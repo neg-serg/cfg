@@ -101,6 +101,14 @@ After containerization lands, verify that container failures surface through the
 `nyxt-bin` — binary packaging for the Nyxt browser. Needs investigation:
 current AUR package may be sufficient, or may need custom PKGBUILD.
 
+### Nyxt dark theme support
+
+Add dark theme configuration for Nyxt browser:
+- Nyxt uses Lisp-based config (`~/.config/nyxt/auto-config.lisp`)
+- Dark mode: `(define-configuration browser (default-theme 'dark))`
+- System dark mode integration via `prefer-color-scheme`
+- CSS injection for web content darkening if needed
+
 ### Home LLM cluster — exo / llama.cpp RPC
 
 When building a multi-node home cluster, evaluate distributed LLM inference options:

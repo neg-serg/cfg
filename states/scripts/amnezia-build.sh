@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-set -uo pipefail
+set -euo pipefail
 BUILD=${BUILD:?BUILD env var required}
 IMG=archlinux:latest
 # Build a container mirrorlist from host mirrors, excluding CachyOS-specific ones

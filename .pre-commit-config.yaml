@@ -29,6 +29,9 @@ repos:
 
       - id: shellcheck
         name: shellcheck
+        # SC2129 excluded: the codebase prefers individual redirects (cmd >> file)
+        # over grouped redirects ({ cmd1; cmd2; } >> file) for readability and
+        # easier per-line debugging. This is an intentional style choice.
         entry: bash -c 'r=0; for f; do case "$(head -n1 "$f")" in (*bash*|*"/bin/sh"*|*"env sh"*) shellcheck -e SC2129 "$f" || r=1;; esac; done; exit $r' --
         language: system
         files: ^(scripts|states/scripts)/.*\.sh$

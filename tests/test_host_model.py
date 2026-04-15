@@ -1,10 +1,8 @@
 """Unit tests for scripts/host_model.py — shared host model builder."""
 
-import pytest
-
 # scripts/ is on sys.path via conftest.py
 import host_model  # noqa: E402, I001
-
+import pytest
 
 # --- recursive_merge ---
 

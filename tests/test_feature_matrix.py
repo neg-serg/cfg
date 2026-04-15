@@ -6,10 +6,9 @@ Validates that states/data/feature_matrix.yaml scenarios are well-formed:
 - Override keys exist in hosts.yaml defaults schema
 """
 
-import pytest
-
 # scripts/ is on sys.path via conftest.py
 import host_model  # noqa: E402, I001
+import pytest
 
 
 def flatten_keys(d, prefix=""):

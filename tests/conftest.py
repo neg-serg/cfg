@@ -2,7 +2,7 @@
 
 import sys
 
-from tests import SCRIPTS_DIR, REPO_ROOT_PATH
+from tests import REPO_ROOT_PATH, SCRIPTS_DIR
 
 # Add scripts/ to sys.path so host_model and other helpers are importable
 if SCRIPTS_DIR not in sys.path:

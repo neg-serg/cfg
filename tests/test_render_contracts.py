@@ -4,7 +4,9 @@ import os
 
 import yaml
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+from tests import REPO_ROOT_STR
+
+REPO_ROOT = REPO_ROOT_STR
 
 
 def test_salt_monitor_unit_is_templated_for_runtime_dir():

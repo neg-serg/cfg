@@ -8,17 +8,14 @@ Complements spec 051 which handles the actual refactoring.
 import importlib.util
 import os
 import re
-import sys
 import warnings
 
+import pytest
 import yaml
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCRIPTS_DIR = os.path.join(REPO_ROOT, "scripts")
+from tests import REPO_ROOT_STR, SCRIPTS_DIR
 
-if SCRIPTS_DIR not in sys.path:
-    sys.path.insert(0, SCRIPTS_DIR)
-
+# scripts/ is on sys.path via conftest.py
 import host_model  # noqa: E402
 
 _lint_path = os.path.join(SCRIPTS_DIR, "lint-jinja.py")
@@ -39,7 +36,7 @@ def _render_all_states():
     import glob
 
     orig = os.getcwd()
-    os.chdir(REPO_ROOT)
+    os.chdir(REPO_ROOT_STR)
     try:
         env = _make_render_env()
         env.globals["grains"]["host"] = "matrix-default"
@@ -116,6 +113,7 @@ _ALL_STATES = _render_all_states()
 _CMD_STATES = _extract_cmd_states(_ALL_STATES)
 
 
+@pytest.mark.slow
 def test_cmdrun_audit_summary():
     """Report cmd.run compliance summary."""
     total = len(_CMD_STATES)
@@ -155,11 +153,13 @@ def test_cmdrun_audit_summary():
         warnings.warn(report, stacklevel=1)
 
 
+@pytest.mark.slow
 def test_cmdrun_states_found():
     """Verify cmd.run states were found for auditing."""
     assert len(_CMD_STATES) > 0, "No cmd.run/cmd.script states found"
 
 
+@pytest.mark.slow
 def test_cmdrun_guard_coverage():
     """Check that guard coverage is tracked."""
     total = len(_CMD_STATES)

@@ -8,8 +8,7 @@ import importlib.util
 import os
 import warnings
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCRIPTS_DIR = os.path.join(REPO_ROOT, "scripts")
+from tests import REPO_ROOT_STR, SCRIPTS_DIR
 
 # Import render-matrix.py via importlib (hyphenated name)
 _rm_path = os.path.join(SCRIPTS_DIR, "render-matrix.py")
@@ -22,7 +21,7 @@ render_all_states = _rm.render_all_states
 
 def _collect_results():
     orig = os.getcwd()
-    os.chdir(REPO_ROOT)
+    os.chdir(REPO_ROOT_STR)
     try:
         return render_all_states()
     finally:

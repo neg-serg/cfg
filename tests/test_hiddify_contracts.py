@@ -7,7 +7,9 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+from tests import REPO_ROOT_PATH
+
+REPO_ROOT = REPO_ROOT_PATH
 
 
 def test_system_description_includes_hiddify_state_by_default():

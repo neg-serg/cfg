@@ -1,10 +1,8 @@
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
+from tests import REPO_ROOT_PATH
 
 
 def read(path: str) -> str:
-    return (ROOT / path).read_text()
+    return (REPO_ROOT_PATH / path).read_text()
 
 
 def test_hypr_browser_binding_prefers_zen_and_keeps_floorp_secondary():

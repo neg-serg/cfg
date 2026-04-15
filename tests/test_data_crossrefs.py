@@ -12,9 +12,9 @@ import re
 import pytest
 import yaml
 
-DATA_DIR = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "states", "data"
-)
+from tests import REPO_ROOT_STR
+
+DATA_DIR = os.path.join(REPO_ROOT_STR, "states", "data")
 
 
 def load_yaml(filename):

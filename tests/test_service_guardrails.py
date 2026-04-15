@@ -1,7 +1,6 @@
 """Contract tests for service helper guardrails and performance gate wiring."""
 
 import importlib.util
-from pathlib import Path
 
 from tests import REPO_ROOT_PATH
 
@@ -71,4 +70,5 @@ def test_state_profiler_compare_rows_honor_threshold(tmp_path):
     assert by_state["slow_state"]["regression"] is True
 
 
-# NOTE: CI workflow removed — state-profiler gate tested directly in test_state_profiler_gate_statuses
+# CI workflow removed; state-profiler gate tested in
+# test_state_profiler_gate_statuses above.

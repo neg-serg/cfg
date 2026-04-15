@@ -10,13 +10,12 @@ import os
 import re
 import warnings
 
+# scripts/ is on sys.path via conftest.py
+import host_model  # noqa: E402
 import pytest
 import yaml
 
 from tests import REPO_ROOT_STR, SCRIPTS_DIR
-
-# scripts/ is on sys.path via conftest.py
-import host_model  # noqa: E402
 
 _lint_path = os.path.join(SCRIPTS_DIR, "lint-jinja.py")
 _spec = importlib.util.spec_from_file_location("lint_jinja", _lint_path)

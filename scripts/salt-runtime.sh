@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 salt_runtime_prepare_dirs() {
     local project_dir="$1"

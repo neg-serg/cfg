@@ -11,6 +11,11 @@
 # existing_parallelism: none | openmp | pthreads | rayon | tbb | gpu | goroutines
 # compiler_backend: gcc-graphite | polly | both | none
 # risk: low | medium | high
+#
+# DECISION: Keep in VCS. Hand-curated research data with benchmark notes
+# and manual classifications. Not consumed by any state file or script,
+# but valuable as a reference document. Only referenced by:
+#   docs/autoparallel-research.md, docs/data-inventory.md
 
 # ── High Potential ──────────────────────────────────────────────────
 # Single-threaded C/C++ programs with CPU-bound data processing loops.

@@ -3,7 +3,7 @@
 # Ensures games properly enumerate all available display modes.
 # Issue: DXVK sometimes reports only a subset of resolutions to games.
 # Expects DXVK_RESOLUTION env var (e.g. "3840x2160"), defaults to native.
-set -eo pipefail
+set -euo pipefail
 
 RESOLUTION="${DXVK_RESOLUTION:-3840x2160}"
 

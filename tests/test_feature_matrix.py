@@ -6,14 +6,9 @@ Validates that states/data/feature_matrix.yaml scenarios are well-formed:
 - Override keys exist in hosts.yaml defaults schema
 """
 
-import os
-import sys
-
 import pytest
 
-SCRIPTS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts")
-sys.path.insert(0, SCRIPTS_DIR)
-
+# scripts/ is on sys.path via conftest.py
 import host_model  # noqa: E402, I001
 
 

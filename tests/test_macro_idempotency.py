@@ -7,16 +7,13 @@ Validates Constitution Principle I compliance for macro-generated states.
 import glob
 import importlib.util
 import os
-import sys
 
+import pytest
 import yaml
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCRIPTS_DIR = os.path.join(REPO_ROOT, "scripts")
+from tests import REPO_ROOT_STR, SCRIPTS_DIR
 
-if SCRIPTS_DIR not in sys.path:
-    sys.path.insert(0, SCRIPTS_DIR)
-
+# scripts/ is on sys.path via conftest.py
 import host_model  # noqa: E402
 
 _lint_path = os.path.join(SCRIPTS_DIR, "lint-jinja.py")
@@ -31,13 +28,13 @@ GUARD_KEYS = {"creates", "unless", "onlyif"}
 CMD_FUNCTIONS = {"cmd.run", "cmd.script"}
 
 # Macro files to verify
-MACRO_FILES = sorted(glob.glob(os.path.join(REPO_ROOT, "states", "_macros_*.jinja")))
+MACRO_FILES = sorted(glob.glob(os.path.join(REPO_ROOT_STR, "states", "_macros_*.jinja")))
 
 
 def _render_state(sls_path):
     """Render a single .sls file and return parsed YAML."""
     orig = os.getcwd()
-    os.chdir(REPO_ROOT)
+    os.chdir(REPO_ROOT_STR)
     try:
         env = _make_render_env()
         env.globals["grains"]["host"] = "matrix-default"
@@ -61,7 +58,7 @@ def _find_macro_consumers():
     """Find .sls files that import any macro file."""
     macro_basenames = {os.path.basename(f) for f in MACRO_FILES}
     consumers = []
-    for sls_path in sorted(glob.glob(os.path.join(REPO_ROOT, "states", "*.sls"))):
+    for sls_path in sorted(glob.glob(os.path.join(REPO_ROOT_STR, "states", "*.sls"))):
         with open(sls_path) as fh:
             source = fh.read()
         for name in macro_basenames:
@@ -102,22 +99,25 @@ _CONSUMERS = _find_macro_consumers()
 _ALL_CMD_STATES = []
 for _sls in _CONSUMERS:
     _states = _render_state(_sls)
-    _rel = os.path.relpath(_sls, REPO_ROOT)
+    _rel = os.path.relpath(_sls, REPO_ROOT_STR)
     for _entry in _extract_cmd_states(_states):
         _entry["file"] = _rel
         _ALL_CMD_STATES.append(_entry)
 
 
+@pytest.mark.slow
 def test_macro_files_exist():
     """Verify macro files are found."""
     assert len(MACRO_FILES) > 0, "No _macros_*.jinja files found"
 
 
+@pytest.mark.slow
 def test_macro_consumers_found():
     """Verify states that use macros are found."""
     assert len(_CONSUMERS) > 0, "No .sls files importing macros found"
 
 
+@pytest.mark.slow
 def test_macro_generated_states_have_guards():
     """All macro-generated cmd.run/cmd.script states must have idempotency guards."""
     missing = [s for s in _ALL_CMD_STATES if not s["has_guard"]]

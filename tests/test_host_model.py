@@ -1,14 +1,8 @@
 """Unit tests for scripts/host_model.py — shared host model builder."""
 
-import os
-import sys
-
 import pytest
 
-# Add scripts/ to path so we can import host_model
-SCRIPTS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts")
-sys.path.insert(0, SCRIPTS_DIR)
-
+# scripts/ is on sys.path via conftest.py
 import host_model  # noqa: E402, I001
 
 

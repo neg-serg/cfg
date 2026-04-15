@@ -3,11 +3,11 @@
 import importlib.util
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+from tests import REPO_ROOT_PATH
 
 
 def _load_state_profiler():
-    module_path = REPO_ROOT / "scripts" / "state-profiler.py"
+    module_path = REPO_ROOT_PATH / "scripts" / "state-profiler.py"
     spec = importlib.util.spec_from_file_location("state_profiler_module", module_path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -16,7 +16,7 @@ def _load_state_profiler():
 
 
 def test_services_macro_exposes_config_replace_helper():
-    source = (REPO_ROOT / "states" / "_macros_service.jinja").read_text()
+    source = (REPO_ROOT_PATH / "states" / "_macros_service.jinja").read_text()
 
     assert "macro config_replace_with_service_control" in source
     assert "service.dead:" in source
@@ -25,7 +25,7 @@ def test_services_macro_exposes_config_replace_helper():
 
 
 def test_services_sls_no_longer_has_transmission_escape_hatch():
-    source = (REPO_ROOT / "states" / "services.sls").read_text()
+    source = (REPO_ROOT_PATH / "states" / "services.sls").read_text()
 
     # Transmission migrated to Quadlet — escape hatch (ACLs + config replacement) removed
     assert "transmission_acl_setup" not in source

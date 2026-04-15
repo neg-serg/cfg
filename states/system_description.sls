@@ -125,6 +125,7 @@ include:
 {% if host.features.floorp and host.floorp_profile %}
   - floorp
 {% endif %}
+  - nyxt
 {% if host.features.network.get('hiddify', True) %}
   - hiddify
 {% endif %}

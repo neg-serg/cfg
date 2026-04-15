@@ -1,3 +1,6 @@
+# =============================================================================
+# Zapret2 DPI bypass — configuration, hostlist, and helper service
+# =============================================================================
 {% from '_imports.jinja' import user %}
 {% from '_macros_service.jinja' import ensure_dir, service_with_unit %}
 {% import_yaml 'data/zapret2.yaml' as zapret2 %}

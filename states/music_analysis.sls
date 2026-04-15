@@ -1,3 +1,4 @@
+# Music analysis: Python dependencies for Annoy-based scripts + Essentia audio extractor.
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_install.jinja' import curl_extract_tar %}
 {% import_yaml 'data/versions.yaml' as ver %}

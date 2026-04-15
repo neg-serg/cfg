@@ -1,3 +1,5 @@
+# Data-driven fallback installs: tools built from GitHub releases, pip, cargo, go, or raw HTTP.
+# Use only when no official/AUR package is suitable.
 {% from '_imports.jinja' import user, home, retry_attempts, retry_interval %}
 {% from '_macros_install.jinja' import cargo_pkg, curl_bin, curl_extract_tar, curl_extract_zip, git_clone_build, git_clone_deploy, go_pkg, http_file, install_catalog, pip_pkg %}
 {% from '_macros_pkg.jinja' import paru_install %}

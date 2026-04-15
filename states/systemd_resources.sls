@@ -1,3 +1,6 @@
+# =============================================================================
+# SystemD managed resources — identity guards and path protections
+# =============================================================================
 {% import_yaml 'data/managed_resources.yaml' as managed %}
 {% from '_macros_service.jinja' import managed_identity_guard, managed_path_guard %}
 

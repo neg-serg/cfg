@@ -1,3 +1,4 @@
+# Hardware-specific configuration: RME USB trigger, fan control, WiFi.
 {% from '_imports.jinja' import host %}
 {% from '_macros_service.jinja' import udev_rule, service_with_unit %}
 

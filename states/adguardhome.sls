@@ -1,3 +1,6 @@
+# =============================================================================
+# AdGuard Home DNS filter — Quadlet container deployment
+# =============================================================================
 {% from '_imports.jinja' import host, user, home %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}

@@ -1,3 +1,6 @@
+# =============================================================================
+# Desktop user session — dconf, SSH keys, user services
+# =============================================================================
 {% from '_imports.jinja' import host, home %}
 {% from '_macros_desktop.jinja' import dconf_settings %}
 {% from '_macros_service.jinja' import ensure_dir, service_with_unit %}

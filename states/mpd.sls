@@ -1,3 +1,4 @@
+# MPD (Music Player Daemon) — native deployment with systemd user service and PipeWire output.
 {% from '_imports.jinja' import host, user, home, pkg_list, gopass_secret %}
 {% from '_macros_install.jinja' import cargo_pkg %}
 {% from '_macros_service.jinja' import user_service_enable, user_service_file %}

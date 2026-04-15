@@ -1,3 +1,5 @@
+# DNS services: unbound, AdGuard Home, avahi.
+# Migrated to data-driven definitions in services.yaml.
 {% from '_imports.jinja' import host %}
 {% set dns = host.features.dns %}
 

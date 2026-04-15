@@ -1,3 +1,4 @@
+# Kernel boot parameters for CachyOS (Limine bootloader).
 {% from '_imports.jinja' import host %}
 {% from '_macros_config.jinja' import config_file_edit %}
 # Kernel boot parameters for CachyOS (Limine bootloader).

@@ -1,3 +1,6 @@
+# =============================================================================
+# Video AI base — directory structure and base dependencies
+# =============================================================================
 {% from '_imports.jinja' import host, user, retry_attempts, retry_interval %}
 {% from '_macros_service.jinja' import ensure_dir %}
 {% import_yaml 'data/video_ai.yaml' as video_ai %}

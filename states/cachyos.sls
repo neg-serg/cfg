@@ -1,3 +1,7 @@
+# CachyOS bootstrap verification state.
+# Validates that bootstrap-cachyos.sh + cachyos-packages.sh completed correctly.
+# Run: sudo salt-call --local state.apply cachyos
+# Verify only: sudo salt-call --local state.apply cachyos test=True
 {% from '_imports.jinja' import host, user %}
 {% import_yaml 'data/cachyos.yaml' as checks %}
 # CachyOS bootstrap verification state

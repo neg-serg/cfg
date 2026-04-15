@@ -1,3 +1,6 @@
+# =============================================================================
+# Desktop environment — top-level include for system, packages, portal, hyprland, user
+# =============================================================================
 include:
   - desktop.system
   - desktop.packages

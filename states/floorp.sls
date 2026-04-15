@@ -1,3 +1,4 @@
+# Floorp browser: user.js + userChrome.css + userContent.css + extensions.
 {% from '_imports.jinja' import host, user, home %}
 {% from '_macros_desktop.jinja' import browser_extensions %}
 {% from '_macros_install.jinja' import git_clone_deploy %}

@@ -1,8 +1,10 @@
+# Amnezia VPN — builds and deploys AmneziaWG + Amnezia VPN client from source.
+# All 3 components build in parallel for faster deployment.
+# Run: sudo salt-call --local state.apply amnezia
 {% from '_imports.jinja' import host, user, home, retry_attempts, retry_interval %}
 {% from '_macros_service.jinja' import ensure_dir %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% set cache = host.mnt_one ~ '/pkg/cache/amnezia' %}
-# Salt state for Amnezia build and deploy (Local User version)
 # All 3 components build in parallel for faster deployment
 {{ ensure_dir('amnezia_cache_dir', cache, require=['mount: mount_one']) }}
 

@@ -98,8 +98,8 @@ After containerization lands, verify that container failures surface through the
 
 ### Nyxt browser packaging
 
-`nyxt-bin` — binary packaging for the Nyxt browser. Needs investigation:
-current AUR package may be sufficient, or may need custom PKGBUILD.
+**Resolved 2026-04-16**: Nyxt 3.12.0-1 is in Arch `extra` repo. Just `pacman -S nyxt`.
+No custom PKGBUILD needed.
 
 ### Nyxt dark theme support
 

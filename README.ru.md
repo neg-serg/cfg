@@ -57,3 +57,4 @@ just test group/network
 - [Секреты](docs/secrets-scheme.ru.md) — интеграция gopass/Yubikey
 - [Настройка gopass](docs/gopass-setup.ru.md) — пошаговое заведение секретов
 - [Recovery gopass age](docs/gopass-age-recovery.ru.md) — перенос `age`-backed store на другой компьютер
+- [Настройка SonoBus](docs/sonobus-setup.md) — P2P аудио-стриминг с низкой задержкой между устройствами

@@ -59,3 +59,4 @@ new logic, just a convenient entry point.  Individual states still work:
 - [Secrets](docs/secrets-scheme.md) — `gopass`-backed secret management with approved `gpg` and `age` backends
 - [gopass setup](docs/gopass-setup.md) — step-by-step secret provisioning, unlock, backup, and migration guidance
 - [gopass age recovery](docs/gopass-age-recovery.md) — moving an `age`-backed store to another machine
+- [SonoBus setup](docs/sonobus-setup.md) — P2P low-latency audio streaming between devices

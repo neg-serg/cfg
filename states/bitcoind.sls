@@ -18,6 +18,7 @@ bitcoind_native_unit_absent:
 bitcoind_native_unit_daemon_reload:
   cmd.run:
     - name: systemctl daemon-reload
+    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
     - onchanges:
       - file: bitcoind_native_unit_absent
 
@@ -25,4 +26,5 @@ bitcoind_native_unit_daemon_reload:
 {{ ensure_dir('bitcoind_data_dir', '/var/lib/bitcoind-container', mode='0755', user='root') }}
 
 {{ container_service('bitcoind', catalog.bitcoind, image_registry,
+    quadlet_unit_name='bitcoind-container',
     requires=['file: bitcoind_data_dir', 'cmd: bitcoind_native_unit_daemon_reload']) }}

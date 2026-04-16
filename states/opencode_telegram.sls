@@ -43,12 +43,14 @@ opencode_telegram_bot_env:
 
 # ── OpenCode serve (API server for the bot) — containerized ──────────
 {{ container_service('opencode_serve', catalog.opencode_serve, image_registry,
+    quadlet_unit_name='opencode-serve',
     user_scope=True,
     requires=['cmd: install_opencode_telegram']) }}
 
 # ── Bot container ─────────────────────────────────────────────────────
 {% set _bot_watch = (['file: opencode_telegram_bot_env'] if _has_otb_token else []) %}
 {{ container_service('opencode_telegram_bot', catalog.opencode_telegram_bot, image_registry,
+    quadlet_unit_name='opencode-telegram-bot',
     user_scope=True,
     requires=['cmd: install_opencode_telegram'],
     watch=_bot_watch) }}

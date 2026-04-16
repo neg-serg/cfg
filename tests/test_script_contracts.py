@@ -1,5 +1,7 @@
 """Contract tests for shared shell/bootstrap scripts."""
 
+import os
+import subprocess
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -41,3 +43,87 @@ def test_justfile_lint_delegates_to_script():
     assert "bash scripts/lint-all.sh" in justfile_source
     assert 'run_check "lint-jinja"' in lint_script_source
     assert 'run_check "yamllint"' in lint_script_source
+
+
+def test_health_check_tracks_named_quadlet_units():
+    source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
+
+    assert "jellyfin-container" in source
+    assert "transmission-container" in source
+    assert "adguardhome-container" in source
+    assert "loki-container" in source
+    assert "promtail-container" in source
+    assert "grafana-container" in source
+    assert "bitcoind-container" in source
+
+
+def test_deploy_guide_uses_cfg_project_dir():
+    source = (REPO_ROOT / "scripts" / "deploy-cachyos.sh").read_text()
+
+    assert "~/src/cfg" in source
+    assert "~/src/salt" not in source
+
+
+def test_hot_reload_uses_nanoclaw_quadlet_unit():
+    source = (REPO_ROOT / "scripts" / "hot-reload.sh").read_text()
+
+    assert "SVC_UNIT[nanoclaw]='nanoclaw-container.service'" in source
+    assert "SVC_TYPE[nanoclaw]='quadlet'" in source
+
+
+def test_hot_reload_script_parses_in_zsh():
+    script = REPO_ROOT / "scripts" / "hot-reload.sh"
+
+    result = subprocess.run(["zsh", "-n", str(script)], capture_output=True, text=True)
+
+    assert result.returncode == 0, result.stderr
+
+
+def test_health_check_parses_user_service_names_from_yaml_mappings():
+    source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
+
+    assert "grep -oP '^\\s+- \\{name:\\s*\\K[^,}]+'" in source
+
+
+def test_health_check_uses_expected_states_for_timers_and_oneshot_units():
+    source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
+
+    assert 'check_user_service "$timer" "active (waiting)"' in source
+    assert 'check_user_service "openrgb-profile.service" "inactive"' in source
+
+
+def test_health_check_skips_feature_gated_disabled_user_units():
+    source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
+
+    assert "grep -v 'features:'" in source
+    assert "grep -oP '^\\s+- \\{name:\\s*\\K[^,}]+'" in source
+
+
+def test_health_check_uses_host_aware_optional_unbound_and_cronie_checks():
+    source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
+
+    assert "host_name=$(hostnamectl --static 2>/dev/null || hostname)" in source
+    assert 'SYSTEM_SERVICES+=("unbound")' in source
+    assert 'SYSTEM_SERVICES+=("cronie")' in source
+
+
+def test_health_check_uses_dash_keys_for_quadlet_http_checks():
+    source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
+
+    assert 'HEALTHCHECKS["loki-container"]="3100:/ready"' in source
+    assert 'HEALTHCHECKS["promtail-container"]="9080:/ready"' in source
+    assert 'HEALTHCHECKS["grafana-container"]="3030:/api/health"' in source
+    assert 'HEALTHCHECKS["adguardhome-container"]="3000:/"' in source
+
+
+def test_salt_validate_does_not_execute_stale_venv_shebang_wrappers():
+    source = (REPO_ROOT / "scripts" / "salt-validate.sh").read_text()
+
+    assert ".venv/bin/salt-call" not in source
+    assert '"$salt_python" -m salt.scripts salt_call' in source
+
+
+def test_health_check_script_is_executable():
+    script = REPO_ROOT / "scripts" / "health-check.sh"
+
+    assert os.access(script, os.X_OK)

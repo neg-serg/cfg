@@ -22,6 +22,7 @@ transmission_native_unit_absent:
 transmission_native_unit_daemon_reload:
   cmd.run:
     - name: systemctl daemon-reload
+    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
     - onchanges:
       - file: transmission_native_unit_absent
 
@@ -31,4 +32,5 @@ transmission_native_unit_daemon_reload:
 {{ ensure_dir('transmission_download_dir', home ~ '/torrent/data', mode='0755') }}
 
 {{ container_service('transmission', catalog.transmission, image_registry,
+    quadlet_unit_name='transmission-container',
     requires=['file: transmission_config_dir', 'file: transmission_watch_dir', 'file: transmission_download_dir', 'cmd: transmission_native_unit_daemon_reload']) }}

@@ -97,6 +97,7 @@ nanoclaw_native_unit_absent:
 nanoclaw_native_unit_daemon_reload:
   cmd.run:
     - name: systemctl --user daemon-reload
+    - onlyif: systemctl --user show-environment >/dev/null 2>&1
     - runas: {{ user }}
     - env:
       - XDG_RUNTIME_DIR: {{ host.runtime_dir }}
@@ -106,10 +107,11 @@ nanoclaw_native_unit_daemon_reload:
 
 # ── Container deployment ──
 {{ container_service('nanoclaw', catalog.nanoclaw, image_registry,
+    quadlet_unit_name='nanoclaw-container',
     user_scope=True,
     requires=['cmd: nanoclaw_version', 'file: nanoclaw_env', 'file: nanoclaw_sender_allowlist', 'file: nanoclaw_mount_allowlist', 'cmd: nanoclaw_native_unit_daemon_reload']) }}
 
 # ── Restart on env change ──
-{{ user_service_restart('restart_nanoclaw_on_env_change', 'nanoclaw.service',
-    onlyif='systemctl --user is-active nanoclaw.service >/dev/null 2>&1',
+{{ user_service_restart('restart_nanoclaw_on_env_change', 'nanoclaw-container.service',
+    onlyif='systemctl --user is-active nanoclaw-container.service >/dev/null 2>&1',
     onchanges=['file: nanoclaw_env']) }}

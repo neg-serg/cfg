@@ -65,5 +65,6 @@ telethon_bridge_init_script:
 
 # ── Containerized Telethon Bridge (localhost image) ──────────────────
 {{ container_service('telethon_bridge', catalog.telethon_bridge, image_registry,
+    quadlet_unit_name='telethon-bridge',
     user_scope=True,
     requires=['cmd: install_python_telethon', 'file: telethon_bridge_config']) }}

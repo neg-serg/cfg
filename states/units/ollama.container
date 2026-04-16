@@ -21,7 +21,7 @@ StartLimitIntervalSec=60
 [Container]
 Image={{ image }}
 ContainerName=ollama
-PublishPort=127.0.0.1:{{ catalog_entry.port }}:11434
+Network=host
 {% for m in expanded_mounts -%}
 Volume={{ m.host }}:{{ m.container }}:{{ m.mode }}
 {% endfor -%}

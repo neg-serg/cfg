@@ -38,7 +38,7 @@ uinput_group:
 kanata_user_groups:
   cmd.run:
     - name: usermod -aG input,uinput {{ user }}
-    - unless: id -nG {{ user }} | grep -qw uinput
+    - onlyif: id -u {{ user }} >/dev/null 2>&1 && command -v usermod >/dev/null 2>&1 && id -nG {{ user }} | grep -qw input && ! id -nG {{ user }} | grep -qw uinput
     - require:
       - group: uinput_group
 

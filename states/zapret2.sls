@@ -75,6 +75,7 @@ zapret2_hostlist:
 zapret2_refresh_lists:
   cmd.run:
     - name: /opt/zapret2/ipset/get_config.sh
+    - onlyif: test -x /opt/zapret2/ipset/get_config.sh
     - onchanges:
       - file: zapret2_config
       - file: zapret2_hostlist

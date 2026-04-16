@@ -28,6 +28,7 @@ managed_service_accounts_conf:
 managed_service_accounts_apply:
   cmd.run:
     - name: systemd-sysusers /etc/sysusers.d/salt-managed-service-accounts.conf
+    - onlyif: command -v systemd-sysusers >/dev/null 2>&1
     - onchanges:
       - file: managed_service_accounts_conf
     - require:
@@ -68,6 +69,7 @@ managed_service_paths_conf:
 managed_service_paths_apply:
   cmd.run:
     - name: systemd-tmpfiles --create /etc/tmpfiles.d/salt-managed-service-paths.conf
+    - onlyif: command -v systemd-tmpfiles >/dev/null 2>&1
     - onchanges:
       - file: managed_service_paths_conf
     - require:

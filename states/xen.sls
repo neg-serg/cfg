@@ -90,6 +90,7 @@ xen_steam_symlink:
 xen_steam_acl:
   cmd.run:
     - name: |
+        set -euo pipefail
         setfacl -R -m g:steam:rX {{ home }}/.local/share/Steam 2>/dev/null || true
         setfacl -R -d -m g:steam:rX {{ home }}/.local/share/Steam 2>/dev/null || true
     - unless: getfacl {{ home }}/.local/share/Steam 2>/dev/null | grep -q 'group:steam:r'

@@ -66,7 +66,7 @@ def test_build_lint_host_derived_fields():
     assert "runtime_dir" in host
     assert host["runtime_dir"] == f"/run/user/{host['uid']}"
     assert host["pkg_list"] == "/var/cache/salt/pacman_installed.txt"
-    assert host["project_dir"] == host["home"] + "/src/salt"
+    assert host["project_dir"] == host["home"] + "/src/cfg"
 
 
 def test_build_lint_host_all_features_enabled():
@@ -175,7 +175,7 @@ def test_full_assembly_pipeline():
     assert "zen_profile" in host
     # Derived fields should be computed
     assert host["runtime_dir"] == f"/run/user/{host['uid']}"
-    assert host["project_dir"] == host["home"] + "/src/salt"
+    assert host["project_dir"] == host["home"] + "/src/cfg"
 
 
 def test_alias_produces_identical_config():

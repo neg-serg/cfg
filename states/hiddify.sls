@@ -21,6 +21,7 @@ hiddify_legacy_cleanup:
 hiddify_next_default_handlers:
   cmd.run:
     - name: |
+        set -euo pipefail
         xdg-mime default hiddify.desktop x-scheme-handler/hiddify
         xdg-mime default hiddify.desktop x-scheme-handler/sing-box
         xdg-mime default hiddify.desktop x-scheme-handler/v2ray

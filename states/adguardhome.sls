@@ -26,6 +26,7 @@ adguardhome_native_unit_absent:
 adguardhome_native_unit_daemon_reload:
   cmd.run:
     - name: systemctl daemon-reload
+    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
     - onchanges:
       - file: adguardhome_native_unit_absent
 
@@ -56,14 +57,16 @@ adguardhome_resolved_conf:
 systemd_resolved_restart_on_adguardhome_change:
   cmd.run:
     - name: systemctl restart systemd-resolved
+    - onlyif: systemctl is-enabled systemd-resolved >/dev/null 2>&1
     - onchanges:
       - file: adguardhome_resolved_conf
 
 {# ── Container deployment ── #}
 {{ container_service('adguardhome', catalog.adguardhome, image_registry,
+    quadlet_unit_name='adguardhome-container',
     requires=['file: adguardhome_work_dir', 'file: adguardhome_initial_config', 'cmd: adguardhome_native_unit_daemon_reload']) }}
 
 {# ── Healthcheck ── #}
-{{ service_with_healthcheck('adguardhome_start', 'adguardhome',
+{{ service_with_healthcheck('adguardhome_start', 'adguardhome-container',
     'curl -sf http://127.0.0.1:3000/ >/dev/null 2>&1',
     requires=['cmd: adguardhome_running']) }}

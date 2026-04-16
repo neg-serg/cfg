@@ -38,6 +38,7 @@ amnezia_build:
 amnezia_version_stamp:
   cmd.run:
     - name: mkdir -p /var/cache/salt/versions && rm -f /var/cache/salt/versions/amnezia_vpn@* && touch {{ _amnezia_ver_marker }}
+    - onlyif: test -x {{ cache }}/amneziawg-go-bin && test -x {{ cache }}/awg-bin && test -x {{ cache }}/AmneziaVPN-bin && test -x {{ cache }}/AmneziaVPN-service-bin
     - onchanges:
       - cmd: amnezia_build
 {% endif %}
@@ -60,15 +61,16 @@ amnezia_version_stamp:
 {% endfor %}
 
 # Verification (only runs when the binary actually changed)
-{% for state_id, cmd, bin_state in [
-  ('amneziawg_go', '/usr/local/bin/amneziawg-go --version', 'amneziawg_go_bin'),
-  ('awg', '/usr/local/bin/awg --version', 'amneziawg_tools_bin'),
-  ('amnezia_vpn', 'ldd /usr/local/bin/AmneziaVPN', 'amnezia_vpn_bin'),
-  ('amnezia_service', 'ldd /usr/local/bin/AmneziaVPN-service', 'amnezia_service_bin'),
+{% for state_id, cmd, bin_state, binary_path in [
+  ('amneziawg_go', '/usr/local/bin/amneziawg-go --version', 'amneziawg_go_bin', '/usr/local/bin/amneziawg-go'),
+  ('awg', '/usr/local/bin/awg --version', 'amneziawg_tools_bin', '/usr/local/bin/awg'),
+  ('amnezia_vpn', 'ldd /usr/local/bin/AmneziaVPN', 'amnezia_vpn_bin', '/usr/local/bin/AmneziaVPN'),
+  ('amnezia_service', 'ldd /usr/local/bin/AmneziaVPN-service', 'amnezia_service_bin', '/usr/local/bin/AmneziaVPN-service'),
 ] %}
 {{ state_id }}_verify:
   cmd.run:
     - name: {{ cmd }}
+    - onlyif: test -x {{ binary_path }}
     - onchanges:
       - file: {{ bin_state }}
 {% endfor %}

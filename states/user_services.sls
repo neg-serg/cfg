@@ -40,7 +40,7 @@ RestartSec=3
 chezmoi_source_symlink:
   file.symlink:
     - name: {{ home }}/.local/share/chezmoi
-    - target: {{ home }}/src/salt/dotfiles
+    - target: {{ host.project_dir }}/dotfiles
     - user: {{ user }}
     - group: {{ user }}
     - force: True

@@ -94,6 +94,14 @@ def test_catalog_packages_are_valid():
     assert not invalid, f"Invalid catalog package fields: {invalid}"
 
 
+def test_avahi_package_list_does_not_reference_missing_repo_package():
+    """Avahi package list should only include packages available in repos."""
+    services = load_yaml("services.yaml")
+    avahi = services.get("dns", {}).get("avahi", {})
+
+    assert "avahi-tools" not in avahi.get("packages", "")
+
+
 # --- US1: Monitored services cross-references ---
 
 
@@ -136,7 +144,7 @@ def _collect_known_services():
         if os.path.isdir(scope_path):
             for unit_file in os.listdir(scope_path):
                 # Strip .service/.timer suffix to get service name
-                for suffix in (".service", ".timer", ".socket", ".path"):
+                for suffix in (".service", ".timer", ".socket", ".path", ".container"):
                     if unit_file.endswith(suffix):
                         known.add(unit_file[: -len(suffix)])
 

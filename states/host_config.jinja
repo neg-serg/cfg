@@ -39,4 +39,5 @@
 {% endif %}
 {% do host.update({'runtime_dir': '/run/user/' ~ host.uid|string}) %}
 {% do host.update({'pkg_list': '/var/cache/salt/pacman_installed.txt'}) %}
-{% do host.update({'project_dir': host.home ~ '/src/salt'}) %}
+{% set project_dir = salt['config.get']('project_dir', host.home ~ '/src/cfg') %}
+{% do host.update({'project_dir': project_dir}) %}

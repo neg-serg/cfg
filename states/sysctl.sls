@@ -13,5 +13,6 @@ sysctl_config:
 sysctl_apply:
   cmd.run:
     - name: sysctl --system
+    - onlyif: command -v sysctl >/dev/null 2>&1
     - onchanges:
       - file: sysctl_config

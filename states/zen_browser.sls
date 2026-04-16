@@ -33,7 +33,7 @@ zen_userchrome:
 zen_floorp_profile_import:
   cmd.run:
     - name: >
-        {{ home }}/src/salt/scripts/migrate-floorp-to-zen-profile.sh
+        {{ host.project_dir }}/scripts/migrate-floorp-to-zen-profile.sh
         --floorp-profile {{ floorp_profile | yaml_dquote }}
         --zen-profile {{ zen_profile | yaml_dquote }}
         --stamp {{ zen_floorp_import_stamp | yaml_dquote }}

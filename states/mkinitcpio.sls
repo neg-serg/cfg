@@ -11,5 +11,6 @@ mkinitcpio_config:
 mkinitcpio_rebuild:
   cmd.run:
     - name: mkinitcpio -P
+    - onlyif: command -v mkinitcpio >/dev/null 2>&1
     - onchanges:
       - file: mkinitcpio_config

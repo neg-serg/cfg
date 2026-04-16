@@ -165,7 +165,7 @@ dns:
         - service: unbound_running
 
   avahi:
-    packages: avahi avahi-tools nss-mdns
+    packages: avahi nss-mdns
     service: avahi-daemon  # enable package-provided service
     config_templates:
       - dest: /etc/avahi/avahi-daemon.conf

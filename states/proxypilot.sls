@@ -79,6 +79,7 @@ proxypilot_native_unit_absent:
 proxypilot_native_unit_daemon_reload:
   cmd.run:
     - name: systemctl --user daemon-reload
+    - onlyif: systemctl --user show-environment >/dev/null 2>&1
     - runas: {{ user }}
     - env:
       - XDG_RUNTIME_DIR: {{ host.runtime_dir }}
@@ -88,10 +89,11 @@ proxypilot_native_unit_daemon_reload:
 
 {# ── Container deployment ── #}
 {{ container_service('proxypilot', catalog.proxypilot, image_registry,
+    quadlet_unit_name='proxypilot-container',
     user_scope=True,
     requires=['file: proxypilot_config', 'cmd: proxypilot_native_unit_daemon_reload']) }}
 
 {# ── Restart on config change ── #}
-{{ user_service_restart('restart_proxypilot_on_config_change', 'proxypilot.service',
-    onlyif='systemctl --user is-active proxypilot.service >/dev/null 2>&1',
+{{ user_service_restart('restart_proxypilot_on_config_change', 'proxypilot-container.service',
+    onlyif='systemctl --user is-active proxypilot-container.service >/dev/null 2>&1',
     onchanges=['file: proxypilot_config']) }}

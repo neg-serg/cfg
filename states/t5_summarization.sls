@@ -30,8 +30,10 @@
 t5_summarization_convert:
   cmd.run:
     - name: |
+        set -euo pipefail
         cd {{ hf_path }}
         /usr/bin/convert_hf_to_gguf.py {{ hf_path }} --outfile {{ gguf_path }} --outtype q5_k_m 2>&1
+    - shell: /bin/bash
     - runas: {{ user }}
     - creates: {{ gguf_path }}
     - require:
@@ -49,6 +51,7 @@ t5_summarization_native_unit_absent:
 t5_summarization_native_unit_daemon_reload:
   cmd.run:
     - name: systemctl daemon-reload
+    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
     - onchanges:
       - file: t5_summarization_native_unit_absent
 

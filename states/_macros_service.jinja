@@ -121,6 +121,7 @@ test -e {{ _path }}
 {{ name }}_reload:
   cmd.run:
     - name: udevadm control --reload-rules && udevadm trigger
+    - onlyif: command -v udevadm >/dev/null 2>&1
     - onchanges:
       - file: {{ name }}
 {%- endmacro -%}
@@ -261,6 +262,7 @@ test -e {{ _path }}
 {{ name }}:
   cmd.run:
     - name: |
+        set -euo pipefail
         if ! systemctl is-active --quiet {{ service }}; then
           systemctl daemon-reload
           systemctl restart {{ service }}
@@ -335,6 +337,7 @@ test -e {{ _path }}
 {{ name }}_daemon_reload:
   cmd.run:
     - name: systemctl --user daemon-reload
+    - onlyif: systemctl --user show-environment >/dev/null 2>&1
     - runas: {{ user }}
     - env:
 {{ _env_block() }}
@@ -372,6 +375,7 @@ test -e {{ _path }}
 {{ name }}_daemon_reload:
   cmd.run:
     - name: systemctl --user daemon-reload
+    - onlyif: systemctl --user show-environment >/dev/null 2>&1
     - runas: {{ user }}
     - env:
 {{ _env_block() }}
@@ -398,7 +402,7 @@ test -e {{ _path }}
 {%- if not all_units and not daemon_reload %}
         /usr/bin/true
 {%- else %}
-        set -e
+        set -euo pipefail
 {%- if daemon_reload %}
         systemctl --user daemon-reload
 {%- endif %}
@@ -573,6 +577,7 @@ test -e {{ _path }}
 {{ name }}_daemon_reload:
   cmd.run:
     - name: systemctl daemon-reload
+    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
     - onchanges:
       - file: {{ name }}_service
 {%- if companion %}
@@ -784,11 +789,16 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
   cmd.run:
     - name: systemctl {% if user_scope %}--user {% endif %}daemon-reload
 {%- if user_scope %}
+    - onlyif: systemctl --user show-environment >/dev/null 2>&1
+{%- else %}
+    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
+{%- endif %}
+{%- if user_scope %}
     - runas: {{ _user }}
     - env:
 {{ _env_block() }}
 {%- endif %}
-    - onchanges:
+    - require:
       - file: {{ name }}_container
 
 {%- if not _manual_start %}
@@ -810,8 +820,9 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
       - cmd: {{ name }}_daemon_reload
 {%- endif %}
 {%- else %}
-  service.enabled:
-    - name: {{ _quadlet_name }}
+  cmd.run:
+    - name: systemctl is-enabled {{ _quadlet_name }}.service >/dev/null 2>&1 || systemctl enable {{ _quadlet_name }}.service
+    - unless: systemctl is-enabled {{ _quadlet_name }}.service >/dev/null 2>&1
     - require:
 {%- if _is_localhost %}
       - cmd: {{ name }}_daemon_reload
@@ -834,7 +845,7 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
 {%- if user_scope %}
       - cmd: {{ name }}_enabled
 {%- else %}
-      - service: {{ name }}_enabled
+      - cmd: {{ name }}_enabled
 {%- endif %}
 
 {{ name }}_running:
@@ -858,7 +869,7 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
 {%- if user_scope %}
       - cmd: {{ name }}_enabled
 {%- else %}
-      - service: {{ name }}_enabled
+      - cmd: {{ name }}_enabled
 {%- endif %}
       - cmd: {{ name }}_reset_failed
 {%- endif %}

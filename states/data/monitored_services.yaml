@@ -31,24 +31,24 @@ system_services:
     severity: warning
     health_url: "http://127.0.0.1:11436/health"
     optional: true
-  - name: jellyfin
+  - name: jellyfin-container
     severity: info
     optional: true
-  - name: transmission
+  - name: transmission-container
     severity: info
     optional: true
-  - name: adguardhome
+  - name: adguardhome-container
     severity: warning
     health_url: "http://127.0.0.1:3000/"
     optional: true
-  - name: loki
+  - name: loki-container
     severity: warning
     health_url: "http://127.0.0.1:3100/ready"
     optional: true
-  - name: promtail
+  - name: promtail-container
     severity: info
     optional: true
-  - name: grafana
+  - name: grafana-container
     severity: info
     health_url: "http://127.0.0.1:3030/api/health"
     optional: true
@@ -58,13 +58,13 @@ system_services:
   - name: samba
     severity: info
     optional: true
-  - name: bitcoind
+  - name: bitcoind-container
     severity: info
     optional: true
 
 # User services (systemd user scope)
 user_services:
-  - name: proxypilot
+  - name: proxypilot-container
     severity: critical
   - name: telethon-bridge
     severity: warning

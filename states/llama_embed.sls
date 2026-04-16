@@ -27,6 +27,7 @@ llama_embed_native_unit_absent:
 llama_embed_native_unit_daemon_reload:
   cmd.run:
     - name: systemctl daemon-reload
+    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
     - onchanges:
       - file: llama_embed_native_unit_absent
 

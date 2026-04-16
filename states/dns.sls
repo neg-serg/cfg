@@ -13,4 +13,5 @@
 unbound_restart_or_reload:
   cmd.run:
     - name: unbound-control reload 2>/dev/null || systemctl restart unbound 2>/dev/null || true
+    - onlyif: command -v unbound-control >/dev/null 2>&1 || systemctl cat unbound >/dev/null 2>&1
 {% endif %}

@@ -17,6 +17,7 @@ install_{{ name | replace('-', '_') }}:
   cmd.run:
 {%- if version %}
     - name: |
+        set -euo pipefail
         sudo -u {{ _user }} paru -S --noconfirm --needed {{ pkg }}
         {{ ver_stamp(_ver_dir, name, version) }}
     - shell: /bin/bash
@@ -40,7 +41,7 @@ install_{{ name | replace('-', '_') }}:
    check: idempotency check override (passed to paru_install).
    requires: optional extra requisites for service.enabled beyond the install (e.g. config files).
    Usage: {{ simple_service('unbound', 'unbound') }}
-          {{ simple_service('avahi', 'avahi avahi-tools nss-mdns', service='avahi-daemon', requires=['file: avahi_config']) }}
+           {{ simple_service('avahi', 'avahi nss-mdns', service='avahi-daemon', requires=['file: avahi_config']) }}
           {{ simple_service('grafana', 'grafana', service='grafana-server', requires=['file: grafana_config']) }}
 #}
 {%- macro simple_service(name, pkgs, service=None, check=None, requires=None) -%}

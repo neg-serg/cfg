@@ -886,7 +886,7 @@ def check_systemd_units():
         "ollama_port": 11434,
         "dns_unbound": True,
         "gpu_enable": True,
-        "project_dir": default_home + "/src/salt",
+        "project_dir": default_home + "/src/cfg",
     }
     for path in sorted(j2_units):
         try:

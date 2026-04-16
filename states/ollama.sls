@@ -20,6 +20,7 @@ ollama_native_unit_absent:
 ollama_native_unit_daemon_reload:
   cmd.run:
     - name: systemctl daemon-reload
+    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
     - onchanges:
       - file: ollama_native_unit_absent
 
@@ -47,12 +48,14 @@ ollama_native_unit_daemon_reload:
 ollama_tmp_start:
   cmd.run:
     - name: |
+        set -euo pipefail
         systemctl start ollama
         for i in $(seq 1 30); do
           curl -sf http://{{ ollama_base }}/api/tags >/dev/null 2>&1 && exit 0
           sleep 1
         done
         echo "ollama failed to start within 30s" >&2; exit 1
+    - shell: /bin/bash
     - unless: {% for model in ollama.models %}test -f "{{ manifest_path(model) }}" && {% endfor %}true
     - require:
       - cmd: ollama_daemon_reload

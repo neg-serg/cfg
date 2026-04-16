@@ -106,7 +106,7 @@ def _add_derived_fields(host):
         host["home"] = f"/home/{host['user']}"
     host["runtime_dir"] = f"/run/user/{host['uid']}"
     host["pkg_list"] = "/var/cache/salt/pacman_installed.txt"
-    host["project_dir"] = host["home"] + "/src/salt"
+    host["project_dir"] = host["home"] + "/src/cfg"
 
 
 def build_lint_host():

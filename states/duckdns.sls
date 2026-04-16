@@ -29,6 +29,7 @@ duckdns_native_script_absent:
 duckdns_native_unit_daemon_reload:
   cmd.run:
     - name: systemctl daemon-reload
+    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
     - onchanges:
       - file: duckdns_native_timer_absent
       - file: duckdns_native_service_absent
@@ -37,4 +38,5 @@ duckdns_native_unit_daemon_reload:
 {{ ensure_dir('duckdns_env_dir', '/etc', mode='0755', user='root') }}
 
 {{ container_service('duckdns', catalog.duckdns, image_registry,
+    quadlet_unit_name='duckdns-update-container',
     requires=['cmd: duckdns_native_unit_daemon_reload']) }}

@@ -16,6 +16,13 @@ source "${script_dir}/salt-runtime.sh"
 
 jobs="${1:-${VALIDATE_JOBS:-$(nproc)}}"
 validate_timeout="${VALIDATE_TIMEOUT:-300}"
+salt_python="${project_dir}/.venv/bin/python3"
+
+if [[ ! -x "$salt_python" ]]; then
+	echo "error: missing Salt venv interpreter at $salt_python" >&2
+	echo "  run scripts/salt-apply.sh once to bootstrap .venv" >&2
+	exit 1
+fi
 
 runtime="$(mktemp -d)"
 salt_runtime_prepare_dirs "${project_dir}" "${runtime}"
@@ -28,7 +35,7 @@ salt_runtime_reset_validate_cache "${runtime}"
 # Use sudo when available (CI has NOPASSWD sudo, needed for runas=)
 sudo_cmd=""
 if sudo -n true 2>/dev/null; then
-    sudo_cmd="sudo"
+	sudo_cmd="sudo"
 fi
 
 # --- Collect state names ---
@@ -38,8 +45,8 @@ shopt -u nullglob
 
 total=${#sls_files[@]}
 if [[ $total -eq 0 ]]; then
-    echo "Warning: no .sls files found in states/"
-    exit 0
+	echo "Warning: no .sls files found in states/"
+	exit 0
 fi
 
 # --- Pre-warm cache template ---
@@ -51,43 +58,43 @@ trap '$sudo_cmd rm -rf "$cache_base" "$runtime"; rm -f "$joblog"' EXIT
 
 template_cache="${cache_base}/template"
 mkdir -p "$template_cache"
-$sudo_cmd .venv/bin/salt-call --local --config-dir="$runtime" \
-    --cachedir="$template_cache" \
-    state.show_sls audio --out=quiet 2>/dev/null || true
+$sudo_cmd "$salt_python" -m salt.scripts salt_call --local --config-dir="$runtime" \
+	--cachedir="$template_cache" \
+	state.show_sls audio --out=quiet 2>/dev/null || true
 
 # --- Per-state validation function (exported for GNU parallel) ---
 # Each worker copies the pre-warmed template cache for isolation.
 validate_one() {
-    local sls="$1"
-    local slot="$2"
-    local name="${sls#states/}"
-    name="${name%.sls}"
-    local worker_cache="${cache_base}/worker-${slot}"
-    if [[ ! -d "$worker_cache" ]]; then
-        $sudo_cmd cp -a "${cache_base}/template" "$worker_cache"
-    fi
-    if $sudo_cmd .venv/bin/salt-call --local --config-dir="$runtime" \
-            --cachedir="$worker_cache" \
-            state.show_sls "$name" --out=quiet 2>/dev/null; then
-        return 0
-    else
-        echo "FAILED: $name"
-        # Re-run to capture error details
-        $sudo_cmd .venv/bin/salt-call --local --config-dir="$runtime" \
-                --cachedir="$worker_cache" \
-                state.show_sls "$name" --out=quiet 2>&1 || true
-        return 1
-    fi
+	local sls="$1"
+	local slot="$2"
+	local name="${sls#states/}"
+	name="${name%.sls}"
+	local worker_cache="${cache_base}/worker-${slot}"
+	if [[ ! -d "$worker_cache" ]]; then
+		$sudo_cmd cp -a "${cache_base}/template" "$worker_cache"
+	fi
+	if $sudo_cmd "$salt_python" -m salt.scripts salt_call --local --config-dir="$runtime" \
+		--cachedir="$worker_cache" \
+		state.show_sls "$name" --out=quiet 2>/dev/null; then
+		return 0
+	else
+		echo "FAILED: $name"
+		# Re-run to capture error details
+		$sudo_cmd "$salt_python" -m salt.scripts salt_call --local --config-dir="$runtime" \
+			--cachedir="$worker_cache" \
+			state.show_sls "$name" --out=quiet 2>&1 || true
+		return 1
+	fi
 }
 export -f validate_one
-export sudo_cmd cache_base runtime
+export sudo_cmd cache_base runtime salt_python
 
 # --- Parallel validation with joblog for accurate failure counting ---
 # {1} and {#} are GNU parallel placeholders, not bash syntax
 # shellcheck disable=SC1083
 parallel --will-cite -j "$jobs" --group --timeout "$validate_timeout" --halt never \
-    --joblog "$joblog" \
-    validate_one {1} {#} ::: "${sls_files[@]}" || true
+	--joblog "$joblog" \
+	validate_one {1} {#} ::: "${sls_files[@]}" || true
 
 # Count failures from joblog (column 7 is Exitval, skip header line)
 failed=$(awk 'NR>1 && $7!=0 {count++} END {print count+0}' "$joblog")

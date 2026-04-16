@@ -17,6 +17,7 @@ jellyfin_native_unit_absent:
 jellyfin_native_unit_daemon_reload:
   cmd.run:
     - name: systemctl daemon-reload
+    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
     - onchanges:
       - file: jellyfin_native_unit_absent
 
@@ -25,4 +26,5 @@ jellyfin_native_unit_daemon_reload:
 {{ ensure_dir('jellyfin_cache_dir', '/var/cache/jellyfin', mode='0755') }}
 
 {{ container_service('jellyfin', catalog.jellyfin, image_registry,
+    quadlet_unit_name='jellyfin-container',
     requires=['file: jellyfin_config_dir', 'file: jellyfin_cache_dir', 'cmd: jellyfin_native_unit_daemon_reload']) }}

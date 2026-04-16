@@ -59,6 +59,224 @@ def test_video_ai_uses_shared_huggingface_macro():
     assert "curl -fsSL -C -" not in models_source
 
 
+def test_transmission_uses_named_quadlet_unit_file():
+    path = os.path.join(REPO_ROOT, "states", "transmission.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "quadlet_unit_name='transmission-container'" in source
+
+
+def test_quadlet_unit_names_match_on_disk_files():
+    cases = [
+        ("duckdns.sls", "duckdns-update-container"),
+        ("jellyfin.sls", "jellyfin-container"),
+        ("bitcoind.sls", "bitcoind-container"),
+        ("adguardhome.sls", "adguardhome-container"),
+        ("nanoclaw.sls", "nanoclaw-container"),
+        ("proxypilot.sls", "proxypilot-container"),
+        ("telethon_bridge.sls", "telethon-bridge"),
+        ("opencode_telegram.sls", "opencode-serve"),
+        ("opencode_telegram.sls", "opencode-telegram-bot"),
+    ]
+
+    for filename, quadlet_name in cases:
+        path = os.path.join(REPO_ROOT, "states", filename)
+        with open(path) as fh:
+            source = fh.read()
+        assert f"quadlet_unit_name='{quadlet_name}'" in source
+
+
+def test_container_service_system_scope_enables_via_cmd_run():
+    path = os.path.join(REPO_ROOT, "states", "_macros_service.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert (
+        "systemctl is-enabled {{ _quadlet_name }}.service >/dev/null 2>&1 || systemctl enable {{ _quadlet_name }}.service"
+        in source
+    )
+
+
+def test_container_service_daemon_reload_is_required():
+    path = os.path.join(REPO_ROOT, "states", "_macros_service.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "- require:" in source
+    assert "- file: {{ name }}_container" in source
+
+
+def test_service_healthcheck_macro_uses_strict_shell_mode():
+    path = os.path.join(REPO_ROOT, "states", "_macros_service.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "set -euo pipefail" in source
+
+
+def test_user_daemon_reload_macros_have_onlyif_guards():
+    path = os.path.join(REPO_ROOT, "states", "_macros_service.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "- onlyif: systemctl --user show-environment >/dev/null 2>&1" in source
+
+
+def test_touched_native_unit_daemon_reload_states_have_onlyif_guards():
+    files = [
+        "adguardhome.sls",
+        "bitcoind.sls",
+        "duckdns.sls",
+        "jellyfin.sls",
+        "llama_embed.sls",
+        "nanoclaw.sls",
+        "ollama.sls",
+        "proxypilot.sls",
+        "t5_summarization.sls",
+        "transmission.sls",
+    ]
+
+    for filename in files:
+        path = os.path.join(REPO_ROOT, "states", filename)
+        with open(path) as fh:
+            source = fh.read()
+        assert (
+            "- onlyif: test -e /run/systemd/system || test -e /etc/systemd/system" in source
+            or "- onlyif: systemctl --user show-environment >/dev/null 2>&1" in source
+        )
+
+
+def test_dns_unbound_restart_has_guard():
+    path = os.path.join(REPO_ROOT, "states", "dns.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert (
+        "- onlyif: command -v unbound-control >/dev/null 2>&1 || systemctl cat unbound >/dev/null 2>&1"
+        in source
+    )
+
+
+def test_versioned_paru_install_uses_strict_shell_mode():
+    path = os.path.join(REPO_ROOT, "states", "_macros_pkg.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "sudo -u {{ _user }} paru -S --noconfirm --needed {{ pkg }}" in source
+    assert "set -euo pipefail" in source
+
+
+def test_npm_build_workflow_version_pin_uses_strict_shell_mode():
+    path = os.path.join(REPO_ROOT, "states", "_macros_install.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "git fetch --tags --depth=1" in source
+    assert "set -euo pipefail" in source
+
+
+def test_ollama_tmp_start_uses_strict_shell_mode():
+    path = os.path.join(REPO_ROOT, "states", "ollama.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "set -euo pipefail" in source
+
+
+def test_t5_convert_uses_strict_shell_mode():
+    path = os.path.join(REPO_ROOT, "states", "t5_summarization.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "set -euo pipefail" in source
+
+
+def test_udev_rule_macro_has_guard():
+    path = os.path.join(REPO_ROOT, "states", "_macros_service.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "- onlyif: command -v udevadm >/dev/null 2>&1" in source
+
+
+def test_next_guard_batch_has_onlyif_guards():
+    cases = {
+        "zapret2.sls": "- onlyif: test -x /opt/zapret2/ipset/get_config.sh",
+        "systemd_resources.sls": "- onlyif: command -v systemd-sysusers >/dev/null 2>&1",
+        "sysctl.sls": "- onlyif: command -v sysctl >/dev/null 2>&1",
+        "mkinitcpio.sls": "- onlyif: command -v mkinitcpio >/dev/null 2>&1",
+        "kanata.sls": "- onlyif: id -u {{ user }} >/dev/null 2>&1 && command -v usermod >/dev/null 2>&1 && id -nG {{ user }} | grep -qw input && ! id -nG {{ user }} | grep -qw uinput",
+    }
+
+    for filename, needle in cases.items():
+        path = os.path.join(REPO_ROOT, "states", filename)
+        with open(path) as fh:
+            source = fh.read()
+        assert needle in source
+
+
+def test_service_with_unit_daemon_reload_has_guard():
+    path = os.path.join(REPO_ROOT, "states", "_macros_service.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "{{ name }}_daemon_reload:" in source
+    assert "- onlyif: test -e /run/systemd/system || test -e /etc/systemd/system" in source
+
+
+def test_pip_pkg_macro_uses_strict_shell_mode():
+    path = os.path.join(REPO_ROOT, "states", "_macros_install.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "pipx install" in source
+    assert "set -euo pipefail" in source
+
+
+def test_amnezia_cmdrun_states_have_guards():
+    path = os.path.join(REPO_ROOT, "states", "amnezia.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert (
+        "- onlyif: test -x {{ cache }}/amneziawg-go-bin && test -x {{ cache }}/awg-bin && test -x {{ cache }}/AmneziaVPN-bin && test -x {{ cache }}/AmneziaVPN-service-bin"
+        in source
+    )
+    assert (
+        "('amneziawg_go', '/usr/local/bin/amneziawg-go --version', 'amneziawg_go_bin', '/usr/local/bin/amneziawg-go')"
+        in source
+    )
+    assert (
+        "('awg', '/usr/local/bin/awg --version', 'amneziawg_tools_bin', '/usr/local/bin/awg')"
+        in source
+    )
+    assert (
+        "('amnezia_vpn', 'ldd /usr/local/bin/AmneziaVPN', 'amnezia_vpn_bin', '/usr/local/bin/AmneziaVPN')"
+        in source
+    )
+    assert (
+        "('amnezia_service', 'ldd /usr/local/bin/AmneziaVPN-service', 'amnezia_service_bin', '/usr/local/bin/AmneziaVPN-service')"
+        in source
+    )
+    assert "- onlyif: test -x {{ binary_path }}" in source
+
+
+def test_remaining_multiline_cmdrun_states_use_strict_shell_mode():
+    cases = [
+        ("hardware.sls", "set -euo pipefail"),
+        ("hiddify.sls", "set -euo pipefail"),
+        ("network.sls", "set -euo pipefail"),
+        ("xen.sls", "set -euo pipefail"),
+    ]
+
+    for filename, needle in cases:
+        path = os.path.join(REPO_ROOT, "states", filename)
+        with open(path) as fh:
+            source = fh.read()
+        assert needle in source
+
+
 def test_system_description_includes_shared_systemd_resources_state():
     path = os.path.join(REPO_ROOT, "states", "system_description.sls")
     with open(path) as fh:

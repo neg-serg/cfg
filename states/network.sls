@@ -23,6 +23,7 @@ vm_bridge_network:
 vm_bridge_firewall:
   cmd.run:
     - name: |
+        set -euo pipefail
         firewall-cmd --permanent --zone=trusted --add-interface=br0
         firewall-cmd --permanent --zone=trusted --add-service=dhcp
         firewall-cmd --reload

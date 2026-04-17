@@ -56,4 +56,5 @@ specs/
 
 
 <!-- MANUAL ADDITIONS START -->
+- `docs/superpowers/plans/*.md` are temporary working artifacts by default: do not commit them unless they are explicitly being kept as active shared planning documents. Remove stale plan files periodically once the related work is finished or abandoned.
 <!-- MANUAL ADDITIONS END -->

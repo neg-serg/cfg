@@ -34,6 +34,7 @@ salt_config/var/
 CLAUDE.md
 .claude/
 .claude.json
+.worktrees/
 .serena/
 _catalog/
 tt
@@ -43,3 +44,6 @@ tt
 Thumbs.db
 .vscode/
 .idea/
+
+# Temporary planning artifacts
+docs/superpowers/plans/*.md

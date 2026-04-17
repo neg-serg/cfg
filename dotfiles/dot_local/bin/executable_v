@@ -5,6 +5,11 @@ export NVIM_APPNAME=
 . /etc/profile
 SOCKET="/tmp/nvim.sock"
 
+if ! command -v nvr >/dev/null 2>&1; then
+  echo "error: nvr is required for remote attachment; reinstall neovim-remote" >&2
+  exit 127
+fi
+
 # 1. Check if socket exists AND is responsive (has a listener)
 # We use nc -zU for a reliable, non-blocking check.
 if [ -S "$SOCKET" ] && nc -zU "$SOCKET" >/dev/null 2>&1; then

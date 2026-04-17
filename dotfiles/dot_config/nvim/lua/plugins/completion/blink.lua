@@ -7,7 +7,6 @@ return {'saghen/blink.cmp',
   dependencies = { 'rafamadriz/friendly-snippets' }, -- optional: provides snippets for the snippet source
   version = '1.*', -- use a release tag to download pre-built binaries
   init = function()
-    -- Update LSP capabilities when blink loads after lspconfig
     vim.api.nvim_create_autocmd('User', {
       pattern = 'LazyLoad',
       callback = function(ev)

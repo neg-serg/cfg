@@ -36,10 +36,7 @@ return {
           local function bmap(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, { buffer = buf, silent = true, desc = desc })
           end
-          -- Neovim 0.11 provides native LSP keymaps via LspAttach:
-          --   grr = references, gri = implementation, gra = code action,
-          --   grn = rename, gO = document symbols
-          -- Only add keymaps that have no native equivalent:
+          -- Only add keymaps without native equivalents.
           bmap('n', '<leader>D', vim.lsp.buf.type_definition, 'LSP: type definition')
           bmap('n', '<leader>ws', vim.lsp.buf.workspace_symbol, 'LSP: workspace symbol')
           if vim.lsp.inlay_hint then
@@ -106,9 +103,5 @@ return {
         },
       },
     })
-
-    -- K (hover) and gd (definition) are provided natively by Neovim 0.11+.
-    -- No custom overrides needed — native versions handle LSP-attached
-    -- buffers automatically and fall back to :help/tags in non-LSP contexts.
   end,
 }

@@ -1,0 +1,10 @@
+[Unit]
+Description=Set balanced CPU EPP policy
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/cpu-balanced-epp
+
+[Install]
+WantedBy=multi-user.target

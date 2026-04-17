@@ -591,3 +591,23 @@ def test_opencode_repo_manages_minimal_runtime_files():
 
     for path in managed_paths:
         assert os.path.exists(path)
+
+
+def test_desktop_system_persists_balanced_cpu_epp_policy():
+    state_path = os.path.join(REPO_ROOT, "states", "desktop", "system.sls")
+    with open(state_path) as fh:
+        state_source = fh.read()
+
+    unit_path = os.path.join(REPO_ROOT, "states", "units", "cpu-balanced-epp.service")
+    with open(unit_path) as fh:
+        unit_source = fh.read()
+
+    script_path = os.path.join(REPO_ROOT, "states", "scripts", "cpu-balanced-epp.sh")
+    with open(script_path) as fh:
+        script_source = fh.read()
+
+    assert "cpu_balanced_epp_script:" in state_source
+    assert "service_with_unit('cpu-balanced-epp'" in state_source
+    assert "energy_performance_preference" in script_source
+    assert "balance_performance" in script_source
+    assert "Type=oneshot" in unit_source

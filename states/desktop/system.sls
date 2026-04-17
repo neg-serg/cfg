@@ -1,7 +1,7 @@
 # Desktop environment: services, SSH, dconf themes
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir, service_stopped %}
+{% from '_macros_service.jinja' import ensure_dir, service_stopped, service_with_unit %}
 {% import_yaml 'data/desktop.yaml' as desktop %}
 
 # --- Pacman hook: regenerate installed-package cache after every transaction ---
@@ -112,3 +112,14 @@ pcscd_socket_enabled:
 # I/O tuning (sets read_ahead_kb=8192 on NVMe, may override sysctl values).
 # All tuning is managed manually via sysctl.sls, kernel_params_limine.sls, hardware.sls.
 {{ service_stopped('tuned_stopped', 'tuned', onlyif='systemctl list-unit-files tuned.service 2>/dev/null | grep -q tuned') }}
+
+# Persist the amd-pstate-epp balanced policy without forcing the CPU governor
+# into full performance mode. This keeps the system responsive for low-QD I/O
+# while avoiding the more aggressive always-performance setting.
+cpu_balanced_epp_script:
+  file.managed:
+    - name: /usr/local/bin/cpu-balanced-epp
+    - source: salt://scripts/cpu-balanced-epp.sh
+    - mode: '0755'
+
+{{ service_with_unit('cpu-balanced-epp', 'salt://units/cpu-balanced-epp.service', requires=['file: cpu_balanced_epp_script']) }}

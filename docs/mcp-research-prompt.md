@@ -61,7 +61,7 @@
   - Podman containers (not Docker, not Kubernetes)
   - Grafana + Loki + Promtail + Prometheus monitoring stack
   - Unbound + AdGuardHome DNS
-  - Btrfs with snapper snapshots
+  - Btrfs root filesystem
   - Neovim as primary editor
   - Gopass (GPG + Yubikey) for secrets
   - Ollama for local LLMs

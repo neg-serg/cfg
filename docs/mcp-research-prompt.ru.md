@@ -61,7 +61,7 @@
   - Podman-контейнеры (не Docker, не Kubernetes)
   - Стек мониторинга Grafana + Loki + Promtail + Prometheus
   - Unbound + AdGuardHome DNS
-  - Btrfs со снапшотами snapper
+  - Btrfs как корневая файловая система
   - Neovim как основной редактор
   - Gopass (GPG + Yubikey) для секретов
   - Ollama для локальных LLM

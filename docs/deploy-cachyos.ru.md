@@ -14,8 +14,7 @@
                 ├── @          → /
                 ├── @home      → /home
                 ├── @cache     → /var/cache
-                ├── @log       → /var/log
-                └── @snapshots → /.snapshots
+                └── @log       → /var/log
 ```
 
 ## Быстрый старт
@@ -47,7 +46,7 @@ bash /mnt/one/salt/scripts/deploy-cachyos.sh /dev/nvme0n1 /mnt/one/cachyos-root
 Скрипт выполняет всё автоматически:
 - GPT-разметка (4 GiB ESP + LVM)
 - Настройка LVM (VG `main`, LV `sys` на 90%)
-- Btrfs с subvolumes (@, @home, @cache, @log, @snapshots)
+- Btrfs с subvolumes (@, @home, @cache, @log)
 - rsync rootfs
 - Генерация fstab
 - mkinitcpio с lvm2 hook

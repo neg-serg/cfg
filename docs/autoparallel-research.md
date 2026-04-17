@@ -75,26 +75,20 @@ Polly is **not installed by default** on CachyOS. Install with `pacman -S polly`
 ### Step-by-step
 
 ```bash
-# 1. Safety snapshot
-sudo snapper create -d "pre-autopar: <package>" -t pre
-
-# 2. Get PKGBUILD
+# 1. Get PKGBUILD
 asp checkout <package>
 cd <package>/trunk
 
-# 3. Add flags in build()
+# 2. Add flags in build()
 # Insert at the top of the build() function:
 export CFLAGS="$CFLAGS -ftree-parallelize-loops=16"
 export CXXFLAGS="$CXXFLAGS -ftree-parallelize-loops=16"
 export LDFLAGS="$LDFLAGS -lgomp"
 
-# 4. Build and install
+# 3. Build and install
 makepkg -si
 
-# 5. Post-snapshot
-sudo snapper create -d "post-autopar: <package>" -t post
-
-# 6. Benchmark
+# 4. Benchmark
 hyperfine --warmup 3 --runs 10 '<workload command>'
 ```
 
@@ -104,10 +98,7 @@ hyperfine --warmup 3 --runs 10 '<workload command>'
 # Option 1: Pacman cache (fastest)
 sudo pacman -U /var/cache/pacman/pkg/<package>-<version>.pkg.tar.zst
 
-# Option 2: Snapper (full system rollback)
-sudo snapper undochange <pre-id>..<post-id>
-
-# Option 3: Runtime escape hatch
+# Option 2: Runtime escape hatch
 OMP_NUM_THREADS=1 ./program  # Disable parallelism without rebuilding
 ```
 

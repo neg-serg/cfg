@@ -219,14 +219,6 @@ See CLAUDE.md "Data file package lists" and "Package descriptions" conventions.
 
 **This project**: `tests/smoke-test.sh` (164 lines). Run via `just smoke-test`.
 
-### TV-05: Btrfs snapshot rollback ✅
-
-**Practice**: Automatically create btrfs snapshots before and after every apply. Provide one-command rollback.
-
-**Rationale**: Even with testing, applies can produce unexpected results. Instant rollback to the pre-apply state is the ultimate safety net.
-
-**This project**: Every `just apply` creates a snapper pre/post pair. `just rollback` reverts the last pair via `snapper undochange`. Gracefully skipped if snapper is unavailable.
-
 ---
 
 ## 6. LLM Integration
@@ -507,7 +499,6 @@ All modules used are in Salt core and confirmed to remain there through 3008+:
 | TV-02 | Dry-run with `test=True` | ✅ |
 | TV-03 | Multi-linter pipeline | ✅ |
 | TV-04 | Container smoke tests | ✅ |
-| TV-05 | Btrfs snapshot rollback | ✅ |
 | LM-01 | CLAUDE.md as convention encoder | ✅ |
 | LM-02 | Macro documentation for AI consumption | ✅ |
 | LM-03 | Data-driven patterns reduce AI errors | ✅ |

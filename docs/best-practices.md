@@ -12,13 +12,13 @@ After researching modern Salt best practices (2024–2025), we identified gaps b
 
 ## Implemented Improvements
 
-### 1. Pre/Post-Apply Btrfs Snapshots
+### 1. Pre-Apply Dry Runs
 
-Every `just apply` automatically creates snapper pre/post snapshot pairs, providing instant rollback capability.
+Before applying changes on the live workstation, preview them with a dry-run and fix surprises first.
 
-- **How**: `salt-apply.sh` calls `snapper create --type pre/post` around state execution
-- **Rollback**: `just rollback` reverts to the last pre-apply snapshot
-- **Graceful**: Skipped silently if snapper is unavailable
+- **How**: `just test STATE` runs `salt-apply.sh STATE --test`
+- **Use case**: Review planned changes for an individual state before a real apply
+- **Pair with**: `just validate` to catch render errors before execution
 
 ### 2. Automated Drift Detection
 
@@ -63,13 +63,13 @@ Single command to check all managed services.
 - **Command**: `just health`
 - **Checks**: System services, user services, HTTP healthcheck endpoints
 - **Output**: Colored table, `--json`, or `--quiet` (exit code only)
-- **Script**: `scripts/health-check.sh`
+- **Implementation**: `~/.local/bin/salt-alert --health`
 
 ## New Justfile Recipes
 
 | Recipe | Description |
 |--------|-------------|
-| `rollback` | Revert to last pre-apply snapshot |
+| `test STATE` | Dry-run a state before applying |
 | `dep-graph` | Generate state dependency graph |
 | `smoke-test` | Container-based smoke tests |
 | `profile-trend` | State duration trends across logs |

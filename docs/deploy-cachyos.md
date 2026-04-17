@@ -14,8 +14,7 @@ Deploy bootstrapped CachyOS rootfs to NVMe with LVM + btrfs + Limine.
                 ├── @          → /
                 ├── @home      → /home
                 ├── @cache     → /var/cache
-                ├── @log       → /var/log
-                └── @snapshots → /.snapshots
+                └── @log       → /var/log
 ```
 
 ## Quick Start
@@ -48,7 +47,7 @@ bash /mnt/one/salt/scripts/deploy-cachyos.sh /dev/nvme0n1 /mnt/one/cachyos-root
 The script handles everything automatically:
 - GPT partitioning (4 GiB ESP + LVM)
 - LVM setup (VG `main`, LV `sys` at 90%)
-- Btrfs with subvolumes (@, @home, @cache, @log, @snapshots)
+- Btrfs with subvolumes (@, @home, @cache, @log)
 - rsync of rootfs
 - fstab generation
 - mkinitcpio with lvm2 hook

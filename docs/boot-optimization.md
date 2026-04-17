@@ -180,15 +180,9 @@ systemd-analyze --firmware-setup  # schedules reboot into UEFI
 
 The Limine boot menu always includes a fallback entry using `initramfs-linux-cachyos-lts-fallback.img`. This initramfs includes all modules and does not depend on autodetection. If a mkinitcpio configuration change breaks boot, select the fallback entry in the Limine menu.
 
-### Snapper rollback
+### Recovering from a bad apply
 
-Every `just apply` creates a btrfs snapshot pair. To revert:
-
-```bash
-just rollback
-```
-
-This runs `snapper undochange` on the most recent pre/post snapshot pair, restoring the filesystem to the state before the last Salt apply.
+If a recent `just apply` causes problems, use the fallback boot entry for boot issues or switch to the emergency TTY for userspace issues, then inspect logs before re-applying a corrected state.
 
 ### Emergency TTY
 
@@ -214,4 +208,4 @@ If changing mkinitcpio compression breaks boot:
 4. Regenerate initramfs: `sudo mkinitcpio -P`
 5. Reboot normally
 
-Alternatively, run `just rollback` if the change was applied via Salt.
+Alternatively, revert the mkinitcpio setting in the managed Salt state, then run `just apply` again to deploy the corrected configuration.

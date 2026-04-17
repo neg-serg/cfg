@@ -27,7 +27,6 @@ source "${SCRIPT_DIR}/salt-runtime.sh"
 
 STATE="system_description"
 TEST_MODE=false
-SNAPPER_PRE_NUM=""
 
 for arg in "$@"; do
     case "$arg" in

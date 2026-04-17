@@ -93,8 +93,8 @@ def test_container_service_system_scope_enables_via_cmd_run():
         source = fh.read()
 
     assert (
-        "systemctl is-enabled {{ _quadlet_name }}.service >/dev/null 2>&1 || systemctl enable {{ _quadlet_name }}.service"
-        in source
+        "systemctl is-enabled {{ _quadlet_name }}.service >/dev/null 2>&1 || "
+        "systemctl enable {{ _quadlet_name }}.service" in source
     )
 
 
@@ -153,8 +153,8 @@ def test_dns_unbound_restart_has_guard():
         source = fh.read()
 
     assert (
-        "- onlyif: command -v unbound-control >/dev/null 2>&1 || systemctl cat unbound >/dev/null 2>&1"
-        in source
+        "- onlyif: command -v unbound-control >/dev/null 2>&1 || "
+        "systemctl cat unbound >/dev/null 2>&1" in source
     )
 
 
@@ -305,8 +305,9 @@ def test_service_healthcheck_macro_supports_user_scope_systemctl():
         source = fh.read()
 
     assert (
-        "macro service_with_healthcheck(name, service, check_cmd=None, timeout=_healthcheck_timeout, requires=None, catalog=None, user_scope=False, user=_user)"
-        in source
+        "macro service_with_healthcheck(name, service, check_cmd=None, "
+        "timeout=_healthcheck_timeout, requires=None, catalog=None, "
+        "user_scope=False, user=_user)" in source
     )
     assert (
         "systemctl {% if user_scope %}--user {% endif %}is-active --quiet {{ service }}" in source
@@ -370,7 +371,11 @@ def test_next_guard_batch_has_onlyif_guards():
         "systemd_resources.sls": "- onlyif: command -v systemd-sysusers >/dev/null 2>&1",
         "sysctl.sls": "- onlyif: command -v sysctl >/dev/null 2>&1",
         "mkinitcpio.sls": "- onlyif: command -v mkinitcpio >/dev/null 2>&1",
-        "kanata.sls": "- onlyif: id -u {{ user }} >/dev/null 2>&1 && command -v usermod >/dev/null 2>&1 && id -nG {{ user }} | grep -qw input && ! id -nG {{ user }} | grep -qw uinput",
+        "kanata.sls": (
+            "- onlyif: id -u {{ user }} >/dev/null 2>&1 && command -v usermod "
+            ">/dev/null 2>&1 && id -nG {{ user }} | grep -qw input && ! "
+            "id -nG {{ user }} | grep -qw uinput"
+        ),
     }
 
     for filename, needle in cases.items():
@@ -404,24 +409,25 @@ def test_amnezia_cmdrun_states_have_guards():
         source = fh.read()
 
     assert (
-        "- onlyif: test -x {{ cache }}/amneziawg-go-bin && test -x {{ cache }}/awg-bin && test -x {{ cache }}/AmneziaVPN-bin && test -x {{ cache }}/AmneziaVPN-service-bin"
+        "- onlyif: test -x {{ cache }}/amneziawg-go-bin && test -x {{ cache }}/awg-bin "
+        "&& test -x {{ cache }}/AmneziaVPN-bin && test -x {{ cache }}/AmneziaVPN-service-bin"
         in source
     )
     assert (
-        "('amneziawg_go', '/usr/local/bin/amneziawg-go --version', 'amneziawg_go_bin', '/usr/local/bin/amneziawg-go')"
-        in source
+        "('amneziawg_go', '/usr/local/bin/amneziawg-go --version', "
+        "'amneziawg_go_bin', '/usr/local/bin/amneziawg-go')" in source
     )
     assert (
         "('awg', '/usr/local/bin/awg --version', 'amneziawg_tools_bin', '/usr/local/bin/awg')"
         in source
     )
     assert (
-        "('amnezia_vpn', 'ldd /usr/local/bin/AmneziaVPN', 'amnezia_vpn_bin', '/usr/local/bin/AmneziaVPN')"
-        in source
+        "('amnezia_vpn', 'ldd /usr/local/bin/AmneziaVPN', "
+        "'amnezia_vpn_bin', '/usr/local/bin/AmneziaVPN')" in source
     )
     assert (
-        "('amnezia_service', 'ldd /usr/local/bin/AmneziaVPN-service', 'amnezia_service_bin', '/usr/local/bin/AmneziaVPN-service')"
-        in source
+        "('amnezia_service', 'ldd /usr/local/bin/AmneziaVPN-service', "
+        "'amnezia_service_bin', '/usr/local/bin/AmneziaVPN-service')" in source
     )
     assert "- onlyif: test -x {{ binary_path }}" in source
 

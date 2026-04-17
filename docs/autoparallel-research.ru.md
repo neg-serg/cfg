@@ -75,26 +75,20 @@ Polly **не установлен по умолчанию** в CachyOS. Уста
 ### Пошаговая инструкция
 
 ```bash
-# 1. Снимок безопасности
-sudo snapper create -d "pre-autopar: <package>" -t pre
-
-# 2. Получить PKGBUILD
+# 1. Получить PKGBUILD
 asp checkout <package>
 cd <package>/trunk
 
-# 3. Добавить флаги в build()
+# 2. Добавить флаги в build()
 # Вставить в начало функции build():
 export CFLAGS="$CFLAGS -ftree-parallelize-loops=16"
 export CXXFLAGS="$CXXFLAGS -ftree-parallelize-loops=16"
 export LDFLAGS="$LDFLAGS -lgomp"
 
-# 4. Собрать и установить
+# 3. Собрать и установить
 makepkg -si
 
-# 5. Пост-снимок
-sudo snapper create -d "post-autopar: <package>" -t post
-
-# 6. Бенчмарк
+# 4. Бенчмарк
 hyperfine --warmup 3 --runs 10 '<команда нагрузки>'
 ```
 
@@ -104,10 +98,7 @@ hyperfine --warmup 3 --runs 10 '<команда нагрузки>'
 # Вариант 1: Кэш pacman (самый быстрый)
 sudo pacman -U /var/cache/pacman/pkg/<package>-<version>.pkg.tar.zst
 
-# Вариант 2: Snapper (полный откат системы)
-sudo snapper undochange <pre-id>..<post-id>
-
-# Вариант 3: Рантайм-переключатель
+# Вариант 2: Рантайм-переключатель
 OMP_NUM_THREADS=1 ./program  # Отключить параллелизм без пересборки
 ```
 

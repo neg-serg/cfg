@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # Bootstrap CachyOS (Zen4/5 optimized) rootfs via Podman + Arch container.
-# Produces a rootfs with Limine bootloader and Btrfs snapshot support.
+# Produces a rootfs with Limine bootloader.
 #
 # Usage:
 #   sudo ./scripts/bootstrap-cachyos.sh [TARGET_DIR]
@@ -15,7 +15,6 @@
 #   @home       → /home
 #   @cache      → /var/cache
 #   @log        → /var/log
-#   @snapshots  → /.snapshots
 
 set -euo pipefail
 
@@ -44,10 +43,8 @@ PACKAGES=(
     limine
     efibootmgr
 
-    # Btrfs + snapshots
+    # Btrfs
     btrfs-progs
-    snapper
-    snap-pac
 
     # LVM (for /dev/main/sys)
     lvm2
@@ -328,41 +325,6 @@ if [[ -f /usr/share/limine/BOOTX64.EFI ]]; then
     cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/BOOTX64.EFI
 fi
 
-# --- Snapper configuration for root subvolume ---
-# Create snapper config for root (expects /.snapshots on @snapshots subvolume)
-cat > /etc/snapper/configs/root <<SNAPPER_CFG
-SUBVOLUME="/"
-FSTYPE="btrfs"
-QGROUP=""
-
-# snapshot limits
-TIMELINE_MIN_AGE="1800"
-TIMELINE_LIMIT_HOURLY="5"
-TIMELINE_LIMIT_DAILY="7"
-TIMELINE_LIMIT_WEEKLY="4"
-TIMELINE_LIMIT_MONTHLY="3"
-TIMELINE_LIMIT_YEARLY="0"
-
-# cleanup
-NUMBER_MIN_AGE="1800"
-NUMBER_LIMIT="20"
-NUMBER_LIMIT_IMPORTANT="10"
-
-TIMELINE_CREATE="yes"
-TIMELINE_CLEANUP="yes"
-
-# snap-pac: pre/post snapshots on pacman transactions
-NUMBER_CLEANUP="yes"
-SNAPPER_CFG
-
-# Register root config with snapper
-if [[ -f /etc/conf.d/snapper ]]; then
-    sed -i "s/^SNAPPER_CONFIGS=.*/SNAPPER_CONFIGS=\"root\"/" /etc/conf.d/snapper
-else
-    mkdir -p /etc/conf.d
-    echo "SNAPPER_CONFIGS=\"root\"" > /etc/conf.d/snapper
-fi
-
 # --- Btrfs mount options for fstab (template — adjust UUIDs during deploy) ---
 mkdir -p /etc/deploy-notes
 cat > /etc/deploy-notes/fstab-template <<FSTAB_TMPL
@@ -372,7 +334,6 @@ cat > /etc/deploy-notes/fstab-template <<FSTAB_TMPL
 # <device>        <mount>        <type>  <options>                                              <dump> <pass>
 # /dev/main/sys   /              btrfs   subvol=@,compress=zstd:1,noatime          0  0
 # /dev/main/sys   /home          btrfs   subvol=@home,compress=zstd:1,noatime      0  0
-# /dev/main/sys   /.snapshots    btrfs   subvol=@snapshots,compress=zstd:1,noatime 0  0
 # /dev/main/sys   /var/cache     btrfs   subvol=@cache,compress=zstd:1,noatime     0  0
 # /dev/main/sys   /var/log       btrfs   subvol=@log,compress=zstd:1,noatime       0  0
 # /dev/nvme0n1p1  /boot          vfat    umask=0077                                0  1
@@ -396,8 +357,6 @@ NMCONF
 systemctl enable NetworkManager
 systemctl enable iwd
 systemctl enable sshd
-systemctl enable snapper-timeline.timer
-systemctl enable snapper-cleanup.timer
 
 # --- Passwordless sudo for neg (paru needs it for AUR builds) ---
 echo "neg ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/99-neg-nopasswd
@@ -456,7 +415,6 @@ echo "==> Verification:"
 checks=(
     "usr/bin/pacman:pacman binary"
     "usr/share/limine/BOOTX64.EFI:Limine EFI binary"
-    "etc/snapper/configs/root:snapper root config"
     "etc/hostname:hostname config"
     "etc/locale.conf:locale config"
     "home/neg:user home directory"

@@ -454,9 +454,6 @@ AUR_PKGS=(
     # --- VPN ---
     amneziawg-tools     # AmneziaWG VPN userspace tools
     amneziawg-dkms      # AmneziaWG kernel module (DKMS)
-
-    # --- Snapshot boot integration ---
-    limine-snapper-sync # sync Btrfs snapshots to Limine boot entries
 )
 
 # ===================================================================

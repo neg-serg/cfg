@@ -77,14 +77,27 @@ managed_service_paths_apply:
 
 managed_service_paths_ensure:
   cmd.run:
-    - name: systemd-tmpfiles --create /etc/tmpfiles.d/salt-managed-service-paths.conf
+    - name: |
+        set -e
+        _ok=1
 {% if paths %}
-    - unless: |
-{%- for _name, _entry in paths|dictsort %}
-        {{ managed_path_guard(_entry) }}{% if not loop.last %} &&{% endif %}
-{%- endfor %}
+{% for _name, _entry in paths|dictsort %}
+        if ! {{ managed_path_guard(_entry) }}; then
+          _ok=0
+        fi
+{% endfor %}
+        if [ "$_ok" -eq 1 ]; then
+          echo "changed=no comment='managed service paths already present'"
+        else
+          systemd-tmpfiles --create /etc/tmpfiles.d/salt-managed-service-paths.conf
+          echo "changed=yes comment='managed service paths reconciled'"
+        fi
 {% else %}
-    - unless: test 1 = 1
+        echo "changed=no comment='no managed service paths declared'"
 {% endif %}
+    - shell: /bin/bash
+    - stateful: True
+{% if paths %}
     - require:
       - file: managed_service_paths_conf
+{% endif %}

@@ -27,6 +27,14 @@ def test_salt_apply_and_validate_source_runtime_module():
     assert validate_call in validate_source
 
 
+def test_salt_apply_uses_daemon_stream_instead_of_tailing_log_file():
+    apply_source = (REPO_ROOT / "scripts" / "salt-apply.sh").read_text()
+
+    assert 'tail -n 0 -f "${LOG_FILE}" &' not in apply_source
+    assert "if msg.get('type') == 'stdout':" in apply_source
+    assert "print(msg.get('line', ''), file=sys.stderr)" in apply_source
+
+
 def test_salt_apply_always_runs_chezmoi_after_success():
     apply_source = (REPO_ROOT / "scripts" / "salt-apply.sh").read_text()
 

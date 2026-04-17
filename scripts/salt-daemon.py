@@ -139,14 +139,95 @@ _NOISY_DEBUG_LOGGERS = (
     "salt.utils.jinja",
     "salt.fileclient",
     "salt.fileserver",
+    "salt.loaded.int.module.cmdmod",
 )
 
 
 class _DropNoisyDebugFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
-        if record.levelno > logging.DEBUG:
+        if record.levelno >= logging.WARNING:
             return True
-        return not record.name.startswith(_NOISY_DEBUG_LOGGERS)
+        if record.name == "salt.state" and record.levelno == logging.INFO:
+            message = record.getMessage()
+            return message.startswith(("Running state ", "Completed state "))
+        return False
+
+
+def _summarize_stream(text: str, keep: int = 2) -> list[str]:
+    lines = [line for line in text.splitlines() if line.strip()]
+    if len(lines) <= keep * 2:
+        return lines
+    omitted = len(lines) - (keep * 2)
+    return [*lines[:keep], f"... {omitted} lines omitted ...", *lines[-keep:]]
+
+
+def _format_change_block(changes: dict) -> list[str]:
+    lines: list[str] = []
+    for key, value in changes.items():
+        if key in {"stdout", "stderr"} and isinstance(value, str):
+            summarized = _summarize_stream(value)
+            if not summarized:
+                continue
+            lines.append(f"              {key}:")
+            for entry in summarized:
+                lines.append(f"                  {entry}")
+            continue
+        lines.append(f"              {key}: {value}")
+    return lines
+
+
+def _format_compact_highstate(result: dict) -> str:
+    ordered = sorted(
+        (entry for entry in result.values() if isinstance(entry, dict)),
+        key=lambda item: item.get("__run_num__", 0),
+    )
+
+    changed = []
+    failed = []
+    success_count = 0
+    failed_count = 0
+
+    for entry in ordered:
+        if entry.get("result") is False:
+            failed.append(entry)
+            failed_count += 1
+            continue
+        success_count += 1
+        if entry.get("changes"):
+            changed.append(entry)
+
+    lines = ["local:", ""]
+    for entry in [*changed, *failed]:
+        lines.extend(
+            [
+                "----------",
+                f"      ID: {entry.get('__id__', entry.get('name', 'unknown'))}",
+                f"Function: {entry.get('fun', 'unknown')}",
+                f"    Name: {entry.get('name', '')}",
+                f"  Result: {entry.get('result')}",
+                f" Comment: {entry.get('comment', '')}",
+            ]
+        )
+        duration = entry.get("duration")
+        if duration is not None:
+            lines.append(f"Duration: {duration} ms")
+        if entry.get("changes"):
+            lines.append("     Changes:")
+            lines.append("              ----------")
+            lines.extend(_format_change_block(entry["changes"]))
+
+    lines.extend(
+        [
+            "",
+            "Summary for local",
+            "--------------",
+            f"Succeeded: {success_count}" + (f" (changed={len(changed)})" if changed else ""),
+            f"Failed:      {failed_count}",
+            "--------------",
+            f"Total states run:     {len(ordered)}",
+        ]
+    )
+    return "\n".join(lines) + "\n"
 
 
 def run_state(
@@ -226,17 +307,19 @@ def run_state(
                     exit_code = 1
                     break
 
-        # Capture display_output (which writes to sys.stdout)
-        captured = io.StringIO()
-        old_stdout = sys.stdout
-        sys.stdout = captured
         if isinstance(result, dict):
-            salt.output.display_output({"local": result}, out="highstate", opts=run_opts)
+            formatted_output = _format_compact_highstate(result)
         else:
-            # Non-dict result (error list, etc.)
-            salt.output.display_output({"local": result}, out="nested", opts=run_opts)
-        sys.stdout = old_stdout
-        formatted_output = captured.getvalue()
+            # Capture display_output (which writes to sys.stdout)
+            captured = io.StringIO()
+            old_stdout = sys.stdout
+            try:
+                sys.stdout = captured
+                # Non-dict result (error list, etc.)
+                salt.output.display_output({"local": result}, out="nested", opts=run_opts)
+            finally:
+                sys.stdout = old_stdout
+            formatted_output = captured.getvalue()
 
         # Write to log file
         if log_file and formatted_output:

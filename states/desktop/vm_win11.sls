@@ -4,7 +4,7 @@
 # Deploy the libvirt XML template
 win11_xml:
   file.managed:
-    - name: /tmp/win11.xml
+    - name: /var/cache/salt/win11.xml
     - source: salt://configs/win11.xml
     - mode: '0644'
 
@@ -12,6 +12,6 @@ win11_xml:
 # virsh define is idempotent — updates an existing domain with the same name.
 win11_defined:
   cmd.run:
-    - name: virsh -c qemu:///system define /tmp/win11.xml
+    - name: virsh -c qemu:///system define /var/cache/salt/win11.xml
     - onchanges:
       - file: win11_xml

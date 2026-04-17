@@ -29,11 +29,14 @@ STATE="system_description"
 TEST_MODE=false
 
 for arg in "$@"; do
-    case "$arg" in
-        --test|--dry-run) TEST_MODE=true ;;
-        -*) echo "Unknown flag: $arg" >&2; exit 1 ;;
-        *) STATE="$arg" ;;
-    esac
+	case "$arg" in
+	--test | --dry-run) TEST_MODE=true ;;
+	-*)
+		echo "Unknown flag: $arg" >&2
+		exit 1
+		;;
+	*) STATE="$arg" ;;
+	esac
 done
 
 # Normalise state name: accept both group/core and group.core
@@ -48,43 +51,43 @@ install -m 0640 /dev/null "${LOG_FILE}"
 
 # ── Bootstrap: venv + Salt install ────────────────────────────────────────────
 bootstrap_salt() {
-    if [[ ! -d "$VENV_DIR" ]]; then
-        echo "--- Bootstrapping Salt (creating venv) ---"
-        python3 -m venv "$VENV_DIR"
-    fi
+	if [[ ! -d "$VENV_DIR" ]]; then
+		echo "--- Bootstrapping Salt (creating venv) ---"
+		python3 -m venv "$VENV_DIR"
+	fi
 
-    if [[ ! -f "$VENV_DIR/bin/salt-call" ]]; then
-        echo "--- Installing Salt and dependencies ---"
-        "$VENV_DIR/bin/pip" install -r "${PROJECT_DIR}/requirements.txt"
-    fi
+	if [[ ! -f "$VENV_DIR/bin/salt-call" ]]; then
+		echo "--- Installing Salt and dependencies ---"
+		"$VENV_DIR/bin/pip" install -r "${PROJECT_DIR}/requirements.txt"
+	fi
 }
 
 # ── Runtime config: generate .salt_runtime/minion ─────────────────────────────
 setup_config() {
-    [[ -f "${RUNTIME_CONFIG_DIR}/minion" ]] && return 0
-    salt_runtime_prepare_dirs "${PROJECT_DIR}" "${RUNTIME_CONFIG_DIR}"
-    salt_runtime_write_minion_config "${PROJECT_DIR}" "${RUNTIME_CONFIG_DIR}" apply
+	[[ -f "${RUNTIME_CONFIG_DIR}/minion" ]] && return 0
+	salt_runtime_prepare_dirs "${PROJECT_DIR}" "${RUNTIME_CONFIG_DIR}"
+	salt_runtime_write_minion_config "${PROJECT_DIR}" "${RUNTIME_CONFIG_DIR}" apply
 }
 
 # ── Sudo: prefer NOPASSWD, fall back to .password file ────────────────────────
 get_sudo() {
-    if sudo -n true 2>/dev/null; then
-        SUDO_CMD=(sudo)
-        SUDO_PASS=""
-    elif [[ -f "${PROJECT_DIR}/.password" ]]; then
-        SUDO_CMD=(sudo -S)
-        SUDO_PASS=$(<"${PROJECT_DIR}/.password")
-    else
-        echo "error: no NOPASSWD sudo and no .password file found" >&2
-        echo "  either configure NOPASSWD or create .password" >&2
-        exit 1
-    fi
+	if sudo -n true 2>/dev/null; then
+		SUDO_CMD=(sudo)
+		SUDO_PASS=""
+	elif [[ -f "${PROJECT_DIR}/.password" ]]; then
+		SUDO_CMD=(sudo -S)
+		SUDO_PASS=$(<"${PROJECT_DIR}/.password")
+	else
+		echo "error: no NOPASSWD sudo and no .password file found" >&2
+		echo "  either configure NOPASSWD or create .password" >&2
+		exit 1
+	fi
 }
 
 # ── Daemon helpers ─────────────────────────────────────────────────────────────
 daemon_running() {
-    [[ -S "$DAEMON_SOCK" ]] || return 1
-    if python3 -c "
+	[[ -S "$DAEMON_SOCK" ]] || return 1
+	if python3 -c "
 import socket, sys
 try:
     s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -94,44 +97,40 @@ try:
 except Exception:
     sys.exit(1)
 " 2>/dev/null; then
-        return 0
-    fi
-    # Socket exists but daemon is dead — remove stale socket so ensure_daemon
-    # can start a fresh daemon without bind() failing on the existing path.
-    "${SUDO_CMD[@]}" rm -f "$DAEMON_SOCK"
-    return 1
+		return 0
+	fi
+	# Socket exists but daemon is dead — remove stale socket so ensure_daemon
+	# can start a fresh daemon without bind() failing on the existing path.
+	"${SUDO_CMD[@]}" rm -f "$DAEMON_SOCK"
+	return 1
 }
 
 ensure_daemon() {
-    daemon_running && return 0
-    [[ -x "$DAEMON_SCRIPT" ]] || return 1
-    echo "(starting salt-daemon in background...)"
-    "${SUDO_CMD[@]}" "$DAEMON_SCRIPT" \
-        --config-dir "$RUNTIME_CONFIG_DIR" \
-        --socket "$DAEMON_SOCK" \
-        --log-level warning &>/dev/null &
-    for _ in $(seq 1 10); do
-        sleep 0.5
-        daemon_running && return 0
-    done
-    return 1  # timeout — fall back to direct
+	daemon_running && return 0
+	[[ -x "$DAEMON_SCRIPT" ]] || return 1
+	echo "(starting salt-daemon in background...)"
+	"${SUDO_CMD[@]}" "$DAEMON_SCRIPT" \
+		--config-dir "$RUNTIME_CONFIG_DIR" \
+		--socket "$DAEMON_SOCK" \
+		--log-level warning &>/dev/null &
+	for _ in $(seq 1 10); do
+		sleep 0.5
+		daemon_running && return 0
+	done
+	return 1 # timeout — fall back to direct
 }
 
 # ── Run via daemon ─────────────────────────────────────────────────────────────
 run_via_daemon() {
-    echo "=== Applying ${STATE} via daemon ($(date)) ==="
-    echo "Log: ${LOG_FILE}"
+	echo "=== Applying ${STATE} via daemon ($(date)) ==="
+	echo "Log: ${LOG_FILE}"
 
-    # Stream the log file to the terminal as Salt writes to it. No
-    # reformatting — operators see native Salt highstate output directly.
-    tail -n 0 -f "${LOG_FILE}" &
-    local tail_pid=$!
+	local kwargs='{}'
+	$TEST_MODE && kwargs='{"test":true}'
 
-    local kwargs='{}'
-    $TEST_MODE && kwargs='{"test":true}'
-
-    local exit_code
-    exit_code=$(python3 - <<PYEOF
+	local exit_code
+	exit_code=$(
+		python3 - <<PYEOF
 import json, socket, sys
 req = json.dumps({
     'state': '${SALT_STATE}',
@@ -157,6 +156,8 @@ try:
                 msg = json.loads(line.decode())
             except json.JSONDecodeError:
                 continue
+            if msg.get('type') == 'stdout':
+                print(msg.get('line', ''), file=sys.stderr)
             if msg.get('type') == 'exit':
                 rc = msg.get('code', 0)
 except ConnectionResetError:
@@ -164,55 +165,51 @@ except ConnectionResetError:
 s.close()
 print(rc)
 PYEOF
-    )
-
-    sleep 0.3
-    kill "$tail_pid" 2>/dev/null || true
-    wait "$tail_pid" 2>/dev/null || true
-    return "${exit_code:-1}"
+	)
+	return "${exit_code:-1}"
 }
 
 # ── Fallback: direct salt-call ─────────────────────────────────────────────────
 SALT_RUNNER="${SCRIPT_DIR}/salt-runner.py"
 
 run_direct() {
-    echo "=== Applying ${STATE} directly (daemon not running) ($(date)) ==="
-    echo "Log: ${LOG_FILE}"
-    echo "(Start salt-daemon for faster subsequent runs)"
+	echo "=== Applying ${STATE} directly (daemon not running) ($(date)) ==="
+	echo "Log: ${LOG_FILE}"
+	echo "(Start salt-daemon for faster subsequent runs)"
 
-    local -a salt_cmd
-    salt_cmd=(
-        "${SUDO_CMD[@]}" "$VENV_DIR/bin/python3" -u "$SALT_RUNNER"
-        --config-dir="${RUNTIME_CONFIG_DIR}"
-        --local --log-level=warning --force-color
-        --log-file="${LOG_FILE}" --log-file-level=debug
-        state.sls "${SALT_STATE}"
-    )
-    $TEST_MODE && salt_cmd+=(test=True)
+	local -a salt_cmd
+	salt_cmd=(
+		"${SUDO_CMD[@]}" "$VENV_DIR/bin/python3" -u "$SALT_RUNNER"
+		--config-dir="${RUNTIME_CONFIG_DIR}"
+		--local --log-level=warning --force-color
+		--log-file="${LOG_FILE}" --log-file-level=debug
+		state.sls "${SALT_STATE}"
+	)
+	$TEST_MODE && salt_cmd+=(test=True)
 
-    # Let Salt stream native highstate output directly to the terminal
-    # while tee also appends it to the log file for post-run inspection.
-    if [[ -n "${SUDO_PASS:-}" ]]; then
-        echo "$SUDO_PASS" | "${salt_cmd[@]}" 2>&1 | tee -a "${LOG_FILE}"
-        local rc="${pipestatus[2]}"
-    else
-        "${salt_cmd[@]}" 2>&1 | tee -a "${LOG_FILE}"
-        local rc="${pipestatus[1]}"
-    fi
+	# Let Salt stream native highstate output directly to the terminal
+	# while tee also appends it to the log file for post-run inspection.
+	if [[ -n "${SUDO_PASS:-}" ]]; then
+		echo "$SUDO_PASS" | "${salt_cmd[@]}" 2>&1 | tee -a "${LOG_FILE}"
+		local rc="${pipestatus[2]}"
+	else
+		"${salt_cmd[@]}" 2>&1 | tee -a "${LOG_FILE}"
+		local rc="${pipestatus[1]}"
+	fi
 
-    return "$rc"
+	return "$rc"
 }
 
 # ── Maintenance lock (suppresses salt-monitor alerts during apply) ─────────────
 MAINTENANCE_LOCK="${HOME}/.cache/salt-monitor/maintenance.lock"
 
 maintenance_lock_create() {
-    mkdir -p "${HOME}/.cache/salt-monitor"
-    touch "$MAINTENANCE_LOCK"
+	mkdir -p "${HOME}/.cache/salt-monitor"
+	touch "$MAINTENANCE_LOCK"
 }
 
 maintenance_lock_remove() {
-    rm -f "$MAINTENANCE_LOCK"
+	rm -f "$MAINTENANCE_LOCK"
 }
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -224,13 +221,13 @@ maintenance_lock_create
 trap maintenance_lock_remove EXIT
 
 if ensure_daemon; then
-    run_via_daemon && RC=$? || RC=$?
-    if [[ $RC -eq 75 ]]; then
-        echo "(daemon busy — falling back to direct salt-call)"
-        run_direct && RC=$? || RC=$?
-    fi
+	run_via_daemon && RC=$? || RC=$?
+	if [[ $RC -eq 75 ]]; then
+		echo "(daemon busy — falling back to direct salt-call)"
+		run_direct && RC=$? || RC=$?
+	fi
 else
-    run_direct && RC=$? || RC=$?
+	run_direct && RC=$? || RC=$?
 fi
 
 echo ""
@@ -238,32 +235,32 @@ echo "=== Finished ${STATE} (exit code: ${RC}) at $(date) ==="
 echo "Full log: ${LOG_FILE}"
 
 if [[ $RC -eq 0 ]]; then
-    echo "--- ${STATE}: all states passed ---"
-    echo "--- Applying dotfiles (chezmoi) ---"
-    # Keep the existing GPG flow usable by refreshing pinentry TTY when that backend is in use.
-    gpg-connect-agent updatestartuptty /bye &>/dev/null || true
-    # Bootstrap chezmoi config before apply (needed for gopass template rendering)
-    install -Dm644 "${PROJECT_DIR}/dotfiles/dot_config/chezmoi/chezmoi.toml" \
-        "${HOME}/.config/chezmoi/chezmoi.toml" 2>/dev/null || true
-    chezmoi_output=""
-    if ! chezmoi_output=$(chezmoi apply --force --source "${PROJECT_DIR}/dotfiles" 2>&1); then
-        echo ""
-        printf '\033[33m━━━ chezmoi apply failed ━━━\033[0m\n'
-        printf '\033[33m  Salt states succeeded; dotfiles were not fully applied.\033[0m\n'
+	echo "--- ${STATE}: all states passed ---"
+	echo "--- Applying dotfiles (chezmoi) ---"
+	# Keep the existing GPG flow usable by refreshing pinentry TTY when that backend is in use.
+	gpg-connect-agent updatestartuptty /bye &>/dev/null || true
+	# Bootstrap chezmoi config before apply (needed for gopass template rendering)
+	install -Dm644 "${PROJECT_DIR}/dotfiles/dot_config/chezmoi/chezmoi.toml" \
+		"${HOME}/.config/chezmoi/chezmoi.toml" 2>/dev/null || true
+	chezmoi_output=""
+	if ! chezmoi_output=$(chezmoi apply --force --source "${PROJECT_DIR}/dotfiles" 2>&1); then
+		echo ""
+		printf '\033[33m━━━ chezmoi apply failed ━━━\033[0m\n'
+		printf '\033[33m  Salt states succeeded; dotfiles were not fully applied.\033[0m\n'
 
-        if printf '%s\n' "$chezmoi_output" | rg -qi 'gopass|pinentry|failed to decrypt|decryption failed'; then
-            printf '\033[33m  Reason: gopass is locked or pinentry is unavailable in this session.\033[0m\n'
-            printf '\033[33m  Action: unlock gopass, then re-run: chezmoi apply --force --source %s/dotfiles\033[0m\n' "${PROJECT_DIR}"
-            printf '\033[33m  Verify: gopass show -o <known-key> (gopass ls alone does not prove decryption works).\033[0m\n'
-            printf '\033[33m  Details: see docs/gopass-setup.md if the unlock path is not configured.\033[0m\n'
-            printf '\033[33m  Continuing: Salt rollout succeeded; dotfiles were skipped for now.\033[0m\n'
-        else
-            printf '%s\n' "$chezmoi_output"
-            printf '\033[33m  Re-run: chezmoi apply --force --source %s/dotfiles\033[0m\n' "${PROJECT_DIR}"
-            exit 1
-        fi
-    fi
+		if printf '%s\n' "$chezmoi_output" | rg -qi 'gopass|pinentry|failed to decrypt|decryption failed'; then
+			printf '\033[33m  Reason: gopass is locked or pinentry is unavailable in this session.\033[0m\n'
+			printf '\033[33m  Action: unlock gopass, then re-run: chezmoi apply --force --source %s/dotfiles\033[0m\n' "${PROJECT_DIR}"
+			printf '\033[33m  Verify: gopass show -o <known-key> (gopass ls alone does not prove decryption works).\033[0m\n'
+			printf '\033[33m  Details: see docs/gopass-setup.md if the unlock path is not configured.\033[0m\n'
+			printf '\033[33m  Continuing: Salt rollout succeeded; dotfiles were skipped for now.\033[0m\n'
+		else
+			printf '%s\n' "$chezmoi_output"
+			printf '\033[33m  Re-run: chezmoi apply --force --source %s/dotfiles\033[0m\n' "${PROJECT_DIR}"
+			exit 1
+		fi
+	fi
 else
-    echo "--- ${STATE}: some states failed (see log above) ---"
-    exit $RC
+	echo "--- ${STATE}: some states failed (see log above) ---"
+	exit $RC
 fi

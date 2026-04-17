@@ -205,6 +205,28 @@ def test_container_service_daemon_reload_only_runs_on_quadlet_changes():
     assert "- require:" not in block
 
 
+def test_win11_vm_definition_is_not_staged_via_tmp_file():
+    path = os.path.join(REPO_ROOT, "states", "desktop", "vm_win11.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "/tmp/win11.xml" not in source
+    assert "virsh -c qemu:///system define" in source
+
+
+def test_managed_service_paths_ensure_is_stateful_noop_when_guards_match():
+    path = os.path.join(REPO_ROOT, "states", "systemd_resources.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    marker = "managed_service_paths_ensure:"
+    block = source[source.index(marker) :]
+
+    assert "stateful: True" in block
+    assert 'echo "changed=no' in block
+    assert "systemd-tmpfiles --create /etc/tmpfiles.d/salt-managed-service-paths.conf" in block
+
+
 def test_npm_build_workflow_version_pin_uses_strict_shell_mode():
     path = os.path.join(REPO_ROOT, "states", "_macros_install.jinja")
     with open(path) as fh:

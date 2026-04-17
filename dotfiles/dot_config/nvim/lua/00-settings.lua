@@ -7,7 +7,6 @@ local appname=env_.NVIM_APPNAME or 'nvim'
 local config_dir=config_home_..'/'..appname
 local data_dir=data_home_..'/'..appname
 o.sessionoptions='blank,buffers,curdir,folds,help,tabpages,winsize'
--- thx to https://www.reddit.com/r/neovim/comments/opipij/guide_tips_and_tricks_to_reduce_startup_and/
 local disabled_built_ins={
     '2html_plugin',
     'bugreport',
@@ -41,7 +40,6 @@ for _, plugin in pairs(disabled_built_ins) do
 end
 vim.g.loaded_node_provider=0
 
--- netrw is disabled elsewhere; drop redundant globals
 -- Defer executable() checks to VeryLazy (synchronous PATH scans are slow at startup)
 vim.api.nvim_create_autocmd('User', {
   pattern = 'VeryLazy', once = true,

@@ -94,9 +94,9 @@ After containerization lands, verify that container failures surface through the
 
 ---
 
-## Hyprland hotkey search follow-ups
+## Hyprland hotkey UX
 
-- [ ] Add an optional hierarchical key-hint mode generated from `dotfiles/dot_config/hypr/shortcuts.yaml`, so grouped prefixes can expand into a structured on-screen help tree without diverging from the search catalog.
+- [ ] Add an optional hierarchical key-hint mode generated from `dotfiles/dot_config/hypr/shortcuts.yaml` as an alternative to the search-first `Mod4+/` launcher, so grouped prefixes can expand into a structured on-screen help tree without diverging from the search catalog.
 
 ---
 

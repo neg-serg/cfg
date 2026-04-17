@@ -108,6 +108,7 @@ def test_avahi_package_list_does_not_reference_missing_repo_package():
 def _collect_known_services():
     """Collect all service names from catalog, services.yaml, and base OS."""
     unit_suffixes = (".service", ".timer", ".socket", ".path", ".container")
+    templated_unit_suffixes = tuple(f"{suffix}.j2" for suffix in unit_suffixes)
     known = set()
     catalog = load_yaml("service_catalog.yaml")
     for name, config in catalog.items():
@@ -162,6 +163,11 @@ def _collect_known_services():
                     if unit_file.endswith(suffix):
                         known.add(unit_file)
                         known.add(unit_file[: -len(suffix)])
+                for suffix in templated_unit_suffixes:
+                    if unit_file.endswith(suffix):
+                        unit_name = unit_file[: -len(".j2")]
+                        known.add(unit_name)
+                        known.add(unit_name[: -len(suffix.removesuffix(".j2"))])
 
     return known
 
@@ -242,9 +248,7 @@ def test_user_services_schema_is_valid():
     assert not invalid, f"Invalid user_services.yaml schema: {invalid}"
 
 
-def test_drift_inventory_schema_is_valid():
-    inventory = load_yaml("drift_inventory.yaml")
-
+def _assert_drift_inventory_schema(inventory):
     assert set(inventory) >= {"files", "system_units", "user_units"}
 
     files = inventory["files"]
@@ -256,16 +260,42 @@ def test_drift_inventory_schema_is_valid():
         file_ids.add(entry["id"])
         assert isinstance(entry["path"], str) and entry["path"]
         assert entry["severity"] in {"critical", "warning", "info"}
-        assert entry.get("capture_after_apply", True) in {True, False}
+        assert isinstance(entry.get("capture_after_apply", True), bool)
 
     for scope in ("system_units", "user_units"):
         entries = inventory[scope]
         assert isinstance(entries, list) and entries
         for entry in entries:
             assert isinstance(entry["name"], str) and entry["name"].endswith((".service", ".timer"))
-            assert entry["enabled"] in {True, False}
+            assert isinstance(entry["enabled"], bool)
             assert entry["severity"] in {"critical", "warning", "info"}
-            assert entry.get("optional", False) in {True, False}
+            assert isinstance(entry.get("optional", False), bool)
+
+
+def test_drift_inventory_schema_is_valid():
+    inventory = load_yaml("drift_inventory.yaml")
+
+    _assert_drift_inventory_schema(inventory)
+
+
+def test_drift_inventory_schema_rejects_non_boolean_flags():
+    inventory = {
+        "files": [
+            {
+                "id": "salt-monitor-script",
+                "path": "{{ home }}/.local/bin/salt-monitor",
+                "severity": "critical",
+                "capture_after_apply": 1,
+            }
+        ],
+        "system_units": [
+            {"name": "sshd.service", "enabled": 1, "severity": "critical", "optional": 0}
+        ],
+        "user_units": [{"name": "salt-monitor.service", "enabled": True, "severity": "critical"}],
+    }
+
+    with pytest.raises(AssertionError):
+        _assert_drift_inventory_schema(inventory)
 
 
 def test_drift_inventory_paths_and_units_resolve_to_known_targets():
@@ -294,3 +324,4 @@ def test_collect_known_services_includes_root_level_units():
 
     assert "xray.service" in known
     assert "transmission-container.container" in known
+    assert "salt-daemon.service" in known

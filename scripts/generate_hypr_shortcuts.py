@@ -84,9 +84,39 @@ def format_hotkey(modifiers: tuple[str, ...], key: str) -> str:
     return "+".join(parts)
 
 
+def resolve_source_path(root: Path, current: Path, source: str) -> Path:
+    source = source.strip().strip('"')
+    hypr_prefix = "~/.config/hypr/"
+
+    if source.startswith(hypr_prefix):
+        return root.parent / source.removeprefix(hypr_prefix)
+    if source.startswith("/"):
+        return Path(source)
+    return current.parent / source
+
+
 def iter_binding_files(root: Path) -> list[Path]:
-    files = [root]
-    files.extend(sorted((root.parent / "bindings").glob("*.conf")))
+    files: list[Path] = []
+    seen: set[Path] = set()
+
+    def walk(path: Path) -> None:
+        resolved = path.resolve()
+        if resolved in seen:
+            return
+        if not path.exists():
+            raise SystemExit(f"binding source not found: {path}")
+
+        seen.add(resolved)
+        files.append(path)
+
+        for raw_line in path.read_text().splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#") or not line.startswith("source ="):
+                continue
+            source = line.split("=", 1)[1].strip()
+            walk(resolve_source_path(root, path, source))
+
+    walk(root)
     return files
 
 

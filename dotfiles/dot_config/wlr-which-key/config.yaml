@@ -61,7 +61,7 @@ menu:
   submenu:
   - key: "l"
     desc: Lock
-    cmd: hyprctl switchxkblayout current 0 && hyprlock
+    cmd: sh -lc "hyprctl switchxkblayout current 0 && hyprlock"
   - key: "s"
     desc: Suspend
     cmd: systemctl suspend
@@ -76,12 +76,12 @@ menu:
   submenu:
   - key: "r"
     desc: Full screen
-    cmd: shot="$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png"; grim "$shot"
-      && pic-info "$shot"
+    cmd: sh -lc "shot=\"$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png\"; grim
+      \"$shot\" && pic-info \"$shot\""
   - key: "s"
     desc: Select area
-    cmd: shot="$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png"; grim -g "$(slurp)"
-      "$shot" && pic-info "$shot"
+    cmd: sh -lc "shot=\"$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png\"; grim
+      -g \"$(slurp)\" \"$shot\" && pic-info \"$shot\""
   - key: "v"
     desc: Record screen
     cmd: ~/.local/bin/screenrec screen

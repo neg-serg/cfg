@@ -135,36 +135,6 @@ entries:
     group: Wallpaper
     keywords: [wallpaper, backgrounds, theme]
     mode: launchable
-  - id: selectors.wallpaper
-    match: selectors|w|exec|hyde-selector wallpaper
-    title: Wallpaper Selector
-    group: Selectors
-    keywords: [wallpaper, selector, hyde]
-    mode: launchable
-  - id: selectors.theme
-    match: selectors|t|exec|hyde-selector theme
-    title: Theme Selector
-    group: Selectors
-    keywords: [theme, selector, hyde]
-    mode: launchable
-  - id: selectors.animation
-    match: selectors|a|exec|hyde-selector animation
-    title: Animation Selector
-    group: Selectors
-    keywords: [animation, selector, hyde]
-    mode: launchable
-  - id: selectors.emoji
-    match: selectors|e|exec|vicinae "vicinae://extensions/vicinae/core/search-emojis"
-    title: Emoji Search
-    group: Selectors
-    keywords: [emoji, search, vicinae]
-    mode: launchable
-  - id: selectors.calculator
-    match: selectors|c|exec|vicinae "vicinae://extensions/vicinae/calculator/index"
-    title: Calculator
-    group: Selectors
-    keywords: [calculator, calc, vicinae]
-    mode: launchable
   - id: media.play_pause
     match: root|w|exec|~/.local/bin/pl cmd play-pause
     title: Play/Pause
@@ -292,7 +262,7 @@ which_key:
     entries:
       - key: "l"
         desc: Lock
-        match: special|l|exec|hyprctl switchxkblayout current 0 && hyprlock
+        cmd: 'sh -lc "hyprctl switchxkblayout current 0 && hyprlock"'
       - key: "s"
         desc: Suspend
         cmd: systemctl suspend
@@ -307,10 +277,10 @@ which_key:
     entries:
       - key: "r"
         desc: Full screen
-        match: root|r|exec|shot="$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png"; grim "$shot" && pic-info "$shot"
+        cmd: 'sh -lc "shot=\"$HOME/pic/shots/satty-$(date ''+%Y%m%d-%H.%M.%S'').png\"; grim \"$shot\" && pic-info \"$shot\""'
       - key: "s"
         desc: Select area
-        match: root|r|exec|shot="$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png"; grim -g "$(slurp)" "$shot" && pic-info "$shot"
+        cmd: 'sh -lc "shot=\"$HOME/pic/shots/satty-$(date ''+%Y%m%d-%H.%M.%S'').png\"; grim -g \"$(slurp)\" \"$shot\" && pic-info \"$shot\""'
       - key: "v"
         desc: Record screen
         match: root|v|exec|~/.local/bin/screenrec screen
@@ -325,19 +295,19 @@ which_key:
     entries:
       - key: "w"
         desc: Wallpaper
-        match: selectors|w|exec|hyde-selector wallpaper
+        cmd: hyde-selector wallpaper
       - key: "t"
         desc: Theme
-        match: selectors|t|exec|hyde-selector theme
+        cmd: hyde-selector theme
       - key: "a"
         desc: Animation
-        match: selectors|a|exec|hyde-selector animation
+        cmd: hyde-selector animation
       - key: "e"
         desc: Emoji
-        match: selectors|e|exec|vicinae "vicinae://extensions/vicinae/core/search-emojis"
+        cmd: vicinae "vicinae://extensions/vicinae/core/search-emojis"
       - key: "c"
         desc: Calculator
-        match: selectors|c|exec|vicinae "vicinae://extensions/vicinae/calculator/index"
+        cmd: vicinae "vicinae://extensions/vicinae/calculator/index"
   - key: "m"
     desc: Media
     entries:

@@ -8,6 +8,7 @@
 #
 # Usage:
 #   ./scripts/pkg-drift.zsh           # Full report
+#   ./scripts/pkg-drift.zsh --json    # Machine-readable JSON report
 #   ./scripts/pkg-drift.zsh --quiet   # Exit code only (0=clean, 1=drift)
 #   ./scripts/pkg-drift.zsh --help
 
@@ -15,13 +16,18 @@ set -euo pipefail
 
 # --- Config ---
 SCRIPT_DIR="${0:A:h}"
-PROJECT_DIR="${SCRIPT_DIR:h}"
+if [[ -d "${PWD}/states" ]]; then
+    PROJECT_DIR="${PWD:A}"
+else
+    PROJECT_DIR="${SCRIPT_DIR:h}"
+fi
 STATES_DIR="${PROJECT_DIR}/states"
 DATA_DIR="${STATES_DIR}/data"
 PACKAGES_YAML="${DATA_DIR}/packages.yaml"
 
 # --- Flags ---
 typeset -i flag_quiet=0
+typeset -i flag_json=0
 
 usage() {
     cat <<'EOF'
@@ -30,6 +36,7 @@ Usage: pkg-drift.zsh [OPTIONS]
 Compare declared packages against actual system state.
 
 Options:
+  --json    Emit a machine-readable JSON report.
   --quiet   Suppress output; exit 0 if no drift, 1 if drift detected.
   --help    Show this help.
 EOF
@@ -38,11 +45,41 @@ EOF
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        --json)  flag_json=1; shift ;;
         --quiet) flag_quiet=1; shift ;;
         --help)  usage ;;
         *)       echo "Unknown option: $1" >&2; exit 1 ;;
     esac
 done
+
+json_escape() {
+    local value="$1"
+    value=${value//\\/\\\\}
+    value=${value//\"/\\\"}
+    value=${value//$'\n'/\\n}
+    value=${value//$'\r'/\\r}
+    value=${value//$'\t'/\\t}
+    print -rn -- "$value"
+}
+
+json_array() {
+    local -a values=("$@")
+    local first=1
+    local value
+
+    print -rn '['
+    for value in "${(@o)values}"; do
+        [[ -n "$value" ]] || continue
+        if (( ! first )); then
+            print -rn ','
+        fi
+        first=0
+        print -rn '"'
+        json_escape "$value"
+        print -rn '"'
+    done
+    print -rn ']'
+}
 
 # --- Step 1: Collect declared packages ---
 typeset -A declared  # pkg_name → source
@@ -167,16 +204,32 @@ orphan_list=("${(@)orphan_list:#}")
 
 # --- Step 4: Report ---
 typeset -i drift=0
+report_date="$(date -I)"
 
 if [[ ${#unmanaged_list} -gt 0 || ${#missing_list} -gt 0 || ${#orphan_list} -gt 0 ]]; then
     drift=1
+fi
+
+if (( flag_json )); then
+    print -rn '{"date":"'
+    json_escape "$report_date"
+    print -rn '","unmanaged":'
+    json_array "${unmanaged_list[@]}"
+    print -rn ',"missing":'
+    json_array "${missing_list[@]}"
+    print -rn ',"orphans":'
+    json_array "${orphan_list[@]}"
+    print -rn ',"drift":'
+    print -rn -- "$drift"
+    print '}'
+    exit $drift
 fi
 
 if (( flag_quiet )); then
     exit $drift
 fi
 
-echo "=== Package Drift Report ($(date -I)) ==="
+echo "=== Package Drift Report (${report_date}) ==="
 echo ""
 
 if [[ ${#unmanaged_list} -gt 0 ]]; then

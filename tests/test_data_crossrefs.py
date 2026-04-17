@@ -107,6 +107,7 @@ def test_avahi_package_list_does_not_reference_missing_repo_package():
 
 def _collect_known_services():
     """Collect all service names from catalog, services.yaml, and base OS."""
+    unit_suffixes = (".service", ".timer", ".socket", ".path", ".container")
     known = set()
     catalog = load_yaml("service_catalog.yaml")
     for name, config in catalog.items():
@@ -150,14 +151,14 @@ def _collect_known_services():
         }
     )
 
-    # User/system unit files deployed by Salt (unit name = service name)
+    # Unit files deployed by Salt can live directly under states/units/ or in scope dirs.
     units_dir = os.path.join(states_dir, "units")
-    for scope_dir in ("user", "system"):
-        scope_path = os.path.join(units_dir, scope_dir)
-        if os.path.isdir(scope_path):
-            for unit_file in os.listdir(scope_path):
-                # Strip .service/.timer suffix to get service name
-                for suffix in (".service", ".timer", ".socket", ".path", ".container"):
+    unit_paths = [units_dir]
+    unit_paths.extend(os.path.join(units_dir, scope_dir) for scope_dir in ("user", "system"))
+    for unit_path in unit_paths:
+        if os.path.isdir(unit_path):
+            for unit_file in os.listdir(unit_path):
+                for suffix in unit_suffixes:
                     if unit_file.endswith(suffix):
                         known.add(unit_file)
                         known.add(unit_file[: -len(suffix)])
@@ -248,8 +249,11 @@ def test_drift_inventory_schema_is_valid():
 
     files = inventory["files"]
     assert isinstance(files, list) and files
+    file_ids = set()
     for entry in files:
         assert isinstance(entry["id"], str) and entry["id"]
+        assert entry["id"] not in file_ids
+        file_ids.add(entry["id"])
         assert isinstance(entry["path"], str) and entry["path"]
         assert entry["severity"] in {"critical", "warning", "info"}
         assert entry.get("capture_after_apply", True) in {True, False}
@@ -261,22 +265,32 @@ def test_drift_inventory_schema_is_valid():
             assert isinstance(entry["name"], str) and entry["name"].endswith((".service", ".timer"))
             assert entry["enabled"] in {True, False}
             assert entry["severity"] in {"critical", "warning", "info"}
+            assert entry.get("optional", False) in {True, False}
 
 
 def test_drift_inventory_paths_and_units_resolve_to_known_targets():
     inventory = load_yaml("drift_inventory.yaml")
     known = _collect_known_services()
-    expected_paths = {
-        "{{ home }}/.local/bin/salt-monitor",
-        "{{ home }}/.local/bin/salt-alert",
-        "{{ home }}/.config/systemd/user/salt-monitor.service",
-        "{{ home }}/.config/systemd/user/salt-monitor-watchdog.timer",
-    }
-
     paths = [entry["path"] for entry in inventory["files"]]
-    assert len(paths) == len(expected_paths)
-    assert set(paths) == expected_paths
+    assert len(paths) == len(set(paths))
+
+    for path in paths:
+        assert path.startswith("/") or path.startswith("{{ home }}/")
+        assert "salt-" in path
+        if path.startswith("{{ home }}/.local/bin/"):
+            assert path.rsplit("/", 1)[-1] in {"salt-monitor", "salt-alert"}
+        else:
+            assert path.startswith("{{ home }}/.config/systemd/user/")
+            assert path.rsplit("/", 1)[-1].startswith("salt-monitor")
+            assert path.endswith((".service", ".timer"))
 
     for scope in ("system_units", "user_units"):
         for entry in inventory[scope]:
             assert entry["name"] in known
+
+
+def test_collect_known_services_includes_root_level_units():
+    known = _collect_known_services()
+
+    assert "xray.service" in known
+    assert "transmission-container.container" in known

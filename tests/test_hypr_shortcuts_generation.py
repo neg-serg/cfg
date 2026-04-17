@@ -28,7 +28,7 @@ def test_load_bindings_follows_source_graph_and_excludes_unsourced_files(tmp_pat
     assert "should-not-appear" not in arguments
 
 
-def test_build_search_entries_uses_repo_metadata_for_browser_and_hides_unsourced_entries():
+def test_build_search_entries_uses_repo_metadata_and_marks_unsourced_selectors_as_docs_only():
     actions = gen.load_bindings(
         REPO_ROOT_PATH / "dotfiles" / "dot_config" / "hypr" / "bindings.conf"
     )
@@ -49,7 +49,16 @@ def test_build_search_entries_uses_repo_metadata_for_browser_and_hides_unsourced
         "keywords": ["browser", "web", "zen"],
         "label": "Apps / Browser  Super+W",
     }
-    assert "selectors.wallpaper" not in by_id
+    assert by_id["selectors.wallpaper"] == {
+        "id": "selectors.wallpaper",
+        "title": "Wallpaper Selector",
+        "group": "Selectors",
+        "hotkey": "Super+Alt+S, W",
+        "command": "hyde-selector wallpaper",
+        "mode": "docs_only",
+        "keywords": ["wallpaper", "selector", "hyde"],
+        "label": "Selectors / Wallpaper Selector  Super+Alt+S, W",
+    }
 
 
 def test_render_which_key_config_keeps_browser_menu_and_wraps_shell_commands():
@@ -95,7 +104,8 @@ def test_main_writes_search_json_and_which_key_yaml(tmp_path):
 
     data = json.loads(search_out.read_text())
     by_id = {entry["id"]: entry for entry in data}
-    assert "selectors.wallpaper" not in by_id
+    assert by_id["selectors.wallpaper"]["mode"] == "docs_only"
+    assert by_id["selectors.wallpaper"]["hotkey"] == "Super+Alt+S, W"
     rendered = which_key_out.read_text()
     assert "desc: Media" in rendered
     assert "desc: Selectors" in rendered

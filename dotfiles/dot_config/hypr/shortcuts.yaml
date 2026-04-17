@@ -135,6 +135,41 @@ entries:
     group: Wallpaper
     keywords: [wallpaper, backgrounds, theme]
     mode: launchable
+  - id: selectors.wallpaper
+    command: hyde-selector wallpaper
+    hotkey: Super+Alt+S, W
+    title: Wallpaper Selector
+    group: Selectors
+    keywords: [wallpaper, selector, hyde]
+    mode: docs_only
+  - id: selectors.theme
+    command: hyde-selector theme
+    hotkey: Super+Alt+S, T
+    title: Theme Selector
+    group: Selectors
+    keywords: [theme, selector, hyde]
+    mode: docs_only
+  - id: selectors.animation
+    command: hyde-selector animation
+    hotkey: Super+Alt+S, A
+    title: Animation Selector
+    group: Selectors
+    keywords: [animation, selector, hyde]
+    mode: docs_only
+  - id: selectors.emoji
+    command: vicinae "vicinae://extensions/vicinae/core/search-emojis"
+    hotkey: Super+Alt+S, E
+    title: Emoji Search
+    group: Selectors
+    keywords: [emoji, search, vicinae]
+    mode: docs_only
+  - id: selectors.calculator
+    command: vicinae "vicinae://extensions/vicinae/calculator/index"
+    hotkey: Super+Alt+S, C
+    title: Calculator
+    group: Selectors
+    keywords: [calculator, calc, vicinae]
+    mode: docs_only
   - id: media.play_pause
     match: root|w|exec|~/.local/bin/pl cmd play-pause
     title: Play/Pause

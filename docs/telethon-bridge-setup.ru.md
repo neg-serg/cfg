@@ -138,6 +138,26 @@ systemctl --user stop telethon-bridge        # остановка
 journalctl --user -u telethon-bridge -f      # логи в реальном времени
 ```
 
+## Реактивная перезагрузка
+
+Salt также разворачивает opt-in user-level path unit `telethon-bridge-react.path`,
+который следит за такими runtime-файлами:
+
+- `~/.telethon-bridge/config.yaml`
+- `~/.local/bin/telethon-bridge`
+
+Когда один из этих файлов меняется:
+
+- если `telethon-bridge` уже запущен, helper перезапускает его
+- если он не запущен, но существует `~/.telethon-bridge/telethon.session`, helper запускает сервис
+- если файла сессии нет, helper завершится без запуска сервиса
+
+Отключить это поведение можно в любой момент:
+
+```bash
+systemctl --user disable --now telethon-bridge-react.path
+```
+
 ## Устранение неполадок
 
 **Сессия аннулирована**: Telegram может отозвать сессии после смены пароля или

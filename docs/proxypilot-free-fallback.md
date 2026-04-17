@@ -55,7 +55,7 @@ Excluded providers:
 
 1. Add entry to `states/data/free_providers.yaml`
 2. Store API key: `gopass insert api/<name>`
-3. Run `scripts/bootstrap-free-providers.sh` to seed the config
+3. Run the recovery flow in `docs/proxypilot-recovery.md` if the deployed config needs repair
 4. Run `just` to deploy
 
 Only 2 files changed (data file + gopass secret) -- no code modifications needed.
@@ -80,8 +80,8 @@ gopass insert api/cerebras
 gopass insert api/openrouter
 gopass insert api/deepseek  # optional
 
-# 3. Run bootstrap to seed ProxyPilot config
-scripts/bootstrap-free-providers.sh
+# 3. Repair or seed the deployed ProxyPilot config when needed
+# See docs/proxypilot-recovery.md
 
 # 4. Deploy via Salt
 just
@@ -100,15 +100,15 @@ curl http://127.0.0.1:8317/v1/chat/completions \
 
 ### Provider not responding
 
-- Check gopass key exists: `scripts/bootstrap-free-providers.sh --check`
+- Check gopass key exists with `gopass show -o api/<provider>`
 - Check ProxyPilot logs: `journalctl --user -u proxypilot -f`
-- Re-seed config: `scripts/bootstrap-free-providers.sh`
+- Re-run the recovery container flow from `docs/proxypilot-recovery.md`
 
 ### Keys missing after `just`
 
 gopass secret access may depend on a user-session unlock path that is unavailable in Salt's root context. The AWK fallback reads keys from the already-deployed config. If keys are missing:
 
-1. Run `scripts/bootstrap-free-providers.sh` to re-inject from gopass
+1. Run the recovery flow from `docs/proxypilot-recovery.md` to rebuild `openai-compatibility`
 2. Subsequent `just` runs will maintain keys via AWK
 
 ### Model deprecated by provider
@@ -130,5 +130,5 @@ Grafana dashboard at `http://127.0.0.1:3000` -> ProxyPilot dashboard -> "Fallbac
 | `states/data/free_providers.yaml` | Provider definitions (data-driven) |
 | `states/configs/proxypilot.yaml.j2` | ProxyPilot config template (renders providers) |
 | `states/opencode.sls` | Salt state (imports data, resolves keys) |
-| `scripts/bootstrap-free-providers.sh` | First-time key seeder |
+| `docs/proxypilot-recovery.md` | Recovery and rebuild flow |
 | `states/configs/grafana-dashboard-proxypilot.json` | Grafana dashboard |

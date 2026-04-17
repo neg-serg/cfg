@@ -337,6 +337,7 @@ gpg --card-status
 - задокументируйте, как разблокировать её на новой машине, прежде чем убирать legacy GPG access.
 
 Короткий runbook для переноса и recovery: `docs/gopass-age-recovery.ru.md`.
+Отдельный break-glass runbook для случая, когда рабочая машина потеряла decrypt path: `docs/gopass-breakglass-recovery.ru.md`.
 
 ### 8c. Ограничения cutover при миграции
 

@@ -266,6 +266,9 @@ if [[ $RC -eq 0 ]]; then
 			exit 1
 		fi
 	fi
+	python3 "${PROJECT_DIR}/scripts/drift_state.py" refresh-expected \
+		--project-dir "${PROJECT_DIR}" \
+		--cache-dir "${HOME}/.cache/salt-monitor"
 else
 	echo "--- ${STATE}: some states failed (see log above) ---"
 	exit $RC

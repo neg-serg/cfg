@@ -50,7 +50,8 @@ def test_compact_highstate_omits_unchanged_states_but_keeps_changed_and_failed_e
             "changes": {
                 "retcode": 0,
                 "stdout": "there is nothing to do\n",
-                "stderr": "warning: foo is up to date -- skipping\nwarning: bar is up to date -- skipping\n",
+                "stderr": "warning: foo is up to date -- skipping\n"
+                "warning: bar is up to date -- skipping\n",
             },
             "duration": 250.0,
         },
@@ -258,7 +259,9 @@ def test_progress_handler_collapses_multiline_state_names_to_single_trimmed_line
                 "name": "salt.state",
                 "levelno": logging.INFO,
                 "levelname": "INFO",
-                "msg": "Completed state [set -euo pipefail\nvery long command with many args\nand more details] at time 12:00:01",
+                "msg": "Completed state [set -euo pipefail\n"
+                "very long command with many args\n"
+                "and more details] at time 12:00:01",
             }
         )
     )

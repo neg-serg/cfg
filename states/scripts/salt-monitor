@@ -17,6 +17,22 @@ BOOT_GRACE_SECONDS=180        # suppress non-failed alerts during boot
 MAINTENANCE_LOCK="${HOME}/.cache/salt-monitor/maintenance.lock"
 STATE_DIR="${HOME}/.cache/salt-monitor/alerts"
 ALERT_CMD="${HOME}/.local/bin/salt-alert"
+PROJECT_DIR="{{ project_dir }}"
+DRIFT_CACHE_DIR="${HOME}/.cache/salt-monitor"
+DRIFT_HELPER="${PROJECT_DIR}/scripts/drift_state.py"
+DRIFT_FAST_INTERVAL=300
+LAST_DRIFT_FAST_TS=0
+
+run_drift_helper() {
+    python3 "$DRIFT_HELPER" "$@" --project-dir "$PROJECT_DIR" --cache-dir "$DRIFT_CACHE_DIR"
+}
+
+case "${1:-}" in
+    --drift-fast)   shift; run_drift_helper fast "$@" ; exit $? ;;
+    --drift-full)   shift; run_drift_helper full "$@" ; exit $? ;;
+    --drift-status) shift; run_drift_helper status "$@" ; exit $? ;;
+    --drift-report) shift; run_drift_helper report "$@" ; exit $? ;;
+esac
 
 # ── Service inventory (injected by Salt/Jinja) ──────────────────────
 {% set svc_data = monitored %}
@@ -527,21 +543,14 @@ poll_resources() {
 
 }
 
-# ── Drift check (daily) ─────────────────────────────────────────────
-check_drift() {
-    local today
-    today=$(date +%F)
-    [[ "$today" == "$LAST_DRIFT_DATE" ]] && return
-    LAST_DRIFT_DATE="$today"
+check_fast_drift() {
+    local now_ts=$EPOCHSECONDS
+    (( now_ts - LAST_DRIFT_FAST_TS < DRIFT_FAST_INTERVAL )) && return
+    LAST_DRIFT_FAST_TS=$now_ts
 
-    local drift_script="${HOME}/.local/share/salt/scripts/pkg-drift.zsh"
-    [[ -x "$drift_script" ]] || drift_script="$(dirname "$(dirname "$ALERT_CMD")")/../scripts/pkg-drift.zsh"
-    [[ -x "$drift_script" ]] || return
-
-    if ! "$drift_script" --quiet 2>/dev/null; then
-        dispatch_alert --scope system --service drift --type detected \
-            --severity warning \
-            --message "Package drift detected — run 'just pkg-drift' for details"
+    if ! run_drift_helper fast >/dev/null 2>&1; then
+        log "DRIFT: fast-check failed"
+        return
     fi
 }
 
@@ -584,8 +593,7 @@ while true; do
         poll_resources
     fi
 
-    # Daily drift check
-    check_drift
+    check_fast_drift
 
     # Daily soname/rebuild check
     check_soname

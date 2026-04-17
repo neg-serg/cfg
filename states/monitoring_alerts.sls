@@ -40,11 +40,12 @@ salt_monitor_script:
         telegram_token: {{ _telegram_token | tojson }}
         telegram_uid: {{ _telegram_uid | tojson }}
         monitored: {{ monitored | tojson }}
+        project_dir: {{ host.project_dir | tojson }}
     - require:
       - file: salt_alert_script
 
 # ── Systemd user units ──────────────────────────────────────────────
-{{ user_service_file('salt_monitor_service', 'salt-monitor.service', template='jinja', context={'runtime_dir': host.runtime_dir}) }}
+{{ user_service_file('salt_monitor_service', 'salt-monitor.service', template='jinja', context={'runtime_dir': host.runtime_dir, 'project_dir': host.project_dir}) }}
 {{ user_service_file('salt_monitor_watchdog_service', 'salt-monitor-watchdog.service') }}
 {{ user_service_file('salt_monitor_watchdog_timer', 'salt-monitor-watchdog.timer') }}
 

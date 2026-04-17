@@ -333,6 +333,7 @@ When initializing the `age` backend:
 - record how to unlock it on a new machine before retiring any legacy GPG access.
 
 For the short transfer/recovery runbook, see `docs/gopass-age-recovery.md`.
+For the break-glass recovery path when the working machine has lost decrypt capability, see `docs/gopass-breakglass-recovery.md`.
 
 ### 8c. Migration cutover guardrails
 

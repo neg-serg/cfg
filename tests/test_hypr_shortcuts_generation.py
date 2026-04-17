@@ -1,7 +1,7 @@
 import json
-from pathlib import Path
 
 import generate_hypr_shortcuts as gen
+
 from tests import REPO_ROOT_PATH
 
 

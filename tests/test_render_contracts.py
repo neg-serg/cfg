@@ -22,6 +22,25 @@ def test_salt_monitor_unit_is_templated_for_runtime_dir():
     assert "Environment=XDG_RUNTIME_DIR={{ runtime_dir }}" in unit_source
 
 
+def test_salt_monitor_state_templates_project_dir_for_drift_commands():
+    state_path = os.path.join(REPO_ROOT, "states", "monitoring_alerts.sls")
+    with open(state_path) as fh:
+        state_source = fh.read()
+    unit_path = os.path.join(REPO_ROOT, "states", "units", "user", "salt-monitor.service")
+    with open(unit_path) as fh:
+        unit_source = fh.read()
+    script_path = os.path.join(REPO_ROOT, "states", "scripts", "salt-monitor")
+    with open(script_path) as fh:
+        script_source = fh.read()
+
+    assert "'project_dir': host.project_dir" in state_source
+    assert "Environment=PROJECT_DIR={{ project_dir }}" in unit_source
+    assert "--drift-fast" in script_source
+    assert "--drift-full" in script_source
+    assert "--drift-status" in script_source
+    assert "--drift-report" in script_source
+
+
 def test_salt_daemon_unit_is_templated_for_user_runtime_dir():
     state_path = os.path.join(REPO_ROOT, "states", "desktop", "user.sls")
     with open(state_path) as fh:
@@ -545,6 +564,36 @@ def test_amnezia_import_user_units_are_deployed_but_not_auto_enabled():
 
     assert "Type=oneshot" in service_source
     assert "ExecStart=%h/.local/bin/amnezia-import-tun-config import" in service_source
+
+
+def test_telethon_bridge_state_deploys_reactivity_units_and_helper():
+    path = os.path.join(REPO_ROOT, "states", "telethon_bridge.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "telethon_bridge_react_helper:" in source
+    assert "telethon_bridge_react_path" in source
+    assert "telethon_bridge_react_service" in source
+
+
+def test_telethon_bridge_react_path_watches_exact_runtime_files():
+    path = os.path.join(REPO_ROOT, "states", "units", "user", "telethon-bridge-react.path")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "PathChanged=%h/.telethon-bridge/config.yaml" in source
+    assert "PathChanged=%h/.local/bin/telethon-bridge" in source
+    assert "%h/.telethon-bridge/telethon.session" not in source
+    assert "%h/.telethon-bridge/" not in source.replace("%h/.telethon-bridge/config.yaml", "")
+
+
+def test_telethon_bridge_react_service_runs_helper_script():
+    path = os.path.join(REPO_ROOT, "states", "units", "user", "telethon-bridge-react.service")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "Type=oneshot" in source
+    assert "ExecStart=%h/.local/bin/telethon-bridge-react" in source
 
 
 def test_remaining_multiline_cmdrun_states_use_strict_shell_mode():

@@ -138,6 +138,26 @@ systemctl --user stop telethon-bridge        # stop
 journalctl --user -u telethon-bridge -f      # live logs
 ```
 
+## Reactive Reloads
+
+Salt also deploys an opt-in user-level path unit, `telethon-bridge-react.path`,
+that watches these runtime files:
+
+- `~/.telethon-bridge/config.yaml`
+- `~/.local/bin/telethon-bridge`
+
+When one of these files changes:
+
+- if `telethon-bridge` is already running, the helper restarts it
+- if it is not running but `~/.telethon-bridge/telethon.session` exists, the helper starts it
+- if the session file does not exist, the helper exits without starting the service
+
+Disable this behavior at any time with:
+
+```bash
+systemctl --user disable --now telethon-bridge-react.path
+```
+
 ## Troubleshooting
 
 **Session invalidated**: Telegram may revoke sessions after password changes or

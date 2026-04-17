@@ -21,17 +21,7 @@
 
 ## Настройка
 
-### 1. Добавить API-ключи
-
-```bash
-# Интерактивная настройка (пропускает существующие)
-scripts/bootstrap-image-providers.sh
-
-# Проверить наличие ключей
-scripts/bootstrap-image-providers.sh --check
-```
-
-Или вручную:
+### 1. Добавить API-ключи в gopass
 
 ```bash
 gopass insert api/together-ai    # https://api.together.xyz/settings/api-keys
@@ -96,7 +86,7 @@ just apply image_generation
 |----------|---------|
 | `gen-image: command not found` | Выполнить `just apply image_generation` или `chezmoi apply` |
 | `config not found` | Выполнить `just apply image_generation` |
-| Все провайдеры не работают | Проверить `scripts/bootstrap-image-providers.sh --check` |
+| Все провайдеры не работают | Проверить наличие нужных gopass ключей и повторить `just apply image_generation` |
 | Cloudflare 403 | Указать `account_id` в `image_providers.yaml` |
 | ComfyUI таймаут | Убедиться, что ComfyUI запущен на порту 8188 |
 
@@ -107,6 +97,5 @@ just apply image_generation
 | `states/data/image_providers.yaml` | Ростер провайдеров (редактируйте этот файл) |
 | `states/configs/image-gen-providers.yaml.j2` | Шаблон конфига |
 | `states/image_generation.sls` | Salt-стейт |
-| `scripts/bootstrap-image-providers.sh` | Настройка API-ключей |
 | `dotfiles/dot_local/bin/executable_gen-image` | CLI-обёртка |
 | `~/.config/image-gen/providers.yaml` | Рендеренный конфиг (не редактировать) |

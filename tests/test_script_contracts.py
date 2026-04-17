@@ -71,6 +71,24 @@ def test_justfile_exposes_selective_validate_shortcuts():
     assert "scripts/salt-validate.sh -- {{STATES}}" in justfile_source
 
 
+def test_salt_apply_refreshes_drift_baseline_after_success():
+    source = (REPO_ROOT / "scripts" / "salt-apply.sh").read_text()
+
+    assert 'python3 "${PROJECT_DIR}/scripts/drift_state.py" refresh-expected' in source
+    assert '"${HOME}/.cache/salt-monitor"' in source
+
+
+def test_justfile_exposes_drift_commands():
+    source = (REPO_ROOT / "Justfile").read_text()
+
+    assert "drift:" in source
+    assert 'python3 scripts/drift_state.py fast --project-dir "${PWD}"' in source
+    assert "drift-full:" in source
+    assert 'python3 scripts/drift_state.py full --project-dir "${PWD}"' in source
+    assert "drift-status:" in source
+    assert 'python3 scripts/drift_state.py status --project-dir "${PWD}"' in source
+
+
 def test_health_check_tracks_named_quadlet_units():
     source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
 
@@ -119,6 +137,24 @@ def test_amnezia_import_script_exposes_cli_subcommands_and_source_paths():
 
 def test_amnezia_import_script_parses_in_zsh():
     script = REPO_ROOT / "scripts" / "amnezia-import-tun-config.sh"
+
+    result = subprocess.run(["zsh", "-n", str(script)], capture_output=True, text=True)
+
+    assert result.returncode == 0, result.stderr
+
+
+def test_telethon_bridge_react_script_contains_guarded_start_restart_logic():
+    source = (REPO_ROOT / "scripts" / "telethon-bridge-react.sh").read_text()
+
+    assert "set -euo pipefail" in source
+    assert 'SESSION_FILE="${HOME}/.telethon-bridge/telethon.session"' in source
+    assert 'systemctl --user is-active --quiet "$UNIT"' in source
+    assert 'systemctl --user restart "$UNIT"' in source
+    assert 'systemctl --user start "$UNIT"' in source
+
+
+def test_telethon_bridge_react_script_parses_in_zsh():
+    script = REPO_ROOT / "scripts" / "telethon-bridge-react.sh"
 
     result = subprocess.run(["zsh", "-n", str(script)], capture_output=True, text=True)
 
@@ -206,3 +242,36 @@ def test_health_check_script_is_executable():
     script = REPO_ROOT / "scripts" / "health-check.sh"
 
     assert os.access(script, os.X_OK)
+
+
+def test_image_provider_bootstrap_script_removed():
+    script = REPO_ROOT / "scripts" / "bootstrap-image-providers.sh"
+    assert not script.exists()
+
+
+def test_image_gen_docs_use_manual_gopass_setup():
+    source = (REPO_ROOT / "docs" / "image-gen-roster.md").read_text()
+    assert "scripts/bootstrap-image-providers.sh" not in source
+    assert "gopass insert api/together-ai" in source
+    assert "just apply image_generation" in source
+
+
+def test_proxypilot_recovery_artifacts_exist():
+    dockerfile = REPO_ROOT / "containers" / "proxypilot-recovery" / "Dockerfile"
+    recovery_doc = REPO_ROOT / "docs" / "proxypilot-recovery.md"
+    fallback_doc = REPO_ROOT / "docs" / "proxypilot-free-fallback.md"
+
+    assert dockerfile.is_file()
+    assert recovery_doc.is_file()
+    assert "podman run" in recovery_doc.read_text()
+    assert "scripts/bootstrap-free-providers.sh" not in fallback_doc.read_text()
+
+
+def test_breakglass_recovery_docs_cover_file_based_age_backup_set():
+    breakglass = (REPO_ROOT / "docs" / "gopass-breakglass-recovery.md").read_text()
+    setup = (REPO_ROOT / "docs" / "gopass-setup.md").read_text()
+
+    assert "~/.config/gopass/age/identities" in breakglass
+    assert "Store the identity backup separately from the password" in breakglass
+    assert "gopass show -o <known-key>" in breakglass
+    assert "gopass-breakglass-recovery.md" in setup

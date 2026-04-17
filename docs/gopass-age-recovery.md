@@ -54,3 +54,6 @@ Keep these outside the workstation:
 
 `gopass ls` alone is not a sufficient verification step. Always validate with
 `gopass show -o <known-key>`.
+
+For the full break-glass procedure when the current machine has already lost the decrypt path,
+see `docs/gopass-breakglass-recovery.md`.

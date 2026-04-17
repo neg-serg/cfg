@@ -54,3 +54,6 @@ gopass show -o email/gmail/address
 
 Сам по себе `gopass ls` не является достаточной проверкой. Всегда подтверждайте
 рабочий decrypt path через `gopass show -o <known-key>`.
+
+Если текущая машина уже потеряла decrypt path, используйте полный break-glass runbook:
+`docs/gopass-breakglass-recovery.ru.md`.

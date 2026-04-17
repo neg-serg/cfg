@@ -127,6 +127,15 @@ validate-one STATE:
 validate-some *STATES:
     scripts/salt-validate.sh -- {{STATES}}
 
+drift:
+    python3 scripts/drift_state.py fast --project-dir "${PWD}"
+
+drift-full:
+    python3 scripts/drift_state.py full --project-dir "${PWD}"
+
+drift-status:
+    python3 scripts/drift_state.py status --project-dir "${PWD}"
+
 # Check if salt-daemon is running and responsive
 daemon-health:
     #!/usr/bin/env bash

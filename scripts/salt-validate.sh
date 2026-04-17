@@ -20,7 +20,6 @@ validate_timeout="${VALIDATE_TIMEOUT:-300}"
 salt_python="${project_dir}/.venv/bin/python3"
 
 targets=()
-explicit_targets=0
 if [[ $# -gt 0 && "$1" != "--" ]]; then
 	jobs="$1"
 	shift
@@ -30,7 +29,6 @@ if [[ $# -gt 0 ]]; then
 		echo "error: explicit targets must follow --" >&2
 		exit 1
 	fi
-	explicit_targets=1
 	shift
 	if [[ $# -eq 0 ]]; then
 		echo "error: -- requires at least one target" >&2

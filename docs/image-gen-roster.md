@@ -21,17 +21,7 @@ The image generation roster follows the same pattern as `free_providers.yaml` fo
 
 ## Setup
 
-### 1. Seed API keys
-
-```bash
-# Seed keys interactively (skips existing)
-scripts/bootstrap-image-providers.sh
-
-# Check which keys exist
-scripts/bootstrap-image-providers.sh --check
-```
-
-Or manually:
+### 1. Insert API keys into gopass
 
 ```bash
 gopass insert api/together-ai    # https://api.together.xyz/settings/api-keys
@@ -96,7 +86,7 @@ just apply image_generation
 |-------|----------|
 | `gen-image: command not found` | Run `just apply image_generation` or `chezmoi apply` |
 | `config not found` | Run `just apply image_generation` |
-| All providers fail | Check `scripts/bootstrap-image-providers.sh --check` |
+| All providers fail | Verify the required gopass keys exist and re-run `just apply image_generation` |
 | Cloudflare 403 | Set `account_id` in `image_providers.yaml` |
 | ComfyUI timeout | Ensure ComfyUI is running on port 8188 |
 
@@ -107,6 +97,5 @@ just apply image_generation
 | `states/data/image_providers.yaml` | Provider roster (edit this) |
 | `states/configs/image-gen-providers.yaml.j2` | Config template |
 | `states/image_generation.sls` | Salt state |
-| `scripts/bootstrap-image-providers.sh` | API key seeding |
 | `dotfiles/dot_local/bin/executable_gen-image` | CLI wrapper |
 | `~/.config/image-gen/providers.yaml` | Rendered config (don't edit) |

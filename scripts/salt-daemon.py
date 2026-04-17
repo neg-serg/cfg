@@ -154,7 +154,7 @@ class _DropNoisyDebugFilter(logging.Filter):
 
 
 class _ClientProgressHandler(logging.Handler):
-    def __init__(self, emit_line, interval: int = 25):
+    def __init__(self, emit_line, interval: int = 10):
         super().__init__(level=logging.INFO)
         self._emit_line = emit_line
         self._interval = interval

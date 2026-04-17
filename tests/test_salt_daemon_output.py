@@ -266,3 +266,23 @@ def test_progress_handler_truncates_very_long_state_names():
     assert len(emitted) == 1
     assert len(emitted[0]) < 170
     assert emitted[0].endswith("...")
+
+
+def test_progress_handler_defaults_to_tighter_update_interval():
+    salt_daemon = _load_salt_daemon()
+    emitted = []
+
+    handler = salt_daemon._ClientProgressHandler(emitted.append)
+    for index in range(1, 11):
+        handler.emit(
+            logging.makeLogRecord(
+                {
+                    "name": "salt.state",
+                    "levelno": logging.INFO,
+                    "levelname": "INFO",
+                    "msg": f"Completed state [/tmp/state-{index}] at time 12:00:{index:02d}",
+                }
+            )
+        )
+
+    assert emitted[-1] == "[progress] 10 states completed; latest: /tmp/state-10"

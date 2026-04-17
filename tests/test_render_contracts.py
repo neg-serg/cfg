@@ -236,7 +236,7 @@ def test_proxypilot_dockerfile_copies_packaged_binary_from_repo_root():
     )
 
 
-def test_proxypilot_quadlet_uses_mounted_config_file_path():
+def test_proxypilot_quadlet_uses_mounted_config_without_overriding_sdnotify():
     path = os.path.join(REPO_ROOT, "states", "units", "user", "proxypilot-container.container")
     with open(path) as fh:
         source = fh.read()
@@ -244,8 +244,8 @@ def test_proxypilot_quadlet_uses_mounted_config_file_path():
     assert "Exec=-config /config/config.yaml" in source
     assert "Environment=HOME=/root" in source
     assert "HealthCmd=" not in source
-    assert "Notify=healthy" not in source
-    assert "PodmanArgs=--sdnotify=ignore" in source
+    assert "\nNotify=" not in source
+    assert "--sdnotify=" not in source
 
 
 def test_nanoclaw_dockerfile_skips_husky_prepare_in_container_build():

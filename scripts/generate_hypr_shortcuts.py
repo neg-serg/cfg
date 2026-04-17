@@ -270,7 +270,6 @@ def render_which_key_config(actions: list[BindingAction], metadata: dict) -> str
         "rows_per_column": 8,
         "column_padding": 25,
         "anchor": "center",
-        "namespace": "wlr_which_key",
         "menu": [],
     }
 

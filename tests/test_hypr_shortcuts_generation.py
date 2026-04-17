@@ -81,6 +81,7 @@ def test_render_which_key_config_keeps_browser_menu_and_wraps_shell_commands():
     assert "desc: Full screen" in rendered
     assert "cmd: sh -lc" in rendered
     assert 'pic-info \\"$shot\\"' in rendered
+    assert "namespace:" not in rendered
 
 
 def test_main_writes_search_json_and_which_key_yaml(tmp_path):

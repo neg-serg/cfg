@@ -1,5 +1,4 @@
 #!/usr/bin/env zsh
-# hypr-shortcuts: Vicinae-powered quick commands for Hyprland helpers
 setopt ERR_EXIT NOUNSET PIPE_FAIL
 IFS=$'\n\t'
 
@@ -8,116 +7,29 @@ log() {
 }
 
 vicinae_bin="${VICINAE_BIN:-$(command -v vicinae 2> /dev/null || true)}"
+data_file="${HYPR_SHORTCUTS_DATA:-$HOME/.config/hypr/generated/shortcuts.json}"
+
 if [ -z "$vicinae_bin" ]; then
   log "vicinae binary not found in PATH"
   exit 1
 fi
 
-runtime="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+if [ ! -f "$data_file" ]; then
+  log "shortcuts dataset not found: $data_file"
+  exit 1
+fi
 
-detect_signature() {
-  local sig="${HYPRLAND_INSTANCE_SIGNATURE:-}"
-  if [ -n "$sig" ] && [ -S "$runtime/hypr/$sig/.socket.sock" ]; then
-    printf '%s\n' "$sig"
-    return 0
-  fi
-  if [ -d "$runtime/hypr" ]; then
-    local newest cand
-    newest="$(ls -td "$runtime/hypr"/* 2> /dev/null | head -n1 || true)"
-    if [ -n "$newest" ]; then
-      cand="$(basename -- "$newest" || true)"
-      if [ -S "$runtime/hypr/$cand/.socket.sock" ] || [ -S "$runtime/hypr/$cand/.socket2.sock" ]; then
-        printf '%s\n' "$cand"
-        return 0
-      fi
-    fi
-  fi
-  return 1
-}
+selection="$({
+  jq -r '.[] | select(.mode == "launchable") | .label' "$data_file"
+} | "$vicinae_bin" dmenu --placeholder "shortcuts" --section-title "Shortcuts {count}" --navigation-title "Shortcuts")" || exit 0
 
-require_signature() {
-  local sig
-  if ! sig="$(detect_signature)"; then
-    log "unable to locate Hyprland runtime socket under $runtime"
-    return 1
-  fi
-  printf '%s\n' "$sig"
-}
+[ -n "$selection" ] || exit 0
 
-vicinae_menu() {
-  "$vicinae_bin" dmenu --placeholder "shortcuts" --section-title "Shortcuts {count}" --navigation-title "Shortcuts"
-}
+command="$(jq -r --arg label "$selection" '.[] | select(.mode == "launchable" and .label == $label) | .command' "$data_file")"
 
-pick_secret() {
-  local listing
-  if ! listing="$(gopass ls --flat 2> /dev/null)"; then
-    log "gopass ls failed"
-    return 1
-  fi
-  listing="$(printf '%s\n' "$listing" | sed '/^\s*$/d')"
-  [ -n "$listing" ] || return 1
-  printf '%s\n' "$listing" | "$vicinae_bin" dmenu --placeholder "gopass" --navigation-title "gopass" --section-title "Entries {count}"
-}
+if [ -z "$command" ] || [ "$command" = "null" ]; then
+  log "no command found for selection: $selection"
+  exit 1
+fi
 
-fetch_window() {
-  local line address workspace_id
-  line="$(hyprctl clients -j | jq -r '.[] | select(.mapped) | "\(.address) [\(.class)] \(.title)"' | "$vicinae_bin" dmenu --placeholder "fetch window" --section-title "Windows {count}" --navigation-title "Fetch")" || return 0
-  address="${line%% *}"
-  workspace_id="$(hyprctl activeworkspace -j | jq -r '.id')"
-  hyprctl dispatch movetoworkspacesilent "$workspace_id,address:$address"
-  hyprctl dispatch focuswindow "address:$address"
-}
-
-open_socket_reader() {
-  local sig
-  sig="$(require_signature)" || return 1
-  local sock="$runtime/hypr/$sig/.socket2.sock"
-  kitty socat - "UNIX-CONNECT:${sock}"
-}
-
-tail_hyprland_logs() {
-  local sig
-  sig="$(require_signature)" || return 1
-  local log_path="$runtime/hypr/$sig/hyprland.log"
-  kitty tail -f "$log_path"
-}
-
-copy_password() {
-  local entry
-  entry="$(pick_secret)" || return 0
-  gopass show -c "$entry"
-}
-
-update_password() {
-  local entry
-  entry="$(pick_secret)" || return 0
-  kitty -- gopass generate -s --strict -t "$entry" && gopass show -c "$entry"
-}
-
-choices=(
-  "Fetch window"
-  "Hyprland socket"
-  "Hyprland logs"
-  "Copy password"
-  "Update/Change password"
-)
-
-selection="$(printf '%s\n' "${choices[@]}" | vicinae_menu)" || exit 0
-case "$selection" in
-  "Fetch window")
-    fetch_window
-    ;;
-  "Hyprland socket")
-    open_socket_reader
-    ;;
-  "Hyprland logs")
-    tail_hyprland_logs
-    ;;
-  "Copy password")
-    copy_password
-    ;;
-  "Update/Change password")
-    update_password
-    ;;
-  *) ;;
-esac
+zsh -lc "$command"

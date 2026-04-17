@@ -1,3 +1,5 @@
+import json
+
 from tests import REPO_ROOT_PATH
 
 
@@ -34,12 +36,29 @@ def test_wlr_which_key_browser_menu_prefers_zen_and_keeps_floorp_secondary():
     assert 'cmd: raise --match "class:regex=^zen$" --launch zen-browser' in text
     assert '- key: "W"' in text
     assert "desc: Floorp Browser" in text
-    secondary = (
-        "cmd: raise --match "
-        '"class:regex=^(floorp|one\\\\.ablaze\\\\.floorp|floorpdeveloperedition)$" '
-        "--launch floorp"
+    assert (
+        'cmd: raise --match "class:regex=^(floorp|one\\.ablaze\\.floorp|floorpdeveloperedition)$"'
+        in text
     )
-    assert secondary in text
+    assert "    --launch floorp" in text
+
+
+def test_generated_hypr_shortcuts_index_contains_browser_and_selector_entries():
+    data = json.loads(read("dotfiles/dot_config/hypr/generated/shortcuts.json"))
+    by_id = {entry["id"]: entry for entry in data}
+
+    assert by_id["apps.browser"]["hotkey"] == "Super+W"
+    assert by_id["apps.browser_floorp"]["hotkey"] == "Super+Shift+W"
+    assert by_id["selectors.wallpaper"]["hotkey"] == "Super+Alt+S, W"
+    assert by_id["selectors.wallpaper"]["mode"] == "docs_only"
+
+
+def test_hypr_shortcuts_script_reads_generated_shortcut_json():
+    text = read("dotfiles/dot_local/bin/executable_hypr-shortcuts")
+
+    assert "$HOME/.config/hypr/generated/shortcuts.json" in text
+    assert 'select(.mode == "launchable")' in text
+    assert 'jq -r --arg label "$selection"' in text
 
 
 def test_hypr_shared_browser_matchers_include_zen_for_routing_and_navigation():

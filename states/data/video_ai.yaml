@@ -101,8 +101,8 @@ text_encoders:
     dir: text_encoders
 
   - id: gemma_tokenizer
-    file: tokenizer.model  # Gemma 3 SentencePiece tokenizer, required for text encoding
-    repo: Comfy-Org/gemma_3_repackaged
+    file: tokenizer.model  # Gemma 3 tokenizer.model is public in the base repo
+    repo: unsloth/gemma-3-12b-it
     dir: text_encoders
 
 # ── Shared VAE models ─────────────────────────────────────────────
@@ -113,6 +113,6 @@ vaes:
     dir: vae
 
   - id: taeltx2-3
-    file: taeltx2_3.safetensors  # LTX-2.3 VAE from Kijai's Comfy-ready pack
+    file: LTX23_video_vae_bf16.safetensors  # LTX-2.3 VAE from Kijai's Comfy-ready pack
     repo: Kijai/LTX2.3_comfy
     dir: vae

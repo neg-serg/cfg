@@ -192,6 +192,170 @@ def test_t5_convert_uses_strict_shell_mode():
     assert "set -euo pipefail" in source
 
 
+def test_user_and_system_quadlets_use_environment_not_env_keys():
+    paths = [
+        os.path.join(REPO_ROOT, "states", "units", "transmission-container.container"),
+        os.path.join(REPO_ROOT, "states", "units", "user", "nanoclaw-container.container"),
+    ]
+
+    for path in paths:
+        with open(path) as fh:
+            source = fh.read()
+        assert "Environment=" in source
+        assert "\nEnv=" not in source
+
+
+def test_localhost_quadlets_disable_pull_attempts():
+    paths = [
+        os.path.join(REPO_ROOT, "states", "units", "user", "proxypilot-container.container"),
+        os.path.join(REPO_ROOT, "states", "units", "user", "nanoclaw-container.container"),
+    ]
+
+    for path in paths:
+        with open(path) as fh:
+            source = fh.read()
+        assert "Pull=never" in source
+
+
+def test_transmission_quadlet_does_not_override_webui_path():
+    path = os.path.join(REPO_ROOT, "states", "units", "transmission-container.container")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "TRANSMISSION_WEB_HOME" not in source
+
+
+def test_proxypilot_dockerfile_copies_packaged_binary_from_repo_root():
+    path = os.path.join(REPO_ROOT, "build", "proxypilot", "Dockerfile")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert (
+        "COPY build/pkgbuilds/proxypilot/pkg/proxypilot/usr/bin/proxypilot /usr/bin/proxypilot"
+        in source
+    )
+
+
+def test_proxypilot_quadlet_uses_mounted_config_file_path():
+    path = os.path.join(REPO_ROOT, "states", "units", "user", "proxypilot-container.container")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "Exec=-config /config/config.yaml" in source
+    assert "Environment=HOME=/root" in source
+    assert "HealthCmd=" not in source
+    assert "Notify=healthy" not in source
+    assert "PodmanArgs=--sdnotify=ignore" in source
+
+
+def test_nanoclaw_dockerfile_skips_husky_prepare_in_container_build():
+    path = os.path.join(REPO_ROOT, "build", "nanoclaw", "Dockerfile")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "FROM node:22-bookworm-slim" in source
+    assert "npm pkg delete scripts.prepare" in source
+    assert "npm ci --production" in source
+    assert "apt-get install -y --no-install-recommends docker.io" in source
+    assert "USER node" not in source
+
+
+def test_proxypilot_uses_user_scope_systemd_health_command():
+    path = os.path.join(REPO_ROOT, "states", "data", "service_catalog.yaml")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert 'health_cmd: "systemctl --user is-active --quiet proxypilot-container.service"' in source
+
+
+def test_nanoclaw_is_manual_start_until_channels_are_configured():
+    path = os.path.join(REPO_ROOT, "states", "data", "service_catalog.yaml")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "nanoclaw:" in source
+    assert "manual_start: true" in source
+
+
+def test_nanoclaw_quadlet_mounts_podman_socket_as_docker_sock():
+    path = os.path.join(REPO_ROOT, "states", "units", "user", "nanoclaw-container.container")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "Volume=/run/user/1000/podman/podman.sock:/var/run/docker.sock:rw" in source
+    assert "Volume=/home/neg/.local/share/nanoclaw:/app:rw" not in source
+    assert "Volume=/home/neg/.local/share/nanoclaw/store:/app/store:rw" in source
+    assert "Volume=/home/neg/.local/share/nanoclaw/data:/app/data:rw" in source
+    assert "Volume=/home/neg/.local/share/nanoclaw/groups:/app/groups:rw" in source
+    assert "Volume=/home/neg/.local/share/nanoclaw/.env:/app/.env:rw" in source
+
+
+def test_video_ai_registry_uses_public_gemma_tokenizer_repo():
+    path = os.path.join(REPO_ROOT, "states", "data", "video_ai.yaml")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "repo: unsloth/gemma-3-12b-it" in source
+    assert "file: tokenizer.model" in source
+
+
+def test_service_healthcheck_macro_supports_user_scope_systemctl():
+    path = os.path.join(REPO_ROOT, "states", "_macros_service.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert (
+        "macro service_with_healthcheck(name, service, check_cmd=None, timeout=_healthcheck_timeout, requires=None, catalog=None, user_scope=False, user=_user)"
+        in source
+    )
+    assert (
+        "systemctl {% if user_scope %}--user {% endif %}is-active --quiet {{ service }}" in source
+    )
+
+
+def test_nanoclaw_container_image_note_matches_agent_image_name():
+    path = os.path.join(REPO_ROOT, "states", "data", "container_images.yaml")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "image: nanoclaw-agent" in source
+    assert "podman build -f build/nanoclaw/Dockerfile -t localhost/nanoclaw-agent" in source
+
+
+def test_video_ai_registry_uses_current_model_filenames():
+    path = os.path.join(REPO_ROOT, "states", "data", "video_ai.yaml")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "repo: unsloth/gemma-3-12b-it" in source
+    assert "file: tokenizer.model" in source
+    assert "LTX23_video_vae_bf16.safetensors" in source
+
+
+def test_container_service_healthcheck_requires_service_state_for_system_scope():
+    path = os.path.join(REPO_ROOT, "states", "_macros_service.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "requires=['service: ' ~ name ~ '_running']" in source
+
+
+def test_transmission_state_disables_native_service_before_container_cutover():
+    path = os.path.join(REPO_ROOT, "states", "transmission.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "service_stopped('transmission_native_service_disabled', 'transmission'" in source
+
+
+def test_nanoclaw_uses_existing_localhost_agent_image_name():
+    path = os.path.join(REPO_ROOT, "states", "data", "container_images.yaml")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "image: nanoclaw-agent" in source
+
+
 def test_udev_rule_macro_has_guard():
     path = os.path.join(REPO_ROOT, "states", "_macros_service.jinja")
     with open(path) as fh:

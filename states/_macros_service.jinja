@@ -245,7 +245,7 @@ test -e {{ _path }}
    Usage: {{ service_with_healthcheck('ollama_start', 'ollama', catalog=catalog, requires=['service: ollama_enabled']) }}
           {{ service_with_healthcheck('custom_start', 'custom', 'my-check-cmd', requires=[...]) }}
 #}
-{%- macro service_with_healthcheck(name, service, check_cmd=None, timeout=_healthcheck_timeout, requires=None, catalog=None) -%}
+{%- macro service_with_healthcheck(name, service, check_cmd=None, timeout=_healthcheck_timeout, requires=None, catalog=None, user_scope=False, user=_user) -%}
 {#- Resolve check_cmd from catalog when not explicitly provided -#}
 {%- if check_cmd is none and catalog is not none and service in catalog -%}
   {%- set _entry = catalog[service] -%}
@@ -263,9 +263,9 @@ test -e {{ _path }}
   cmd.run:
     - name: |
         set -euo pipefail
-        if ! systemctl is-active --quiet {{ service }}; then
-          systemctl daemon-reload
-          systemctl restart {{ service }}
+        if ! systemctl {% if user_scope %}--user {% endif %}is-active --quiet {{ service }}; then
+          systemctl {% if user_scope %}--user {% endif %}daemon-reload
+          systemctl {% if user_scope %}--user {% endif %}restart {{ service }}
         fi
         for i in $(seq 1 {{ timeout }}); do
           {{ check_cmd }} && exit 0
@@ -274,6 +274,11 @@ test -e {{ _path }}
         echo "{{ service }} failed to start within {{ timeout }}s" >&2
         exit 1
     - shell: /bin/bash
+{%- if user_scope %}
+    - runas: {{ user }}
+    - env:
+{{ _env_block() }}
+{%- endif %}
     - unless: {{ check_cmd }}
 {%- if requires %}
     - require:
@@ -877,7 +882,7 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
 {#- Post-start healthcheck via service_with_healthcheck (skipped for manual_start). -#}
 {%- if not _manual_start %}
 
-{{ service_with_healthcheck(name ~ '_healthcheck', _quadlet_name, catalog={_quadlet_name: catalog_entry}, requires=['cmd: ' ~ name ~ '_running']) }}
+{{ service_with_healthcheck(name ~ '_healthcheck', _quadlet_name, catalog={_quadlet_name: catalog_entry}, requires=['service: ' ~ name ~ '_running'] if not user_scope else ['cmd: ' ~ name ~ '_running'], user_scope=user_scope, user=_user) }}
 {%- endif %}
 {%- endif %}{# close "all preconditions passed" #}
 {%- endif %}{# close "image key found in registry" #}

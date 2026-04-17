@@ -219,7 +219,7 @@ bitcoind:                      # Bitcoin Core node (containerized)
 # ─── Bridge tier (localhost images, built manually) ──────────────────
 proxypilot:                    # LLM proxy (containerized)
   port: 8317
-  health_path: /health
+  health_cmd: "systemctl --user is-active --quiet proxypilot-container.service"
   unit: proxypilot
   scope: user
   packages: null               # installed via container_service image pull
@@ -239,6 +239,7 @@ nanoclaw:                      # AI Telegram agent (containerized)
   health_path: /health
   unit: nanoclaw
   scope: user
+  manual_start: true
   packages: null               # installed via container_service image pull
   container_image: nanoclaw
   gpu: none

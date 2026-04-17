@@ -25,9 +25,8 @@ Volume={{ m.host }}:{{ m.container }}:{{ m.mode }}
 EnvironmentFile={{ catalog_entry.env_file }}
 {% endif -%}
 # Linuxserver image uses USER_UID/USER_GID for file ownership
-Env=USER_UID=1000
-Env=USER_GID=1000
-Env=TRANSMISSION_WEB_HOME=/config/webui
+Environment=USER_UID=1000
+Environment=USER_GID=1000
 # Health check — transmission web UI
 HealthCmd=curl -sf http://127.0.0.1:9091/transmission/web/ >/dev/null 2>&1 || exit 1
 HealthInterval=5s

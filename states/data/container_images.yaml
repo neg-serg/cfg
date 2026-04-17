@@ -96,11 +96,11 @@ proxypilot:
 
 nanoclaw:
   registry: localhost
-  image: nanoclaw
+  image: nanoclaw-agent
   variant: null
   digest: null
   approved_at: null
-  note: "Local image — build: podman build -t localhost/nanoclaw build/nanoclaw/"
+  note: "Local image — build: podman build -f build/nanoclaw/Dockerfile -t localhost/nanoclaw-agent /home/neg/src/cfg"
 
 telethon_bridge:
   registry: localhost

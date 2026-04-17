@@ -16,17 +16,18 @@ StartLimitIntervalSec=300
 
 [Container]
 Image={{ image }}
+Pull=never
 ContainerName=nanoclaw
 PublishPort=127.0.0.1:{{ catalog_entry.port }}:8318
-{% for m in expanded_mounts -%}
-Volume={{ m.host }}:{{ m.container }}:{{ m.mode }}
-{% endfor -%}
-{% if catalog_entry.env_file -%}
-EnvironmentFile={{ catalog_entry.env_file }}
-{% endif -%}
+Volume=/home/neg/.local/share/nanoclaw/store:/app/store:rw
+Volume=/home/neg/.local/share/nanoclaw/data:/app/data:rw
+Volume=/home/neg/.local/share/nanoclaw/groups:/app/groups:rw
+Volume=/home/neg/.local/share/nanoclaw/.env:/app/.env:rw
+Volume=/home/neg/.config/nanoclaw:/config:rw
+Volume=/run/user/1000/podman/podman.sock:/var/run/docker.sock:rw
 # NanoClaw reads .env from its working directory
 WorkingDir=/app
-Env=NODE_ENV=production
+Environment=NODE_ENV=production
 # Health check — NanoClaw HTTP endpoint
 HealthCmd=curl -sf http://127.0.0.1:8318/health >/dev/null 2>&1 || exit 1
 HealthInterval=5s

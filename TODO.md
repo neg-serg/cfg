@@ -104,11 +104,6 @@ After containerization lands, verify that container failures surface through the
 
 - [ ] Audit already-implemented docs and planning artifacts for obsolete references, duplicate examples, and dead guidance; queue any safe removals as a separate cleanup task.
 
-### Nyxt browser packaging
-
-**Resolved 2026-04-16**: Nyxt 3.12.0-1 is in Arch `extra` repo. Just `pacman -S nyxt`.
-No custom PKGBUILD needed.
-
 ### Nyxt dark theme support
 
 Add dark theme configuration for Nyxt browser:

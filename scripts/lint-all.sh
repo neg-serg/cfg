@@ -92,7 +92,11 @@ else
     echo "  No zsh scripts to check"
 fi
 
-run_check "yamllint" yamllint states/data/*.yaml states/configs/*.yaml .github/workflows/*.yaml
+yaml_files=(states/data/*.yaml states/configs/*.yaml)
+if [ -d .github/workflows ]; then
+    yaml_files+=(.github/workflows/*.yaml .github/workflows/*.yml)
+fi
+run_check "yamllint" yamllint "${yaml_files[@]}"
 
 if $HAS_SALT_LINT; then
     run_check "salt-lint" .venv/bin/salt-lint states/*.sls

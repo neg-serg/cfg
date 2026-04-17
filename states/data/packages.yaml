@@ -127,12 +127,12 @@ other:
   - borg  # deduplicating backup with encryption
   - bpftrace  # eBPF tracing language
   - bucklespring  # Model-M keyboard sound simulator
-# CachyOS packages (require CachyOS repos — not configured)
-# - cachyos-keyring  # CachyOS package signing keys
-# - cachyos-mirrorlist  # CachyOS repository mirrors
-# - cachyos-rate-mirrors  # CachyOS mirror ranking helper
-# - cachyos-settings  # CachyOS default settings
-# - cachyos-v3-mirrorlist  # CachyOS v3 repository mirrors
+  # CachyOS packages (require CachyOS repos — not configured)
+  # - cachyos-keyring  # CachyOS package signing keys
+  # - cachyos-mirrorlist  # CachyOS repository mirrors
+  # - cachyos-rate-mirrors  # CachyOS mirror ranking helper
+  # - cachyos-settings  # CachyOS default settings
+  # - cachyos-v3-mirrorlist  # CachyOS v3 repository mirrors
   - carla  # audio plugin host
   - cava  # console audio visualizer
   - ccid  # USB smart card driver
@@ -142,7 +142,7 @@ other:
   - chezmoi  # dotfiles manager
   - choose  # human-friendly alternative to cut/awk
   - chromaprint  # audio fingerprinting library
-# - claude-code  # Anthropic CLI agentic coding tool (custom PKGBUILD, managed separately)
+  # - claude-code  # Anthropic CLI agentic coding tool (custom PKGBUILD, managed separately)
   - cliphist  # Wayland clipboard manager
   - convmv  # filename encoding converter
   - corectrl  # GPU/CPU control application
@@ -179,7 +179,7 @@ other:
   - fd  # fast find replacement
   - figlet  # ASCII art text generator
   - fio  # storage benchmark and I/O tester
-# - floorp-bin  # Secondary managed Firefox-based browser (AUR, currently not installed)
+  # - floorp-bin  # Secondary managed Firefox-based browser (AUR, currently not installed)
   - fortune-mod  # random quote generator
   - fping  # parallel ping utility
   - freerdp  # RDP client implementation
@@ -206,7 +206,7 @@ other:
   - gptfdisk  # GPT partition table editor
   - grafana  # metrics visualization and dashboards
   - graphviz  # graph visualization (DOT language)
-# - greetd-regreet  # GTK greeter for greetd
+  # - greetd-regreet  # GTK greeter for greetd
   - grex  # regex generator from examples
   - gvfs  # GIO virtual filesystem
   - gvfs-mtp  # GIO MTP backend (Android devices)
@@ -250,7 +250,7 @@ other:
   - lowdown  # Markdown translator
   - lshw  # hardware info tool
   - lsp-plugins  # audio DSP plugin collection
-# - man-db  # man page reader (conflicts with mandoc from code_rag.sls)
+  # - man-db  # man page reader (conflicts with mandoc from code_rag.sls)
   - man-pages  # Linux man pages
   - mediainfo  # media file metadata viewer
   - media-player-info  # media player capability database
@@ -260,7 +260,7 @@ other:
   - moreutils  # extra Unix tools (sponge, ts, parallel, etc)
   - mpc  # MPD CLI client
   - mpd  # music player daemon
-# - mpdris2-git  # MPRIS2 bridge for MPD (AUR, moved to aur section)
+  # - mpdris2-git  # MPRIS2 bridge for MPD (AUR, moved to aur section)
   - python-mutagen  # audio metadata reader (enables mpdris2 embedded cover art)
   - mtr  # traceroute + ping combined
   - multipath-tools  # device-mapper multipath tools
@@ -282,9 +282,9 @@ other:
   - ouch  # compress/decompress archives easily
   - pandoc-cli  # document format converter
   - parallel  # shell job parallelizer
-# - paru  # AUR helper (AUR, bootstrapped separately)
+  # - paru  # AUR helper (AUR, bootstrapped separately)
   - pastel  # CLI color tool (generate, convert, analyze)
-# - patool  # portable archive file manager (AUR, moved to aur section)
+  # - patool  # portable archive file manager (AUR, moved to aur section)
   - pbzip2  # parallel bzip2 implementation
   - pcmanfm  # lightweight file manager
   - pcsc-tools  # smart card reader tools
@@ -335,7 +335,7 @@ other:
   - s-tui  # terminal CPU stress test and monitor
   - sudo  # privileged command execution
   - swappy  # Wayland screenshot editor
-# - systemd-language-server  # LSP for systemd units (removed from AUR)
+  # - systemd-language-server  # LSP for systemd units (removed from AUR)
   - systemd-resolvconf  # resolvconf via systemd-resolved
   - tabiew  # lightweight TUI to view and query CSV files
   - taplo-cli  # TOML toolkit (formatter, linter)
@@ -379,7 +379,7 @@ other:
   - which  # show full path of commands
   - whois  # WHOIS client
   - wireshark-cli  # network protocol analyzer (CLI)
-# - wlogout  # Wayland logout menu (AUR, moved to aur section)
+  # - wlogout  # Wayland logout menu (AUR, moved to aur section)
   - wtype  # Wayland xdotool (type text)
   - xfsprogs  # XFS filesystem utilities
   - xh  # fast HTTP client (Rust)
@@ -400,9 +400,9 @@ aur:
   - act-bin  # run GitHub Actions locally
   - advancecomp  # recompress zip/png/gz with 7-zip algo
   - albumdetails  # music album metadata generator
-# - blktrace  # block layer I/O tracer
-# - brutefir  # multi-channel FIR convolution engine
-# - carapace-bin  # multi-shell completion engine
+  # - blktrace  # block layer I/O tracer
+  # - brutefir  # multi-channel FIR convolution engine
+  # - carapace-bin  # multi-shell completion engine
   - claude-code  # Anthropic CLI agentic coding tool
   - cmake-language-server  # LSP for CMake
   - dcfldd  # forensic dd replacement with hashing
@@ -416,13 +416,13 @@ aur:
   - fsel-bin  # TUI fuzzy launcher, dmenu replacement, clipboard browser
   - epr-git  # CLI EPUB reader
   - freeze-bin  # generate images of code/terminal output
-# - gitbutler-bin  # visual Git client (Tauri/Rust/Svelte)
+  # - gitbutler-bin  # visual Git client (Tauri/Rust/Svelte)
   - ghgrab-bin  # download files from GitHub repos without cloning
   - gmap-bin  # Git repository analysis tool for churn and heatmap visualization
   - git-extras  # extra git utilities (summary, effort, etc)
   - google-chrome  # Google Chrome stable (AUR)
   - gowall-bin  # wallpaper color scheme/palette converter
-# - gram-editor-bin  # minimal code editor
+  # - gram-editor-bin  # minimal code editor
   - hishtory-bin  # synced, queryable shell history
   - hxd  # colorful hex dump utility
   - hw-probe  # hardware probe and operability check
@@ -440,7 +440,7 @@ aur:
   - mpdas  # MPD AudioScrobbler client
   - neg-pretty-printer  # custom pretty-printer for scripts
   - neo-matrix  # Matrix digital rain simulator
-# - netdump  # interactive network packet analyzer with ASCII visualization
+  # - netdump  # interactive network packet analyzer with ASCII visualization
   - newsraft  # TUI feed/RSS reader
   - no-more-secrets  # "Sneakers" data decryption effect
   - oh-my-posh  # cross-shell prompt theme engine
@@ -473,14 +473,14 @@ aur:
   - sing-box-bin  # universal proxy platform (tun/proxy)
   - strace-tui-bin  # TUI for visualizing and exploring strace output
   - systemd-manager-tui  # TUI for managing systemd services
-# - taoup  # Art of Unix Programming wisdom quotes
+  # - taoup  # Art of Unix Programming wisdom quotes
   - tanin-git  # TUI ambient sound generator (rain, wind, fire, etc.)
   - tessen  # rofi menu for pass/gopass autotype
   - tmmpr  # terminal mind mapper with vim keybindings and infinite canvas
   - ttfautohint  # automated font hinting for web
   - unflac  # audio image + cue sheet splitter
   - vicinae  # native desktop launcher (fast, extensible)
-# - vmtouch  # filesystem cache diagnostics and control
+  # - vmtouch  # filesystem cache diagnostics and control
   - watchtower-bin  # terminal-based global intelligence dashboard
   - witr-bin  # TUI process inspector — shows why a process is running
   - wget2  # next-gen wget with HTTP/2 and parallel downloads
@@ -489,5 +489,5 @@ aur:
   - wlr-which-key  # on-screen keybinding cheatsheet for Hyprland (AUR)
   - xdg-ninja  # check for XDG Base Directory compliance
   - youtube-tui  # TUI YouTube browser with mpv playback and sixel/kitty preview
-# - ytsurf  # terminal YouTube client with fzf/rofi selection and mpv playback
+  # - ytsurf  # terminal YouTube client with fzf/rofi selection and mpv playback
   - zen-browser-bin  # performance-oriented Firefox-based browser

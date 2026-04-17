@@ -1,0 +1,7 @@
+[Unit]
+Description=Import AmneziaVPN config for split-routing
+After=default.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/amnezia-import-tun-config import

@@ -118,6 +118,7 @@ network:
       unit_context:
         home: home
         uid: uid
+        vpn_split_router: vpn_split_router
 
   tailscale:
     packages: tailscale

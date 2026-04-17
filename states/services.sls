@@ -31,6 +31,7 @@
     'mnt_one': host.mnt_one,
     'user': user,
     'home': home,
+    'vpn_split_router': net.get('vpn_split_router', False),
     'dns_unbound': dns.get('unbound', False),
 } %}
 
@@ -157,6 +158,7 @@
 {% if opts.unit is defined %}
 {% set u = opts.unit %}
 {% set unit_requires = [] %}
+{% set resolved_unit_context = {} %}
 {% if opts.packages is defined %}
 {% do unit_requires.append('cmd: install_' ~ name | replace('-', '_')) %}
 {% endif %}
@@ -165,7 +167,14 @@
 {% do unit_requires.append(r) %}
 {% endfor %}
 {% endif %}
-{{ service_with_unit(name, u.source, unit_type=u.get('type', 'service'), enabled=u.get('enabled', True), running=u.get('running', False), companion=u.get('companion'), template=u.get('template'), context=u.get('unit_context'), requires=unit_requires if unit_requires else None) }}
+{% for k, v in u.get('unit_context', {}).items() %}
+{% if v in known_vars %}
+{% do resolved_unit_context.update({k: known_vars[v]}) %}
+{% else %}
+{% do resolved_unit_context.update({k: v}) %}
+{% endif %}
+{% endfor %}
+{{ service_with_unit(name, u.source, unit_type=u.get('type', 'service'), enabled=u.get('enabled', True), running=u.get('running', False), companion=u.get('companion'), template=u.get('template'), context=resolved_unit_context if resolved_unit_context else u.get('unit_context'), requires=unit_requires if unit_requires else None) }}
 {% endif %}
 
 {# simple_service fallback (no custom unit) #}

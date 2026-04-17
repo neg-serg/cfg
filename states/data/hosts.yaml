@@ -49,6 +49,7 @@ defaults:
       tailscale: false
       zapret2: false
       wifi: false
+      vpn_split_router: false
     user_services:
       mail: true
       vdirsyncer: true

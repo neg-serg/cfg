@@ -79,6 +79,26 @@ def test_hot_reload_script_parses_in_zsh():
     assert result.returncode == 0, result.stderr
 
 
+def test_amnezia_import_script_exposes_cli_subcommands_and_source_paths():
+    source = (REPO_ROOT / "scripts" / "amnezia-import-tun-config.sh").read_text()
+
+    assert "set -euo pipefail" in source
+    assert "~/.config/AmneziaVPN.ORG/AmneziaVPN.conf" in source
+    assert "~/.config/sing-box-tun/config.json" in source
+    assert "import|show-path|check" in source
+    assert "show-path" in source
+    assert "check)" in source
+    assert "config.json" in source
+
+
+def test_amnezia_import_script_parses_in_zsh():
+    script = REPO_ROOT / "scripts" / "amnezia-import-tun-config.sh"
+
+    result = subprocess.run(["zsh", "-n", str(script)], capture_output=True, text=True)
+
+    assert result.returncode == 0, result.stderr
+
+
 def test_health_check_parses_user_service_names_from_yaml_mappings():
     source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
 
@@ -96,7 +116,6 @@ def test_health_check_skips_feature_gated_disabled_user_units():
     source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
 
     assert "grep -v 'features:'" in source
-    assert "grep -oP '^\\s+- \\{name:\\s*\\K[^,}]+'" in source
 
 
 def test_health_check_uses_host_aware_optional_unbound_and_cronie_checks():

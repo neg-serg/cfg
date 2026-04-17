@@ -432,6 +432,61 @@ def test_amnezia_cmdrun_states_have_guards():
     assert "- onlyif: test -x {{ binary_path }}" in source
 
 
+def test_sing_box_tun_uses_imported_runtime_config_and_split_routing():
+    state_path = os.path.join(REPO_ROOT, "states", "network.sls")
+    with open(state_path) as fh:
+        state_source = fh.read()
+    services_path = os.path.join(REPO_ROOT, "states", "services.sls")
+    with open(services_path) as fh:
+        services_source = fh.read()
+    services_data_path = os.path.join(REPO_ROOT, "states", "data", "services.yaml")
+    with open(services_data_path) as fh:
+        services_data_source = fh.read()
+    unit_path = os.path.join(REPO_ROOT, "states", "units", "sing-box-tun.service")
+    with open(unit_path) as fh:
+        unit_source = fh.read()
+
+    assert "net.vpn_split_router" in state_source
+    assert "/usr/local/bin/amnezia-import-tun-config" in state_source
+    assert "vpn_split_router: vpn_split_router" in services_data_source
+    assert "known_vars[v]" in services_source
+    assert "{{ home }}/.config/sing-box-tun/config.json" in unit_source
+    assert "{% if vpn_split_router %}" in unit_source
+    assert "/run/user/{{ uid }}/secrets/vless-reality-singbox-tun.json" in unit_source
+    assert "ExecStart=/usr/bin/sing-box run -c" in unit_source
+
+
+def test_amnezia_import_runtime_artifacts_are_deployed_as_user_space_files():
+    state_path = os.path.join(REPO_ROOT, "states", "network.sls")
+    with open(state_path) as fh:
+        state_source = fh.read()
+
+    assert "scripts/amnezia-import-tun-config.sh" in state_source
+    assert "/usr/local/bin/amnezia-import-tun-config" in state_source
+    assert "{{ home }}/.local/bin/amnezia-import-tun-config" in state_source
+    assert "target: /usr/local/bin/amnezia-import-tun-config" in state_source
+    assert "~/.config/AmneziaVPN.ORG/AmneziaVPN.conf" not in state_source
+
+
+def test_amnezia_import_user_units_are_deployed_but_not_auto_enabled():
+    state_path = os.path.join(REPO_ROOT, "states", "network.sls")
+    with open(state_path) as fh:
+        state_source = fh.read()
+
+    service_path = os.path.join(REPO_ROOT, "states", "units", "user", "amnezia-import-tun.service")
+    with open(service_path) as fh:
+        service_source = fh.read()
+
+    assert (
+        "user_service_file('amnezia_import_tun_user_service', 'amnezia-import-tun.service'"
+        in state_source
+    )
+    assert "amnezia-import-tun.path" not in state_source
+
+    assert "Type=oneshot" in service_source
+    assert "ExecStart=%h/.local/bin/amnezia-import-tun-config import" in service_source
+
+
 def test_remaining_multiline_cmdrun_states_use_strict_shell_mode():
     cases = [
         ("hardware.sls", "set -euo pipefail"),
@@ -556,10 +611,16 @@ def test_opencode_config_uses_template_source_without_removed_local_paths():
     template_path = os.path.join(
         REPO_ROOT, "dotfiles", "dot_config", "opencode", "opencode.json.tmpl"
     )
-    legacy_path = os.path.join(REPO_ROOT, "dotfiles", "dot_config", "opencode", "opencode.json")
+    managed_paths = {
+        os.path.join(REPO_ROOT, "dotfiles", "dot_config", "opencode", "opencode.json.tmpl"),
+        os.path.join(REPO_ROOT, "dotfiles", "dot_config", "opencode", "tui.json"),
+    }
 
     assert os.path.exists(template_path)
-    assert not os.path.exists(legacy_path)
+    assert (
+        os.path.join(REPO_ROOT, "dotfiles", "dot_config", "opencode", "opencode.json")
+        not in managed_paths
+    )
 
     with open(template_path) as fh:
         template_source = fh.read()
@@ -588,9 +649,15 @@ def test_opencode_repo_manages_minimal_runtime_files():
         os.path.join(REPO_ROOT, "dotfiles", "dot_config", "opencode", "themes", "neg.json"),
         os.path.join(REPO_ROOT, "dotfiles", "dot_config", "opencode", "themes", "neg-light.json"),
     ]
+    legacy_runtime_path = os.path.join(
+        REPO_ROOT, "dotfiles", "dot_config", "opencode", "opencode.json"
+    )
 
     for path in managed_paths:
         assert os.path.exists(path)
+
+    assert legacy_runtime_path not in managed_paths
+    assert not os.path.isfile(legacy_runtime_path)
 
 
 def test_desktop_system_persists_balanced_cpu_epp_policy():

@@ -1,0 +1,10 @@
+[Unit]
+Description=Watch Telethon Bridge runtime files for safe reloads
+
+[Path]
+PathChanged=%h/.telethon-bridge/config.yaml
+PathChanged=%h/.local/bin/telethon-bridge
+Unit=telethon-bridge-react.service
+
+[Install]
+WantedBy=default.target

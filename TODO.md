@@ -158,6 +158,7 @@ After containerization lands, verify that container failures surface through the
 - [ ] Treat failed or degraded applies conservatively: if Salt fails, or if dotfiles remain unapplied in a way that affects the managed inventory, do not silently mark a new baseline as authoritative.
 - [ ] Expose a manual baseline refresh path for recovery and debugging, but keep it clearly separate from normal drift checks so operators do not accidentally bless drift during diagnosis.
 - [ ] Show in drift status/report output when the current baseline was last refreshed and from which apply mode, so operators can tell whether the snapshot is fresh enough to trust.
+- [ ] Add tests that lock in baseline refresh gating rules, maintenance-lock behavior, and the relationship between successful apply paths and stored drift state.
 
 ### Nyxt dark theme support
 

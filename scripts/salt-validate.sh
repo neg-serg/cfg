@@ -4,8 +4,9 @@ set -euo pipefail
 # Validate all Salt state files render without errors.
 # Uses GNU parallel for concurrent validation.
 #
-# Usage: salt-validate.sh [JOBS]
+# Usage: salt-validate.sh [JOBS] [-- TARGET...]
 #   JOBS: max parallel jobs (default: nproc, or VALIDATE_JOBS env var)
+#   TARGET: state name (desktop) or path (states/desktop.sls)
 #   VALIDATE_TIMEOUT: per-state timeout in seconds (default: 300)
 
 project_dir="$(cd "$(dirname "$0")/.." && pwd)"
@@ -14,9 +15,29 @@ script_dir="${project_dir}/scripts"
 # shellcheck disable=SC1091
 source "${script_dir}/salt-runtime.sh"
 
-jobs="${1:-${VALIDATE_JOBS:-$(nproc)}}"
+jobs="${VALIDATE_JOBS:-$(nproc)}"
 validate_timeout="${VALIDATE_TIMEOUT:-300}"
 salt_python="${project_dir}/.venv/bin/python3"
+
+targets=()
+explicit_targets=0
+if [[ $# -gt 0 && "$1" != "--" ]]; then
+	jobs="$1"
+	shift
+fi
+if [[ $# -gt 0 ]]; then
+	if [[ "$1" != "--" ]]; then
+		echo "error: explicit targets must follow --" >&2
+		exit 1
+	fi
+	explicit_targets=1
+	shift
+	if [[ $# -eq 0 ]]; then
+		echo "error: -- requires at least one target" >&2
+		exit 1
+	fi
+	targets=("$@")
+fi
 
 if [[ ! -x "$salt_python" ]]; then
 	echo "error: missing Salt venv interpreter at $salt_python" >&2
@@ -38,10 +59,52 @@ if sudo -n true 2>/dev/null; then
 	sudo_cmd="sudo"
 fi
 
+resolve_target() {
+	local target="$1"
+	local candidate
+
+	if [[ "$target" == states/*.sls ]]; then
+		if [[ -f "$target" ]]; then
+			REPLY="$target"
+			return 0
+		fi
+	else
+		candidate="states/${target}.sls"
+		if [[ -f "$candidate" ]]; then
+			REPLY="$candidate"
+			return 0
+		fi
+	fi
+
+	echo "error: unknown state target: $target" >&2
+	exit 1
+}
+
+collect_sls_files() {
+	local target resolved
+	declare -A seen_targets=()
+
+	sls_files=()
+	if [[ $# -eq 0 ]]; then
+		shopt -s nullglob
+		sls_files=(states/*.sls)
+		shopt -u nullglob
+		return 0
+	fi
+
+	for target in "$@"; do
+		resolve_target "$target"
+		resolved="$REPLY"
+		if [[ -n "${seen_targets["$resolved"]+x}" ]]; then
+			continue
+		fi
+		seen_targets["$resolved"]=1
+		sls_files+=("$resolved")
+	done
+}
+
 # --- Collect state names ---
-shopt -s nullglob
-sls_files=(states/*.sls)
-shopt -u nullglob
+collect_sls_files "${targets[@]}"
 
 total=${#sls_files[@]}
 if [[ $total -eq 0 ]]; then
@@ -69,6 +132,7 @@ validate_one() {
 	local slot="$2"
 	local name="${sls#states/}"
 	name="${name%.sls}"
+	name="${name//\//.}"
 	local worker_cache="${cache_base}/worker-${slot}"
 	if [[ ! -d "$worker_cache" ]]; then
 		$sudo_cmd cp -a "${cache_base}/template" "$worker_cache"

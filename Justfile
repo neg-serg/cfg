@@ -119,6 +119,14 @@ lint-sysctl:
 validate JOBS="":
     scripts/salt-validate.sh {{JOBS}}
 
+# Check one explicit state file render without a full repository pass
+validate-one STATE:
+    scripts/salt-validate.sh -- {{STATE}}
+
+# Check multiple explicit state file renders without a full repository pass
+validate-some *STATES:
+    scripts/salt-validate.sh -- {{STATES}}
+
 # Check if salt-daemon is running and responsive
 daemon-health:
     #!/usr/bin/env bash

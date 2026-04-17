@@ -53,6 +53,15 @@ def test_justfile_lint_delegates_to_script():
     assert 'run_check "yamllint"' in lint_script_source
 
 
+def test_justfile_exposes_selective_validate_shortcuts():
+    justfile_source = (REPO_ROOT / "Justfile").read_text()
+
+    assert "validate-one STATE:" in justfile_source
+    assert "scripts/salt-validate.sh -- {{STATE}}" in justfile_source
+    assert "validate-some *STATES:" in justfile_source
+    assert "scripts/salt-validate.sh -- {{STATES}}" in justfile_source
+
+
 def test_health_check_tracks_named_quadlet_units():
     source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
 
@@ -148,6 +157,40 @@ def test_salt_validate_does_not_execute_stale_venv_shebang_wrappers():
 
     assert ".venv/bin/salt-call" not in source
     assert '"$salt_python" -m salt.scripts salt_call' in source
+
+
+def test_salt_validate_supports_named_state_targets():
+    source = (REPO_ROOT / "scripts" / "salt-validate.sh").read_text()
+
+    assert "resolve_target()" in source
+    assert 'candidate="states/${target}.sls"' in source
+
+
+def test_salt_validate_accepts_state_paths_and_deduplicates_targets():
+    source = (REPO_ROOT / "scripts" / "salt-validate.sh").read_text()
+
+    assert 'if [[ "$target" == states/*.sls ]]; then' in source
+    assert 'seen_targets["$resolved"]=1' in source
+
+
+def test_salt_validate_fails_clearly_for_missing_targets():
+    source = (REPO_ROOT / "scripts" / "salt-validate.sh").read_text()
+
+    assert "error: unknown state target:" in source
+    assert "exit 1" in source
+
+
+def test_salt_validate_rejects_empty_explicit_target_list():
+    source = (REPO_ROOT / "scripts" / "salt-validate.sh").read_text()
+
+    assert "if [[ $# -eq 0 ]]; then" in source
+    assert 'echo "error: -- requires at least one target" >&2' in source
+
+
+def test_salt_validate_normalizes_nested_state_paths_for_show_sls():
+    source = (REPO_ROOT / "scripts" / "salt-validate.sh").read_text()
+
+    assert r'name="${name//\//.}"' in source
 
 
 def test_health_check_script_is_executable():

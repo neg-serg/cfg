@@ -167,6 +167,44 @@ def test_versioned_paru_install_uses_strict_shell_mode():
     assert "set -euo pipefail" in source
 
 
+def test_paru_install_supports_all_packages_guard_for_category_installs():
+    path = os.path.join(REPO_ROOT, "states", "_macros_pkg.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "check == '__ALL__'" in source
+    assert "for _pkg in {{ pkg.split() | tojson }}; do" not in source
+    assert "for pkg_name in pkg.split()" in source
+    assert "grep -qxF '{{ pkg_name }}' {{ host.pkg_list }} || exit 1" in source
+
+
+def test_paru_install_defaults_multi_package_checks_to_all_packages():
+    path = os.path.join(REPO_ROOT, "states", "_macros_pkg.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "_check_all = check == '__ALL__' or (check is none and ' ' in pkg)" in source
+    assert "elif _check_all" in source
+
+
+def test_container_service_daemon_reload_only_runs_on_quadlet_changes():
+    path = os.path.join(REPO_ROOT, "states", "_macros_service.jinja")
+    with open(path) as fh:
+        source = fh.read()
+
+    marker = (
+        "# container_service({{ name }}): daemon-reload so Quadlet regenerates the systemd unit"
+    )
+    block = source[
+        source.index(marker) : source.index("{%- if not _manual_start %}", source.index(marker))
+    ]
+
+    assert "{{ name }}_daemon_reload:" in block
+    assert "- onchanges:" in block
+    assert "- file: {{ name }}_container" in block
+    assert "- require:" not in block
+
+
 def test_npm_build_workflow_version_pin_uses_strict_shell_mode():
     path = os.path.join(REPO_ROOT, "states", "_macros_install.jinja")
     with open(path) as fh:

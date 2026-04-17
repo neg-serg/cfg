@@ -13,6 +13,7 @@
 #}
 {%- macro paru_install(name, pkg, check=None, requires=None, version='') -%}
 {%- set _ver_dir = _home ~ '/.cache/salt-versions' -%}
+{%- set _check_all = check == '__ALL__' or (check is none and ' ' in pkg) -%}
 install_{{ name | replace('-', '_') }}:
   cmd.run:
 {%- if version %}
@@ -22,6 +23,13 @@ install_{{ name | replace('-', '_') }}:
         {{ ver_stamp(_ver_dir, name, version) }}
     - shell: /bin/bash
     - creates: {{ _ver_dir }}/{{ name }}@{{ version }}
+{%- elif _check_all %}
+    - name: sudo -u {{ _user }} paru -S --noconfirm --needed {{ pkg }}
+    - unless: |
+        set -e
+{%- for pkg_name in pkg.split() %}
+        grep -qxF '{{ pkg_name }}' {{ host.pkg_list }} || exit 1
+{%- endfor %}
 {%- else %}
     - name: sudo -u {{ _user }} paru -S --noconfirm --needed {{ pkg }}
     - unless: grep -qxF '{{ check or pkg }}' {{ host.pkg_list }}

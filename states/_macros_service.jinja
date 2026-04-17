@@ -803,7 +803,7 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
     - env:
 {{ _env_block() }}
 {%- endif %}
-    - require:
+    - onchanges:
       - file: {{ name }}_container
 
 {%- if not _manual_start %}

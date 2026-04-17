@@ -39,6 +39,12 @@ for arg in "$@"; do
 	esac
 done
 
+if [[ "$STATE" == "auto" ]]; then
+	# Minimal rollout planning is deferred until impact analysis is implemented.
+	# For now, keep the operator UX safe and predictable by applying the full tree.
+	STATE="system_description"
+fi
+
 # Normalise state name: accept both group/core and group.core
 SALT_STATE="${STATE//\//.}"
 

@@ -44,6 +44,15 @@ def test_salt_apply_always_runs_chezmoi_after_success():
     assert "salt_has_changes" not in apply_source
 
 
+def test_salt_apply_treats_auto_scope_as_full_system_description_for_now():
+    apply_source = (REPO_ROOT / "scripts" / "salt-apply.sh").read_text()
+
+    assert 'STATE="auto"' not in apply_source
+    assert 'if [[ "$STATE" == "auto" ]]; then' in apply_source
+    assert 'STATE="system_description"' in apply_source
+    assert "Minimal rollout planning is deferred" in apply_source
+
+
 def test_justfile_lint_delegates_to_script():
     justfile_source = (REPO_ROOT / "Justfile").read_text()
     lint_script_source = (REPO_ROOT / "scripts" / "lint-all.sh").read_text()

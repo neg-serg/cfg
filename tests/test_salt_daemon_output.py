@@ -15,6 +15,28 @@ def _load_salt_daemon():
     return module
 
 
+class _FakeClock:
+    def __init__(self, now: float):
+        self._now = now
+
+    def now(self) -> float:
+        return self._now
+
+    def advance(self, seconds: float) -> None:
+        self._now += seconds
+
+
+def _state_record(status: str, state: str, timestamp: str) -> logging.LogRecord:
+    return logging.makeLogRecord(
+        {
+            "name": "salt.state",
+            "levelno": logging.INFO,
+            "levelname": "INFO",
+            "msg": f"{status} state [{state}] at time {timestamp}",
+        }
+    )
+
+
 def test_compact_highstate_omits_unchanged_states_but_keeps_changed_and_failed_entries():
     salt_daemon = _load_salt_daemon()
     result = {
@@ -286,3 +308,93 @@ def test_progress_handler_defaults_to_tighter_update_interval():
         )
 
     assert emitted[-1] == "[progress] 10 states completed; latest: /tmp/state-10"
+
+
+def test_progress_handler_emits_one_running_line_when_active_state_exceeds_threshold():
+    salt_daemon = _load_salt_daemon()
+    emitted = []
+    clock = _FakeClock(100.0)
+
+    handler = salt_daemon._ClientProgressHandler(
+        emitted.append,
+        interval=10,
+        stall_threshold_seconds=10,
+        time_source=clock.now,
+    )
+
+    handler.emit(_state_record("Running", "/tmp/slow-state", "12:00:00"))
+    clock.advance(12)
+    handler.check_for_stalled_state()
+
+    assert emitted == ["[running] 12s in /tmp/slow-state"]
+
+
+def test_progress_handler_emits_running_line_only_once_per_active_state():
+    salt_daemon = _load_salt_daemon()
+    emitted = []
+    clock = _FakeClock(200.0)
+
+    handler = salt_daemon._ClientProgressHandler(
+        emitted.append,
+        interval=10,
+        stall_threshold_seconds=10,
+        time_source=clock.now,
+    )
+
+    handler.emit(_state_record("Running", "/tmp/slow-state", "12:00:00"))
+    clock.advance(11)
+    handler.check_for_stalled_state()
+    clock.advance(14)
+    handler.check_for_stalled_state()
+
+    assert emitted == ["[running] 11s in /tmp/slow-state"]
+
+
+def test_progress_handler_resets_after_completion_so_next_slow_state_can_report():
+    salt_daemon = _load_salt_daemon()
+    emitted = []
+    clock = _FakeClock(300.0)
+
+    handler = salt_daemon._ClientProgressHandler(
+        emitted.append,
+        interval=10,
+        stall_threshold_seconds=10,
+        time_source=clock.now,
+    )
+
+    first_running = _state_record("Running", "/tmp/slow-state-1", "12:00:00")
+    first_completed = _state_record("Completed", "/tmp/slow-state-1", "12:00:12")
+    second_running = _state_record("Running", "/tmp/slow-state-2", "12:01:40")
+
+    handler.emit(first_running)
+    clock.advance(12)
+    handler.check_for_stalled_state()
+    handler.emit(first_completed)
+    handler.emit(second_running)
+    clock.advance(13)
+    handler.check_for_stalled_state()
+
+    assert emitted == [
+        "[running] 12s in /tmp/slow-state-1",
+        "[running] 13s in /tmp/slow-state-2",
+    ]
+
+
+def test_progress_handler_does_not_emit_running_line_when_state_finishes_quickly():
+    salt_daemon = _load_salt_daemon()
+    emitted = []
+    clock = _FakeClock(500.0)
+
+    handler = salt_daemon._ClientProgressHandler(
+        emitted.append,
+        interval=10,
+        stall_threshold_seconds=10,
+        time_source=clock.now,
+    )
+
+    handler.emit(_state_record("Running", "/tmp/quick-state", "12:00:00"))
+    clock.advance(7)
+    handler.emit(_state_record("Completed", "/tmp/quick-state", "12:00:07"))
+    handler.check_for_stalled_state()
+
+    assert emitted == []

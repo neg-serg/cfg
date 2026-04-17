@@ -39,6 +39,7 @@ import socket
 import struct
 import sys
 import threading
+import time
 
 # ── Salt venv path setup ─────────────────────────────────────────────────────
 # Ensure the venv site-packages is on the path when run with system python3.
@@ -60,6 +61,7 @@ salt_compat.patch()
 _DEFAULT_SOCKET = "/run/salt-daemon.sock"
 _DEFAULT_CONFIG_DIR = os.path.join(_SCRIPT_DIR, ".salt_runtime")
 _DEFAULT_TIMEOUT = 1800  # 30 minutes per state run (large model downloads)
+_DEFAULT_STALL_THRESHOLD = 30
 
 
 class StateTimeout(Exception):
@@ -154,11 +156,23 @@ class _DropNoisyDebugFilter(logging.Filter):
 
 
 class _ClientProgressHandler(logging.Handler):
-    def __init__(self, emit_line, interval: int = 10):
+    def __init__(
+        self,
+        emit_line,
+        interval: int = 10,
+        stall_threshold_seconds: int = _DEFAULT_STALL_THRESHOLD,
+        time_source=None,
+    ):
         super().__init__(level=logging.INFO)
         self._emit_line = emit_line
         self._interval = interval
+        self._stall_threshold_seconds = stall_threshold_seconds
+        self._time_source = time_source or time.monotonic
         self._completed = 0
+        self._active_state_name = None
+        self._active_state_started_at = None
+        self._active_state_reported = False
+        self._lock = threading.Lock()
 
     @staticmethod
     def _format_latest_state(name: str, limit: int = 110) -> str:
@@ -166,6 +180,25 @@ class _ClientProgressHandler(logging.Handler):
         if len(normalized) <= limit:
             return normalized
         return normalized[: limit - 3] + "..."
+
+    @staticmethod
+    def _extract_state_name(message: str, prefix: str) -> str | None:
+        if not message.startswith(prefix):
+            return None
+        return message.split(prefix, 1)[1].split("]", 1)[0]
+
+    def check_for_stalled_state(self) -> None:
+        with self._lock:
+            if self._active_state_name is None or self._active_state_reported:
+                return
+            if self._stall_threshold_seconds <= 0 or self._active_state_started_at is None:
+                return
+            elapsed = int(self._time_source() - self._active_state_started_at)
+            if elapsed < self._stall_threshold_seconds:
+                return
+            state_name = self._format_latest_state(self._active_state_name)
+            self._active_state_reported = True
+        self._emit_line(f"[running] {elapsed}s in {state_name}")
 
     def emit(self, record: logging.LogRecord) -> None:
         try:
@@ -175,13 +208,26 @@ class _ClientProgressHandler(logging.Handler):
                 return
             if record.name != "salt.state" or record.levelno != logging.INFO:
                 return
-            if not message.startswith("Completed state ["):
+            running_state = self._extract_state_name(message, "Running state [")
+            if running_state is not None:
+                with self._lock:
+                    self._active_state_name = running_state
+                    self._active_state_started_at = self._time_source()
+                    self._active_state_reported = False
                 return
-            self._completed += 1
-            if self._completed % self._interval != 0:
+            completed_state = self._extract_state_name(message, "Completed state [")
+            if completed_state is None:
                 return
-            latest = message.split("Completed state [", 1)[1].split("]", 1)[0]
-            latest = self._format_latest_state(latest)
+            latest = self._format_latest_state(completed_state)
+            with self._lock:
+                self._completed += 1
+                if completed_state == self._active_state_name:
+                    self._active_state_name = None
+                    self._active_state_started_at = None
+                    self._active_state_reported = False
+                completed = self._completed
+            if completed % self._interval != 0:
+                return
             self._emit_line(f"[progress] {self._completed} states completed; latest: {latest}")
         except Exception:
             self.handleError(record)
@@ -311,7 +357,12 @@ def run_state(
     # messages propagate through named loggers (which inherit from root).  Save and
     # restore the original level so the stderr handler stays at its configured level.
     file_handler = None
-    progress_handler = _ClientProgressHandler(lambda line: send({"type": "stdout", "line": line}))
+    progress_handler = _ClientProgressHandler(
+        lambda line: send({"type": "stdout", "line": line}),
+        stall_threshold_seconds=_DEFAULT_STALL_THRESHOLD,
+    )
+    stall_check_stop = threading.Event()
+    stall_check_thread = None
     saved_root_level = logging.root.level
     logging.root.addHandler(progress_handler)
     if log_file:
@@ -331,6 +382,14 @@ def run_state(
     # ── Run state.sls ────────────────────────────────────────────────────────
     exit_code = 0
     result = None
+
+    def _watch_for_stalled_state() -> None:
+        while not stall_check_stop.wait(1.0):
+            progress_handler.check_for_stalled_state()
+
+    stall_check_thread = threading.Thread(target=_watch_for_stalled_state, daemon=True)
+    stall_check_thread.start()
+
     try:
         filtered = {k: v for k, v in kwargs.items() if k != "state_output"}
         result = minion.functions["state.sls"](state, **filtered)
@@ -380,6 +439,9 @@ def run_state(
 
     finally:
         # ── Teardown file handler (always runs, even on timeout/error) ───
+        stall_check_stop.set()
+        if stall_check_thread is not None:
+            stall_check_thread.join(timeout=1.5)
         logging.root.removeHandler(progress_handler)
         progress_handler.close()
         if file_handler is not None:

@@ -102,6 +102,8 @@ After containerization lands, verify that container failures surface through the
 
 ## Research / evaluation items
 
+- [ ] Audit already-implemented docs and planning artifacts for obsolete references, duplicate examples, and dead guidance; queue any safe removals as a separate cleanup task.
+
 ### Nyxt browser packaging
 
 **Resolved 2026-04-16**: Nyxt 3.12.0-1 is in Arch `extra` repo. Just `pacman -S nyxt`.

@@ -115,6 +115,8 @@ def _collect_known_services():
             unit = config.get("unit", "")
             if unit:
                 known.add(unit)
+                if "." not in unit:
+                    known.add(f"{unit}.service")
 
     services = load_yaml("services.yaml")
     simple = services.get("simple", {})
@@ -125,6 +127,8 @@ def _collect_known_services():
                 svc = config.get("service", "")
                 if svc:
                     known.add(svc)
+                    if "." not in svc:
+                        known.add(f"{svc}.service")
 
     # Services managed by dedicated .sls files or the OS (not in catalog).
     # These are always present and intentionally outside the catalog.
@@ -135,7 +139,16 @@ def _collect_known_services():
             known.add(sls[:-4].replace("_", "-"))  # "monitoring_alerts" → "monitoring-alerts"
 
     # Base OS services (always present, never Salt-managed)
-    known.update({"sshd", "NetworkManager", "cronie"})
+    known.update(
+        {
+            "sshd",
+            "sshd.service",
+            "NetworkManager",
+            "NetworkManager.service",
+            "cronie",
+            "cronie.service",
+        }
+    )
 
     # User/system unit files deployed by Salt (unit name = service name)
     units_dir = os.path.join(states_dir, "units")
@@ -146,6 +159,7 @@ def _collect_known_services():
                 # Strip .service/.timer suffix to get service name
                 for suffix in (".service", ".timer", ".socket", ".path", ".container"):
                     if unit_file.endswith(suffix):
+                        known.add(unit_file)
                         known.add(unit_file[: -len(suffix)])
 
     return known
@@ -252,13 +266,17 @@ def test_drift_inventory_schema_is_valid():
 def test_drift_inventory_paths_and_units_resolve_to_known_targets():
     inventory = load_yaml("drift_inventory.yaml")
     known = _collect_known_services()
+    expected_paths = {
+        "{{ home }}/.local/bin/salt-monitor",
+        "{{ home }}/.local/bin/salt-alert",
+        "{{ home }}/.config/systemd/user/salt-monitor.service",
+        "{{ home }}/.config/systemd/user/salt-monitor-watchdog.timer",
+    }
 
-    for entry in inventory["files"]:
-        path = entry["path"]
-        assert path.startswith("/") or path.startswith("{{ home }}/")
+    paths = [entry["path"] for entry in inventory["files"]]
+    assert len(paths) == len(expected_paths)
+    assert set(paths) == expected_paths
 
     for scope in ("system_units", "user_units"):
         for entry in inventory[scope]:
-            unit = entry["name"]
-            base = unit.rsplit(".", 1)[0]
-            assert base in known or unit in {"salt-monitor.service", "salt-monitor-watchdog.timer"}
+            assert entry["name"] in known

@@ -170,3 +170,99 @@ def test_compact_highstate_returns_failure_code_for_non_dict_error_results():
 
     assert rc == 1
     assert any('"type": "exit", "code": 1' in msg for msg in sock.messages)
+
+
+def test_progress_handler_emits_periodic_completed_state_updates_and_warnings():
+    salt_daemon = _load_salt_daemon()
+    emitted = []
+
+    handler = salt_daemon._ClientProgressHandler(emitted.append, interval=3)
+
+    for index in range(1, 4):
+        handler.emit(
+            logging.makeLogRecord(
+                {
+                    "name": "salt.state",
+                    "levelno": logging.INFO,
+                    "levelname": "INFO",
+                    "msg": f"Completed state [/tmp/state-{index}] at time 12:00:0{index}",
+                }
+            )
+        )
+
+    handler.emit(
+        logging.makeLogRecord(
+            {
+                "name": "salt.fileserver",
+                "levelno": logging.WARNING,
+                "levelname": "WARNING",
+                "msg": "Failed to get mtime on dangling symlink",
+            }
+        )
+    )
+
+    assert emitted[0] == "[progress] 3 states completed; latest: /tmp/state-3"
+    assert emitted[1] == "[warning] Failed to get mtime on dangling symlink"
+
+
+def test_progress_handler_does_not_emit_for_every_completed_state():
+    salt_daemon = _load_salt_daemon()
+    emitted = []
+
+    handler = salt_daemon._ClientProgressHandler(emitted.append, interval=5)
+    for index in range(1, 5):
+        handler.emit(
+            logging.makeLogRecord(
+                {
+                    "name": "salt.state",
+                    "levelno": logging.INFO,
+                    "levelname": "INFO",
+                    "msg": f"Completed state [/tmp/state-{index}] at time 12:00:0{index}",
+                }
+            )
+        )
+
+    assert emitted == []
+
+
+def test_progress_handler_collapses_multiline_state_names_to_single_trimmed_line():
+    salt_daemon = _load_salt_daemon()
+    emitted = []
+
+    handler = salt_daemon._ClientProgressHandler(emitted.append, interval=1)
+    handler.emit(
+        logging.makeLogRecord(
+            {
+                "name": "salt.state",
+                "levelno": logging.INFO,
+                "levelname": "INFO",
+                "msg": "Completed state [set -euo pipefail\nvery long command with many args\nand more details] at time 12:00:01",
+            }
+        )
+    )
+
+    assert len(emitted) == 1
+    assert "\n" not in emitted[0]
+    assert "set -euo pipefail very long command with many args and more details" in emitted[0]
+
+
+def test_progress_handler_truncates_very_long_state_names():
+    salt_daemon = _load_salt_daemon()
+    emitted = []
+
+    handler = salt_daemon._ClientProgressHandler(emitted.append, interval=1)
+    long_name = "x" * 200
+    handler.emit(
+        logging.makeLogRecord(
+            {
+                "name": "salt.state",
+                "levelno": logging.INFO,
+                "levelname": "INFO",
+                "msg": f"Completed state [{long_name}] at time 12:00:01",
+            }
+        )
+    )
+
+    assert len(emitted) == 1
+    assert len(emitted[0]) < 170
+    assert emitted[0].endswith("...")

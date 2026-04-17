@@ -153,6 +153,40 @@ class _DropNoisyDebugFilter(logging.Filter):
         return False
 
 
+class _ClientProgressHandler(logging.Handler):
+    def __init__(self, emit_line, interval: int = 25):
+        super().__init__(level=logging.INFO)
+        self._emit_line = emit_line
+        self._interval = interval
+        self._completed = 0
+
+    @staticmethod
+    def _format_latest_state(name: str, limit: int = 110) -> str:
+        normalized = " ".join(name.split())
+        if len(normalized) <= limit:
+            return normalized
+        return normalized[: limit - 3] + "..."
+
+    def emit(self, record: logging.LogRecord) -> None:
+        try:
+            message = record.getMessage()
+            if record.levelno >= logging.WARNING:
+                self._emit_line(f"[warning] {message}")
+                return
+            if record.name != "salt.state" or record.levelno != logging.INFO:
+                return
+            if not message.startswith("Completed state ["):
+                return
+            self._completed += 1
+            if self._completed % self._interval != 0:
+                return
+            latest = message.split("Completed state [", 1)[1].split("]", 1)[0]
+            latest = self._format_latest_state(latest)
+            self._emit_line(f"[progress] {self._completed} states completed; latest: {latest}")
+        except Exception:
+            self.handleError(record)
+
+
 def _summarize_stream(text: str, keep: int = 2) -> list[str]:
     lines = [line for line in text.splitlines() if line.strip()]
     if len(lines) <= keep * 2:
@@ -277,7 +311,9 @@ def run_state(
     # messages propagate through named loggers (which inherit from root).  Save and
     # restore the original level so the stderr handler stays at its configured level.
     file_handler = None
+    progress_handler = _ClientProgressHandler(lambda line: send({"type": "stdout", "line": line}))
     saved_root_level = logging.root.level
+    logging.root.addHandler(progress_handler)
     if log_file:
         try:
             os.makedirs(os.path.dirname(log_file), exist_ok=True)
@@ -344,6 +380,8 @@ def run_state(
 
     finally:
         # ── Teardown file handler (always runs, even on timeout/error) ───
+        logging.root.removeHandler(progress_handler)
+        progress_handler.close()
         if file_handler is not None:
             logging.root.removeHandler(file_handler)
             file_handler.close()

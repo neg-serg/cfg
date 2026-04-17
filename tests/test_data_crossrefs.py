@@ -225,3 +225,40 @@ def test_user_services_schema_is_valid():
                 invalid.append(f"{group_name} entry has invalid features: {entry!r}")
 
     assert not invalid, f"Invalid user_services.yaml schema: {invalid}"
+
+
+def test_drift_inventory_schema_is_valid():
+    inventory = load_yaml("drift_inventory.yaml")
+
+    assert set(inventory) >= {"files", "system_units", "user_units"}
+
+    files = inventory["files"]
+    assert isinstance(files, list) and files
+    for entry in files:
+        assert isinstance(entry["id"], str) and entry["id"]
+        assert isinstance(entry["path"], str) and entry["path"]
+        assert entry["severity"] in {"critical", "warning", "info"}
+        assert entry.get("capture_after_apply", True) in {True, False}
+
+    for scope in ("system_units", "user_units"):
+        entries = inventory[scope]
+        assert isinstance(entries, list) and entries
+        for entry in entries:
+            assert isinstance(entry["name"], str) and entry["name"].endswith((".service", ".timer"))
+            assert entry["enabled"] in {True, False}
+            assert entry["severity"] in {"critical", "warning", "info"}
+
+
+def test_drift_inventory_paths_and_units_resolve_to_known_targets():
+    inventory = load_yaml("drift_inventory.yaml")
+    known = _collect_known_services()
+
+    for entry in inventory["files"]:
+        path = entry["path"]
+        assert path.startswith("/") or path.startswith("{{ home }}/")
+
+    for scope in ("system_units", "user_units"):
+        for entry in inventory[scope]:
+            unit = entry["name"]
+            base = unit.rsplit(".", 1)[0]
+            assert base in known or unit in {"salt-monitor.service", "salt-monitor-watchdog.timer"}

@@ -29,8 +29,6 @@ return {
               local has
               if vim.treesitter.query and vim.treesitter.query.get then
                 has = pcall(vim.treesitter.query.get, 'lua', 'rainbow-blocks')
-              elseif vim.treesitter.get_query then
-                has = pcall(vim.treesitter.get_query, 'lua', 'rainbow-blocks')
               end
               return has and 'rainbow-blocks' or 'rainbow-delimiters'
             end)

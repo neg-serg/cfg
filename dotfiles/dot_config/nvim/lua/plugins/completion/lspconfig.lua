@@ -50,8 +50,9 @@ return {
       })
     end
 
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
+    local capabilities = require('blink.cmp').get_lsp_capabilities(
+      vim.lsp.protocol.make_client_capabilities()
+    )
 
     local base_config = {
       capabilities = capabilities,

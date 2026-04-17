@@ -550,3 +550,44 @@ def test_systemd_resource_templates_reference_shared_macros():
 
     assert "managed_sysusers_line" in accounts_source
     assert "managed_tmpfiles_line" in paths_source
+
+
+def test_opencode_config_uses_template_source_without_removed_local_paths():
+    template_path = os.path.join(
+        REPO_ROOT, "dotfiles", "dot_config", "opencode", "opencode.json.tmpl"
+    )
+    legacy_path = os.path.join(REPO_ROOT, "dotfiles", "dot_config", "opencode", "opencode.json")
+
+    assert os.path.exists(template_path)
+    assert not os.path.exists(legacy_path)
+
+    with open(template_path) as fh:
+        template_source = fh.read()
+
+    assert "http://192.168.2.166:8317/v1" in template_source
+    assert "/home/me/MyProjects/opencode-tg/skills" not in template_source
+    assert "YTDLP_COOKIES_FILE" not in template_source
+
+
+def test_opencode_config_keeps_expected_plugins():
+    template_path = os.path.join(
+        REPO_ROOT, "dotfiles", "dot_config", "opencode", "opencode.json.tmpl"
+    )
+
+    with open(template_path) as fh:
+        template_source = fh.read()
+
+    assert '"opencode-gemini-auth@latest"' in template_source
+    assert '"superpowers@git+https://github.com/obra/superpowers.git"' in template_source
+
+
+def test_opencode_repo_manages_minimal_runtime_files():
+    managed_paths = [
+        os.path.join(REPO_ROOT, "dotfiles", "dot_config", "opencode", "opencode.json.tmpl"),
+        os.path.join(REPO_ROOT, "dotfiles", "dot_config", "opencode", "tui.json"),
+        os.path.join(REPO_ROOT, "dotfiles", "dot_config", "opencode", "themes", "neg.json"),
+        os.path.join(REPO_ROOT, "dotfiles", "dot_config", "opencode", "themes", "neg-light.json"),
+    ]
+
+    for path in managed_paths:
+        assert os.path.exists(path)

@@ -141,3 +141,11 @@ def test_generated_repo_files_are_in_sync_with_the_generator(tmp_path):
             REPO_ROOT_PATH / "dotfiles" / "dot_config" / "wlr-which-key" / "config.yaml"
         ).read_text()
     )
+
+
+def test_todo_tracks_future_hierarchical_key_hint_mode_note():
+    todo_text = (REPO_ROOT_PATH / "TODO.md").read_text()
+
+    assert "## Hyprland hotkey search follow-ups" in todo_text
+    assert "optional hierarchical key-hint mode" in todo_text
+    assert "dotfiles/dot_config/hypr/shortcuts.yaml" in todo_text

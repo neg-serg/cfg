@@ -94,6 +94,12 @@ After containerization lands, verify that container failures surface through the
 
 ---
 
+## Hyprland hotkey search follow-ups
+
+- [ ] Add an optional hierarchical key-hint mode generated from `dotfiles/dot_config/hypr/shortcuts.yaml`, so grouped prefixes can expand into a structured on-screen help tree without diverging from the search catalog.
+
+---
+
 ## Research / evaluation items
 
 ### Nyxt browser packaging

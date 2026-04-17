@@ -4,6 +4,7 @@
 return {
   'neovim/nvim-lspconfig',
   event = { "BufReadPre", "BufNewFile" },
+  dependencies = { 'saghen/blink.cmp' },
   config = function()
     if not (vim.lsp and vim.lsp.config and vim.lsp.enable) then
       vim.notify('vim.lsp.config requires Neovim 0.11+', vim.log.levels.WARN)
@@ -49,11 +50,8 @@ return {
       })
     end
 
-    -- Blink interaction: merge capabilities without forcing eager load
     local capabilities = vim.lsp.protocol.make_client_capabilities()
-    if package.loaded['blink.cmp'] then
-      capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
-    end
+    capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
 
     local base_config = {
       capabilities = capabilities,

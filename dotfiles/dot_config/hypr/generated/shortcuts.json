@@ -1,0 +1,561 @@
+[
+  {
+    "id": "apps.browser",
+    "title": "Browser",
+    "group": "Apps",
+    "hotkey": "Super+W",
+    "command": "raise --match \"class:regex=^zen$\" --launch zen-browser",
+    "mode": "launchable",
+    "keywords": [
+      "browser",
+      "web",
+      "zen"
+    ],
+    "label": "Apps / Browser  Super+W"
+  },
+  {
+    "id": "apps.browser_floorp",
+    "title": "Floorp Browser",
+    "group": "Apps",
+    "hotkey": "Super+Shift+W",
+    "command": "raise --match \"class:regex=^(floorp|one\\.ablaze\\.floorp|floorpdeveloperedition)$\" --launch floorp",
+    "mode": "launchable",
+    "keywords": [
+      "browser",
+      "floorp",
+      "web"
+    ],
+    "label": "Apps / Floorp Browser  Super+Shift+W"
+  },
+  {
+    "id": "apps.neovim",
+    "title": "Neovim",
+    "group": "Apps",
+    "hotkey": "Super+Q",
+    "command": "raise --match \"class:regex=^nwim$\" --launch \"kitty --single-instance --class nwim -e v\"",
+    "mode": "launchable",
+    "keywords": [
+      "editor",
+      "vim",
+      "neovim"
+    ],
+    "label": "Apps / Neovim  Super+Q"
+  },
+  {
+    "id": "apps.steam",
+    "title": "Steam",
+    "group": "Apps",
+    "hotkey": "Super+G",
+    "command": "raise --match \"class:regex=^(steam|steam_app.*|gamescope)$\" --launch steam",
+    "mode": "launchable",
+    "keywords": [
+      "steam",
+      "game",
+      "gamescope"
+    ],
+    "label": "Apps / Steam  Super+G"
+  },
+  {
+    "id": "apps.terminal",
+    "title": "Terminal",
+    "group": "Apps",
+    "hotkey": "Super+X",
+    "command": "raise --match \"class:regex=^term$\" --launch \"kitty --single-instance --class term\"",
+    "mode": "launchable",
+    "keywords": [
+      "terminal",
+      "kitty",
+      "shell"
+    ],
+    "label": "Apps / Terminal  Super+X"
+  },
+  {
+    "id": "apps.video",
+    "title": "Video",
+    "group": "Apps",
+    "hotkey": "Super+B",
+    "command": "raise --match \"class:regex=^mpv$\" --launch \"~/.local/bin/pl video\"",
+    "mode": "launchable",
+    "keywords": [
+      "video",
+      "mpv",
+      "player"
+    ],
+    "label": "Apps / Video  Super+B"
+  },
+  {
+    "id": "apps.zathura",
+    "title": "Zathura",
+    "group": "Apps",
+    "hotkey": "Super+O",
+    "command": "raise --match \"class:regex=^org\\\\.pwmt\\\\.zathura$\" --launch \"zathura\"",
+    "mode": "launchable",
+    "keywords": [
+      "pdf",
+      "reader",
+      "zathura"
+    ],
+    "label": "Apps / Zathura  Super+O"
+  },
+  {
+    "id": "media.mute",
+    "title": "Mute",
+    "group": "Media",
+    "hotkey": "Super+Shift+I",
+    "command": "~/.local/bin/pl vol mute",
+    "mode": "launchable",
+    "keywords": [
+      "media",
+      "audio",
+      "mute"
+    ],
+    "label": "Media / Mute  Super+Shift+I"
+  },
+  {
+    "id": "media.next",
+    "title": "Next",
+    "group": "Media",
+    "hotkey": "Super+.",
+    "command": "~/.local/bin/pl cmd next",
+    "mode": "launchable",
+    "keywords": [
+      "media",
+      "playback",
+      "next"
+    ],
+    "label": "Media / Next  Super+."
+  },
+  {
+    "id": "media.play_pause",
+    "title": "Play/Pause",
+    "group": "Media",
+    "hotkey": "Super+Shift+W",
+    "command": "~/.local/bin/pl cmd play-pause",
+    "mode": "launchable",
+    "keywords": [
+      "media",
+      "playback",
+      "pause"
+    ],
+    "label": "Media / Play/Pause  Super+Shift+W"
+  },
+  {
+    "id": "media.previous",
+    "title": "Previous",
+    "group": "Media",
+    "hotkey": "Super+,",
+    "command": "~/.local/bin/pl cmd previous",
+    "mode": "launchable",
+    "keywords": [
+      "media",
+      "playback",
+      "previous"
+    ],
+    "label": "Media / Previous  Super+,"
+  },
+  {
+    "id": "media.switch_sink",
+    "title": "Switch Sink",
+    "group": "Media",
+    "hotkey": "Super+Shift+/",
+    "command": "~/.local/bin/sink-switch select",
+    "mode": "launchable",
+    "keywords": [
+      "media",
+      "audio",
+      "sink"
+    ],
+    "label": "Media / Switch Sink  Super+Shift+/"
+  },
+  {
+    "id": "media.unmute",
+    "title": "Unmute",
+    "group": "Media",
+    "hotkey": "Super+Shift+O",
+    "command": "~/.local/bin/pl vol unmute",
+    "mode": "launchable",
+    "keywords": [
+      "media",
+      "audio",
+      "unmute"
+    ],
+    "label": "Media / Unmute  Super+Shift+O"
+  },
+  {
+    "id": "power.lock",
+    "title": "Lock",
+    "group": "Power",
+    "hotkey": "Alt+E, Shift+L",
+    "command": "hyprctl switchxkblayout current 0 && hyprlock",
+    "mode": "launchable",
+    "keywords": [
+      "power",
+      "lock",
+      "hyprlock"
+    ],
+    "label": "Power / Lock  Alt+E, Shift+L"
+  },
+  {
+    "id": "power.reboot",
+    "title": "Reboot",
+    "group": "Power",
+    "hotkey": "Super+I, P, R",
+    "command": "systemctl reboot",
+    "mode": "launchable",
+    "keywords": [
+      "power",
+      "reboot",
+      "restart"
+    ],
+    "label": "Power / Reboot  Super+I, P, R"
+  },
+  {
+    "id": "power.shutdown",
+    "title": "Shutdown",
+    "group": "Power",
+    "hotkey": "Super+I, P, O",
+    "command": "systemctl poweroff",
+    "mode": "launchable",
+    "keywords": [
+      "power",
+      "shutdown",
+      "poweroff"
+    ],
+    "label": "Power / Shutdown  Super+I, P, O"
+  },
+  {
+    "id": "power.suspend",
+    "title": "Suspend",
+    "group": "Power",
+    "hotkey": "Super+I, P, S",
+    "command": "systemctl suspend",
+    "mode": "launchable",
+    "keywords": [
+      "power",
+      "suspend",
+      "sleep"
+    ],
+    "label": "Power / Suspend  Super+I, P, S"
+  },
+  {
+    "id": "scratchpads.amnezia",
+    "title": "AmneziaVPN",
+    "group": "Scratchpads",
+    "hotkey": "Super+V, A",
+    "command": "~/.local/bin/scratchpad-toggle amnezia",
+    "mode": "launchable",
+    "keywords": [
+      "scratchpad",
+      "vpn",
+      "amnezia"
+    ],
+    "label": "Scratchpads / AmneziaVPN  Super+V, A"
+  },
+  {
+    "id": "scratchpads.im",
+    "title": "IM",
+    "group": "Scratchpads",
+    "hotkey": "Super+E",
+    "command": "~/.local/bin/scratchpad-toggle im",
+    "mode": "launchable",
+    "keywords": [
+      "scratchpad",
+      "chat",
+      "messenger"
+    ],
+    "label": "Scratchpads / IM  Super+E"
+  },
+  {
+    "id": "scratchpads.mixer",
+    "title": "Mixer",
+    "group": "Scratchpads",
+    "hotkey": "Super+Ctrl+P",
+    "command": "~/.local/bin/scratchpad-toggle mixer",
+    "mode": "launchable",
+    "keywords": [
+      "scratchpad",
+      "mixer",
+      "audio"
+    ],
+    "label": "Scratchpads / Mixer  Super+Ctrl+P"
+  },
+  {
+    "id": "scratchpads.music",
+    "title": "Music",
+    "group": "Scratchpads",
+    "hotkey": "Super+F",
+    "command": "~/.local/bin/scratchpad-toggle music",
+    "mode": "launchable",
+    "keywords": [
+      "scratchpad",
+      "music",
+      "player"
+    ],
+    "label": "Scratchpads / Music  Super+F"
+  },
+  {
+    "id": "scratchpads.teardown",
+    "title": "Teardown",
+    "group": "Scratchpads",
+    "hotkey": "Super+D",
+    "command": "~/.local/bin/scratchpad-toggle teardown",
+    "mode": "launchable",
+    "keywords": [
+      "scratchpad",
+      "teardown"
+    ],
+    "label": "Scratchpads / Teardown  Super+D"
+  },
+  {
+    "id": "scratchpads.torrment",
+    "title": "Torrents",
+    "group": "Scratchpads",
+    "hotkey": "Super+T",
+    "command": "~/.local/bin/scratchpad-toggle torrment",
+    "mode": "launchable",
+    "keywords": [
+      "scratchpad",
+      "torrent",
+      "downloads"
+    ],
+    "label": "Scratchpads / Torrents  Super+T"
+  },
+  {
+    "id": "screenshots.area",
+    "title": "Area Screenshot",
+    "group": "Screenshots",
+    "hotkey": "Super+Shift+Ctrl+R",
+    "command": "shot=\"$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png\"; grim -g \"$(slurp)\" \"$shot\" && pic-info \"$shot\"",
+    "mode": "launchable",
+    "keywords": [
+      "screenshot",
+      "capture",
+      "area"
+    ],
+    "label": "Screenshots / Area Screenshot  Super+Shift+Ctrl+R"
+  },
+  {
+    "id": "screenshots.fullscreen",
+    "title": "Full Screen Screenshot",
+    "group": "Screenshots",
+    "hotkey": "Super+Shift+R",
+    "command": "shot=\"$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png\"; grim \"$shot\" && pic-info \"$shot\"",
+    "mode": "launchable",
+    "keywords": [
+      "screenshot",
+      "capture",
+      "full"
+    ],
+    "label": "Screenshots / Full Screen Screenshot  Super+Shift+R"
+  },
+  {
+    "id": "screenshots.record_area",
+    "title": "Record Area",
+    "group": "Screenshots",
+    "hotkey": "Super+Shift+Ctrl+V",
+    "command": "~/.local/bin/screenrec area",
+    "mode": "launchable",
+    "keywords": [
+      "screen",
+      "recording",
+      "area"
+    ],
+    "label": "Screenshots / Record Area  Super+Shift+Ctrl+V"
+  },
+  {
+    "id": "screenshots.record_screen",
+    "title": "Record Screen",
+    "group": "Screenshots",
+    "hotkey": "Super+Shift+V",
+    "command": "~/.local/bin/screenrec screen",
+    "mode": "launchable",
+    "keywords": [
+      "screen",
+      "recording",
+      "video"
+    ],
+    "label": "Screenshots / Record Screen  Super+Shift+V"
+  },
+  {
+    "id": "selectors.animation",
+    "title": "Animation Selector",
+    "group": "Selectors",
+    "hotkey": "Super+Alt+S, A",
+    "command": "hyde-selector animation",
+    "mode": "launchable",
+    "keywords": [
+      "animation",
+      "selector",
+      "hyde"
+    ],
+    "label": "Selectors / Animation Selector  Super+Alt+S, A"
+  },
+  {
+    "id": "selectors.calculator",
+    "title": "Calculator",
+    "group": "Selectors",
+    "hotkey": "Super+Alt+S, C",
+    "command": "vicinae \"vicinae://extensions/vicinae/calculator/index\"",
+    "mode": "launchable",
+    "keywords": [
+      "calculator",
+      "calc",
+      "vicinae"
+    ],
+    "label": "Selectors / Calculator  Super+Alt+S, C"
+  },
+  {
+    "id": "selectors.emoji",
+    "title": "Emoji Search",
+    "group": "Selectors",
+    "hotkey": "Super+Alt+S, E",
+    "command": "vicinae \"vicinae://extensions/vicinae/core/search-emojis\"",
+    "mode": "launchable",
+    "keywords": [
+      "emoji",
+      "search",
+      "vicinae"
+    ],
+    "label": "Selectors / Emoji Search  Super+Alt+S, E"
+  },
+  {
+    "id": "selectors.theme",
+    "title": "Theme Selector",
+    "group": "Selectors",
+    "hotkey": "Super+Alt+S, T",
+    "command": "hyde-selector theme",
+    "mode": "launchable",
+    "keywords": [
+      "theme",
+      "selector",
+      "hyde"
+    ],
+    "label": "Selectors / Theme Selector  Super+Alt+S, T"
+  },
+  {
+    "id": "selectors.wallpaper",
+    "title": "Wallpaper Selector",
+    "group": "Selectors",
+    "hotkey": "Super+Alt+S, W",
+    "command": "hyde-selector wallpaper",
+    "mode": "launchable",
+    "keywords": [
+      "wallpaper",
+      "selector",
+      "hyde"
+    ],
+    "label": "Selectors / Wallpaper Selector  Super+Alt+S, W"
+  },
+  {
+    "id": "special.bazecor",
+    "title": "Bazecor",
+    "group": "Special",
+    "hotkey": "Super+Ctrl+V",
+    "command": "raise --match \"class:regex=^Bazecor$\" --launch \"bazecor\"",
+    "mode": "launchable",
+    "keywords": [
+      "keyboard",
+      "bazecor",
+      "layout"
+    ],
+    "label": "Special / Bazecor  Super+Ctrl+V"
+  },
+  {
+    "id": "special.carla",
+    "title": "Carla",
+    "group": "Special",
+    "hotkey": "Alt+E, Shift+Q",
+    "command": "raise --match \"class:regex=^Carla2$\" --launch \"carla\"",
+    "mode": "launchable",
+    "keywords": [
+      "audio",
+      "patchbay",
+      "carla"
+    ],
+    "label": "Special / Carla  Alt+E, Shift+Q"
+  },
+  {
+    "id": "special.nicotine",
+    "title": "Nicotine+",
+    "group": "Special",
+    "hotkey": "Alt+E, D",
+    "command": "raise --match \"class:regex=^org\\\\.nicotine_plus\\\\.Nicotine$\" --launch \"nicotine\"",
+    "mode": "launchable",
+    "keywords": [
+      "special",
+      "nicotine",
+      "soulseek"
+    ],
+    "label": "Special / Nicotine+  Alt+E, D"
+  },
+  {
+    "id": "special.obs",
+    "title": "OBS",
+    "group": "Special",
+    "hotkey": "Super+Ctrl+O",
+    "command": "raise --match \"class:regex=^(obs|com\\\\.obsproject\\\\.Studio)$\" --launch \"obs\"",
+    "mode": "launchable",
+    "keywords": [
+      "streaming",
+      "recording",
+      "obs"
+    ],
+    "label": "Special / OBS  Super+Ctrl+O"
+  },
+  {
+    "id": "special.obsidian",
+    "title": "Obsidian",
+    "group": "Special",
+    "hotkey": "Super+Ctrl+N",
+    "command": "raise --match \"class:regex=^(Obsidian|md\\\\.obsidian\\\\.Obsidian)$\" --launch \"flatpak run md.obsidian.Obsidian\"",
+    "mode": "launchable",
+    "keywords": [
+      "notes",
+      "obsidian",
+      "knowledge"
+    ],
+    "label": "Special / Obsidian  Super+Ctrl+N"
+  },
+  {
+    "id": "special.reaper",
+    "title": "REAPER",
+    "group": "Special",
+    "hotkey": "Alt+E, R",
+    "command": "raise --match \"class:regex=^REAPER$\" --launch \"GDK_BACKEND=x11 reaper\"",
+    "mode": "launchable",
+    "keywords": [
+      "audio",
+      "daw",
+      "reaper"
+    ],
+    "label": "Special / REAPER  Alt+E, R"
+  },
+  {
+    "id": "special.qpwgraph",
+    "title": "qpwgraph",
+    "group": "Special",
+    "hotkey": "Alt+E, Q",
+    "command": "raise --match \"class:regex=^qpwgraph$\" --launch \"qpwgraph\"",
+    "mode": "launchable",
+    "keywords": [
+      "audio",
+      "patchbay",
+      "pipewire"
+    ],
+    "label": "Special / qpwgraph  Alt+E, Q"
+  },
+  {
+    "id": "wallpaper.launcher",
+    "title": "Wallpaper",
+    "group": "Wallpaper",
+    "hotkey": "Super+I, Y",
+    "command": "~/.local/bin/wl",
+    "mode": "launchable",
+    "keywords": [
+      "wallpaper",
+      "backgrounds",
+      "theme"
+    ],
+    "label": "Wallpaper / Wallpaper  Super+I, Y"
+  }
+]

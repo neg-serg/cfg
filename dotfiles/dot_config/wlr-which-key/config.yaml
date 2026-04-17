@@ -1,168 +1,157 @@
 font: Iosevka 12
-background: "#1a1b26e6"
-color: "#c0caf5"
-border: "#7aa2f7"
-separator: " → "
+background: '#1a1b26e6'
+color: '#c0caf5'
+border: '#7aa2f7'
+separator: " \u2192 "
 border_width: 2
 corner_r: 10
 padding: 15
 rows_per_column: 8
 column_padding: 25
-
 anchor: center
-namespace: "wlr_which_key"
-
+namespace: wlr_which_key
 menu:
-  # --- Apps ---
-  - key: "w"
-    desc: Browser
-    cmd: raise --match "class:regex=^zen$" --launch zen-browser
-  - key: "W"
-    desc: Floorp Browser
-    cmd: raise --match "class:regex=^(floorp|one\\.ablaze\\.floorp|floorpdeveloperedition)$" --launch floorp
-  - key: "x"
-    desc: Terminal
-    cmd: raise --match "class:regex=^term$" --launch "kitty --class term"
-  - key: "q"
-    desc: Neovim
-    cmd: raise --match "class:regex=^nwim$" --launch "kitty --class nwim -e v"
-  - key: "b"
-    desc: Video
-    cmd: raise --match "class:regex=^mpv$" --launch "~/.local/bin/pl video"
-  - key: "g"
-    desc: Steam
-    cmd: raise --match "class:regex=^(steam|steam_app.*|gamescope)$" --launch steam
-  - key: "o"
-    desc: Zathura
-    cmd: raise --match "class:regex=^org\\.pwmt\\.zathura$" --launch "zathura"
-
-  # --- Scratchpads ---
-  - key: "s"
-    desc: Scratchpads
-    submenu:
-      - key: "a"
-        desc: AmneziaVPN
-        cmd: ~/.local/bin/scratchpad-toggle amnezia
-      - key: "d"
-        desc: Teardown
-        cmd: ~/.local/bin/scratchpad-toggle teardown
-      - key: "e"
-        desc: IM
-        cmd: ~/.local/bin/scratchpad-toggle im
-      - key: "f"
-        desc: Music
-        cmd: ~/.local/bin/scratchpad-toggle music
-      - key: "t"
-        desc: Torrents
-        cmd: ~/.local/bin/scratchpad-toggle torrment
-      - key: "m"
-        desc: Mixer
-        cmd: ~/.local/bin/scratchpad-toggle mixer
-
-  # --- Power ---
-  - key: "p"
-    desc: Power
-    submenu:
-      - key: "l"
-        desc: Lock
-        cmd: hyprctl switchxkblayout current 0 && hyprlock
-      - key: "s"
-        desc: Suspend
-        cmd: systemctl suspend
-      - key: "r"
-        desc: Reboot
-        cmd: systemctl reboot
-      - key: "o"
-        desc: Shutdown
-        cmd: systemctl poweroff
-
-  # --- Screenshots ---
-  - key: "r"
-    desc: Screenshot
-    submenu:
-      - key: "r"
-        desc: Full screen
-        cmd: sh -c 'shot="$HOME/pic/shots/satty-$(date +%Y%m%d-%H.%M.%S).png"; grim "$shot" && pic-info "$shot"'
-      - key: "s"
-        desc: Select area
-        cmd: sh -c 'shot="$HOME/pic/shots/satty-$(date +%Y%m%d-%H.%M.%S).png"; grim -g "$(slurp)" "$shot" && pic-info "$shot"'
-      - key: "v"
-        desc: Record screen
-        cmd: ~/.local/bin/screenrec screen
-      - key: "a"
-        desc: Record area
-        cmd: ~/.local/bin/screenrec area
-
-  # --- Wallpaper ---
-  - key: "y"
-    desc: Wallpaper
-    cmd: ~/.local/bin/wl
-
-  # --- Selectors ---
+- key: "w"
+  desc: Browser
+  cmd: raise --match "class:regex=^zen$" --launch zen-browser
+- key: "W"
+  desc: Floorp Browser
+  cmd: raise --match "class:regex=^(floorp|one\.ablaze\.floorp|floorpdeveloperedition)$"
+    --launch floorp
+- key: "x"
+  desc: Terminal
+  cmd: raise --match "class:regex=^term$" --launch "kitty --single-instance --class
+    term"
+- key: "q"
+  desc: Neovim
+  cmd: raise --match "class:regex=^nwim$" --launch "kitty --single-instance --class
+    nwim -e v"
+- key: "b"
+  desc: Video
+  cmd: raise --match "class:regex=^mpv$" --launch "~/.local/bin/pl video"
+- key: "g"
+  desc: Steam
+  cmd: raise --match "class:regex=^(steam|steam_app.*|gamescope)$" --launch steam
+- key: "o"
+  desc: Zathura
+  cmd: raise --match "class:regex=^org\\.pwmt\\.zathura$" --launch "zathura"
+- key: "s"
+  desc: Scratchpads
+  submenu:
+  - key: "a"
+    desc: AmneziaVPN
+    cmd: ~/.local/bin/scratchpad-toggle amnezia
+  - key: "d"
+    desc: Teardown
+    cmd: ~/.local/bin/scratchpad-toggle teardown
   - key: "e"
-    desc: Selectors
-    submenu:
-      - key: "w"
-        desc: Wallpaper
-        cmd: hyde-selector wallpaper
-      - key: "t"
-        desc: Theme
-        cmd: hyde-selector theme
-      - key: "a"
-        desc: Animation
-        cmd: hyde-selector animation
-      - key: "e"
-        desc: Emoji
-        cmd: rofi -show emoji
-      - key: "c"
-        desc: Calculator
-        cmd: rofi -show calc
-
-  # --- Audio ---
+    desc: IM
+    cmd: ~/.local/bin/scratchpad-toggle im
+  - key: "f"
+    desc: Music
+    cmd: ~/.local/bin/scratchpad-toggle music
+  - key: "t"
+    desc: Torrents
+    cmd: ~/.local/bin/scratchpad-toggle torrment
   - key: "m"
-    desc: Media
-    submenu:
-      - key: "p"
-        desc: Play/Pause
-        cmd: ~/.local/bin/pl cmd play-pause
-      - key: "n"
-        desc: Next
-        cmd: ~/.local/bin/pl cmd next
-      - key: "b"
-        desc: Previous
-        cmd: ~/.local/bin/pl cmd previous
-      - key: "m"
-        desc: Mute
-        cmd: ~/.local/bin/pl vol mute
-      - key: "u"
-        desc: Unmute
-        cmd: ~/.local/bin/pl vol unmute
-      - key: "s"
-        desc: Switch sink
-        cmd: ~/.local/bin/sink-switch select
-
-  # --- Special apps ---
-  - key: "i"
-    desc: Special
-    submenu:
-      - key: "r"
-        desc: REAPER
-        cmd: raise --match "class:regex=^REAPER$" --launch "GDK_BACKEND=x11 reaper"
-      - key: "q"
-        desc: qpwgraph
-        cmd: raise --match "class:regex=^qpwgraph$" --launch "qpwgraph"
-      - key: "d"
-        desc: Nicotine+
-        cmd: raise --match "class:regex=^org\\.nicotine_plus\\.Nicotine$" --launch "nicotine"
-      - key: "c"
-        desc: Carla
-        cmd: raise --match "class:regex=^Carla2$" --launch "carla"
-      - key: "n"
-        desc: Obsidian
-        cmd: raise --match "class:regex=^(Obsidian|md\\.obsidian\\.Obsidian)$" --launch "flatpak run md.obsidian.Obsidian"
-      - key: "o"
-        desc: OBS
-        cmd: raise --match "class:regex=^(obs|com\\.obsproject\\.Studio)$" --launch "obs"
-      - key: "b"
-        desc: Bazecor
-        cmd: raise --match "class:regex=^Bazecor$" --launch "bazecor"
+    desc: Mixer
+    cmd: ~/.local/bin/scratchpad-toggle mixer
+- key: "p"
+  desc: Power
+  submenu:
+  - key: "l"
+    desc: Lock
+    cmd: hyprctl switchxkblayout current 0 && hyprlock
+  - key: "s"
+    desc: Suspend
+    cmd: systemctl suspend
+  - key: "r"
+    desc: Reboot
+    cmd: systemctl reboot
+  - key: "o"
+    desc: Shutdown
+    cmd: systemctl poweroff
+- key: "r"
+  desc: Screenshot
+  submenu:
+  - key: "r"
+    desc: Full screen
+    cmd: shot="$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png"; grim "$shot"
+      && pic-info "$shot"
+  - key: "s"
+    desc: Select area
+    cmd: shot="$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png"; grim -g "$(slurp)"
+      "$shot" && pic-info "$shot"
+  - key: "v"
+    desc: Record screen
+    cmd: ~/.local/bin/screenrec screen
+  - key: "a"
+    desc: Record area
+    cmd: ~/.local/bin/screenrec area
+- key: "y"
+  desc: Wallpaper
+  cmd: ~/.local/bin/wl
+- key: "e"
+  desc: Selectors
+  submenu:
+  - key: "w"
+    desc: Wallpaper
+    cmd: hyde-selector wallpaper
+  - key: "t"
+    desc: Theme
+    cmd: hyde-selector theme
+  - key: "a"
+    desc: Animation
+    cmd: hyde-selector animation
+  - key: "e"
+    desc: Emoji
+    cmd: vicinae "vicinae://extensions/vicinae/core/search-emojis"
+  - key: "c"
+    desc: Calculator
+    cmd: vicinae "vicinae://extensions/vicinae/calculator/index"
+- key: "m"
+  desc: Media
+  submenu:
+  - key: "p"
+    desc: Play/Pause
+    cmd: ~/.local/bin/pl cmd play-pause
+  - key: "n"
+    desc: Next
+    cmd: ~/.local/bin/pl cmd next
+  - key: "b"
+    desc: Previous
+    cmd: ~/.local/bin/pl cmd previous
+  - key: "m"
+    desc: Mute
+    cmd: ~/.local/bin/pl vol mute
+  - key: "u"
+    desc: Unmute
+    cmd: ~/.local/bin/pl vol unmute
+  - key: "s"
+    desc: Switch sink
+    cmd: ~/.local/bin/sink-switch select
+- key: "i"
+  desc: Special
+  submenu:
+  - key: "r"
+    desc: REAPER
+    cmd: raise --match "class:regex=^REAPER$" --launch "GDK_BACKEND=x11 reaper"
+  - key: "q"
+    desc: qpwgraph
+    cmd: raise --match "class:regex=^qpwgraph$" --launch "qpwgraph"
+  - key: "d"
+    desc: Nicotine+
+    cmd: raise --match "class:regex=^org\\.nicotine_plus\\.Nicotine$" --launch "nicotine"
+  - key: "c"
+    desc: Carla
+    cmd: raise --match "class:regex=^Carla2$" --launch "carla"
+  - key: "n"
+    desc: Obsidian
+    cmd: raise --match "class:regex=^(Obsidian|md\\.obsidian\\.Obsidian)$" --launch
+      "flatpak run md.obsidian.Obsidian"
+  - key: "o"
+    desc: OBS
+    cmd: raise --match "class:regex=^(obs|com\\.obsproject\\.Studio)$" --launch "obs"
+  - key: "b"
+    desc: Bazecor
+    cmd: raise --match "class:regex=^Bazecor$" --launch "bazecor"

@@ -1,0 +1,385 @@
+entries:
+  - id: apps.browser
+    match: root|w|exec|raise --match "class:regex=^zen$" --launch zen-browser
+    title: Browser
+    group: Apps
+    keywords: [browser, web, zen]
+    mode: launchable
+  - id: apps.browser_floorp
+    match: root|w|exec|raise --match "class:regex=^(floorp|one\.ablaze\.floorp|floorpdeveloperedition)$" --launch floorp
+    title: Floorp Browser
+    group: Apps
+    keywords: [browser, floorp, web]
+    mode: launchable
+  - id: apps.terminal
+    match: root|x|exec|raise --match "class:regex=^term$" --launch "kitty --single-instance --class term"
+    title: Terminal
+    group: Apps
+    keywords: [terminal, kitty, shell]
+    mode: launchable
+  - id: apps.neovim
+    match: root|q|exec|raise --match "class:regex=^nwim$" --launch "kitty --single-instance --class nwim -e v"
+    title: Neovim
+    group: Apps
+    keywords: [editor, vim, neovim]
+    mode: launchable
+  - id: apps.video
+    match: root|b|exec|raise --match "class:regex=^mpv$" --launch "~/.local/bin/pl video"
+    title: Video
+    group: Apps
+    keywords: [video, mpv, player]
+    mode: launchable
+  - id: apps.steam
+    match: root|g|exec|raise --match "class:regex=^(steam|steam_app.*|gamescope)$" --launch steam
+    title: Steam
+    group: Apps
+    keywords: [steam, game, gamescope]
+    mode: launchable
+  - id: apps.zathura
+    match: root|o|exec|raise --match "class:regex=^org\\.pwmt\\.zathura$" --launch "zathura"
+    title: Zathura
+    group: Apps
+    keywords: [pdf, reader, zathura]
+    mode: launchable
+  - id: scratchpads.amnezia
+    match: vpn|a|exec|~/.local/bin/scratchpad-toggle amnezia
+    title: AmneziaVPN
+    group: Scratchpads
+    keywords: [scratchpad, vpn, amnezia]
+    mode: launchable
+  - id: scratchpads.teardown
+    match: root|d|exec|~/.local/bin/scratchpad-toggle teardown
+    title: Teardown
+    group: Scratchpads
+    keywords: [scratchpad, teardown]
+    mode: launchable
+  - id: scratchpads.im
+    match: root|e|exec|~/.local/bin/scratchpad-toggle im
+    title: IM
+    group: Scratchpads
+    keywords: [scratchpad, chat, messenger]
+    mode: launchable
+  - id: scratchpads.music
+    match: root|f|exec|~/.local/bin/scratchpad-toggle music
+    title: Music
+    group: Scratchpads
+    keywords: [scratchpad, music, player]
+    mode: launchable
+  - id: scratchpads.torrment
+    match: root|t|exec|~/.local/bin/scratchpad-toggle torrment
+    title: Torrents
+    group: Scratchpads
+    keywords: [scratchpad, torrent, downloads]
+    mode: launchable
+  - id: scratchpads.mixer
+    match: root|p|exec|~/.local/bin/scratchpad-toggle mixer
+    title: Mixer
+    group: Scratchpads
+    keywords: [scratchpad, mixer, audio]
+    mode: launchable
+  - id: power.lock
+    match: special|l|exec|hyprctl switchxkblayout current 0 && hyprlock
+    title: Lock
+    group: Power
+    keywords: [power, lock, hyprlock]
+    mode: launchable
+  - id: power.suspend
+    command: systemctl suspend
+    hotkey: Super+I, P, S
+    title: Suspend
+    group: Power
+    keywords: [power, suspend, sleep]
+    mode: launchable
+  - id: power.reboot
+    command: systemctl reboot
+    hotkey: Super+I, P, R
+    title: Reboot
+    group: Power
+    keywords: [power, reboot, restart]
+    mode: launchable
+  - id: power.shutdown
+    command: systemctl poweroff
+    hotkey: Super+I, P, O
+    title: Shutdown
+    group: Power
+    keywords: [power, shutdown, poweroff]
+    mode: launchable
+  - id: screenshots.fullscreen
+    match: root|r|exec|shot="$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png"; grim "$shot" && pic-info "$shot"
+    title: Full Screen Screenshot
+    group: Screenshots
+    keywords: [screenshot, capture, full]
+    mode: launchable
+  - id: screenshots.area
+    match: root|r|exec|shot="$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png"; grim -g "$(slurp)" "$shot" && pic-info "$shot"
+    title: Area Screenshot
+    group: Screenshots
+    keywords: [screenshot, capture, area]
+    mode: launchable
+  - id: screenshots.record_screen
+    match: root|v|exec|~/.local/bin/screenrec screen
+    title: Record Screen
+    group: Screenshots
+    keywords: [screen, recording, video]
+    mode: launchable
+  - id: screenshots.record_area
+    match: root|v|exec|~/.local/bin/screenrec area
+    title: Record Area
+    group: Screenshots
+    keywords: [screen, recording, area]
+    mode: launchable
+  - id: wallpaper.launcher
+    command: ~/.local/bin/wl
+    hotkey: Super+I, Y
+    title: Wallpaper
+    group: Wallpaper
+    keywords: [wallpaper, backgrounds, theme]
+    mode: launchable
+  - id: selectors.wallpaper
+    match: selectors|w|exec|hyde-selector wallpaper
+    title: Wallpaper Selector
+    group: Selectors
+    keywords: [wallpaper, selector, hyde]
+    mode: launchable
+  - id: selectors.theme
+    match: selectors|t|exec|hyde-selector theme
+    title: Theme Selector
+    group: Selectors
+    keywords: [theme, selector, hyde]
+    mode: launchable
+  - id: selectors.animation
+    match: selectors|a|exec|hyde-selector animation
+    title: Animation Selector
+    group: Selectors
+    keywords: [animation, selector, hyde]
+    mode: launchable
+  - id: selectors.emoji
+    match: selectors|e|exec|vicinae "vicinae://extensions/vicinae/core/search-emojis"
+    title: Emoji Search
+    group: Selectors
+    keywords: [emoji, search, vicinae]
+    mode: launchable
+  - id: selectors.calculator
+    match: selectors|c|exec|vicinae "vicinae://extensions/vicinae/calculator/index"
+    title: Calculator
+    group: Selectors
+    keywords: [calculator, calc, vicinae]
+    mode: launchable
+  - id: media.play_pause
+    match: root|w|exec|~/.local/bin/pl cmd play-pause
+    title: Play/Pause
+    group: Media
+    keywords: [media, playback, pause]
+    mode: launchable
+  - id: media.next
+    match: root|period|exec|~/.local/bin/pl cmd next
+    title: Next
+    group: Media
+    keywords: [media, playback, next]
+    mode: launchable
+  - id: media.previous
+    match: root|comma|exec|~/.local/bin/pl cmd previous
+    title: Previous
+    group: Media
+    keywords: [media, playback, previous]
+    mode: launchable
+  - id: media.mute
+    match: root|i|exec|~/.local/bin/pl vol mute
+    title: Mute
+    group: Media
+    keywords: [media, audio, mute]
+    mode: launchable
+  - id: media.unmute
+    match: root|o|exec|~/.local/bin/pl vol unmute
+    title: Unmute
+    group: Media
+    keywords: [media, audio, unmute]
+    mode: launchable
+  - id: media.switch_sink
+    match: root|slash|exec|~/.local/bin/sink-switch select
+    title: Switch Sink
+    group: Media
+    keywords: [media, audio, sink]
+    mode: launchable
+  - id: special.reaper
+    match: special|r|exec|raise --match "class:regex=^REAPER$" --launch "GDK_BACKEND=x11 reaper"
+    title: REAPER
+    group: Special
+    keywords: [audio, daw, reaper]
+    mode: launchable
+  - id: special.qpwgraph
+    match: special|q|exec|raise --match "class:regex=^qpwgraph$" --launch "qpwgraph"
+    title: qpwgraph
+    group: Special
+    keywords: [audio, patchbay, pipewire]
+    mode: launchable
+  - id: special.nicotine
+    match: special|d|exec|raise --match "class:regex=^org\\.nicotine_plus\\.Nicotine$" --launch "nicotine"
+    title: Nicotine+
+    group: Special
+    keywords: [special, nicotine, soulseek]
+    mode: launchable
+  - id: special.carla
+    match: special|q|exec|raise --match "class:regex=^Carla2$" --launch "carla"
+    title: Carla
+    group: Special
+    keywords: [audio, patchbay, carla]
+    mode: launchable
+  - id: special.obsidian
+    match: root|n|exec|raise --match "class:regex=^(Obsidian|md\\.obsidian\\.Obsidian)$" --launch "flatpak run md.obsidian.Obsidian"
+    title: Obsidian
+    group: Special
+    keywords: [notes, obsidian, knowledge]
+    mode: launchable
+  - id: special.obs
+    match: root|o|exec|raise --match "class:regex=^(obs|com\\.obsproject\\.Studio)$" --launch "obs"
+    title: OBS
+    group: Special
+    keywords: [streaming, recording, obs]
+    mode: launchable
+  - id: special.bazecor
+    match: root|v|exec|raise --match "class:regex=^Bazecor$" --launch "bazecor"
+    title: Bazecor
+    group: Special
+    keywords: [keyboard, bazecor, layout]
+    mode: launchable
+
+which_key:
+  - key: "w"
+    desc: Browser
+    match: root|w|exec|raise --match "class:regex=^zen$" --launch zen-browser
+  - key: "W"
+    desc: Floorp Browser
+    match: root|w|exec|raise --match "class:regex=^(floorp|one\.ablaze\.floorp|floorpdeveloperedition)$" --launch floorp
+  - key: "x"
+    desc: Terminal
+    match: root|x|exec|raise --match "class:regex=^term$" --launch "kitty --single-instance --class term"
+  - key: "q"
+    desc: Neovim
+    match: root|q|exec|raise --match "class:regex=^nwim$" --launch "kitty --single-instance --class nwim -e v"
+  - key: "b"
+    desc: Video
+    match: root|b|exec|raise --match "class:regex=^mpv$" --launch "~/.local/bin/pl video"
+  - key: "g"
+    desc: Steam
+    match: root|g|exec|raise --match "class:regex=^(steam|steam_app.*|gamescope)$" --launch steam
+  - key: "o"
+    desc: Zathura
+    match: root|o|exec|raise --match "class:regex=^org\\.pwmt\\.zathura$" --launch "zathura"
+  - key: "s"
+    desc: Scratchpads
+    entries:
+      - key: "a"
+        desc: AmneziaVPN
+        match: vpn|a|exec|~/.local/bin/scratchpad-toggle amnezia
+      - key: "d"
+        desc: Teardown
+        match: root|d|exec|~/.local/bin/scratchpad-toggle teardown
+      - key: "e"
+        desc: IM
+        match: root|e|exec|~/.local/bin/scratchpad-toggle im
+      - key: "f"
+        desc: Music
+        match: root|f|exec|~/.local/bin/scratchpad-toggle music
+      - key: "t"
+        desc: Torrents
+        match: root|t|exec|~/.local/bin/scratchpad-toggle torrment
+      - key: "m"
+        desc: Mixer
+        match: root|p|exec|~/.local/bin/scratchpad-toggle mixer
+  - key: "p"
+    desc: Power
+    entries:
+      - key: "l"
+        desc: Lock
+        match: special|l|exec|hyprctl switchxkblayout current 0 && hyprlock
+      - key: "s"
+        desc: Suspend
+        cmd: systemctl suspend
+      - key: "r"
+        desc: Reboot
+        cmd: systemctl reboot
+      - key: "o"
+        desc: Shutdown
+        cmd: systemctl poweroff
+  - key: "r"
+    desc: Screenshot
+    entries:
+      - key: "r"
+        desc: Full screen
+        match: root|r|exec|shot="$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png"; grim "$shot" && pic-info "$shot"
+      - key: "s"
+        desc: Select area
+        match: root|r|exec|shot="$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png"; grim -g "$(slurp)" "$shot" && pic-info "$shot"
+      - key: "v"
+        desc: Record screen
+        match: root|v|exec|~/.local/bin/screenrec screen
+      - key: "a"
+        desc: Record area
+        match: root|v|exec|~/.local/bin/screenrec area
+  - key: "y"
+    desc: Wallpaper
+    cmd: ~/.local/bin/wl
+  - key: "e"
+    desc: Selectors
+    entries:
+      - key: "w"
+        desc: Wallpaper
+        match: selectors|w|exec|hyde-selector wallpaper
+      - key: "t"
+        desc: Theme
+        match: selectors|t|exec|hyde-selector theme
+      - key: "a"
+        desc: Animation
+        match: selectors|a|exec|hyde-selector animation
+      - key: "e"
+        desc: Emoji
+        match: selectors|e|exec|vicinae "vicinae://extensions/vicinae/core/search-emojis"
+      - key: "c"
+        desc: Calculator
+        match: selectors|c|exec|vicinae "vicinae://extensions/vicinae/calculator/index"
+  - key: "m"
+    desc: Media
+    entries:
+      - key: "p"
+        desc: Play/Pause
+        match: root|w|exec|~/.local/bin/pl cmd play-pause
+      - key: "n"
+        desc: Next
+        match: root|period|exec|~/.local/bin/pl cmd next
+      - key: "b"
+        desc: Previous
+        match: root|comma|exec|~/.local/bin/pl cmd previous
+      - key: "m"
+        desc: Mute
+        match: root|i|exec|~/.local/bin/pl vol mute
+      - key: "u"
+        desc: Unmute
+        match: root|o|exec|~/.local/bin/pl vol unmute
+      - key: "s"
+        desc: Switch sink
+        match: root|slash|exec|~/.local/bin/sink-switch select
+  - key: "i"
+    desc: Special
+    entries:
+      - key: "r"
+        desc: REAPER
+        match: special|r|exec|raise --match "class:regex=^REAPER$" --launch "GDK_BACKEND=x11 reaper"
+      - key: "q"
+        desc: qpwgraph
+        match: special|q|exec|raise --match "class:regex=^qpwgraph$" --launch "qpwgraph"
+      - key: "d"
+        desc: Nicotine+
+        match: special|d|exec|raise --match "class:regex=^org\\.nicotine_plus\\.Nicotine$" --launch "nicotine"
+      - key: "c"
+        desc: Carla
+        match: special|q|exec|raise --match "class:regex=^Carla2$" --launch "carla"
+      - key: "n"
+        desc: Obsidian
+        match: root|n|exec|raise --match "class:regex=^(Obsidian|md\\.obsidian\\.Obsidian)$" --launch "flatpak run md.obsidian.Obsidian"
+      - key: "o"
+        desc: OBS
+        match: root|o|exec|raise --match "class:regex=^(obs|com\\.obsproject\\.Studio)$" --launch "obs"
+      - key: "b"
+        desc: Bazecor
+        match: root|v|exec|raise --match "class:regex=^Bazecor$" --launch "bazecor"

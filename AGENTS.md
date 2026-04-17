@@ -48,6 +48,7 @@ specs/
 - Keep macros narrow and operationally transparent.
 - Preserve state ID readability and uniqueness across includes.
 - Treat `states/**/*.sls` as the supported state tree for lint/render/index tooling.
+- Use commit subjects in `[type] short description` format for local history, for example `[feat] ...`, `[fix] ...`, `[docs] ...`, or `[chore] ...`.
 
 ## Recent Changes
 - 079-age-yubikey-cutover: Added Markdown planning artifacts, Salt/Jinja states, shell-based operator workflow, `gopass` 1.16.1, `age` 1.3.1, `yubikey-manager` 5.9.0 + `gopass`, `age`, `age-plugin-yubikey`, `yubikey-manager`, `pcsclite` / `pcscd`, systemd user services, existing Salt data/state files, existing chezmoi templates

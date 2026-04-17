@@ -1,4 +1,9 @@
 import json
+import os
+import stat
+import subprocess
+import textwrap
+from pathlib import Path
 
 from tests import REPO_ROOT_PATH
 
@@ -58,7 +63,135 @@ def test_hypr_shortcuts_script_reads_generated_shortcut_json():
 
     assert "$HOME/.config/hypr/generated/shortcuts.json" in text
     assert 'select(.mode == "launchable")' in text
-    assert 'jq -r --arg label "$selection"' in text
+    assert "@tsv" in text
+    assert 'jq -r --arg id "$selection_id"' in text
+
+
+def write_executable(path: Path, content: str) -> None:
+    path.write_text(textwrap.dedent(content).lstrip())
+    path.chmod(path.stat().st_mode | stat.S_IXUSR)
+
+
+def run_hypr_shortcuts(tmp_path: Path, dataset: list[dict] | str, *, selection: str = ""):
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    input_capture = tmp_path / "vicinae-input.txt"
+    output_capture = tmp_path / "command-output.txt"
+    called_capture = tmp_path / "vicinae-called.txt"
+    data_file = tmp_path / "shortcuts.json"
+
+    if isinstance(dataset, str):
+        data_file.write_text(dataset)
+    else:
+        data_file.write_text(json.dumps(dataset))
+
+    write_executable(
+        bin_dir / "vicinae",
+        f"""
+        #!/usr/bin/env zsh
+        setopt ERR_EXIT NOUNSET PIPE_FAIL
+        cat > "{input_capture}"
+        : > "{called_capture}"
+        if [[ -n "${{VICINAE_SELECTION:-}}" ]]; then
+          printf '%s' "$VICINAE_SELECTION"
+        fi
+        """,
+    )
+
+    env = os.environ.copy()
+    env.update(
+        {
+            "PATH": f"{bin_dir}:{env['PATH']}",
+            "HYPR_SHORTCUTS_DATA": str(data_file),
+            "HYPR_TEST_OUTPUT": str(output_capture),
+            "VICINAE_SELECTION": selection,
+        }
+    )
+
+    result = subprocess.run(
+        [
+            "zsh",
+            str(REPO_ROOT_PATH / "dotfiles" / "dot_local" / "bin" / "executable_hypr-shortcuts"),
+        ],
+        cwd=REPO_ROOT_PATH,
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+
+    return result, input_capture, output_capture, called_capture
+
+
+def test_hypr_shortcuts_executes_selected_launchable_entry_from_generated_data(tmp_path):
+    dataset = [
+        {
+            "id": "apps.browser",
+            "label": "Apps / Browser  Super+W",
+            "command": 'printf %s "$HYPR_TEST_OUTPUT" > "$HYPR_TEST_OUTPUT"',
+            "mode": "docs_only",
+        },
+        {
+            "id": "apps.terminal",
+            "label": "Apps / Terminal  Super+X",
+            "command": 'printf terminal > "$HYPR_TEST_OUTPUT"',
+            "mode": "launchable",
+        },
+    ]
+
+    result, input_capture, output_capture, _ = run_hypr_shortcuts(
+        tmp_path,
+        dataset,
+        selection="apps.terminal\tApps / Terminal  Super+X",
+    )
+
+    assert result.returncode == 0
+    assert output_capture.read_text() == "terminal"
+    assert input_capture.read_text() == "apps.terminal\tApps / Terminal  Super+X"
+
+
+def test_hypr_shortcuts_duplicate_labels_still_execute_the_selected_id(tmp_path):
+    dataset = [
+        {
+            "id": "apps.first",
+            "label": "Apps / Browser  Super+W",
+            "command": 'printf first > "$HYPR_TEST_OUTPUT.first"',
+            "mode": "launchable",
+        },
+        {
+            "id": "apps.second",
+            "label": "Apps / Browser  Super+W",
+            "command": 'printf second > "$HYPR_TEST_OUTPUT.second"',
+            "mode": "launchable",
+        },
+    ]
+
+    result, input_capture, output_capture, _ = run_hypr_shortcuts(
+        tmp_path,
+        dataset,
+        selection="apps.second\tApps / Browser  Super+W",
+    )
+
+    assert result.returncode == 0
+    assert not output_capture.exists()
+    assert (tmp_path / "command-output.txt.second").read_text() == "second"
+    assert not (tmp_path / "command-output.txt.first").exists()
+    assert input_capture.read_text().splitlines() == [
+        "apps.first\tApps / Browser  Super+W",
+        "apps.second\tApps / Browser  Super+W",
+    ]
+
+
+def test_hypr_shortcuts_reports_malformed_json_and_exits_non_zero(tmp_path):
+    result, _, output_capture, called_capture = run_hypr_shortcuts(
+        tmp_path,
+        "{not valid json}\n",
+        selection="ignored",
+    )
+
+    assert result.returncode != 0
+    assert "hypr-shortcuts: failed to parse launchable shortcuts from" in result.stderr
+    assert not output_capture.exists()
+    assert not called_capture.exists()
 
 
 def test_hypr_shared_browser_matchers_include_zen_for_routing_and_navigation():

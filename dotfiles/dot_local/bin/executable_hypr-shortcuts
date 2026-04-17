@@ -19,17 +19,71 @@ if [ ! -f "$data_file" ]; then
   exit 1
 fi
 
-selection="$({
-  jq -r '.[] | select(.mode == "launchable") | .label' "$data_file"
-} | "$vicinae_bin" dmenu --placeholder "shortcuts" --section-title "Shortcuts {count}" --navigation-title "Shortcuts")" || exit 0
+set +e
+menu_entries="$(jq -r '.[] | select(.mode == "launchable") | [.id, .label] | @tsv' "$data_file")"
+jq_status=$?
+set -e
+
+if [ "$jq_status" -ne 0 ]; then
+  log "failed to parse launchable shortcuts from $data_file"
+  exit "$jq_status"
+fi
+
+[ -n "$menu_entries" ] || exit 0
+
+set +e
+selection="$(printf '%s' "$menu_entries" | "$vicinae_bin" dmenu --placeholder "shortcuts" --section-title "Shortcuts {count}" --navigation-title "Shortcuts")"
+menu_status=$?
+set -e
+
+if [ "$menu_status" -ne 0 ]; then
+  if [ "$menu_status" -eq 130 ]; then
+    exit 0
+  fi
+  log "shortcut picker failed"
+  exit "$menu_status"
+fi
 
 [ -n "$selection" ] || exit 0
 
-command="$(jq -r --arg label "$selection" '.[] | select(.mode == "launchable" and .label == $label) | .command' "$data_file")"
+case "$selection" in
+  *$'\t'*) ;;
+  *)
+    log "invalid shortcut selection: $selection"
+    exit 1
+    ;;
+esac
+
+selection_id="${selection%%$'\t'*}"
+[ -n "$selection_id" ] || {
+  log "invalid shortcut selection: $selection"
+  exit 1
+}
+
+command="$(jq -r --arg id "$selection_id" '
+  [.[] | select(.mode == "launchable" and .id == $id) | .command] as $commands
+  | if ($commands | length) == 1 then
+      $commands[0]
+    elif ($commands | length) == 0 then
+      empty
+    else
+      error("ambiguous launchable shortcut id: \($id)")
+    end
+' "$data_file")" || {
+  log "failed to resolve shortcut command for id: $selection_id"
+  exit 1
+}
 
 if [ -z "$command" ] || [ "$command" = "null" ]; then
-  log "no command found for selection: $selection"
+  log "no command found for shortcut id: $selection_id"
   exit 1
 fi
+
+case "$command" in
+  *$'\n'*)
+    log "shortcut command for $selection_id is not single-line"
+    exit 1
+    ;;
+esac
 
 zsh -lc "$command"

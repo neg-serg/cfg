@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install salt pytest ruff shellcheck yamllint salt-lint
+
+      - name: Run lint
+        run: |
+          just lint
+
+      - name: Run validation
+        run: |
+          just validate
+
+      - name: Run tests
+        run: |
+          pytest tests/ -q

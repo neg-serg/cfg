@@ -4,13 +4,16 @@
 return {
   "folke/snacks.nvim",
   priority = 1000,
-  lazy = false,
-  opts = {
-    bigfile = { enabled = true },
-    dashboard = {
-        enabled = true,
-        preset = {
-            header = [[
+  event = { "UIEnter", "BufReadPre" },
+  opts = function()
+    local has_args = vim.fn.argc(-1) > 0
+
+    return {
+      bigfile = { enabled = true },
+      dashboard = {
+          enabled = not has_args,
+          preset = {
+              header = [[
                 .d$$$$*$$$$$$bc
              .d$P"    d$$    "*$$.
            d$"      4$"$$      "$$.
@@ -30,22 +33,23 @@ return {
             *$b.             .d$P"
               "$$$ec.....ze$$$"
                   "**$$$**""
-            ]]
-        },
-        sections = {
-            { section = "header" },
-            { section = "recent_files", limit = 8, padding = 1 },
-            { section = "startup" },
-        },
-    },
-    indent = { enabled = false },
-    input = { enabled = true },
-    notifier = { enabled = true },
-    quickfile = { enabled = true },
-    scroll = { enabled = false },
-    statuscolumn = { enabled = true },
-    words = { enabled = true },
-  },
+              ]]
+          },
+          sections = {
+              { section = "header" },
+              { section = "recent_files", limit = 8, padding = 1 },
+              { section = "startup" },
+          },
+      },
+      indent = { enabled = false },
+      input = { enabled = true },
+      notifier = { enabled = true },
+      quickfile = { enabled = has_args },
+      scroll = { enabled = false },
+      statuscolumn = { enabled = true },
+      words = { enabled = true },
+    }
+  end,
   keys = {
     { "<leader>ss", function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
     { "<leader>S",  function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },

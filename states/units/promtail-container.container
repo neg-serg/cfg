@@ -12,9 +12,9 @@
 [Unit]
 Description=Promtail log shipper to Loki (containerized)
 Documentation=https://grafana.com/docs/loki/latest/clients/promtail/
-After=network-online.target loki.service
+After=network-online.target loki-container.service
 Wants=network-online.target
-Requires=loki.service
+Requires=loki-container.service
 # StartLimit* keys belong in [Unit] per systemd.unit(5).
 StartLimitBurst=5
 StartLimitIntervalSec=60
@@ -22,17 +22,15 @@ StartLimitIntervalSec=60
 [Container]
 Image={{ image }}
 ContainerName=promtail
-PublishPort=127.0.0.1:{{ catalog_entry.port }}:9080
+
+    Network=slirp4netns
+    PublishPort=127.0.0.1:{{ catalog_entry.port }}:9080
 {% for m in expanded_mounts -%}
 Volume={{ m.host }}:{{ m.container }}:{{ m.mode }}
 {% endfor -%}
 # Upstream image expects -config.file at the mounted config path.
 Exec=-config.file=/etc/promtail/config.yaml
-HealthCmd=wget -qO- http://127.0.0.1:9080/ready || exit 1
-HealthInterval=30s
-HealthRetries=3
-HealthTimeout=5s
-Notify=healthy
+# Health check disabled: Promtail image lacks wget/curl
 
 [Service]
 Restart=on-failure

@@ -19,4 +19,6 @@
     - fs_vfstype: {{ _fs }}
     - fs_mntops: {{ _opts }}
     - mount: False
+    - require_in:
+      - cmd: format_fstab
 {% endfor %}

@@ -35,10 +35,10 @@ loki:                          # Log aggregation (Grafana Loki)
   bind_mounts:
     - host: /etc/loki
       container: /etc/loki
-      mode: ro                 # Salt-managed config; container reads it read-only
+      mode: ro,Z               # Salt-managed config; container reads it read-only
     - host: /var/lib/loki-container
       container: /var/lib/loki
-      mode: rw                 # Container state dir
+      mode: rw,Z               # Container state dir
   env_file: null
 
 promtail:                      # Log shipper for Loki
@@ -52,18 +52,22 @@ promtail:                      # Log shipper for Loki
   bind_mounts:
     - host: /etc/promtail
       container: /etc/promtail
-      mode: ro
+      mode: ro,Z
     - host: /var/log/journal
       container: /var/log/journal
-      mode: ro                 # systemd journal (persistent)
+      mode: ro,Z               # systemd journal (persistent)
     - host: /run/log/journal
       container: /run/log/journal
-      mode: ro                 # systemd journal (runtime)
+      mode: ro,Z               # systemd journal (runtime)
+    - host: /var/cache/promtail
+      container: /var/cache/promtail
+      mode: rw,Z
   env_file: null
 
 grafana:                       # Monitoring dashboard
   port: 3030
   health_path: /api/health
+  timeout: 90
   unit: grafana
   scope: system
   packages: grafana
@@ -72,13 +76,13 @@ grafana:                       # Monitoring dashboard
   bind_mounts:
     - host: /etc/grafana.ini
       container: /etc/grafana/grafana.ini
-      mode: ro
+      mode: ro,Z
     - host: /etc/grafana/provisioning
       container: /etc/grafana/provisioning
-      mode: ro                 # provisioning-as-code already Salt-managed
+      mode: ro,Z               # provisioning-as-code already Salt-managed
     - host: /var/lib/grafana-container
       container: /var/lib/grafana
-      mode: rw
+      mode: rw,Z
   env_file: null
 
 adguardhome:                   # DNS-level ad blocker (containerized)

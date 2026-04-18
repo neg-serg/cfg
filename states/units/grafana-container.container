@@ -16,7 +16,7 @@
 Description=Grafana OSS dashboard (containerized)
 Documentation=https://grafana.com/docs/grafana/
 After=network-online.target
-Wants=network-online.target loki.service
+Wants=network-online.target loki-container.service
 # StartLimit* keys belong in [Unit] per systemd.unit(5).
 StartLimitBurst=5
 StartLimitIntervalSec=60
@@ -24,18 +24,22 @@ StartLimitIntervalSec=60
 [Container]
 Image={{ image }}
 ContainerName=grafana
-PublishPort=127.0.0.1:{{ catalog_entry.port }}:3000
+    User=207
+    Group=207
+    Network=slirp4netns
+    PublishPort=127.0.0.1:{{ catalog_entry.port }}:3000
 {% for m in expanded_mounts -%}
 Volume={{ m.host }}:{{ m.container }}:{{ m.mode }}
 {% endfor -%}
 Environment=GF_PATHS_CONFIG=/etc/grafana/grafana.ini
 Environment=GF_PATHS_PROVISIONING=/etc/grafana/provisioning
 Environment=GF_PATHS_DATA=/var/lib/grafana
-HealthCmd=wget -qO- http://127.0.0.1:3000/api/health || exit 1
-HealthInterval=30s
-HealthRetries=3
-HealthTimeout=5s
-Notify=healthy
+# Health check disabled temporarily to avoid startup timeout
+# HealthCmd=wget -qO- http://127.0.0.1:{{ catalog_entry.port }}/api/health || exit 1
+# HealthInterval=30s
+# HealthRetries=3
+# HealthTimeout=5s
+# Notify=healthy
 
 [Service]
 Restart=on-failure

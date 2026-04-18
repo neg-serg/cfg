@@ -9,7 +9,7 @@
 {% set mon = host.features.monitoring %}
 
 {# ── Loki: log aggregation ── #}
-{{ paru_install('loki', 'loki') }}
+
 
 loki_config:
   file.managed:
@@ -21,16 +21,16 @@ loki_config:
     - context:
         loki_port: {{ catalog.loki.port }}
 
-{{ service_stopped('loki_native_dead', 'loki', requires=['cmd: install_loki']) }}
 
-{{ ensure_dir('loki_container_state_dir', '/var/lib/loki-container', user='root') }}
+
+{{ ensure_dir('loki_container_state_dir', '/var/lib/loki-container', user='loki') }}
 {{ container_service('loki', catalog.loki, image_registry,
     quadlet_unit_name='loki-container',
-    requires=['file: loki_config', 'file: loki_container_state_dir', 'cmd: managed_service_accounts_ensure', 'cmd: managed_service_paths_ensure']) }}
+    requires=['file: loki_config', 'file: loki_container_state_dir']) }}
 
 {# ── Promtail: log shipper to Loki ── #}
 {% if mon.promtail and mon.loki %}
-{{ paru_install('promtail', 'promtail') }}
+
 
 promtail_config:
   file.managed:
@@ -43,17 +43,17 @@ promtail_config:
         loki_port: {{ catalog.loki.port }}
         promtail_port: {{ catalog.promtail.port }}
 
-{{ service_stopped('promtail_native_dead', 'promtail', requires=['cmd: install_promtail']) }}
 
-{{ ensure_dir('promtail_cache_dir', '/var/cache/promtail', user='root') }}
+
+{{ ensure_dir('promtail_cache_dir', '/var/cache/promtail', user='promtail') }}
 {{ container_service('promtail', catalog.promtail, image_registry,
     quadlet_unit_name='promtail-container',
-    requires=['cmd: install_promtail', 'file: promtail_config']) }}
+    requires=['file: promtail_config']) }}
 {% endif %}
 
 {# ── Grafana: dashboard with Loki datasource ── #}
 {% if mon.grafana %}
-{{ paru_install('grafana', 'grafana') }}
+
 
 {% if mon.loki %}
 grafana_loki_datasource:
@@ -70,7 +70,7 @@ grafana_loki_datasource:
 grafana_config:
   file.managed:
     - name: /etc/grafana.ini
-    - mode: '0640'
+    - mode: '0644'
     - source: salt://configs/grafana.ini.j2
     - template: jinja
     - context:
@@ -91,12 +91,12 @@ grafana_proxypilot_dashboard:
     - mode: '0644'
     - source: salt://configs/grafana-dashboard-proxypilot.json
 
-{{ service_stopped('grafana_native_dead', 'grafana', requires=['cmd: install_grafana']) }}
 
-{{ ensure_dir('grafana_container_state_dir', '/var/lib/grafana-container', user='root') }}
+
+{{ ensure_dir('grafana_container_state_dir', '/var/lib/grafana-container', user='grafana', mode='0755') }}
 {% set _grafana_watch = ['file: grafana_config', 'file: grafana_dashboards_provider', 'file: grafana_proxypilot_dashboard'] + (['file: grafana_loki_datasource'] if mon.loki else []) %}
 {{ container_service('grafana', catalog.grafana, image_registry,
     quadlet_unit_name='grafana-container',
-    requires=['cmd: install_grafana', 'file: grafana_config', 'file: grafana_dashboards_provider', 'file: grafana_proxypilot_dashboard', 'file: grafana_container_state_dir'],
+    requires=['file: grafana_config', 'file: grafana_dashboards_provider', 'file: grafana_proxypilot_dashboard', 'file: grafana_container_state_dir'],
     watch=_grafana_watch) }}
 {% endif %}

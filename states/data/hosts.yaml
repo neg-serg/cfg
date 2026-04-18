@@ -89,9 +89,9 @@ hosts:
     features:
       fancontrol: true
       monitoring:
-        loki: false
-        promtail: false
-        grafana: false
+        loki: true
+        promtail: true
+        grafana: true
       services:
         transmission: true
       user_services:

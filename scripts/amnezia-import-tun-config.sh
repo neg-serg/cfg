@@ -20,20 +20,45 @@ import re
 import sys
 from pathlib import Path
 
+def extract_payload(data):
+    # Try old format: last_config = @ByteArray(...)
+    match = re.search(r'last_config\s*=\s*@ByteArray\(([^)]*)\)', data, re.S)
+    if match:
+        blob = ''.join(match.group(1).split())
+        padding = '=' * (-len(blob) % 4)
+        try:
+            decoded = base64.b64decode(blob + padding, validate=True)
+            return json.loads(decoded.decode('utf-8'))
+        except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise SystemExit(f'invalid last_config payload: {exc}') from exc
+    # Try new format: serversList JSON with last_config inside
+    servers_match = re.search(r'serversList=\"(.*?)\"\n', data, re.S)
+    if not servers_match:
+        raise SystemExit('could not locate serversList in AmneziaVPN.conf')
+    servers_json = servers_match.group(1)
+    servers_json = servers_json.encode().decode('unicode_escape')
+    try:
+        servers = json.loads(servers_json)
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f'invalid serversList JSON: {exc}') from exc
+    if not servers:
+        raise SystemExit('serversList is empty')
+    server = servers[0]
+    containers = server.get('containers', [])
+    if not containers:
+        raise SystemExit('no containers in server')
+    container = containers[0]
+    xray = container.get('xray', {})
+    last_config_str = xray.get('last_config')
+    if not last_config_str:
+        raise SystemExit('last_config not found in xray container')
+    last_config_str = last_config_str.encode().decode('unicode_escape')
+    return json.loads(last_config_str)
+
 src = Path(sys.argv[1])
 out = Path(sys.argv[2])
 data = src.read_text(encoding='utf-8', errors='strict')
-match = re.search(r'last_config\s*=\s*@ByteArray\(([^)]*)\)', data, re.S)
-if not match:
-    raise SystemExit('could not locate last_config in AmneziaVPN.conf')
-
-blob = ''.join(match.group(1).split())
-padding = '=' * (-len(blob) % 4)
-try:
-    decoded = base64.b64decode(blob + padding, validate=True)
-    payload = json.loads(decoded.decode('utf-8'))
-except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as exc:
-    raise SystemExit(f'invalid last_config payload in {src}: {exc}') from exc
+payload = extract_payload(data)
 
 out.parent.mkdir(parents=True, exist_ok=True)
 out.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
@@ -50,6 +75,41 @@ import re
 import sys
 from pathlib import Path
 
+def extract_payload(data):
+    # Try old format: last_config = @ByteArray(...)
+    match = re.search(r'last_config\s*=\s*@ByteArray\(([^)]*)\)', data, re.S)
+    if match:
+        blob = ''.join(match.group(1).split())
+        padding = '=' * (-len(blob) % 4)
+        try:
+            decoded = base64.b64decode(blob + padding, validate=True)
+            return json.loads(decoded.decode('utf-8'))
+        except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise SystemExit(f'invalid last_config payload: {exc}') from exc
+    # Try new format: serversList JSON with last_config inside
+    servers_match = re.search(r'serversList="(.*?)"\n', data, re.S)
+    if not servers_match:
+        raise SystemExit('could not locate serversList in AmneziaVPN.conf')
+    servers_json = servers_match.group(1).replace('\\n', '').replace('\\"', '"')
+    servers_json = servers_json.encode().decode('unicode_escape')
+    try:
+        servers = json.loads(servers_json)
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f'invalid serversList JSON: {exc}') from exc
+    if not servers:
+        raise SystemExit('serversList is empty')
+    server = servers[0]
+    containers = server.get('containers', [])
+    if not containers:
+        raise SystemExit('no containers in server')
+    container = containers[0]
+    xray = container.get('xray', {})
+    last_config_str = xray.get('last_config')
+    if not last_config_str:
+        raise SystemExit('last_config not found in xray container')
+    last_config_str = last_config_str.encode().decode('unicode_escape')
+    return json.loads(last_config_str)
+
 src = Path(sys.argv[1])
 out = Path(sys.argv[2])
 if not src.is_file():
@@ -58,18 +118,8 @@ if not out.is_file():
     raise SystemExit(f'missing runtime config: {out}')
 
 data = src.read_text(encoding='utf-8', errors='strict')
-match = re.search(r'last_config\s*=\s*@ByteArray\(([^)]*)\)', data, re.S)
-if not match:
-    raise SystemExit(f'could not locate last_config in {src}')
-
-blob = ''.join(match.group(1).split())
-padding = '=' * (-len(blob) % 4)
-try:
-    decoded = base64.b64decode(blob + padding, validate=True)
-    expected = json.loads(decoded.decode('utf-8'))
-    current = json.loads(out.read_text(encoding='utf-8'))
-except (ValueError, UnicodeDecodeError, json.JSONDecodeError):
-    raise SystemExit(f'invalid last_config payload in {src}')
+expected = extract_payload(data)
+current = json.loads(out.read_text(encoding='utf-8'))
 
 if current != expected:
     raise SystemExit(f'{out} does not match imported AmneziaVPN payload')

@@ -19,17 +19,16 @@ StartLimitIntervalSec=60
 [Container]
 Image={{ image }}
 ContainerName=loki
-PublishPort=127.0.0.1:{{ catalog_entry.port }}:3100
+    User=947
+    Group=947
+    Network=slirp4netns
+    PublishPort=127.0.0.1:{{ catalog_entry.port }}:3100
 {% for m in expanded_mounts -%}
 Volume={{ m.host }}:{{ m.container }}:{{ m.mode }}
 {% endfor -%}
 # Upstream image expects -config.file at the mounted config path.
 Exec=-config.file=/etc/loki/config.yaml
-HealthCmd=wget -qO- http://127.0.0.1:3100/ready || exit 1
-HealthInterval=30s
-HealthRetries=3
-HealthTimeout=5s
-Notify=healthy
+# Health check disabled: Loki image lacks wget/curl
 
 [Service]
 Restart=on-failure

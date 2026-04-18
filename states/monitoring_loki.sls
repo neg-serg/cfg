@@ -4,8 +4,8 @@
 {% from '_imports.jinja' import host %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
-{% from '_macros_service.jinja' import ensure_dir, service_stopped, container_service %}
-{% from '_macros_pkg.jinja' import paru_install %}
+{% from '_macros_service.jinja' import ensure_dir, container_service %}
+
 {% set mon = host.features.monitoring %}
 
 {# ── Loki: log aggregation ── #}

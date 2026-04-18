@@ -70,7 +70,7 @@
       opencode: false
 
 - name: matrix-containerized
-  description: All US1/US2 containerization flags enabled (exercises the Quadlet/container_service render path)
+  description: All US1/US2 containerized services enabled (exercises the Quadlet/container_service render path)
   overrides:
     hostname: matrix-containerized
     features:

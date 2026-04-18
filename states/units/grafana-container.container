@@ -27,7 +27,7 @@ ContainerName=grafana
     User=207
     Group=207
     Network=slirp4netns
-    PublishPort=127.0.0.1:{{ catalog_entry.port }}:3000
+    PublishPort=127.0.0.1:{{ catalog_entry.port }}:{{ catalog_entry.port }}
 {% for m in expanded_mounts -%}
 Volume={{ m.host }}:{{ m.container }}:{{ m.mode }}
 {% endfor -%}

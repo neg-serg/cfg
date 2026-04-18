@@ -121,6 +121,16 @@ data = src.read_text(encoding='utf-8', errors='strict')
 expected = extract_payload(data)
 current = json.loads(out.read_text(encoding='utf-8'))
 
+current_route = current.get("route", {})
+filtered_rules = [
+    rule for rule in current.get("route", {}).get("rules", [])
+    if rule.get("tag") != "vpn-split-router-managed"
+]
+if "route" in current:
+    current_route["rules"] = filtered_rules
+    current["route"] = current_route
+expected.get("route", {}).setdefault("rules", [])
+
 if current != expected:
     raise SystemExit(f'{out} does not match imported AmneziaVPN payload')
 

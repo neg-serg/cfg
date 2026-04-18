@@ -1,9 +1,7 @@
-"""Unit tests for data file cross-reference consistency.
+"""Unit tests for states/data schema and consistency contracts.
 
-Validates that references between states/data/*.yaml files resolve correctly:
-- installers.yaml ${VER} URLs → versions.yaml keys
-- service_catalog.yaml packages → packages.yaml entries
-- monitored_services.yaml names → service_catalog/services.yaml keys
+Validates cross-file references, schema constraints, and data-specific invariants
+across repository-managed YAML data files under states/data/.
 """
 
 import os
@@ -325,3 +323,62 @@ def test_collect_known_services_includes_root_level_units():
     assert "xray.service" in known
     assert "transmission-container.container" in known
     assert "salt-daemon.service" in known
+
+
+def _assert_vpn_split_router_schema(data):
+    settings = data["settings"]
+    for setting in (
+        "probe_timeout_seconds",
+        "probe_interval_seconds",
+        "seed_vpn_failure_threshold",
+        "observed_vpn_failure_threshold",
+        "direct_ttl_seconds",
+        "vpn_ttl_seconds",
+        "observed_stale_after_seconds",
+    ):
+        assert isinstance(settings[setting], (int, float))
+        assert not isinstance(settings[setting], bool)
+    assert settings["probe_timeout_seconds"] > 0
+    assert settings["probe_interval_seconds"] > 0
+    assert settings["seed_vpn_failure_threshold"] >= 1
+    assert settings["observed_vpn_failure_threshold"] >= 1
+    assert settings["direct_ttl_seconds"] > 0
+    assert settings["vpn_ttl_seconds"] > 0
+    assert settings["observed_stale_after_seconds"] > settings["vpn_ttl_seconds"]
+
+    seed_domains = data["seed_domains"]
+    assert isinstance(seed_domains, list) and seed_domains
+    assert all(isinstance(domain, str) and "." in domain for domain in seed_domains)
+
+
+def test_vpn_split_router_schema_is_valid():
+    data = load_yaml("vpn_split_router.yaml")
+
+    _assert_vpn_split_router_schema(data)
+
+
+@pytest.mark.parametrize(
+    "setting",
+    [
+        "probe_timeout_seconds",
+        "probe_interval_seconds",
+        "seed_vpn_failure_threshold",
+        "observed_vpn_failure_threshold",
+        "direct_ttl_seconds",
+        "vpn_ttl_seconds",
+        "observed_stale_after_seconds",
+    ],
+)
+def test_vpn_split_router_schema_rejects_boolean_settings(setting):
+    data = load_yaml("vpn_split_router.yaml")
+    data["settings"][setting] = True
+
+    with pytest.raises(AssertionError):
+        _assert_vpn_split_router_schema(data)
+
+
+def test_vpn_split_router_seed_domains_are_unique():
+    data = load_yaml("vpn_split_router.yaml")
+
+    seed_domains = data["seed_domains"]
+    assert len(seed_domains) == len(set(seed_domains))

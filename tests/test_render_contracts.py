@@ -566,6 +566,75 @@ def test_amnezia_import_user_units_are_deployed_but_not_auto_enabled():
     assert "ExecStart=%h/.local/bin/amnezia-import-tun-config import" in service_source
 
 
+def test_vpn_split_router_state_deploys_helper_config_and_units():
+    path = os.path.join(REPO_ROOT, "states", "network.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "vpn_split_router_script:" in source
+    assert "vpn_split_router.py" in source
+    assert "vpn_split_router_config:" in source
+    assert "configs/vpn-split-router.yaml.j2" in source
+    assert "user_service_file('vpn_split_router_service', 'vpn-split-router.service'" in source
+    assert "user_service_file('vpn_split_router_timer', 'vpn-split-router.timer'" in source
+    assert "user_service_enable('vpn_split_router_enabled'" in source
+    assert "cmd: vpn_split_router_service_daemon_reload" in source
+    assert "cmd: vpn_split_router_timer_daemon_reload" in source
+
+
+def test_vpn_split_router_units_use_user_scope_and_timer_schedule():
+    service_path = os.path.join(REPO_ROOT, "states", "units", "user", "vpn-split-router.service")
+    timer_path = os.path.join(REPO_ROOT, "states", "units", "user", "vpn-split-router.timer")
+
+    with open(service_path) as fh:
+        service_source = fh.read()
+    with open(timer_path) as fh:
+        timer_source = fh.read()
+
+    assert "Type=oneshot" in service_source
+    assert "ExecStart=%h/.local/bin/vpn-split-router recheck" in service_source
+    assert "OnBootSec=2m" in timer_source
+    assert "OnUnitActiveSec=15m" in timer_source
+    assert "WantedBy=timers.target" in timer_source
+
+
+def test_vpn_split_router_state_deploys_sing_box_react_units():
+    path = os.path.join(REPO_ROOT, "states", "network.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "sing_box_tun_react_service_unit:" in source
+    assert "sing-box-tun-react.service" in source
+    assert "sing_box_tun_react_path_unit:" in source
+    assert "sing-box-tun-react.path" in source
+    assert "sing_box_tun_react_path_running:" in source
+
+
+def test_sing_box_tun_react_units_watch_runtime_config_and_restart_service():
+    service_path = os.path.join(REPO_ROOT, "states", "units", "sing-box-tun-react.service")
+    path_path = os.path.join(REPO_ROOT, "states", "units", "sing-box-tun-react.path")
+    with open(service_path) as fh:
+        service_source = fh.read()
+    with open(path_path) as fh:
+        path_source = fh.read()
+
+    assert (
+        "systemctl is-active sing-box-tun.service --quiet && systemctl restart sing-box-tun.service || true"
+        in service_source
+    )
+    assert "PathChanged={{ home }}/.config/sing-box-tun/config.json" in path_source
+    assert "Unit=sing-box-tun-react.service" in path_source
+
+
+def test_vpn_split_router_config_template_preserves_empty_seed_domain_list():
+    path = os.path.join(REPO_ROOT, "states", "configs", "vpn-split-router.yaml.j2")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "seed_domains: []" in source
+    assert "{% if router.seed_domains %}" in source
+
+
 def test_telethon_bridge_state_deploys_reactivity_units_and_helper():
     path = os.path.join(REPO_ROOT, "states", "telethon_bridge.sls")
     with open(path) as fh:

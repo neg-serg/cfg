@@ -1,0 +1,10 @@
+[Unit]
+Description=Periodic zero-config VPN routing reconcile
+
+[Timer]
+OnBootSec=2m
+OnUnitActiveSec=15m
+Unit=vpn-split-router.service
+
+[Install]
+WantedBy=timers.target

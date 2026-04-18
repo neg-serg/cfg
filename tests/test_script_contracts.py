@@ -143,6 +143,15 @@ def test_amnezia_import_script_parses_in_zsh():
     assert result.returncode == 0, result.stderr
 
 
+def test_amnezia_import_check_ignores_router_managed_rule_block():
+    source = (REPO_ROOT / "scripts" / "amnezia-import-tun-config.sh").read_text()
+
+    assert 'current.get("route", {}).get("rules", [])' in source
+    assert 'rule.get("tag") != "vpn-split-router-managed"' in source
+    assert 'current_route["rules"] = filtered_rules' in source
+    assert 'expected.get("route", {}).setdefault("rules", [])' in source
+
+
 def test_telethon_bridge_react_script_contains_guarded_start_restart_logic():
     source = (REPO_ROOT / "scripts" / "telethon-bridge-react.sh").read_text()
 
@@ -275,3 +284,25 @@ def test_breakglass_recovery_docs_cover_file_based_age_backup_set():
     assert "Store the identity backup separately from the password" in breakglass
     assert "gopass show -o <known-key>" in breakglass
     assert "gopass-breakglass-recovery.md" in setup
+
+
+def test_vpn_split_router_script_exposes_expected_subcommands():
+    source = (REPO_ROOT / "scripts" / "vpn_split_router.py").read_text()
+
+    assert 'add_parser("status")' in source
+    assert 'add_parser("list")' in source
+    assert 'add_parser("recheck")' in source
+    assert 'add_parser("forget")' in source
+    assert 'add_parser("mark-vpn")' in source
+    assert 'add_parser("mark-direct")' in source
+    assert 'add_parser("observe")' in source
+
+
+def test_vpn_split_router_script_compiles():
+    script = REPO_ROOT / "scripts" / "vpn_split_router.py"
+
+    result = subprocess.run(
+        ["python3", "-m", "py_compile", str(script)], capture_output=True, text=True
+    )
+
+    assert result.returncode == 0, result.stderr

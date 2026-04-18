@@ -1,0 +1,6 @@
+[Unit]
+Description=Restart sing-box-tun after runtime config changes
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'systemctl is-active sing-box-tun.service --quiet && systemctl restart sing-box-tun.service || true'

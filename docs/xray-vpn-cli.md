@@ -76,6 +76,35 @@ sing-box check -c ~/.config/sing-box-tun/config-singbox.json
 
 If the check passes, enable the TUN service:
 
+## Zero-config router workflow
+
+When `features.network.vpn_split_router` is enabled, use the helper to reconcile routing state and inspect decisions:
+
+```bash
+~/.local/bin/vpn-split-router recheck
+~/.local/bin/vpn-split-router status
+~/.local/bin/vpn-split-router list
+```
+
+Reconciliation also runs automatically via the user `systemd` units `vpn-split-router.timer` and `vpn-split-router.service`.
+
+```bash
+systemctl --user status vpn-split-router.timer vpn-split-router.service
+```
+
+Temporary state edit escape hatches:
+
+```bash
+~/.local/bin/vpn-split-router mark-vpn claude.ai
+~/.local/bin/vpn-split-router mark-direct claude.ai
+~/.local/bin/vpn-split-router forget claude.ai
+```
+
+`mark-vpn` and `mark-direct` only adjust the current router state until later reconciliation updates it.
+`forget` only removes the current state entry; seed domains can reappear on a later `recheck` or timer run, while observed-only domains return only if an external producer observes them again or you add them back manually.
+
+Start the TUN service:
+
 ```bash
 sudo systemctl start sing-box-tun
 ```

@@ -1,0 +1,7 @@
+[Unit]
+Description=Reconcile zero-config VPN routing state
+After=default.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/vpn-split-router recheck

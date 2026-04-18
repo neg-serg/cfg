@@ -76,6 +76,35 @@ sing-box check -c ~/.config/sing-box-tun/config-singbox.json
 
 Если проверка проходит, запустите TUN-сервис:
 
+## Поток zero-config router
+
+Когда включен `features.network.vpn_split_router`, используйте helper для пересборки состояния и просмотра решений:
+
+```bash
+~/.local/bin/vpn-split-router recheck
+~/.local/bin/vpn-split-router status
+~/.local/bin/vpn-split-router list
+```
+
+Пересборка также автоматически запускается через пользовательские `systemd`-юниты `vpn-split-router.timer` и `vpn-split-router.service`.
+
+```bash
+systemctl --user status vpn-split-router.timer vpn-split-router.service
+```
+
+Временные escape hatch команды для правки состояния:
+
+```bash
+~/.local/bin/vpn-split-router mark-vpn claude.ai
+~/.local/bin/vpn-split-router mark-direct claude.ai
+~/.local/bin/vpn-split-router forget claude.ai
+```
+
+`mark-vpn` и `mark-direct` меняют только текущее состояние роутера, пока его не обновит следующая пересборка.
+`forget` удаляет только текущую запись состояния; seed-домены могут появиться снова при следующем `recheck` или запуске таймера, а observed-only домены вернутся только если внешний источник заново их обнаружит или вы добавите их вручную.
+
+Запустите TUN-сервис:
+
 ```bash
 sudo systemctl start sing-box-tun
 ```

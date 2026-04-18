@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch sing-box runtime config for live restarts
+
+[Path]
+PathChanged={{ home }}/.config/sing-box-tun/config.json
+Unit=sing-box-tun-react.service
+
+[Install]
+WantedBy=multi-user.target

@@ -1,5 +1,5 @@
 local M = {}
-local uv = vim.uv or vim.loop
+local uv = vim.uv
 
 local HALF_LIFE = 30 * 24 * 3600 -- 30 days in seconds
 local LAMBDA = math.log(2) / HALF_LIFE

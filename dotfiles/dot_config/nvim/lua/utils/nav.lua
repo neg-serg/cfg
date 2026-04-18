@@ -3,7 +3,7 @@
 -- Used by ftplugin/markdown.lua, ftplugin/sh.lua, ftplugin/lua.lua,
 -- and indirectly by utils/fzf.lua and 04-aucmds.lua.
 local M = {}
-local uv = vim.uv or vim.loop
+local uv = vim.uv
 
 -- Ordered by specificity so ecosystem markers win over generic VCS roots,
 -- which gives correct behaviour inside monorepo sub-projects.

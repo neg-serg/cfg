@@ -15,7 +15,7 @@ return function()
     local ok_devicons, devicons = pcall(require, 'nvim-web-devicons')
 
     -- Debug helpers
-    local uv = vim.uv or vim.loop
+    local uv = vim.uv
     local DEBUG = (vim.env.HEIRLINE_DEBUG == '1') or (vim.g.heirline_debug == true)
     local DBG_TITLE, DBG_MAX = 'HeirlineDBG', 600
     local dbg_log = {}

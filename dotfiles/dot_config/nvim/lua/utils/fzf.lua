@@ -50,7 +50,7 @@ function M.frecency()
   local entries = {}
   local curr = vim.api.nvim_buf_get_name(0)
   for _, item in ipairs(ranked) do
-    if item.path ~= curr and (vim.uv or vim.loop).fs_stat(item.path) then
+    if item.path ~= curr and vim.uv.fs_stat(item.path) then
       table.insert(entries, item.path)
     end
   end

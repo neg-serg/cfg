@@ -3,7 +3,7 @@
 -- then falls back to fzf-lua if nothing found.
 
 local nav = require('utils.nav')
-local uv  = vim.uv or vim.loop
+local uv  = vim.uv
 
 local function require_module_at_cursor()
   local line = vim.api.nvim_get_current_line()

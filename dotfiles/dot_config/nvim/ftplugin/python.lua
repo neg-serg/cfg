@@ -3,7 +3,7 @@
 -- Complements pyright's LSP gd — works without LSP and opens the file directly.
 
 local nav = require('utils.nav')
-local uv  = vim.uv or vim.loop
+local uv  = vim.uv
 
 local PY_EXTS = { '.py', '/__init__.py' }
 

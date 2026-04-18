@@ -6,11 +6,6 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   dependencies = { 'saghen/blink.cmp' },
   config = function()
-    if not (vim.lsp and vim.lsp.config and vim.lsp.enable) then
-      vim.notify('vim.lsp.config requires Neovim 0.11+', vim.log.levels.WARN)
-      return
-    end
-
     vim.diagnostic.config({
       virtual_text = false,
       virtual_lines = { current_line = true },

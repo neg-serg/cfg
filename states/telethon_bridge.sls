@@ -5,7 +5,7 @@
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir, container_service, user_service_file, user_service_enable %}
+{% from '_macros_service.jinja' import ensure_dir, container_service %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% set _proxy_key = proxypilot_key() %}
 {% set _tb_creds = home ~ '/.telethon-bridge/credentials' %}
@@ -63,29 +63,7 @@ telethon_bridge_init_script:
     - require:
       - file: telethon_bridge_config
 
-telethon_bridge_react_helper:
-  file.managed:
-    - name: {{ home }}/.local/bin/telethon-bridge-react
-    - source: salt://scripts/telethon-bridge-react.sh
-    - user: {{ user }}
-    - group: {{ user }}
-    - mode: '0755'
 
-{{ user_service_file('telethon_bridge_react_service', 'telethon-bridge-react.service') }}
-{{ user_service_file('telethon_bridge_react_path', 'telethon-bridge-react.path') }}
-
-{{ user_service_enable(
-    'telethon_bridge_react_enabled',
-    start_now=['telethon-bridge-react.path'],
-    check='active',
-    requires=[
-        'file: telethon_bridge_react_helper',
-        'file: telethon_bridge_react_service',
-        'cmd: telethon_bridge_react_service_daemon_reload',
-        'file: telethon_bridge_react_path',
-        'cmd: telethon_bridge_react_path_daemon_reload',
-    ],
-) }}
 
 # ── Containerized Telethon Bridge (localhost image) ──────────────────
 {{ container_service('telethon_bridge', catalog.telethon_bridge, image_registry,

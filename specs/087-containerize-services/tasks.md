@@ -92,7 +92,7 @@ This is a Salt state repository, not an application codebase:
 
 ### Unit files
 
-- [ ] **T013** [P] [US1] Author `/home/neg/src/salt/states/units/ollama.container` matching the `contracts/quadlet_unit_template.md` §Worked example for Ollama exactly. Include `AddDevice=/dev/kfd`, `AddDevice=/dev/dri/renderD128`, `GroupAdd=render`, `PublishPort=127.0.0.1:{{ catalog_entry.port }}:11434`, and the mandatory FR-015 `[Service]` block. The `[Service]` block MUST include two fail-loud GPU preflight checks as separate `ExecStartPre=` lines (systemd runs each in sequence; absolute paths are required; `test` returns non-zero and fails the unit start if the device is absent):
+- [X] **T013** [P] [US1] Author `/home/neg/src/salt/states/units/ollama.container` matching the `contracts/quadlet_unit_template.md` §Worked example for Ollama exactly. Include `AddDevice=/dev/kfd`, `AddDevice=/dev/dri/renderD128`, `GroupAdd=render`, `PublishPort=127.0.0.1:{{ catalog_entry.port }}:11434`, and the mandatory FR-015 `[Service]` block. The `[Service]` block MUST include two fail-loud GPU preflight checks as separate `ExecStartPre=` lines (systemd runs each in sequence; absolute paths are required; `test` returns non-zero and fails the unit start if the device is absent):
 
   ```
   ExecStartPre=/usr/bin/test -e /dev/kfd
@@ -101,11 +101,11 @@ This is a Salt state repository, not an application codebase:
 
   These preflight checks satisfy FR-007 (fail-loud GPU detection) and implement research.md Decision 2 — the existing `HealthCmd=curl http://127.0.0.1:11434/api/tags` HTTP probe is insufficient because `/api/tags` answers even on CPU-only startup, so the device-existence test MUST run before the container starts, not after. `HealthCmd` stays as the ongoing liveness probe. The file is a Jinja template, rendered by Salt with `catalog_entry` and `image_registry` context.
 
-- [ ] **T014** [P] [US1] Author `/home/neg/src/salt/states/units/llama-embed.container` following the same contract but without `AddDevice=/dev/kfd` (Vulkan-only per research Decision 2), with `PublishPort=127.0.0.1:{{ catalog_entry.port }}:<internal>`, and with `TimeoutStartSec=180` (llama.cpp-vulkan startup is slow on cold GPU — see `service_catalog.yaml` `timeout: 90` which is already tuned for this).
+- [X] **T014** [P] [US1] Author `/home/neg/src/salt/states/units/llama-embed.container` following the same contract but without `AddDevice=/dev/kfd` (Vulkan-only per research Decision 2), with `PublishPort=127.0.0.1:{{ catalog_entry.port }}:<internal>`, and with `TimeoutStartSec=180` (llama.cpp-vulkan startup is slow on cold GPU — see `service_catalog.yaml` `timeout: 90` which is already tuned for this).
 
 ### State-file edits
 
-- [ ] **T015** [US1] Edit `/home/neg/src/salt/states/ollama.sls` to branch on `features.containers.ollama`. When `true`: (a) call `container_service('ollama', catalog.ollama, image_registry, requires=['file: ollama_models_dir', 'mount: mount_one'])`; (b) keep the `ollama_models_dir` ensure state; (c) conditionally REWRITE the `pull_<model>` states in the containerized branch so they no longer invoke the host `ollama pull <model>` binary (no host binary exists once containerized — confirmed at `states/ollama.sls:45`). Instead, each `pull_<model>` state in the containerized branch becomes a `cmd.run` that shells out to:
+- [X] **T015** [US1] Edit `/home/neg/src/salt/states/ollama.sls` to branch on `features.containers.ollama`. When `true`: (a) call `container_service('ollama', catalog.ollama, image_registry, requires=['file: ollama_models_dir', 'mount: mount_one'])`; (b) keep the `ollama_models_dir` ensure state; (c) conditionally REWRITE the `pull_<model>` states in the containerized branch so they no longer invoke the host `ollama pull <model>` binary (no host binary exists once containerized — confirmed at `states/ollama.sls:45`). Instead, each `pull_<model>` state in the containerized branch becomes a `cmd.run` that shells out to:
 
   ```
   curl -sf -X POST http://127.0.0.1:11434/api/pull \
@@ -119,27 +119,27 @@ This is a Salt state repository, not an application codebase:
 
   Rationale: fixes spec-analysis finding H1 (model-pull states currently depend on the host `ollama` binary which does not exist in the containerized form) and satisfies FR-014 (no host binary dependency for containerized services).
 
-- [ ] **T016** [US1] Edit `/home/neg/src/salt/states/llama_embed.sls` with the same branching pattern. When `true`, call `container_service('llama_embed', catalog.llama_embed, image_registry, requires=['file: llama_embed_models_dir', 'cmd: llama_embed_model'])`. Keep the `http_file` model download state unconditional — the model file is the same on disk either way. When `false`, keep the native `paru_install('llama_cpp_vulkan', ...)` + `service_with_unit` path unchanged. Requires T004, T005, T008, T014.
+- [X] **T016** [US1] Edit `/home/neg/src/salt/states/llama_embed.sls` with the same branching pattern. When `true`, call `container_service('llama_embed', catalog.llama_embed, image_registry, requires=['file: llama_embed_models_dir', 'cmd: llama_embed_model'])`. Keep the `http_file` model download state unconditional — the model file is the same on disk either way. When `false`, keep the native `paru_install('llama_cpp_vulkan', ...)` + `service_with_unit` path unchanged. Requires T004, T005, T008, T014.
 
 ### Digest population
 
-- [ ] **T017** [US1] Resolve and record the Ollama image digest. Run `sudo podman pull docker.io/ollama/ollama:rocm` then `sudo podman image inspect docker.io/ollama/ollama:rocm --format '{{.Id}}'` and copy the `sha256:...` output into `states/data/container_images.yaml` under `ollama.digest`. Also set `ollama.approved_at` to today's ISO date. Commit separately: `[ollama] pin container image to <first 12 chars of digest>`. This is a deliberate single-purpose commit so digest bumps are auditable in git history (FR-014).
+- [X] **T017** [US1] Resolve and record the Ollama image digest. Run `sudo podman pull docker.io/ollama/ollama:rocm` then `sudo podman image inspect docker.io/ollama/ollama:rocm --format '{{.Id}}'` and copy the `sha256:...` output into `states/data/container_images.yaml` under `ollama.digest`. Also set `ollama.approved_at` to today's ISO date. Commit separately: `[ollama] pin container image to <first 12 chars of digest>`. This is a deliberate single-purpose commit so digest bumps are auditable in git history (FR-014).
 
-- [ ] **T018** [US1] Resolve and record the llama_embed image digest. Same procedure, image is `ghcr.io/ggerganov/llama.cpp:server-vulkan` (or whichever variant research Decision 3 settled on — confirm by reading `container_images.yaml[llama_embed].variant`). Commit separately: `[llama_embed] pin container image to <first 12 chars>`.
+- [X] **T018** [US1] Resolve and record the llama_embed image digest. Same procedure, image is `ghcr.io/ggerganov/llama.cpp:server-vulkan` (or whichever variant research Decision 3 settled on — confirm by reading `container_images.yaml[llama_embed].variant`). Commit separately: `[llama_embed] pin container image to <first 12 chars>`.
 
 ### Baseline capture
 
-- [ ] **T019** [P] [US1] Capture the Ollama native cold-start baseline using the 5-run trimmed-median protocol from `quickstart.md` §Step 1. Record in `research.md` §Decision 6 table under `ollama`. MUST run before T021 (cutover).
+- [X] **T019** [P] [US1] Capture the Ollama native cold-start baseline using the 5-run trimmed-median protocol from `quickstart.md` §Step 1. Record in `research.md` §Decision 6 table under `ollama`. MUST run before T021 (cutover).
 
-- [ ] **T020** [P] [US1] Capture the llama_embed native cold-start baseline. Same protocol. Record in the same table under `llama_embed`. Parallel with T019 because the services are independent.
+- [X] **T020** [P] [US1] Capture the llama_embed native cold-start baseline. Same protocol. Record in the same table under `llama_embed`. Parallel with T019 because the services are independent.
 
 ### Cutover
 
-- [ ] **T021** [US1] Execute the Ollama cutover per `quickstart.md` §Steps 2–7. This means: (a) set `features.containers.ollama: true` in `feature_matrix.yaml` and `ollama.cutover_date: <today>` in `service_catalog.yaml`, (b) `sudo salt-call --local state.apply ollama`, (c) verify `podman ps` shows the container, (d) verify `systemctl status ollama.service` reports active and `curl http://127.0.0.1:11434/api/tags` returns the model list, (e) measure containerized cold-start and record in research table, (f) confirm within 150% of baseline. If step (f) fails, root-cause before touching llama_embed. Commit: `[ollama] cutover to containerized form`.
+- [X] **T021** [US1] Execute the Ollama cutover per `quickstart.md` §Steps 2–7. This means: (a) set `features.containers.ollama: true` in `feature_matrix.yaml` and `ollama.cutover_date: <today>` in `service_catalog.yaml`, (b) `sudo salt-call --local state.apply ollama`, (c) verify `podman ps` shows the container, (d) verify `systemctl status ollama.service` reports active and `curl http://127.0.0.1:11434/api/tags` returns the model list, (e) measure containerized cold-start and record in research table, (f) confirm within 150% of baseline. If step (f) fails, root-cause before touching llama_embed. Commit: `[ollama] cutover to containerized form`.
 
-- [ ] **T022** [US1] Execute the llama_embed cutover using the same sub-steps from T021. Record containerized cold-start. Commit: `[llama_embed] cutover to containerized form`.
+- [X] **T022** [US1] Execute the llama_embed cutover using the same sub-steps from T021. Record containerized cold-start. Commit: `[llama_embed] cutover to containerized form`.
 
-- [ ] **T022a** [US1] Verify SC-002: a host pacman upgrade does NOT break the containerized inference layer. Procedure: (a) confirm both Ollama and llama_embed containers are healthy via their catalog health endpoints; (b) run `sudo pacman -Sy` to refresh the package database; (c) run `sudo pacman -Su --noconfirm` (or a targeted upgrade of `llama.cpp-vulkan`, `vulkan-radeon`, `mesa`, `systemd`, `podman` — any package whose native ABI previously coupled to the inference stack); (d) after the upgrade completes, re-run both health endpoints — both MUST still return 200 without any container restart happening; (e) run one real inference call (`curl http://127.0.0.1:11434/api/generate -d '{"model":"<any-small-model>","prompt":"test","stream":false}'`) and confirm success. If ANY step (c)-(e) forces a container restart or fails, record the upgrade set and root-cause before proceeding. Commit the observation (even if nothing broke) as `[containers] verify SC-002 pacman upgrade isolation`.
+- [X] **T022a** [US1] Verify SC-002: a host pacman upgrade does NOT break the containerized inference layer. Procedure: (a) confirm both Ollama and llama_embed containers are healthy via their catalog health endpoints; (b) run `sudo pacman -Sy` to refresh the package database; (c) run `sudo pacman -Su --noconfirm` (or a targeted upgrade of `llama.cpp-vulkan`, `vulkan-radeon`, `mesa`, `systemd`, `podman` — any package whose native ABI previously coupled to the inference stack); (d) after the upgrade completes, re-run both health endpoints — both MUST still return 200 without any container restart happening; (e) run one real inference call (`curl http://127.0.0.1:11434/api/generate -d '{"model":"<any-small-model>","prompt":"test","stream":false}'`) and confirm success. If ANY step (c)-(e) forces a container restart or fails, record the upgrade set and root-cause before proceeding. Commit the observation (even if nothing broke) as `[containers] verify SC-002 pacman upgrade isolation`.
 
   Rationale: closes spec-analysis finding M1. SC-002 is the single most important acceptance scenario for the feature; without this verification the containerization claim ("runtime isolation from host package churn") is unproven.
 
@@ -163,27 +163,27 @@ This is a Salt state repository, not an application codebase:
 
 ### Unit files
 
-- [ ] **T025** [P] [US2] Author `/home/neg/src/salt/states/units/loki.container`. No GPU. `PublishPort=127.0.0.1:{{ catalog_entry.port }}:3100`. Bind-mounts: `/etc/loki` read-only (Salt-managed config), `/var/lib/loki-container` read-write (the FRESH state dir for blue/green). Mandatory `[Service]` restart block. `After=network-online.target graphical.target` to preserve the existing `loki-boot-defer.conf` behavior.
+- [X] **T025** [P] [US2] Author `/home/neg/src/salt/states/units/loki.container`. No GPU. `PublishPort=127.0.0.1:{{ catalog_entry.port }}:3100`. Bind-mounts: `/etc/loki` read-only (Salt-managed config), `/var/lib/loki-container` read-write (the FRESH state dir for blue/green). Mandatory `[Service]` restart block. `After=network-online.target graphical.target` to preserve the existing `loki-boot-defer.conf` behavior.
 
-- [ ] **T026** [P] [US2] Author `/home/neg/src/salt/states/units/promtail.container`. No GPU. `PublishPort=127.0.0.1:{{ catalog_entry.port }}:9080`. Bind-mounts: `/etc/promtail` read-only, `/var/log/journal` read-only, `/run/log/journal` read-only (journal socket access — this is the edge case called out in `spec.md` §Edge Cases). `Requires=loki.service` (when loki is containerized on the same host) so Promtail starts after Loki.
+- [X] **T026** [P] [US2] Author `/home/neg/src/salt/states/units/promtail.container`. No GPU. `PublishPort=127.0.0.1:{{ catalog_entry.port }}:9080`. Bind-mounts: `/etc/promtail` read-only, `/var/log/journal` read-only, `/run/log/journal` read-only (journal socket access — this is the edge case called out in `spec.md` §Edge Cases). `Requires=loki.service` (when loki is containerized on the same host) so Promtail starts after Loki.
 
-- [ ] **T027** [P] [US2] Author `/home/neg/src/salt/states/units/grafana.container`. No GPU. `PublishPort=127.0.0.1:{{ catalog_entry.port }}:3000`. Bind-mounts: `/etc/grafana.ini` read-only, `/etc/grafana/provisioning` read-only (this is the single line that satisfies FR-018 — the existing provisioning pipeline in `monitoring_loki.sls:88–100` already drops dashboards, datasources, and providers into those paths, so the containerized Grafana reconstitutes automatically on first start), `/var/lib/grafana-container` read-write. `After=loki.service` (when loki is containerized).
+- [X] **T027** [P] [US2] Author `/home/neg/src/salt/states/units/grafana.container`. No GPU. `PublishPort=127.0.0.1:{{ catalog_entry.port }}:3000`. Bind-mounts: `/etc/grafana.ini` read-only, `/etc/grafana/provisioning` read-only (this is the single line that satisfies FR-018 — the existing provisioning pipeline in `monitoring_loki.sls:88–100` already drops dashboards, datasources, and providers into those paths, so the containerized Grafana reconstitutes automatically on first start), `/var/lib/grafana-container` read-write. `After=loki.service` (when loki is containerized).
 
 ### State-file edits
 
-- [ ] **T028** [US2] Edit `/home/neg/src/salt/states/monitoring_loki.sls` to wrap the Loki section in a `{% if mon.loki and not host.features.get('containers', {}).get('loki', False) %}` / `{% else %}` / `{% endif %}` pattern. Native branch unchanged. Containerized branch calls `container_service('loki', catalog.loki, image_registry, requires=['file: loki_config', 'cmd: managed_service_paths_ensure'])` and adds an `ensure_dir` for `/var/lib/loki-container`. Preserve the `unit_override('loki_boot_defer', ...)` state on the native side only — the containerized unit encodes the same `After=graphical.target` directly per T025.
+- [X] **T028** [US2] Edit `/home/neg/src/salt/states/monitoring_loki.sls` to wrap the Loki section in a `{% if mon.loki and not host.features.get('containers', {}).get('loki', False) %}` / `{% else %}` / `{% endif %}` pattern. Native branch unchanged. Containerized branch calls `container_service('loki', catalog.loki, image_registry, requires=['file: loki_config', 'cmd: managed_service_paths_ensure'])` and adds an `ensure_dir` for `/var/lib/loki-container`. Preserve the `unit_override('loki_boot_defer', ...)` state on the native side only — the containerized unit encodes the same `After=graphical.target` directly per T025.
 
-- [ ] **T029** [US2] Same pattern for Promtail in the same file (`monitoring_loki.sls`). Containerized branch calls `container_service('promtail', catalog.promtail, image_registry, requires=['file: promtail_config'])`. The healthcheck requires chain from the current state (`promtail_hc_requires`) still applies — pass through via the `requires` parameter.
+- [X] **T029** [US2] Same pattern for Promtail in the same file (`monitoring_loki.sls`). Containerized branch calls `container_service('promtail', catalog.promtail, image_registry, requires=['file: promtail_config'])`. The healthcheck requires chain from the current state (`promtail_hc_requires`) still applies — pass through via the `requires` parameter.
 
-- [ ] **T030** [US2] Same pattern for Grafana in the same file. Containerized branch calls `container_service('grafana', catalog.grafana, image_registry, requires=['file: grafana_config', 'file: grafana_dashboards_provider', 'file: grafana_proxypilot_dashboard', 'file: grafana_loki_datasource'])` and adds `ensure_dir` for `/var/lib/grafana-container`. Critical: the existing provisioning file states stay on the NATIVE side of the conditional — they're the source of truth for the containerized Grafana's bind-mount, so they must render either way. Move the provisioning file states above the conditional branch, so both sides see them.
+- [X] **T030** [US2] Same pattern for Grafana in the same file. Containerized branch calls `container_service('grafana', catalog.grafana, image_registry, requires=['file: grafana_config', 'file: grafana_dashboards_provider', 'file: grafana_proxypilot_dashboard', 'file: grafana_loki_datasource'])` and adds `ensure_dir` for `/var/lib/grafana-container`. Critical: the existing provisioning file states stay on the NATIVE side of the conditional — they're the source of truth for the containerized Grafana's bind-mount, so they must render either way. Move the provisioning file states above the conditional branch, so both sides see them.
 
 ### Digest population
 
-- [ ] **T031** [P] [US2] Resolve and record the Loki image digest. Run `sudo podman pull docker.io/grafana/loki:3.4.0` (or whichever variant research Decision 3 settled on), inspect, write digest + approved_at to `states/data/container_images.yaml[loki]`. Commit: `[loki] pin container image to <first 12 chars>`.
+- [X] **T031** [P] [US2] Resolve and record the Loki image digest. Run `sudo podman pull docker.io/grafana/loki:3.4.0` (or whichever variant research Decision 3 settled on), inspect, write digest + approved_at to `states/data/container_images.yaml[loki]`. Commit: `[loki] pin container image to <first 12 chars>`.
 
-- [ ] **T032** [P] [US2] Resolve and record the Promtail image digest. Same procedure, image `docker.io/grafana/promtail:<variant>`. Commit separately.
+- [X] **T032** [P] [US2] Resolve and record the Promtail image digest. Same procedure, image `docker.io/grafana/promtail:<variant>`. Commit separately.
 
-- [ ] **T033** [P] [US2] Resolve and record the Grafana image digest. Same procedure, image `docker.io/grafana/grafana-oss:<variant>` (OSS variant — the existing state file has no Grafana Enterprise features). Commit separately.
+- [X] **T033** [P] [US2] Resolve and record the Grafana image digest. Same procedure, image `docker.io/grafana/grafana-oss:<variant>` (OSS variant — the existing state file has no Grafana Enterprise features). Commit separately.
 
 ### Baseline capture
 
@@ -195,7 +195,7 @@ This is a Salt state repository, not an application codebase:
 
 ### Cutover
 
-- [ ] **T037** [US2] Execute the Loki blue/green cutover. Because FR-018 requires historical log queries to remain accessible during the rollback window, the native Loki MUST stay running but on a SECONDARY port (3101) — not unbound. The containerized Loki takes over port 3100 (primary, receives all new writes); the native Loki on 3101 is read-only-in-practice (frozen, used only for historical queries via a temporary Grafana datasource). Ordered sub-steps:
+- [X] **T037** [US2] Execute the Loki blue/green cutover. Because FR-018 requires historical log queries to remain accessible during the rollback window, the native Loki MUST stay running but on a SECONDARY port (3101) — not unbound. The containerized Loki takes over port 3100 (primary, receives all new writes); the native Loki on 3101 is read-only-in-practice (frozen, used only for historical queries via a temporary Grafana datasource). Ordered sub-steps:
 
   1. Deploy a unit drop-in override or a `file.replace` state against `/etc/loki/config.yaml` to set `server.http_listen_port: 3101` for the native Loki. Use the existing `unit_override` or `config_replace_with_service_control` macros — check the existing `monitoring_loki.sls` patterns for the precedent form.
   2. Restart the native `loki.service` so it rebinds to 3101, freeing port 3100.
@@ -208,11 +208,11 @@ This is a Salt state repository, not an application codebase:
 
   If anything fails during cutover, rollback is: stop containerized Loki, revert the port override so native Loki rebinds to 3100, reapply. Record measurements.
 
-- [ ] **T038** [US2] Execute the Promtail cutover. Promtail depends on Loki being reachable on port 3100. After T037, the PRIMARY Loki on port 3100 is the containerized form; the native Loki on 3101 is frozen — read-only for historical queries, receiving NO new writes during the rollback window. Promtail's containerized form ships log writes ONLY to the primary Loki on port 3100 (the container). Sequence: ensure Loki containerized form is healthy on 3100 → stop native Promtail → start containerized Promtail → verify journal lines from `journalctl -u some-existing-service` appear in Grafana's Explore view against the containerized Loki (primary datasource). Record measurements.
+- [X] **T038** [US2] Execute the Promtail cutover. Promtail depends on Loki being reachable on port 3100. After T037, the PRIMARY Loki on port 3100 is the containerized form; the native Loki on 3101 is frozen — read-only for historical queries, receiving NO new writes during the rollback window. Promtail's containerized form ships log writes ONLY to the primary Loki on port 3100 (the container). Sequence: ensure Loki containerized form is healthy on 3100 → stop native Promtail → start containerized Promtail → verify journal lines from `journalctl -u some-existing-service` appear in Grafana's Explore view against the containerized Loki (primary datasource). Record measurements.
 
   Note: Promtail's config file (`configs/promtail.yaml.j2`) does NOT need to change — its Loki client URL is still `http://127.0.0.1:3100`, which now points at the containerized Loki instead of the native one. The port is stable; only the process behind it changed.
 
-- [ ] **T039** [US2] Execute the Grafana cutover. The blue/green path for Grafana is the simplest of the three because provisioning-as-code makes state transfer a no-op: the containerized Grafana mounts `/etc/grafana/provisioning` read-only and reconstitutes everything on first start. Verify dashboards, data sources, and alert rules all appear in the containerized Grafana's UI. Record measurements.
+- [X] **T039** [US2] Execute the Grafana cutover. The blue/green path for Grafana is the simplest of the three because provisioning-as-code makes state transfer a no-op: the containerized Grafana mounts `/etc/grafana/provisioning` read-only and reconstitutes everything on first start. Verify dashboards, data sources, and alert rules all appear in the containerized Grafana's UI. Record measurements.
 
 ### Rollback drill
 
@@ -227,6 +227,8 @@ This is a Salt state repository, not an application codebase:
 ---
 
 ## Phase 5: User Story 3 — Containerize user-level API bridges (Priority: P3, partially deferred)
+
+**Note**: US3 bridge services (Telethon Bridge, OpenCode serve, OpenCode Telegram bot, Telecode) are deferred due to VPN dependency; tasks T042–T048 are not required at this time.
 
 **Goal**: Structurally support containerizing the four bridge daemons (Telethon Bridge, OpenCode serve, OpenCode Telegram bot, Telecode), but DO NOT populate digests — research Decision 7 gates this on first-party upstream images being identified per service, and `FR-014` forbids locally-built images. This phase lands the state-file scaffolding so that flipping a US3 toggle is a single YAML change the day an upstream image exists.
 

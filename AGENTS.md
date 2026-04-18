@@ -59,3 +59,7 @@ specs/
 <!-- MANUAL ADDITIONS START -->
 - `docs/superpowers/plans/*.md` are temporary working artifacts by default: do not commit them unless they are explicitly being kept as active shared planning documents. Remove stale plan files periodically once the related work is finished or abandoned.
 <!-- MANUAL ADDITIONS END -->
+
+<!-- FUTURE WORK -->
+- **VM‑based test environment**: Add a lightweight virtual‑machine harness (QEMU + Arch Linux) that can be used to test full Salt deployments of containerized services and other applications, independent of the host's CachyOS‑specific rootfs requirement. This would replace the current `scripts/vm‑smoke.sh` which expects a CachyOS rootfs.
+<!-- END FUTURE WORK -->

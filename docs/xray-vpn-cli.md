@@ -97,6 +97,56 @@ sudo systemctl status sing-box-tun
 journalctl -u sing-box-tun -b --no-pager
 ```
 
+## Hybrid Scheme (Xray + sing-box TUN)
+
+For AmneziaVPN configurations using XHTTP transport (Xray-specific), direct conversion to sing-box may fail because sing-box doesn't support XHTTP. A hybrid approach works:
+
+1. **Xray** runs the original AmneziaVPN config with XHTTP+REALITY, providing SOCKS5 proxy on port 10808.
+2. **sing-box** creates a TUN interface and routes traffic through the Xray SOCKS5 proxy.
+
+**Steps:**
+
+```bash
+# Start hybrid VPN
+scripts/start-hybrid-vpn.sh
+
+# Or manually:
+scripts/start-hybrid-vpn.sh ~/.config/sing-box-tun/config.json ~/.config/sing-box-tun/config-singbox-hybrid-final.json
+```
+
+**Configuration files:**
+
+- Original Xray config: `~/.config/sing-box-tun/config.json`
+- Hybrid sing-box config: `~/.config/sing-box-tun/config-singbox-hybrid-final.json`
+- Converter script: `scripts/xray-to-singbox.py` (updated with correct TUN address syntax)
+
+**TUN Configuration for sing-box 1.13+:**
+
+Sing-box 1.12.0 removed legacy `inet4_address`/`inet6_address` fields. Use the unified `address` field:
+
+```json
+{
+  "type": "tun",
+  "tag": "tun-in",
+  "interface_name": "sb0",
+  "address": ["172.19.0.1/30", "fd00::1/126"],
+  "mtu": 1500,
+  "stack": "mixed",
+  "auto_route": true,
+  "strict_route": false,
+  "endpoint_independent_nat": true
+}
+```
+
+**Testing:**
+
+The hybrid scheme provides:
+- TUN interface `sb0` with automatic routing
+- Split routing: private IPs go direct, external traffic goes through VPN
+- DNS via local resolver (223.5.5.5) with fallback to TLS (1.1.1.1)
+
+Test with `scripts/test-hybrid-routing.sh`.
+
 ## Relation to AmneziaVPN
 
 If the AmneziaVPN profile changes, rerun the importer command to regenerate `~/.config/sing-box-tun/config.json` before starting or restarting any VPN client.

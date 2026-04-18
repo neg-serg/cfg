@@ -270,7 +270,7 @@ This is a Salt state repository, not an application codebase:
 
 - [x] **T052** Run `just` one final time. Must report clean. This is the Principle VII gate for the whole feature.
 
-- [ ] **T053** Commit the polish batch: `[docs] add containerized services guide (EN + RU)`.
+- [x] **T053** Commit the polish batch: `[docs] add containerized services guide (EN + RU)`.
 
 - [ ] **T054** Rollback-window close: 7 days after the first `cutover_date` (set in T021), the `{{name}}_native_teardown` `pkg.removed` states from the `container_service` macro become eligible to fire. Run `sudo salt-call --local state.apply` on each cutover service to let the native package removal happen. But `pkg.removed` alone is not sufficient for every service — the Loki blue/green cutover left additional state on disk that must be cleaned up atomically with the native package per FR-018. Execute this per-service checklist:
 
@@ -295,13 +295,13 @@ This is a Salt state repository, not an application codebase:
 
   Rationale: closes spec-analysis finding H4 (T037 promised a cleanup T054 did not describe) and enforces FR-018's atomic-cleanup clause.
 
-- [ ] **T055** Final end-to-end verification: pick a random downstream client of each containerized layer and exercise it. For the inference layer: trigger `code-rag` to reindex a small directory (exercises Ollama + llama_embed). For the observability layer: open Grafana in a browser, check the ProxyPilot dashboard renders live data. Record that each client works. This catches integration issues the per-service verification might miss.
+- [x] **T055** Final end-to-end verification: pick a random downstream client of each containerized layer and exercise it. For the inference layer: trigger `code-rag` to reindex a small directory (exercises Ollama + llama_embed). For the observability layer: open Grafana in a browser, check the ProxyPilot dashboard renders live data. Record that each client works. This catches integration issues the per-service verification might miss.
 
 - [ ] **T055a** [P] Verify SC-005: fresh-provision path reaches full containerized topology on first apply. Use the existing `tests/vm-smoke.sh` harness with `features.containers.ollama`, `features.containers.llama_embed`, `features.containers.loki`, `features.containers.promtail`, `features.containers.grafana` all set to `true` for the test host. Expected result: the smoke test reports all five containerized services healthy on first boot of a fresh VM, with no manual `podman run` commands or follow-up applies needed. If `tests/vm-smoke.sh` is inappropriate for this test (e.g. it does not support the containers feature matrix), note the limitation in the task checkbox and either extend the smoke test or add a manual "provision a throwaway Arch VM and apply" verification step.
 
   Rationale: closes spec-analysis finding M2. SC-005 is otherwise unfalsifiable — "reaches full topology on first apply" needs an actual first-apply run on a clean host to be verified.
 
-- [ ] **T055b** [P] Verify SC-008: no out-of-scope state file was touched by this feature. Run:
+- [x] **T055b** [P] Verify SC-008: no out-of-scope state file was touched by this feature. Run:
   ```bash
   git diff main -- states/ 2>&1 | \
     grep -E '^\+\+\+ b/states/(audio|mpd|hiddify|network|dns|amnezia|zapret2|nanoclaw|bitcoind|jellyfin|transmission)\.sls' | \

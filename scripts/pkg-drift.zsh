@@ -220,7 +220,11 @@ if (( flag_json )); then
     print -rn ',"orphans":'
     json_array "${orphan_list[@]}"
     print -rn ',"drift":'
-    print -rn -- "$drift"
+    if (( drift )); then
+        print -rn true
+    else
+        print -rn false
+    fi
     print '}'
     exit $drift
 fi

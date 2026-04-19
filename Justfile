@@ -237,3 +237,18 @@ vpn-stop:
 # Check health of all Salt-managed services
 health *ARGS:
     ~/.local/bin/salt-alert --health {{ARGS}}
+
+# Check Loki readiness (full check with timeout)
+check-loki:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "Checking Loki readiness..."
+    for i in $(seq 1 120); do
+        if curl -sf --max-time 5 http://127.0.0.1:3100/ready >/dev/null 2>&1; then
+            echo "Loki is ready"
+            exit 0
+        fi
+        sleep 1
+    done
+    echo "Loki failed to become ready within 120s" >&2
+    exit 1

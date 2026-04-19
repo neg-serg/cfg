@@ -27,6 +27,8 @@
 loki:                          # Log aggregation (Grafana Loki)
   port: 3100
   health_path: /ready
+  health_cmd: timeout 1 bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/3100' 2>/dev/null || ss -H -t -l -n | grep -q ':3100 '
+  timeout: 30
   unit: loki
   scope: system
   packages: loki

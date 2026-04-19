@@ -92,7 +92,7 @@ hosts:
       monitoring:
         loki: true
         promtail: true
-        grafana: true
+        grafana: false
       services:
         transmission: true
       user_services:

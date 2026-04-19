@@ -31,5 +31,11 @@ llama_embed_native_unit_daemon_reload:
     - onchanges:
       - file: llama_embed_native_unit_absent
 
+# Remove native package (idempotent — no-op if already removed)
+llama_embed_native_package_removed:
+  pkg.removed:
+    - pkgs:
+      - llama.cpp-vulkan
+
 {{ container_service('llama_embed', catalog.llama_embed, image_registry,
     requires=['file: llama_embed_models_dir', 'cmd: llama_embed_model', 'cmd: llama_embed_native_unit_daemon_reload']) }}

@@ -30,7 +30,10 @@ loki:                          # Log aggregation (Grafana Loki)
   unit: loki
   scope: system
   packages: loki
+  containerized: true
   container_image: loki
+  cutover_mode: in_place
+  cutover_date: "2026-04-19"
   gpu: none
   bind_mounts:
     - host: /etc/loki
@@ -47,7 +50,10 @@ promtail:                      # Log shipper for Loki
   unit: promtail
   scope: system
   packages: promtail
+  containerized: true
   container_image: promtail
+  cutover_mode: in_place
+  cutover_date: "2026-04-19"
   gpu: none
   bind_mounts:
     - host: /etc/promtail
@@ -71,7 +77,10 @@ grafana:                       # Monitoring dashboard
   unit: grafana
   scope: system
   packages: grafana
+  containerized: true
   container_image: grafana
+  cutover_mode: in_place
+  cutover_date: "2026-04-19"
   gpu: none
   bind_mounts:
     - host: /etc/grafana.ini
@@ -106,7 +115,10 @@ ollama:                        # Local LLM inference server
   scope: system
   manual_start: true
   packages: null               # installed via container_service image pull
+  containerized: true
   container_image: ollama
+  cutover_mode: in_place
+  cutover_date: "2026-04-11"
   gpu: amdgpu                  # /dev/kfd (ROCm) + /dev/dri/renderD128
   bind_mounts:
     - host: /mnt/one/ollama/models
@@ -122,7 +134,10 @@ llama_embed:                   # llama.cpp embedding server (Vulkan)
   packages: llama.cpp-vulkan
   timeout: 90
   manual_start: true
+  containerized: true
   container_image: llama_embed
+  cutover_mode: in_place
+  cutover_date: "2026-04-11"
   gpu: render_group            # Vulkan-only; no /dev/kfd needed
   bind_mounts:
     - host: /mnt/one/llama-embed/models
@@ -138,7 +153,10 @@ t5_summarization:              # llama.cpp T5 summarization server (Vulkan)
   packages: llama.cpp-vulkan
   timeout: 90
   manual_start: true
+  containerized: true
   container_image: llama_embed   # reuses ggml-org/llama.cpp:server-vulkan
+  cutover_mode: in_place
+  cutover_date: "2026-04-11"
   gpu: render_group              # Vulkan-only; no /dev/kfd needed
   bind_mounts:
     - host: /mnt/one/t5-summarization/models

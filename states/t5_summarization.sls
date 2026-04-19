@@ -55,5 +55,11 @@ t5_summarization_native_unit_daemon_reload:
     - onchanges:
       - file: t5_summarization_native_unit_absent
 
+# Remove native package (idempotent — no-op if already removed)
+t5_summarization_native_package_removed:
+  pkg.removed:
+    - pkgs:
+      - llama.cpp-vulkan
+
 {{ container_service('t5_summarization', catalog.t5_summarization, image_registry,
     requires=['file: t5_summarization_hf_dir', 'cmd: t5_summarization_convert', 'cmd: t5_summarization_native_unit_daemon_reload']) }}

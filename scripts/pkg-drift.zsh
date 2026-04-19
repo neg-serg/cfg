@@ -52,34 +52,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-json_escape() {
-    local value="$1"
-    value=${value//\\/\\\\}
-    value=${value//\"/\\\"}
-    value=${value//$'\n'/\\n}
-    value=${value//$'\r'/\\r}
-    value=${value//$'\t'/\\t}
-    print -rn -- "$value"
-}
 
-json_array() {
-    local -a values=("$@")
-    local first=1
-    local value
-
-    print -rn '['
-    for value in "${(@o)values}"; do
-        [[ -n "$value" ]] || continue
-        if (( ! first )); then
-            print -rn ','
-        fi
-        first=0
-        print -rn '"'
-        json_escape "$value"
-        print -rn '"'
-    done
-    print -rn ']'
-}
 
 # --- Step 1: Collect declared packages ---
 typeset -A declared  # pkg_name → source
@@ -211,21 +184,28 @@ if [[ ${#unmanaged_list} -gt 0 || ${#missing_list} -gt 0 || ${#orphan_list} -gt 
 fi
 
 if (( flag_json )); then
-    print -rn '{"date":"'
-    json_escape "$report_date"
-    print -rn '","unmanaged":'
-    json_array "${unmanaged_list[@]}"
-    print -rn ',"missing":'
-    json_array "${missing_list[@]}"
-    print -rn ',"orphans":'
-    json_array "${orphan_list[@]}"
-    print -rn ',"drift":'
-    if (( drift )); then
-        print -rn true
-    else
-        print -rn false
-    fi
-    print '}'
+    # Collect sorted arrays as newline-separated lists for Python
+    local unmanaged_sorted=("${(@o)unmanaged_list}")
+    local missing_sorted=("${(@o)missing_list}")
+    local orphan_sorted=("${(@o)orphan_list}")
+    python3 -c "
+import json, sys
+lines = [line.rstrip('\\n') for line in sys.stdin]
+unmanaged = lines[0].split('\\n') if len(lines) > 0 and lines[0] != '' else []
+missing = lines[1].split('\\n') if len(lines) > 1 and lines[1] != '' else []
+orphans = lines[2].split('\\n') if len(lines) > 2 and lines[2] != '' else []
+print(json.dumps({
+    'date': '$(date -I)',
+    'unmanaged': unmanaged,
+    'missing': missing,
+    'orphans': orphans,
+    'drift': $([[ $drift -eq 1 ]] && echo True || echo False)
+}, separators=(',', ':')))
+" <<EOF
+${(F)unmanaged_sorted}
+${(F)missing_sorted}
+${(F)orphan_sorted}
+EOF
     exit $drift
 fi
 

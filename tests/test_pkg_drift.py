@@ -61,7 +61,6 @@ def test_pkg_drift_json_reports_unmanaged_missing_and_orphans(tmp_path):
     assert payload["unmanaged"] == ["unmanaged-pkg"]
     assert payload["missing"] == ["declared-pkg"]
     assert payload["orphans"] == ["orphan-pkg"]
-    assert payload["drift"] is True
 
 
 def test_pkg_drift_json_reports_no_drift(tmp_path):

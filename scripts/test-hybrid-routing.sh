@@ -6,6 +6,14 @@ SINGBOX_CONFIG="$HOME/.config/sing-box-tun/config-singbox-hybrid-final.json"
 XRAY_BIN="$HOME/.local/bin/xray"
 SINGBOX_BIN="/usr/bin/sing-box"
 
+# shellcheck disable=SC2329  # function is called via trap
+cleanup() {
+    echo "Stopping processes..."
+    kill "$XRAY_PID" 2>/dev/null || true
+    kill "$SINGBOX_PID" 2>/dev/null || true
+    echo "Stopped"
+}
+
 # Kill existing
 pkill -f "xray.*config.json" 2>/dev/null || true
 pkill -f "sing-box.*config-singbox-hybrid-final" 2>/dev/null || true
@@ -54,5 +62,5 @@ fi
 
 echo ""
 echo "=== Press Ctrl+C to stop ==="
-trap "kill $XRAY_PID $SINGBOX_PID 2>/dev/null; echo 'Stopped'" INT TERM
+trap cleanup INT TERM
 wait $XRAY_PID $SINGBOX_PID

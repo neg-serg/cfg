@@ -106,6 +106,10 @@ sing_box_tun_react_path_running:
       - file: sing_box_tun_react_path_unit
       - cmd: sing_box_tun_react_daemon_reload
 
+{% endif %}
+
+{# --- AmneziaVPN config import script (shared by vpn_split_router and vpn_hybrid) --- #}
+{% if net.vpn_split_router or net.vpn_hybrid %}
 amnezia_import_tun_script:
   file.managed:
     - name: /usr/local/bin/amnezia-import-tun-config

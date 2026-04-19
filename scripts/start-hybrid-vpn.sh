@@ -16,6 +16,7 @@ XRAY_PID=""
 SINGBOX_PID=""
 OVERALL_RESULT=0
 
+# shellcheck disable=SC2329  # function is called via trap
 cleanup() {
     echo ""
     echo "=== Cleanup ==="

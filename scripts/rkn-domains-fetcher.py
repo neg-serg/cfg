@@ -332,7 +332,7 @@ def integrate_with_vpn_split_router(domains: list[str], config: dict, state: dic
         }
 
 
-def fetch_domains(config: dict, state: dict, force: bool = False) -> tuple[bool, dict]:
+def fetch_domains(config: dict, state: dict, force: bool = False) -> tuple[bool, dict, list]:
     """Main fetch logic with fallback"""
     settings = config.get("settings", {})
     
@@ -343,7 +343,7 @@ def fetch_domains(config: dict, state: dict, force: bool = False) -> tuple[bool,
         
         if last_update and (now_utc() - last_update) < update_interval:
             logger.info("Skipping update, not enough time passed")
-            return False, state
+            return False, state, []
     
     sources = config.get("sources", {})
     primary_url = sources.get("primary", RKN_DOMAINS_URL)
@@ -371,7 +371,7 @@ def fetch_domains(config: dict, state: dict, force: bool = False) -> tuple[bool,
     if not content:
         state["error_count"] = state.get("error_count", 0) + 1
         logger.error("All sources failed")
-        return False, state
+        return False, state, []
     
     # Process domains
     domains, stats = process_domains(content, config)
@@ -387,7 +387,7 @@ def fetch_domains(config: dict, state: dict, force: bool = False) -> tuple[bool,
         "stats": stats
     })
     
-    return True, state
+    return True, state, domains
 
 
 def command_fetch(args: argparse.Namespace) -> int:
@@ -395,31 +395,23 @@ def command_fetch(args: argparse.Namespace) -> int:
     config = load_config(args.config)
     state = load_state(args.state)
     
-    success, new_state = fetch_domains(config, state, force=args.force)
+    success, new_state, domains = fetch_domains(config, state, force=args.force)
     
     if not success:
         logger.error("Failed to fetch domains")
         return 1
     
     # Save domains to file
-    if args.output.exists():
-        with open(args.output) as fh:
-            existing_domains = [line.strip() for line in fh if line.strip()]
+    if domains:
+        save_domains_file(domains, args.output)
     else:
-        existing_domains = []
-    
-    # Get domains from state (would need to be stored or recalculated)
-    # For now, we'll fetch again or use a different approach
-    # This is simplified - in reality we'd store domains in state or temp file
+        logger.warning("No domains to save")
     
     save_state(args.state, new_state)
     
     # Integrate with VPN split router
-    if args.integrate:
-        # We need the actual domains list here
-        # This would require either storing in state or re-processing
-        logger.warning("Domain integration requires domain list storage")
-        # integrate_with_vpn_split_router(domains, config, new_state)
+    if args.integrate and domains:
+        integrate_with_vpn_split_router(domains, config, new_state)
     
     logger.info("Fetch completed successfully")
     return 0

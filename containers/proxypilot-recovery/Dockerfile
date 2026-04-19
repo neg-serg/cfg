@@ -1,8 +1,6 @@
-FROM python:3.13-slim
+FROM archlinux:latest
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends gopass ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+RUN pacman -Syu --noconfirm --needed python gopass
 
 WORKDIR /workspace
 

@@ -56,9 +56,9 @@ vim.api.nvim_create_autocmd('User', {
   end,
 })
 o.path='.,..,'..config_dir..','..
-    	config_dir..'/lua,'..
-	config_dir..'/after,'..
-	data_dir..'/site/,/usr/include'
+    config_dir..'/lua,'..
+    config_dir..'/after,'..
+    data_dir..'/site/,/usr/include'
 -- Allow recursive file lookup for gf/:find
 vim.opt.path:append('**')
 o.fillchars={foldopen="", foldclose="",

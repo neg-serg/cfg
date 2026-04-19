@@ -14,6 +14,38 @@ AmneziaVPN хранит активный профиль в `~/.config/AmneziaVPN
 - Протестировать импортированный конфиг напрямую через Xray (SOCKS5 прокси)
 - Сконвертировать его в формат sing‑box для TUN‑маршрутизации (требует ручного соответствия полей)
 
+## Какой вариант выбрать?
+
+- **Для большинства пользователей**: Используйте **SOCKS5 прокси** (порт 10808) - просто, работает с большинством CLI инструментов
+- **Для VPN на уровне системы**: Используйте **TUN интерфейс** - автоматически маршрутизирует весь трафик
+- **Для конфигов AmneziaVPN с XHTTP**: Используйте **Гибридную схему** - Xray обрабатывает XHTTP, sing-box обрабатывает TUN
+
+## Быстрый старт
+
+### 1. Импорт конфига AmneziaVPN
+```bash
+scripts/amnezia-import-tun-config.sh import
+```
+
+### 2. Запуск VPN (SOCKS5 прокси на порту 10808)
+```bash
+~/.local/bin/xray run -config ~/.config/sing-box-tun/config.json &
+```
+
+### 3. Использование VPN
+```bash
+# Проверка подключения
+curl --socks5 127.0.0.1:10808 https://httpbin.org/ip
+
+# Доступ к сайтам через VPN
+curl --socks5 127.0.0.1:10808 https://google.com
+
+# Настройка прокси для текущей сессии терминала
+export ALL_PROXY=socks5://127.0.0.1:10808
+export HTTP_PROXY=socks5://127.0.0.1:10808
+export HTTPS_PROXY=socks5://127.0.0.1:10808
+```
+
 ## Пути
 
 - Исходный конфиг: `~/.config/AmneziaVPN.ORG/AmneziaVPN.conf`
@@ -37,26 +69,131 @@ scripts/amnezia-import-tun-config.sh import
 Импортер извлекает поле `last_config` из конфигурации AmneziaVPN.
 Если импорт завершается ошибкой «could not locate last_config», проверьте, что профиль содержит валидную запись сервера.
 
-### 2. Тестирование импортированного конфига (Xray SOCKS5)
+### 2. Простое использование SOCKS5 прокси (Рекомендуется)
 
-```bash
-scripts/test-vpn-connection.sh
-```
+После запуска Xray с конфигом AmneziaVPN, он предоставляет SOCKS5 прокси на `127.0.0.1:10808`. Это самый простой способ доступа в интернет без блокировок.
 
-Скрипт запускает Xray с импортированным конфигом, проверяет подключение через SOCKS5‑прокси (`127.0.0.1:10808`), затем останавливает Xray.
-
-Ручная проверка:
-
+#### Запуск VPN:
 ```bash
 # Запустить Xray в фоне
 ~/.local/bin/xray run -config ~/.config/sing-box-tun/config.json &
 XRAY_PID=$!
 
-# Тест через curl
-curl --max-time 30 --socks5 127.0.0.1:10808 https://httpbin.org/ip
+# Или запустить в foreground (Ctrl+C для остановки)
+~/.local/bin/xray run -config ~/.config/sing-box-tun/config.json
+```
 
-# Остановить Xray
-kill $XRAY_PID
+#### Проверка подключения:
+```bash
+# Быстрая проверка
+curl --socks5 127.0.0.1:10808 https://httpbin.org/ip
+
+# Проверить, меняет ли VPN ваш IP
+curl --socks5 127.0.0.1:10808 https://ifconfig.me && echo
+curl https://ifconfig.me && echo
+```
+
+#### Использование с разными программами:
+
+**curl/wget:**
+```bash
+curl --socks5 127.0.0.1:10808 https://google.com
+wget -e use_proxy=yes -e socks_proxy=127.0.0.1:10808 https://example.com
+```
+
+**git:**
+```bash
+# Для одной команды
+git -c http.proxy=socks5://127.0.0.1:10808 clone https://github.com/user/repo.git
+
+# Для всех команд git в текущей сессии
+export GIT_PROXY=socks5://127.0.0.1:10808
+```
+
+**Системный прокси для сессии терминала:**
+```bash
+# Все curl/wget/git/etc будут использовать VPN
+export ALL_PROXY=socks5://127.0.0.1:10808
+export HTTP_PROXY=socks5://127.0.0.1:10808
+export HTTPS_PROXY=socks5://127.0.0.1:10808
+
+# Теперь любые команды используют VPN автоматически
+curl https://google.com           # через VPN
+wget https://example.com          # через VPN
+```
+
+**Менеджеры пакетов (временно):**
+```bash
+# pacman (Arch)
+sudo http_proxy=socks5://127.0.0.1:10808 https_proxy=socks5://127.0.0.1:10808 pacman -Syu
+
+# apt (Debian/Ubuntu)
+sudo http_proxy=socks5://127.0.0.1:10808 https_proxy=socks5://127.0.0.1:10808 apt update
+```
+
+**Приложения Python/Node.js:**
+```bash
+# Установить переменные окружения перед запуском
+export HTTP_PROXY=socks5://127.0.0.1:10808
+export HTTPS_PROXY=socks5://127.0.0.1:10808
+python script.py
+node app.js
+```
+
+#### Скрипт для проверки статуса VPN:
+```bash
+#!/usr/bin/env bash
+# Сохранить как ~/bin/check-vpn
+if curl --max-time 5 --socks5 127.0.0.1:10808 --silent https://ifconfig.me >/dev/null 2>&1; then
+    VPN_IP=$(curl --socks5 127.0.0.1:10808 --silent https://ifconfig.me)
+    DIRECT_IP=$(curl --silent https://ifconfig.me)
+    echo "✅ VPN работает: $VPN_IP (прямой: $DIRECT_IP)"
+    if [[ "$VPN_IP" != "$DIRECT_IP" ]]; then
+        echo "🎉 IP изменен - блокировки обходятся!"
+    fi
+else
+    echo "❌ VPN не работает"
+fi
+```
+
+### 2.5 Проверить, не запущен ли уже VPN
+
+Часто Xray может быть уже запущен (например, из AmneziaVPN или предыдущей сессии). Проверьте перед запуском:
+
+```bash
+# Проверить, слушает ли порт 10808
+ss -tlnp | grep :10808
+
+# Проверить процессы Xray
+pgrep -af xray
+
+# Быстрый тест подключения
+curl --max-time 5 --socks5 127.0.0.1:10808 https://ifconfig.me 2>/dev/null && echo "✅ VPN уже работает" || echo "❌ VPN не отвечает"
+
+# Полная проверка статуса
+if ss -tlnp | grep -q ":10808"; then
+    VPN_IP=$(curl --socks5 127.0.0.1:10808 --silent https://ifconfig.me 2>/dev/null || echo "нет ответа")
+    DIRECT_IP=$(curl --silent https://ifconfig.me 2>/dev/null || echo "нет ответа")
+    echo "SOCKS5 прокси: 127.0.0.1:10808"
+    echo "IP через VPN:   $VPN_IP"
+    echo "Прямой IP:      $DIRECT_IP"
+    if [[ "$VPN_IP" != "$DIRECT_IP" ]] && [[ "$VPN_IP" != "нет ответа" ]]; then
+        echo "Статус:         ✅ VPN АКТИВЕН (IP изменен)"
+    elif [[ "$VPN_IP" != "нет ответа" ]]; then
+        echo "Статус:         ⚠️  VPN подключен, но IP не изменился"
+    else
+        echo "Статус:         ❌ VPN не работает"
+    fi
+else
+    echo "SOCKS5 прокси: Не слушает порт 127.0.0.1:10808"
+    echo "Статус:         ❌ VPN не запущен"
+fi
+```
+
+Если VPN уже запущен, можно использовать его сразу:
+```bash
+export ALL_PROXY=socks5://127.0.0.1:10808
+curl https://google.com
 ```
 
 ### 3. TUN‑маршрутизация (sing‑box)

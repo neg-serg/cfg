@@ -19,6 +19,7 @@ base:
 desktop:
   - broot
   - chromium
+  - cosmic-greeter
   - dunst
   - grim
   - hypridle
@@ -365,6 +366,7 @@ other:
   - unarchiver
   - unbound
   - unzip
+  - cpio
   - upower
   - urlscan
   - urlwatch
@@ -403,6 +405,7 @@ aur:
   - act-bin
   - advancecomp
   - babashka-bin
+  - carapace-bin
   - aliae-bin
   - albumdetails
 

@@ -212,6 +212,28 @@ profile-trend:
 profile-compare LOG1 LOG2:
     python3 scripts/state-profiler.py --compare {{LOG1}} {{LOG2}}
 
+# Enable hybrid VPN (Xray + sing-box TUN)
+vpn-enable:
+    scripts/enable-vpn-hybrid.sh --enable-flags --apply
+
+# Start hybrid VPN manually (without Salt)
+vpn-start:
+    scripts/start-hybrid-vpn.sh
+
+# Check VPN status
+vpn-status:
+    scripts/check-vpn-status.sh
+
+# Stop hybrid VPN
+vpn-stop:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    sudo systemctl stop xray 2>/dev/null || true
+    sudo systemctl stop sing-box-tun-hybrid 2>/dev/null || true
+    pkill -f "xray run" 2>/dev/null || true
+    pkill -f "sing-box run" 2>/dev/null || true
+    echo "VPN stopped"
+
 # Check health of all Salt-managed services
 health *ARGS:
     ~/.local/bin/salt-alert --health {{ARGS}}

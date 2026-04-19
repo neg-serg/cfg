@@ -11,7 +11,6 @@ from pathlib import Path
 
 import yaml
 
-
 DEFAULT_CONFIG_PATH = Path.home() / ".config" / "vpn-split-router" / "config.yaml"
 DEFAULT_STATE_PATH = Path.home() / ".local" / "state" / "vpn-split-router" / "state.json"
 DEFAULT_OBSERVED_PATH = (

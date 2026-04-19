@@ -118,8 +118,8 @@ export HTTP_PROXY=socks5://127.0.0.1:10808
 export HTTPS_PROXY=socks5://127.0.0.1:10808
 
 # Now any command uses VPN automatically
-curl https://google.com           # через VPN
-wget https://example.com          # через VPN
+curl https://google.com           # via VPN
+wget https://example.com          # via VPN
 ```
 
 **Package managers (temporary):**
@@ -147,12 +147,12 @@ node app.js
 if curl --max-time 5 --socks5 127.0.0.1:10808 --silent https://ifconfig.me >/dev/null 2>&1; then
     VPN_IP=$(curl --socks5 127.0.0.1:10808 --silent https://ifconfig.me)
     DIRECT_IP=$(curl --silent https://ifconfig.me)
-    echo "✅ VPN работает: $VPN_IP (прямой: $DIRECT_IP)"
+    echo "✅ VPN is working: $VPN_IP (direct: $DIRECT_IP)"
     if [[ "$VPN_IP" != "$DIRECT_IP" ]]; then
-        echo "🎉 IP изменен - блокировки обходятся!"
+        echo "🎉 IP changed - bypassing blocking!"
     fi
 else
-    echo "❌ VPN не работает"
+    echo "❌ VPN is not working"
 fi
 ```
 

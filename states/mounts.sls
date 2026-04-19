@@ -19,6 +19,4 @@ mount_{{ name }}:
     - failhard: True
     - require:
       - file: {{ name }}_dir
-    - require_in:
-      - cmd: format_fstab
 {% endfor %}

@@ -58,6 +58,7 @@ include:
   - zsh
   - mounts
   - bind_mounts
+  - fstab_column
 
   # Kernel tuning, hardware, sysctl
   - kernel_modules

@@ -1,8 +1,7 @@
 import importlib.util
 import json
-from types import SimpleNamespace
 from pathlib import Path
-
+from types import SimpleNamespace
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 MODULE_PATH = REPO_ROOT / "scripts" / "vpn_split_router.py"

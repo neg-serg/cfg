@@ -619,8 +619,8 @@ def test_sing_box_tun_react_units_watch_runtime_config_and_restart_service():
         path_source = fh.read()
 
     assert (
-        "systemctl is-active sing-box-tun.service --quiet && systemctl restart sing-box-tun.service || true"
-        in service_source
+        "systemctl is-active sing-box-tun.service --quiet && "
+        "systemctl restart sing-box-tun.service || true" in service_source
     )
     assert "PathChanged={{ home }}/.config/sing-box-tun/config.json" in path_source
     assert "Unit=sing-box-tun-react.service" in path_source

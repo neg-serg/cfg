@@ -21,8 +21,6 @@
     - fs_vfstype: none
     - fs_mntops: rbind,nofail,x-systemd.automount
     - mount: False
-    - require_in:
-      - cmd: format_fstab
 
 {{ name }}_mount:
   cmd.run:

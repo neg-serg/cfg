@@ -260,10 +260,11 @@ def check_unused_imports(sls_files):
     return warnings
 
 
-def check_require_resolve(rendered_docs, global_ids):
+def check_require_resolve(rendered_docs, global_ids, suppressions=None):
     """Validate that all requisite references point to existing state IDs."""
     valid_ids = set(global_ids)
     errors = 0
+    suppressions = suppressions or {}
 
     for filepath, docs in rendered_docs.items():
         for doc in docs:
@@ -273,6 +274,10 @@ def check_require_resolve(rendered_docs, global_ids):
                 if state_id in _SALT_DIRECTIVES:
                     continue
                 if not isinstance(state_body, dict):
+                    continue
+                # Check if require-resolve is suppressed for this state
+                state_suppressions = suppressions.get(state_id, set())
+                if "require-resolve" in state_suppressions:
                     continue
                 for mod_func, directives in state_body.items():
                     if not isinstance(directives, list):

@@ -63,6 +63,7 @@ if [[ -f "$PACKAGES_YAML" ]]; then
         # Match lines like "  - package-name"
         if [[ "$line" =~ '^\s+-\s+(.+)$' ]]; then
             local pkg="${match[1]}"
+            pkg="${pkg%%#*}"      # strip inline comment
             pkg="${pkg## }"
             pkg="${pkg%% }"
             [[ -n "$pkg" ]] && declared[$pkg]="packages.yaml"

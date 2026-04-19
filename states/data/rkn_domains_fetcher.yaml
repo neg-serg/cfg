@@ -1,0 +1,117 @@
+rkn_domains_fetcher:
+  enabled: true
+  
+  settings:
+    update_interval_hours: 6  # Check every 6 hours for fresh updates
+    max_domains: 100000
+    domain_validation: true
+    
+    autocorrection:
+      enabled: true
+      health_check_url: "https://httpbin.org/ip"
+      health_check_timeout: 10
+      max_consecutive_failures: 3
+      fallback_to_cache: true
+      cache_max_age_days: 7
+      emergency_list_enabled: true
+    
+    monitoring:
+      enabled: true
+      check_interval_minutes: 60
+      alert_on_stale_days: 1  # Alert if no update for 1 day
+      notify_on_failure: true
+  
+  sources:
+    primary: "https://raw.githubusercontent.com/EikeiDev/domains/main/domains.lst"
+    
+    backups:
+      - "https://raw.githubusercontent.com/zapret-info/z-i/master/dump.csv"
+      - "https://raw.githubusercontent.com/antifilter/filterlist/master/antifilter.list"
+      - "https://raw.githubusercontent.com/b17Owner/check_blocked/main/blocked.txt"
+    
+    local_fallbacks:
+      - "/tmp/rkn-domains-cache.txt"
+      - "/var/tmp/rkn-domains-backup.txt"
+  
+  integration:
+    vpn_split_router:
+      enabled: true
+      auto_mark_vpn: true
+      update_on_change: true
+      # Important categories to always route through VPN
+      important_categories:
+        - "ai_services"
+        - "social_media"
+        - "video_streaming"
+        - "messaging"
+    
+    singbox:
+      enabled: true
+      config_path: "~/.config/sing-box-tun/config-no-auto-route.json"
+      max_domains_per_rule: 500  # Reasonable limit for sing-box
+      rule_priority: 10  # Higher priority = evaluated first
+    
+    # Also integrate with system proxy if needed
+    system_proxy:
+      enabled: false
+      pac_file: "~/.config/rkn-domains-fetcher/proxy.pac"
+  
+  emergency:
+    enabled: true
+    essential_domains:
+      # AI Services
+      - "claude.ai"
+      - "openai.com"
+      - "chatgpt.com"
+      - "anthropic.com"
+      - "openrouter.ai"
+      
+      # Social Media
+      - "twitter.com"
+      - "x.com"
+      - "instagram.com"
+      - "facebook.com"
+      - "tiktok.com"
+      
+      # Messaging
+      - "whatsapp.com"
+      - "discord.com"
+      - "telegram.org"
+      - "signal.org"
+      
+      # Video & Streaming
+      - "youtube.com"
+      - "twitch.tv"
+      - "reddit.com"
+      - "netflix.com"
+      - "hulu.com"
+      
+      # Development
+      - "github.com"
+      - "gitlab.com"
+      - "stackoverflow.com"
+      
+      # News & Media
+      - "bbc.com"
+      - "cnn.com"
+      - "reuters.com"
+      - "bloomberg.com"
+    
+    create_if_missing: true
+    max_age_hours: 48  # Regenerate emergency list every 2 days if no updates
+  
+  logging:
+    level: "INFO"
+    file: "~/.local/state/rkn-domains-fetcher/rkn-domains-fetcher.log"
+    max_size_mb: 20
+    backup_count: 5
+  
+  systemd:
+    user_service: true
+    timer_enabled: true
+    timer_schedule: "*-*-* 0/6:00:00"  # Every 6 hours
+    randomized_delay_sec: 1800  # 30 minutes random delay
+    retry_on_failure: true
+    max_retries: 5
+    retry_delay_sec: 600  # 10 minutes between retries
+    watchdog_sec: 300  # Restart if stuck for 5 minutes

@@ -50,6 +50,7 @@ defaults:
       zapret2: false
       wifi: false
       vpn_split_router: false
+      vpn_hybrid: false
     user_services:
       mail: true
       vdirsyncer: true

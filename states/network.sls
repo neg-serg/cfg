@@ -126,3 +126,53 @@ amnezia_import_tun_user_script:
 
 {{ user_service_file('amnezia_import_tun_user_service', 'amnezia-import-tun.service') }}
 {% endif %}
+
+{# --- Hybrid VPN (Xray + sing-box TUN) --- #}
+{% if net.vpn_hybrid %}
+
+{{ ensure_dir('sing_box_tun_hybrid_config_dir', home ~ '/.config/sing-box-tun', mode='0755') }}
+
+sing_box_tun_hybrid_config:
+  file.managed:
+    - name: {{ home }}/.config/sing-box-tun/hybrid-config.json
+    - source: salt://configs/sing-box-hybrid-config.json.j2
+    - template: jinja
+    - mode: '0644'
+    - user: {{ user }}
+    - group: {{ user }}
+    - makedirs: True
+
+sing_box_tun_hybrid_service_unit:
+  file.managed:
+    - name: /etc/systemd/system/sing-box-tun-hybrid.service
+    - source: salt://units/sing-box-tun-hybrid.service
+    - template: jinja
+    - mode: '0644'
+    - context:
+        home: {{ home }}
+
+sing_box_tun_hybrid_daemon_reload:
+  cmd.run:
+    - name: systemctl daemon-reload
+    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
+    - onchanges:
+      - file: sing_box_tun_hybrid_service_unit
+
+# Copy Xray config from imported AmneziaVPN config (if exists)
+xray_hybrid_config:
+  file.managed:
+    - name: /etc/xray/config.json
+    - source: {{ home }}/.config/sing-box-tun/config.json
+    - user: root
+    - group: root
+    - mode: '0644'
+    - makedirs: True
+    - onlyif: test -f {{ home }}/.config/sing-box-tun/config.json
+    - require:
+      - file: sing_box_tun_hybrid_config_dir
+
+# Note: services are not enabled by default, manual start required:
+# systemctl start xray
+# systemctl start sing-box-tun-hybrid
+# Or use the helper script: ~/.local/bin/amnezia-import-tun-config import
+{% endif %}

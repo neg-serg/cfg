@@ -1,0 +1,75 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "tls",
+        "tag": "google",
+        "server": "1.1.1.1"
+      },
+      {
+        "type": "udp",
+        "tag": "local",
+        "server": "223.5.5.5"
+      }
+    ],
+    "strategy": "ipv4_only",
+    "final": "local"
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "interface_name": "sb0",
+      "mtu": 1500,
+      "stack": "mixed",
+      "auto_route": true,
+      "strict_route": false,
+      "endpoint_independent_nat": true,
+      "address": ["172.19.0.1/30", "fd00::1/126"]
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "socks",
+      "tag": "proxy",
+      "server": "127.0.0.1",
+      "server_port": 10808,
+      "version": "5"
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "domain": [
+          "geosite:category-ads-all"
+        ],
+        "action": "reject"
+      },
+      {
+        "inbound": ["tun-in"],
+        "action": "sniff",
+        "timeout": "1s"
+      }
+    ],
+    "auto_detect_interface": true,
+    "final": "proxy",
+    "default_domain_resolver": "local"
+  },
+  "experimental": {}
+}

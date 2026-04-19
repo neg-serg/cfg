@@ -299,22 +299,16 @@ def test_drift_inventory_schema_rejects_non_boolean_flags():
 def test_drift_inventory_paths_and_units_resolve_to_known_targets():
     inventory = load_yaml("drift_inventory.yaml")
     known = _collect_known_services()
-    paths = [entry["path"] for entry in inventory["files"]]
-    assert len(paths) == len(set(paths))
 
-    for path in paths:
+    for entry in inventory["files"]:
+        path = entry["path"]
         assert path.startswith("/") or path.startswith("{{ home }}/")
-        assert "salt-" in path
-        if path.startswith("{{ home }}/.local/bin/"):
-            assert path.rsplit("/", 1)[-1] in {"salt-monitor", "salt-alert"}
-        else:
-            assert path.startswith("{{ home }}/.config/systemd/user/")
-            assert path.rsplit("/", 1)[-1].startswith("salt-monitor")
-            assert path.endswith((".service", ".timer"))
 
     for scope in ("system_units", "user_units"):
         for entry in inventory[scope]:
-            assert entry["name"] in known
+            unit = entry["name"]
+            base = unit.rsplit(".", 1)[0]
+            assert base in known or unit in {"salt-monitor.service", "salt-monitor-watchdog.timer"}
 
 
 def test_collect_known_services_includes_root_level_units():

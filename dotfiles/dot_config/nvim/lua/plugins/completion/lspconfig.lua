@@ -56,8 +56,8 @@ return {
     -- configure: set custom config; optionally enable (for non-Mason servers)
     local function configure(server, extra, enable)
       local resolved = vim.tbl_deep_extend('force', {}, base_config, extra or {})
-      vim.lsp.config(server, resolved)
-      if enable then vim.lsp.enable(server) end
+      local config = vim.tbl_extend('force', resolved, { autostart = enable or false })
+      require('lspconfig')[server].setup(config)
     end
 
     -- System-installed servers (pacman/AUR — not managed by Mason, must enable manually)

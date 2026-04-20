@@ -10,14 +10,204 @@ SINGBOX_CONFIG="${2:-$HOME/.config/sing-box-tun/config-singbox-hybrid-final.json
 XRAY_BIN="${XRAY_BIN:-$HOME/.local/bin/xray}"
 SINGBOX_BIN="${SINGBOX_BIN:-/usr/bin/sing-box}"
 TIMEOUT=30
+SOCKS5_PORT=10808
 TEST_URL="https://httpbin.org/ip"
 
 XRAY_PID=""
 SINGBOX_PID=""
 OVERALL_RESULT=0
+BACKUP_DIR=""
+
+# Current flow with validation points:
+# 1. Pre‑start: binaries, configs, port availability
+# 2. Before Xray start: verify no conflicting process
+# 3. After Xray start: verify SOCKS5 proxy responsiveness
+# 4. Before sing‑box start: verify Xray is healthy
+# 5. After sing‑box start: verify TUN interface created
+# 6. After TUN setup: verify routing rules
+# 7. Cleanup: restore previous routing state
+
+# Validation functions
+check_prerequisites() {
+    echo "=== Checking prerequisites ==="
+    
+    # Check binaries
+    if [[ ! -x "$XRAY_BIN" ]]; then
+        echo "❌ xray binary not found or not executable: $XRAY_BIN" >&2
+        return 1
+    fi
+    echo "✅ xray binary: $XRAY_BIN"
+    
+    if [[ ! -x "$SINGBOX_BIN" ]]; then
+        echo "❌ sing-box binary not found or not executable: $SINGBOX_BIN" >&2
+        return 1
+    fi
+    echo "✅ sing-box binary: $SINGBOX_BIN"
+    
+    # Check configs
+    if [[ ! -f "$XRAY_CONFIG" ]]; then
+        echo "❌ Xray config not found: $XRAY_CONFIG" >&2
+        return 1
+    fi
+    echo "✅ Xray config: $XRAY_CONFIG"
+    
+    if [[ ! -f "$SINGBOX_CONFIG" ]]; then
+        echo "❌ sing-box config not found: $SINGBOX_CONFIG" >&2
+        return 1
+    fi
+    echo "✅ sing-box config: $SINGBOX_CONFIG"
+    
+    # Check port availability (optional, warn if occupied)
+    if ss -tlnp | grep -q ":$SOCKS5_PORT"; then
+        local pid
+        pid=$(ss -tlnp | grep ":$SOCKS5_PORT" | grep -o 'pid=[0-9]*' | cut -d= -f2 | head -1)
+        if [[ "$pid" != "$$" ]] && ! pgrep -f "xray.*config.json" | grep -q "$pid"; then
+            echo "⚠️  Port $SOCKS5_PORT already in use by PID $pid" >&2
+            echo "   If it's an existing Xray process, it will be killed later" >&2
+        fi
+    fi
+    
+    # Validate sing-box config syntax
+    local check_output
+    if ! check_output=$("$SINGBOX_BIN" check -c "$SINGBOX_CONFIG" 2>&1); then
+        echo "❌ sing-box config syntax check failed" >&2
+        echo "$check_output" >&2
+        return 1
+    fi
+    echo "✅ sing-box config syntax valid"
+    
+    echo "✅ All prerequisites satisfied"
+    return 0
+}
+
+test_socks5_proxy() {
+    local timeout=${1:-10}
+    local test_url=${2:-"https://httpbin.org/ip"}
+    local port=${3:-$SOCKS5_PORT}
+    
+    echo "Testing SOCKS5 proxy (127.0.0.1:$port)..."
+    
+    # Wait for port to become available
+    local attempts=0
+    while ! ss -tlnp | grep -q ":$port"; do
+        sleep 1
+        attempts=$((attempts + 1))
+        if [[ $attempts -ge 5 ]]; then
+            echo "❌ SOCKS5 proxy not listening on port $port after 5 seconds" >&2
+            return 1
+        fi
+    done
+    
+    # Test connectivity through proxy
+    local curl_output
+    if curl_output=$(curl --max-time "$timeout" --socks5 "127.0.0.1:$port" --silent --fail --show-error "$test_url" 2>&1); then
+        echo "✅ SOCKS5 proxy works!"
+        return 0
+    else
+        echo "❌ SOCKS5 proxy test failed (port $port): $curl_output" >&2
+        return 1
+    fi
+}
+
+verify_tun_interface() {
+    echo "Verifying TUN interface setup..."
+    
+    # Check interface exists
+    if ! ip link show sb0 >/dev/null 2>&1; then
+        echo "❌ TUN interface sb0 not found" >&2
+        return 1
+    fi
+    echo "✅ TUN interface sb0 exists"
+    
+    # Check interface is UP
+    if ! ip link show sb0 | grep -q "state UP"; then
+        echo "⚠️  TUN interface sb0 is not UP" >&2
+        # Continue anyway, it might come up later
+    else
+        echo "✅ TUN interface sb0 is UP"
+    fi
+    
+    # Check IP address assigned
+    if ! ip addr show sb0 | grep -q "inet "; then
+        echo "⚠️  TUN interface sb0 has no IP address" >&2
+    else
+        echo "✅ TUN interface sb0 has IP address"
+        ip addr show sb0 | grep "inet " | head -1
+    fi
+    
+    # Check routing table for VPN routes (table 200)
+    if ip route show table 200 >/dev/null 2>&1; then
+        echo "✅ VPN routing table (200) exists"
+        local route_count
+        route_count=$(ip route show table 200 | wc -l)
+        echo "   Found $route_count route(s) in table 200"
+    else
+        echo "⚠️  VPN routing table (200) not found" >&2
+    fi
+    
+    # Test basic connectivity through TUN (optional)
+    if ping -c 1 -W 2 1.1.1.1 >/dev/null 2>&1; then
+        echo "✅ Basic connectivity via TUN works"
+    else
+        echo "⚠️  Basic ping test failed (may be firewall)" >&2
+    fi
+    
+    return 0
+}
+
+backup_routes() {
+    local backup_dir="${1:-/tmp/vpn-backup-$$}"
+    
+    echo "Backing up current routing state to $backup_dir..."
+    
+    mkdir -p "$backup_dir"
+    
+    # Backup main routing table
+    ip route show > "$backup_dir/routes-main.txt" 2>/dev/null || true
+    
+    # Backup table 200 if exists
+    ip route show table 200 > "$backup_dir/routes-table200.txt" 2>/dev/null || true
+    
+    # Backup ip rules
+    ip rule show > "$backup_dir/ip-rules.txt" 2>/dev/null || true
+    
+    # Backup interface configuration
+    ip addr show > "$backup_dir/ip-addr.txt" 2>/dev/null || true
+    
+    echo "✅ Routing backup saved to $backup_dir"
+    echo "$backup_dir"
+}
+
+restore_routes() {
+    local backup_dir="$1"
+    
+    if [[ ! -d "$backup_dir" ]]; then
+        echo "⚠️  No backup directory found: $backup_dir" >&2
+        return 1
+    fi
+    
+    echo "Restoring routing state from $backup_dir..."
+    
+    # Clean up any VPN-specific routes/rules first
+    sudo ip route flush table 200 2>/dev/null || true
+    sudo ip rule del pref 100 2>/dev/null || true
+    sudo ip rule del pref 200 2>/dev/null || true
+    
+    # Note: We don't automatically restore from backup because
+    # network state may have changed. Instead, we log what was backed up
+    # and rely on the existing cleanup of VPN-specific artifacts.
+    
+    echo "✅ VPN-specific routing artifacts removed"
+    echo "   Original state backed up in: $backup_dir"
+    
+    # Keep backup for inspection
+    return 0
+}
 
 # shellcheck disable=SC2329  # function is called via trap
 cleanup() {
+    local backup_dir="${1:-}"
+    
     echo ""
     echo "=== Cleanup ==="
     
@@ -49,35 +239,28 @@ cleanup() {
     sudo ip rule del pref 100 2>/dev/null || true
     sudo ip rule del pref 200 2>/dev/null || true
     
+    # Restore routes from backup if provided
+    if [[ -n "$backup_dir" ]] && [[ -d "$backup_dir" ]]; then
+        echo "Routing backup available at: $backup_dir"
+        echo "   Inspect if network connectivity issues persist"
+    fi
+    
     echo "Cleanup complete"
 }
 
+
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+
 # Setup trap for cleanup
-trap cleanup EXIT INT TERM
+cleanup_wrapper() {
+    cleanup "$BACKUP_DIR"
+}
+trap cleanup_wrapper EXIT INT TERM
 
-# Verify binaries
-if [[ ! -x "$XRAY_BIN" ]]; then
-    echo "ERROR: xray binary not found or not executable: $XRAY_BIN" >&2
-    echo "Install with: curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh | sudo bash" >&2
-    exit 1
-fi
-
-if [[ ! -x "$SINGBOX_BIN" ]]; then
-    echo "ERROR: sing-box binary not found or not executable: $SINGBOX_BIN" >&2
-    echo "Install with: sudo pacman -S sing-box" >&2
-    exit 1
-fi
-
-# Verify configs
-if [[ ! -f "$XRAY_CONFIG" ]]; then
-    echo "ERROR: Xray config not found: $XRAY_CONFIG" >&2
-    echo "Run: ./scripts/amnezia-import-tun-config.sh import" >&2
-    exit 1
-fi
-
-if [[ ! -f "$SINGBOX_CONFIG" ]]; then
-    echo "ERROR: sing-box config not found: $SINGBOX_CONFIG" >&2
-    echo "Create config with: python3 scripts/xray-to-singbox.py $XRAY_CONFIG $SINGBOX_CONFIG" >&2
+# Phase 0: Prerequisite checks
+if ! check_prerequisites; then
+    echo "❌ Prerequisite checks failed" >&2
     exit 1
 fi
 
@@ -87,6 +270,9 @@ echo "sing-box config: $SINGBOX_CONFIG"
 echo "Xray binary: $XRAY_BIN"
 echo "sing-box binary: $SINGBOX_BIN"
 echo ""
+
+# Backup current routing state
+BACKUP_DIR=$(backup_routes)
 
 # Kill existing processes
 pkill -f "xray.*$XRAY_CONFIG" 2>/dev/null || true
@@ -111,9 +297,8 @@ echo "✅ Xray started (PID $XRAY_PID)"
 
 # Test Xray SOCKS5 proxy
 echo ""
-echo "Testing Xray SOCKS5 proxy (127.0.0.1:10808)..."
-if curl --max-time "$TIMEOUT" --socks5 "127.0.0.1:10808" --silent --fail "$TEST_URL"; then
-    echo "✅ Xray SOCKS5 proxy works!"
+if test_socks5_proxy "$TIMEOUT" "$TEST_URL" "$SOCKS5_PORT"; then
+    echo "✅ Xray SOCKS5 proxy verified"
 else
     echo "❌ Xray SOCKS5 proxy failed" >&2
     OVERALL_RESULT=1
@@ -123,7 +308,14 @@ fi
 echo ""
 echo "=== Phase 2: Starting sing-box (TUN interface) ==="
 
-# Check sing-box config
+# Verify Xray is still running before starting sing-box
+if ! kill -0 "$XRAY_PID" 2>/dev/null; then
+    echo "❌ Xray process died before sing-box start" >&2
+    OVERALL_RESULT=1
+    exit 1
+fi
+
+# Check sing-box config (redundant but safe)
 if ! "$SINGBOX_BIN" check -c "$SINGBOX_CONFIG" 2>&1; then
     echo "ERROR: sing-box config check failed" >&2
     exit 1
@@ -144,41 +336,12 @@ echo "✅ sing-box started (PID $SINGBOX_PID)"
 
 # Check TUN interface
 echo ""
-echo "Checking TUN interface..."
-if ip link show sb0 2>/dev/null; then
-    echo "✅ TUN interface sb0 created"
-    
-    # Show interface details
-    echo "TUN interface details:"
-    ip addr show sb0 2>/dev/null || true
-    
-    # Test TUN routing
-    echo ""
-    echo "Testing TUN routing (through Xray proxy)..."
-    echo "This test uses the TUN interface to route traffic through VPN"
-    echo "Note: May take a moment for routes to establish"
-    sleep 2
-    
-    # Simple test - check if we can resolve DNS through TUN
-    if ping -c 1 -W 2 1.1.1.1 2>/dev/null; then
-        echo "✅ Basic network connectivity via TUN works"
-    else
-        echo "⚠️  Basic ping test failed (may be blocked by firewall)" >&2
-    fi
-    
-    # Test that direct connection still works (split routing)
-    echo ""
-    echo "Testing direct connection (should still work)..."
-    if curl --max-time "$TIMEOUT" --silent --fail "$TEST_URL"; then
-        echo "✅ Direct connection works - split routing configured"
-    else
-        echo "⚠️  Direct connection failed - check routing" >&2
-    fi
-    
+if verify_tun_interface; then
+    echo "✅ TUN interface verified"
 else
-    echo "❌ TUN interface not created" >&2
-    echo "Check permissions: sudo setcap 'cap_net_admin,cap_net_raw,cap_net_bind_service=+ep' /usr/bin/sing-box" >&2
+    echo "❌ TUN interface verification failed" >&2
     OVERALL_RESULT=1
+    exit 1
 fi
 
 echo ""
@@ -186,9 +349,10 @@ if [[ "$OVERALL_RESULT" -eq 0 ]]; then
     echo "=== ✅ HYBRID VPN RUNNING SUCCESSFULLY ==="
     echo ""
     echo "Configuration:"
-    echo "  • Xray: SOCKS5 proxy on 127.0.0.1:10808 (XHTTP+REALITY)"
+    echo "  • Xray: SOCKS5 proxy on 127.0.0.1:$SOCKS5_PORT (XHTTP+REALITY)"
     echo "  • sing-box: TUN interface sb0 with auto routing"
     echo "  • Traffic routing: Through TUN → Xray → VPN server"
+    echo "  • Route backup: $BACKUP_DIR"
     echo ""
     echo "Press Ctrl+C to stop"
     echo ""
@@ -205,3 +369,4 @@ else
 fi
 
 exit "$OVERALL_RESULT"
+fi

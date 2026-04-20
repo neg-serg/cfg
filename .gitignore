@@ -47,3 +47,6 @@ Thumbs.db
 
 # Temporary planning artifacts
 docs/superpowers/plans/*.md
+
+# OpenCode session files
+session-*.md

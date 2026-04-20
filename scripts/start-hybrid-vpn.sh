@@ -249,7 +249,6 @@ cleanup() {
 
 
 
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 
 # Setup trap for cleanup
 cleanup_wrapper() {
@@ -368,4 +367,3 @@ else
 fi
 
 exit "$OVERALL_RESULT"
-fi

@@ -954,6 +954,7 @@ const PROXY_MODES = {
 };
 
 let currentProxyMode = 'direct';
+const AUTO_RELOAD_CURRENT_TAB = true; // Reload current tab after proxy change
 
 function showProxyStatus() {
   const mode = PROXY_MODES[currentProxyMode];
@@ -1020,6 +1021,22 @@ function setProxyMode(modeKey) {
         currentProxyMode = modeKey;
         if (api.status) api.status('Proxy: ' + mode.name);
         api.Front.showBanner('Proxy: ' + result[0].mode);
+        
+        // Reload current tab to apply proxy settings
+        if (AUTO_RELOAD_CURRENT_TAB) {
+          setTimeout(() => {
+            try {
+              if (api.RUNTIME && typeof api.RUNTIME === 'function') {
+                api.RUNTIME('reloadTab');
+              }
+            } catch (e) {
+              // fallback: use location.reload via executeScript on current tab
+              api.Front.executeScript({
+                code: 'location.reload();'
+              });
+            }
+          }, 800);
+        }
       } else {
         api.Front.showBanner('Proxy error: ' + (result ? result[0]?.error : 'unknown'));
       }

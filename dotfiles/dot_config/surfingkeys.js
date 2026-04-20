@@ -968,6 +968,8 @@ function setProxyMode(modeKey) {
   const mode = PROXY_MODES[modeKey];
   if (!mode) return;
 
+  api.Front.showBanner('Switching proxy to: ' + mode.name);
+  
   // Open about:config in a background tab
   api.RUNTIME('openLink', {
     tab: { tabbed: true, active: false },
@@ -1046,7 +1048,7 @@ function setProxyMode(modeKey) {
     }).catch(e => {
       api.Front.showBanner('Failed to execute script: ' + e.message);
     });
-  }, 2000);
+  }, 3000);
 }
 
 // Keyboard shortcuts for proxy modes

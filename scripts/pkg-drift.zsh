@@ -52,8 +52,6 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-
-
 # --- Step 1: Collect declared packages ---
 typeset -A declared  # pkg_name → source
 
@@ -172,7 +170,7 @@ for pkg in ${(k)declared}; do
 done
 
 # Orphans: dependency-only packages with no dependents
-orphan_list=("${(@f)$(pacman -Qdtq 2>/dev/null)}" )
+orphan_list=("${(@f)$(pacman -Qdtq 2>/dev/null || true)}" )
 # Filter empty entries
 orphan_list=("${(@)orphan_list:#}")
 

@@ -16,7 +16,7 @@
 {% set _telegram_uid_guest2 = tg_secret('api/telegram-uid-guest2', 'telegram-uid-guest2') %}
 
 # ── Install python-telethon from AUR ─────────────────────────────────
-{{ paru_install('python_telethon', 'python-telethon', version=ver.telethon) }}
+# {{ paru_install('python_telethon', 'python-telethon', version=ver.telethon) }}
 
 # ── Directories ──────────────────────────────────────────────────────
 {{ ensure_dir('telethon_bridge_dir', home ~ '/.telethon-bridge') }}

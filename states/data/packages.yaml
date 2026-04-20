@@ -19,6 +19,17 @@ base:
 desktop:
   - broot
   - chromium
+  - epiphany
+  - firefox
+  - gimp
+  - gnome-backgrounds
+  - gnome-calculator
+  - gnome-calendar
+  - gnome-characters
+  - gnome-clocks
+  - gnome-color-manager
+  - gnome-connections
+  - gnome-console
   - cosmic-greeter
   - dunst
   - grim
@@ -43,6 +54,36 @@ desktop:
   - xdg-desktop-portal-hyprland
   - yazi
   - ark
+  - gnome-contacts
+  - gnome-control-center
+  - gnome-disk-utility
+  - gnome-font-viewer
+  - gnome-keyring
+  - gnome-logs
+  - gnome-maps
+  - gnome-menus
+  - gnome-music
+  - gnome-remote-desktop
+  - gnome-session
+  - gnome-settings-daemon
+  - gnome-shell
+  - gnome-software
+  - gnome-system-monitor
+  - gnome-text-editor
+  - gnome-tour
+  - gnome-tweaks
+  - gnome-user-docs
+  - gnome-user-share
+  - gnome-weather
+  - nautilus
+  - simple-scan
+  - sushi
+  - swayosd
+  - wofi
+  - xdg-desktop-portal-gnome
+  - xdg-user-dirs-gtk
+  - xdg-utils
+  - yelp
 
 dev:
   - clang
@@ -53,12 +94,21 @@ dev:
   - fennel
   - git
   - lua-language-server
+  - lua53
+  - patchelf
   - neovim
+  - neovim-remote
   - nodejs-lts-jod
   - npm
   - python-pipx
   - python-pyperclip
   - python-textual
+  - python-mcp
+  - python-poetry
+  - python-orjson
+  - python-numpy
+  - python-telethon
+  - python-transformers
   - ruby
   - jupyterlab
   - rustup
@@ -70,16 +120,25 @@ network:
   - cloudflare-speed-cli
   - curl
   - firewalld
+  - ufw
   - networkmanager
+  - networkmanager-qt
   - bluez
   - nmap
   - openssh
   - tailscale
+  - proton-vpn-cli
+  - zapret2
   - wget
+  - nethogs
+  - network-manager-applet
 
 audio:
 
   - pipewire
+  - gst-plugin-pipewire
+  - pavucontrol
+  - sonobus
 
 media:
   - ffmpeg
@@ -89,10 +148,15 @@ media:
   - gst-plugins-ugly
   - imagemagick
   - mpv
+  - grilo-plugins
+  - rygel
+  - showtime
+  - ytsurf
 
 fonts:
 
   - noto-fonts-cjk
+  - ttf-jetbrains-mono-nerd
 
 gaming:
   - lutris
@@ -100,10 +164,16 @@ gaming:
   - xorg-server
   - xorg-xinit
   - xf86-video-amdgpu
+  - xf86-video-ati
+  - nethack
+  - proton-ge-custom-bin
 
 system:
   - bottom
   - btop
+  - xorg-server
+  - xorg-xinit
+  - xf86-video-amdgpu
   - htop
   - lsof
   - lvm2
@@ -114,6 +184,13 @@ system:
   - sysstat
   - pacman-contrib
   - rebuild-detector
+  - cups
+  - cups-pk-helper
+  - gdm
+  - rsync
+  - slirp4netns
+  - system-config-printer
+  - zram-generator
 
 other:
   - abduco
@@ -127,9 +204,11 @@ other:
   - bat
   - beets
   - blender
+  - lib32-vulkan-radeon
   - bluez-utils
   - borg
   - bpftrace
+  - pam_ssh_agent_auth
   - bucklespring
 
 
@@ -215,6 +294,13 @@ other:
   - gvfs
   - gvfs-mtp
   - gvfs-smb
+  - gvfs-afc
+  - gvfs-dnssd
+  - gvfs-goa
+  - gvfs-gphoto2
+  - gvfs-nfs
+  - gvfs-onedrive
+  - gvfs-wsdd
   - hashcat
   - helix
   - helvum
@@ -399,10 +485,41 @@ other:
   - zmap
   - zoxide
   - zsh
+  - handlr-regex
+  - hiddify
+  - i3status
+  - i3-wm
+  - inxi
+  - kate
+  - libpulse
+  - libvirt
+  - malcontent
+  - nano
+  - orca
+  - papers
+  - pass
+  - plasma-desktop
+  - plasma-workspace
+  - polkit-kde-agent
+  - breeze
+  - breeze-icons
+  - konsole
+  - proxypilot
+  - proxypilot-debug
+  - qt6-wayland
+  - snapshot
+  - ssh-to-age
+  - ssh-to-age-debug
+  - taoup
+  - tecla
+  - uwsm
+  - vim
+  - wiremix
 
 aur:
 
   - act-bin
+  - optiscaler-universal
   - advancecomp
   - babashka-bin
   - carapace-bin
@@ -421,6 +538,7 @@ aur:
   - flclashx-bin
   - v2raya-bin
   - v2rayn-bin
+  - v2ray
   - fsel-bin
   - epr-git
   - freeze-bin
@@ -459,12 +577,14 @@ aur:
   - par
   - patool
   - paru
+  - paru-debug
   - pipemixer-git
   - pup-bin
   - python-ascii_magic
   - python-rapidgzip
   - quickshell
   - raise
+  - raise-debug
   - reddix-bin
   - repeater-bin
   - regex-tui
@@ -473,6 +593,7 @@ aur:
   - richcolors
   - rmlint
   - rofi-file-browser-extended-git
+  - rofi-file-browser-extended-git-debug
   - rustmission
   - salt
   - scc
@@ -481,6 +602,12 @@ aur:
   - sing-box-bin
   - strace-tui-bin
   - systemd-manager-tui
+  - sidecar
+  - sidecar-debug
+  - tailray
+  - tailray-debug
+  - throne
+  - throne-debug
 
   - tanin-git
   - tessen
@@ -494,8 +621,10 @@ aur:
   - wget2
   - wlogout
   - wl
+  - wl-debug
   - wlr-which-key
   - xdg-ninja
+  - xdg-desktop-portal-termfilechooser-hunkyburrito-git
   - youtube-tui
-
+  - espanso-wayland
   - zen-browser-bin

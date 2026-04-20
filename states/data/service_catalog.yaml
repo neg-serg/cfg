@@ -260,7 +260,7 @@ proxypilot:                    # LLM proxy (containerized)
 
 nanoclaw:                      # AI Telegram agent (containerized)
   port: 8318
-  health_path: /health
+  health_cmd: null
   unit: nanoclaw
   scope: user
   manual_start: true
@@ -274,7 +274,16 @@ nanoclaw:                      # AI Telegram agent (containerized)
     - host: ~/.config/nanoclaw
       container: /config
       mode: rw                 # sender/mount allowlists
-  env_file: null
+    - host: ~/.local/share/nanoclaw/entrypoint.sh
+      container: /app/entrypoint.sh
+      mode: ro                 # overridden entrypoint for daemon mode
+    - host: ~/.local/share/nanoclaw/container-runtime-patched.ts
+      container: /app/src/container-runtime.ts
+      mode: ro                 # patched container runtime module
+    - host: ~/.local/share/nanoclaw/index-main-patched.ts
+      container: /app/src/index.ts
+      mode: ro                 # patched main index.ts (skip channel check)
+  env_file: ~/.local/share/nanoclaw/.env
 
 telethon_bridge:               # Telegram bridge (python-telethon)
   unit: telethon-bridge

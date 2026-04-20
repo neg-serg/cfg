@@ -19,22 +19,16 @@ Image={{ image }}
 Pull=never
 ContainerName=nanoclaw
 PublishPort=127.0.0.1:{{ catalog_entry.port }}:8318
-Volume=/home/neg/.local/share/nanoclaw/store:/app/store:rw
-Volume=/home/neg/.local/share/nanoclaw/data:/app/data:rw
-Volume=/home/neg/.local/share/nanoclaw/groups:/app/groups:rw
-Volume=/home/neg/.local/share/nanoclaw/.env:/app/.env:rw
-Volume=/home/neg/.config/nanoclaw:/config:rw
+{% for m in expanded_mounts -%}
+Volume={{ m.host }}:{{ m.container }}:{{ m.mode }}
+{% endfor -%}
 Volume=/run/user/1000/podman/podman.sock:/var/run/docker.sock:rw
 # NanoClaw reads .env from its working directory
 WorkingDir=/app
 Environment=NODE_ENV=production
-# Health check — NanoClaw HTTP endpoint
-HealthCmd=curl -sf http://127.0.0.1:8318/health >/dev/null 2>&1 || exit 1
-HealthInterval=5s
-HealthStartPeriod=15s
-HealthRetries=3
-HealthTimeout=10s
-Notify=healthy
+User=1000
+# Health check disabled — container runs as daemon waiting for IPC
+# No HTTP endpoint available
 
 [Service]
 # Resource limits (mirrors native unit)
@@ -43,7 +37,7 @@ CPUQuota=200%
 # Bounded restart policy
 Restart=on-failure
 RestartSec=10
-TimeoutStartSec=60
+TimeoutStartSec=180
 
 [Install]
 WantedBy=default.target

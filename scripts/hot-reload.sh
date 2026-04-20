@@ -32,21 +32,21 @@ SVC_UNIT[nanoclaw]='nanoclaw-container.service'
 SVC_HEALTH[nanoclaw]='curl -sf http://127.0.0.1:8318/health >/dev/null 2>&1 || pgrep -f "node.*nanoclaw" >/dev/null'
 SVC_TYPE[nanoclaw]='quadlet'
 
-SVC_UNIT[telethon - bridge]='telethon-bridge.service'
-SVC_HEALTH[telethon - bridge]='pgrep -f telethon-bridge >/dev/null'
-SVC_TYPE[telethon - bridge]='quadlet'
+SVC_UNIT[telethon-bridge]='telethon-bridge.service'
+SVC_HEALTH[telethon-bridge]='pgrep -f telethon-bridge >/dev/null'
+SVC_TYPE[telethon-bridge]='quadlet'
 
-SVC_UNIT[opencode - telegram]='opencode-telegram-bot.service'
-SVC_HEALTH[opencode - telegram]='pgrep -f opencode-telegram >/dev/null'
-SVC_TYPE[opencode - telegram]='quadlet'
+SVC_UNIT[opencode-telegram]='opencode-telegram-bot.service'
+SVC_HEALTH[opencode-telegram]='pgrep -f opencode-telegram >/dev/null'
+SVC_TYPE[opencode-telegram]='quadlet'
 
 SVC_UNIT[telecode]='telecode.service'
 SVC_HEALTH[telecode]='pgrep -f telecode >/dev/null'
 SVC_TYPE[telecode]='quadlet'
 
-SVC_UNIT[opencode - serve]='opencode-serve.service'
-SVC_HEALTH[opencode - serve]='curl -sf http://127.0.0.1:4096/ >/dev/null 2>&1'
-SVC_TYPE[opencode - serve]='quadlet'
+SVC_UNIT[opencode-serve]='opencode-serve.service'
+SVC_HEALTH[opencode-serve]='curl -sf http://127.0.0.1:4096/ >/dev/null 2>&1'
+SVC_TYPE[opencode-serve]='quadlet'
 
 # ── Helpers ──────────────────────────────────────────────────────────
 

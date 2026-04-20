@@ -5,7 +5,7 @@
 {% import_yaml 'data/installers.yaml' as tools %}
 
 # Python dependencies for Annoy-based analysis scripts
-{{ paru_install('music_analysis_pydeps', 'python-orjson python-numpy') }}
+
 {{ paru_install('python_annoy', 'python-annoy') }}
 
 # Essentia streaming extractor (binary tarball)

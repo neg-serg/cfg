@@ -21,12 +21,12 @@ Because Firefox/Zen Browser does not expose a privileged JavaScript API for prox
 ### 1. Proxy Mode Definitions
 Four modes are defined, matching the existing proxy endpoints:
 
-| Key        | Name                        | `network.proxy.type` | SOCKS host   | Port  | Notes                                 |
-|------------|-----------------------------|----------------------|--------------|-------|---------------------------------------|
-| `direct`   | Direct (no proxy)           | 0 (none)             | –            | –     | Bypasses all proxies.                |
-| `telegram` | Telegram Xray (SOCKS5 :10808)| 1 (manual)           | `localhost`  | 10808 | The Telegram‑dedicated Xray instance.|
-| `test`     | Test Xray (SOCKS5 :10810)   | 1 (manual)           | `localhost`  | 10810 | Debug/test Xray (port 10810).        |
-| `system`   | System VPN (auto‑detect)    | 4 (auto‑detect)      | –            | –     | Lets the OS/VPN decide.              |
+| Key          | Name                                        | `network.proxy.type` | SOCKS host   | Port  | Notes                                                              |
+|--------------|---------------------------------------------|----------------------|--------------|-------|--------------------------------------------------------------------|
+| `direct`     | Direct (no proxy)                           | 0 (none)             | –            | –     | Bypasses all proxies.                                             |
+| `telegram`   | Telegram Xray (SOCKS5 :10808)               | 1 (manual)           | `localhost`  | 10808 | The Telegram‑dedicated Xray instance.                             |
+| `debug`      | Debug Xray (SOCKS5 :10810)                  | 1 (manual)           | `localhost`  | 10810 | Debug/test Xray (port 10810).                                     |
+| `system_vpn` | System VPN (fallback to Telegram proxy)     | 1 (manual)           | `localhost`  | 10808 | Uses Telegram proxy as fallback while system VPN is not working. |
 
 ### 2. Surfingkeys Integration
 Add a new section in `/home/neg/src/cfg/dotfiles/dot_config/surfingkeys.js`:
@@ -121,23 +121,16 @@ function setProxyMode(modeKey) {
 Add these mappings after the function definition:
 
 ```javascript
-// Proxy shortcuts
-api.mapkey(';pd', 'Proxy: Direct (no proxy)', () => setProxyMode('direct'));
-api.mapkey(';pt', 'Proxy: Telegram Xray (SOCKS5 :10808)', () => setProxyMode('telegram'));
-api.mapkey(';px', 'Proxy: Test Xray (SOCKS5 :10810)', () => setProxyMode('test'));
-api.mapkey(';pv', 'Proxy: System VPN (auto‑detect)', () => setProxyMode('system'));
-
-// Quick toggle between direct and the last used proxy
-api.mapkey(';pp', 'Toggle proxy on/off', () => {
-  const current = localStorage.getItem('lastProxyMode') || 'direct';
-  const next = current === 'direct' ? 'telegram' : 'direct';
-  localStorage.setItem('lastProxyMode', next);
-  setProxyMode(next);
-});
+// Proxy shortcuts (Alt+Shift+number)
+api.mapkey('<A-S-1>', 'Proxy: Direct', () => setProxyMode('direct'));
+api.mapkey('<A-S-2>', 'Proxy: Telegram Xray', () => setProxyMode('telegram'));
+api.mapkey('<A-S-3>', 'Proxy: Debug Xray', () => setProxyMode('debug'));
+api.mapkey('<A-S-4>', 'Proxy: System VPN', () => setProxyMode('system_vpn'));
+api.mapkey('<A-S-0>', 'Show proxy status', () => showProxyStatus());
 ```
 
 ### 4. Data Flow
-1. **User presses `;pt`** → Surfingkeys opens `about:config` in a new foreground tab.
+1. **User presses `Alt+Shift+2`** → Surfingkeys opens `about:config` in a new background tab.
 2. **After 1‑second delay** (page load), `api.Front.executeScript` injects the configuration script.
 3. **Script runs in `about:config` context**:
    - Sets `network.proxy.type` and SOCKS5 details (if manual).
@@ -159,19 +152,16 @@ api.mapkey(';pp', 'Toggle proxy on/off', () => {
    - Verify port 10808: `ss -tlnp | grep :10808`
    - Open Zen Browser and confirm Surfingkeys is active.
 2. **Functional test**:
-   - Press `;pt` → observe banner “Proxy: Telegram Xray (SOCKS5 :10808)”.
+   - Press `Alt+Shift+2` → observe banner “Proxy: Telegram Xray (SOCKS5 :10808)”.
    - Open `about:config`, search for `network.proxy` → values should match the mode.
    - Visit `httpbin.org/ip` → the returned IP should be the VPN exit (if Xray is connected).
-3. **Toggle test**:
-   - Press `;pp` (toggle) → banner toggles between direct and Telegram proxy.
-   - Check that `localStorage.getItem('lastProxyMode')` updates.
-4. **Fallback test**:
-   - Stop the Telegram Xray service, press `;pt` → browsing should hang (expected). Press `;pd` to revert.
+3. **Fallback test**:
+   - Stop the Telegram Xray service, press `Alt+Shift+2` → browsing should hang (expected). Press `Alt+Shift+1` to revert to direct mode.
 
 ## Integration with Existing VPN Stack
-- The **system VPN** mode (`;pv`) corresponds to the full‑routing VPN (`vpn‑tun2socks --full`), which is currently broken. Once the full‑routing issue is fixed, this mode will route traffic through the system‑wide `tun0` interface.
-- The **direct** mode (`;pd`) bypasses all proxies, useful when the VPN is misbehaving.
-- The **test** mode (`;px`) uses the debug Xray instance (port 10810), which can be started independently with `vpn‑tun2socks --test`.
+- The **system VPN** mode (`Alt+Shift+4`) currently falls back to Telegram proxy (port 10808) because the full‑routing VPN (`vpn‑tun2socks --full`) is broken. Once the full‑routing issue is fixed, this mode can be updated to route traffic through the system‑wide `tun0` interface.
+- The **direct** mode (`Alt+Shift+1`) bypasses all proxies, useful when the VPN is misbehaving.
+- The **debug** mode (`Alt+Shift+3`) uses the debug Xray instance (port 10810), which can be started independently with `vpn‑tun2socks --test` (if not already running).
 
 ## Future Extensions
 - **Per‑domain rules**: Extend the script to write a PAC file (`network.proxy.autoconfig_url`) that routes specific domains through a proxy.
@@ -180,12 +170,42 @@ api.mapkey(';pp', 'Toggle proxy on/off', () => {
 - **Integration with Salt**: Once the Surfingkeys config is proven, add a Salt state to deploy the updated `surfingkeys.js` to all relevant hosts.
 
 ## Acceptance Criteria
-- [ ] Pressing `;pt` changes Zen Browser’s proxy to `localhost:10808` (SOCKS5).
-- [ ] Pressing `;pd` disables the proxy (`network.proxy.type = 0`).
+- [ ] Pressing `Alt+Shift+2` changes Zen Browser’s proxy to `localhost:10808` (SOCKS5).
+- [ ] Pressing `Alt+Shift+1` disables the proxy (`network.proxy.type = 0`).
 - [ ] The change is reflected in `about:config` without manual editing.
 - [ ] A Surfingkeys banner confirms the action.
 - [ ] No browser restart is required (only page reload).
 - [ ] The existing Surfingkeys mappings remain intact.
+
+## Rollback Instructions
+
+If the proxy management feature causes issues (e.g., browser hangs, proxy settings stuck), follow these steps:
+
+1. **Immediate fallback**: Press `Alt+Shift+1` (Direct mode) to disable proxy. This should restore direct internet access.
+
+2. **Manual reset via about:config**:
+   - Open `about:config` in Zen Browser.
+   - Search for `network.proxy`.
+   - Reset the following preferences to default values:
+     - `network.proxy.type` → `0`
+     - `network.proxy.socks` → `""`
+     - `network.proxy.socks_port` → `0`
+     - `network.proxy.socks_version` → `5`
+     - `network.proxy.no_proxies_on` → `""`
+   - Restart the browser.
+
+3. **Disable the feature**:
+   - Edit `/home/neg/src/cfg/dotfiles/dot_config/surfingkeys.js`
+   - Remove or comment out the entire "Proxy Management" section (lines 926‑1026).
+   - Reload Surfingkeys extension (or restart browser).
+
+4. **Restore previous configuration**:
+   - If a backup exists (`surfingkeys.js.backup`), copy it over the modified file.
+   - Run `git checkout -- dotfiles/dot_config/surfingkeys.js` to revert to the committed version.
+
+5. **Verify network connectivity**:
+   - Use `curl -I https://example.com` to confirm internet works without proxy.
+   - Check that local services (e.g., `http://192.168.2.*`) are accessible.
 
 ## References
 - Surfingkeys proxy support table (Chromium‑only): https://github.com/brookhong/Surfingkeys#proxy‑settings

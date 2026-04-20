@@ -921,3 +921,107 @@ if (/aur\.archlinux\.org$/.test(_hostname)) {
     api.Hints.create("a[href^='/packages/'][href$='/']");
   });
 }
+
+
+// ========== Proxy Management (Firefox/Zen Browser) ==========
+// Uses about:config as a “remote API” to change proxy prefs.
+
+const PROXY_MODES = {
+  direct: {
+    name: "Direct (no proxy)",
+    type: 0,
+    socks: "",
+    port: 0
+  },
+  telegram: {
+    name: "Telegram Xray (SOCKS5 :10808)",
+    type: 1,
+    socks: "localhost",
+    port: 10808
+  },
+  debug: {
+    name: "Debug Xray (SOCKS5 :10810)",
+    type: 1,
+    socks: "localhost",
+    port: 10810
+  },
+  system_vpn: {
+    name: "System VPN (fallback to Telegram proxy)",
+    type: 1,
+    socks: "localhost",
+    port: 10808
+  }
+};
+
+let currentProxyMode = 'direct';
+
+function showProxyStatus() {
+  const mode = PROXY_MODES[currentProxyMode];
+  if (mode && api.status) {
+    api.status('Proxy: ' + mode.name);
+  }
+  api.Front.showBanner('Proxy: ' + (mode ? mode.name : 'unknown'));
+}
+
+function setProxyMode(modeKey) {
+  const mode = PROXY_MODES[modeKey];
+  if (!mode) return;
+
+  // Open about:config in a background tab
+  api.RUNTIME('openLink', {
+    tab: { tabbed: true, active: false },
+    url: 'about:config'
+  });
+
+  // Wait for about:config to load, then inject script
+  setTimeout(() => {
+    api.Front.executeScript({
+      code: `
+        try {
+          // network.proxy.type:
+          // 0 = direct, 1 = manual, 2 = PAC, 4 = auto‑detect, 5 = system
+          Services.prefs.setIntPref('network.proxy.type', ${mode.type});
+
+          if (${mode.type} === 1) {
+            // SOCKS5 proxy
+            Services.prefs.setCharPref('network.proxy.socks', '${mode.socks}');
+            Services.prefs.setIntPref('network.proxy.socks_port', ${mode.port});
+            Services.prefs.setIntPref('network.proxy.socks_version', 5);
+
+            // Do not proxy localhost and LAN
+            Services.prefs.setBoolPref('network.proxy.allow_hijacking_localhost', true);
+            Services.prefs.setCharPref('network.proxy.no_proxies_on', 'localhost, 127.0.0.1, 192.168.2.0/24');
+          }
+
+          // Force‑flush the preference change
+          Services.obs.notifyObservers(null, 'nsPref:changed', 'network.proxy.type');
+
+          window.dispatchEvent(new CustomEvent('ProxyChanged', {
+            detail: { mode: '${modeKey}', name: '${mode.name}' }
+          }));
+
+          return { success: true, mode: '${mode.name}' };
+        } catch (e) {
+          return { success: false, error: e.toString() };
+        }
+      `
+    }).then(result => {
+      if (result && result[0] && result[0].success) {
+        currentProxyMode = modeKey;
+        if (api.status) api.status('Proxy: ' + mode.name);
+        api.Front.showBanner('Proxy: ' + result[0].mode);
+      } else {
+        api.Front.showBanner('Proxy error: ' + (result ? result[0]?.error : 'unknown'));
+      }
+    }).catch(e => {
+      api.Front.showBanner('Failed to execute script: ' + e.message);
+    });
+  }, 1500);
+}
+
+// Keyboard shortcuts for proxy modes
+api.mapkey('<A-S-1>', 'Proxy: Direct', () => setProxyMode('direct'));
+api.mapkey('<A-S-2>', 'Proxy: Telegram Xray', () => setProxyMode('telegram'));
+api.mapkey('<A-S-3>', 'Proxy: Debug Xray', () => setProxyMode('debug'));
+api.mapkey('<A-S-4>', 'Proxy: System VPN', () => setProxyMode('system_vpn'));
+api.mapkey('<A-S-0>', 'Show proxy status', () => showProxyStatus());

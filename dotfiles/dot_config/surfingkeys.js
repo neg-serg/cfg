@@ -992,6 +992,8 @@ function setProxyMode(modeKey) {
             // Do not proxy localhost and LAN
             Services.prefs.setBoolPref('network.proxy.allow_hijacking_localhost', true);
             Services.prefs.setCharPref('network.proxy.no_proxies_on', 'localhost, 127.0.0.1, 192.168.2.0/24');
+            // Route DNS through SOCKS5 proxy
+            Services.prefs.setBoolPref('network.proxy.socks_remote_dns', true);
           } else {
             // Reset SOCKS settings when proxy is disabled
             Services.prefs.setCharPref('network.proxy.socks', '');
@@ -999,6 +1001,7 @@ function setProxyMode(modeKey) {
             Services.prefs.setIntPref('network.proxy.socks_version', 5);
             Services.prefs.setBoolPref('network.proxy.allow_hijacking_localhost', false);
             Services.prefs.setCharPref('network.proxy.no_proxies_on', '');
+            Services.prefs.setBoolPref('network.proxy.socks_remote_dns', false);
           }
 
            // Force‑flush the preference change

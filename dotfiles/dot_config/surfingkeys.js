@@ -991,16 +991,26 @@ function setProxyMode(modeKey) {
             // Do not proxy localhost and LAN
             Services.prefs.setBoolPref('network.proxy.allow_hijacking_localhost', true);
             Services.prefs.setCharPref('network.proxy.no_proxies_on', 'localhost, 127.0.0.1, 192.168.2.0/24');
+          } else {
+            // Reset SOCKS settings when proxy is disabled
+            Services.prefs.setCharPref('network.proxy.socks', '');
+            Services.prefs.setIntPref('network.proxy.socks_port', 0);
+            Services.prefs.setIntPref('network.proxy.socks_version', 5);
+            Services.prefs.setBoolPref('network.proxy.allow_hijacking_localhost', false);
+            Services.prefs.setCharPref('network.proxy.no_proxies_on', '');
           }
 
-          // Force‑flush the preference change
-          Services.obs.notifyObservers(null, 'nsPref:changed', 'network.proxy.type');
+           // Force‑flush the preference change
+           Services.obs.notifyObservers(null, 'nsPref:changed', 'network.proxy.type');
+           
+           // Save preferences to disk
+           Services.prefs.savePrefFile(null);
 
-          window.dispatchEvent(new CustomEvent('ProxyChanged', {
-            detail: { mode: '${modeKey}', name: '${mode.name}' }
-          }));
+           window.dispatchEvent(new CustomEvent('ProxyChanged', {
+             detail: { mode: '${modeKey}', name: '${mode.name}' }
+           }));
 
-          return { success: true, mode: '${mode.name}' };
+           return { success: true, mode: '${mode.name}' };
         } catch (e) {
           return { success: false, error: e.toString() };
         }
@@ -1016,7 +1026,7 @@ function setProxyMode(modeKey) {
     }).catch(e => {
       api.Front.showBanner('Failed to execute script: ' + e.message);
     });
-  }, 1500);
+  }, 2000);
 }
 
 // Keyboard shortcuts for proxy modes

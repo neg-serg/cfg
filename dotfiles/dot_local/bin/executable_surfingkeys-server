@@ -6,6 +6,8 @@ import subprocess
 import os
 import sys
 import glob
+import traceback
+from urllib.parse import urlparse, parse_qs
 
 PORT = 18888
 DIR = os.path.expanduser("~/.config")
@@ -28,30 +30,71 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         super().__init__(*args, directory=DIR, **kwargs)
 
     def do_GET(self):
-        print(f"Request: {self.path}", flush=True)
-        path = self.path.split("?", 1)[0]
+        try:
+            print(f"=== do_GET called ===", flush=True)
+            print(f"Request: {self.path}", flush=True)
+            path = self.path.split("?", 1)[0]
+            print(f"Path after split: '{path}'", flush=True)
+            print(f"Checking if path == '/focus': {path == '/focus'}", flush=True)
+            print(f"Checking if path == '/proxy': {path == '/proxy'}", flush=True)
 
-        if path == '/focus':
-            try:
-                env = hyprland_env()
-                if env is None:
-                    raise RuntimeError("No Hyprland socket found")
-                subprocess.run(
-                    ["hyprctl", "dispatch", "sendshortcut", "CTRL,l,activewindow"],
-                    env=env,
-                    check=True,
-                )
-                self.send_response(200)
-                self.end_headers()
-                self.wfile.write(b'OK')
-            except Exception as e:
-                print(f"Error: {e}", flush=True)
-                self.send_response(500)
-                self.end_headers()
-                self.wfile.write(str(e).encode())
+            if path == '/focus':
+                print("Entering /focus handler", flush=True)
+                try:
+                    env = hyprland_env()
+                    if env is None:
+                        raise RuntimeError("No Hyprland socket found")
+                    subprocess.run(
+                        ["hyprctl", "dispatch", "sendshortcut", "CTRL,l,activewindow"],
+                        env=env,
+                        check=True,
+                    )
+                    self.send_response(200)
+                    self.end_headers()
+                    self.wfile.write(b'OK')
+                except Exception as e:
+                    print(f"Error: {e}", flush=True)
+                    self.send_response(500)
+                    self.end_headers()
+                    self.wfile.write(str(e).encode())
 
-        else:
-            return super().do_GET()
+            elif path == '/proxy':
+                print("Entering /proxy handler", flush=True)
+                try:
+                    # Parse query string
+                    query = urlparse(self.path).query
+                    params = parse_qs(query)
+                    mode = params.get('mode', [None])[0]
+                    print(f"Parsed mode: {mode}", flush=True)
+                    if not mode or mode not in ['direct', 'telegram', 'debug', 'system_vpn']:
+                        raise ValueError('Invalid or missing mode parameter')
+                    
+                    # Execute set-zen-proxy
+                    result = subprocess.run(
+                        ['/home/neg/bin/set-zen-proxy', mode],
+                        capture_output=True,
+                        text=True,
+                        check=True
+                    )
+                    print(f"Command output: {result.stdout}", flush=True)
+                    self.send_response(200)
+                    self.end_headers()
+                    self.wfile.write(result.stdout.encode())
+                except Exception as e:
+                    print(f"Proxy error: {e}", flush=True)
+                    self.send_response(500)
+                    self.end_headers()
+                    self.wfile.write(str(e).encode())
+
+            else:
+                print(f"Path '{path}' not matched, falling back to super().do_GET()", flush=True)
+                return super().do_GET()
+        except Exception as e:
+            print(f"UNEXPECTED ERROR in do_GET: {e}", flush=True)
+            print(traceback.format_exc(), flush=True)
+            self.send_response(500)
+            self.end_headers()
+            self.wfile.write(b'Internal server error')
 
     def end_headers(self):
         self.send_header("Access-Control-Allow-Origin", "*")

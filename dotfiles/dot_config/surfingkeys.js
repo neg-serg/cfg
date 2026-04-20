@@ -924,7 +924,9 @@ if (/aur\.archlinux\.org$/.test(_hostname)) {
 
 
 // ========== Proxy Management (Firefox/Zen Browser) ==========
-// Uses about:config as a “remote API” to change proxy prefs.
+// Uses external script set-zen-proxy to write proxy preferences to user.js.
+// Note: "telegram" mode refers to Telegram Xray proxy (port 10808), not the messenger.
+// Browser restart required for changes to take effect.
 
 const PROXY_MODES = {
   direct: {
@@ -953,7 +955,7 @@ const PROXY_MODES = {
   }
 };
 
-let currentProxyMode = 'direct';
+let currentProxyMode = (typeof localStorage !== 'undefined' && localStorage.getItem('zenProxyMode')) || 'direct';
 const AUTO_RELOAD_CURRENT_TAB = true; // Reload current tab after proxy change
 
 function showProxyStatus() {
@@ -968,87 +970,41 @@ function setProxyMode(modeKey) {
   const mode = PROXY_MODES[modeKey];
   if (!mode) return;
 
-  api.Front.showBanner('Switching proxy to: ' + mode.name);
+  api.Front.showBanner('Setting proxy to: ' + mode.name);
   
-  // Open about:config in a background tab
-  api.RUNTIME('openLink', {
-    tab: { tabbed: true, active: false },
-    url: 'about:config'
-  });
-
-  // Wait for about:config to load, then inject script
-  setTimeout(() => {
-    api.Front.executeScript({
-      code: `
-        try {
-          // network.proxy.type:
-          // 0 = direct, 1 = manual, 2 = PAC, 4 = auto‑detect, 5 = system
-          Services.prefs.setIntPref('network.proxy.type', ${mode.type});
-
-          if (${mode.type} === 1) {
-            // SOCKS5 proxy
-            Services.prefs.setCharPref('network.proxy.socks', '${mode.socks}');
-            Services.prefs.setIntPref('network.proxy.socks_port', ${mode.port});
-            Services.prefs.setIntPref('network.proxy.socks_version', 5);
-
-            // Do not proxy localhost and LAN
-            Services.prefs.setBoolPref('network.proxy.allow_hijacking_localhost', true);
-            Services.prefs.setCharPref('network.proxy.no_proxies_on', 'localhost, 127.0.0.1, 192.168.2.0/24');
-            // Route DNS through SOCKS5 proxy
-            Services.prefs.setBoolPref('network.proxy.socks_remote_dns', true);
-          } else {
-            // Reset SOCKS settings when proxy is disabled
-            Services.prefs.setCharPref('network.proxy.socks', '');
-            Services.prefs.setIntPref('network.proxy.socks_port', 0);
-            Services.prefs.setIntPref('network.proxy.socks_version', 5);
-            Services.prefs.setBoolPref('network.proxy.allow_hijacking_localhost', false);
-            Services.prefs.setCharPref('network.proxy.no_proxies_on', '');
-            Services.prefs.setBoolPref('network.proxy.socks_remote_dns', false);
-          }
-
-           // Force‑flush the preference change
-           Services.obs.notifyObservers(null, 'nsPref:changed', 'network.proxy.type');
-           
-           // Save preferences to disk
-           Services.prefs.savePrefFile(null);
-
-           window.dispatchEvent(new CustomEvent('ProxyChanged', {
-             detail: { mode: '${modeKey}', name: '${mode.name}' }
-           }));
-
-           return { success: true, mode: '${mode.name}' };
-        } catch (e) {
-          return { success: false, error: e.toString() };
-        }
-      `
-    }).then(result => {
-      if (result && result[0] && result[0].success) {
-        currentProxyMode = modeKey;
-        if (api.status) api.status('Proxy: ' + mode.name);
-        api.Front.showBanner('Proxy: ' + result[0].mode);
-        
-        // Reload current tab to apply proxy settings
-        if (AUTO_RELOAD_CURRENT_TAB) {
-          setTimeout(() => {
-            try {
-              if (api.RUNTIME && typeof api.RUNTIME === 'function') {
-                api.RUNTIME('reloadTab');
-              }
-            } catch (e) {
-              // fallback: use location.reload via executeScript on current tab
-              api.Front.executeScript({
-                code: 'location.reload();'
-              });
-            }
-          }, 800);
-        }
+  const cmd = 'set-zen-proxy ' + modeKey;
+  const cmdWithPath = '/home/neg/bin/set-zen-proxy ' + modeKey;
+  
+  // Try to call helper server via HTTP first
+  api.Front.showBanner('Calling proxy server: ' + modeKey);
+  fetch(`http://localhost:18888/proxy?mode=${modeKey}`)
+    .then(response => {
+      if (response.ok) {
+        return response.text();
       } else {
-        api.Front.showBanner('Proxy error: ' + (result ? result[0]?.error : 'unknown'));
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-    }).catch(e => {
-      api.Front.showBanner('Failed to execute script: ' + e.message);
+    })
+    .then(output => {
+      currentProxyMode = modeKey;
+      if (typeof localStorage !== 'undefined') localStorage.setItem('zenProxyMode', modeKey);
+      if (api.status) api.status('Proxy: ' + mode.name);
+      api.Front.showBanner('✓ Proxy configuration updated');
+      api.Front.showBanner('Restart Zen Browser to apply changes');
+      // Show output from script
+      api.Front.showBanner(output.split('\n')[0]);
+    })
+    .catch(error => {
+      api.Front.showBanner('HTTP request failed: ' + error.message);
+      // Fallback to clipboard
+      try {
+        api.Clipboard.write(cmd);
+        api.Front.showBanner('Command copied to clipboard');
+        api.Front.showBanner('Paste in terminal and restart Zen Browser');
+      } catch (clipErr) {
+        api.Front.showBanner('Run manually: ' + cmd);
+      }
     });
-  }, 3000);
 }
 
 // Keyboard shortcuts for proxy modes
@@ -1057,3 +1013,20 @@ api.mapkey('<A-S-2>', 'Proxy: Telegram Xray', () => setProxyMode('telegram'));
 api.mapkey('<A-S-3>', 'Proxy: Debug Xray', () => setProxyMode('debug'));
 api.mapkey('<A-S-4>', 'Proxy: System VPN', () => setProxyMode('system_vpn'));
 api.mapkey('<A-S-0>', 'Show proxy status', () => showProxyStatus());
+
+// Alternative shortcuts (if Alt+Shift doesn't work)
+api.mapkey(';p1', 'Proxy: Direct', () => setProxyMode('direct'));
+api.mapkey(';p2', 'Proxy: Telegram Xray', () => setProxyMode('telegram'));
+api.mapkey(';p3', 'Proxy: Debug Xray', () => setProxyMode('debug'));
+api.mapkey(';p4', 'Proxy: System VPN', () => setProxyMode('system_vpn'));
+api.mapkey(';p0', 'Show proxy status', () => showProxyStatus());
+
+// Debug: test RUNTIME('execute')
+api.mapkey(';debug', 'Test RUNTIME execute', () => {
+  try {
+    const res = api.RUNTIME('execute', {command: 'echo', args: ['hello']});
+    api.Front.showBanner('Result: ' + JSON.stringify(res));
+  } catch(e) {
+    api.Front.showBanner('Error: ' + e.message);
+  }
+});

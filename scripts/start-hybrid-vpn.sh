@@ -138,8 +138,7 @@ verify_tun_interface() {
     # Check routing table for VPN routes (table 200)
     if ip route show table 200 >/dev/null 2>&1; then
         echo "✅ VPN routing table (200) exists"
-        local route_count
-        route_count=$(ip route show table 200 | wc -l)
+        local route_count=$(ip route show table 200 | wc -l)
         echo "   Found $route_count route(s) in table 200"
     else
         echo "⚠️  VPN routing table (200) not found" >&2

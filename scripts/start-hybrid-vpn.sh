@@ -203,6 +203,36 @@ restore_routes() {
     return 0
 }
 
+# Current flow with validation points:
+# 1. Pre‑start: binaries, configs, port availability
+# 2. Before Xray start: verify no conflicting process
+# 3. After Xray start: verify SOCKS5 proxy responsiveness
+# 4. Before sing‑box start: verify Xray is healthy
+# 5. After sing‑box start: verify TUN interface created
+# 6. After TUN setup: verify routing rules
+# 7. Cleanup: restore previous routing state
+
+# Validation functions
+check_prerequisites() {
+    # Check binaries, configs, port
+}
+
+test_socks5_proxy() {
+    # Test that SOCKS5 proxy responds
+}
+
+verify_tun_interface() {
+    # Verify sb0 exists and has routes
+}
+
+backup_routes() {
+    # Save current routing state
+}
+
+restore_routes() {
+    # Restore from backup (or clean up added routes)
+}
+
 # shellcheck disable=SC2329  # function is called via trap
 cleanup() {
     local backup_dir="${1:-}"

@@ -215,22 +215,27 @@ restore_routes() {
 # Validation functions
 check_prerequisites() {
     # Check binaries, configs, port
+    :
 }
 
 test_socks5_proxy() {
     # Test that SOCKS5 proxy responds
+    :
 }
 
 verify_tun_interface() {
     # Verify sb0 exists and has routes
+    :
 }
 
 backup_routes() {
     # Save current routing state
+    :
 }
 
 restore_routes() {
     # Restore from backup (or clean up added routes)
+    :
 }
 
 # shellcheck disable=SC2329  # function is called via trap

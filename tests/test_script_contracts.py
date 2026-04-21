@@ -194,6 +194,10 @@ def test_pw_restore_links_retries_entire_restore_when_first_pass_hits_transient_
 
         if [[ "$1" == "list-objects" && "$2" == "Node" ]]; then
           print 'node.name = "alsa_output.usb-RME_ADI-2_4_Pro_SE__53011083__B992903C2BD8DC8-00.pro-output-0"'
+          print 'node.name = "rme-out-1-2"'
+          print 'node.name = "rme-out-3-4"'
+          print 'node.name = "rme-out-5-6"'
+          print 'node.name = "rme-out-7-8"'
           exit 0
         fi
 

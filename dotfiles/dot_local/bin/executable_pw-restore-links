@@ -42,6 +42,7 @@
 setopt ERR_EXIT NO_UNSET PIPE_FAIL
 
 readonly hw_out="alsa_output.usb-RME_ADI-2_4_Pro_SE__53011083__B992903C2BD8DC8-00.pro-output-0"
+readonly audio_services=(pipewire.service pipewire-pulse.service wireplumber.service)
 
 typeset -A sink_channels=(
     [rme-out-1-2]="AUX0 AUX1"
@@ -70,7 +71,7 @@ wait_for_sinks() {
     while true; do
         missing=()
         for sink in ${(k)sink_channels}; do
-            pw-cli info "$sink" >/dev/null 2>&1 || missing+=("$sink")
+            pw-cli list-objects Node | grep -qF "node.name = \"$sink\"" 2>/dev/null || missing+=("$sink")
         done
         (( ${#missing} == 0 )) && return 0
         if (( waited >= max_wait )); then
@@ -80,6 +81,14 @@ wait_for_sinks() {
         sleep 0.5
         (( waited += 1 ))
     done
+}
+
+restart_audio_services() {
+    systemctl --user restart "${audio_services[@]}"
+}
+
+wait_until_ready() {
+    wait_for_hw_node && wait_for_sinks
 }
 
 link_with_retry() {
@@ -99,8 +108,12 @@ link_with_retry() {
 }
 
 # Wait for hardware node and virtual sinks to be ready (USB reconnect recovery).
-wait_for_hw_node || exit 1
-wait_for_sinks || exit 1
+# If PipeWire came back with incomplete loopback topology after a device flap,
+# restart the user audio stack once to force the loopback modules to be recreated.
+if ! wait_until_ready; then
+    restart_audio_services || exit 1
+    wait_until_ready || exit 1
+fi
 
 err=0
 

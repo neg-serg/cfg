@@ -80,6 +80,18 @@ def test_justfile_exposes_selective_validate_shortcuts():
     assert "scripts/salt-validate.sh -- {{STATES}}" in justfile_source
 
 
+def test_salt_apply_bootstrap_repairs_relocated_venv_launchers():
+    source = (REPO_ROOT / "scripts" / "salt-apply.sh").read_text()
+
+    assert 'repair_stale_venv_entrypoints()' in source
+    assert 'launcher_path="$1"' in source
+    assert 'expected_shebang="#!${VENV_DIR}/bin/python3"' in source
+    assert 'grep -qF "$expected_shebang" "$launcher_path"' in source
+    assert '"$VENV_DIR/bin/python3" -m pip install --force-reinstall -r "${PROJECT_DIR}/requirements.txt"' in source
+    assert 'repair_stale_venv_entrypoints "$VENV_DIR/bin/pytest"' in source
+    assert 'repair_stale_venv_entrypoints "$VENV_DIR/bin/salt-call"' in source
+
+
 def test_salt_apply_refreshes_drift_baseline_after_success():
     source = (REPO_ROOT / "scripts" / "salt-apply.sh").read_text()
 

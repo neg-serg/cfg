@@ -56,6 +56,17 @@ mkdir -p "${LOG_DIR}"
 install -m 0640 /dev/null "${LOG_FILE}"
 
 # ── Bootstrap: venv + Salt install ────────────────────────────────────────────
+repair_stale_venv_entrypoints() {
+	local launcher_path="$1"
+	local expected_shebang="#!${VENV_DIR}/bin/python3"
+
+	[[ -f "$launcher_path" ]] || return 0
+	grep -qF "$expected_shebang" "$launcher_path" && return 0
+
+	echo "--- Repairing relocated venv entrypoints ---"
+	"$VENV_DIR/bin/python3" -m pip install --force-reinstall -r "${PROJECT_DIR}/requirements.txt"
+}
+
 bootstrap_salt() {
 	if [[ ! -d "$VENV_DIR" ]]; then
 		echo "--- Bootstrapping Salt (creating venv) ---"
@@ -66,6 +77,9 @@ bootstrap_salt() {
 		echo "--- Installing Salt and dependencies ---"
 		"$VENV_DIR/bin/pip" install -r "${PROJECT_DIR}/requirements.txt"
 	fi
+
+	repair_stale_venv_entrypoints "$VENV_DIR/bin/pytest"
+	repair_stale_venv_entrypoints "$VENV_DIR/bin/salt-call"
 }
 
 # ── Runtime config: generate .salt_runtime/minion ─────────────────────────────

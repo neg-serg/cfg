@@ -2,9 +2,16 @@
 
 import os
 import subprocess
+import stat
+import textwrap
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def write_executable(path: Path, content: str) -> None:
+    path.write_text(textwrap.dedent(content).lstrip())
+    path.chmod(path.stat().st_mode | stat.S_IXUSR)
 
 
 def test_salt_runtime_module_exposes_required_functions():
@@ -168,6 +175,97 @@ def test_telethon_bridge_react_script_parses_in_zsh():
     result = subprocess.run(["zsh", "-n", str(script)], capture_output=True, text=True)
 
     assert result.returncode == 0, result.stderr
+
+
+def test_pw_restore_links_retries_entire_restore_when_first_pass_hits_transient_link_failures(
+    tmp_path,
+):
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    attempts_file = tmp_path / "pw-link-attempts.txt"
+    calls_file = tmp_path / "pw-link-calls.txt"
+    attempts_file.write_text("0")
+
+    write_executable(
+        bin_dir / "pw-cli",
+        f"""
+        #!/usr/bin/env zsh
+        setopt ERR_EXIT NOUNSET PIPE_FAIL
+
+        if [[ "$1" == "list-objects" && "$2" == "Node" ]]; then
+          print 'node.name = "alsa_output.usb-RME_ADI-2_4_Pro_SE__53011083__B992903C2BD8DC8-00.pro-output-0"'
+          exit 0
+        fi
+
+        if [[ "$1" == "info" ]]; then
+          print 'node.link-group = "audio-group"'
+          exit 0
+        fi
+
+        print -u2 "unexpected pw-cli invocation: $*"
+        exit 1
+        """,
+    )
+
+    write_executable(
+        bin_dir / "pw-link",
+        f"""
+        #!/usr/bin/env zsh
+        setopt ERR_EXIT NOUNSET PIPE_FAIL
+
+        attempts_file="{attempts_file}"
+        calls_file="{calls_file}"
+
+        if [[ "$1" == "-l" ]]; then
+          exit 0
+        fi
+
+        current=0
+        if [[ -f "$attempts_file" ]]; then
+          current=$(<"$attempts_file")
+        fi
+        current=$((current + 1))
+        print -r -- "$current" > "$attempts_file"
+        print -r -- "$*" >> "$calls_file"
+
+        if (( current <= 2 )); then
+          exit 1
+        fi
+
+        exit 0
+        """,
+    )
+
+    write_executable(
+        bin_dir / "notify-send",
+        """
+        #!/usr/bin/env zsh
+        exit 0
+        """,
+    )
+
+    write_executable(
+        bin_dir / "sleep",
+        """
+        #!/usr/bin/env zsh
+        exit 0
+        """,
+    )
+
+    env = os.environ.copy()
+    env["PATH"] = f"{bin_dir}:{env['PATH']}"
+
+    result = subprocess.run(
+        ["zsh", str(REPO_ROOT / "dotfiles" / "dot_local" / "bin" / "executable_pw-restore-links")],
+        cwd=REPO_ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "All loopback links restored" in result.stdout
+    assert len([line for line in calls_file.read_text().splitlines() if line]) >= 3
 
 
 def test_health_check_parses_user_service_names_from_yaml_mappings():

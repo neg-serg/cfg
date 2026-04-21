@@ -82,6 +82,22 @@ wait_for_sinks() {
     done
 }
 
+link_with_retry() {
+    local src="$1" dst="$2"
+    local attempt=1 max_attempts=3
+
+    while (( attempt <= max_attempts )); do
+        if pw-link "$src" "$dst" 2>/dev/null; then
+            return 0
+        fi
+        (( attempt == max_attempts )) && break
+        sleep 0.5
+        (( attempt += 1 ))
+    done
+
+    return 1
+}
+
 # Wait for hardware node and virtual sinks to be ready (USB reconnect recovery).
 wait_for_hw_node || exit 1
 wait_for_sinks || exit 1
@@ -112,7 +128,7 @@ for sink in ${(k)sink_channels}; do
         src="${loopback_out}:output_${ch}"
         dst="${hw_out}:playback_${ch}"
 
-        if pw-link "$src" "$dst" 2>/dev/null; then
+        if link_with_retry "$src" "$dst"; then
             print "LINKED: $sink $ch"
         elif pw-link -l 2>/dev/null | grep -qF "$src"; then
             print "OK:     $sink $ch (already linked)"

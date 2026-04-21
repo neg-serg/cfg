@@ -7,6 +7,7 @@
 pacman_db_warmup:
   cmd.run:
     - name: |
+        set -euo pipefail
         _tmp=$(mktemp)
         pacman -Qq > "$_tmp"
         if cmp -s "$_tmp" {{ pkg_list }}; then
@@ -16,5 +17,6 @@ pacman_db_warmup:
           mv "$_tmp" {{ pkg_list }}
           echo "changed=yes"
         fi
+    - onlyif: command -v pacman >/dev/null 2>&1
     - stateful: True
     - shell: /bin/bash

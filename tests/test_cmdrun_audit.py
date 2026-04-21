@@ -112,6 +112,26 @@ _ALL_STATES = _render_all_states()
 _CMD_STATES = _extract_cmd_states(_ALL_STATES)
 
 
+def test_pacman_db_warmup_cmdrun_is_guarded_and_audit_compliant():
+    target = next(
+        s for s in _CMD_STATES if s["file"] == "states/pacman_db_warmup.sls" and s["state_id"] == "pacman_db_warmup"
+    )
+
+    assert target["has_guard"] is True
+    assert target["has_error_handling"] is True
+
+
+def test_managed_service_paths_ensure_cmdrun_is_guarded_and_audit_compliant():
+    target = next(
+        s
+        for s in _CMD_STATES
+        if s["file"] == "states/systemd_resources.sls" and s["state_id"] == "managed_service_paths_ensure"
+    )
+
+    assert target["has_guard"] is True
+    assert target["has_error_handling"] is True
+
+
 @pytest.mark.slow
 def test_cmdrun_audit_summary():
     """Report cmd.run compliance summary."""

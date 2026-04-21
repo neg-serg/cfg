@@ -78,7 +78,7 @@ managed_service_paths_apply:
 managed_service_paths_ensure:
   cmd.run:
     - name: |
-        set -e
+        set -eo pipefail
         _ok=1
 {% if paths %}
 {% for _name, _entry in paths|dictsort %}
@@ -95,6 +95,7 @@ managed_service_paths_ensure:
 {% else %}
         echo "changed=no comment='no managed service paths declared'"
 {% endif %}
+    - onlyif: command -v systemd-tmpfiles >/dev/null 2>&1
     - shell: /bin/bash
     - stateful: True
 {% if paths %}

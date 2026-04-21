@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Date**: 2026-04-20
-- **Status**: Implemented
+- **Status**: Partial (script only) - Surfingkeys integration removed
 - **Author**: opencode (assisted)
 - **Related Context**: VPN hybrid setup (`vpn-tun2socks`), existing Surfingkeys configuration (`dotfiles/dot_config/surfingkeys.js`), Zen Browser profile management.
 
@@ -202,6 +202,25 @@ If the proxy management feature causes issues (e.g., browser hangs, proxy settin
 5. **Verify network connectivity**:
    - Use `curl -I https://example.com` to confirm internet works without proxy.
    - Check that local services (e.g., `http://192.168.2.*`) are accessible.
+
+## Current State (2026-04-21)
+
+The Surfingkeys integration has been removed due to issues with configuration loading and hotkey conflicts in Firefox/Zen Browser. The following components remain functional:
+
+- **`/home/neg/bin/set-zen-proxy`** – Script that writes proxy preferences to `~/.config/zen/qnkh60k3.Default (release)/user.js`
+- **HTTP helper server** (`surfingkeys-server.service`) – Includes `/proxy` endpoint for future use
+- **Four proxy modes**: `direct`, `telegram` (10808), `debug` (10810), `system_vpn`
+
+To switch proxy modes manually:
+```bash
+set-zen-proxy telegram  # Switch to Telegram Xray proxy
+# Restart Zen Browser for changes to take effect
+```
+
+Future integration options:
+- Global hotkey (Super+P) with dmenu/rofi selection
+- Shell aliases (`proxy-telegram`, `proxy-direct`)
+- Simple GUI via zenity/yad
 
 ## References
 - Surfingkeys proxy support table (Chromium‑only): https://github.com/brookhong/Surfingkeys#proxy‑settings

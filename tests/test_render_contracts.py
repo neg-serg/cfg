@@ -358,16 +358,33 @@ def test_nanoclaw_is_manual_start_until_channels_are_configured():
 
 
 def test_nanoclaw_quadlet_mounts_podman_socket_as_docker_sock():
-    path = os.path.join(REPO_ROOT, "states", "units", "user", "nanoclaw-container.container")
-    with open(path) as fh:
-        source = fh.read()
+    catalog_path = os.path.join(REPO_ROOT, "states", "data", "service_catalog.yaml")
+    with open(catalog_path) as fh:
+        catalog_source = fh.read()
 
-    assert "Volume=/run/user/1000/podman/podman.sock:/var/run/docker.sock:rw" in source
-    assert "Volume=/home/neg/.local/share/nanoclaw:/app:rw" not in source
-    assert "Volume=/home/neg/.local/share/nanoclaw/store:/app/store:rw" in source
-    assert "Volume=/home/neg/.local/share/nanoclaw/data:/app/data:rw" in source
-    assert "Volume=/home/neg/.local/share/nanoclaw/groups:/app/groups:rw" in source
-    assert "Volume=/home/neg/.local/share/nanoclaw/.env:/app/.env:rw" in source
+    assert "nanoclaw:" in catalog_source
+    assert "- host: ~/.local/share/nanoclaw" in catalog_source
+    assert "container: /app" in catalog_source
+    assert "- host: ~/.config/nanoclaw" in catalog_source
+    assert "container: /config" in catalog_source
+    assert "- host: ~/.local/share/nanoclaw/entrypoint.sh" in catalog_source
+    assert "container: /app/entrypoint.sh" in catalog_source
+    assert "- host: ~/.local/share/nanoclaw/container-runtime-patched.ts" in catalog_source
+    assert "container: /app/src/container-runtime.ts" in catalog_source
+    assert "- host: ~/.local/share/nanoclaw/index-main-patched.ts" in catalog_source
+    assert "container: /app/src/index.ts" in catalog_source
+
+    unit_path = os.path.join(REPO_ROOT, "states", "units", "user", "nanoclaw-container.container")
+    with open(unit_path) as fh:
+        unit_source = fh.read()
+
+    assert "{% for m in expanded_mounts -%}" in unit_source
+    assert "Volume={{ m.host }}:{{ m.container }}:{{ m.mode }}" in unit_source
+    assert "Volume=/run/user/1000/podman/podman.sock:/var/run/docker.sock:rw" in unit_source
+    assert "Volume=/home/neg/.local/share/nanoclaw/store:/app/store:rw" not in unit_source
+    assert "Volume=/home/neg/.local/share/nanoclaw/data:/app/data:rw" not in unit_source
+    assert "Volume=/home/neg/.local/share/nanoclaw/groups:/app/groups:rw" not in unit_source
+    assert "Volume=/home/neg/.local/share/nanoclaw/.env:/app/.env:rw" not in unit_source
 
 
 def test_video_ai_registry_uses_public_gemma_tokenizer_repo():

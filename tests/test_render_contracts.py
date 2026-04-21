@@ -55,6 +55,18 @@ def test_salt_daemon_unit_is_templated_for_user_runtime_dir():
     assert "Environment=DBUS_SESSION_BUS_ADDRESS=unix:path={{ runtime_dir }}/bus" in unit_source
 
 
+def test_rkn_domains_fetcher_timer_places_onfailure_in_unit_section():
+    unit_path = os.path.join(REPO_ROOT, "states", "units", "user", "rkn-domains-fetcher.timer")
+    with open(unit_path) as fh:
+        unit_source = fh.read()
+
+    assert (
+        "[Unit]\nDescription=Daily RKN domains update with autocorrection\nOnFailure="
+        in unit_source
+    )
+    assert "[Timer]\nOnFailure=" not in unit_source
+
+
 def test_user_services_source_has_no_parallel_feature_lists():
     path = os.path.join(REPO_ROOT, "states", "user_services.sls")
     with open(path) as fh:

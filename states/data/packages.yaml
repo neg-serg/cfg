@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 base:
   - base
   - base-devel
@@ -210,12 +201,6 @@ other:
   - bpftrace
   - pam_ssh_agent_auth
   - bucklespring
-
-
-
-
-
-
   - carla
   - cava
   - ccid
@@ -525,9 +510,6 @@ aur:
   - carapace-bin
   - aliae-bin
   - albumdetails
-
-
-
   - claude-code
   - cmake-language-server
   - dcfldd

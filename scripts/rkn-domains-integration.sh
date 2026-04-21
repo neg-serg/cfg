@@ -5,7 +5,6 @@ set -euo pipefail
 # Provides manual fallback and integration with existing systems
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Configuration
 CONFIG_DIR="${HOME}/.config/rkn-domains-fetcher"
@@ -162,7 +161,8 @@ process_domains() {
         grep -v '^[0-9]+$' | \
         sort -u > "$output_file.tmp"
     
-    local count=$(wc -l < "$output_file.tmp")
+    local count
+    count=$(wc -l < "$output_file.tmp")
     mv "$output_file.tmp" "$output_file"
     
     log_success "Processed $count valid domains"
@@ -212,7 +212,8 @@ integrate_vpn_split_router() {
         fi
     else
         # Use yq for proper YAML manipulation
-        local temp_file=$(mktemp)
+        local temp_file
+        temp_file=$(mktemp)
         
         # Get current seed domains
         local current_seed=()
@@ -222,7 +223,8 @@ integrate_vpn_split_router() {
         
         # Merge and deduplicate
         local all_domains=("${current_seed[@]}" "${important_domains[@]}")
-        local unique_domains=($(printf "%s\n" "${all_domains[@]}" | sort -u))
+        local unique_domains=()
+        mapfile -t unique_domains < <(printf "%s\n" "${all_domains[@]}" | sort -u)
         
         # Update config
         yq eval ".seed_domains = []" "$VPN_SPLIT_ROUTER_CONFIG" > "$temp_file"
@@ -265,7 +267,8 @@ integrate_singbox() {
     domains_json+="]"
     
     # Create temporary config
-    local temp_file=$(mktemp)
+    local temp_file
+    temp_file=$(mktemp)
     jq --argjson domains "$domains_json" '
         .route.rules = [
             {
@@ -380,7 +383,8 @@ EOF
 # Main manual workflow
 manual_workflow() {
     local url="${1:-https://raw.githubusercontent.com/EikeiDev/domains/main/domains.lst}"
-    local temp_file=$(mktemp)
+    local temp_file
+    temp_file=$(mktemp)
     
     log_info "Starting manual RKN domains update"
     log_info "Source: $url"
@@ -427,7 +431,8 @@ show_status() {
     fi
     
     if [[ -f "$OUTPUT_FILE" ]]; then
-        local count=$(wc -l < "$OUTPUT_FILE")
+        local count
+        count=$(wc -l < "$OUTPUT_FILE")
         echo "Domains in file: $count"
         echo "File: $OUTPUT_FILE"
         

@@ -46,7 +46,7 @@ repos:
         name: yamllint
         entry: yamllint
         language: system
-        files: ^(states/data|states/configs|\.github/workflows)/.*\.ya?ml$
+        files: ^(states/data|states/configs)/.*\.ya?ml$
 
       - id: lint-jinja
         name: lint-jinja

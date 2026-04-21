@@ -5,8 +5,8 @@ Auto-generated from active feature plans. Last updated: 2026-04-21
 ## Active Technologies
 - Jinja2 + YAML Salt states, Python 3, Bash/Zsh helper scripts
 - Salt 3006.x masterless workflow with shared `_macros_*.jinja`
-- `just`, `pytest`, `ruff`, `shellcheck`, `yamllint`, `salt-lint`, GitHub Actions
-- Repository artifacts under `states/`, `scripts/`, `tests/`, `docs/`, `.github/workflows/`
+- `just`, `pytest`, `ruff`, `shellcheck`, `yamllint`, `salt-lint`
+- Repository artifacts under `states/`, `scripts/`, `tests/`, `docs/`
 - Markdown documentation, shell-based operator workflow, existing `gopass` CLI usage in Salt/chezmoi scripts + `gopass` 1.16.x, current git-backed password store, `chezmoi`, Salt masterless workflow, existing docs under `docs/` (072-gopass-age-migration)
 - File-based `gopass` store plus git history and local backup artifacts (072-gopass-age-migration)
 - Jinja2 + YAML Salt states, Python 3, Bash/Zsh helper scripts + Salt 3006.x masterless workflow, existing `_macros_*.jinja`, systemd, Arch/CachyOS package management, `zapret2` AUR package (`0.9.4.5-1` observed during planning) (073-zapret2-dry-run)
@@ -31,7 +31,6 @@ states/
 scripts/
 tests/
 docs/
-.github/workflows/
 specs/
 ```
 
@@ -61,6 +60,7 @@ specs/
 
 <!-- MANUAL ADDITIONS START -->
 - `docs/superpowers/plans/*.md` are temporary working artifacts by default: do not commit them unless they are explicitly being kept as active shared planning documents. Remove stale plan files periodically once the related work is finished or abandoned.
+- Do not add GitHub automation files unless the user explicitly asks for them.
 <!-- MANUAL ADDITIONS END -->
 
 <!-- FUTURE WORK -->

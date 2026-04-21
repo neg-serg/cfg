@@ -1,4 +1,4 @@
--- gf for YAML: follow $ref, include:, extends:, and local uses: (GitHub Actions).
+-- gf for YAML: follow $ref, include:, extends:, and local uses:.
 -- Anchor navigation via JSON Pointer paths (#/components/schemas/User).
 
 local nav = require('utils.nav')
@@ -34,7 +34,7 @@ local function ref_at_cursor()
   local ref = line:match([[$ref%s*:%s*['"]?([^'"%s,}]+)['"]?]])
            or line:match([[include%s*:%s*['"]?([^'"%s,}]+)['"]?]])
            or line:match([[extends%s*:%s*['"]?([^'"%s,}]+)['"]?]])
-           -- GitHub Actions: only local actions start with ./
+            -- only local actions start with ./
            or line:match([[uses%s*:%s*['"]?(%.%/[^'"%s,}]+)['"]?]])
   if not ref then return nil end
 

@@ -1,7 +1,7 @@
 """cmd.run compliance audit: check all cmd.run/cmd.script states against the standard.
 
 See docs/cmd-run-standard.md for the full specification.
-Violations are reported as warnings — this test does not fail CI.
+Violations are reported as warnings — this test does not fail the audit.
 Complements spec 051 which handles the actual refactoring.
 """
 

@@ -51,7 +51,7 @@ salt_runtime_write_minion_config "${project_dir}" "${runtime}" validate
 salt_runtime_clear_stale_proc_locks "${runtime}"
 salt_runtime_reset_validate_cache "${runtime}"
 
-# Use sudo when available (CI has NOPASSWD sudo, needed for runas=)
+# Use sudo when available (non-interactive sudo is needed for runas=)
 sudo_cmd=""
 if sudo -n true 2>/dev/null; then
 	sudo_cmd="sudo"

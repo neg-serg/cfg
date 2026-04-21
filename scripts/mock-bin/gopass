@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Minimal gopass mock for CI/testing. Supports: gopass show [-o] secret/path
+# Minimal gopass mock for testing. Supports: gopass show [-o] secret/path
 
 set -euo pipefail
 

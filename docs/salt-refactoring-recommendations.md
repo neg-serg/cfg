@@ -67,7 +67,7 @@ Move a change into `avoid for now` if it is likely to:
 | 5. Extract `Justfile` lint recipe | safe now | done on `071-salt-refactor-program` | lint flow moved to `scripts/lint-all.sh` |
 | 6. Narrow config+restart helper | requires validation | done on `071-salt-refactor-program` | applied only to the repeated Transmission settings pattern |
 | 7. Contract tests for macros/rendering | safe now | done on `071-salt-refactor-program` | dedicated regression tests added under `tests/` |
-| 8. CI performance gate | requires validation | done on `071-salt-refactor-program` | path-scoped PASS/FAIL/INCONCLUSIVE gate wired in CI |
+| 8. Performance gate | requires validation | done on `071-salt-refactor-program` | path-scoped PASS/FAIL/INCONCLUSIVE gate wired into the validation flow |
 | 9. Selective SLS decomposition | requires validation | done on `071-salt-refactor-program` | `video_ai` and `desktop` split into explicit thematic includes |
 | 10. Keep refactor backlog synchronized | safe now | done on `071-salt-refactor-program` | this document and spec-kit tasks stay aligned |
 
@@ -84,7 +84,7 @@ Latest verification pass on `071-salt-refactor-program`:
 ## Adoption Order
 
 1. Land the already-implemented safe-now items first: runtime-dir normalization, shared downloads, YAML user-services, shared runtime bootstrap, lint extraction, contract tests, backlog sync.
-2. Land the validation-gated but completed items with the recorded evidence: config+restart helper, CI perf gate, and selective SLS decomposition.
+2. Land the validation-gated but completed items with the recorded evidence: config+restart helper, performance gate, and selective SLS decomposition.
 3. Keep future follow-ups narrow; do not widen include graphs or introduce meta-generated state topology.
 
 ## Safe Now

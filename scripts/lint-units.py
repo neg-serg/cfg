@@ -16,7 +16,7 @@ import sys
 
 UNITS_DIR = os.path.join("states", "units")
 
-# Errors that are expected on dev/CI machines where binaries aren't installed
+# Errors that are expected on development machines where binaries aren't installed
 _NOISE = re.compile(
     r"is not executable: No such file|"
     r"No such file or directory|"

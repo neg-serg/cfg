@@ -198,9 +198,8 @@ Audit (2026-04-15): 106 tests across 19 files + 1 shell script. 3 failing, sever
 - [ ] **Fix 3 failing tests:**
   - `test_managed_resources_inventory_covers_phase1_services` — remove `adguardhome`, `bitcoind` (now containerized)
   - `test_transmission_uses_shared_config_replace_helper` — update to match consolidated services.sls pattern
-  - `test_ci_workflow_wires_performance_gate_status_handling` — `.github/workflows/salt-ci.yaml` doesn't exist
 - [ ] **Create `tests/conftest.py`** — shared `REPO_ROOT`, `sys.path` setup, fixtures, pytest markers (`@pytest.mark.slow`, `@pytest.mark.integration`)
-- [ ] **Move `cmd.run` audit from report-only to failing** — currently 70/499 unguarded states silently pass CI. Add threshold-based fail.
+- [ ] **Move `cmd.run` audit from report-only to failing** — currently 70/499 unguarded states silently pass checks. Add threshold-based fail.
 - [ ] **Add `@pytest.mark.slow` to module-level render tests** — `test_macro_idempotency.py` and `test_cmdrun_audit.py` render ALL .sls at import time
 
 ### MEDIUM PRIORITY

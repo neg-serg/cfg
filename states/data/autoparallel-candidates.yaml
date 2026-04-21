@@ -1372,7 +1372,7 @@ not-applicable-tools:
     reason: "Rust binary; Vulkan GPU rendering"
   - name: albumdetails  # music metadata — Python
     reason: "Python runtime"
-  - name: act-bin  # GitHub Actions — Go
+  - name: act-bin  # local workflow runner — Go
     reason: "Go binary; container management"
   - name: amneziawg-dkms  # WireGuard module
     reason: "Kernel module; out of scope"

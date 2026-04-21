@@ -110,7 +110,7 @@ for state in "${SAFE_STATES[@]}"; do
 done
 
 # Full tree rendering is covered separately by `just validate` and
-# `just render-matrix` in CI. The smoke test stays focused on applying a small
+# `just render-matrix`. The smoke test stays focused on applying a small
 # offline-capable subset inside the container.
 
 # ── Assertions ───────────────────────────────────────────────────────────

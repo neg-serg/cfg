@@ -65,7 +65,7 @@
   - Neovim as primary editor
   - Gopass (GPG + Yubikey) for secrets
   - Ollama for local LLMs
-  This is NOT an enterprise or team setup. No CI/CD, no cloud infrastructure, no web app development.
+  This is NOT an enterprise or team setup. No cloud infrastructure, no web app development.
 </audience>
 
 <context>

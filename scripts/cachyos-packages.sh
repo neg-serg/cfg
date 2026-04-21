@@ -376,7 +376,7 @@ PACMAN_PKGS=(
 AUR_PKGS=(
 	# --- From main package list ---
 	patool  # universal archive manager (wrapper)
-	act-bin # run GitHub Actions locally
+	act-bin # run the local workflow runner
 	# hxtools             # misc Linux utilities collection — FTBFS on CachyOS
 	ttf-material-design-icons-extended # Material Design icon font
 	advancecomp                        # recompression tools (advpng, advzip)
@@ -403,7 +403,7 @@ AUR_PKGS=(
 	# fheroes2            # Heroes of Might and Magic II engine
 	# flare-game          # action RPG (Diablo-like)
 	# bottles             # Wine prefix manager (GUI)
-	ddccontrol # DDC/CI monitor control
+	ddccontrol # DDC monitor control
 	git-extras # extra git commands (git-summary, etc.)
 
 	adguardian                 # AdGuard Home TUI

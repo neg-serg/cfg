@@ -222,7 +222,7 @@ install_tool:
 | 2023-11 | Broadcom приобретает VMware (родитель SaltStack) | Среднее |
 | 2024-06 | Выпуск Salt 3007.0 (STS) | Низкое |
 | 2024-09 | Уход комьюнити-менеджера; замены нет | Среднее |
-| 2024-10 | Удалена CI-инфраструктура AWS Salt Project | Высокое |
+| 2024-10 | Удалена инфраструктура AWS Salt Project | Высокое |
 | 2025-01 | Tom Hatch уходит из Broadcom, остаётся с Salt | Среднее |
 | 2025-01 | GitHub Discussion #67028: обсуждение soft fork | Среднее |
 | 2025 H1 | Great Module Migration (облачные модули → salt-extensions) | Нет влияния |

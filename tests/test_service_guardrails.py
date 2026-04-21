@@ -70,5 +70,5 @@ def test_state_profiler_compare_rows_honor_threshold(tmp_path):
     assert by_state["slow_state"]["regression"] is True
 
 
-# CI workflow removed; state-profiler gate tested in
+# workflow removed; state-profiler gate tested in
 # test_state_profiler_gate_statuses above.

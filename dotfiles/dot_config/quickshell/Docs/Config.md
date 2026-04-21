@@ -148,7 +148,7 @@ Theme/.theme.json (short)
 Tools
 
 - Build theme: `node Tools/build-theme.mjs` (merges `Theme/*.jsonc` into `Theme/.theme.json`; add
-  `--check` for CI/hooks).
+  `--check` for local hooks).
 - Validate theme:
   `node Tools/validate-theme.mjs [--theme Theme/.theme.json] [--schema Docs/ThemeHierarchical.json] [--strict]`
   (auto-loads from the `Theme/` parts when present).

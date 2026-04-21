@@ -4,7 +4,7 @@
 Usage:
     update-tools.py                  # list all tools with install status
     update-tools.py --check          # check latest GitHub release tags vs pinned
-    update-tools.py --check --ci     # same, but markdown output + exit 1 if updates
+    update-tools.py --check --markdown # same, but markdown output + exit 1 if updates
     update-tools.py --update name..  # update specific tools
     update-tools.py --update --all   # update all tools
 """
@@ -175,10 +175,10 @@ def cmd_list(tool_map):
             print(f"    {mark} {name}")
 
 
-def cmd_check(ci=False):
+def cmd_check(markdown=False):
     """Check latest GitHub versions against pinned versions.yaml.
 
-    When ci=True, outputs a markdown table of outdated tools and returns
+    When markdown=True, outputs a markdown table of outdated tools and returns
     exit code 1 if any updates are available.
     """
     versions = load_versions()
@@ -198,7 +198,7 @@ def cmd_check(ci=False):
         pinned_clean = str(pinned)
         results.append((key, f"npm:{pkg}", pinned_clean, latest, latest))
 
-    if ci:
+    if markdown:
         outdated = [(k, r, p, lc, tag) for k, r, p, lc, tag in results if lc not in ("?", p)]
         if not outdated:
             print("All pinned versions are up to date.")
@@ -331,7 +331,7 @@ def main():
         epilog="Examples:\n"
         "  %(prog)s                    List all tools\n"
         "  %(prog)s --check            Check pinned vs latest GitHub versions\n"
-        "  %(prog)s --check --ci       Markdown output, exit 1 if updates\n"
+        "  %(prog)s --check --markdown Markdown output, exit 1 if updates\n"
         "  %(prog)s --update sops eza  Update specific tools\n"
         "  %(prog)s --update --all     Update everything\n",
     )
@@ -339,7 +339,7 @@ def main():
         "--check", action="store_true", help="check pinned vs latest GitHub versions"
     )
     parser.add_argument(
-        "--ci", action="store_true", help="CI mode: markdown output, exit 1 if updates available"
+        "--markdown", action="store_true", help="markdown output, exit 1 if updates available"
     )
     parser.add_argument("--update", nargs="*", metavar="TOOL", help="update tools (or --all)")
     parser.add_argument("--all", action="store_true", help="update all tools (with --update)")
@@ -350,7 +350,7 @@ def main():
     tool_map = build_tool_map(tools)
 
     if args.check:
-        sys.exit(cmd_check(ci=args.ci))
+        sys.exit(cmd_check(markdown=args.markdown))
     elif args.update is not None:
         if args.all:
             names = sorted(tool_map.keys())

@@ -369,9 +369,9 @@ alias:
   - name: wget
     value: wget2 --hsts-file $XDG_DATA_HOME/wget-hsts
   - name: yt
-    value: yt-dlp --downloader aria2c --no-playlist --cookies-from-browser firefox:$HOME/.floorp/c85pjaxk.default-default --embed-metadata --embed-thumbnail --embed-subs --sub-langs=all
+    value: yt-dlp --no-playlist --embed-metadata --embed-thumbnail --embed-subs --sub-langs=all -o "%(title)s [%(id)s].%(ext)s"
   - name: yta
-    value: yt-dlp --downloader aria2c --no-playlist --cookies-from-browser firefox:$HOME/.floorp/c85pjaxk.default-default --embed-metadata --embed-thumbnail --embed-subs --sub-langs=all --write-info-json
+    value: yt-dlp --no-playlist --embed-metadata --embed-thumbnail --embed-subs --sub-langs=all --write-info-json -o "%(title)s [%(id)s].%(ext)s"
   - name: fd
     value: fd -H --ignore-vcs
   - name: fda

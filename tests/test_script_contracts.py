@@ -6,6 +6,8 @@ import stat
 import textwrap
 from pathlib import Path
 
+import yaml
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -128,6 +130,35 @@ def test_hot_reload_script_parses_in_zsh():
     result = subprocess.run(["zsh", "-n", str(script)], capture_output=True, text=True)
 
     assert result.returncode == 0, result.stderr
+
+
+def test_yt_alias_uses_wrapper_based_defaults():
+    aliases = yaml.safe_load(
+        (REPO_ROOT / "dotfiles" / "dot_config" / "aliae" / "aliae.yaml").read_text()
+    )["alias"]
+    yt = next(entry for entry in aliases if entry["name"] == "yt")
+
+    assert yt["value"] == (
+        'yt-dlp --no-playlist --embed-metadata --embed-thumbnail '
+        '--embed-subs --sub-langs=all -o "%(title)s [%(id)s].%(ext)s"'
+    )
+    assert '--cookies-from-browser firefox:$HOME/.floorp/' not in yt["value"]
+    assert '--downloader aria2c' not in yt["value"]
+
+
+def test_yta_alias_adds_info_json_to_wrapper_based_defaults():
+    aliases = yaml.safe_load(
+        (REPO_ROOT / "dotfiles" / "dot_config" / "aliae" / "aliae.yaml").read_text()
+    )["alias"]
+    yta = next(entry for entry in aliases if entry["name"] == "yta")
+
+    assert yta["value"] == (
+        'yt-dlp --no-playlist --embed-metadata --embed-thumbnail '
+        '--embed-subs --sub-langs=all --write-info-json -o '
+        '"%(title)s [%(id)s].%(ext)s"'
+    )
+    assert '--cookies-from-browser firefox:$HOME/.floorp/' not in yta["value"]
+    assert '--downloader aria2c' not in yta["value"]
 
 
 def test_amnezia_import_script_exposes_cli_subcommands_and_source_paths():

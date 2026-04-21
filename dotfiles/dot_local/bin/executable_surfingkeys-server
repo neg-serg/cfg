@@ -71,7 +71,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     
                     # Execute set-zen-proxy
                     result = subprocess.run(
-                        ['/home/neg/bin/set-zen-proxy', mode],
+                        ['/home/neg/.local/bin/set-zen-proxy', mode],
                         capture_output=True,
                         text=True,
                         check=True

@@ -38,7 +38,7 @@ elif path == '/proxy':
     params = parse_qs(query)
     mode = params.get('mode', [None])[0]
     if mode in ['direct', 'telegram', 'debug', 'system_vpn']:
-        subprocess.run(['/home/neg/bin/set-zen-proxy', mode], check=True)
+        subprocess.run(['/home/neg/.local/bin/set-zen-proxy', mode], check=True)
 ```
 
 ### 3. Surfingkeys Integration
@@ -126,7 +126,7 @@ api.mapkey('<A-S-0>', 'Show proxy status', () => showProxyStatus());
 
 ### 4. Data Flow
 1. **User presses `Alt+Shift+2`** → Surfingkeys calls `fetch('http://localhost:18888/proxy?mode=telegram')`.
-2. **HTTP server** receives the request, validates the mode, and executes `/home/neg/bin/set-zen-proxy telegram`.
+2. **HTTP server** receives the request, validates the mode, and executes `/home/neg/.local/bin/set-zen-proxy telegram`.
 3. **External script** writes the appropriate proxy preferences to `~/.config/zen/qnkh60k3.Default (release)/user.js`.
 4. **Surfingkeys** shows a banner confirming the update and reminding the user to restart Zen Browser.
 5. **After browser restart**, the new proxy settings take effect globally (all tabs and new connections).
@@ -207,7 +207,7 @@ If the proxy management feature causes issues (e.g., browser hangs, proxy settin
 
 The Surfingkeys integration has been removed due to issues with configuration loading and hotkey conflicts in Firefox/Zen Browser. The following components remain functional:
 
-- **`/home/neg/bin/set-zen-proxy`** – Script that writes proxy preferences to `~/.config/zen/qnkh60k3.Default (release)/user.js`
+- **`/home/neg/.local/bin/set-zen-proxy`** – Script that writes proxy preferences to `~/.config/zen/qnkh60k3.Default (release)/user.js`
 - **HTTP helper server** (`surfingkeys-server.service`) – Includes `/proxy` endpoint for future use
 - **Four proxy modes**: `direct`, `telegram` (10808), `debug` (10810), `system_vpn`
 

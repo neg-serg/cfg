@@ -68,7 +68,7 @@ fi
 
 # Execute the proxy change
 echo "Switching proxy to: $selected_desc"
-if /home/neg/bin/set-zen-proxy "$selected_key"; then
+if ~/.local/bin/set-zen-proxy "$selected_key"; then
     # Success notification
     if command -v notify-send >/dev/null 2>&1; then
         notify-send -t 3000 "Proxy switched" "Mode: $selected_desc\nRestart Zen Browser to apply"

@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# Proxy switcher menu for Zen Browser
+# Uses vicinae/dmenu/rofi to select a proxy mode, then runs set-zen-proxy
+
+set -euo pipefail
+
+# Available proxy modes
+MODES=(
+    "direct:Direct (no proxy)"
+    "telegram:Telegram Xray (SOCKS5 :10808)"
+    "debug:Debug Xray (SOCKS5 :10810)"
+    "system_vpn:System VPN (fallback to Telegram proxy)"
+)
+
+# Find a menu launcher
+MENU_CMD=""
+for cmd in vicinae dmenu rofi; do
+    if command -v "$cmd" >/dev/null 2>&1; then
+        MENU_CMD="$cmd"
+        break
+    fi
+done
+
+if [[ -z "$MENU_CMD" ]]; then
+    echo "ERROR: No menu launcher found (vicinae, dmenu, rofi)" >&2
+    exit 1
+fi
+
+# Prepare menu entries (show description, output mode key)
+menu_entries=()
+for entry in "${MODES[@]}"; do
+    key="${entry%%:*}"
+    desc="${entry#*:}"
+    menu_entries+=("$desc")
+done
+
+# Display menu and get selection
+selected_desc=$(
+    printf '%s\n' "${menu_entries[@]}" | \
+    $MENU_CMD -p "Proxy mode:" \
+              ${MENU_CMD:+${MENU_CMD}_ARGS} 2>/dev/null || true
+)
+
+if [[ -z "$selected_desc" ]]; then
+    # User cancelled
+    exit 0
+fi
+
+# Find the key for the selected description
+selected_key=""
+for entry in "${MODES[@]}"; do
+    key="${entry%%:*}"
+    desc="${entry#*:}"
+    if [[ "$desc" == "$selected_desc" ]]; then
+        selected_key="$key"
+        break
+    fi
+done
+
+if [[ -z "$selected_key" ]]; then
+    echo "ERROR: Could not match selection '$selected_desc'" >&2
+    exit 1
+fi
+
+# Execute the proxy change
+echo "Switching proxy to: $selected_desc"
+if /home/neg/bin/set-zen-proxy "$selected_key"; then
+    # Success notification
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send -t 3000 "Proxy switched" "Mode: $selected_desc\nRestart Zen Browser to apply"
+    fi
+    echo "✓ Proxy set to $selected_key"
+    echo "Note: Restart Zen Browser for changes to take effect."
+else
+    # Error notification
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send -t 5000 -u critical "Proxy switch failed" "Check terminal for details"
+    fi
+    echo "✗ Failed to switch proxy" >&2
+    exit 1
+fi

@@ -34,6 +34,11 @@ docs/
 specs/
 ```
 
+## Mandatory Agent Requirements
+
+- Any agent working in this repository must read and follow this file before making changes or taking repo actions.
+- Do not add GitHub automation files, CI workflows, or `.github/workflows/` entries unless the user explicitly asks for them.
+
 ## Commands
 
 - `just lint`

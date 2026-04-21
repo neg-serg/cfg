@@ -14,9 +14,14 @@ MODES=(
 
 # Find a menu launcher
 MENU_CMD=""
+MENU_ARGS=""
 for cmd in vicinae dmenu rofi; do
     if command -v "$cmd" >/dev/null 2>&1; then
         MENU_CMD="$cmd"
+        # vicinae requires 'dmenu' subcommand
+        if [[ "$cmd" == "vicinae" ]]; then
+            MENU_ARGS="dmenu"
+        fi
         break
     fi
 done
@@ -37,8 +42,7 @@ done
 # Display menu and get selection
 selected_desc=$(
     printf '%s\n' "${menu_entries[@]}" | \
-    $MENU_CMD -p "Proxy mode:" \
-              ${MENU_CMD:+${MENU_CMD}_ARGS} 2>/dev/null || true
+    $MENU_CMD $MENU_ARGS -p "Proxy mode:" 2>/dev/null || true
 )
 
 if [[ -z "$selected_desc" ]]; then

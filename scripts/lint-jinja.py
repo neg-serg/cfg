@@ -18,6 +18,7 @@ if SCRIPTS_DIR not in sys.path:
 import host_model  # noqa: E402
 import jinja2  # noqa: E402
 import jinja2.ext  # noqa: E402
+import salt_contracts  # noqa: E402
 import yaml  # noqa: E402
 
 # --- Salt-specific Jinja2 tags ---
@@ -1019,6 +1020,13 @@ def main():
     unit_errors, units_checked = check_systemd_units()
     total_errors += unit_errors
     print(f"Systemd units: {units_checked} files, {unit_errors} errors")
+
+    # 17. Explicit service inventory contracts
+    contract_errors = salt_contracts.print_contract_errors(
+        salt_contracts.check_service_inventory_contracts()
+    )
+    total_errors += contract_errors
+    print(f"Service inventory contracts: {contract_errors} errors")
 
     sys.exit(1 if total_errors else 0)
 

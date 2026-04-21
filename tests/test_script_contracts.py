@@ -1,8 +1,9 @@
 """Contract tests for shared shell/bootstrap scripts."""
 
+import json
 import os
-import subprocess
 import stat
+import subprocess
 import textwrap
 from pathlib import Path
 
@@ -62,6 +63,34 @@ def test_salt_apply_treats_auto_scope_as_full_system_description_for_now():
     assert "Minimal rollout planning is deferred" in apply_source
 
 
+def test_salt_apply_auto_plan_delegates_to_planner_and_exits_before_apply_flow():
+    apply_source = (REPO_ROOT / "scripts" / "salt-apply.sh").read_text()
+    auto_plan_section = apply_source.split(
+        'if [[ "$STATE" == "auto" && "$PLAN_MODE" == true ]]; then', 1
+    )[1].split('if [[ "$STATE" == "auto" ]]; then', 1)[0]
+
+    assert "PLAN_MODE=false" in apply_source
+    assert "--plan) PLAN_MODE=true ;;" in apply_source
+    assert 'if [[ "$STATE" == "auto" && "$PLAN_MODE" == true ]]; then' in apply_source
+    assert 'python3 "${SCRIPT_DIR}/salt_impact.py"' in apply_source
+    assert "exit $? " not in apply_source
+    assert 'python3 "${SCRIPT_DIR}/salt_impact.py" "$@"' not in apply_source
+    assert 'python3 "${SCRIPT_DIR}/salt_impact.py"' in auto_plan_section
+    assert "bootstrap_salt" not in auto_plan_section
+    assert "run_via_daemon" not in auto_plan_section
+    assert "run_direct" not in auto_plan_section
+    assert 'chezmoi apply --force --source "${PROJECT_DIR}/dotfiles"' not in auto_plan_section
+    assert "exit $?" in auto_plan_section
+
+
+def test_salt_apply_auto_plan_passes_explicit_files_to_salt_impact():
+    source = (REPO_ROOT / "scripts" / "salt-apply.sh").read_text()
+
+    assert "PLAN_FILES=()" in source
+    assert 'PLAN_FILES+=("$arg")' in source or 'PLAN_FILES+=("${arg}")' in source
+    assert 'python3 "${SCRIPT_DIR}/salt_impact.py" --files "${PLAN_FILES[@]}"' in source
+
+
 def test_justfile_lint_delegates_to_script():
     justfile_source = (REPO_ROOT / "Justfile").read_text()
     lint_script_source = (REPO_ROOT / "scripts" / "lint-all.sh").read_text()
@@ -80,14 +109,26 @@ def test_justfile_exposes_selective_validate_shortcuts():
     assert "scripts/salt-validate.sh -- {{STATES}}" in justfile_source
 
 
+def test_justfile_exposes_auto_plan_wrappers():
+    source = (REPO_ROOT / "Justfile").read_text()
+
+    assert "apply-plan *FILES:" in source
+    assert "./scripts/salt-apply.sh auto --plan {{FILES}}" in source
+    assert "apply-auto:" in source
+    assert "./scripts/salt-apply.sh auto" in source
+
+
 def test_salt_apply_bootstrap_repairs_relocated_venv_launchers():
     source = (REPO_ROOT / "scripts" / "salt-apply.sh").read_text()
 
-    assert 'repair_stale_venv_entrypoints()' in source
+    assert "repair_stale_venv_entrypoints()" in source
     assert 'launcher_path="$1"' in source
     assert 'expected_shebang="#!${VENV_DIR}/bin/python3"' in source
     assert 'grep -qF "$expected_shebang" "$launcher_path"' in source
-    assert '"$VENV_DIR/bin/python3" -m pip install --force-reinstall -r "${PROJECT_DIR}/requirements.txt"' in source
+    assert (
+        '"$VENV_DIR/bin/python3" -m pip install --force-reinstall -r '
+        '"${PROJECT_DIR}/requirements.txt"' in source
+    )
     assert 'repair_stale_venv_entrypoints "$VENV_DIR/bin/pytest"' in source
     assert 'repair_stale_venv_entrypoints "$VENV_DIR/bin/salt-call"' in source
 
@@ -97,6 +138,17 @@ def test_salt_apply_refreshes_drift_baseline_after_success():
 
     assert 'python3 "${PROJECT_DIR}/scripts/drift_state.py" refresh-expected' in source
     assert '"${HOME}/.cache/salt-monitor"' in source
+
+
+def test_salt_apply_repairs_runtime_ownership_before_setup_config():
+    source = (REPO_ROOT / "scripts" / "salt-apply.sh").read_text()
+    main_flow = source.split("# ── Main", 1)[1]
+
+    assert "repair_runtime_permissions()" in source
+    assert '"${SUDO_CMD[@]}" chown -R "$(id -u):$(id -g)" "${RUNTIME_CONFIG_DIR}"' in source
+    assert 'find "${RUNTIME_CONFIG_DIR}" -type d -exec chmod u+rwx {} +' in source
+    assert 'find "${RUNTIME_CONFIG_DIR}" -type f -exec chmod u+rw {} +' in source
+    assert main_flow.index("repair_runtime_permissions") < main_flow.index("setup_config")
 
 
 def test_justfile_exposes_drift_commands():
@@ -110,6 +162,21 @@ def test_justfile_exposes_drift_commands():
     assert 'python3 scripts/drift_state.py status --project-dir "${PWD}"' in source
 
 
+def test_chezmoi_watch_uses_cfg_dotfiles_path():
+    source = (REPO_ROOT / "dotfiles" / "dot_local" / "bin" / "executable_chezmoi-watch").read_text()
+
+    assert 'src_dir="${HOME}/src/cfg/dotfiles"' in source
+    assert 'src_dir="${HOME}/src/salt/dotfiles"' not in source
+
+
+def test_health_check_marks_http_probe_failures_as_unhealthy():
+    source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
+
+    assert 'http_ok="FAIL"' in source
+    assert 'status="unhealthy"' in source
+    assert 'results[i]=$(echo "$entry" | awk -F\'\\t\' -v h="$http_ok" -v s="$status"' in source
+
+
 def test_health_check_tracks_named_quadlet_units():
     source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
 
@@ -120,6 +187,35 @@ def test_health_check_tracks_named_quadlet_units():
     assert "promtail-container" in source
     assert "grafana-container" in source
     assert "bitcoind-container" in source
+
+
+def test_health_check_uses_catalog_ported_grafana_api_health_endpoint():
+    source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
+
+    assert 'HEALTHCHECKS["grafana-container"]="3030:/api/health"' in source
+
+
+def test_health_check_only_checks_optional_monitoring_units_when_host_features_enable_them():
+    source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
+    loki_expr = (
+        "print('true' if host.get('features', {}).get('monitoring', {}).get('loki', "
+        "False) else 'false')"
+    )
+    promtail_expr = (
+        "print('true' if host.get('features', {}).get('monitoring', {}).get('promtail', "
+        "False) else 'false')"
+    )
+    grafana_expr = (
+        "print('true' if host.get('features', {}).get('monitoring', {}).get('grafana', "
+        "False) else 'false')"
+    )
+
+    assert loki_expr in source
+    assert promtail_expr in source
+    assert grafana_expr in source
+    assert 'OPTIONAL_SYSTEM+=("loki-container")' in source
+    assert 'OPTIONAL_SYSTEM+=("promtail-container")' in source
+    assert 'OPTIONAL_SYSTEM+=("grafana-container")' in source
 
 
 def test_deploy_guide_uses_cfg_project_dir():
@@ -151,11 +247,11 @@ def test_yt_alias_uses_wrapper_based_defaults():
     yt = next(entry for entry in aliases if entry["name"] == "yt")
 
     assert yt["value"] == (
-        'yt-dlp --no-playlist --embed-metadata --embed-thumbnail '
+        "yt-dlp --no-playlist --embed-metadata --embed-thumbnail "
         '--embed-subs --sub-langs=all -o "%(title)s [%(id)s].%(ext)s"'
     )
-    assert '--cookies-from-browser firefox:$HOME/.floorp/' not in yt["value"]
-    assert '--downloader aria2c' not in yt["value"]
+    assert "--cookies-from-browser firefox:$HOME/.floorp/" not in yt["value"]
+    assert "--downloader aria2c" not in yt["value"]
 
 
 def test_yta_alias_adds_info_json_to_wrapper_based_defaults():
@@ -165,12 +261,12 @@ def test_yta_alias_adds_info_json_to_wrapper_based_defaults():
     yta = next(entry for entry in aliases if entry["name"] == "yta")
 
     assert yta["value"] == (
-        'yt-dlp --no-playlist --embed-metadata --embed-thumbnail '
-        '--embed-subs --sub-langs=all --write-info-json -o '
+        "yt-dlp --no-playlist --embed-metadata --embed-thumbnail "
+        "--embed-subs --sub-langs=all --write-info-json -o "
         '"%(title)s [%(id)s].%(ext)s"'
     )
-    assert '--cookies-from-browser firefox:$HOME/.floorp/' not in yta["value"]
-    assert '--downloader aria2c' not in yta["value"]
+    assert "--cookies-from-browser firefox:$HOME/.floorp/" not in yta["value"]
+    assert "--downloader aria2c" not in yta["value"]
 
 
 def test_amnezia_import_script_exposes_cli_subcommands_and_source_paths():
@@ -231,12 +327,13 @@ def test_pw_restore_links_retries_entire_restore_when_first_pass_hits_transient_
 
     write_executable(
         bin_dir / "pw-cli",
-        f"""
+        """
         #!/usr/bin/env zsh
         setopt ERR_EXIT NOUNSET PIPE_FAIL
 
         if [[ "$1" == "list-objects" && "$2" == "Node" ]]; then
-          print 'node.name = "alsa_output.usb-RME_ADI-2_4_Pro_SE__53011083__B992903C2BD8DC8-00.pro-output-0"'
+          print 'node.name = "alsa_output.usb-RME_ADI-2_4_Pro_SE__53011083__'\
+'B992903C2BD8DC8-00.pro-output-0"'
           print 'node.name = "rme-out-1-2"'
           print 'node.name = "rme-out-3-4"'
           print 'node.name = "rme-out-5-6"'
@@ -326,14 +423,16 @@ def test_pw_restore_links_restarts_user_audio_when_expected_sink_topology_is_inc
 
     write_executable(
         bin_dir / "pw-cli",
-        f"""
+        (
+            f"""
         #!/usr/bin/env zsh
         setopt ERR_EXIT NOUNSET PIPE_FAIL
 
         phase=$(<"{phase_file}")
 
         if [[ "$1" == "list-objects" && "$2" == "Node" ]]; then
-          print 'node.name = "alsa_output.usb-RME_ADI-2_4_Pro_SE__53011083__B992903C2BD8DC8-00.pro-output-0"'
+          print 'node.name = "alsa_output.usb-RME_ADI-2_4_Pro_SE__53011083__'\
+'B992903C2BD8DC8-00.pro-output-0"'
           if [[ "$phase" == "before" ]]; then
             print 'node.name = "rme-out-1-2"'
             print 'node.name = "rme-out-3-4"'
@@ -358,7 +457,8 @@ def test_pw_restore_links_restarts_user_audio_when_expected_sink_topology_is_inc
 
         print -u2 "unexpected pw-cli invocation: $*"
         exit 1
-        """,
+        """
+        ),
     )
 
     write_executable(
@@ -495,6 +595,132 @@ def test_salt_validate_normalizes_nested_state_paths_for_show_sls():
     source = (REPO_ROOT / "scripts" / "salt-validate.sh").read_text()
 
     assert r'name="${name//\//.}"' in source
+
+
+def test_salt_validate_writes_machine_readable_summary_artifact_per_run(tmp_path):
+    repo_dir = tmp_path / "repo"
+    scripts_dir = repo_dir / "scripts"
+    states_dir = repo_dir / "states"
+    venv_bin_dir = repo_dir / ".venv" / "bin"
+    bin_dir = tmp_path / "bin"
+    summary_path = tmp_path / "artifacts" / "salt-validate-summary.json"
+
+    scripts_dir.mkdir(parents=True)
+    states_dir.mkdir()
+    venv_bin_dir.mkdir(parents=True)
+    bin_dir.mkdir()
+
+    (scripts_dir / "salt-validate.sh").write_text(
+        (REPO_ROOT / "scripts" / "salt-validate.sh").read_text()
+    )
+    (scripts_dir / "salt-validate.sh").chmod(0o755)
+
+    write_executable(
+        scripts_dir / "salt-runtime.sh",
+        """
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        salt_runtime_prepare_dirs() {
+          mkdir -p "$2"
+        }
+
+        salt_runtime_write_minion_config() {
+          :
+        }
+
+        salt_runtime_clear_stale_proc_locks() {
+          :
+        }
+
+        salt_runtime_reset_validate_cache() {
+          :
+        }
+        """,
+    )
+
+    (states_dir / "alpha.sls").write_text("alpha: {}\n")
+    (states_dir / "beta.sls").write_text("beta: {}\n")
+
+    write_executable(
+        venv_bin_dir / "python3",
+        """
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        state_name="${*: -2:1}"
+        if [[ "$state_name" == "beta" ]]; then
+          exit 1
+        fi
+        exit 0
+        """,
+    )
+
+    write_executable(
+        bin_dir / "parallel",
+        """
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        joblog=""
+        args=("$@")
+        index=0
+        while [[ $index -lt $# ]]; do
+          if [[ "${args[$index]}" == "--joblog" ]]; then
+            index=$((index + 1))
+            joblog="${args[$index]}"
+          fi
+          if [[ "${args[$index]}" == ":::" ]]; then
+            break
+          fi
+          index=$((index + 1))
+        done
+
+        printf 'Seq\tHost\tStarttime\tRuntime\tSend\tReceive\tExitval\t'\
+'Signal\tCommand\n' > "$joblog"
+
+        seq=1
+        index=$((index + 1))
+        while [[ $index -lt $# ]]; do
+          target="${args[$index]}"
+          if validate_one "$target" "$seq"; then
+            exitval=0
+          else
+            exitval=1
+          fi
+          printf '%s\t:localhost\t0\t0\t0\t0\t%s\t0\tvalidate_one %s '\
+'%s\n' \
+            "$seq" "$exitval" "$target" "$seq" >> "$joblog"
+          seq=$((seq + 1))
+          index=$((index + 1))
+        done
+        """,
+    )
+
+    env = os.environ.copy()
+    env["PATH"] = f"{bin_dir}:{env['PATH']}"
+    env["VALIDATE_SUMMARY_FILE"] = str(summary_path)
+
+    result = subprocess.run(
+        ["bash", str(scripts_dir / "salt-validate.sh"), "1", "--", "alpha", "beta"],
+        cwd=repo_dir,
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.stdout.strip().endswith("Validated 2 states, 1 failed")
+    assert result.returncode == 1
+    assert summary_path.exists()
+
+    summary = json.loads(summary_path.read_text())
+    assert summary["tool"] == "salt-validate"
+    assert summary["total"] == 2
+    assert summary["failed"] == 1
+    assert summary["results"] == [
+        {"state": "alpha", "success": True},
+        {"state": "beta", "success": False},
+    ]
 
 
 def test_health_check_script_is_executable():

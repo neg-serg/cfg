@@ -17,12 +17,13 @@ import re
 import sys
 from datetime import datetime
 
-import yaml
-
 # Host model from shared module; lint-jinja.py for Jinja rendering infrastructure
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 if SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, SCRIPTS_DIR)
+
+import yaml
+from salt_source_model import discover_state_files, enrich_source_metadata
 
 # lint-jinja.py has a hyphenated name — must use importlib.util
 _lint_path = os.path.join(SCRIPTS_DIR, "lint-jinja.py")
@@ -69,6 +70,13 @@ IMPORT_YAML_RE = re.compile(r"\{%-?\s*import_yaml\s+['\"]([^'\"]+)['\"]\s+as\s+\
 # --- Macro parsing ---
 
 MACRO_DEF_RE = re.compile(r"\{%-?\s*macro\s+(\w+)\s*\((.*?)\)\s*-?%\}", re.DOTALL)
+
+
+def _state_name_from_relpath(relpath):
+    rel = relpath.replace("\\", "/")
+    if rel.startswith("states/"):
+        rel = rel[len("states/") :]
+    return rel.removesuffix(".sls").replace("/", ".")
 
 
 def parse_macros(jinja_files):
@@ -126,17 +134,25 @@ def render_states(sls_files):
     """
     env = _make_render_env()
     results = []
+    requested = set(sls_files)
+    metadata_by_rel = {
+        record.relpath: enrich_source_metadata(record)
+        for record in discover_state_files(STATES_DIR)
+        if record.relpath in requested
+    }
 
     for path in sorted(sls_files):
         rel = os.path.relpath(path)
         name = path.removeprefix(f"{STATES_DIR}/")
+        source_record = metadata_by_rel.get(rel)
         try:
             t = env.get_template(name)
             with open(path) as fh:
                 yaml_vars = _resolve_import_yaml(fh.read())
             rendered = t.render(**yaml_vars)
         except Exception:
-            results.append((rel, [], [], [], []))
+            feature_guards = source_record.feature_guards if source_record else []
+            results.append((rel, [], [], [], feature_guards))
             continue
 
         state_ids = []
@@ -171,14 +187,7 @@ def render_states(sls_files):
         except Exception:
             pass
 
-        # Scan raw source for feature guards
-        feature_guards = []
-        with open(path) as fh:
-            raw = fh.read()
-        for fm in re.finditer(r"host\.features\.(\w+(?:\.\w+)*)", raw):
-            feat = fm.group(1)
-            if feat not in feature_guards:
-                feature_guards.append(feat)
+        feature_guards = source_record.feature_guards if source_record else []
 
         results.append((rel, state_ids, includes, requires, feature_guards))
 
@@ -190,8 +199,8 @@ def generate_states_md(state_results):
     lines = [HEADER, "# Salt State Index\n"]
 
     for rel, state_ids, includes, requires, guards in state_results:
-        basename = os.path.basename(rel).replace(".sls", "")
-        lines.append(f"\n## {basename}")
+        state_name = _state_name_from_relpath(rel)
+        lines.append(f"\n## {state_name}")
         lines.append(f"**File:** `{rel}`\n")
 
         if includes:
@@ -220,7 +229,7 @@ def build_state_graph(state_results):
     reverse = {}
     guards_map = {}
     for rel, _, includes, _, guards in state_results:
-        name = os.path.basename(rel).replace(".sls", "")
+        name = _state_name_from_relpath(rel)
         clean_includes = [inc.strip() for inc in includes if inc]
         graph[name] = clean_includes
         guards_map[name] = guards
@@ -286,7 +295,7 @@ def write_knowledge_base(macros, state_results, summaries):
                 json.dumps(
                     {
                         "type": "state",
-                        "name": os.path.basename(rel).replace(".sls", ""),
+                        "name": _state_name_from_relpath(rel),
                         "file": rel,
                         "state_ids": state_ids,
                         "includes": includes,
@@ -441,7 +450,7 @@ def main():
     print(f"Wrote {macros_path} ({len(macros)} macros, {macros_md.count(chr(10))} lines)")
 
     # 2. States
-    sls_files = sorted(glob.glob(os.path.join(STATES_DIR, "**", "*.sls"), recursive=True))
+    sls_files = [record.relpath for record in discover_state_files(STATES_DIR)]
     state_results = render_states(sls_files)
     rendered_ok = sum(1 for _, ids, _, _, _ in state_results if ids)
     states_md = generate_states_md(state_results)

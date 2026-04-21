@@ -18,6 +18,7 @@ source "${script_dir}/salt-runtime.sh"
 jobs="${VALIDATE_JOBS:-$(nproc)}"
 validate_timeout="${VALIDATE_TIMEOUT:-300}"
 salt_python="${project_dir}/.venv/bin/python3"
+summary_file="${VALIDATE_SUMMARY_FILE:-}"
 
 targets=()
 if [[ $# -gt 0 && "$1" != "--" ]]; then
@@ -110,6 +111,13 @@ if [[ $total -eq 0 ]]; then
 	exit 0
 fi
 
+if [[ -z "$summary_file" ]]; then
+	mkdir -p logs
+	summary_file="logs/salt-validate-$(date +%Y%m%d-%H%M%S).json"
+else
+	mkdir -p "$(dirname "$summary_file")"
+fi
+
 # --- Pre-warm cache template ---
 # Salt scans file_roots to build mtime_map (expensive for large trees).
 # Build it once, then copy to per-worker caches so each starts warm.
@@ -160,6 +168,50 @@ parallel --will-cite -j "$jobs" --group --timeout "$validate_timeout" --halt nev
 
 # Count failures from joblog (column 7 is Exitval, skip header line)
 failed=$(awk 'NR>1 && $7!=0 {count++} END {print count+0}' "$joblog")
+
+json_escape() {
+	local value="$1"
+	value=${value//\\/\\\\}
+	value=${value//\"/\\\"}
+	value=${value//$'\n'/\\n}
+	value=${value//$'\r'/\\r}
+	value=${value//$'\t'/\\t}
+	printf '%s' "$value"
+}
+
+write_summary_artifact() {
+	local results_json=""
+	local line_no=0
+	while IFS=$'\t' read -r _ _ _ _ _ _ exitval _ command; do
+		if [[ $line_no -eq 0 ]]; then
+			line_no=$((line_no + 1))
+			continue
+		fi
+		local target="${command#validate_one }"
+		target="${target% *}"
+		local state="${target#states/}"
+		state="${state%.sls}"
+		state="${state//\//.}"
+		local success=false
+		if [[ "$exitval" -eq 0 ]]; then
+			success=true
+		fi
+		local entry
+		entry=$(printf '{"state":"%s","success":%s}' "$(json_escape "$state")" "$success")
+		if [[ -n "$results_json" ]]; then
+			results_json+="," 
+		fi
+		results_json+="$entry"
+		line_no=$((line_no + 1))
+	done < "$joblog"
+
+	printf '{\n  "tool": "salt-validate",\n  "total": %s,\n  "failed": %s,\n  "results": [%s]\n}\n' \
+		"$total" \
+		"$failed" \
+		"$results_json" > "$summary_file"
+}
+
+write_summary_artifact
 
 echo "Validated ${total} states, ${failed} failed"
 [[ "$failed" -eq 0 ]]

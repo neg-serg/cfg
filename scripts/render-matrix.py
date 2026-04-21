@@ -8,8 +8,9 @@ grains['host'] set to the scenario's name.  Ensures all feature combinations
 template correctly (catches missing imports/macros before deployment).
 """
 
-import glob
+import argparse
 import importlib.util
+import json
 import os
 import sys
 
@@ -18,6 +19,7 @@ if SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, SCRIPTS_DIR)
 
 import host_model  # noqa: E402
+from salt_source_model import discover_state_files, enrich_source_metadata  # noqa: E402
 
 # lint-jinja.py has a hyphenated name — must use importlib.util
 _lint_path = os.path.join(SCRIPTS_DIR, "lint-jinja.py")
@@ -41,6 +43,18 @@ def _load_global_yaml_vars():
 
 
 GLOBAL_YAML_VARS = _load_global_yaml_vars()
+
+
+def _select_render_state_files():
+    return [record.relpath for record in _discover_render_state_records()]
+
+
+def _discover_render_state_records():
+    return [
+        enrich_source_metadata(record)
+        for record in discover_state_files()
+        if record.top_level_entrypoint
+    ]
 
 
 def load_matrix():
@@ -82,33 +96,66 @@ def render_all_states():
     if not matrix:
         return []
 
-    sls_files = sorted(glob.glob("states/*.sls"))
+    state_records = _discover_render_state_records()
+    sls_files = [record.relpath for record in state_records]
+    state_metadata = {record.relpath: record for record in state_records}
     results = []
 
     for entry in matrix:
         name = entry.get("name")
         env = _make_render_env()
         errors = render_for_scenario(env, name, sls_files)
-        error_files = {path for path, _ in errors}
+        errors_by_path = {path: exc for path, exc in errors}
         for path in sls_files:
-            if path in error_files:
-                exc = next(e for p, e in errors if p == path)
+            record = state_metadata[path]
+            if path in errors_by_path:
+                exc = errors_by_path[path]
                 results.append(
-                    {"file": path, "scenario": name, "success": False, "error": str(exc)}
+                    {
+                        "file": path,
+                        "state": record.state_name,
+                        "scenario": name,
+                        "entrypoint": record.top_level_entrypoint,
+                        "success": False,
+                        "error": str(exc),
+                        "error_stage": "render",
+                        "imported_yaml": record.imported_yaml,
+                    }
                 )
             else:
-                results.append({"file": path, "scenario": name, "success": True, "error": None})
+                results.append(
+                    {
+                        "file": path,
+                        "state": record.state_name,
+                        "scenario": name,
+                        "entrypoint": record.top_level_entrypoint,
+                        "success": True,
+                        "error": None,
+                        "error_stage": None,
+                        "imported_yaml": record.imported_yaml,
+                    }
+                )
 
     return results
 
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--json", action="store_true", dest="json_output")
+    args = parser.parse_args(argv)
+
+    if args.json_output:
+        results = render_all_states()
+        json.dump(results, sys.stdout)
+        sys.stdout.write("\n")
+        return 1 if any(not result["success"] for result in results) else 0
+
     matrix = load_matrix()
     if not matrix:
         print("No feature matrix entries found; nothing to render")
-        return
+        return 0
 
-    sls_files = sorted(glob.glob("states/*.sls"))
+    sls_files = _select_render_state_files()
     overall_errors = 0
 
     for entry in matrix:
@@ -128,8 +175,10 @@ def main():
             print(f"[OK] {name}{desc}")
 
     if overall_errors:
-        sys.exit(1)
+        return 1
+
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

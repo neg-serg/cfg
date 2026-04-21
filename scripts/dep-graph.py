@@ -2,8 +2,8 @@
 """Generate dependency graph of Salt states (include/require/watch/onchanges)."""
 
 import argparse
-import glob
 import importlib.util
+import json
 import os
 import subprocess
 import sys
@@ -21,6 +21,40 @@ if not _index_spec or not _index_spec.loader:
 _index_module = importlib.util.module_from_spec(_index_spec)
 _index_spec.loader.exec_module(_index_module)
 
+_source_model_spec = importlib.util.spec_from_file_location(
+    "salt_source_model_module", SCRIPTS_DIR / "salt_source_model.py"
+)
+if not _source_model_spec or not _source_model_spec.loader:
+    raise ImportError("Cannot load salt_source_model.py")
+_source_model_module = importlib.util.module_from_spec(_source_model_spec)
+_source_model_spec.loader.exec_module(_source_model_module)
+
+
+def _state_name_from_relpath(relpath):
+    rel = relpath.replace("\\", "/")
+    if rel.startswith("states/"):
+        rel = rel[len("states/") :]
+    return rel.removesuffix(".sls").replace("/", ".")
+
+
+def collect_json_nodes(state_results, include_edges, requisite_edges, known_state_names):
+    """Collect canonical state nodes for JSON output."""
+    node_names = {_state_name_from_relpath(rel) for rel, *_ in state_results}
+
+    for src, dst in include_edges:
+        if src in known_state_names:
+            node_names.add(src)
+        if dst in known_state_names:
+            node_names.add(dst)
+
+    for src, dst, _req_type in requisite_edges:
+        if src in known_state_names:
+            node_names.add(src)
+        if dst in known_state_names:
+            node_names.add(dst)
+
+    return [{"name": name} for name in sorted(node_names)]
+
 
 def collect_edges(state_results):
     """Extract include and requisite edges from rendered state results."""
@@ -28,12 +62,20 @@ def collect_edges(state_results):
     requisite_edges = []  # (from_state, to_state, type)
 
     for rel, state_ids, includes, requisites, *_ in state_results:
-        name = os.path.basename(rel).replace(".sls", "")
+        name = _state_name_from_relpath(rel)
         # Include edges
         for inc in includes or []:
             include_edges.append((name, inc))
         # Requisite edges
         for req in requisites or []:
+            if (
+                isinstance(req, tuple)
+                and len(req) == 2
+                and isinstance(req[0], str)
+                and isinstance(req[1], str)
+            ):
+                requisite_edges.append((req[0], req[1], "require"))
+                continue
             if isinstance(req, dict):
                 for req_type, targets in req.items():
                     if isinstance(targets, list):
@@ -59,7 +101,7 @@ def generate_dot(include_edges, requisite_edges, state_results):
     # Collect all state file nodes
     nodes = set()
     for rel, *_ in state_results:
-        name = os.path.basename(rel).replace(".sls", "")
+        name = _state_name_from_relpath(rel)
         nodes.add(name)
 
     for node in sorted(nodes):
@@ -112,6 +154,44 @@ def generate_text_tree(include_edges, root="system_description"):
     return "\n".join(lines)
 
 
+def generate_json(include_edges, requisite_edges, state_results, cycles, known_state_names):
+    """Generate JSON graph payload."""
+    nodes = collect_json_nodes(state_results, include_edges, requisite_edges, known_state_names)
+    edges = [
+        {
+            "src_kind": "state",
+            "src": src,
+            "dst_kind": "state",
+            "dst": dst,
+            "relation": "include",
+        }
+        for src, dst in include_edges
+    ]
+    edges.extend(
+        {
+            "src_kind": "state_id" if req_type == "require" else "state",
+            "src": src,
+            "dst_kind": "requisite_target",
+            "dst": dst,
+            "relation": req_type,
+        }
+        for src, dst, req_type in requisite_edges
+    )
+    relation_order = {"include": 0, "require": 1, "watch": 2, "onchanges": 3, "require_in": 4}
+    edges = sorted(
+        enumerate(edges),
+        key=lambda item: (relation_order.get(item[1]["relation"], 99), item[0]),
+    )
+    return json.dumps(
+        {
+            "nodes": nodes,
+            "edges": [edge for _, edge in edges],
+            "cycles": cycles,
+        },
+        indent=2,
+    )
+
+
 def detect_cycles(include_edges):
     """Detect cycles in include graph using DFS."""
     children = defaultdict(list)
@@ -142,11 +222,20 @@ def detect_cycles(include_edges):
     return cycles
 
 
+def discover_render_targets(states_dir="states"):
+    """Select dep-graph render targets from canonical state discovery."""
+    return [
+        record.relpath
+        for record in _source_model_module.discover_state_files(states_dir)
+        if record.top_level_entrypoint
+    ]
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate Salt state dependency graph")
     parser.add_argument(
         "--format",
-        choices=["dot", "svg", "text"],
+        choices=["dot", "svg", "text", "json"],
         default="dot",
         help="Output format (default: dot)",
     )
@@ -160,7 +249,9 @@ def main():
     )
     args = parser.parse_args()
 
-    sls_files = sorted(glob.glob("states/*.sls"))
+    all_state_records = _source_model_module.discover_state_files()
+    known_state_names = {record.state_name for record in all_state_records}
+    sls_files = [record.relpath for record in all_state_records if record.top_level_entrypoint]
     if not sls_files:
         print("No .sls files found in states/", file=sys.stderr)
         sys.exit(2)
@@ -179,6 +270,8 @@ def main():
 
     if args.format == "text":
         output = generate_text_tree(include_edges, args.root)
+    elif args.format == "json":
+        output = generate_json(include_edges, requisite_edges, state_results, cycles, known_state_names)
     else:
         dot_output = generate_dot(include_edges, requisite_edges, state_results)
         if args.format == "svg":

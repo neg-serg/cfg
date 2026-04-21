@@ -27,17 +27,34 @@ source "${SCRIPT_DIR}/salt-runtime.sh"
 
 STATE="system_description"
 TEST_MODE=false
+PLAN_MODE=false
+PLAN_FILES=()
 
 for arg in "$@"; do
 	case "$arg" in
+	--plan) PLAN_MODE=true ;;
 	--test | --dry-run) TEST_MODE=true ;;
 	-*)
 		echo "Unknown flag: $arg" >&2
 		exit 1
 		;;
-	*) STATE="$arg" ;;
+	*)
+		if [[ "$STATE" == "auto" && "$PLAN_MODE" == true && "$arg" != "auto" ]]; then
+			PLAN_FILES+=("$arg")
+		else
+			STATE="$arg"
+		fi
+		;;
 	esac
 done
+
+if [[ "$STATE" == "auto" && "$PLAN_MODE" == true ]]; then
+	if [[ ${#PLAN_FILES[@]} -eq 0 ]]; then
+		PLAN_FILES=("states/system_description.sls")
+	fi
+	python3 "${SCRIPT_DIR}/salt_impact.py" --files "${PLAN_FILES[@]}"
+	exit $?
+fi
 
 if [[ "$STATE" == "auto" ]]; then
 	# Minimal rollout planning is deferred until impact analysis is implemented.

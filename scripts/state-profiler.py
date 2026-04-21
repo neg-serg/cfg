@@ -2,10 +2,8 @@
 """Parse salt-apply logs and print the slowest states with include context."""
 
 import argparse
-import glob
 import importlib.util
 import json
-import os
 import re
 import statistics
 import sys
@@ -13,6 +11,7 @@ from collections import defaultdict, deque
 from pathlib import Path
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
+
 _index_spec = importlib.util.spec_from_file_location(
     "index_salt_module", SCRIPTS_DIR / "index-salt.py"
 )
@@ -20,6 +19,15 @@ if not _index_spec or not _index_spec.loader:  # pragma: no cover - defensive
     raise ImportError("Cannot load index-salt.py")
 _index_module = importlib.util.module_from_spec(_index_spec)
 _index_spec.loader.exec_module(_index_module)  # type: ignore[attr-defined]
+
+_source_model_spec = importlib.util.spec_from_file_location(
+    "salt_source_model_module", SCRIPTS_DIR / "salt_source_model.py"
+)
+if not _source_model_spec or not _source_model_spec.loader:  # pragma: no cover - defensive
+    raise ImportError("Cannot load salt_source_model.py")
+_source_model_module = importlib.util.module_from_spec(_source_model_spec)
+_source_model_spec.loader.exec_module(_source_model_module)  # type: ignore[attr-defined]
+discover_state_files = _source_model_module.discover_state_files
 
 SALT_DIRECTIVES = {"include", "extend"}
 
@@ -59,19 +67,23 @@ def parse_log(path: Path) -> list[tuple[float, str]]:
 
 
 def build_state_metadata(root_state: str):
-    sls_files = sorted(glob.glob("states/**/*.sls", recursive=True))
-    file_data = []
-    for path in sls_files:
-        with open(path) as fh:
-            content = fh.read()
-        file_data.append((os.path.basename(path).replace(".sls", ""), content))
+    records = discover_state_files()
+    sls_files = [record.relpath for record in records]
+    records_by_rel = {record.relpath: record for record in records}
+    file_data = [(record.state_name, record.source_text) for record in records]
     state_results = _index_module.render_states(sls_files)
-    graph, _, _ = _index_module.build_state_graph(state_results)
+    graph = {
+        records_by_rel[rel].state_name: [inc.strip() for inc in includes if inc]
+        for rel, _, includes, _, _ in state_results
+        if rel in records_by_rel
+    }
     state_files = {}
     for rel, state_ids, _, _, _ in state_results:
-        name = os.path.basename(rel).replace(".sls", "")
+        record = records_by_rel.get(rel)
+        if record is None:
+            continue
         for sid in state_ids:
-            state_files[sid] = name
+            state_files[sid] = record.state_name
     include_paths = build_include_paths(graph, root_state)
     text_map = build_text_state_map(file_data)
     return state_files, include_paths, text_map, dict(file_data)

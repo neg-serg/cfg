@@ -11,6 +11,12 @@
 apply STATE="system_description":
     scripts/salt-apply.sh {{STATE}}
 
+apply-plan *FILES:
+    ./scripts/salt-apply.sh auto --plan {{FILES}}
+
+apply-auto:
+    ./scripts/salt-apply.sh auto
+
 # Apply dotfiles only (chezmoi, no Salt)
 dotfiles:
     #!/usr/bin/env bash
@@ -68,6 +74,14 @@ daemon:
 index:
     python scripts/index-qml.py
     python scripts/index-salt.py
+
+# Show provenance for a state name
+provenance STATE:
+    .venv/bin/python3 scripts/salt_provenance.py --state "{{STATE}}"
+
+# Show provenance for a state ID
+provenance-id STATE_ID:
+    .venv/bin/python3 scripts/salt_provenance.py --state-id "{{STATE_ID}}"
 
 # Lint Salt states and Python scripts
 lint:

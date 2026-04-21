@@ -268,6 +268,111 @@ def test_pw_restore_links_retries_entire_restore_when_first_pass_hits_transient_
     assert len([line for line in calls_file.read_text().splitlines() if line]) >= 3
 
 
+def test_pw_restore_links_restarts_user_audio_when_expected_sink_topology_is_incomplete(
+    tmp_path,
+):
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    phase_file = tmp_path / "phase.txt"
+    phase_file.write_text("before")
+    systemctl_calls = tmp_path / "systemctl-calls.txt"
+
+    write_executable(
+        bin_dir / "pw-cli",
+        f"""
+        #!/usr/bin/env zsh
+        setopt ERR_EXIT NOUNSET PIPE_FAIL
+
+        phase=$(<"{phase_file}")
+
+        if [[ "$1" == "list-objects" && "$2" == "Node" ]]; then
+          print 'node.name = "alsa_output.usb-RME_ADI-2_4_Pro_SE__53011083__B992903C2BD8DC8-00.pro-output-0"'
+          if [[ "$phase" == "before" ]]; then
+            print 'node.name = "rme-out-1-2"'
+            print 'node.name = "rme-out-3-4"'
+            print 'node.name = "rme-out-5-6"'
+          else
+            print 'node.name = "rme-out-1-2"'
+            print 'node.name = "rme-out-3-4"'
+            print 'node.name = "rme-out-5-6"'
+            print 'node.name = "rme-out-7-8"'
+          fi
+          exit 0
+        fi
+
+        if [[ "$1" == "info" ]]; then
+          if [[ "$2" == "rme-out-7-8" && "$phase" == "before" ]]; then
+            print -u2 'Error: "info: unknown global '\''rme-out-7-8'\''"'
+            exit 0
+          fi
+          print 'node.link-group = "audio-group"'
+          exit 0
+        fi
+
+        print -u2 "unexpected pw-cli invocation: $*"
+        exit 1
+        """,
+    )
+
+    write_executable(
+        bin_dir / "pw-link",
+        """
+        #!/usr/bin/env zsh
+        setopt ERR_EXIT NOUNSET PIPE_FAIL
+        if [[ "$1" == "-l" ]]; then
+          exit 0
+        fi
+        exit 0
+        """,
+    )
+
+    write_executable(
+        bin_dir / "systemctl",
+        f"""
+        #!/usr/bin/env zsh
+        setopt ERR_EXIT NOUNSET PIPE_FAIL
+        print -r -- "$*" >> "{systemctl_calls}"
+        if [[ "$1" == "--user" && "$2" == "restart" ]]; then
+          print -r -- restart > "{phase_file}"
+          exit 0
+        fi
+        exit 0
+        """,
+    )
+
+    write_executable(
+        bin_dir / "notify-send",
+        """
+        #!/usr/bin/env zsh
+        exit 0
+        """,
+    )
+
+    write_executable(
+        bin_dir / "sleep",
+        """
+        #!/usr/bin/env zsh
+        exit 0
+        """,
+    )
+
+    env = os.environ.copy()
+    env["PATH"] = f"{bin_dir}:{env['PATH']}"
+
+    result = subprocess.run(
+        ["zsh", str(REPO_ROOT / "dotfiles" / "dot_local" / "bin" / "executable_pw-restore-links")],
+        cwd=REPO_ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "All loopback links restored" in result.stdout
+    calls = systemctl_calls.read_text().splitlines()
+    assert calls == ["--user restart pipewire.service pipewire-pulse.service wireplumber.service"]
+
+
 def test_health_check_parses_user_service_names_from_yaml_mappings():
     source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
 

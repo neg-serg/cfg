@@ -232,3 +232,23 @@ When the Wayland compositor emits a fast output-remove-and-readd sequence (monit
 - [ ] Keep `Restart=always` in wl.service as defense-in-depth
 
 **Secondary cleanup** (cosmetic): `ExecStartPost=wl restore` retry-loop in the unit file fires before daemon's IPC socket is ready. Fix: `sd_notify(READY=1)` + `Type=notify` + drop sleep-based retry loop.
+
+---
+
+## IPv6 diagnostics and configuration
+
+IPv6 testing revealed that the stack is functional but global addresses are missing and external connectivity is impossible.
+
+**Issues:**
+- ❌ Global IPv6 addresses missing (only link‑local `fe80::`)
+- ❌ Default route (`default`) not configured
+- ❌ Connectivity to external IPv6 hosts impossible (`Network is unreachable`)
+- ✅ AAAA DNS resolution works
+- ❌ Tunnel mechanisms (6to4, Teredo, Miredo) not installed
+- ⚠️  `ip6tables` active with `DROP` policy on INPUT/FORWARD (may block ICMPv6)
+
+**Actions:**
+1. Check IPv6 settings on router/switch (enable SLAAC/DHCPv6)
+2. If ISP doesn't provide IPv6, configure a tunnel (Hurricane Electric, SixXS)
+3. If needed, temporarily disable `ufw` for IPv6 (`sudo ufw disable` for IPv6) or add rules for ICMPv6
+4. For testing, use `ping -6` with interface specification (`-I`) or `curl --interface`

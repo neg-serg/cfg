@@ -78,6 +78,27 @@ def test_user_services_source_has_no_parallel_feature_lists():
     assert "vdirsyncer_timers" not in source
 
 
+def test_user_services_inventory_driven_core_uses_single_feature_filtering_helper():
+    path = os.path.join(REPO_ROOT, "states", "user_services.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "{% macro feature_entry_enabled(entry) -%}" in source
+    assert "{% for unit in us.unit_files %}" in source
+    assert "filtered_services" in source
+    assert "filtered_timers" in source
+
+
+def test_user_services_sidecar_logic_stays_outside_inventory_driven_core():
+    path = os.path.join(REPO_ROOT, "states", "user_services.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "chezmoi_source_symlink:" in source
+    assert "mail_directories:" in source
+    assert "{{ user_service_enable('enable_user_services'" in source
+
+
 def test_video_ai_uses_shared_huggingface_macro():
     root_path = os.path.join(REPO_ROOT, "states", "video_ai.sls")
     with open(root_path) as fh:

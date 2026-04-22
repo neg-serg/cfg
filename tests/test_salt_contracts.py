@@ -622,6 +622,51 @@ def test_check_user_services_schema_reports_non_mapping_root_document(tmp_path):
     assert errors == ["user_services.yaml must be a mapping, got list"]
 
 
+def test_check_user_services_schema_reports_unknown_enable_services(tmp_path):
+    salt_contracts = _load_salt_contracts()
+
+    _write(
+        tmp_path / "states" / "data" / "user_services.yaml",
+        """
+unit_files:
+  - id: known_user_service
+    filename: known.service
+enable_services:
+  - name: known.service
+  - name: missing.service
+enable_now_timers: []
+""",
+    )
+    _write(tmp_path / "states" / "units" / "user" / "known.service", "[Unit]\nDescription=known\n")
+
+    errors = salt_contracts.check_user_services_schema(tmp_path)
+
+    assert errors == ["enable_services entry references unknown user unit 'missing.service'"]
+
+
+def test_check_user_services_schema_reports_unknown_enable_now_timers(tmp_path):
+    salt_contracts = _load_salt_contracts()
+
+    _write(
+        tmp_path / "states" / "data" / "user_services.yaml",
+        """
+unit_files:
+  - id: known_user_timer
+    filename: known.timer
+enable_services:
+  - name: gpg-agent.socket
+enable_now_timers:
+  - name: known.timer
+  - name: missing.timer
+""",
+    )
+    _write(tmp_path / "states" / "units" / "user" / "known.timer", "[Unit]\nDescription=known\n")
+
+    errors = salt_contracts.check_user_services_schema(tmp_path)
+
+    assert errors == ["enable_now_timers entry references unknown user unit 'missing.timer'"]
+
+
 def test_check_service_inventory_contracts_includes_user_services_schema_errors(tmp_path):
     salt_contracts = _load_salt_contracts()
 

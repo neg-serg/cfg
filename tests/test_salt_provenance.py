@@ -247,6 +247,69 @@ def test_managed_resources_data_key_targets_systemd_resources_domain(monkeypatch
     assert [record.state_name for record in match["consumers"]] == ["systemd_resources"]
 
 
+def test_user_services_state_exposes_user_services_inventory_in_provenance():
+    salt_provenance = _load_salt_provenance()
+
+    reverse_index = salt_provenance.build_reverse_index()
+    match = reverse_index.lookup_state("user_services")
+
+    assert match is not None
+    assert match.relpath == "states/user_services.sls"
+    assert "data/user_services.yaml" in match.imported_yaml
+
+
+def test_user_services_data_key_targets_user_services_domain(monkeypatch):
+    salt_provenance = _load_salt_provenance()
+
+    user_services_record = salt_provenance._source_model_module.StateFileRecord(
+        relpath="states/user_services.sls",
+        state_name="user_services",
+        top_level_entrypoint=True,
+        workflow_apply_target=True,
+        source_text=(
+            "{% import_yaml 'data/user_services.yaml' as us %}\n{% for unit in us.unit_files %}\n"
+        ),
+    )
+    other_record = salt_provenance._source_model_module.StateFileRecord(
+        relpath="states/other_user_services.sls",
+        state_name="other_user_services",
+        top_level_entrypoint=True,
+        workflow_apply_target=True,
+        source_text="{% import_yaml 'data/user_services.yaml' as us %}\n",
+    )
+
+    monkeypatch.setattr(
+        salt_provenance._source_model_module,
+        "discover_state_files",
+        lambda _states_dir="states": [user_services_record, other_record],
+    )
+    monkeypatch.setattr(
+        salt_provenance._index_module,
+        "render_states",
+        lambda sls_files: [
+            ("states/user_services.sls", [], [], [], []),
+            ("states/other_user_services.sls", [], [], [], []),
+        ],
+    )
+    monkeypatch.setattr(
+        salt_provenance._index_module,
+        "collect_data_usage",
+        lambda: {
+            "states/data/user_services.yaml": [
+                "user_services.sls",
+                "other_user_services.sls",
+            ]
+        },
+    )
+
+    reverse_index = salt_provenance.build_reverse_index()
+    match = reverse_index.lookup_data_key("user_services.unit_files")
+
+    assert match is not None
+    assert match["data_file"] == "states/data/user_services.yaml"
+    assert [record.state_name for record in match["consumers"]] == ["user_services"]
+
+
 def test_main_json_outputs_macro_matches_and_not_found_exit(monkeypatch, capsys):
     salt_provenance = _load_salt_provenance()
     macro_consumer = salt_provenance.StateProvenanceRecord(

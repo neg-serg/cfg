@@ -14,6 +14,12 @@ UNITS_DIR = REPO_ROOT / "states" / "units"
 UNIT_SUFFIXES = (".service", ".timer", ".socket", ".path", ".container")
 TEMPLATED_UNIT_SUFFIXES = tuple(f"{suffix}.j2" for suffix in UNIT_SUFFIXES)
 USER_SERVICE_ALLOWED_FEATURES = {"mail", "vdirsyncer", "mpd"}
+KNOWN_NATIVE_USER_UNITS = {
+    "gpg-agent.socket",
+    "ssh-agent.socket",
+    "systemd-tmpfiles-setup.service",
+    "ydotool.service",
+}
 KNOWN_NATIVE_SERVICES = {
     "NetworkManager",
     "NetworkManager.service",
@@ -56,6 +62,23 @@ def _user_service_group_entries(user_services: dict, group_name: str, errors: li
         return entries
     errors.append(f"user_services.yaml {group_name} must be a list, got {type(entries).__name__}")
     return []
+
+
+def _collect_user_service_enable_targets(user_services: dict) -> set[str]:
+    known = set(KNOWN_NATIVE_USER_UNITS)
+
+    unit_files = user_services.get("unit_files", [])
+    if not isinstance(unit_files, list):
+        return known
+
+    for entry in unit_files:
+        if not isinstance(entry, dict):
+            continue
+        filename = entry.get("filename")
+        if isinstance(filename, str) and filename:
+            known.update(_unit_aliases(filename))
+
+    return known
 
 
 def _unit_aliases(unit_name: str) -> set[str]:
@@ -340,6 +363,7 @@ def check_user_services_schema(repo_root: Path = REPO_ROOT) -> list[str]:
 
     errors = []
     seen_ids = set()
+    known_enable_targets = _collect_user_service_enable_targets(user_services)
 
     for entry in _user_service_group_entries(user_services, "unit_files", errors):
         if not isinstance(entry, dict):
@@ -372,6 +396,11 @@ def check_user_services_schema(repo_root: Path = REPO_ROOT) -> list[str]:
             name = entry.get("name")
             if not isinstance(name, str) or not name:
                 errors.append(f"{group_name} entry missing valid name: {entry!r}")
+            elif (
+                "features" not in entry
+                or not _has_invalid_user_service_features(entry.get("features"))
+            ) and not _is_known_service_target(name, known_enable_targets):
+                errors.append(f"{group_name} entry references unknown user unit '{name}'")
 
             if "features" in entry:
                 features = entry.get("features")

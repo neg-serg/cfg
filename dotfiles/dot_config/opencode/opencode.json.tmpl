@@ -13,198 +13,6 @@
         "baseURL": "http://192.168.2.166:8317/v1"
       },
       "models": {
-        "gemini-2.5-flash": {
-          "name": "Gemini 2.5 Flash",
-          "reasoning": true,
-          "options": {
-            "thinkingConfig": {
-              "includeThoughts": true,
-              "thinkingBudget": 16000
-            }
-          },
-          "variants": {
-            "high": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingBudget": 16000
-              }
-            },
-            "max": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingBudget": 24576
-              }
-            }
-          }
-        },
-        "gemini-2.5-flash-lite": {
-          "name": "Gemini 2.5 Flash Lite",
-          "reasoning": true,
-          "options": {
-            "thinkingConfig": {
-              "includeThoughts": true,
-              "thinkingBudget": 16000
-            }
-          },
-          "variants": {
-            "high": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingBudget": 16000
-              }
-            },
-            "max": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingBudget": 24576
-              }
-            }
-          }
-        },
-        "gemini-2.5-pro": {
-          "name": "Gemini 2.5 Pro",
-          "reasoning": true,
-          "options": {
-            "thinkingConfig": {
-              "includeThoughts": true,
-              "thinkingBudget": 16000
-            }
-          },
-          "variants": {
-            "high": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingBudget": 16000
-              }
-            },
-            "max": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingBudget": 24576
-              }
-            }
-          }
-        },
-        "gemini-3-flash-preview": {
-          "name": "Gemini 3 Flash Preview",
-          "reasoning": true,
-          "options": {
-            "thinkingConfig": {
-              "includeThoughts": true,
-              "thinkingLevel": "high"
-            }
-          },
-          "variants": {
-            "low": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingLevel": "low"
-              }
-            },
-            "medium": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingLevel": "medium"
-              }
-            },
-            "high": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingLevel": "high"
-              }
-            }
-          }
-        },
-        "gemini-3-pro-preview": {
-          "name": "Gemini 3 Pro Preview",
-          "reasoning": true,
-          "options": {
-            "thinkingConfig": {
-              "includeThoughts": true,
-              "thinkingLevel": "high"
-            }
-          },
-          "variants": {
-            "low": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingLevel": "low"
-              }
-            },
-            "medium": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingLevel": "medium"
-              }
-            },
-            "high": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingLevel": "high"
-              }
-            }
-          }
-        },
-        "gemini-3.1-flash-lite-preview": {
-          "name": "Gemini 3.1 Flash Lite Preview",
-          "reasoning": true,
-          "options": {
-            "thinkingConfig": {
-              "includeThoughts": true,
-              "thinkingLevel": "high"
-            }
-          },
-          "variants": {
-            "low": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingLevel": "low"
-              }
-            },
-            "medium": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingLevel": "medium"
-              }
-            },
-            "high": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingLevel": "high"
-              }
-            }
-          }
-        },
-        "gemini-3.1-pro-preview": {
-          "name": "Gemini 3.1 Pro Preview",
-          "reasoning": true,
-          "options": {
-            "thinkingConfig": {
-              "includeThoughts": true,
-              "thinkingLevel": "high"
-            }
-          },
-          "variants": {
-            "low": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingLevel": "low"
-              }
-            },
-            "medium": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingLevel": "medium"
-              }
-            },
-            "high": {
-              "thinkingConfig": {
-                "includeThoughts": true,
-                "thinkingLevel": "high"
-              }
-            }
-          }
-        },
         "claude-haiku-3-5-20241022": {
           "name": "Claude Haiku 3.5 (20241022)"
         },
@@ -249,12 +57,24 @@
             "reasoningEffort": "high"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5-codex": {
@@ -268,12 +88,24 @@
             "reasoningEffort": "high"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5-codex-mini": {
@@ -287,12 +119,24 @@
             "reasoningEffort": "high"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5.1": {
@@ -306,12 +150,24 @@
             "reasoningEffort": "high"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5.1-codex": {
@@ -325,12 +181,24 @@
             "reasoningEffort": "high"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5.1-codex-max": {
@@ -344,12 +212,24 @@
             "reasoningEffort": "high"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5.1-codex-mini": {
@@ -363,12 +243,24 @@
             "reasoningEffort": "high"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5.2": {
@@ -382,12 +274,24 @@
             "reasoningEffort": "high"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5.2-codex": {
@@ -401,12 +305,24 @@
             "reasoningEffort": "high"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5.3-codex": {
@@ -420,12 +336,24 @@
             "reasoningEffort": "high"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5.4": {
@@ -439,12 +367,24 @@
             "reasoningEffort": "high"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5.4-fast": {
@@ -458,12 +398,24 @@
             "reasoningEffort": "low"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5.4-mini": {
@@ -477,12 +429,24 @@
             "reasoningEffort": "high"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "gpt-5.4-mini-fast": {
@@ -496,12 +460,24 @@
             "reasoningEffort": "low"
           },
           "variants": {
-            "none": {"reasoningEffort": "none"},
-            "minimal": {"reasoningEffort": "minimal"},
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "high": {"reasoningEffort": "high"},
-            "xhigh": {"reasoningEffort": "xhigh"}
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         },
         "coder-model": {
@@ -515,8 +491,13 @@
             "output": 100000
           },
           "modalities": {
-            "input": ["text", "image"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
           }
         }
       }

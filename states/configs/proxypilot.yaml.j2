@@ -89,7 +89,6 @@ openai-compatibility:
 {% endif %}
 
 # ── Payload rules ───────────────────────────────────────────────────
-# Default thinking budget for Gemini models (when not set by client)
 
 payload:
   default:
@@ -100,8 +99,3 @@ payload:
           protocol: "openai"
       params:
         "reasoning.effort": "low"
-    - models:
-        - name: "gemini-*"
-          protocol: "gemini"
-      params:
-        "generationConfig.thinkingConfig.thinkingBudget": 16384

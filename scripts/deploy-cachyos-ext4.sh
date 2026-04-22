@@ -1,33 +1,31 @@
 #!/usr/bin/env zsh
-# Deploy bootstrapped CachyOS rootfs to NVMe with LVM + btrfs + Limine.
+# Deploy CachyOS rootfs to ext4 partition with existing ESP.
 #
 # Usage:
-#   sudo ./scripts/deploy-cachyos.sh /dev/nvme0n1 [ROOTFS_DIR]
+#   sudo ./scripts/deploy-cachyos-ext4.sh /dev/nvme1n1p4 /dev/nvme1n1p1 [ROOTFS_DIR]
 #
 # Default rootfs: /mnt/one/cachyos-root
 #
 # Layout:
-#   /dev/nvmeXn1p1  4 GiB  FAT32 (ESP)  → /boot
-#   /dev/nvmeXn1p2  rest   LVM PV
-#     └── VG: main → LV: sys (90%)
-#         └── btrfs: @, @home, @cache, @log
+#   /dev/nvme1n1p1  ESP (already exists, FAT32)
+#   /dev/nvme1n1p4  ext4 root partition
 #
-# See docs/deploy-cachyos.md for manual steps and troubleshooting.
+# Requires: rsync, mkinitcpio, limine, efibootmgr
 
 set -euo pipefail
 
-DISK="${1:-}"
-ROOTFS="${2:-/mnt/one/cachyos-root}"
-MNT="/mnt/deploy"
-LV_PERCENT="90"
+ROOT_PART="${1:-}"
+ESP_PART="${2:-}"
+ROOTFS="${3:-/mnt/one/cachyos-root}"
+MNT="/mnt/deploy-ext4"
 
 # -------------------------------------------------------------------
 # Validation
 # -------------------------------------------------------------------
 
-if [[ -z "$DISK" ]]; then
-	echo "usage: $0 /dev/nvmeXn1 [ROOTFS_DIR]" >&2
-	echo "  DISK is required (e.g. /dev/nvme0n1, /dev/sda)" >&2
+if [[ -z "$ROOT_PART" ]] || [[ -z "$ESP_PART" ]]; then
+	echo "usage: $0 <root_partition> <esp_partition> [ROOTFS_DIR]" >&2
+	echo "  e.g. $0 /dev/nvme1n1p4 /dev/nvme1n1p1 /mnt/one/cachyos-root" >&2
 	exit 1
 fi
 
@@ -36,8 +34,13 @@ if [[ $EUID -ne 0 ]]; then
 	exit 1
 fi
 
-if [[ ! -b "$DISK" ]]; then
-	echo "error: $DISK is not a block device" >&2
+if [[ ! -b "$ROOT_PART" ]]; then
+	echo "error: $ROOT_PART is not a block device" >&2
+	exit 1
+fi
+
+if [[ ! -b "$ESP_PART" ]]; then
+	echo "error: $ESP_PART is not a block device" >&2
 	exit 1
 fi
 
@@ -47,41 +50,28 @@ if [[ ! -d "$ROOTFS/usr/bin" ]]; then
 	exit 1
 fi
 
-for cmd in parted mkfs.fat mkfs.btrfs pvcreate vgcreate lvcreate \
-	btrfs rsync blkid chroot efibootmgr; do
+for cmd in rsync blkid chroot efibootmgr; do
 	if ! command -v "$cmd" &>/dev/null; then
 		echo "error: required command '$cmd' not found" >&2
 		exit 1
 	fi
 done
 
-# Detect partition naming: nvme0n1 → nvme0n1p1, sda → sda1
-if [[ "$DISK" =~ [0-9]$ ]]; then
-	PART1="${DISK}p1"
-	PART2="${DISK}p2"
-else
-	PART1="${DISK}1"
-	PART2="${DISK}2"
-fi
-
 # -------------------------------------------------------------------
 # Confirmation
 # -------------------------------------------------------------------
 
 echo "========================================"
-echo " CachyOS Deploy"
+echo " CachyOS Deploy (ext4)"
 echo "========================================"
 echo ""
-echo "  Disk:     $DISK"
-echo "    ESP:    $PART1  (4 GiB, FAT32)"
-echo "    LVM PV: $PART2 (rest)"
-echo "      VG:   main"
-echo "      LV:   sys (${LV_PERCENT}% of VG, btrfs)"
+echo "  Root partition: $ROOT_PART"
+echo "  ESP partition:  $ESP_PART"
+echo "  Rootfs:         $ROOTFS"
+echo "  Mount point:    $MNT"
 echo ""
-echo "  Rootfs:   $ROOTFS"
-echo "  Target:   $MNT"
-echo ""
-echo "  WARNING: ALL DATA ON $DISK WILL BE DESTROYED"
+echo "  WARNING: ALL DATA ON $ROOT_PART WILL BE DESTROYED"
+echo "           ESP ($ESP_PART) will be preserved but Limine will be installed"
 echo ""
 read -r "confirm?  Type 'yes' to continue: "
 if [[ "$confirm" != "yes" ]]; then
@@ -103,74 +93,76 @@ trap cleanup EXIT
 mkdir -p "$MNT"
 
 # -------------------------------------------------------------------
-# Part 1: Disk Setup
+# Part 1: Prepare root partition
 # -------------------------------------------------------------------
 
 echo ""
-echo "==> Partitioning $DISK..."
-parted -s "$DISK" -- mklabel gpt
-parted -s "$DISK" -- mkpart ESP fat32 1MiB 4GiB
-parted -s "$DISK" -- set 1 esp on
-parted -s "$DISK" -- mkpart primary 4GiB 100%
-
-# Wait for partition devices to appear
-sleep 1
-partprobe "$DISK"
-sleep 1
-
-if [[ ! -b "$PART1" ]] || [[ ! -b "$PART2" ]]; then
-	echo "error: partition devices ($PART1, $PART2) not found after partitioning" >&2
+echo "==> Checking filesystem on $ROOT_PART..."
+if ! blkid -s TYPE -o value "$ROOT_PART" | grep -q '^ext4$'; then
+	echo "error: $ROOT_PART is not ext4" >&2
 	exit 1
 fi
 
-echo "==> Formatting ESP ($PART1)..."
-mkfs.fat -F32 -n EFI "$PART1"
+echo "==> Mounting root partition..."
+mount "$ROOT_PART" "$MNT"
 
-echo "==> Setting up LVM on $PART2..."
-pvcreate -f "$PART2"
-vgcreate main "$PART2"
-lvcreate -l "${LV_PERCENT}%FREE" -n sys main
-
-echo "==> Creating btrfs on /dev/main/sys..."
-mkfs.btrfs -f -L cachyos /dev/main/sys
-
-echo "==> Creating btrfs subvolumes..."
-mount /dev/main/sys "$MNT"
-btrfs subvolume create "$MNT/@"
-btrfs subvolume create "$MNT/@home"
-btrfs subvolume create "$MNT/@cache"
-btrfs subvolume create "$MNT/@log"
-umount "$MNT"
-
-# -------------------------------------------------------------------
-# Part 2: Mount & Copy
-# -------------------------------------------------------------------
-
-echo "==> Mounting target layout..."
-mount -o subvol=@,compress=zstd:1,noatime /dev/main/sys "$MNT"
-mkdir -p "$MNT"/{boot,home,var/cache,var/log}
-mount "$PART1" "$MNT/boot"
-mount -o subvol=@home,compress=zstd:1,noatime /dev/main/sys "$MNT/home"
-mount -o subvol=@cache,compress=zstd:1,noatime /dev/main/sys "$MNT/var/cache"
-mount -o subvol=@log,compress=zstd:1,noatime /dev/main/sys "$MNT/var/log"
+echo "==> Clearing root partition (keeping lost+found)..."
+find "$MNT" -mindepth 1 -maxdepth 1 ! -name 'lost+found' -exec rm -rf {} +
 
 echo "==> Copying rootfs (this takes a while)..."
 rsync -aAH --info=progress2 "$ROOTFS/" "$MNT/"
+
+# -------------------------------------------------------------------
+# Part 2: Copy kernel/initramfs to ESP before mounting
+# -------------------------------------------------------------------
+
+echo "==> Preparing ESP mount..."
+ESPMNT="/tmp/esp-mount"
+mkdir -p "$ESPMNT"
+mount "$ESP_PART" "$ESPMNT"
+
+echo "==> Ensuring boot directory structure on ESP..."
+mkdir -p "$ESPMNT/EFI/BOOT"
+
+# Copy Limine EFI binary if exists in rootfs
+if [[ -f "$MNT/usr/share/limine/BOOTX64.EFI" ]]; then
+	echo "==> Copying Limine EFI binary..."
+	cp "$MNT/usr/share/limine/BOOTX64.EFI" "$ESPMNT/EFI/BOOT/BOOTX64.EFI"
+fi
+
+# Copy kernel and initramfs from rootfs boot to ESP
+echo "==> Copying kernel and initramfs to ESP..."
+if [[ -f "$MNT/boot/vmlinuz-linux-cachyos-lts" ]]; then
+	cp "$MNT/boot/vmlinuz-linux-cachyos-lts" "$ESPMNT/"
+fi
+if [[ -f "$MNT/boot/initramfs-linux-cachyos-lts.img" ]]; then
+	cp "$MNT/boot/initramfs-linux-cachyos-lts.img" "$ESPMNT/"
+fi
+if [[ -f "$MNT/boot/initramfs-linux-cachyos-lts-fallback.img" ]]; then
+	cp "$MNT/boot/initramfs-linux-cachyos-lts-fallback.img" "$ESPMNT/"
+fi
+
+# Unmount temporary ESP mount
+umount "$ESPMNT"
+rmdir "$ESPMNT"
+
+# Now mount ESP to /boot inside root
+echo "==> Mounting ESP to /boot..."
+mkdir -p "$MNT/boot"
+mount "$ESP_PART" "$MNT/boot"
 
 # -------------------------------------------------------------------
 # Part 3: Chroot configuration
 # -------------------------------------------------------------------
 
 echo "==> Generating fstab..."
-ESP_UUID=$(blkid -s UUID -o value "$PART1")
+ROOT_UUID=$(blkid -s UUID -o value "$ROOT_PART")
+ESP_UUID=$(blkid -s UUID -o value "$ESP_PART")
 
 cat >"$MNT/etc/fstab" <<FSTAB
-# CachyOS — LVM + btrfs + ESP (generated by deploy-cachyos.sh)
-/dev/mapper/main-sys  /              btrfs  subvol=@,compress=zstd:1,noatime          0  0
-/dev/mapper/main-sys  /home          btrfs  subvol=@home,compress=zstd:1,noatime      0  0
-/dev/mapper/main-sys  /var/cache     btrfs  subvol=@cache,compress=zstd:1,noatime     0  0
-/dev/mapper/main-sys  /var/log       btrfs  subvol=@log,compress=zstd:1,noatime       0  0
-UUID=${ESP_UUID}      /boot          vfat   umask=0077                                0  1
+# CachyOS — ext4 root + ESP (generated by deploy-cachyos-ext4.sh)
+UUID=${ROOT_UUID}  /              ext4  defaults,noatime          0  0
+UUID=${ESP_UUID}   /boot          vfat  umask=0077                0  1
 FSTAB
 
 echo "==> Entering chroot for final configuration..."
@@ -185,12 +177,7 @@ mount -t efivarfs efivarfs "$MNT/sys/firmware/efi/efivars" 2>/dev/null || true
 chroot "$MNT" /bin/bash <<CHROOT
 set -euo pipefail
 
-# --- mkinitcpio: ensure lvm2 hook ---
-if ! grep -q 'lvm2' /etc/mkinitcpio.conf; then
-    echo "  Adding lvm2 hook to mkinitcpio..."
-    sed -i 's/block filesystems/block lvm2 filesystems/' /etc/mkinitcpio.conf
-fi
-
+# --- mkinitcpio: no lvm2 hook needed for ext4 ---
 echo "  Rebuilding initramfs..."
 mkinitcpio -P
 
@@ -204,37 +191,32 @@ interface_branding: CachyOS
 /CachyOS LTS
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-cachyos-lts
-    kernel_cmdline: root=/dev/mapper/main-sys rootflags=subvol=@ rw quiet splash
+    kernel_cmdline: root=UUID=${ROOT_UUID} rw quiet splash
     module_path: boot():/initramfs-linux-cachyos-lts.img
 
 /CachyOS LTS (fallback)
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-cachyos-lts
-    kernel_cmdline: root=/dev/mapper/main-sys rootflags=subvol=@ rw
+    kernel_cmdline: root=UUID=${ROOT_UUID} rw
     module_path: boot():/initramfs-linux-cachyos-lts-fallback.img
 
 /CachyOS
     //CachyOS LTS
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-cachyos-lts
-    kernel_cmdline: root=/dev/mapper/main-sys rootflags=subvol=@ rw quiet splash
+    kernel_cmdline: root=UUID=${ROOT_UUID} rw quiet splash
     module_path: boot():/initramfs-linux-cachyos-lts.img
 
     //CachyOS LTS (fallback)
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-cachyos-lts
-    kernel_cmdline: root=/dev/mapper/main-sys rootflags=subvol=@ rw
+    kernel_cmdline: root=UUID=${ROOT_UUID} rw
     module_path: boot():/initramfs-linux-cachyos-lts-fallback.img
 LIMINE
 
-# --- Install Limine EFI ---
-echo "  Installing Limine EFI binary..."
-mkdir -p /boot/EFI/BOOT
-cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/BOOTX64.EFI
-
 # --- Register in UEFI boot menu ---
 echo "  Registering UEFI boot entry..."
-efibootmgr --create --disk "$DISK" --part 1 \
+efibootmgr --create --disk "${ESP_PART%p*}" --part "${ESP_PART##*p}" \
     --label "CachyOS" --loader 'EFI\BOOT\BOOTX64.EFI' 2>/dev/null || \
     echo "  WARNING: efibootmgr failed (expected if not booted in UEFI mode)"
 CHROOT
@@ -266,20 +248,12 @@ for check in "${checks[@]}"; do
 	fi
 done
 
-# Verify lvm2 hook
-if grep -q 'lvm2' "$MNT/etc/mkinitcpio.conf"; then
-	echo "  OK    lvm2 hook in mkinitcpio"
-else
-	echo "  FAIL  lvm2 hook missing"
-	ok=false
-fi
-
 # -------------------------------------------------------------------
 # Write post-boot instructions to target filesystem
 # -------------------------------------------------------------------
 
 cat >"$MNT/root/POST-BOOT.md" <<'POSTBOOT'
-# CachyOS Post-Boot Guide
+# CachyOS Post-Boot Guide (ext4)
 
 ## 1. Set passwords (in chroot before reboot, or after first boot)
 
@@ -315,55 +289,7 @@ Salt repo and rootfs backup are on xenon-one:
     cp -a /mnt/one/salt ~/src/cfg
     cd ~/src/cfg
 
-## 5. Gopass backend preparation
-
-Choose one approved backend:
-
-GPG/Yubikey flow:
-
-    gpg --card-status          # verify card is detected
-    gpg --card-edit            # fetch if needed: fetch → quit
-
-GPG agent starts via socket activation (systemd user units).
-No manual daemon start needed.
-
-age flow:
-
-    export GPG_TTY="$(tty)"
-    gopass age identities keygen
-    gopass age agent start     # optional session agent
-    gopass age agent unlock    # verify in-session decryption before chezmoi
-
-If this machine will be used for a live backend cutover, keep one maintainer/operator
-responsible for all go/no-go decisions.
-
-## 6. Gopass (secrets)
-
-    gopass clone git@github.com:<user>/password-store.git
-    gopass show -o email/gmail/address   # verify decryption works
-
-If cloning via SSH fails (no key yet), use HTTPS:
-
-    gopass clone https://github.com/<user>/password-store.git
-
-Before a production migration from GPG/Yubikey to age, prepare a rollback package:
-
-    - active store copy
-    - store git history
-    - legacy unlock materials
-    - written rollback steps
-
-Keep existing git history unchanged during the main migration, validate a representative
-subset of attached files or other non-password entries, and retain the legacy path for
-7 consecutive stabilization days before retirement.
-
-Secrets needed by chezmoi templates:
-
-    api/github-token           email/gmail/address
-    api/brave-search           email/gmail/app-password
-    api/context7               lastfm/username, lastfm/password
-
-## 7. Apply Salt + chezmoi
+## 5. Apply Salt + chezmoi
 
     cd ~/src/cfg
     scripts/salt-apply.sh
@@ -372,17 +298,17 @@ This runs:
   - Salt verification state (cachyos.sls) — checks packages, services, configs
   - chezmoi apply — deploys all dotfiles (renders .tmpl files via gopass)
 
-## 8. Switch git remote to SSH (if cloned via HTTPS)
+## 6. Switch git remote to SSH (if cloned via HTTPS)
 
     cd ~/src/cfg
     git remote set-url origin git@github.com:neg-serg/salt.git
 
-## 9. Add XFS mounts to fstab (permanent)
+## 7. Add XFS mounts to fstab (permanent)
 
     echo '/dev/mapper/xenon-one  /mnt/one  xfs  noatime  0  0' | sudo tee -a /etc/fstab
     echo '/dev/mapper/argon-zero /mnt/zero xfs  noatime  0  0' | sudo tee -a /etc/fstab
 
-## 10. Reboot and verify
+## 8. Reboot and verify
 
     sudo reboot
 
@@ -419,9 +345,8 @@ echo "                       sudo mkdir -p /mnt/{one,zero}"
 echo "                       sudo mount /dev/mapper/xenon-one /mnt/one"
 echo "                       sudo mount /dev/mapper/argon-zero /mnt/zero"
 echo "  5. Copy salt repo:   cp -a /mnt/one/salt ~/src/cfg"
-echo "  6. gopass backend:    prepare GPG/Yubikey or age, then gopass clone <store-url>"
-echo "  7. Apply config:     cd ~/src/cfg && scripts/salt-apply.sh"
-echo "  8. Add to fstab:     see /root/POST-BOOT.md (step 9)"
+echo "  6. Apply config:     cd ~/src/cfg && scripts/salt-apply.sh"
+echo "  7. Add to fstab:     see /root/POST-BOOT.md (step 7)"
 echo ""
 echo "Full guide saved to: $MNT/root/POST-BOOT.md"
 echo "Salt repo on XFS:    /mnt/one/salt/"

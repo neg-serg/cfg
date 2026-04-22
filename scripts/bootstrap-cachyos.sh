@@ -111,7 +111,7 @@ set -euo pipefail
 TARGET=/mnt/target
 
 echo "==> [container] Updating pacman DB and installing arch-install-scripts..."
-pacman -Sy --noconfirm arch-install-scripts
+echo "y" | pacman -Sy --needed arch-install-scripts
 
 # --- CachyOS repository setup (inside container's pacman) ---
 
@@ -169,7 +169,9 @@ pacman -Sy
 # --- Pacstrap ---
 
 echo "==> [container] Running pacstrap..."
-pacstrap "$TARGET" __PACKAGES__
+export PACMAN_NO_CONFIRM=1
+export PACMAN_AUTOSELECT_PROVIDER=1
+printf "1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n" | pacstrap "$TARGET" __PACKAGES__
 
 # --- Copy mirrorlists and generate pacman.conf for target ---
 
@@ -397,6 +399,7 @@ fi
 
 echo "==> Launching Arch container for bootstrap..."
 podman run --rm -it \
+    --network=host \
     --cap-add=SYS_ADMIN --cap-add=SYS_CHROOT --cap-add=MKNOD \
     --security-opt=no-new-privileges \
     --name cachyos-bootstrap \

@@ -52,9 +52,7 @@ def _user_service_group_entries(user_services: dict, group_name: str, errors: li
     entries = user_services.get(group_name, [])
     if isinstance(entries, list):
         return entries
-    errors.append(
-        f"user_services.yaml {group_name} must be a list, got {type(entries).__name__}"
-    )
+    errors.append(f"user_services.yaml {group_name} must be a list, got {type(entries).__name__}")
     return []
 
 
@@ -307,9 +305,7 @@ def check_user_service_unit_files(repo_root: Path = REPO_ROOT) -> list[str]:
             continue
         user_unit_path = repo_root / "states" / "units" / "user" / filename
         if not user_unit_path.is_file():
-            errors.append(
-                f"User service unit '{filename}' does not exist under states/units/user"
-            )
+            errors.append(f"User service unit '{filename}' does not exist under states/units/user")
 
     return errors
 

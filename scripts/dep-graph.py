@@ -4,7 +4,6 @@
 import argparse
 import importlib.util
 import json
-import os
 import subprocess
 import sys
 from collections import defaultdict
@@ -271,7 +270,9 @@ def main():
     if args.format == "text":
         output = generate_text_tree(include_edges, args.root)
     elif args.format == "json":
-        output = generate_json(include_edges, requisite_edges, state_results, cycles, known_state_names)
+        output = generate_json(
+            include_edges, requisite_edges, state_results, cycles, known_state_names
+        )
     else:
         dot_output = generate_dot(include_edges, requisite_edges, state_results)
         if args.format == "svg":

@@ -312,8 +312,7 @@ enable_now_timers: []
     assert errors == [
         "services.yaml complex.bad_manual manual_start.service references unknown "
         "service 'missing-manual'",
-        "services.yaml network.bad_simple service references unknown service "
-        "'missing-simple'",
+        "services.yaml network.bad_simple service references unknown service 'missing-simple'",
         "services.yaml dns.bad_running ensure_running.service references unknown "
         "service 'missing-running'",
     ]
@@ -402,9 +401,7 @@ managed_service_paths:
 
     errors = salt_contracts.check_managed_resource_services(tmp_path)
 
-    assert errors == [
-        "Managed resource path 'stray_path' references unknown service 'stray_state'"
-    ]
+    assert errors == ["Managed resource path 'stray_path' references unknown service 'stray_state'"]
 
 
 def test_check_managed_resource_services_accepts_real_repo_inventory():

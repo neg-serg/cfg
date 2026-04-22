@@ -78,9 +78,7 @@ def test_render_all_states_includes_source_model_metadata(monkeypatch):
     monkeypatch.setattr(
         render_matrix,
         "render_for_scenario",
-        lambda _env, _scenario_name, _sls_files: [
-            ("states/entry.sls", RuntimeError("boom"))
-        ],
+        lambda _env, _scenario_name, _sls_files: [("states/entry.sls", RuntimeError("boom"))],
     )
 
     results = render_matrix.render_all_states()

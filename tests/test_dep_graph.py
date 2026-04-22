@@ -167,7 +167,7 @@ def test_main_json_output_uses_structured_nodes_and_adds_state_names_from_edges(
             top_level_entrypoint=False,
             workflow_apply_target=False,
             source_text="",
-        )
+        ),
     ]
     state_results = [
         (

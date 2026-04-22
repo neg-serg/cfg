@@ -62,18 +62,18 @@ def test_plan_changed_files_falls_back_for_shared_macro():
 
     assert plan["selected_states"] == []
     assert plan["final_target"] == "system_description"
-    assert plan["fallback_reasons"] == [
-        "states/_macros_service.jinja is a shared macro input"
-    ]
+    assert plan["fallback_reasons"] == ["states/_macros_service.jinja is a shared macro input"]
 
 
 def test_plan_changed_files_falls_back_for_multiple_conflicting_targets():
     salt_impact = _load_salt_impact()
 
-    plan = salt_impact.plan_for_changed_files([
-        "states/services.sls",
-        "states/desktop/system.sls",
-    ])
+    plan = salt_impact.plan_for_changed_files(
+        [
+            "states/services.sls",
+            "states/desktop/system.sls",
+        ]
+    )
 
     assert sorted(plan["selected_states"]) == ["desktop", "services"]
     assert plan["final_target"] == "system_description"
@@ -200,6 +200,4 @@ def test_plan_changed_files_falls_back_for_unknown_state_owned_file():
 
     assert plan["selected_states"] == []
     assert plan["final_target"] == "system_description"
-    assert plan["fallback_reasons"] == [
-        "states/_imports.jinja has no safe workflow target mapping"
-    ]
+    assert plan["fallback_reasons"] == ["states/_imports.jinja has no safe workflow target mapping"]

@@ -105,6 +105,8 @@ def _read_data_keys(repo_data_path: Path) -> list[str]:
 
 
 IMPORT_YAML_ALIAS_RE = re.compile(r"\{%-?\s*import_yaml\s+['\"]([^'\"]+)['\"]\s+as\s+(\w+)")
+
+
 def _strip_comments(source_text: str) -> str:
     return _source_model_module._strip_comments(source_text)
 

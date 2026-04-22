@@ -60,15 +60,18 @@ def test_build_reverse_index_reuses_existing_discovery_render_and_data_usage(mon
     monkeypatch.setattr(
         salt_provenance._index_module,
         "render_states",
-        lambda sls_files: calls.update({"render_states": list(sls_files)}) or [
-            (
-                "states/monitoring_loki.sls",
-                ["loki_config", "loki_native_unit_absent"],
-                ["services"],
-                [("loki_config", "pkg: loki")],
-                ["monitoring.loki"],
-            )
-        ],
+        lambda sls_files: (
+            calls.update({"render_states": list(sls_files)})
+            or [
+                (
+                    "states/monitoring_loki.sls",
+                    ["loki_config", "loki_native_unit_absent"],
+                    ["services"],
+                    [("loki_config", "pkg: loki")],
+                    ["monitoring.loki"],
+                )
+            ]
+        ),
     )
     monkeypatch.setattr(
         salt_provenance._index_module,
@@ -105,8 +108,7 @@ def test_lookup_data_key_prefers_source_level_matches_over_file_level_consumers(
         top_level_entrypoint=True,
         workflow_apply_target=True,
         source_text=(
-            "{% import_yaml 'data/service_catalog.yaml' as catalog %}\n"
-            "{{ catalog.loki.enabled }}\n"
+            "{% import_yaml 'data/service_catalog.yaml' as catalog %}\n{{ catalog.loki.enabled }}\n"
         ),
     )
     promtail_record = salt_provenance._source_model_module.StateFileRecord(
@@ -324,10 +326,9 @@ def test_main_json_reports_not_found_with_controlled_exit(monkeypatch, capsys):
 def test_justfile_exposes_provenance_shortcuts():
     justfile_source = (REPO_ROOT_PATH / "Justfile").read_text()
 
-    assert 'provenance STATE:' in justfile_source
+    assert "provenance STATE:" in justfile_source
     assert '.venv/bin/python3 scripts/salt_provenance.py --state "{{STATE}}"' in justfile_source
-    assert 'provenance-id STATE_ID:' in justfile_source
+    assert "provenance-id STATE_ID:" in justfile_source
     assert (
-        '.venv/bin/python3 scripts/salt_provenance.py --state-id "{{STATE_ID}}"'
-        in justfile_source
+        '.venv/bin/python3 scripts/salt_provenance.py --state-id "{{STATE_ID}}"' in justfile_source
     )

@@ -17,13 +17,21 @@ import re
 import sys
 from datetime import datetime
 
+import yaml
+
 # Host model from shared module; lint-jinja.py for Jinja rendering infrastructure
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 if SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, SCRIPTS_DIR)
 
-import yaml
-from salt_source_model import discover_state_files, enrich_source_metadata
+
+def _load_source_model_helpers():
+    from salt_source_model import discover_state_files, enrich_source_metadata
+
+    return discover_state_files, enrich_source_metadata
+
+
+discover_state_files, enrich_source_metadata = _load_source_model_helpers()
 
 # lint-jinja.py has a hyphenated name — must use importlib.util
 _lint_path = os.path.join(SCRIPTS_DIR, "lint-jinja.py")

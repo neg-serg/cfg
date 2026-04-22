@@ -18,9 +18,7 @@ FEATURE_ALIAS_RE = re.compile(
 )
 ALIAS_ATTR_RE = re.compile(r"\b([a-zA-Z_]\w*)\.([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*)")
 ALIAS_GET_RE = re.compile(r"\b([a-zA-Z_]\w*)\.get\(\s*['\"]([a-zA-Z_]\w*)['\"]")
-ALIAS_DYNAMIC_GET_RE = re.compile(
-    r"\b([a-zA-Z_]\w*)\.get\(\s*(?!['\"])([a-zA-Z_]\w*)\s*(?:,|\))"
-)
+ALIAS_DYNAMIC_GET_RE = re.compile(r"\b([a-zA-Z_]\w*)\.get\(\s*(?!['\"])([a-zA-Z_]\w*)\s*(?:,|\))")
 CALL_LIKE_RE = re.compile(r"^[a-zA-Z_]\w*\s*\(")
 
 

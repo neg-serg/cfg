@@ -5,7 +5,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
+
+SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
+if SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, SCRIPTS_DIR)
+
+import salt_debug_report  # noqa: E402
 
 TOP_LEVEL_PREFIX = "states/"
 GROUP_PREFIX = "states/group/"
@@ -120,13 +127,50 @@ def _print_text(plan: dict[str, object]) -> None:
         print("- none")
 
 
+def _debug_bundle_context(changed_files: list[str] | None) -> dict[str, object]:
+    if not changed_files:
+        return {"state": "auto"}
+
+    selected_states = sorted(
+        {
+            target
+            for path in _normalize_changed_files(changed_files)
+            for target in [
+                _group_target(path) or _top_level_state_target(path) or _owner_target(path)
+            ]
+            if target is not None
+        }
+    )
+    if len(selected_states) == 1:
+        return {"state": selected_states[0]}
+    if selected_states:
+        return {"selected_states": selected_states}
+    return {"state": "auto"}
+
+
+def _write_planning_failure_bundle(changed_files: list[str] | None, error: Exception) -> None:
+    bundle = {
+        "tool": "salt-impact",
+        "failure_stage": "planning",
+        "error": str(error),
+    }
+    bundle.update(_debug_bundle_context(changed_files))
+    salt_debug_report.write_debug_bundle(bundle)
+
+
 def main() -> None:
-    args = _build_parser().parse_args(sys.argv[1:])
-    plan = plan_for_changed_files(args.files)
-    if args.as_json:
-        print(json.dumps(plan, indent=2))
-    else:
-        _print_text(plan)
+    args = None
+    try:
+        args = _build_parser().parse_args(sys.argv[1:])
+        plan = plan_for_changed_files(args.files)
+        if args.as_json:
+            print(json.dumps(plan, indent=2))
+        else:
+            _print_text(plan)
+    except Exception as exc:  # noqa: BLE001 (surface unexpected planning failures)
+        changed_files = getattr(args, "files", None)
+        _write_planning_failure_bundle(changed_files, exc)
+        raise SystemExit(1) from exc
     raise SystemExit(0)
 
 

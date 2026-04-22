@@ -201,3 +201,69 @@ def test_plan_changed_files_falls_back_for_unknown_state_owned_file():
     assert plan["selected_states"] == []
     assert plan["final_target"] == "system_description"
     assert plan["fallback_reasons"] == ["states/_imports.jinja has no safe workflow target mapping"]
+
+
+def test_main_writes_debug_bundle_and_exits_nonzero_on_unexpected_planning_failure(
+    monkeypatch, tmp_path
+):
+    salt_impact = _load_salt_impact()
+    debug_dir = tmp_path / "logs" / "debug"
+
+    def _raise_boom(_changed_files):
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(salt_impact, "plan_for_changed_files", _raise_boom)
+    monkeypatch.setattr(
+        salt_impact.sys,
+        "argv",
+        ["salt_impact.py", "--files", "states/services.sls"],
+    )
+    monkeypatch.setenv("SALT_DEBUG_REPORT_DIR", str(debug_dir))
+
+    with pytest.raises(SystemExit) as exc_info:
+        salt_impact.main()
+
+    bundles = sorted(debug_dir.glob("*.json"))
+
+    assert exc_info.value.code == 1
+    assert len(bundles) == 1
+    payload = json.loads(bundles[0].read_text())
+    assert payload == {
+        "tool": "salt-impact",
+        "state": "services",
+        "failure_stage": "planning",
+        "error": "boom",
+    }
+
+
+def test_main_writes_auto_state_bundle_when_args_missing_on_unexpected_failure(
+    monkeypatch, tmp_path
+):
+    salt_impact = _load_salt_impact()
+    debug_dir = tmp_path / "logs" / "debug"
+
+    class DummyParser:
+        def parse_args(self, _argv):
+            return BrokenNamespace()
+
+    class BrokenNamespace:
+        files = None
+        as_json = False
+
+    monkeypatch.setattr(salt_impact, "_build_parser", lambda: DummyParser())
+    monkeypatch.setenv("SALT_DEBUG_REPORT_DIR", str(debug_dir))
+
+    with pytest.raises(SystemExit) as exc_info:
+        salt_impact.main()
+
+    bundles = sorted(debug_dir.glob("*.json"))
+
+    assert exc_info.value.code == 1
+    assert len(bundles) == 1
+    payload = json.loads(bundles[0].read_text())
+    assert payload == {
+        "tool": "salt-impact",
+        "state": "auto",
+        "failure_stage": "planning",
+        "error": "'NoneType' object is not iterable",
+    }

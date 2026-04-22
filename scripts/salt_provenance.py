@@ -126,8 +126,11 @@ def _source_references_data_key(source_text: str, aliases: set[str], data_key: s
 
     clean_source = _strip_comments(source_text)
     for alias in aliases:
-        pattern = re.compile(rf"\b{re.escape(alias)}\.{re.escape(key_path)}(?:\b|\.)")
-        if pattern.search(clean_source):
+        attr_pattern = re.compile(rf"\b{re.escape(alias)}\.{re.escape(key_path)}(?:\b|\.)")
+        get_pattern = re.compile(
+            rf"\b{re.escape(alias)}\.get\(\s*['\"]{re.escape(key_path)}['\"]\s*(?:,|\))"
+        )
+        if attr_pattern.search(clean_source) or get_pattern.search(clean_source):
             return True
     return False
 

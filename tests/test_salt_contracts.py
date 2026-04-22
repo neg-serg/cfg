@@ -67,10 +67,12 @@ managed_service_paths:
     service: svc_ok
     path: /var/lib/svc
     type: d
+    mode: "0755"
   bad_service_path:
     service: missing_service
     path: /var/lib/missing
     type: d
+    mode: "0755"
 """,
     )
     _write(
@@ -151,6 +153,7 @@ managed_service_paths:
     service: container_svc
     path: /var/lib/svc
     type: d
+    mode: "0755"
 """,
     )
     _write(
@@ -404,10 +407,71 @@ managed_service_paths:
     assert errors == ["Managed resource path 'stray_path' references unknown service 'stray_state'"]
 
 
+def test_check_managed_resource_services_rejects_unknown_identity_services(tmp_path):
+    salt_contracts = _load_salt_contracts()
+
+    _write(
+        tmp_path / "states" / "data" / "managed_resources.yaml",
+        """
+managed_service_identities:
+  stray:
+    user: stray
+    group: stray
+    home: /var/lib/stray
+    shell: /usr/sbin/nologin
+managed_service_paths: {}
+""",
+    )
+    _write(
+        tmp_path / "states" / "data" / "services.yaml",
+        """
+simple: {}
+complex: {}
+network: {}
+dns: {}
+""",
+    )
+    _write(tmp_path / "states" / "data" / "service_catalog.yaml", "{}\n")
+
+    errors = salt_contracts.check_managed_resource_services(tmp_path)
+
+    assert errors == ["Managed resource identity 'stray' references unknown service 'stray'"]
+
+
 def test_check_managed_resource_services_accepts_real_repo_inventory():
     salt_contracts = _load_salt_contracts()
 
     errors = salt_contracts.check_managed_resource_services(REPO_ROOT_PATH)
+
+    assert errors == []
+
+
+def test_check_managed_resource_paths_require_explicit_type_and_mode(tmp_path):
+    salt_contracts = _load_salt_contracts()
+
+    _write(
+        tmp_path / "states" / "data" / "managed_resources.yaml",
+        """
+managed_service_identities: {}
+managed_service_paths:
+  broken_path:
+    service: loki
+    path: /var/lib/loki/broken
+""",
+    )
+
+    errors = salt_contracts.check_managed_resources_schema(tmp_path)
+
+    assert errors == [
+        "managed_service_paths entry 'broken_path' missing valid type",
+        "managed_service_paths entry 'broken_path' missing valid mode",
+    ]
+
+
+def test_check_managed_resources_schema_accepts_real_repo_inventory():
+    salt_contracts = _load_salt_contracts()
+
+    errors = salt_contracts.check_managed_resources_schema(REPO_ROOT_PATH)
 
     assert errors == []
 

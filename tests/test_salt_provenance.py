@@ -183,6 +183,70 @@ def test_lookup_data_key_prefers_source_level_matches_over_file_level_consumers(
     assert [record.state_name for record in data_key_match["consumers"]] == ["monitoring_loki"]
 
 
+def test_systemd_resources_state_exposes_managed_resource_inventory_in_provenance():
+    salt_provenance = _load_salt_provenance()
+
+    reverse_index = salt_provenance.build_reverse_index()
+    match = reverse_index.lookup_state("systemd_resources")
+
+    assert match is not None
+    assert match.relpath == "states/systemd_resources.sls"
+    assert "data/managed_resources.yaml" in match.imported_yaml
+
+
+def test_managed_resources_data_key_targets_systemd_resources_domain(monkeypatch):
+    salt_provenance = _load_salt_provenance()
+
+    systemd_record = salt_provenance._source_model_module.StateFileRecord(
+        relpath="states/systemd_resources.sls",
+        state_name="systemd_resources",
+        top_level_entrypoint=True,
+        workflow_apply_target=True,
+        source_text=(
+            "{% import_yaml 'data/managed_resources.yaml' as managed %}\n"
+            "{% set paths = managed.get('managed_service_paths', {}) %}\n"
+        ),
+    )
+    other_record = salt_provenance._source_model_module.StateFileRecord(
+        relpath="states/other_resources.sls",
+        state_name="other_resources",
+        top_level_entrypoint=True,
+        workflow_apply_target=True,
+        source_text="{% import_yaml 'data/managed_resources.yaml' as managed %}\n",
+    )
+
+    monkeypatch.setattr(
+        salt_provenance._source_model_module,
+        "discover_state_files",
+        lambda _states_dir="states": [systemd_record, other_record],
+    )
+    monkeypatch.setattr(
+        salt_provenance._index_module,
+        "render_states",
+        lambda sls_files: [
+            ("states/systemd_resources.sls", [], [], [], []),
+            ("states/other_resources.sls", [], [], [], []),
+        ],
+    )
+    monkeypatch.setattr(
+        salt_provenance._index_module,
+        "collect_data_usage",
+        lambda: {
+            "states/data/managed_resources.yaml": [
+                "systemd_resources.sls",
+                "other_resources.sls",
+            ]
+        },
+    )
+
+    reverse_index = salt_provenance.build_reverse_index()
+    match = reverse_index.lookup_data_key("managed_resources.managed_service_paths")
+
+    assert match is not None
+    assert match["data_file"] == "states/data/managed_resources.yaml"
+    assert [record.state_name for record in match["consumers"]] == ["systemd_resources"]
+
+
 def test_main_json_outputs_macro_matches_and_not_found_exit(monkeypatch, capsys):
     salt_provenance = _load_salt_provenance()
     macro_consumer = salt_provenance.StateProvenanceRecord(
@@ -580,9 +644,7 @@ def test_salt_debug_report_main_returns_empty_list_and_exit_1_for_no_matches(
     assert captured.err == ""
 
 
-def test_salt_debug_report_main_outputs_semantic_scenario_diff(
-    monkeypatch, tmp_path, capsys
-):
+def test_salt_debug_report_main_outputs_semantic_scenario_diff(monkeypatch, tmp_path, capsys):
     salt_debug_report = _load_salt_debug_report()
     debug_dir = tmp_path / "logs" / "debug"
     debug_dir.mkdir(parents=True)

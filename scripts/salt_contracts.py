@@ -21,6 +21,8 @@ KNOWN_NATIVE_SERVICES = {
     "avahi-daemon.service",
     "cronie",
     "cronie.service",
+    "greetd",
+    "greetd.service",
     "gpg-agent.socket",
     "mpd",
     "mpd.service",
@@ -181,11 +183,6 @@ def _collect_managed_resource_domains(repo_root: Path) -> set[str]:
     known.update(_collect_catalog_service_names(repo_root))
     known.update(_collect_service_domains_from_services_yaml(repo_root))
 
-    managed_resources = load_yaml_file(repo_root / "states" / "data" / "managed_resources.yaml")
-    identities = managed_resources.get("managed_service_identities", {})
-    if isinstance(identities, dict):
-        known.update(identities)
-
     return known
 
 
@@ -281,6 +278,15 @@ def check_managed_resource_services(repo_root: Path = REPO_ROOT) -> list[str]:
     known_services = _collect_managed_resource_domains(repo_root)
     errors = []
 
+    for identity_name, config in managed_resources.get("managed_service_identities", {}).items():
+        if not isinstance(config, dict):
+            continue
+        if identity_name not in known_services:
+            errors.append(
+                "Managed resource identity "
+                f"'{identity_name}' references unknown service '{identity_name}'"
+            )
+
     for resource_name, config in managed_resources.get("managed_service_paths", {}).items():
         if not isinstance(config, dict):
             continue
@@ -289,6 +295,23 @@ def check_managed_resource_services(repo_root: Path = REPO_ROOT) -> list[str]:
             errors.append(
                 f"Managed resource path '{resource_name}' references unknown service '{service}'"
             )
+
+    return errors
+
+
+def check_managed_resources_schema(repo_root: Path = REPO_ROOT) -> list[str]:
+    managed_resources = load_yaml_file(repo_root / "states" / "data" / "managed_resources.yaml")
+    errors = []
+
+    for resource_name, config in managed_resources.get("managed_service_paths", {}).items():
+        if not isinstance(config, dict):
+            continue
+        path_type = config.get("type")
+        if not isinstance(path_type, str) or not path_type:
+            errors.append(f"managed_service_paths entry '{resource_name}' missing valid type")
+        mode = config.get("mode")
+        if not isinstance(mode, str) or not mode:
+            errors.append(f"managed_service_paths entry '{resource_name}' missing valid mode")
 
     return errors
 
@@ -400,6 +423,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_service_catalog_units(repo_root))
     errors.extend(check_services_yaml_service_references(repo_root))
     errors.extend(check_managed_resource_services(repo_root))
+    errors.extend(check_managed_resources_schema(repo_root))
     errors.extend(check_user_services_schema(repo_root))
     errors.extend(check_user_service_unit_files(repo_root))
     return errors

@@ -259,6 +259,47 @@ def test_managed_service_paths_ensure_is_stateful_noop_when_guards_match():
     assert "systemd-tmpfiles --create /etc/tmpfiles.d/salt-managed-service-paths.conf" in block
 
 
+def test_explicit_identity_and_path_sections():
+    path = os.path.join(REPO_ROOT, "states", "systemd_resources.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "{% set identities = managed.get('managed_service_identities', {}) %}" in source
+    assert "managed_service_accounts_conf:" in source
+    assert "identities: {{ identities }}" in source
+    assert "managed_service_accounts_ensure:" in source
+    assert "{% set paths = managed.get('managed_service_paths', {}) %}" in source
+    assert "managed_service_paths_conf:" in source
+    assert "paths: {{ paths }}" in source
+    assert "managed_service_paths_ensure:" in source
+
+
+def test_only_domain_consumer_of_managed_resources_inventory():
+    state_path = os.path.join(REPO_ROOT, "states", "systemd_resources.sls")
+    with open(state_path) as fh:
+        state_source = fh.read()
+
+    assert "import_yaml 'data/managed_resources.yaml' as managed" in state_source
+
+    consumer_paths = []
+    for root, _dirs, files in os.walk(os.path.join(REPO_ROOT, "states")):
+        for filename in files:
+            if not filename.endswith((".sls", ".jinja", ".j2", ".yaml", ".yml")):
+                continue
+            path = os.path.join(root, filename)
+            with open(path) as fh:
+                source = fh.read()
+            if (
+                "import_yaml 'data/managed_resources.yaml'" in source
+                or 'import_yaml "data/managed_resources.yaml"' in source
+                or "managed.get('managed_service_identities'" in source
+                or "managed.get('managed_service_paths'" in source
+            ):
+                consumer_paths.append(os.path.relpath(path, REPO_ROOT))
+
+    assert consumer_paths == ["states/systemd_resources.sls"]
+
+
 def test_npm_build_workflow_version_pin_uses_strict_shell_mode():
     path = os.path.join(REPO_ROOT, "states", "_macros_install.jinja")
     with open(path) as fh:

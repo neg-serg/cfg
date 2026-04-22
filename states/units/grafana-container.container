@@ -34,6 +34,7 @@ Volume={{ m.host }}:{{ m.container }}:{{ m.mode }}
 Environment=GF_PATHS_CONFIG=/etc/grafana/grafana.ini
 Environment=GF_PATHS_PROVISIONING=/etc/grafana/provisioning
 Environment=GF_PATHS_DATA=/var/lib/grafana
+Environment=GF_SERVER_HTTP_PORT={{ catalog_entry.port }}
 # Health check disabled temporarily to avoid startup timeout
 # HealthCmd=wget -qO- http://127.0.0.1:{{ catalog_entry.port }}/api/health || exit 1
 # HealthInterval=30s

@@ -78,9 +78,6 @@ OPTIONAL_SYSTEM=(
 	cronie
 	ollama
 	llama-embed
-	loki-container
-	promtail-container
-	grafana-container
 	netdata
 	samba
 	bitcoind-container
@@ -178,6 +175,99 @@ PY
 	SYSTEM_SERVICES+=("cronie")
 fi
 
+if [ "$(
+	python3 - "$PROJECT_DIR" "$host_name" <<'PY'
+import sys
+from pathlib import Path
+
+import yaml
+
+project_dir = Path(sys.argv[1])
+host_name = sys.argv[2].strip()
+data = yaml.safe_load((project_dir / 'states' / 'data' / 'hosts.yaml').read_text()) or {}
+defaults = data.get('defaults', {})
+hosts = data.get('hosts', {})
+aliases = data.get('aliases', {})
+resolved = aliases.get(host_name, host_name)
+
+def merge(base, override):
+    result = dict(base)
+    for key, value in override.items():
+        if isinstance(result.get(key), dict) and isinstance(value, dict):
+            result[key] = merge(result[key], value)
+        else:
+            result[key] = value
+    return result
+
+host = merge(defaults, hosts.get(resolved, {}))
+print('true' if host.get('features', {}).get('monitoring', {}).get('loki', False) else 'false')
+PY
+)" = "true" ]; then
+	OPTIONAL_SYSTEM+=("loki-container")
+fi
+
+if [ "$(
+	python3 - "$PROJECT_DIR" "$host_name" <<'PY'
+import sys
+from pathlib import Path
+
+import yaml
+
+project_dir = Path(sys.argv[1])
+host_name = sys.argv[2].strip()
+data = yaml.safe_load((project_dir / 'states' / 'data' / 'hosts.yaml').read_text()) or {}
+defaults = data.get('defaults', {})
+hosts = data.get('hosts', {})
+aliases = data.get('aliases', {})
+resolved = aliases.get(host_name, host_name)
+
+def merge(base, override):
+    result = dict(base)
+    for key, value in override.items():
+        if isinstance(result.get(key), dict) and isinstance(value, dict):
+            result[key] = merge(result[key], value)
+        else:
+            result[key] = value
+    return result
+
+host = merge(defaults, hosts.get(resolved, {}))
+print('true' if host.get('features', {}).get('monitoring', {}).get('promtail', False) else 'false')
+PY
+)" = "true" ]; then
+	OPTIONAL_SYSTEM+=("promtail-container")
+fi
+
+if [ "$(
+	python3 - "$PROJECT_DIR" "$host_name" <<'PY'
+import sys
+from pathlib import Path
+
+import yaml
+
+project_dir = Path(sys.argv[1])
+host_name = sys.argv[2].strip()
+data = yaml.safe_load((project_dir / 'states' / 'data' / 'hosts.yaml').read_text()) or {}
+defaults = data.get('defaults', {})
+hosts = data.get('hosts', {})
+aliases = data.get('aliases', {})
+resolved = aliases.get(host_name, host_name)
+
+def merge(base, override):
+    result = dict(base)
+    for key, value in override.items():
+        if isinstance(result.get(key), dict) and isinstance(value, dict):
+            result[key] = merge(result[key], value)
+        else:
+            result[key] = value
+    return result
+
+host = merge(defaults, hosts.get(resolved, {}))
+print('true' if host.get('features', {}).get('monitoring', {}).get('grafana', False) else 'false')
+PY
+)" = "true" ]; then
+	OPTIONAL_SYSTEM+=("grafana-container")
+fi
+
 for svc in "${SYSTEM_SERVICES[@]}"; do
 	check_system_service "$svc"
 done
@@ -228,19 +318,21 @@ for name in "${!HEALTHCHECKS[@]}"; do
 		entry_name="${entry%%	*}"
 		if [ "$entry_name" = "$name" ]; then
 			http_ok="-"
+			status=$(echo "$entry" | cut -f6)
 			if curl -sf --connect-timeout 2 --max-time 5 "http://127.0.0.1:${port}${path}" >/dev/null 2>&1; then
 				http_ok="ok"
 			else
 				entry_actual=$(echo "$entry" | cut -f4)
 				if [ "$entry_actual" = "active" ]; then
 					http_ok="FAIL"
+					status="unhealthy"
 					unhealthy=$((unhealthy + 1))
 				else
 					http_ok="skip"
 				fi
 			fi
-			# Replace the health field (field 5 of 6)
-			results[i]=$(echo "$entry" | awk -F'\t' -v h="$http_ok" 'BEGIN{OFS="\t"} {$5=h; print}')
+			# Replace the health and status fields (fields 5 and 6)
+			results[i]=$(echo "$entry" | awk -F'\t' -v h="$http_ok" -v s="$status" 'BEGIN{OFS="\t"} {$5=h; $6=s; print}')
 			break
 		fi
 	done

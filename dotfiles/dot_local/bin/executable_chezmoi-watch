@@ -6,7 +6,7 @@
 set -eu
 setopt PIPE_FAIL
 
-src_dir="${HOME}/src/salt/dotfiles"
+src_dir="${HOME}/src/cfg/dotfiles"
 cooldown=2
 last_apply=0
 

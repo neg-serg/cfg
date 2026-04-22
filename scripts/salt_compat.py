@@ -10,7 +10,6 @@ Call patch() before importing any salt module. Installs:
 
 import importlib
 import importlib.abc
-import importlib.machinery
 import multiprocessing
 import sys
 import warnings
@@ -85,8 +84,10 @@ def patch():
 
     # Python 3.14: urlunparse normalizes file:///path differently, breaking
     # salt.utils.url.create(). Instead of a fragile sed patch on the installed
-    # source, monkey-patch the function at import time via a meta path finder.
+    # source, monkey-patch the function immediately and also on first import if
+    # the module is loaded later.
     if sys.version_info >= (3, 14):
+        _patch_url_module()
         _install_url_patch()
 
 
@@ -99,9 +100,15 @@ def _patched_url_create(path, saltenv=None):
     path = path.replace("\\", "/")
     query = f"saltenv={saltenv}" if saltenv else ""
     url = salt.utils.data.decode(urlunparse(("file", "", path, "", query, "")))
-    # Python 3.14 urlunparse may produce "file:path" instead of "file:///path".
-    # Use split+lstrip to robustly extract the path portion regardless of format.
-    return "salt://{}".format(url.split("file:", 1)[1].lstrip("/"))
+    # Python 3.14 urlunparse may produce either:
+    # - file:path?saltenv=base        for relative paths
+    # - file:///abs/path?saltenv=base for absolute paths
+    # Preserve relative paths exactly; strip only the extra leading slashes from
+    # absolute paths.
+    suffix = url.split("file:", 1)[1]
+    if suffix.startswith("///"):
+        suffix = suffix[2:]
+    return f"salt://{suffix}"
 
 
 class _SaltUrlPatchFinder(importlib.abc.MetaPathFinder):
@@ -124,4 +131,11 @@ class _SaltUrlPatchFinder(importlib.abc.MetaPathFinder):
 
 def _install_url_patch():
     """Install a meta path finder that patches salt.utils.url on first import."""
-    sys.meta_path.insert(0, _SaltUrlPatchFinder())
+    if not any(isinstance(finder, _SaltUrlPatchFinder) for finder in sys.meta_path):
+        sys.meta_path.insert(0, _SaltUrlPatchFinder())
+
+
+def _patch_url_module():
+    """Import and patch salt.utils.url.create deterministically."""
+    module = importlib.import_module("salt.utils.url")
+    module.create = _patched_url_create

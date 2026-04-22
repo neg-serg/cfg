@@ -8,9 +8,9 @@
 [Unit]
 Description=Grafana Loki log aggregator (containerized)
 Documentation=https://grafana.com/docs/loki/
-# graphical.target preserves the existing loki-boot-defer.conf behaviour —
-# Loki is deferred past graphical boot to reduce early-boot I/O contention.
-After=network-online.target graphical.target
+# Keep Loki aligned with multi-user.target to avoid ordering cycles with
+# other monitoring services that also start in the system boot graph.
+After=network-online.target
 Wants=network-online.target
 # StartLimit* keys belong in [Unit] per systemd.unit(5).
 StartLimitBurst=5

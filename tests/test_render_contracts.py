@@ -726,6 +726,32 @@ def test_system_description_includes_os_release_state():
     assert "system_os_release" in source
 
 
+def test_loki_quadlet_does_not_defer_to_graphical_target_when_wanted_by_multi_user():
+    path = os.path.join(REPO_ROOT, "states", "units", "loki-container.container")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "WantedBy=multi-user.target" in source
+    assert "After=network-online.target graphical.target" not in source
+
+
+def test_grafana_quadlet_sets_http_port_to_catalog_port():
+    path = os.path.join(REPO_ROOT, "states", "units", "grafana-container.container")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "Environment=GF_SERVER_HTTP_PORT={{ catalog_entry.port }}" in source
+
+
+def test_loki_config_listens_on_all_interfaces_inside_container():
+    path = os.path.join(REPO_ROOT, "states", "configs", "loki.yaml.j2")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "http_listen_address: 0.0.0.0" in source
+    assert "http_listen_address: 127.0.0.1" not in source
+
+
 def test_hyprlock_uses_fancy_name_fallback_for_os_release():
     paths = [
         os.path.join(REPO_ROOT, "dotfiles", "dot_config", "hypr", "hyprlock", "greetd.conf"),

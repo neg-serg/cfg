@@ -106,6 +106,13 @@ setup_config() {
 	salt_runtime_write_minion_config "${PROJECT_DIR}" "${RUNTIME_CONFIG_DIR}" apply
 }
 
+repair_runtime_permissions() {
+	[[ -d "${RUNTIME_CONFIG_DIR}" ]] || return 0
+	"${SUDO_CMD[@]}" chown -R "$(id -u):$(id -g)" "${RUNTIME_CONFIG_DIR}"
+	find "${RUNTIME_CONFIG_DIR}" -type d -exec chmod u+rwx {} +
+	find "${RUNTIME_CONFIG_DIR}" -type f -exec chmod u+rw {} +
+}
+
 # ── Sudo: prefer NOPASSWD, fall back to .password file ────────────────────────
 get_sudo() {
 	if sudo -n true 2>/dev/null; then
@@ -251,8 +258,9 @@ maintenance_lock_remove() {
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 bootstrap_salt
-setup_config
 get_sudo
+repair_runtime_permissions
+setup_config
 
 maintenance_lock_create
 trap maintenance_lock_remove EXIT

@@ -9,6 +9,7 @@ import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
+import salt_debug_report
 import yaml
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -316,15 +317,39 @@ def _print_text(kind: str, value: str, matches: list[dict[str, object]]) -> None
             print(f"  consumers: {consumers or 'none'}")
 
 
-def main() -> None:
-    args = _build_parser().parse_args()
-    index = build_reverse_index()
-    kind, value, matches = _resolve_query(index, args)
+def _debug_bundle_context(args: argparse.Namespace | None) -> dict[str, str]:
+    if args is None:
+        return {}
 
-    if args.as_json:
-        print(json.dumps({"query": {"kind": kind, "value": value}, "matches": matches}, indent=2))
-    else:
-        _print_text(kind, value, matches)
+    for field_name in ("state", "state_id", "data_file", "data_key", "macro"):
+        value = getattr(args, field_name, None)
+        if value:
+            return {field_name: value}
+    return {}
+
+
+def main() -> None:
+    args = None
+    try:
+        args = _build_parser().parse_args()
+        index = build_reverse_index()
+        kind, value, matches = _resolve_query(index, args)
+
+        if args.as_json:
+            print(
+                json.dumps({"query": {"kind": kind, "value": value}, "matches": matches}, indent=2)
+            )
+        else:
+            _print_text(kind, value, matches)
+    except Exception as exc:  # noqa: BLE001 (surface unexpected lookup failures)
+        bundle = {
+            "tool": "salt-provenance",
+            "failure_stage": "lookup",
+            "error": str(exc),
+        }
+        bundle.update(_debug_bundle_context(args))
+        salt_debug_report.write_debug_bundle(bundle)
+        raise SystemExit(1) from exc
 
     raise SystemExit(0 if matches else 1)
 

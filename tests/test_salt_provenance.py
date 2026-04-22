@@ -352,6 +352,69 @@ def test_main_json_reports_not_found_with_controlled_exit(monkeypatch, capsys):
     assert captured.err == ""
 
 
+def test_main_writes_default_debug_bundle_on_unexpected_lookup_failure(monkeypatch, tmp_path):
+    salt_provenance = _load_salt_provenance()
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("SALT_DEBUG_REPORT_DIR", raising=False)
+    monkeypatch.setattr(
+        salt_provenance,
+        "build_reverse_index",
+        lambda: (_ for _ in ()).throw(RuntimeError("index exploded")),
+    )
+    monkeypatch.setattr(
+        salt_provenance.sys,
+        "argv",
+        ["salt_provenance.py", "--state", "monitoring_loki", "--json"],
+    )
+
+    with pytest.raises(SystemExit) as exc_info:
+        salt_provenance.main()
+
+    bundles = sorted((tmp_path / "logs" / "debug").glob("*.json"))
+
+    assert exc_info.value.code == 1
+    assert len(bundles) == 1
+    assert json.loads(bundles[0].read_text()) == {
+        "tool": "salt-provenance",
+        "state": "monitoring_loki",
+        "failure_stage": "lookup",
+        "error": "index exploded",
+    }
+
+
+def test_main_writes_override_debug_bundle_on_unexpected_query_failure(monkeypatch, tmp_path):
+    salt_provenance = _load_salt_provenance()
+    debug_dir = tmp_path / "custom-debug"
+
+    reverse_index = _make_index(salt_provenance)
+
+    def _boom(_data_key):
+        raise RuntimeError("lookup exploded")
+
+    monkeypatch.setattr(reverse_index, "lookup_data_key", _boom)
+    monkeypatch.setattr(salt_provenance, "build_reverse_index", lambda: reverse_index)
+    monkeypatch.setenv("SALT_DEBUG_REPORT_DIR", str(debug_dir))
+    monkeypatch.setattr(
+        salt_provenance.sys,
+        "argv",
+        ["salt_provenance.py", "--data-key", "service_catalog.loki", "--json"],
+    )
+
+    with pytest.raises(SystemExit) as exc_info:
+        salt_provenance.main()
+
+    bundles = sorted(debug_dir.glob("*.json"))
+
+    assert exc_info.value.code == 1
+    assert len(bundles) == 1
+    assert json.loads(bundles[0].read_text()) == {
+        "tool": "salt-provenance",
+        "data_key": "service_catalog.loki",
+        "failure_stage": "lookup",
+        "error": "lookup exploded",
+    }
+
+
 def test_justfile_exposes_provenance_shortcuts():
     justfile_source = (REPO_ROOT_PATH / "Justfile").read_text()
 
@@ -514,6 +577,57 @@ def test_salt_debug_report_main_returns_empty_list_and_exit_1_for_no_matches(
     captured = capsys.readouterr()
     assert exc_info.value.code == 1
     assert json.loads(captured.out) == []
+    assert captured.err == ""
+
+
+def test_salt_debug_report_main_outputs_semantic_scenario_diff(
+    monkeypatch, tmp_path, capsys
+):
+    salt_debug_report = _load_salt_debug_report()
+    debug_dir = tmp_path / "logs" / "debug"
+    debug_dir.mkdir(parents=True)
+    bundle = {
+        "tool": "render-matrix",
+        "state": "entry",
+        "scenario": "lint-full",
+        "failure_stage": "render",
+        "error": "boom",
+    }
+    (debug_dir / "20260421T010101000000Z-render-matrix-entry-lint-full.json").write_text(
+        json.dumps(bundle)
+    )
+
+    monkeypatch.setenv("SALT_DEBUG_REPORT_DIR", str(debug_dir))
+    monkeypatch.setattr(
+        salt_debug_report.sys,
+        "argv",
+        [
+            "salt_debug_report.py",
+            "--state",
+            "entry",
+            "--scenario",
+            "lint-full",
+            "--compare-scenario",
+            "lint-desktop",
+        ],
+    )
+
+    with pytest.raises(SystemExit) as exc_info:
+        salt_debug_report.main()
+
+    captured = capsys.readouterr()
+    assert exc_info.value.code == 0
+    assert json.loads(captured.out) == {
+        "state": "entry",
+        "scenario": "lint-full",
+        "compare_scenario": "lint-desktop",
+        "scenario_bundle_present": True,
+        "compare_scenario_bundle_present": False,
+        "scenario_has_failure": True,
+        "compare_scenario_has_failure": False,
+        "bundle_presence_changed": True,
+        "failure_changed": True,
+    }
     assert captured.err == ""
 
 

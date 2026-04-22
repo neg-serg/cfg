@@ -179,6 +179,10 @@ clean:
 render-matrix:
     python3 scripts/render-matrix.py
 
+# Show matching Salt debug bundles as JSON
+debug-bundle *ARGS:
+    python3 scripts/salt_debug_report.py {{ARGS}}
+
 # Profile Salt state durations from the latest log (or provided LOG)
 profile LOG="":
     #!/usr/bin/env bash

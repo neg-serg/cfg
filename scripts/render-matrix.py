@@ -19,6 +19,7 @@ if SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, SCRIPTS_DIR)
 
 import host_model  # noqa: E402
+import salt_debug_report  # noqa: E402
 from salt_source_model import discover_state_files, enrich_source_metadata  # noqa: E402
 
 # lint-jinja.py has a hyphenated name — must use importlib.util
@@ -87,6 +88,22 @@ def render_for_scenario(env, scenario_name, sls_files):
     return errors
 
 
+def _write_render_failure_bundle(record, scenario_name, error):
+    salt_debug_report.write_debug_bundle(
+        {
+            "tool": "render-matrix",
+            "state": record.state_name,
+            "scenario": scenario_name,
+            "entrypoint": record.top_level_entrypoint,
+            "include_chain": [],
+            "imported_yaml": list(record.imported_yaml),
+            "feature_guards": list(getattr(record, "feature_guards", [])),
+            "failure_stage": "render",
+            "error": str(error),
+        }
+    )
+
+
 def render_all_states():
     """Render all states for all matrix scenarios, returning structured results.
 
@@ -122,6 +139,7 @@ def render_all_states():
                         "imported_yaml": record.imported_yaml,
                     }
                 )
+                _write_render_failure_bundle(record, name, exc)
             else:
                 results.append(
                     {
@@ -156,6 +174,7 @@ def main(argv=None):
         return 0
 
     sls_files = _select_render_state_files()
+    state_metadata = {record.relpath: record for record in _discover_render_state_records()}
     overall_errors = 0
 
     for entry in matrix:
@@ -170,6 +189,8 @@ def main(argv=None):
                 print(f"       {description}")
             for path, exc in errors:
                 print(f"    - {path}: {exc}")
+                if path in state_metadata:
+                    _write_render_failure_bundle(state_metadata[path], name, exc)
         else:
             desc = f" – {description}" if description else ""
             print(f"[OK] {name}{desc}")

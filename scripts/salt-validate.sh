@@ -20,6 +20,40 @@ validate_timeout="${VALIDATE_TIMEOUT:-300}"
 salt_python="${project_dir}/.venv/bin/python3"
 summary_file="${VALIDATE_SUMMARY_FILE:-}"
 
+json_escape() {
+	local value="$1"
+	value=${value//\\/\\\\}
+	value=${value//\"/\\\"}
+	value=${value//$'\n'/\\n}
+	value=${value//$'\r'/\\r}
+	value=${value//$'\t'/\\t}
+	printf '%s' "$value"
+}
+
+write_failure_bundle() {
+	local state="$1"
+	local entrypoint="$2"
+	local error="$3"
+	local output_dir="${SALT_DEBUG_REPORT_DIR:-logs/debug}"
+	local timestamp
+	local sanitized_state
+	local bundle_path
+
+	if [[ -z "$error" ]]; then
+		error="salt validation failed"
+	fi
+
+	mkdir -p "$output_dir"
+	timestamp="$(date -u +%Y%m%dT%H%M%S)"
+	sanitized_state="${state//\//-}"
+	bundle_path="${output_dir}/${timestamp}-salt-validate-${sanitized_state}.json"
+
+	printf '{\n  "tool": "salt-validate",\n  "state": "%s",\n  "entrypoint": %s,\n  "failure_stage": "render",\n  "error": "%s"\n}\n' \
+		"$(json_escape "$state")" \
+		"$entrypoint" \
+		"$(json_escape "$error")" > "$bundle_path"
+}
+
 targets=()
 if [[ $# -gt 0 && "$1" != "--" ]]; then
 	jobs="$1"
@@ -137,7 +171,12 @@ validate_one() {
 	local sls="$1"
 	local slot="$2"
 	local name="${sls#states/}"
+	local entrypoint=true
+	local error_output=""
 	name="${name%.sls}"
+	if [[ "$name" == */* ]]; then
+		entrypoint=false
+	fi
 	name="${name//\//.}"
 	local worker_cache="${cache_base}/worker-${slot}"
 	if [[ ! -d "$worker_cache" ]]; then
@@ -150,13 +189,18 @@ validate_one() {
 	else
 		echo "FAILED: $name"
 		# Re-run to capture error details
-		$sudo_cmd "$salt_python" -m salt.scripts salt_call --local --config-dir="$runtime" \
+		error_output="$($sudo_cmd "$salt_python" -m salt.scripts salt_call --local --config-dir="$runtime" \
 			--cachedir="$worker_cache" \
-			state.show_sls "$name" --out=quiet 2>&1 || true
+			state.show_sls "$name" --out=quiet 2>&1 || true)"
+		if [[ -n "$error_output" ]]; then
+			printf '%s\n' "$error_output"
+		fi
+		write_failure_bundle "$name" "$entrypoint" "$error_output"
 		return 1
 	fi
 }
 export -f validate_one
+export -f json_escape write_failure_bundle
 export sudo_cmd cache_base runtime salt_python
 
 # --- Parallel validation with joblog for accurate failure counting ---
@@ -168,16 +212,6 @@ parallel --will-cite -j "$jobs" --group --timeout "$validate_timeout" --halt nev
 
 # Count failures from joblog (column 7 is Exitval, skip header line)
 failed=$(awk 'NR>1 && $7!=0 {count++} END {print count+0}' "$joblog")
-
-json_escape() {
-	local value="$1"
-	value=${value//\\/\\\\}
-	value=${value//\"/\\\"}
-	value=${value//$'\n'/\\n}
-	value=${value//$'\r'/\\r}
-	value=${value//$'\t'/\\t}
-	printf '%s' "$value"
-}
 
 write_summary_artifact() {
 	local results_json=""

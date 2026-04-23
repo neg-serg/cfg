@@ -830,8 +830,9 @@ def test_opencode_telegram_env_routes_telegram_api_through_local_socks_proxy():
     assert "TELEGRAM_PROXY_URL=socks5://127.0.0.1:10808" in source
     assert "ALL_PROXY=socks5h://127.0.0.1:10808" in source
     assert "HTTPS_PROXY=socks5h://127.0.0.1:10808" in source
-    assert "OPENCODE_MODEL_PROVIDER=cliproxyapi" in source
-    assert "OPENCODE_MODEL_ID=gpt-5.4-mini" in source
+    assert "OPENCODE_MODEL_PROVIDER=deepseek" in source
+    assert "OPENCODE_MODEL_ID=deepseek-chat" in source
+    assert "OPENCODE_MODEL_PROVIDER=cliproxyapi" not in source
 
 
 def test_opencode_telegram_state_uses_direct_user_services_for_serve_and_bot():
@@ -857,6 +858,17 @@ def test_opencode_telegram_state_manages_private_chat_auth_patch():
     assert "middleware/auth.js" in source
     assert "ctx.chat?.type === \"private\"" in source
     assert "ctx.from?.is_bot" in source
+
+
+def test_opencode_telegram_state_manages_deepseek_only_model_patch():
+    path = os.path.join(REPO_ROOT, "states", "opencode_telegram.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "opencode_telegram_model_whitelist_patch:" in source
+    assert 'dist/model/manager.js' in source
+    assert 'deepseek/deepseek-chat' in source
+    assert 'deepseek/deepseek-reasoner' in source
 
 
 def test_remaining_multiline_cmdrun_states_use_strict_shell_mode():

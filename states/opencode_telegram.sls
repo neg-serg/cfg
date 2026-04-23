@@ -37,11 +37,20 @@ opencode_telegram_auth_patch:
 opencode_telegram_auth_bot_guard_patch:
   file.replace:
     - name: {{ home }}/.local/lib/node_modules/@grinev/opencode-telegram-bot/dist/bot/middleware/auth.js
-    - pattern: 'const userId = ctx\.from\?\.id;'
-    - repl: 'const userId = ctx.from?.id;\n    if (ctx.from?.is_bot) {\n        return;\n    }'
+    - pattern: 'const userId = ctx\.from\?\.id;\n(?:    if \(ctx\.from\?\.is_bot\) \{\n        return;\n    \}\n)?'
+    - repl: 'const userId = ctx.from?.id;\n    if (ctx.from?.is_bot) {\n        return;\n    }\n'
     - count: 1
     - require:
       - file: opencode_telegram_auth_patch
+
+opencode_telegram_model_whitelist_patch:
+  file.replace:
+    - name: {{ home }}/.local/lib/node_modules/@grinev/opencode-telegram-bot/dist/model/manager.js
+    - pattern: 'function filterModelsByCatalog\(models, validModelKeys\) \{\n    if \(!validModelKeys\) \{\n        return models;\n    \}\n    return models\.filter\(\(model\) => validModelKeys\.has\(getModelKey\(model\.providerID, model\.modelID\)\)\);\n\}'
+    - repl: 'function filterModelsByCatalog(models, validModelKeys) {\n    const deepseekWhitelist = new Set(["deepseek/deepseek-chat", "deepseek/deepseek-reasoner"]);\n    const catalogFiltered = !validModelKeys\n        ? models\n        : models.filter((model) => validModelKeys.has(getModelKey(model.providerID, model.modelID)));\n    return catalogFiltered.filter((model) => deepseekWhitelist.has(getModelKey(model.providerID, model.modelID)));\n}'
+    - count: 1
+    - require:
+      - cmd: install_opencode_telegram
 
 {% if _has_otb_token %}
 opencode_telegram_bot_env:
@@ -69,6 +78,7 @@ opencode_telegram_bot_env:
         'cmd: install_opencode_telegram',
         'file: opencode_telegram_auth_patch',
         'file: opencode_telegram_auth_bot_guard_patch',
+        'file: opencode_telegram_model_whitelist_patch',
         'file: opencode_serve_service',
         'cmd: opencode_serve_service_daemon_reload',
         'file: opencode_telegram_bot_service',

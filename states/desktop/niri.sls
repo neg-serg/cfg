@@ -14,7 +14,7 @@
 {{ paru_install('niri-portals', 'xdg-desktop-portal-gnome xdg-desktop-portal-gtk') }}
 
 # --- Niri config directory ---
-{{ ensure_dir('niri_config_dir', home ~ '/.config/niri', mode='0700', user=user, group=user) }}
+{{ ensure_dir('niri_config_dir', home ~ '/.config/niri', mode='0700', user=user) }}
 
 # --- Niri config file ---
 niri_config_file:

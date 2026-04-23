@@ -27,7 +27,6 @@ input "type:touchpad" {
 // Workspace layout
 layout {
     default_column_width 0.5
-    default_column_width 0.5
     focus_follows_mouse false
     center_focus true
 }

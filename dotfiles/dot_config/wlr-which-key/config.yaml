@@ -121,9 +121,6 @@ menu:
   - key: "u"
     desc: Unmute
     cmd: ~/.local/bin/pl vol unmute
-  - key: "s"
-    desc: Switch sink
-    cmd: ~/.local/bin/sink-switch select
 - key: "i"
   desc: Special
   submenu:

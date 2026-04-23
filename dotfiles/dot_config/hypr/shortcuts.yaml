@@ -200,12 +200,6 @@ entries:
     group: Media
     keywords: [media, audio, unmute]
     mode: launchable
-  - id: media.switch_sink
-    match: root|slash|exec|~/.local/bin/sink-switch select
-    title: Switch Sink
-    group: Media
-    keywords: [media, audio, sink]
-    mode: launchable
   - id: special.reaper
     match: special|r|exec|raise --match "class:regex=^REAPER$" --launch "GDK_BACKEND=x11 reaper"
     title: REAPER
@@ -361,9 +355,6 @@ which_key:
       - key: "u"
         desc: Unmute
         match: root|o|exec|~/.local/bin/pl vol unmute
-      - key: "s"
-        desc: Switch sink
-        match: root|slash|exec|~/.local/bin/sink-switch select
   - key: "i"
     desc: Special
     entries:

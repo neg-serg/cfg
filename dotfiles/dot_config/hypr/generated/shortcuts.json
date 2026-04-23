@@ -154,20 +154,6 @@
     "label": "Media / Previous  Super+,"
   },
   {
-    "id": "media.switch_sink",
-    "title": "Switch Sink",
-    "group": "Media",
-    "hotkey": "Super+Ctrl+/",
-    "command": "~/.local/bin/sink-switch select",
-    "mode": "launchable",
-    "keywords": [
-      "media",
-      "audio",
-      "sink"
-    ],
-    "label": "Media / Switch Sink  Super+Ctrl+/"
-  },
-  {
     "id": "media.unmute",
     "title": "Unmute",
     "group": "Media",

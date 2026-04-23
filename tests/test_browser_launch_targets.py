@@ -74,12 +74,10 @@ def test_hypr_shortcuts_script_reads_generated_shortcut_json():
 def test_hypr_slash_bind_opens_hotkey_search_without_conflicts():
     bindings = read("dotfiles/dot_config/hypr/bindings.conf")
     misc = read("dotfiles/dot_config/hypr/bindings/misc.conf")
-    media = read("dotfiles/dot_config/hypr/bindings/media.conf")
 
     assert "bind = $M4, slash, exec, ~/.local/bin/hypr-shortcuts" in misc
     assert "bind = $M4, slash, workspace, previous" not in bindings
     assert "bind = $M4+$S, slash, exec, ~/.local/bin/hypr-shortcuts" not in misc
-    assert "bind = $M4+$S, slash, exec, ~/.local/bin/sink-switch select" not in media
 
 
 def write_executable(path: Path, content: str) -> None:

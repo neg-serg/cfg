@@ -2,7 +2,7 @@
 # Used by paru_install macro to detect installed packages.
 # Must be included before any paru_install states.
 
-{% from '_imports.jinja' import host, pkg_list %}
+{% from '_imports.jinja' import pkg_list %}
 
 pacman_db_warmup:
   cmd.run:

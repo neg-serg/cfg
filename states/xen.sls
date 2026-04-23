@@ -4,8 +4,8 @@
 #   - "Xorg VR (i3 + SteamVR)" — minimal i3, auto-launches Steam bigpicture
 #   - "Plasma (X11)" — full KDE desktop with Breeze Dark theme
 
-{% from '_imports.jinja' import host, user, home %}
-{% from '_macros_pkg.jinja' import paru_install %}
+{% from '_imports.jinja' import user, home %}
+
 {% from '_macros_service.jinja' import ensure_dir %}
 
 {% set xen_user = 'xen' %}

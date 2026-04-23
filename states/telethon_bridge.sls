@@ -1,7 +1,7 @@
 # =============================================================================
 # Telethon Bridge — Telegram MTProto proxy container deployment
 # =============================================================================
-{% from '_imports.jinja' import host, user, home, proxypilot_key, tg_secret %}
+{% from '_imports.jinja' import user, home, proxypilot_key, tg_secret %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
 {% from '_macros_pkg.jinja' import paru_install %}

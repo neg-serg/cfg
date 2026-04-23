@@ -1,5 +1,5 @@
 # Espanso: cross-platform text expander (Wayland variant).
-{% from '_imports.jinja' import host, user, home %}
+{% from '_imports.jinja' import host, user %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import user_service_with_unit %}
 # Espanso: cross-platform text expander (Wayland variant)

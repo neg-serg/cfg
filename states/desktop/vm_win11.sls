@@ -1,5 +1,5 @@
 # Windows 11 VM definition — NVMe disk bus (Windows has built-in drivers)
-{% from '_imports.jinja' import user, home %}
+
 
 # Deploy the libvirt XML template
 win11_xml:

@@ -1,4 +1,4 @@
-{% from '_imports.jinja' import host, home, user %}
+{% from '_imports.jinja' import home, user %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir %}
 

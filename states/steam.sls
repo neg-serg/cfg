@@ -1,9 +1,9 @@
-{% from '_imports.jinja' import host, user, home, pkg_list, retry_attempts, retry_interval %}
+{% from '_imports.jinja' import host, user, pkg_list %}
 {% from '_macros_service.jinja' import ensure_dir %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_install.jinja' import curl_extract_7z %}
+
 {% from '_macros_config.jinja' import config_file_edit %}
-{% import_yaml 'data/versions.yaml' as ver %}
+
 # Steam + gaming tools (native pacman install)
 # Requires multilib repo for lib32 dependencies.
 # Inline cmd.run (not paru_install macro): --ask 4 resolves CachyOS

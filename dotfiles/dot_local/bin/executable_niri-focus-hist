@@ -1,0 +1,106 @@
+#!/usr/bin/env python3
+"""Track Niri window focus history via JSON‑IPC.
+
+Daemon mode (default): subscribes to window‑opened, window‑closed, window‑focused
+events via `niri msg subscribe`, maintains an ordered focus history, and writes
+the previous window address to a state file.
+
+Switch mode (--switch): reads the state file and focuses the previous window.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+
+
+def state_path() -> str:
+    runtime = os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
+    return f"{runtime}/niri-focus-history"
+
+
+def switch() -> int:
+    """Read previous window address from state file and focus it."""
+    path = state_path()
+    try:
+        with open(path) as f:
+            addr = f.read().strip()
+    except FileNotFoundError:
+        return 1
+    if not addr:
+        return 1
+    subprocess.run(
+        ["niri", "msg", "action", "focus-window", f"address={addr}"],
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    return 0
+
+
+def daemon() -> None:
+    """Listen to Niri events and track focus history."""
+    proc = subprocess.Popen(
+        ["niri", "msg", "subscribe", "--events", "window-opened,window-closed,window-focused"],
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    history: list[str] = []
+    path = state_path()
+
+    while True:
+        line = proc.stdout.readline()
+        if not line:
+            break
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+
+        if event.get("type") == "window-focused":
+            addr = event.get("window", {}).get("address")
+            if not addr:
+                continue
+            # Skip if already the most recent
+            if history and history[-1] == addr:
+                continue
+            # Move to end (re-insert)
+            if addr in history:
+                history.remove(addr)
+            history.append(addr)
+            # Cap history size
+            if len(history) > 20:
+                history = history[-20:]
+            # Write previous window to state file
+            if len(history) >= 2:
+                with open(path, "w") as f:
+                    f.write(history[-2])
+
+        elif event.get("type") == "window-closed":
+            addr = event.get("window", {}).get("address")
+            if addr in history:
+                history.remove(addr)
+                if len(history) >= 2:
+                    with open(path, "w") as f:
+                        f.write(history[-2])
+                elif history:
+                    with open(path, "w") as f:
+                        f.write(history[0])
+                else:
+                    try:
+                        os.remove(path)
+                    except FileNotFoundError:
+                        pass
+
+
+def main() -> int:
+    if "--switch" in sys.argv:
+        return switch()
+    daemon()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

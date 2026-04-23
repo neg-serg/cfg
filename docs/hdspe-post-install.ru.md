@@ -29,3 +29,6 @@
 - `~/.config/pipewire/pipewire.conf.d/98-adi2-remap.conf` — удалён
 - `~/.local/bin/sink-switch` — удалён
 - `/usr/local/bin/rme-usb-trigger` — удалён
+- `~/.local/bin/pw-restore-links` — удалён
+- `~/.local/bin/pw-tools` — удалён
+- `~/.config/systemd/user/pw-restore-links.service` — удалён (был pw-restore-links.service)

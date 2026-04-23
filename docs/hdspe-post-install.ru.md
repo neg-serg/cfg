@@ -28,4 +28,4 @@
 
 - `~/.config/pipewire/pipewire.conf.d/98-adi2-remap.conf` — удалён
 - `~/.local/bin/sink-switch` — удалён
-- `/usr/local/bin/rme-usb-trigger` — ещё висит (нужен `sudo rm`)
+- `/usr/local/bin/rme-usb-trigger` — удалён

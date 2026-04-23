@@ -34,7 +34,7 @@ Not needed. Works with default WirePlumber. No remapping required — AIO Pro is
 
 - `~/.config/pipewire/pipewire.conf.d/98-adi2-remap.conf` — removed
 - `~/.local/bin/sink-switch` — removed
-- `/usr/local/bin/rme-usb-trigger` — still present (needs `sudo rm`)
+- `/usr/local/bin/rme-usb-trigger` — removed
 
 No pw-restore-links / pw-tools artifacts remain.
 

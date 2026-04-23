@@ -219,7 +219,7 @@ def test_health_check_only_checks_optional_monitoring_units_when_host_features_e
 
 
 def test_deploy_guide_uses_cfg_project_dir():
-    source = (REPO_ROOT / "scripts" / "deploy-cachyos.sh").read_text()
+    source = (REPO_ROOT / "scripts" / "deploy-cachyos-ext4.sh").read_text()
 
     assert "~/src/cfg" in source
     assert "~/src/salt" not in source

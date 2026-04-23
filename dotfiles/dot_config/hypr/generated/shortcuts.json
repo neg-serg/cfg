@@ -4,7 +4,7 @@
     "title": "Browser",
     "group": "Apps",
     "hotkey": "Super+W",
-    "command": "raise --match \"class:regex=^zen$\" --launch zen-browser",
+    "command": "raise --match \"class:regex=(?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|firefox(?:[ -]?developer[ -]?edition)?|org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|librewolf|io\\.gitlab\\.librewolf-community|chromium(?:-browser)?|org\\.chromium\\.chromium|ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\\.brave\\.browser|vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\\.thorium\\.thorium|mullvad-browser|com\\.mullvad\\.browser|palemoon|net\\.palemoon\\.palemoon|qutebrowser|org\\.qutebrowser\\.qutebrowser|falkon|org\\.kde\\.falkon|midori|epiphany|org\\.gnome\\.epiphany|google-chrome(?:-(?:stable|beta|unstable))?|com\\.google\\.chrome|microsoft-edge(?:-(?:beta|dev|canary))?|com\\.microsoft\\.edge)$\" --launch zen-browser",
     "mode": "launchable",
     "keywords": [
       "browser",

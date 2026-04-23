@@ -14,7 +14,11 @@ def read(path: str) -> str:
 
 def test_hypr_browser_binding_prefers_zen_and_keeps_floorp_secondary():
     text = read("dotfiles/dot_config/hypr/bindings/apps.conf")
-    primary = f'bind = $M4, w, exec, raise --match "class:regex={PRIMARY_BROWSER_REGEX}" --launch zen-browser'
+    primary = (
+        "bind = $M4, w, exec, raise --match "
+        f'"class:regex={PRIMARY_BROWSER_REGEX}" '
+        "--launch zen-browser"
+    )
     secondary = (
         "bind = $M4+$S, w, exec, raise --match "
         f'"class:regex={FLOORP_BROWSER_REGEX}" '
@@ -26,7 +30,11 @@ def test_hypr_browser_binding_prefers_zen_and_keeps_floorp_secondary():
 
 def test_wayfire_browser_binding_prefers_zen_and_keeps_floorp_secondary():
     text = read("dotfiles/dot_config/wayfire.ini")
-    primary = f'command_browser = raise --match "class:regex={PRIMARY_BROWSER_REGEX}" --launch zen-browser'
+    primary = (
+        "command_browser = raise --match "
+        f'"class:regex={PRIMARY_BROWSER_REGEX}" '
+        "--launch zen-browser"
+    )
     secondary = (
         "command_browser_floorp = raise --match "
         f'"class:regex={FLOORP_BROWSER_REGEX}" '
@@ -210,7 +218,8 @@ def test_hypr_shared_browser_matchers_include_zen_for_routing_and_navigation():
     assert (
         "$web = match:class "
         "(?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|"
-        "firefox(?:[ -]?developer[ -]?edition)?|org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|"
+        "firefox(?:[ -]?developer[ -]?edition)?|"
+        "org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|"
         "librewolf|io\\.gitlab\\.librewolf-community|chromium(?:-browser)?|org\\.chromium\\.chromium|"
         "ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\\.brave\\.browser|"
         "vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\\.thorium\\.thorium|"
@@ -220,8 +229,10 @@ def test_hypr_shared_browser_matchers_include_zen_for_routing_and_navigation():
         "microsoft-edge(?:-(?:beta|dev|canary))?|com\\.microsoft\\.edge)$"
     ) in classes
     assert (
-        "$browser_match = match:class (?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|"
-        "firefox(?:[ -]?developer[ -]?edition)?|org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|"
+        "$browser_match = match:class "
+        "(?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|"
+        "firefox(?:[ -]?developer[ -]?edition)?|"
+        "org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|"
         "librewolf|io\\.gitlab\\.librewolf-community|chromium(?:-browser)?|org\\.chromium\\.chromium|"
         "ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\\.brave\\.browser|"
         "vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\\.thorium\\.thorium|"
@@ -234,16 +245,18 @@ def test_hypr_shared_browser_matchers_include_zen_for_routing_and_navigation():
     assert "windowrule = match:initial_class ^(zen)$, workspace 2 silent" in workspaces
     assert "windowrule = $web, workspace 2 silent" in workspaces
     assert "$browser = zen-browser" in bindings
+
+
 PRIMARY_BROWSER_REGEX = (
-    '(?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|'
-    'firefox(?:[ -]?developer[ -]?edition)?|org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|'
-    'librewolf|io\\.gitlab\\.librewolf-community|chromium(?:-browser)?|org\\.chromium\\.chromium|'
-    'ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\\.brave\\.browser|'
-    'vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\\.thorium\\.thorium|'
-    'mullvad-browser|com\\.mullvad\\.browser|palemoon|net\\.palemoon\\.palemoon|qutebrowser|'
-    'org\\.qutebrowser\\.qutebrowser|falkon|org\\.kde\\.falkon|midori|epiphany|org\\.gnome\\.epiphany|'
-    'google-chrome(?:-(?:stable|beta|unstable))?|com\\.google\\.chrome|'
-    'microsoft-edge(?:-(?:beta|dev|canary))?|com\\.microsoft\\.edge)$'
+    "(?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|"
+    "firefox(?:[ -]?developer[ -]?edition)?|org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|"
+    "librewolf|io\\.gitlab\\.librewolf-community|chromium(?:-browser)?|org\\.chromium\\.chromium|"
+    "ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\\.brave\\.browser|"
+    "vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\\.thorium\\.thorium|"
+    "mullvad-browser|com\\.mullvad\\.browser|palemoon|net\\.palemoon\\.palemoon|qutebrowser|"
+    "org\\.qutebrowser\\.qutebrowser|falkon|org\\.kde\\.falkon|midori|epiphany|org\\.gnome\\.epiphany|"
+    "google-chrome(?:-(?:stable|beta|unstable))?|com\\.google\\.chrome|"
+    "microsoft-edge(?:-(?:beta|dev|canary))?|com\\.microsoft\\.edge)$"
 )
 
-FLOORP_BROWSER_REGEX = '^(floorp|one\\.ablaze\\.floorp|floorpdeveloperedition)$'
+FLOORP_BROWSER_REGEX = "^(floorp|one\\.ablaze\\.floorp|floorpdeveloperedition)$"

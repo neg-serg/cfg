@@ -72,7 +72,9 @@ def test_render_which_key_config_keeps_browser_menu_and_wraps_shell_commands():
     rendered = gen.render_which_key_config(actions, metadata)
 
     assert "desc: Browser" in rendered
-    assert f'cmd: raise --match "class:regex={PRIMARY_BROWSER_REGEX}" --launch zen-browser' in rendered
+    assert (
+        f'cmd: raise --match "class:regex={PRIMARY_BROWSER_REGEX}" --launch zen-browser' in rendered
+    )
     assert '- key: "W"' in rendered
     assert "desc: Floorp Browser" in rendered
     assert '- key: "e"' in rendered
@@ -153,14 +155,16 @@ def test_todo_tracks_future_hierarchical_key_hint_mode_note():
         "`dotfiles/dot_config/hypr/shortcuts.yaml`" in todo_text
     )
     assert "alternative to the search-first `Mod4+/` launcher" in todo_text
+
+
 PRIMARY_BROWSER_REGEX = (
-    '(?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|'
-    'firefox(?:[ -]?developer[ -]?edition)?|org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|'
-    'librewolf|io\\.gitlab\\.librewolf-community|chromium(?:-browser)?|org\\.chromium\\.chromium|'
-    'ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\\.brave\\.browser|'
-    'vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\\.thorium\\.thorium|'
-    'mullvad-browser|com\\.mullvad\\.browser|palemoon|net\\.palemoon\\.palemoon|qutebrowser|'
-    'org\\.qutebrowser\\.qutebrowser|falkon|org\\.kde\\.falkon|midori|epiphany|org\\.gnome\\.epiphany|'
-    'google-chrome(?:-(?:stable|beta|unstable))?|com\\.google\\.chrome|'
-    'microsoft-edge(?:-(?:beta|dev|canary))?|com\\.microsoft\\.edge)$'
+    "(?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|"
+    "firefox(?:[ -]?developer[ -]?edition)?|org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|"
+    "librewolf|io\\.gitlab\\.librewolf-community|chromium(?:-browser)?|org\\.chromium\\.chromium|"
+    "ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\\.brave\\.browser|"
+    "vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\\.thorium\\.thorium|"
+    "mullvad-browser|com\\.mullvad\\.browser|palemoon|net\\.palemoon\\.palemoon|qutebrowser|"
+    "org\\.qutebrowser\\.qutebrowser|falkon|org\\.kde\\.falkon|midori|epiphany|org\\.gnome\\.epiphany|"
+    "google-chrome(?:-(?:stable|beta|unstable))?|com\\.google\\.chrome|"
+    "microsoft-edge(?:-(?:beta|dev|canary))?|com\\.microsoft\\.edge)$"
 )

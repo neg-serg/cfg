@@ -17,7 +17,6 @@ input {
     keyboard {
         xkb {
             layout "us,ru"
-            variant ""
         }
         numlock
         repeat_delay 250
@@ -25,13 +24,12 @@ input {
     }
     
     touchpad {
-        tap true
-        natural_scroll true
+        tap
+        natural-scroll
     }
     
     mouse {
-        accel_profile "flat"
-        natural_scroll false
+        // natural-scroll
     }
 }
 

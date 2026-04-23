@@ -67,6 +67,17 @@ def test_rkn_domains_fetcher_timer_places_onfailure_in_unit_section():
     assert "[Timer]\nOnFailure=" not in unit_source
 
 
+def test_mpdas_user_unit_sets_proxy_and_config_path():
+    unit_path = os.path.join(
+        REPO_ROOT, "dotfiles", "dot_config", "systemd", "user", "mpdas.service"
+    )
+    with open(unit_path) as fh:
+        unit_source = fh.read()
+
+    assert "Environment=ALL_PROXY=socks5h://127.0.0.1:10808" in unit_source
+    assert "ExecStart=/bin/mpdas -c %h/.config/mpdasrc" in unit_source
+
+
 def test_user_services_source_has_no_parallel_feature_lists():
     path = os.path.join(REPO_ROOT, "states", "user_services.sls")
     with open(path) as fh:

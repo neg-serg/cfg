@@ -768,6 +768,15 @@ def test_telethon_bridge_react_service_runs_helper_script():
     assert "ExecStart=%h/.local/bin/telethon-bridge-react" in source
 
 
+def test_opencode_serve_unit_uses_system_cli_path():
+    path = os.path.join(REPO_ROOT, "states", "units", "user", "opencode-serve.service")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "ExecStart=/usr/bin/opencode serve" in source
+    assert "ExecStart=%h/.local/bin/opencode serve" not in source
+
+
 def test_remaining_multiline_cmdrun_states_use_strict_shell_mode():
     cases = [
         ("hardware.sls", "set -euo pipefail"),

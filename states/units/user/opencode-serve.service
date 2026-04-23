@@ -6,7 +6,7 @@ StartLimitBurst=5
 StartLimitIntervalSec=300
 
 [Service]
-ExecStart=%h/.local/bin/opencode serve
+ExecStart=/usr/bin/opencode serve
 WorkingDirectory=%h
 SyslogIdentifier=opencode-serve
 Restart=on-failure

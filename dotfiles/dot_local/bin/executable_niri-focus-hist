@@ -10,10 +10,16 @@ Switch mode (--switch): reads the state file and focuses the previous window.
 
 from __future__ import annotations
 
+import atexit
+import errno
 import json
 import os
+import re
+import signal
 import subprocess
 import sys
+
+ADDR_REGEX = re.compile(r'^0x[0-9a-f]+$', re.IGNORECASE)
 
 
 def state_path() -> str:
@@ -30,6 +36,9 @@ def switch() -> int:
     except FileNotFoundError:
         return 1
     if not addr:
+        return 1
+    if not ADDR_REGEX.fullmatch(addr):
+        sys.stderr.write(f"Invalid window address format: {addr}\n")
         return 1
     subprocess.run(
         ["niri", "msg", "action", "focus-window", f"address={addr}"],
@@ -50,50 +59,75 @@ def daemon() -> None:
     history: list[str] = []
     path = state_path()
 
-    while True:
-        line = proc.stdout.readline()
-        if not line:
-            break
-        try:
-            event = json.loads(line)
-        except json.JSONDecodeError:
-            continue
+    def cleanup():
+        if proc.poll() is None:
+            proc.terminate()
+            proc.wait()
+    atexit.register(cleanup)
 
-        if event.get("type") == "window-focused":
-            addr = event.get("window", {}).get("address")
-            if not addr:
-                continue
-            # Skip if already the most recent
-            if history and history[-1] == addr:
-                continue
-            # Move to end (re-insert)
-            if addr in history:
-                history.remove(addr)
-            history.append(addr)
-            # Cap history size
-            if len(history) > 20:
-                history = history[-20:]
-            # Write previous window to state file
-            if len(history) >= 2:
-                with open(path, "w") as f:
-                    f.write(history[-2])
+    def signal_handler(signum, frame):
+        cleanup()
+        sys.exit(0)
+    signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGINT, signal_handler)
 
-        elif event.get("type") == "window-closed":
-            addr = event.get("window", {}).get("address")
-            if addr in history:
-                history.remove(addr)
+    try:
+        while True:
+            line = proc.stdout.readline()
+            if not line:
+                break
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+            if event.get("type") == "window-focused":
+                addr = event.get("window", {}).get("address")
+                if not addr:
+                    continue
+                # Skip if already the most recent
+                if history and history[-1] == addr:
+                    continue
+                # Move to end (re-insert)
+                if addr in history:
+                    history.remove(addr)
+                history.append(addr)
+                # Cap history size
+                if len(history) > 20:
+                    history = history[-20:]
+                # Write previous window to state file
                 if len(history) >= 2:
-                    with open(path, "w") as f:
-                        f.write(history[-2])
-                elif history:
-                    with open(path, "w") as f:
-                        f.write(history[0])
-                else:
                     try:
-                        os.remove(path)
-                    except FileNotFoundError:
-                        pass
+                        with open(path, "w") as f:
+                            f.write(history[-2])
+                    except OSError as e:
+                        sys.stderr.write(f"Error writing state file: {e}\n")
 
+            elif event.get("type") == "window-closed":
+                addr = event.get("window", {}).get("address")
+                if addr in history:
+                    history.remove(addr)
+                    if len(history) >= 2:
+                        try:
+                            with open(path, "w") as f:
+                                f.write(history[-2])
+                        except OSError as e:
+                            sys.stderr.write(f"Error writing state file: {e}\n")
+                    elif history:
+                        try:
+                            with open(path, "w") as f:
+                                f.write(history[0])
+                        except OSError as e:
+                            sys.stderr.write(f"Error writing state file: {e}\n")
+                    else:
+                        try:
+                            os.remove(path)
+                        except FileNotFoundError:
+                            pass
+                        except OSError as e:
+                            sys.stderr.write(f"Error removing state file: {e}\n")
+    finally:
+        cleanup()
 
 def main() -> int:
     if "--switch" in sys.argv:

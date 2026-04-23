@@ -365,6 +365,13 @@ def test_telethon_bridge_runtime_uses_configured_proxy_tuple():
     assert 'TelegramClient(session_path, int(tg["api_id"]), tg["api_hash"], proxy=proxy)' in source
 
 
+def test_whisper_stt_service_uses_absolute_whisper_cli_path():
+    source = (REPO_ROOT.parent / "speech" / "engines" / "systemd" / "whisper-stt.service").read_text()
+
+    assert '--whisper-bin %h/src/speech/engines/whisper.cpp/build-cpu/bin/whisper-cli \\' in source
+    assert '--whisper-bin whisper-cli \\' not in source
+
+
 def test_health_check_parses_user_service_names_from_yaml_mappings():
     source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
 

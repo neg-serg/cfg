@@ -833,6 +833,9 @@ def test_opencode_telegram_env_routes_telegram_api_through_local_socks_proxy():
     assert "OPENCODE_MODEL_PROVIDER=deepseek" in source
     assert "OPENCODE_MODEL_ID=deepseek-chat" in source
     assert "OPENCODE_MODEL_PROVIDER=cliproxyapi" not in source
+    assert "STT_API_URL=http://127.0.0.1:8002/v1" in source
+    assert "STT_API_KEY=dummy" in source
+    assert "STT_MODEL=whisper" in source
 
 
 def test_opencode_telegram_state_uses_direct_user_services_for_serve_and_bot():

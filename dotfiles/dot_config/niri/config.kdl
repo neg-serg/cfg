@@ -35,6 +35,14 @@ layout {
     gaps 0
     center-focused-column "never"
     
+    // Hyprland scrolling features not supported in Niri:
+    // - fullscreen_on_one_column
+    // - follow_focus
+    // - follow_min_visible
+    // - direction
+    // - focus_fit_method
+    // (see Hyprland config for details)
+    
     focus-ring {
         width 4
         active-color "#7fc8ff"
@@ -42,7 +50,6 @@ layout {
     }
     
     border {
-        off
         width 1
         active-color "#00285981"
         inactive-color "#00000000"

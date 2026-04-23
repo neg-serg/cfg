@@ -234,6 +234,13 @@ def test_telfir_enables_opencode_telegram_stack():
     assert host["features"]["opencode_telegram"] is True
 
 
+def test_telfir_enables_telethon_bridge_stack():
+    data = host_model.load_hosts_yaml()
+    host = host_model.build_host("telfir", data)
+
+    assert host["features"]["telethon_bridge"] is True
+
+
 # --- US4: deep merge edge cases ---
 
 

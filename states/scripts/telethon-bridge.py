@@ -25,6 +25,7 @@ import time
 from pathlib import Path
 
 import httpx
+import socks
 import yaml
 from aiohttp import web
 from telethon import TelegramClient, events, functions
@@ -34,7 +35,7 @@ from telethon.tl.types import MessageMediaDocument, MessageMediaPhoto
 # ── Logging ──────────────────────────────────────────────────────────────
 log = logging.getLogger("telethon-bridge")
 
-CONFIG_PATH = Path.home() / ".telethon-bridge" / "config.yaml"
+CONFIG_PATH = Path.home() / ".config" / "telethon-bridge" / "config.yaml"
 
 
 # ── SQLite Conversation Manager ──────────────────────────────────────────
@@ -401,7 +402,14 @@ class TelethonBridge:
         # Telegram client
         tg = config["telegram"]
         session_path = os.path.expanduser(tg["session_path"])
-        self.client = TelegramClient(session_path, int(tg["api_id"]), tg["api_hash"])
+        proxy_cfg = tg.get("proxy") or {}
+        proxy = None
+        proxy_scheme = str(proxy_cfg.get("scheme", "")).lower()
+        proxy_host = proxy_cfg.get("host")
+        proxy_port = proxy_cfg.get("port")
+        if proxy_scheme == "socks5" and proxy_host and proxy_port:
+            proxy = (socks.SOCKS5, proxy_host, int(proxy_port))
+        self.client = TelegramClient(session_path, int(tg["api_id"]), tg["api_hash"], proxy=proxy)
 
         # AI client
         self.ai = AIClient(config)

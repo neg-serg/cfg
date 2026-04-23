@@ -261,6 +261,14 @@ def test_pw_route_script_parses_in_zsh():
     assert result.returncode == 0, result.stderr
 
 
+def test_set_zen_proxy_targets_real_zen_profile_path():
+    source = (REPO_ROOT / "scripts" / "set-zen-proxy").read_text()
+
+    assert 'PROFILES_INI = Path.home() / ".config/zen/profiles.ini"' in source
+    assert 'def resolve_profile_path() -> Path:' in source
+    assert 'Path=qnkh60k3.Default (release)' not in source
+
+
 def test_yt_alias_uses_wrapper_based_defaults():
     aliases = yaml.safe_load(
         (REPO_ROOT / "dotfiles" / "dot_config" / "aliae" / "aliae.yaml").read_text()
@@ -323,7 +331,7 @@ def test_telethon_bridge_react_script_contains_guarded_start_restart_logic():
     source = (REPO_ROOT / "scripts" / "telethon-bridge-react.sh").read_text()
 
     assert "set -euo pipefail" in source
-    assert 'SESSION_FILE="${HOME}/.telethon-bridge/telethon.session"' in source
+    assert 'SESSION_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/telethon-bridge/telethon.session"' in source
     assert 'systemctl --user is-active --quiet "$UNIT"' in source
     assert 'systemctl --user restart "$UNIT"' in source
     assert 'systemctl --user start "$UNIT"' in source
@@ -335,6 +343,26 @@ def test_telethon_bridge_react_script_parses_in_zsh():
     result = subprocess.run(["zsh", "-n", str(script)], capture_output=True, text=True)
 
     assert result.returncode == 0, result.stderr
+
+
+def test_telethon_bridge_init_validates_missing_api_credentials_before_casting():
+    source = (REPO_ROOT / "states" / "scripts" / "telethon-bridge-init.py").read_text()
+
+    assert 'CONFIG_PATH = Path.home() / ".config" / "telethon-bridge" / "config.yaml"' in source
+    assert 'api_id_raw = tg.get("api_id")' in source
+    assert 'api_hash = tg.get("api_hash") or ""' in source
+    assert 'Telegram API credentials are missing from ~/.config/telethon-bridge/config.yaml' in source
+    assert 'int(api_id_raw)' in source
+
+
+def test_telethon_bridge_runtime_uses_configured_proxy_tuple():
+    source = (REPO_ROOT / "states" / "scripts" / "telethon-bridge.py").read_text()
+
+    assert 'proxy_cfg = tg.get("proxy") or {}' in source
+    assert 'proxy = None' in source
+    assert 'import socks' in source
+    assert 'proxy = (socks.SOCKS5, proxy_host, int(proxy_port))' in source
+    assert 'TelegramClient(session_path, int(tg["api_id"]), tg["api_hash"], proxy=proxy)' in source
 
 
 def test_health_check_parses_user_service_names_from_yaml_mappings():

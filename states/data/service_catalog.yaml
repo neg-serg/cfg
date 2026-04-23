@@ -289,7 +289,7 @@ telethon_bridge:               # Telegram bridge (python-telethon)
   unit: telethon-bridge
   scope: user
   packages: python-telethon
-  health_cmd: "pgrep -f telethon-bridge"
+  health_cmd: "systemctl --user is-active --quiet telethon-bridge.service"
   container_image: telethon_bridge
   gpu: none
   bind_mounts:

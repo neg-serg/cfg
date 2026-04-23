@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SESSION_FILE="${HOME}/.telethon-bridge/telethon.session"
+STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+SESSION_FILE="${STATE_HOME}/telethon-bridge/telethon.session"
 UNIT="telethon-bridge.service"
 
 runtime_dir="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"

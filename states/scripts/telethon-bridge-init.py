@@ -15,7 +15,7 @@ from pathlib import Path
 import yaml
 from telethon import TelegramClient
 
-CONFIG_PATH = Path.home() / ".telethon-bridge" / "config.yaml"
+CONFIG_PATH = Path.home() / ".config" / "telethon-bridge" / "config.yaml"
 
 
 def main():
@@ -28,8 +28,20 @@ def main():
         config = yaml.safe_load(f)
 
     tg = config["telegram"]
-    api_id = int(tg["api_id"])
-    api_hash = tg["api_hash"]
+    api_id_raw = tg.get("api_id")
+    api_hash = tg.get("api_hash") or ""
+    if not api_id_raw or not api_hash:
+        print(
+            "Error: Telegram API credentials are missing from ~/.config/telethon-bridge/config.yaml",
+            file=sys.stderr,
+        )
+        print(
+            "Add api/telegram-telethon-id and api/telegram-telethon-hash, then re-apply telethon_bridge.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    api_id = int(api_id_raw)
     session_path = os.path.expanduser(tg["session_path"])
 
     print(f"Initializing Telethon session at: {session_path}")

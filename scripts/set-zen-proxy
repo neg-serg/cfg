@@ -9,9 +9,33 @@ import sys
 import json
 import argparse
 from pathlib import Path
+import configparser
 
-# Profile location
-PROFILE_PATH = Path.home() / ".config/zen/qnkh60k3.Default (release)"
+PROFILES_INI = Path.home() / ".config/zen/profiles.ini"
+
+
+def resolve_profile_path() -> Path:
+    """Resolve the active Zen release profile from profiles.ini."""
+    if not PROFILES_INI.exists():
+        raise FileNotFoundError(f"Zen profiles.ini not found: {PROFILES_INI}")
+
+    parser = configparser.RawConfigParser()
+    parser.read(PROFILES_INI)
+
+    install_section = next((name for name in parser.sections() if name.startswith("Install")), None)
+    if install_section and parser.has_option(install_section, "Default"):
+        rel_path = parser.get(install_section, "Default")
+        return PROFILES_INI.parent / rel_path
+
+    for section in parser.sections():
+        if parser.has_option(section, "Name") and parser.get(section, "Name") == "Default (release)":
+            rel_path = parser.get(section, "Path")
+            return PROFILES_INI.parent / rel_path
+
+    raise FileNotFoundError("Could not resolve Zen release profile from profiles.ini")
+
+
+PROFILE_PATH = resolve_profile_path()
 USER_JS = PROFILE_PATH / "user.js"
 
 # Proxy mode definitions

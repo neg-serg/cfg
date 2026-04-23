@@ -2,13 +2,13 @@
 Description=Telethon AI bridge — Telegram MTProto to ProxyPilot
 After=network-online.target proxypilot.service
 Wants=network-online.target proxypilot.service
-ConditionPathExists=%h/.telethon-bridge/telethon.session
+ConditionPathExists=%h/.local/state/telethon-bridge/telethon.session
 StartLimitBurst=5
 StartLimitIntervalSec=300
 
 [Service]
 ExecStart=/usr/bin/python3 %h/.local/bin/telethon-bridge
-WorkingDirectory=%h/.telethon-bridge
+WorkingDirectory=%h/.local/state/telethon-bridge
 SyslogIdentifier=telethon-bridge
 Restart=on-failure
 RestartSec=5

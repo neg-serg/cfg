@@ -139,7 +139,6 @@ def test_quadlet_unit_names_match_on_disk_files():
         ("adguardhome.sls", "adguardhome-container"),
         ("nanoclaw.sls", "nanoclaw-container"),
         ("proxypilot.sls", "proxypilot-container"),
-        ("telethon_bridge.sls", "telethon-bridge"),
     ]
 
     for filename, quadlet_name in cases:
@@ -746,15 +745,24 @@ def test_telethon_bridge_state_deploys_reactivity_units_and_helper():
     assert "telethon_bridge_react_service" in source
 
 
+def test_telethon_bridge_does_not_hide_macro_calls_behind_shell_comments():
+    path = os.path.join(REPO_ROOT, "states", "telethon_bridge.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "\n# {{ paru_install('python_telethon', 'python-telethon', version=ver.telethon) }}\n" not in source
+    assert "{# {{ paru_install('python_telethon', 'python-telethon', version=ver.telethon) }} #}" in source
+
+
 def test_telethon_bridge_react_path_watches_exact_runtime_files():
     path = os.path.join(REPO_ROOT, "states", "units", "user", "telethon-bridge-react.path")
     with open(path) as fh:
         source = fh.read()
 
-    assert "PathChanged=%h/.telethon-bridge/config.yaml" in source
+    assert "PathChanged=%h/.config/telethon-bridge/config.yaml" in source
     assert "PathChanged=%h/.local/bin/telethon-bridge" in source
-    assert "%h/.telethon-bridge/telethon.session" not in source
-    assert "%h/.telethon-bridge/" not in source.replace("%h/.telethon-bridge/config.yaml", "")
+    assert "%h/.local/state/telethon-bridge/telethon.session" not in source
+    assert "%h/.config/telethon-bridge/" not in source.replace("%h/.config/telethon-bridge/config.yaml", "")
 
 
 def test_telethon_bridge_react_service_runs_helper_script():
@@ -764,6 +772,45 @@ def test_telethon_bridge_react_service_runs_helper_script():
 
     assert "Type=oneshot" in source
     assert "ExecStart=%h/.local/bin/telethon-bridge-react" in source
+
+
+def test_telethon_bridge_unit_requires_session_file_before_start():
+    path = os.path.join(REPO_ROOT, "states", "units", "user", "telethon-bridge.service")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "ConditionPathExists=%h/.local/state/telethon-bridge/telethon.session" in source
+
+
+def test_telethon_bridge_uses_systemd_healthcheck_in_catalog():
+    path = os.path.join(REPO_ROOT, "states", "data", "service_catalog.yaml")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert 'telethon_bridge:' in source
+    assert 'health_cmd: "systemctl --user is-active --quiet telethon-bridge.service"' in source
+    assert 'health_cmd: "pgrep -f telethon-bridge"' not in source
+
+
+def test_telethon_bridge_config_declares_local_socks_proxy():
+    path = os.path.join(REPO_ROOT, "states", "configs", "telethon-bridge.yaml.j2")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert 'proxy:' in source
+    assert 'scheme: "socks5"' in source
+    assert 'host: "127.0.0.1"' in source
+    assert 'port: 10808' in source
+
+
+def test_telethon_bridge_state_uses_direct_user_service_for_bringup():
+    path = os.path.join(REPO_ROOT, "states", "telethon_bridge.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "user_service_file('telethon_bridge_service', 'telethon-bridge.service')" in source
+    assert "user_service_enable('telethon_bridge_enabled'" in source
+    assert "container_service('telethon_bridge'" not in source
 
 
 def test_opencode_serve_unit_uses_system_cli_path():

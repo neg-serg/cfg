@@ -5,28 +5,35 @@
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir, container_service, user_service_file, user_service_enable %}
+{% from '_macros_service.jinja' import ensure_dir, user_service_file, user_service_enable %}
 {% import_yaml 'data/versions.yaml' as ver %}
+{% set _tb_config_dir = home ~ '/.config/telethon-bridge' %}
+{% set _tb_state_dir = home ~ '/.local/state/telethon-bridge' %}
 {% set _proxy_key = proxypilot_key() %}
-{% set _tb_creds = home ~ '/.telethon-bridge/credentials' %}
+{% set _tb_creds = _tb_config_dir ~ '/credentials' %}
 {% set _api_id = tg_secret('api/telegram-telethon-id', 'api-id', cred_base=_tb_creds) %}
 {% set _api_hash = tg_secret('api/telegram-telethon-hash', 'api-hash', cred_base=_tb_creds) %}
 {% set _telegram_uid = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
 {% set _telegram_uid_levra = tg_secret('api/telegram-uid-levra', 'telegram-uid-levra') %}
 {% set _telegram_uid_guest2 = tg_secret('api/telegram-uid-guest2', 'telegram-uid-guest2') %}
 
-# ── Install python-telethon from AUR ─────────────────────────────────
-# {{ paru_install('python_telethon', 'python-telethon', version=ver.telethon) }}
+# ── Warm pacman DB cache for package macros ───────────────────────────
+include:
+  - pacman_db_warmup
+
+# ── Install python-telethon + proxy dependency from AUR ──────────────
+{{ paru_install('python_telethon', 'python-telethon python-python-socks', check='__ALL__', version=ver.telethon) }}
 
 # ── Directories ──────────────────────────────────────────────────────
-{{ ensure_dir('telethon_bridge_dir', home ~ '/.telethon-bridge') }}
-{{ ensure_dir('telethon_bridge_credentials_dir', home ~ '/.telethon-bridge/credentials', mode='0700') }}
-{{ ensure_dir('telethon_bridge_media_dir', home ~ '/.telethon-bridge/media') }}
+{{ ensure_dir('telethon_bridge_config_dir', _tb_config_dir) }}
+{{ ensure_dir('telethon_bridge_credentials_dir', _tb_creds, mode='0700') }}
+{{ ensure_dir('telethon_bridge_state_dir', _tb_state_dir, mode='0700') }}
+{{ ensure_dir('telethon_bridge_media_dir', _tb_state_dir ~ '/media') }}
 
 # ── Deploy config (secrets injected at apply time) ────────────────────
 telethon_bridge_config:
   file.managed:
-    - name: {{ home }}/.telethon-bridge/config.yaml
+    - name: {{ _tb_config_dir }}/config.yaml
     - source: salt://configs/telethon-bridge.yaml.j2
     - template: jinja
     - user: {{ user }}
@@ -41,7 +48,8 @@ telethon_bridge_config:
         telegram_uid_levra: {{ _telegram_uid_levra | tojson }}
         telegram_uid_guest2: {{ _telegram_uid_guest2 | tojson }}
     - require:
-      - file: telethon_bridge_dir
+      - file: telethon_bridge_config_dir
+      - file: telethon_bridge_state_dir
 
 # ── Deploy bridge script ─────────────────────────────────────────────
 telethon_bridge_script:
@@ -88,7 +96,14 @@ telethon_bridge_react_helper:
 ) }}
 
 # ── Containerized Telethon Bridge (localhost image) ──────────────────
-{{ container_service('telethon_bridge', catalog.telethon_bridge, image_registry,
-    quadlet_unit_name='telethon-bridge',
-    user_scope=True,
-    requires=['cmd: install_python_telethon', 'file: telethon_bridge_config']) }}
+{{ user_service_file('telethon_bridge_service', 'telethon-bridge.service') }}
+
+{{ user_service_enable('telethon_bridge_enabled',
+    start_now=['telethon-bridge.service'],
+    requires=[
+        'cmd: install_python_telethon',
+        'file: telethon_bridge_config',
+        'file: telethon_bridge_service',
+        'cmd: telethon_bridge_service_daemon_reload',
+    ],
+) }}

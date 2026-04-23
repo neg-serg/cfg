@@ -54,6 +54,12 @@ not expire and can be reused across multiple sessions/devices.
 
 ## Setup Steps
 
+### Bring-up prerequisites
+
+- `api/telegram-telethon-id` and `api/telegram-telethon-hash` must exist in `gopass`
+- `telethon-bridge-init` must create `~/.local/state/telethon-bridge/telethon.session`
+- `telethon-bridge` stays inactive until that session file exists because the user unit has `ConditionPathExists=%h/.local/state/telethon-bridge/telethon.session`
+
 ### 1. Create Gopass Secrets
 
 Once you have the credentials from my.telegram.org:
@@ -85,7 +91,7 @@ telethon-bridge-init
 ```
 
 Prompts for phone number, verification code, and optional 2FA password. On success,
-the session is saved to `~/.telethon-bridge/telethon.session`.
+the session is saved to `~/.local/state/telethon-bridge/telethon.session`.
 
 This step is interactive and only needs to be done once (or after session invalidation).
 
@@ -96,7 +102,7 @@ systemctl --user start telethon-bridge
 systemctl --user status telethon-bridge
 ```
 
-The unit has `ConditionPathExists=%h/.telethon-bridge/telethon.session` -- it will
+The unit has `ConditionPathExists=%h/.local/state/telethon-bridge/telethon.session` -- it will
 refuse to start without a valid session file.
 
 ## Configuration Reference
@@ -143,13 +149,13 @@ journalctl --user -u telethon-bridge -f      # live logs
 Salt also deploys an opt-in user-level path unit, `telethon-bridge-react.path`,
 that watches these runtime files:
 
-- `~/.telethon-bridge/config.yaml`
+- `~/.config/telethon-bridge/config.yaml`
 - `~/.local/bin/telethon-bridge`
 
 When one of these files changes:
 
 - if `telethon-bridge` is already running, the helper restarts it
-- if it is not running but `~/.telethon-bridge/telethon.session` exists, the helper starts it
+- if it is not running but `~/.local/state/telethon-bridge/telethon.session` exists, the helper starts it
 - if the session file does not exist, the helper exits without starting the service
 
 Disable this behavior at any time with:
@@ -175,7 +181,7 @@ to Telegram and recovers automatically when ProxyPilot returns.
 
 **Service won't start**: Verify the session file exists:
 ```bash
-ls -la ~/.telethon-bridge/telethon.session
+ls -la ~/.local/state/telethon-bridge/telethon.session
 ```
 If missing, run `telethon-bridge-init`. If the file exists but the service still
 fails, check logs for authentication errors.

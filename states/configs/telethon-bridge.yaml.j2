@@ -4,7 +4,11 @@
 telegram:
   api_id: {{ api_id }}
   api_hash: {{ api_hash | tojson }}
-  session_path: "{{ home }}/.telethon-bridge/telethon.session"
+  session_path: "{{ home }}/.local/state/telethon-bridge/telethon.session"
+  proxy:
+    scheme: "socks5"
+    host: "127.0.0.1"
+    port: 10808
 
 ai:
   base_url: "http://127.0.0.1:8317/v1"
@@ -74,5 +78,5 @@ service:
   health_port: 8319
   log_level: "info"
   edited_messages: "ignore"
-  db_path: "{{ home }}/.telethon-bridge/conversations.db"
-  media_dir: "{{ home }}/.telethon-bridge/media"
+  db_path: "{{ home }}/.local/state/telethon-bridge/conversations.db"
+  media_dir: "{{ home }}/.local/state/telethon-bridge/media"

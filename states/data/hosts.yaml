@@ -104,6 +104,7 @@ hosts:
       floorp: false
       opencode: true
       opencode_telegram: true
+      telethon_bridge: true
       music_analysis: true
       tidal: true
       xen_vr: false

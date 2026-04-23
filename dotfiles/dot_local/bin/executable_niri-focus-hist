@@ -11,14 +11,13 @@ Switch mode (--switch): reads the state file and focuses the previous window.
 from __future__ import annotations
 
 import atexit
-from collections import deque
-
 import json
 import os
 import re
 import signal
 import subprocess
 import sys
+from collections import deque
 
 # Assumption: Niri window addresses are hex strings prefixed with "0x".
 # This regex should be verified against actual `niri msg subscribe` output
@@ -36,6 +35,25 @@ def ensure_parent_dir(p: str) -> None:
     parent = os.path.dirname(p)
     if parent:
         os.makedirs(parent, exist_ok=True)
+
+
+def write_state(path: str, addr: str) -> None:
+    """Write window address to state file."""
+    try:
+        with open(path, "w") as f:
+            f.write(addr)
+    except OSError as e:
+        sys.stderr.write(f"Error writing state file: {e}\n")
+
+
+def remove_state(path: str) -> None:
+    """Remove state file if it exists."""
+    try:
+        os.remove(path)
+    except FileNotFoundError:
+        pass
+    except OSError as e:
+        sys.stderr.write(f"Error removing state file: {e}\n")
 
 
 def switch() -> int:
@@ -82,13 +100,24 @@ def daemon() -> None:
     path = state_path()
     ensure_parent_dir(path)
 
-    def cleanup():
+    def cleanup() -> None:
         if proc.poll() is None:
-            proc.terminate()
-            proc.wait()
+            try:
+                proc.terminate()
+            except ProcessLookupError:
+                # Process already terminated between poll() and terminate()
+                return
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                proc.wait()
+            except ProcessLookupError:
+                # Process already terminated after terminate()
+                pass
     atexit.register(cleanup)
 
-    def signal_handler(signum, frame):
+    def signal_handler(signum, frame) -> None:
         cleanup()
         sys.exit(0)
     signal.signal(signal.SIGTERM, signal_handler)
@@ -120,11 +149,7 @@ def daemon() -> None:
                 history.append(addr)
                 # Write previous window to state file
                 if len(history) >= 2:
-                    try:
-                        with open(path, "w") as f:
-                            f.write(history[-2])
-                    except OSError as e:
-                        sys.stderr.write(f"Error writing state file: {e}\n")
+                    write_state(path, history[-2])
 
             elif event.get("type") == "window-closed":
                 addr = event.get("window", {}).get("address")
@@ -135,24 +160,9 @@ def daemon() -> None:
                 if addr in history:
                     history = deque([a for a in history if a != addr], maxlen=20)
                     if len(history) >= 2:
-                        try:
-                            with open(path, "w") as f:
-                                f.write(history[-2])
-                        except OSError as e:
-                            sys.stderr.write(f"Error writing state file: {e}\n")
-                    elif history:
-                        try:
-                            with open(path, "w") as f:
-                                f.write(history[0])
-                        except OSError as e:
-                            sys.stderr.write(f"Error writing state file: {e}\n")
+                        write_state(path, history[-2])
                     else:
-                        try:
-                            os.remove(path)
-                        except FileNotFoundError:
-                            pass
-                        except OSError as e:
-                            sys.stderr.write(f"Error removing state file: {e}\n")
+                        remove_state(path)
     finally:
         cleanup()
 

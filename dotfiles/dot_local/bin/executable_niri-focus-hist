@@ -11,6 +11,7 @@ Switch mode (--switch): reads the state file and focuses the previous window.
 from __future__ import annotations
 
 import atexit
+from collections import deque
 
 import json
 import os
@@ -19,12 +20,21 @@ import signal
 import subprocess
 import sys
 
+# Assumption: Niri window addresses are hex strings prefixed with "0x".
+# This regex should be verified against actual `niri msg subscribe` output
+# during windowed‑mode testing (Task 9).
 ADDR_REGEX = re.compile(r'^0x[0-9a-f]+$', re.IGNORECASE)
 
 
 def state_path() -> str:
     runtime = os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
     return f"{runtime}/niri-focus-history"
+
+
+def ensure_parent_dir(p: str) -> None:
+    parent = os.path.dirname(p)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
 
 
 def switch() -> int:
@@ -64,13 +74,10 @@ def daemon() -> None:
     except (FileNotFoundError, OSError) as e:
         sys.stderr.write(f"Failed to start niri: {e}\n")
         sys.exit(1)
-    history: list[str] = []
+    # Note: This script does not automatically reconnect if `niri msg subscribe` exits.
+    # It should be supervised (e.g., by a systemd user service) that restarts it on failure.
+    history: deque[str] = deque(maxlen=20)
     path = state_path()
-
-    def ensure_parent_dir(p: str) -> None:
-        parent = os.path.dirname(p)
-        if parent:
-            os.makedirs(parent, exist_ok=True)
 
     def cleanup():
         if proc.poll() is None:
@@ -103,11 +110,9 @@ def daemon() -> None:
                     continue
                 # Move to end (re-insert)
                 if addr in history:
-                    history.remove(addr)
+                    # Remove existing occurrence while preserving order and maxlen
+                    history = deque([a for a in history if a != addr], maxlen=20)
                 history.append(addr)
-                # Cap history size
-                if len(history) > 20:
-                    history = history[-20:]
                 # Write previous window to state file
                 if len(history) >= 2:
                     try:
@@ -120,7 +125,7 @@ def daemon() -> None:
             elif event.get("type") == "window-closed":
                 addr = event.get("window", {}).get("address")
                 if addr in history:
-                    history.remove(addr)
+                    history = deque([a for a in history if a != addr], maxlen=20)
                     if len(history) >= 2:
                         try:
                             ensure_parent_dir(path)

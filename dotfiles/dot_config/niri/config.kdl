@@ -13,21 +13,26 @@ output "DP-1" {
     off
 }
 
-input "type:keyboard" {
-    xkb_layout "us"
-    xkb_variant ""
-    repeat_delay 600
-    repeat_rate 25
-}
-
-input "type:pointer" {
-    accel_profile "flat"
-    natural_scroll false
-}
-
-input "type:touchpad" {
-    tap true
-    natural_scroll false
+input {
+    keyboard {
+        xkb {
+            layout "us,ru"
+            variant ""
+        }
+        numlock
+        repeat_delay 250
+        repeat_rate 35
+    }
+    
+    touchpad {
+        tap true
+        natural_scroll true
+    }
+    
+    mouse {
+        accel_profile "flat"
+        natural_scroll false
+    }
 }
 
 // Workspace layout

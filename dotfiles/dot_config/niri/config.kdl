@@ -1,10 +1,16 @@
 // Niri configuration (KDL)
 // See https://github.com/YaLTeR/niri/blob/main/examples/config.kdl for full examples
 
+output "DP-2" {
+    mode "3840x2160@240"
+    scale 2.0
+    position x=0 y=0
+    variable-refresh-rate
+    // Note: bitdepth not configurable in Niri
+}
+
 output "DP-1" {
-    mode 2560x1440@144Hz
-    position 0,0
-    scale 1.0
+    off
 }
 
 input "type:keyboard" {

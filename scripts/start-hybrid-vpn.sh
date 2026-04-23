@@ -253,7 +253,10 @@ cleanup() {
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 
 # Setup trap for cleanup
-trap 'cleanup "$BACKUP_DIR"' EXIT INT TERM
+cleanup_wrapper() {
+    cleanup "$BACKUP_DIR"
+}
+trap cleanup_wrapper EXIT INT TERM
 
 # Phase 0: Prerequisite checks
 if ! check_prerequisites; then

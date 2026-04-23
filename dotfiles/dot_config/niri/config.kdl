@@ -74,12 +74,31 @@ layout {
 }
 
 // Keybindings
-bind "Super+Return" action=spawn cmd="kitty"
-bind "Super+Q" action=close_window
-bind "Super+Shift+Q" action=exit
-bind "Super+D" action=spawn cmd="rofi -show drun"
-bind "Super+Shift+D" action=spawn cmd="rofi -show run"
-bind "Super+Space" action=toggle_overview
+binds {
+    Mod+H { focus-column-left; }
+    Mod+J { focus-window-down; }
+    Mod+K { focus-window-up; }
+    Mod+L { focus-column-right; }
+    
+    Mod+Ctrl+H { move-column-left; }
+    Mod+Ctrl+J { move-window-down; }
+    Mod+Ctrl+K { move-window-up; }
+    Mod+Ctrl+L { move-column-right; }
+    
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+Page_Up   { focus-workspace-up; }
+    Mod+U         { focus-workspace-down; }
+    Mod+I         { focus-workspace-up; }
+    
+    Mod+Return { spawn "kitty" "--single-instance"; }
+    Mod+D { spawn "vicinae" "toggle"; }
+    Mod+Shift+D { spawn "zen-browser"; }
+    
+    Mod+Q { close-window; }
+    Mod+Shift+Q { exit; }
+    Mod+Escape { close-window; }
+    Mod+Space { toggle-overview; }
+}
 
 // Status bar (optional)
 // bar { ... }

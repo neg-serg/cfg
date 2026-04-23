@@ -100,21 +100,32 @@ def daemon() -> None:
     path = state_path()
     ensure_parent_dir(path)
 
+    cleaned = False
+
     def cleanup() -> None:
+        nonlocal cleaned
+        if cleaned:
+            return
         if proc.poll() is None:
             try:
                 proc.terminate()
             except ProcessLookupError:
                 # Process already terminated between poll() and terminate()
+                cleaned = True
                 return
             try:
                 proc.wait(timeout=5)
             except subprocess.TimeoutExpired:
                 proc.kill()
-                proc.wait()
+                try:
+                    proc.wait()
+                except ProcessLookupError:
+                    # Process already terminated after kill()
+                    pass
             except ProcessLookupError:
                 # Process already terminated after terminate()
                 pass
+        cleaned = True
     atexit.register(cleanup)
 
     def signal_handler(signum, frame) -> None:

@@ -52,13 +52,15 @@ def switch() -> int:
         sys.stderr.write(f"Invalid window address format: {addr}\n")
         return 1
     try:
-        subprocess.run(
+        result = subprocess.run(
             ["niri", "msg", "action", "focus-window", f"address={addr}"],
             check=False,
             stdout=subprocess.DEVNULL,
         )
     except (FileNotFoundError, OSError) as e:
         sys.stderr.write(f"Failed to run niri: {e}\n")
+        return 1
+    if result.returncode != 0:
         return 1
     return 0
 
@@ -106,6 +108,8 @@ def daemon() -> None:
                 addr = event.get("window", {}).get("address")
                 if not addr:
                     continue
+                if not ADDR_REGEX.fullmatch(addr):
+                    continue
                 # Skip if already the most recent
                 if history and history[-1] == addr:
                     continue
@@ -124,6 +128,10 @@ def daemon() -> None:
 
             elif event.get("type") == "window-closed":
                 addr = event.get("window", {}).get("address")
+                if not addr:
+                    continue
+                if not ADDR_REGEX.fullmatch(addr):
+                    continue
                 if addr in history:
                     history = deque([a for a in history if a != addr], maxlen=20)
                     if len(history) >= 2:

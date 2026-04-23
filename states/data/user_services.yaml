@@ -35,8 +35,6 @@ unit_files:
   - {id: openrgb_profile_service, filename: openrgb-profile.service}
   - {id: salt_drift_service, filename: salt-drift.service}
   - {id: salt_drift_timer, filename: salt-drift.timer}
-  - {id: gpu_unstick_service, filename: gpu-unstick.service}
-  - {id: gpu_unstick_timer, filename: gpu-unstick.timer}
   - {id: chezmoi_watch_service, filename: chezmoi-watch.service}
   - {id: update_check_service, filename: update-check.service}
   - {id: update_check_timer, filename: update-check.timer}
@@ -65,5 +63,4 @@ enable_now_timers:
   - {name: mbsync-gmail.timer, features: [mail]}
   - {name: vdirsyncer.timer, features: [vdirsyncer]}
   - {name: salt-drift.timer}
-  - {name: gpu-unstick.timer}
   - {name: update-check.timer}

@@ -212,6 +212,17 @@ def test_user_services_schema_is_valid():
     assert errors == []
 
 
+def test_user_services_inventory_does_not_manage_gpu_unstick_units():
+    inventory = load_yaml("user_services.yaml")
+
+    unit_files = {entry["filename"] for entry in inventory["unit_files"]}
+    enable_now_timers = {entry["name"] for entry in inventory["enable_now_timers"]}
+
+    assert "gpu-unstick.service" not in unit_files
+    assert "gpu-unstick.timer" not in unit_files
+    assert "gpu-unstick.timer" not in enable_now_timers
+
+
 def _assert_drift_inventory_schema(inventory):
     assert set(inventory) >= {"files", "system_units", "user_units"}
 

@@ -25,6 +25,24 @@
 {{ ensure_dir('opencode_telegram_bot_config_dir', home ~ '/.config/opencode-telegram-bot') }}
 {{ ensure_dir('opencode_telegram_bot_credentials_dir', home ~ '/.config/opencode-telegram-bot/credentials', mode='0700') }}
 
+opencode_telegram_auth_patch:
+  file.replace:
+    - name: {{ home }}/.local/lib/node_modules/@grinev/opencode-telegram-bot/dist/bot/middleware/auth.js
+    - pattern: 'if \(userId && userId === config\.telegram\.allowedUserId\) \{'
+    - repl: 'if (userId && userId === config.telegram.allowedUserId && ctx.chat?.type === "private") {'
+    - count: 1
+    - require:
+      - cmd: install_opencode_telegram
+
+opencode_telegram_auth_bot_guard_patch:
+  file.replace:
+    - name: {{ home }}/.local/lib/node_modules/@grinev/opencode-telegram-bot/dist/bot/middleware/auth.js
+    - pattern: 'const userId = ctx\.from\?\.id;'
+    - repl: 'const userId = ctx.from?.id;\n    if (ctx.from?.is_bot) {\n        return;\n    }'
+    - count: 1
+    - require:
+      - file: opencode_telegram_auth_patch
+
 {% if _has_otb_token %}
 opencode_telegram_bot_env:
   file.managed:
@@ -49,6 +67,8 @@ opencode_telegram_bot_env:
     start_now=['opencode-serve.service', 'opencode-telegram-bot.service'],
     requires=[
         'cmd: install_opencode_telegram',
+        'file: opencode_telegram_auth_patch',
+        'file: opencode_telegram_auth_bot_guard_patch',
         'file: opencode_serve_service',
         'cmd: opencode_serve_service_daemon_reload',
         'file: opencode_telegram_bot_service',

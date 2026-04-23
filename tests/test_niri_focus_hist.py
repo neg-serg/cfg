@@ -30,14 +30,13 @@ def test_address_regex_matches_expected_pattern():
     """Validate the assumed Niri window address format."""
     # Extract ADDR_REGEX from script source
     source = SCRIPT_PATH.read_text()
-    import re
     # Find line like: ADDR_REGEX = re.compile(r'^0x[0-9a-f]+$', re.IGNORECASE)
     match = re.search(r'ADDR_REGEX\s*=\s*re\.compile\(r(["\'])(.*?)\1', source, re.DOTALL)
     assert match is not None, "ADDR_REGEX definition not found in script"
     pattern = match.group(2)
     # Unescape raw string (simple)
     addr_regex = re.compile(rf"{pattern}", re.IGNORECASE)
-    
+
     # Should match hex strings prefixed with "0x"
     assert addr_regex.fullmatch("0x1a2b3c")
     assert addr_regex.fullmatch("0xABCDEF")
@@ -46,7 +45,7 @@ def test_address_regex_matches_expected_pattern():
     assert not addr_regex.fullmatch("")
     assert not addr_regex.fullmatch("0x")
     assert not addr_regex.fullmatch("0xghijkl")  # non‑hex
-    assert not addr_regex.fullmatch("1a2b3c")   # missing prefix
+    assert not addr_regex.fullmatch("1a2b3c")  # missing prefix
     assert not addr_regex.fullmatch("0x1a2b3c ")  # trailing space
     assert not addr_regex.fullmatch(" 0x1a2b3c")
 

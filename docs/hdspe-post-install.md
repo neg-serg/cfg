@@ -1,45 +1,45 @@
-# RME HDSPe AIO Pro: установка и проверка
+# RME HDSPe AIO Pro: installation & verification
 
-## Установлено
+## Installed
 
-- **Модуль ядра**: `snd-hdspe` (DKMS, подписан, автозагрузка)
+- **Kernel module**: `snd-hdspe` (DKMS, signed, auto-load)
 - **Blacklist**: `snd-hdspm` — `/usr/lib/modprobe.d/hdspe.conf`
-- **Утилита**: `~/bin/hdspeconf` (wxWidgets GUI, нужен дисплей)
-- **Репозиторий**: весь ADI-2 код удалён и закоммичен
+- **Utility**: `~/bin/hdspeconf` (wxWidgets GUI, needs display)
+- **Repository**: all ADI-2 code removed and committed
 
-## Карта
+## Hardware map
 
-| Параметр | Значение |
+| Param | Value |
 |---|---|
-| Модель | RME HDSPe AIO Pro (multichannel audio controller) |
+| Model | RME HDSPe AIO Pro (multichannel audio controller) |
 | PCI | `05:00.0`, vendor:device `RME 3fc6`, driver `snd_hdspe` |
 | ALSA | `card 0: HDSPe24048964`, device 0 — playback + capture |
 | PW sink | `alsa_output.pci-0000_05_00.0.multichannel-output` («RME AIO Pro») |
 | PW source | `alsa_input.pci-0000_05_00.0.multichannel-input` («RME AIO Pro») |
-| Дефолтный sink/source | Уже стоит на HDSPe (WirePlumber назначил автоматически) |
+| Default sink/source | Already set to HDSPe (WirePlumber auto-assigned) |
 
-## Что работает
+## Verified
 
-- `pw-play` — воспроизведение через PipeWire: OK
-- `speaker-test` через прямой ALSA `hw:0,0` — fails with Device busy (PipeWire владеет картой, это нормально)
-- `hdspeconf` — запускается при наличии дисплея (GUI для аппаратного микшера AIO Pro)
+- `pw-play` — playback via PipeWire: OK
+- `speaker-test` via direct ALSA `hw:0,0` — fails with Device busy (PipeWire owns the card, expected)
+- `hdspeconf` — launches with a display (GUI for AIO Pro hardware mixer)
 
-## PipeWire конфиг
+## PipeWire config
 
-Не требуется. Карта работает с дефолтным WirePlumber. Никакого ремаппинга не нужно — AIO Pro это многоканальное устройство с физическими выходами.
+Not needed. Works with default WirePlumber. No remapping required — AIO Pro is a multichannel device with physical outputs.
 
-`wireplumber.conf.d/10-default-volume.conf` уже чистый (только `default-sink-volume = 1.0`). ADI-2 референсы удалены.
+`wireplumber.conf.d/10-default-volume.conf` is clean (only `default-sink-volume = 1.0`). All ADI-2 references removed.
 
-## Остаточные ADI-2 артефакты
+## Residual ADI-2 artifacts on disk
 
-- `~/.config/pipewire/pipewire.conf.d/98-adi2-remap.conf` — удалён
-- `~/.local/bin/sink-switch` — удалён
-- `/usr/local/bin/rme-usb-trigger` — остался (нужен `sudo rm`)
+- `~/.config/pipewire/pipewire.conf.d/98-adi2-remap.conf` — removed
+- `~/.local/bin/sink-switch` — removed
+- `/usr/local/bin/rme-usb-trigger` — still present (needs `sudo rm`)
 
-Артефактов pw-restore-links / pw-tools нет.
+No pw-restore-links / pw-tools artifacts remain.
 
-## Примечания
+## Notes
 
-- Модуль `snd-hdspe` собран из форка `Schroedingers-Cat/snd-hdspe` (ветка `kernel-compat/v6.16`) — оригинал не собирается на ядре 6.19+
-- При перезагрузке `snd-hdspm` заблокирован blacklist-ом, `snd-hdspe` грузится автоматически
-- Если карта исчезнет после обновления ядра — пересобрать DKMS: `sudo dkms autoinstall`
+- `snd-hdspe` built from `Schroedingers-Cat/snd-hdspe` fork (`kernel-compat/v6.16` branch) — upstream does not build on kernel 6.19+
+- On reboot, `snd-hdspm` is blacklisted, `snd-hdspe` loads automatically
+- If the card disappears after a kernel update, rebuild DKMS: `sudo dkms autoinstall`

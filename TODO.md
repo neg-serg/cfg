@@ -77,18 +77,46 @@ Note: my.telegram.org form may silently reject — known issue, retry later or f
 
 ## OpenCode Telegram Bots (manual setup)
 
-Salt state `opencode_telegram.sls` is ready. Services are guarded — won't start until tokens are provided.
+`opencode-telegram` is now deployed and running.
+
+Current runtime behavior:
+- access is restricted to the owner user ID only
+- bot only responds in private chat
+- available models are restricted to DeepSeek (`deepseek-chat`, `deepseek-reasoner`), default = `deepseek-chat`
 
 **Manual steps (Telegram-side):**
-- [ ] Create bot via @BotFather for opencode-telegram-bot → `gopass insert api/opencode-telegram-bot`
 - [ ] Create bot via @BotFather for telecode → `gopass insert api/telecode-telegram`
-- [ ] Run `just apply opencode_telegram` after adding tokens
-- [ ] Verify both services start: `systemctl --user status opencode-telegram-bot telecode opencode-serve`
+- [ ] Verify the running bot still responds correctly after token rotation / service restarts: `systemctl --user status opencode-telegram-bot opencode-serve`
+- [ ] Decide whether `telecode` is still needed as a second Telegram stack or should be removed/frozen
+
+**Operational note:**
+- [ ] Rotate the current `opencode-telegram-bot` token after validation; the token was pasted in chat and should be treated as compromised
 
 **Optional enhancements:**
 - [ ] Add more workspaces to telecode config (currently only `~/src/salt`)
 - [ ] Configure STT (voice transcription) for opencode-telegram-bot
 - [ ] Add telecode to `salt-monitor` health checks
+
+---
+
+## Telethon Bridge bring-up
+
+Repository/runtime prep is done, but the service is still blocked on external Telegram MTProto prerequisites.
+
+Current state:
+- `telethon_bridge` feature is enabled for `telfir`
+- config/runtime paths were moved to XDG-style directories
+- service healthcheck is honest now and stays red until a real session exists
+- `telethon-bridge-init` now fails with a clear error instead of traceback when MTProto credentials are missing
+
+Remaining blockers:
+- [ ] Obtain `api_id` and `api_hash` from `https://my.telegram.org/apps`
+- [ ] Store them in `gopass` as `api/telegram-telethon-id` and `api/telegram-telethon-hash`
+- [ ] Re-run `./scripts/salt-apply.sh telethon_bridge`
+- [ ] Run `telethon-bridge-init` interactively to create `~/.local/state/telethon-bridge/telethon.session`
+- [ ] Start and verify: `systemctl --user restart telethon-bridge && curl -s http://127.0.0.1:8319/health`
+
+Note: `my.telegram.org` currently times out directly on this network; use the local Telegram SOCKS5 proxy path from the section above.
 
 ---
 

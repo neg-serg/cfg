@@ -32,9 +32,35 @@ input "type:touchpad" {
 
 // Workspace layout
 layout {
-    default_column_width 0.5
-    focus_follows_mouse false
-    center_focus true
+    gaps 0
+    center-focused-column "never"
+    
+    focus-ring {
+        width 4
+        active-color "#7fc8ff"
+        inactive-color "#505050"
+    }
+    
+    border {
+        off
+        width 1
+        active-color "#00285981"
+        inactive-color "#00000000"
+    }
+    
+    shadow {
+        off
+        softness 30
+        spread 5
+        offset x=0 y=5
+        color "#0007"
+    }
+    
+    default-column-width { proportion 0.5; }
+    preset-column-widths {
+        proportion 0.5
+        proportion 1.0
+    }
 }
 
 // Keybindings

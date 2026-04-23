@@ -48,6 +48,8 @@ Groups let you apply a coherent slice of the system without running all
 | `services` | system services, monitoring, user systemd units | ~0.5 s |
 | `ai` | ollama, llama_embed, nanoclaw, opencode, image_gen (feature-gated) | ~0.4 s |
 
+*Note: Google Gemini AI integration has been removed.*
+
 Groups live in `states/group/*.sls`.  Each is a thin `include:` list — no
 new logic, just a convenient entry point.  Individual states still work:
 `just apply mpd`, `just apply steam`, etc.
@@ -60,3 +62,5 @@ new logic, just a convenient entry point.  Individual states still work:
 - [gopass setup](docs/gopass-setup.md) — step-by-step secret provisioning, unlock, backup, and migration guidance
 - [gopass age recovery](docs/gopass-age-recovery.md) — moving an `age`-backed store to another machine
 - [SonoBus setup](docs/sonobus-setup.md) — P2P low-latency audio streaming between devices
+- [AI state group](docs/ai-state-group.md) — overview of AI‑related Salt states
+- [Neovim AI setup](docs/neovim-ai-setup.md) — AI integration in Neovim (Gemini removed)

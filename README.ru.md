@@ -47,6 +47,8 @@ just test group/network
 | `services` | system services, monitoring, user systemd units | ~0.5 с |
 | `ai` | ollama, llama_embed, nanoclaw, opencode, image_gen (по feature flags) | ~0.4 с |
 
+*Примечание: интеграция Google Gemini AI удалена.*
+
 Группы лежат в `states/group/*.sls` — это обычные `include:` списки без
 новой логики. Отдельные стейты тоже работают: `just apply mpd`, `just apply steam` и т.д.
 
@@ -58,3 +60,5 @@ just test group/network
 - [Настройка gopass](docs/gopass-setup.ru.md) — пошаговое заведение секретов
 - [Recovery gopass age](docs/gopass-age-recovery.ru.md) — перенос `age`-backed store на другой компьютер
 - [Настройка SonoBus](docs/sonobus-setup.md) — P2P аудио-стриминг с низкой задержкой между устройствами
+- [Группа состояний AI](docs/ai-state-group.ru.md) — обзор AI‑стейтов Salt
+- [Настройка AI в Neovim](docs/neovim-ai-setup.ru.md) — AI‑интеграции в Neovim (Gemini удалён)

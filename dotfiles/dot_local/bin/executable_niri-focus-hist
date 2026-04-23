@@ -17,12 +17,24 @@ import re
 import signal
 import subprocess
 import sys
+import types
 from collections import deque
 
 # Assumption: Niri window addresses are hex strings prefixed with "0x".
 # This regex should be verified against actual `niri msg subscribe` output
 # during windowed‑mode testing (Task 9).
 ADDR_REGEX = re.compile(r'^0x[0-9a-f]+$', re.IGNORECASE)
+HISTORY_MAXLEN = 20
+
+
+def is_valid_addr(addr: str) -> bool:
+    """Return True if addr matches the Niri window address pattern."""
+    return bool(ADDR_REGEX.fullmatch(addr))
+
+
+def remove_from_history(history: deque[str], addr: str) -> deque[str]:
+    """Return a new deque with all occurrences of addr removed, preserving maxlen."""
+    return deque([a for a in history if a != addr], maxlen=history.maxlen)
 
 
 def state_path() -> str:
@@ -66,7 +78,7 @@ def switch() -> int:
         return 1
     if not addr:
         return 1
-    if not ADDR_REGEX.fullmatch(addr):
+    if not is_valid_addr(addr):
         sys.stderr.write(f"Invalid window address format: {addr}\n")
         return 1
     try:
@@ -87,7 +99,7 @@ def daemon() -> None:
     """Listen to Niri events and track focus history."""
     try:
         proc = subprocess.Popen(
-            ["niri", "msg", "subscribe", "--events", "window-opened,window-closed,window-focused"],
+            ["niri", "msg", "subscribe", "--events", "window-closed,window-focused"],
             stdout=subprocess.PIPE,
             text=True,
         )
@@ -96,7 +108,7 @@ def daemon() -> None:
         sys.exit(1)
     # Note: This script does not automatically reconnect if `niri msg subscribe` exits.
     # It should be supervised (e.g., by a systemd user service) that restarts it on failure.
-    history: deque[str] = deque(maxlen=20)
+    history: deque[str] = deque(maxlen=HISTORY_MAXLEN)
     path = state_path()
     ensure_parent_dir(path)
 
@@ -128,7 +140,7 @@ def daemon() -> None:
         cleaned = True
     atexit.register(cleanup)
 
-    def signal_handler(signum, frame) -> None:
+    def signal_handler(signum: int, frame: types.FrameType) -> None:
         cleanup()
         sys.exit(0)
     signal.signal(signal.SIGTERM, signal_handler)
@@ -148,7 +160,7 @@ def daemon() -> None:
                 addr = event.get("window", {}).get("address")
                 if not addr:
                     continue
-                if not ADDR_REGEX.fullmatch(addr):
+                if not is_valid_addr(addr):
                     continue
                 # Skip if already the most recent
                 if history and history[-1] == addr:
@@ -156,7 +168,7 @@ def daemon() -> None:
                 # Move to end (re-insert)
                 if addr in history:
                     # Remove existing occurrence while preserving order and maxlen
-                    history = deque([a for a in history if a != addr], maxlen=20)
+                    history = remove_from_history(history, addr)
                 history.append(addr)
                 # Write previous window to state file
                 if len(history) >= 2:
@@ -166,9 +178,9 @@ def daemon() -> None:
                 addr = event.get("window", {}).get("address")
                 if not addr:
                     continue
-                if not ADDR_REGEX.fullmatch(addr):
+                if not is_valid_addr(addr):
                     continue
-                history = deque([a for a in history if a != addr], maxlen=20)
+                history = remove_from_history(history, addr)
                 if len(history) >= 2:
                     write_state(path, history[-2])
                 elif history:

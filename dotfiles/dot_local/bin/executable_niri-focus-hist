@@ -86,11 +86,15 @@ def switch() -> int:
             ["niri", "msg", "action", "focus-window", f"address={addr}"],
             check=False,
             stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True,
         )
     except (FileNotFoundError, OSError) as e:
         sys.stderr.write(f"Failed to run niri: {e}\n")
         return 1
     if result.returncode != 0:
+        if result.stderr:
+            sys.stderr.write(f"niri msg action failed: {result.stderr}\n")
         return 1
     return 0
 
@@ -112,6 +116,7 @@ def daemon() -> None:
     history: deque[str] = deque(maxlen=HISTORY_MAXLEN)
     path = state_path()
     ensure_parent_dir(path)
+    decode_errors = 0
 
     cleaned = False
 
@@ -142,7 +147,10 @@ def daemon() -> None:
     atexit.register(cleanup)
 
     def signal_handler(signum: int, frame: types.FrameType) -> None:
-        cleanup()
+        try:
+            cleanup()
+        except Exception as e:
+            sys.stderr.write(f"Error during cleanup: {e}\n")
         sys.exit(0)
     signal.signal(signal.SIGTERM, signal_handler)
     signal.signal(signal.SIGINT, signal_handler)
@@ -155,11 +163,17 @@ def daemon() -> None:
             try:
                 event = json.loads(line)
             except json.JSONDecodeError:
+                decode_errors += 1
+                if decode_errors <= 5:
+                    sys.stderr.write(f"Malformed IPC line (error #{decode_errors}): {line!r}\n")
                 continue
 
             if event.get("type") == "window-focused":
-                addr = event.get("window", {}).get("address")
-                if not addr:
+                window = event.get("window")
+                if not isinstance(window, dict):
+                    continue
+                addr = window.get("address")
+                if not isinstance(addr, str):
                     continue
                 if not is_valid_addr(addr):
                     continue
@@ -176,8 +190,11 @@ def daemon() -> None:
                     write_state(path, history[-2])
 
             elif event.get("type") == "window-closed":
-                addr = event.get("window", {}).get("address")
-                if not addr:
+                window = event.get("window")
+                if not isinstance(window, dict):
+                    continue
+                addr = window.get("address")
+                if not isinstance(addr, str):
                     continue
                 if not is_valid_addr(addr):
                     continue

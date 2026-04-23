@@ -247,10 +247,10 @@ def test_pw_route_script_exposes_named_rme_output_pairs():
     assert 'targets[aes]="2 3"' in source
     assert 'targets[spdif]="4 5"' in source
     assert 'targets[phones]="6 7"' in source
-    assert 'status)' in source
-    assert 'route_monitor_pair()' in source
-    assert 'monitor_AUX0' in source
-    assert 'monitor_AUX1' in source
+    assert "status)" in source
+    assert "route_monitor_pair()" in source
+    assert "monitor_AUX0" in source
+    assert "monitor_AUX1" in source
 
 
 def test_pw_route_script_parses_in_zsh():

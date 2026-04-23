@@ -1,0 +1,145 @@
+#!/usr/bin/env zsh
+setopt ERR_EXIT NOUNSET PIPE_FAIL
+
+IFS=$'\n\t'
+
+typeset -A targets
+targets[an]="0 1"
+targets[aes]="2 3"
+targets[spdif]="4 5"
+targets[phones]="6 7"
+
+die() {
+    print -u2 -- "pw-route: $*"
+    exit 1
+}
+
+need() {
+    command -v "$1" >/dev/null 2>&1 || die "missing dependency: $1"
+}
+
+usage() {
+    cat <<'EOF'
+Usage: pw-route <an|aes|spdif|phones|status>
+
+Route active stereo PipeWire streams on the RME AIO Pro pro-audio sink:
+  an      -> AUX0/AUX1
+  aes     -> AUX2/AUX3
+  spdif   -> AUX4/AUX5
+  phones  -> AUX6/AUX7
+  status  -> show current RME playback links
+EOF
+}
+
+find_rme_sink() {
+    local sink_name
+
+    sink_name="$(pw-cli list-objects Node | awk '
+        /node.name = "alsa_output\./ { node=$3; gsub(/"/, "", node) }
+        /node.nick = "RME AIO Pro"/ { print node; exit }
+    ')"
+
+    [[ -n "$sink_name" ]] || die "RME AIO Pro sink not found"
+    print -- "$sink_name"
+}
+
+show_status() {
+    local sink_name="$1"
+    local link_dump
+
+    link_dump="$(pw-link -l)"
+    if [[ -z "$link_dump" ]]; then
+        die "no PipeWire links found"
+    fi
+
+    printf '%s\n' "$link_dump" | awk -v sink="$sink_name" '
+        $0 ~ sink":playback_AUX" { print; seen=1; next }
+        seen && /^  \|<-/ { print; next }
+        seen { seen=0 }
+    '
+}
+
+disconnect_stream_port_links() {
+    local stream_port="$1"
+    local link_dump
+    local -a ports
+
+    link_dump="$(pw-link -l)"
+    ports=(
+        ${(f)$(printf '%s\n' "$link_dump" | awk -v stream="$stream_port" '
+            $0 == stream { seen=1; next }
+            seen && /^  \|-> / {
+                sub(/^  \|-> /, "")
+                print
+                next
+            }
+            seen { seen=0 }
+        ')}
+    )
+
+    for port in "${ports[@]}"; do
+        [[ -n "$port" ]] || continue
+        pw-link -d "$stream_port" "$port" 2>/dev/null || true
+    done
+}
+
+route_monitor_pair() {
+    local sink_name="$3"
+    local left_aux="$4"
+    local right_aux="$5"
+    local left_monitor="$1"
+    local right_monitor="$2"
+
+    disconnect_stream_port_links "$left_monitor"
+    disconnect_stream_port_links "$right_monitor"
+
+    pw-link "$left_monitor" "$sink_name:playback_AUX${left_aux}"
+    pw-link "$right_monitor" "$sink_name:playback_AUX${right_aux}"
+}
+
+route_target() {
+    local target_name="$1"
+    local sink_name="$2"
+    local -a pair
+    local left_monitor right_monitor
+
+    pair=( ${(s: :)targets[$target_name]} )
+    left_monitor="$sink_name:monitor_AUX0"
+    right_monitor="$sink_name:monitor_AUX1"
+
+    route_monitor_pair "$left_monitor" "$right_monitor" "$sink_name" "$pair[1]" "$pair[2]"
+    print -- "default stereo mix -> $target_name (AUX${pair[1]}/AUX${pair[2]})"
+}
+
+main() {
+    local command="${1:-}"
+    local sink_name
+
+    case "$command" in
+        an|aes|spdif|phones|status) ;;
+        -h|--help|help)
+            usage
+            exit 0
+            ;;
+        *)
+            usage >&2
+            exit 1
+            ;;
+    esac
+
+    need pw-link
+    need pw-cli
+
+    sink_name="$(find_rme_sink)"
+
+    case "$command" in
+        status)
+            show_status "$sink_name"
+            ;;
+        an|aes|spdif|phones)
+            route_target "$command" "$sink_name"
+            ;;
+    esac
+}
+
+main "$@"

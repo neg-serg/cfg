@@ -240,6 +240,27 @@ def test_hot_reload_script_parses_in_zsh():
     assert result.returncode == 0, result.stderr
 
 
+def test_pw_route_script_exposes_named_rme_output_pairs():
+    source = (REPO_ROOT / "dotfiles" / "dot_local" / "bin" / "executable_pw-route").read_text()
+
+    assert 'targets[an]="0 1"' in source
+    assert 'targets[aes]="2 3"' in source
+    assert 'targets[spdif]="4 5"' in source
+    assert 'targets[phones]="6 7"' in source
+    assert 'status)' in source
+    assert 'route_monitor_pair()' in source
+    assert 'monitor_AUX0' in source
+    assert 'monitor_AUX1' in source
+
+
+def test_pw_route_script_parses_in_zsh():
+    script = REPO_ROOT / "dotfiles" / "dot_local" / "bin" / "executable_pw-route"
+
+    result = subprocess.run(["zsh", "-n", str(script)], capture_output=True, text=True)
+
+    assert result.returncode == 0, result.stderr
+
+
 def test_yt_alias_uses_wrapper_based_defaults():
     aliases = yaml.safe_load(
         (REPO_ROOT / "dotfiles" / "dot_config" / "aliae" / "aliae.yaml").read_text()

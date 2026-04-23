@@ -30,6 +30,18 @@ Not needed. Works with default WirePlumber. No remapping required — AIO Pro is
 
 `wireplumber.conf.d/10-default-volume.conf` is clean (only `default-sink-volume = 1.0`). All ADI-2 references removed.
 
+## PipeWire routing helper
+
+Use `pw-route` to move active stereo PipeWire streams onto named RME output pairs on the pro-audio sink:
+
+- `pw-route an` -> `AUX0/AUX1`
+- `pw-route aes` -> `AUX2/AUX3`
+- `pw-route spdif` -> `AUX4/AUX5`
+- `pw-route phones` -> `AUX6/AUX7`
+- `pw-route status` -> show current RME playback links
+
+This is intended for the HDSPe AIO Pro running as a multichannel PipeWire device. Hardware monitoring and submixing still happen in `hdspmixer`; `pw-route` only changes which software playback pair a PipeWire stream lands on.
+
 ## Residual ADI-2 artifacts on disk
 
 - `~/.config/pipewire/pipewire.conf.d/98-adi2-remap.conf` — removed

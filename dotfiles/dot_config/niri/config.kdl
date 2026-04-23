@@ -100,6 +100,30 @@ binds {
     Mod+Space { toggle-overview; }
 }
 
+// Window rules
+window-rule {
+    match app-id=r#"^zen$"#
+    match app-id=r#"^floorp$"#
+    match app-id=r#"^one\.ablaze\.floorp$"#
+    match app-id=r#"^floorpdeveloperedition$"#
+    // Optional: open-floating true if needed
+}
+
+window-rule {
+    match app-id=r#"^qt5ct$"#
+    match app-id=r#"^wine$"#
+    match app-id=r#"^steamwebhelper$"#
+    match app-id=r#"^sun-awt-X11-XFramePeer$"#
+    match app-id=r#"^install4j-roomeqwizard-RoomEQ_Wizard$"#
+    match app-id=r#"^xdg-desktop-portal-gtk$"#
+    open-floating true
+}
+
+window-rule {
+    match title="^Picture-in-Picture$"
+    open-floating true
+}
+
 // Status bar (optional)
 // bar { ... }
 

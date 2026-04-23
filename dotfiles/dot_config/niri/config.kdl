@@ -1,0 +1,57 @@
+// Niri configuration (KDL)
+// See https://github.com/YaLTeR/niri/blob/main/examples/config.kdl for full examples
+
+output "DP-1" {
+    mode 2560x1440@144Hz
+    position 0,0
+    scale 1.0
+}
+
+input "type:keyboard" {
+    xkb_layout "us"
+    xkb_variant ""
+    repeat_delay 600
+    repeat_rate 25
+}
+
+input "type:pointer" {
+    accel_profile "flat"
+    natural_scroll false
+}
+
+input "type:touchpad" {
+    tap true
+    natural_scroll false
+}
+
+// Workspace layout
+layout {
+    default_column_width 0.5
+    default_column_width 0.5
+    focus_follows_mouse false
+    center_focus true
+}
+
+// Keybindings
+bind "Super+Return" action=spawn cmd="kitty"
+bind "Super+Q" action=close_window
+bind "Super+Shift+Q" action=exit
+bind "Super+D" action=spawn cmd="rofi -show drun"
+bind "Super+Shift+D" action=spawn cmd="rofi -show run"
+bind "Super+Space" action=toggle_overview
+
+// Status bar (optional)
+// bar { ... }
+
+// Animations
+animations {
+    enabled true
+    spring 400,0.5
+}
+
+// Misc
+misc {
+    focus_on_window_activation true
+    border_width 1
+    border_color 0xFFFFFF
+}

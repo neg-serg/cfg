@@ -438,6 +438,10 @@ alias:
   - name: zxgrep
     value: ug -zW
 
+  # Telegram Downloader with SOCKS5 proxy
+  - name: tdl
+    value: tdl --proxy socks5://127.0.0.1:10808
+
 function:
   - name: y
     value: |

@@ -138,7 +138,7 @@ verify_tun_interface() {
     # Check routing table for VPN routes (table 200)
     if ip route show table 200 >/dev/null 2>&1; then
         echo "✅ VPN routing table (200) exists"
-        local route_count=$(ip route show table 200 | wc -l)
+        local route_count; route_count=$(ip route show table 200 | wc -l)
         echo "   Found $route_count route(s) in table 200"
     else
         echo "⚠️  VPN routing table (200) not found" >&2
@@ -177,6 +177,7 @@ backup_routes() {
     echo "$backup_dir"
 }
 
+# shellcheck disable=SC2329  # function is for manual/emergency use
 restore_routes() {
     local backup_dir="$1"
     
@@ -286,6 +287,7 @@ cleanup() {
 
 
 # Setup trap for cleanup
+# shellcheck disable=SC2329  # function is called via trap
 cleanup_wrapper() {
     cleanup "$BACKUP_DIR"
 }

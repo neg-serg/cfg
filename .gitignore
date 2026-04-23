@@ -3,6 +3,7 @@
 # Build artifacts
 rpms/
 *.log
+logs/
 *.pkg.tar.zst
 build/pkgbuilds/*/src/
 build/pkgbuilds/*/pkg/

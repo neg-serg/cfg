@@ -11,7 +11,7 @@ Switch mode (--switch): reads the state file and focuses the previous window.
 from __future__ import annotations
 
 import atexit
-import errno
+
 import json
 import os
 import re
@@ -40,24 +40,37 @@ def switch() -> int:
     if not ADDR_REGEX.fullmatch(addr):
         sys.stderr.write(f"Invalid window address format: {addr}\n")
         return 1
-    subprocess.run(
-        ["niri", "msg", "action", "focus-window", f"address={addr}"],
-        check=False,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+    try:
+        subprocess.run(
+            ["niri", "msg", "action", "focus-window", f"address={addr}"],
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except (FileNotFoundError, OSError) as e:
+        sys.stderr.write(f"Failed to run niri: {e}\n")
+        return 1
     return 0
 
 
 def daemon() -> None:
     """Listen to Niri events and track focus history."""
-    proc = subprocess.Popen(
-        ["niri", "msg", "subscribe", "--events", "window-opened,window-closed,window-focused"],
-        stdout=subprocess.PIPE,
-        text=True,
-    )
+    try:
+        proc = subprocess.Popen(
+            ["niri", "msg", "subscribe", "--events", "window-opened,window-closed,window-focused"],
+            stdout=subprocess.PIPE,
+            text=True,
+        )
+    except (FileNotFoundError, OSError) as e:
+        sys.stderr.write(f"Failed to start niri: {e}\n")
+        sys.exit(1)
     history: list[str] = []
     path = state_path()
+
+    def ensure_parent_dir(p: str) -> None:
+        parent = os.path.dirname(p)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
 
     def cleanup():
         if proc.poll() is None:
@@ -98,6 +111,7 @@ def daemon() -> None:
                 # Write previous window to state file
                 if len(history) >= 2:
                     try:
+                        ensure_parent_dir(path)
                         with open(path, "w") as f:
                             f.write(history[-2])
                     except OSError as e:
@@ -109,12 +123,14 @@ def daemon() -> None:
                     history.remove(addr)
                     if len(history) >= 2:
                         try:
+                            ensure_parent_dir(path)
                             with open(path, "w") as f:
                                 f.write(history[-2])
                         except OSError as e:
                             sys.stderr.write(f"Error writing state file: {e}\n")
                     elif history:
                         try:
+                            ensure_parent_dir(path)
                             with open(path, "w") as f:
                                 f.write(history[0])
                         except OSError as e:

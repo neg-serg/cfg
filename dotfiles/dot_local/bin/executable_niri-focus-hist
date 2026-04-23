@@ -157,12 +157,13 @@ def daemon() -> None:
                     continue
                 if not ADDR_REGEX.fullmatch(addr):
                     continue
-                if addr in history:
-                    history = deque([a for a in history if a != addr], maxlen=20)
-                    if len(history) >= 2:
-                        write_state(path, history[-2])
-                    else:
-                        remove_state(path)
+                history = deque([a for a in history if a != addr], maxlen=20)
+                if len(history) >= 2:
+                    write_state(path, history[-2])
+                elif history:
+                    write_state(path, history[0])
+                else:
+                    remove_state(path)
     finally:
         cleanup()
 

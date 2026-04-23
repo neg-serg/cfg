@@ -935,7 +935,6 @@ def test_opencode_config_keeps_expected_plugins():
     with open(template_path) as fh:
         template_source = fh.read()
 
-    assert '"opencode-gemini-auth@latest"' in template_source
     assert '"superpowers@git+https://github.com/obra/superpowers.git"' in template_source
 
 

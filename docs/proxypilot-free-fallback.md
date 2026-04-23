@@ -2,7 +2,7 @@
 
 ## Overview
 
-Emergency fallback system providing free AI model access when paid providers (Anthropic, Google Gemini) are unavailable. Uses 3 cloud providers + optional DeepSeek + local Ollama as last resort.
+Emergency fallback system providing free AI model access when paid providers (Anthropic) are unavailable. Uses 3 cloud providers + optional DeepSeek + local Ollama as last resort.
 
 ## Architecture
 

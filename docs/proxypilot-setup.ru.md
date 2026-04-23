@@ -175,7 +175,7 @@ proxypilot -config ~/.config/proxypilot/config.yaml -detect-agents
 | Версия | Ключевые изменения |
 |--------|--------------------|
 | v0.3.0-dev-0.39 | Паника `tui` flag при любых командах `--*-login` |
-| v0.3.0-dev-0.40 | Исправлена паника `tui`, Claude OAuth работает, поддержка Gemini 3.1/GPT-5.4 |
+| v0.3.0-dev-0.40 | Исправлена паника `tui`, Claude OAuth работает, поддержка GPT-5.4 |
 
 ## Опасные команды
 

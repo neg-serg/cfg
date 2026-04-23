@@ -41,8 +41,7 @@ def test_wlr_which_key_browser_menu_prefers_zen_and_keeps_floorp_secondary():
     assert f'cmd: raise --match "class:regex={PRIMARY_BROWSER_REGEX}" --launch zen-browser' in text
     assert '- key: "W"' in text
     assert "desc: Floorp Browser" in text
-    assert f'cmd: raise --match "class:regex={FLOORP_BROWSER_REGEX}"' in text
-    assert "    --launch floorp" in text
+    assert f'cmd: raise --match "class:regex={FLOORP_BROWSER_REGEX}" --launch floorp' in text
 
 
 def test_generated_hypr_shortcuts_index_contains_browser_and_selector_entries():

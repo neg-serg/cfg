@@ -294,6 +294,7 @@ def render_which_key_config(actions: list[BindingAction], metadata: dict) -> str
         Dumper=QuotedKeyDumper,
         sort_keys=False,
         allow_unicode=False,
+        width=4096,
     )
 
 

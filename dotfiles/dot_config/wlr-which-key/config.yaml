@@ -12,21 +12,16 @@ anchor: center
 menu:
 - key: "w"
   desc: Browser
-  cmd: raise --match "class:regex=(?i)^(zen|floorp|one\.ablaze\.floorp|floorpdeveloperedition|firefox(?:[
-    -]?developer[ -]?edition)?|org\.mozilla\.firefox(?:[ -]?developer[ -]?edition)?|librewolf|io\.gitlab\.librewolf-community|chromium(?:-browser)?|org\.chromium\.chromium|ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\.brave\.browser|vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\.thorium\.thorium|mullvad-browser|com\.mullvad\.browser|palemoon|net\.palemoon\.palemoon|qutebrowser|org\.qutebrowser\.qutebrowser|falkon|org\.kde\.falkon|midori|epiphany|org\.gnome\.epiphany|google-chrome(?:-(?:stable|beta|unstable))?|com\.google\.chrome|microsoft-edge(?:-(?:beta|dev|canary))?|com\.microsoft\.edge)$"
-    --launch zen-browser
+  cmd: raise --match "class:regex=(?i)^(zen|floorp|one\.ablaze\.floorp|floorpdeveloperedition|firefox(?:[ -]?developer[ -]?edition)?|org\.mozilla\.firefox(?:[ -]?developer[ -]?edition)?|librewolf|io\.gitlab\.librewolf-community|chromium(?:-browser)?|org\.chromium\.chromium|ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\.brave\.browser|vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\.thorium\.thorium|mullvad-browser|com\.mullvad\.browser|palemoon|net\.palemoon\.palemoon|qutebrowser|org\.qutebrowser\.qutebrowser|falkon|org\.kde\.falkon|midori|epiphany|org\.gnome\.epiphany|google-chrome(?:-(?:stable|beta|unstable))?|com\.google\.chrome|microsoft-edge(?:-(?:beta|dev|canary))?|com\.microsoft\.edge)$" --launch zen-browser
 - key: "W"
   desc: Floorp Browser
-  cmd: raise --match "class:regex=^(floorp|one\.ablaze\.floorp|floorpdeveloperedition)$"
-    --launch floorp
+  cmd: raise --match "class:regex=^(floorp|one\.ablaze\.floorp|floorpdeveloperedition)$" --launch floorp
 - key: "x"
   desc: Terminal
-  cmd: raise --match "class:regex=^term$" --launch "kitty --single-instance --class
-    term"
+  cmd: raise --match "class:regex=^term$" --launch "kitty --single-instance --class term"
 - key: "q"
   desc: Neovim
-  cmd: raise --match "class:regex=^nwim$" --launch "kitty --single-instance --class
-    nwim -e v"
+  cmd: raise --match "class:regex=^nwim$" --launch "kitty --single-instance --class nwim -e v"
 - key: "b"
   desc: Video
   cmd: raise --match "class:regex=^mpv$" --launch "~/.local/bin/pl video"
@@ -77,12 +72,10 @@ menu:
   submenu:
   - key: "r"
     desc: Full screen
-    cmd: sh -lc "shot=\"$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png\"; grim
-      \"$shot\" && pic-info \"$shot\""
+    cmd: sh -lc "shot=\"$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png\"; grim \"$shot\" && pic-info \"$shot\""
   - key: "s"
     desc: Select area
-    cmd: sh -lc "shot=\"$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png\"; grim
-      -g \"$(slurp)\" \"$shot\" && pic-info \"$shot\""
+    cmd: sh -lc "shot=\"$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png\"; grim -g \"$(slurp)\" \"$shot\" && pic-info \"$shot\""
   - key: "v"
     desc: Record screen
     cmd: ~/.local/bin/screenrec screen
@@ -148,8 +141,7 @@ menu:
     cmd: raise --match "class:regex=^Carla2$" --launch "carla"
   - key: "n"
     desc: Obsidian
-    cmd: raise --match "class:regex=^(Obsidian|md\\.obsidian\\.Obsidian)$" --launch
-      "flatpak run md.obsidian.Obsidian"
+    cmd: raise --match "class:regex=^(Obsidian|md\\.obsidian\\.Obsidian)$" --launch "flatpak run md.obsidian.Obsidian"
   - key: "o"
     desc: OBS
     cmd: raise --match "class:regex=^(obs|com\\.obsproject\\.Studio)$" --launch "obs"

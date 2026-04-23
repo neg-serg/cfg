@@ -3,11 +3,15 @@
 {% from '_macros_service.jinja' import ensure_dir %}
 
 # --- Niri compositor installation ---
-{{ paru_install('niri_bin', 'niri-bin') }}
+# spec skeleton: niri-pkg pkg.installed with refresh: true
+# project convention: paru_install macro for AUR packages
+{{ paru_install('niri-pkg', 'niri-bin') }}
 
-{{ paru_install('xwayland_satellite', 'xwayland-satellite') }}
+# spec skeleton: niri-xwayland-satellite pkg.installed with refresh: true
+{{ paru_install('niri-xwayland-satellite', 'xwayland-satellite') }}
 
-{{ paru_install('niri_portals', 'xdg-desktop-portal-gnome xdg-desktop-portal-gtk') }}
+# spec skeleton: niri-portals pkg.installed with refresh: true
+{{ paru_install('niri-portals', 'xdg-desktop-portal-gnome xdg-desktop-portal-gtk') }}
 
 # --- Niri config directory ---
 {{ ensure_dir('niri_config_dir', home ~ '/.config/niri', mode='0700', user=user, group=user) }}

@@ -101,6 +101,7 @@ def daemon() -> None:
         proc = subprocess.Popen(
             ["niri", "msg", "subscribe", "--events", "window-closed,window-focused"],
             stdout=subprocess.PIPE,
+            stderr=sys.stderr,
             text=True,
         )
     except (FileNotFoundError, OSError) as e:
@@ -150,7 +151,7 @@ def daemon() -> None:
         while True:
             line = proc.stdout.readline()
             if not line:
-                break
+                sys.exit(1)
             try:
                 event = json.loads(line)
             except json.JSONDecodeError:

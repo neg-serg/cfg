@@ -1,82 +1,45 @@
-# HDSPe Post-Install: PipeWire config & verification
+# RME HDSPe AIO Pro: установка и проверка
 
-## Prerequisites
+## Установлено
 
-- snd-hdspe kernel module loaded (check: `lsmod | grep hdspe`)
-- hdspeconf utility in PATH (`~/bin/hdspeconf`)
+- **Модуль ядра**: `snd-hdspe` (DKMS, подписан, автозагрузка)
+- **Blacklist**: `snd-hdspm` — `/usr/lib/modprobe.d/hdspe.conf`
+- **Утилита**: `~/bin/hdspeconf` (wxWidgets GUI, нужен дисплей)
+- **Репозиторий**: весь ADI-2 код удалён и закоммичен
 
----
+## Карта
 
-## Task 1: Verify HDSPe hardware detection
+| Параметр | Значение |
+|---|---|
+| Модель | RME HDSPe AIO Pro (multichannel audio controller) |
+| PCI | `05:00.0`, vendor:device `RME 3fc6`, driver `snd_hdspe` |
+| ALSA | `card 0: HDSPe24048964`, device 0 — playback + capture |
+| PW sink | `alsa_output.pci-0000_05_00.0.multichannel-output` («RME AIO Pro») |
+| PW source | `alsa_input.pci-0000_05_00.0.multichannel-input` («RME AIO Pro») |
+| Дефолтный sink/source | Уже стоит на HDSPe (WirePlumber назначил автоматически) |
 
-```bash
-# 1. PCI device + driver
-lspci -k | grep -iA 3 hdspe
+## Что работает
 
-# 2. Kernel messages
-dmesg | grep -i hdspe
+- `pw-play` — воспроизведение через PipeWire: OK
+- `speaker-test` через прямой ALSA `hw:0,0` — fails with Device busy (PipeWire владеет картой, это нормально)
+- `hdspeconf` — запускается при наличии дисплея (GUI для аппаратного микшера AIO Pro)
 
-# 3. ALSA devices
-aplay -l
-arecord -l
+## PipeWire конфиг
 
-# 4. PipeWire nodes
-pw-cli list-objects Node | grep -i hdspe
+Не требуется. Карта работает с дефолтным WirePlumber. Никакого ремаппинга не нужно — AIO Pro это многоканальное устройство с физическими выходами.
 
-# 5. hdspeconf can connect
-~/bin/hdspeconf -l
-```
+`wireplumber.conf.d/10-default-volume.conf` уже чистый (только `default-sink-volume = 1.0`). ADI-2 референсы удалены.
 
-Expected: card appears in lspci, ALSA, and PipeWire. hdspeconf shows the card.
+## Остаточные ADI-2 артефакты
 
----
+- `~/.config/pipewire/pipewire.conf.d/98-adi2-remap.conf` — удалён
+- `~/.local/bin/sink-switch` — удалён
+- `/usr/local/bin/rme-usb-trigger` — остался (нужен `sudo rm`)
 
-## Task 2: Determine HDSPe model & capabilities
+Артефактов pw-restore-links / pw-tools нет.
 
-Run `lspci -v -s $(lspci -d 10ee: | cut -d' ' -f1)` to get the exact model.
+## Примечания
 
-Model-specific notes:
-- HDSPe AES: 2x AES/EBU (4 channels)
-- HDSPe MADI: 64 channels MADI
-- HDSPe RayDAT: up to 36 channels (ADAT + AES + SPDIF)
-- HDSPe AIO: analog + ADAT
-
----
-
-## Task 3: PipeWire config for HDSPe
-
-Investigate if any PipeWire config is needed:
-
-1. **Default sink** — update `wireplumber.conf.d/10-default-volume.conf` if needed
-2. **Profile / channel routing** — the HDSPe may expose multiple ALSA devices (hw:X,0 for playback, hw:X,1 for recording, etc.)
-3. **Named nodes** — consider udev rules or WirePlumber policy to name the card's nodes consistently
-4. **Sample rate / format** — if hdspeconf configures the card, PW should follow
-
-Create a minimal config if needed (model-dependent).
-
----
-
-## Task 4: Audio playback test
-
-```bash
-# Test with speaker-test (adjust -c to match channel count)
-speaker-test -D hw:HDSPe -c 8 -t sine -f 440
-
-# Or test through PipeWire
-pw-play /usr/share/sounds/alsa/Front_Center.wav
-```
-
----
-
-## Task 5: Cleanup old ADI-2 artifacts (system-level)
-
-From the previous session these were done:
-- `snd-hdspe` DKMS module installed + signed + loaded
-- `snd-hdspm` blacklisted in `/usr/lib/modprobe.d/hdspe.conf`
-- `hdspeconf` + `dialog-warning.png` in `~/bin/`
-- All repo files removed and committed
-
-Check if any ADI-2 artifacts remain outside the repo:
-- `~/.local/bin/sink-switch` — should be gone (was in repo)
-- `/usr/local/bin/rme-usb-trigger` — should be gone (was deployed by Salt)
-- Any PW config in `~/.config/pipewire/pipewire.conf.d/` — check manually
+- Модуль `snd-hdspe` собран из форка `Schroedingers-Cat/snd-hdspe` (ветка `kernel-compat/v6.16`) — оригинал не собирается на ядре 6.19+
+- При перезагрузке `snd-hdspm` заблокирован blacklist-ом, `snd-hdspe` грузится автоматически
+- Если карта исчезнет после обновления ядра — пересобрать DKMS: `sudo dkms autoinstall`

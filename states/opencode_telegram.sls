@@ -1,9 +1,9 @@
 {% from '_imports.jinja' import user, home, tg_secret %}
-{% import_yaml 'data/service_catalog.yaml' as catalog %}
-{% import_yaml 'data/container_images.yaml' as image_registry %}
 {% from '_macros_pkg.jinja' import npm_pkg %}
 {% from '_macros_install.jinja' import curl_bin %}
-{% from '_macros_service.jinja' import ensure_dir, container_service %}
+{% import_yaml 'data/service_catalog.yaml' as catalog %}
+{% import_yaml 'data/container_images.yaml' as image_registry %}
+{% from '_macros_service.jinja' import ensure_dir, container_service, user_service_enable, user_service_file %}
 {% import_yaml 'data/versions.yaml' as ver %}
 
 # ── Secret resolution ─────────────────────────────────────────────────
@@ -41,19 +41,20 @@ opencode_telegram_bot_env:
       - file: opencode_telegram_bot_config_dir
 {% endif %}
 
-# ── OpenCode serve (API server for the bot) — containerized ──────────
-{{ container_service('opencode_serve', catalog.opencode_serve, image_registry,
-    quadlet_unit_name='opencode-serve',
-    user_scope=True,
-    requires=['cmd: install_opencode_telegram']) }}
+# ── OpenCode serve + bot (direct user services) ───────────────────────
+{{ user_service_file('opencode_serve_service', 'opencode-serve.service') }}
+{{ user_service_file('opencode_telegram_bot_service', 'opencode-telegram-bot.service') }}
 
-# ── Bot container ─────────────────────────────────────────────────────
-{% set _bot_watch = (['file: opencode_telegram_bot_env'] if _has_otb_token else []) %}
-{{ container_service('opencode_telegram_bot', catalog.opencode_telegram_bot, image_registry,
-    quadlet_unit_name='opencode-telegram-bot',
-    user_scope=True,
-    requires=['cmd: install_opencode_telegram'],
-    watch=_bot_watch) }}
+{{ user_service_enable('opencode_telegram_services_enabled',
+    start_now=['opencode-serve.service', 'opencode-telegram-bot.service'],
+    requires=[
+        'cmd: install_opencode_telegram',
+        'file: opencode_serve_service',
+        'cmd: opencode_serve_service_daemon_reload',
+        'file: opencode_telegram_bot_service',
+        'cmd: opencode_telegram_bot_service_daemon_reload',
+    ] + (['file: opencode_telegram_bot_env'] if _has_otb_token else []),
+) }}
 
 # ══════════════════════════════════════════════════════════════════════
 # 2. Telecode (Go binary, spawns CLI directly) — containerized

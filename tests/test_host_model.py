@@ -226,6 +226,14 @@ def test_telfir_has_primary_and_secondary_browser_bindings():
     assert host["features"]["floorp"] is False
 
 
+def test_telfir_enables_opencode_telegram_stack():
+    data = host_model.load_hosts_yaml()
+    host = host_model.build_host("telfir", data)
+
+    assert host["features"]["opencode"] is True
+    assert host["features"]["opencode_telegram"] is True
+
+
 # --- US4: deep merge edge cases ---
 
 

@@ -140,8 +140,6 @@ def test_quadlet_unit_names_match_on_disk_files():
         ("nanoclaw.sls", "nanoclaw-container"),
         ("proxypilot.sls", "proxypilot-container"),
         ("telethon_bridge.sls", "telethon-bridge"),
-        ("opencode_telegram.sls", "opencode-serve"),
-        ("opencode_telegram.sls", "opencode-telegram-bot"),
     ]
 
     for filename, quadlet_name in cases:
@@ -775,6 +773,30 @@ def test_opencode_serve_unit_uses_system_cli_path():
 
     assert "ExecStart=/usr/bin/opencode serve" in source
     assert "ExecStart=%h/.local/bin/opencode serve" not in source
+
+
+def test_opencode_telegram_env_routes_telegram_api_through_local_socks_proxy():
+    path = os.path.join(REPO_ROOT, "states", "configs", "opencode-telegram-bot.env.j2")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "TELEGRAM_PROXY_URL=socks5://127.0.0.1:10808" in source
+    assert "ALL_PROXY=socks5h://127.0.0.1:10808" in source
+    assert "HTTPS_PROXY=socks5h://127.0.0.1:10808" in source
+
+
+def test_opencode_telegram_state_uses_direct_user_services_for_serve_and_bot():
+    path = os.path.join(REPO_ROOT, "states", "opencode_telegram.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert ("user_service_file('opencode_serve_service', 'opencode-serve.service')") in source
+    assert (
+        "user_service_file('opencode_telegram_bot_service', 'opencode-telegram-bot.service')"
+    ) in source
+    assert "user_service_enable('opencode_telegram_services_enabled'" in source
+    assert "container_service('opencode_serve'" not in source
+    assert "container_service('opencode_telegram_bot'" not in source
 
 
 def test_remaining_multiline_cmdrun_states_use_strict_shell_mode():

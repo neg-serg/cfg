@@ -102,6 +102,8 @@ hosts:
         tailscale: false
         zapret2: false
       floorp: false
+      opencode: true
+      opencode_telegram: true
       music_analysis: true
       tidal: true
       xen_vr: false

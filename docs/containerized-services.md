@@ -13,9 +13,6 @@ There is no dual-mode, no feature toggles, and no native fallback.
 | `loki` | `docker.io/grafana/loki:3.x` | system | Log aggregation |
 | `promtail` | `docker.io/grafana/promtail:3.x` | system | Log shipper to Loki |
 | `grafana` | `docker.io/grafana/grafana-oss:11.x-oss` | system | Dashboards |
-| `telethon_bridge` | `localhost/telethon-bridge` | user | Built locally; Telegram MTProto bridge |
-| `opencode_serve` | `localhost/opencode-serve` | user | Built locally; OpenCode HTTP API |
-| `opencode_telegram_bot` | `localhost/opencode-telegram-bot` | user | Built locally; Telegram bot |
 | `telecode` | `localhost/telecode` | user | Built locally; Go binary |
 
 Services explicitly kept native:

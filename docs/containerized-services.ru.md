@@ -13,9 +13,6 @@
 | `loki` | `docker.io/grafana/loki:3.x` | system | Агрегация логов |
 | `promtail` | `docker.io/grafana/promtail:3.x` | system | Отправка логов в Loki |
 | `grafana` | `docker.io/grafana/grafana-oss:11.x-oss` | system | Дашборды |
-| `telethon_bridge` | `localhost/telethon-bridge` | user | Собирается локально; Telegram MTProto мост |
-| `opencode_serve` | `localhost/opencode-serve` | user | Собирается локально; OpenCode HTTP API |
-| `opencode_telegram_bot` | `localhost/opencode-telegram-bot` | user | Собирается локально; Telegram бот |
 | `telecode` | `localhost/telecode` | user | Собирается локально; Go бинарник |
 
 Сервисы, которые **остаются нативными**:

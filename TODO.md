@@ -94,7 +94,8 @@ Current runtime behavior:
 
 **Optional enhancements:**
 - [ ] Add more workspaces to telecode config (currently only `~/src/salt`)
-- [ ] Verify voice message flow end-to-end for `opencode-telegram-bot` (STT backend is already wired to local `whisper-stt` on `127.0.0.1:8002/v1`)
+- [ ] Verify voice message flow end-to-end for `opencode-telegram-bot` (local `whisper-stt` on `127.0.0.1:8002/v1` now returns successful transcriptions)
+- [ ] Decide whether to keep `piper-tts` as the primary always-on local TTS fallback for future Telegram/voice workflows, or switch to another local engine
 - [ ] Add telecode to `salt-monitor` health checks
 
 ---

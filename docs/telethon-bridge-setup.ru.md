@@ -85,7 +85,7 @@ telethon-bridge-init
 ```
 
 Запросит номер телефона, код подтверждения, опционально 2FA. Сессия сохраняется
-в `~/.telethon-bridge/telethon.session`.
+в `~/.local/state/telethon-bridge/telethon.session`.
 
 Этот шаг интерактивный и выполняется однократно (или после аннулирования сессии).
 
@@ -96,7 +96,7 @@ systemctl --user start telethon-bridge
 systemctl --user status telethon-bridge
 ```
 
-Unit содержит `ConditionPathExists=%h/.telethon-bridge/telethon.session` --
+Unit содержит `ConditionPathExists=%h/.local/state/telethon-bridge/telethon.session` --
 сервис откажется запускаться без валидного файла сессии.
 
 ## Справка по конфигурации
@@ -143,13 +143,13 @@ journalctl --user -u telethon-bridge -f      # логи в реальном вр
 Salt также разворачивает opt-in user-level path unit `telethon-bridge-react.path`,
 который следит за такими runtime-файлами:
 
-- `~/.telethon-bridge/config.yaml`
+- `~/.config/telethon-bridge/config.yaml`
 - `~/.local/bin/telethon-bridge`
 
 Когда один из этих файлов меняется:
 
 - если `telethon-bridge` уже запущен, helper перезапускает его
-- если он не запущен, но существует `~/.telethon-bridge/telethon.session`, helper запускает сервис
+- если он не запущен, но существует `~/.local/state/telethon-bridge/telethon.session`, helper запускает сервис
 - если файла сессии нет, helper завершится без запуска сервиса
 
 Отключить это поведение можно в любой момент:
@@ -176,7 +176,7 @@ journalctl --user -u telethon-bridge -f
 **Сервис не запускается**: Проверьте `ConditionPathExists` -- файл сессии должен
 существовать:
 ```bash
-ls -la ~/.telethon-bridge/telethon.session
+ls -la ~/.local/state/telethon-bridge/telethon.session
 ```
 Если отсутствует, выполните `telethon-bridge-init`. Если файл есть, но сервис
 все равно не запускается, проверьте логи на ошибки аутентификации.

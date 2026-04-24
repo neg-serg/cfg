@@ -751,7 +751,8 @@ def test_telethon_bridge_does_not_hide_macro_calls_behind_shell_comments():
         source = fh.read()
 
     assert "\n# {{ paru_install('python_telethon', 'python-telethon', version=ver.telethon) }}\n" not in source
-    assert "{# {{ paru_install('python_telethon', 'python-telethon', version=ver.telethon) }} #}" in source
+    assert "include:\n  - pacman_db_warmup" in source
+    assert "python-telethon python-python-socks" in source
 
 
 def test_telethon_bridge_react_path_watches_exact_runtime_files():

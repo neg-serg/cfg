@@ -331,7 +331,8 @@ def test_telethon_bridge_react_script_contains_guarded_start_restart_logic():
     source = (REPO_ROOT / "scripts" / "telethon-bridge-react.sh").read_text()
 
     assert "set -euo pipefail" in source
-    assert 'SESSION_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/telethon-bridge/telethon.session"' in source
+    assert 'STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"' in source
+    assert 'SESSION_FILE="${STATE_HOME}/telethon-bridge/telethon.session"' in source
     assert 'systemctl --user is-active --quiet "$UNIT"' in source
     assert 'systemctl --user restart "$UNIT"' in source
     assert 'systemctl --user start "$UNIT"' in source

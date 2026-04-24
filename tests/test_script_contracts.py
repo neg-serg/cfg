@@ -253,6 +253,18 @@ def test_pw_route_script_exposes_named_rme_output_pairs():
     assert "monitor_AUX1" in source
 
 
+def test_pw_route_script_exposes_toggle_cycle():
+    source = (REPO_ROOT / "dotfiles" / "dot_local" / "bin" / "executable_pw-route").read_text()
+
+    assert 'toggle)' in source
+    assert 'get_current_target()' in source
+    assert 'case "$current_target" in' in source
+    assert 'an) next_target="aes" ;;' in source
+    assert 'aes) next_target="spdif" ;;' in source
+    assert 'spdif) next_target="phones" ;;' in source
+    assert 'phones) next_target="an" ;;' in source
+
+
 def test_pw_route_script_parses_in_zsh():
     script = REPO_ROOT / "dotfiles" / "dot_local" / "bin" / "executable_pw-route"
 

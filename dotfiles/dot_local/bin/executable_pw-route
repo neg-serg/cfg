@@ -20,13 +20,14 @@ need() {
 
 usage() {
     cat <<'EOF'
-Usage: pw-route <an|aes|spdif|phones|status>
+Usage: pw-route <an|aes|spdif|phones|toggle|status>
 
 Route active stereo PipeWire streams on the RME AIO Pro pro-audio sink:
   an      -> AUX0/AUX1
   aes     -> AUX2/AUX3
   spdif   -> AUX4/AUX5
   phones  -> AUX6/AUX7
+  toggle  -> cycle an -> aes -> spdif -> phones -> an
   status  -> show current RME playback links
 EOF
 }
@@ -111,12 +112,59 @@ route_target() {
     print -- "default stereo mix -> $target_name (AUX${pair[1]}/AUX${pair[2]})"
 }
 
+get_current_target() {
+    local sink_name="$1"
+    local link_dump
+
+    link_dump="$(pw-link -l)"
+
+    if printf '%s\n' "$link_dump" | grep -q "$sink_name:monitor_AUX0" &&
+        printf '%s\n' "$link_dump" | grep -q "$sink_name:playback_AUX0"; then
+        print -- "an"
+        return
+    fi
+    if printf '%s\n' "$link_dump" | grep -q "$sink_name:monitor_AUX0" &&
+        printf '%s\n' "$link_dump" | grep -q "$sink_name:playback_AUX2"; then
+        print -- "aes"
+        return
+    fi
+    if printf '%s\n' "$link_dump" | grep -q "$sink_name:monitor_AUX0" &&
+        printf '%s\n' "$link_dump" | grep -q "$sink_name:playback_AUX4"; then
+        print -- "spdif"
+        return
+    fi
+    if printf '%s\n' "$link_dump" | grep -q "$sink_name:monitor_AUX0" &&
+        printf '%s\n' "$link_dump" | grep -q "$sink_name:playback_AUX6"; then
+        print -- "phones"
+        return
+    fi
+
+    print -- "unknown"
+}
+
+toggle_target() {
+    local sink_name="$1"
+    local current_target next_target
+
+    current_target="$(get_current_target "$sink_name")"
+
+    case "$current_target" in
+        an) next_target="aes" ;;
+        aes) next_target="spdif" ;;
+        spdif) next_target="phones" ;;
+        phones) next_target="an" ;;
+        *) next_target="an" ;;
+    esac
+
+    route_target "$next_target" "$sink_name"
+}
+
 main() {
     local command="${1:-}"
     local sink_name
 
     case "$command" in
-        an|aes|spdif|phones|status) ;;
+        an|aes|spdif|phones|toggle|status) ;;
         -h|--help|help)
             usage
             exit 0
@@ -135,6 +183,9 @@ main() {
     case "$command" in
         status)
             show_status "$sink_name"
+            ;;
+        toggle)
+            toggle_target "$sink_name"
             ;;
         an|aes|spdif|phones)
             route_target "$command" "$sink_name"

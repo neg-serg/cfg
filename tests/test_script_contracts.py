@@ -265,8 +265,8 @@ def test_set_zen_proxy_targets_real_zen_profile_path():
     source = (REPO_ROOT / "scripts" / "set-zen-proxy").read_text()
 
     assert 'PROFILES_INI = Path.home() / ".config/zen/profiles.ini"' in source
-    assert 'def resolve_profile_path() -> Path:' in source
-    assert 'Path=qnkh60k3.Default (release)' not in source
+    assert "def resolve_profile_path() -> Path:" in source
+    assert "Path=qnkh60k3.Default (release)" not in source
 
 
 def test_yt_alias_uses_wrapper_based_defaults():
@@ -352,35 +352,39 @@ def test_telethon_bridge_init_validates_missing_api_credentials_before_casting()
     assert 'CONFIG_PATH = Path.home() / ".config" / "telethon-bridge" / "config.yaml"' in source
     assert 'api_id_raw = tg.get("api_id")' in source
     assert 'api_hash = tg.get("api_hash") or ""' in source
-    assert 'Telegram API credentials are missing from ~/.config/telethon-bridge/config.yaml' in source
-    assert 'int(api_id_raw)' in source
+    assert (
+        "Telegram API credentials are missing from ~/.config/telethon-bridge/config.yaml" in source
+    )
+    assert "int(api_id_raw)" in source
 
 
 def test_telethon_bridge_runtime_uses_configured_proxy_tuple():
     source = (REPO_ROOT / "states" / "scripts" / "telethon-bridge.py").read_text()
 
     assert 'proxy_cfg = tg.get("proxy") or {}' in source
-    assert 'proxy = None' in source
-    assert 'import socks' in source
-    assert 'proxy = (socks.SOCKS5, proxy_host, int(proxy_port))' in source
+    assert "proxy = None" in source
+    assert "import socks" in source
+    assert "proxy = (socks.SOCKS5, proxy_host, int(proxy_port))" in source
     assert 'TelegramClient(session_path, int(tg["api_id"]), tg["api_hash"], proxy=proxy)' in source
 
 
 def test_whisper_stt_service_uses_absolute_whisper_cli_path():
-    source = (REPO_ROOT.parent / "speech" / "engines" / "systemd" / "whisper-stt.service").read_text()
+    source = (
+        REPO_ROOT.parent / "speech" / "engines" / "systemd" / "whisper-stt.service"
+    ).read_text()
 
-    assert '--whisper-bin %h/src/speech/engines/whisper.cpp/build-cpu/bin/whisper-cli \\' in source
-    assert '--whisper-bin whisper-cli \\' not in source
+    assert "--whisper-bin %h/src/speech/engines/whisper.cpp/build-cpu/bin/whisper-cli \\" in source
+    assert "--whisper-bin whisper-cli \\" not in source
 
 
 def test_speech_repo_ignores_local_cosyvoice_and_xtts_artifacts():
     source = (REPO_ROOT.parent / "speech" / ".gitignore").read_text()
 
-    assert 'engines/config/cosyvoice.env' in source
-    assert 'engines/config/xtts.env' in source
-    assert 'engines/cosyvoice-models/' in source
-    assert 'engines/xtts-assets/' in source
-    assert 'engines/cosyvoice/' in source
+    assert "engines/config/cosyvoice.env" in source
+    assert "engines/config/xtts.env" in source
+    assert "engines/cosyvoice-models/" in source
+    assert "engines/xtts-assets/" in source
+    assert "engines/cosyvoice/" in source
 
 
 def test_health_check_parses_user_service_names_from_yaml_mappings():

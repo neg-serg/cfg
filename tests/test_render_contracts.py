@@ -750,7 +750,10 @@ def test_telethon_bridge_does_not_hide_macro_calls_behind_shell_comments():
     with open(path) as fh:
         source = fh.read()
 
-    assert "\n# {{ paru_install('python_telethon', 'python-telethon', version=ver.telethon) }}\n" not in source
+    legacy_hidden_macro = (
+        "\n# {{ paru_install('python_telethon', 'python-telethon', version=ver.telethon) }}\n"
+    )
+    assert legacy_hidden_macro not in source
     assert "include:\n  - pacman_db_warmup" in source
     assert "python-telethon python-python-socks" in source
 
@@ -763,7 +766,9 @@ def test_telethon_bridge_react_path_watches_exact_runtime_files():
     assert "PathChanged=%h/.config/telethon-bridge/config.yaml" in source
     assert "PathChanged=%h/.local/bin/telethon-bridge" in source
     assert "%h/.local/state/telethon-bridge/telethon.session" not in source
-    assert "%h/.config/telethon-bridge/" not in source.replace("%h/.config/telethon-bridge/config.yaml", "")
+    assert "%h/.config/telethon-bridge/" not in source.replace(
+        "%h/.config/telethon-bridge/config.yaml", ""
+    )
 
 
 def test_telethon_bridge_react_service_runs_helper_script():
@@ -788,7 +793,7 @@ def test_telethon_bridge_uses_systemd_healthcheck_in_catalog():
     with open(path) as fh:
         source = fh.read()
 
-    assert 'telethon_bridge:' in source
+    assert "telethon_bridge:" in source
     assert 'health_cmd: "systemctl --user is-active --quiet telethon-bridge.service"' in source
     assert 'health_cmd: "pgrep -f telethon-bridge"' not in source
 
@@ -798,10 +803,10 @@ def test_telethon_bridge_config_declares_local_socks_proxy():
     with open(path) as fh:
         source = fh.read()
 
-    assert 'proxy:' in source
+    assert "proxy:" in source
     assert 'scheme: "socks5"' in source
     assert 'host: "127.0.0.1"' in source
-    assert 'port: 10808' in source
+    assert "port: 10808" in source
 
 
 def test_telethon_bridge_state_uses_direct_user_service_for_bringup():
@@ -860,7 +865,7 @@ def test_opencode_telegram_state_manages_private_chat_auth_patch():
 
     assert "opencode_telegram_auth_patch:" in source
     assert "middleware/auth.js" in source
-    assert "ctx.chat?.type === \"private\"" in source
+    assert 'ctx.chat?.type === "private"' in source
     assert "ctx.from?.is_bot" in source
 
 
@@ -870,9 +875,9 @@ def test_opencode_telegram_state_manages_deepseek_only_model_patch():
         source = fh.read()
 
     assert "opencode_telegram_model_whitelist_patch:" in source
-    assert 'dist/model/manager.js' in source
-    assert 'deepseek/deepseek-chat' in source
-    assert 'deepseek/deepseek-reasoner' in source
+    assert "dist/model/manager.js" in source
+    assert "deepseek/deepseek-chat" in source
+    assert "deepseek/deepseek-reasoner" in source
 
 
 def test_remaining_multiline_cmdrun_states_use_strict_shell_mode():

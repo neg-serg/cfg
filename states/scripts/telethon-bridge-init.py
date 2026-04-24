@@ -32,11 +32,17 @@ def main():
     api_hash = tg.get("api_hash") or ""
     if not api_id_raw or not api_hash:
         print(
-            "Error: Telegram API credentials are missing from ~/.config/telethon-bridge/config.yaml",
+            (
+                "Error: Telegram API credentials are missing from "
+                "~/.config/telethon-bridge/config.yaml"
+            ),
             file=sys.stderr,
         )
         print(
-            "Add api/telegram-telethon-id and api/telegram-telethon-hash, then re-apply telethon_bridge.",
+            (
+                "Add api/telegram-telethon-id and api/telegram-telethon-hash, "
+                "then re-apply telethon_bridge."
+            ),
             file=sys.stderr,
         )
         sys.exit(1)

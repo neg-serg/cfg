@@ -372,6 +372,16 @@ def test_whisper_stt_service_uses_absolute_whisper_cli_path():
     assert '--whisper-bin whisper-cli \\' not in source
 
 
+def test_speech_repo_ignores_local_cosyvoice_and_xtts_artifacts():
+    source = (REPO_ROOT.parent / "speech" / ".gitignore").read_text()
+
+    assert 'engines/config/cosyvoice.env' in source
+    assert 'engines/config/xtts.env' in source
+    assert 'engines/cosyvoice-models/' in source
+    assert 'engines/xtts-assets/' in source
+    assert 'engines/cosyvoice/' in source
+
+
 def test_health_check_parses_user_service_names_from_yaml_mappings():
     source = (REPO_ROOT / "scripts" / "health-check.sh").read_text()
 

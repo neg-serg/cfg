@@ -1,4 +1,4 @@
-{% from '_imports.jinja' import host, user, pkg_list %}
+{% from '_imports.jinja' import host, user %}
 {% from '_macros_service.jinja' import ensure_dir %}
 # Salt state for CachyOS workstation — top-level orchestrator
 # Packages managed via packages.sls (data/packages.yaml) + domain-specific states
@@ -12,21 +12,6 @@ system_os_release:
     - user: root
     - group: root
     - mode: '0644'
-
-pacman_db_warmup:
-  cmd.run:
-    - name: |
-        _tmp=$(mktemp)
-        pacman -Qq > "$_tmp"
-        if cmp -s "$_tmp" {{ pkg_list }}; then
-          rm "$_tmp"
-          echo "changed=no"
-        else
-          mv "$_tmp" {{ pkg_list }}
-          echo "changed=yes"
-        fi
-    - stateful: True
-    - shell: /bin/bash
 
 system_timezone:
   timezone.system:
@@ -52,6 +37,8 @@ system_hostname:
 {{ ensure_dir('download_cache_dir', '/var/cache/salt/downloads', mode='0755') }}
 
 include:
+  - pacman_db_warmup
+
   # ── Core (always included) ──────────────────────────────────────────
   # User accounts, shell, disk mounts — foundations for everything else
   - users

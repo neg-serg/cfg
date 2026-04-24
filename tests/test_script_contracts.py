@@ -364,9 +364,8 @@ def test_telethon_bridge_init_validates_missing_api_credentials_before_casting()
     assert 'CONFIG_PATH = Path.home() / ".config" / "telethon-bridge" / "config.yaml"' in source
     assert 'api_id_raw = tg.get("api_id")' in source
     assert 'api_hash = tg.get("api_hash") or ""' in source
-    assert (
-        "Telegram API credentials are missing from ~/.config/telethon-bridge/config.yaml" in source
-    )
+    assert '"Error: Telegram API credentials are missing from "' in source
+    assert '"~/.config/telethon-bridge/config.yaml"' in source
     assert "int(api_id_raw)" in source
 
 

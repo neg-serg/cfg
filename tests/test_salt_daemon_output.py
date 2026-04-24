@@ -195,6 +195,33 @@ def test_compact_highstate_returns_failure_code_for_non_dict_error_results():
     assert any('"type": "exit", "code": 1' in msg for msg in sock.messages)
 
 
+def test_compact_highstate_returns_failure_code_for_dict_compile_errors():
+    salt_daemon = _load_salt_daemon()
+
+    class DummyMinion:
+        functions = {
+            "state.sls": lambda state, **kwargs: {
+                "local": [
+                    "Detected conflicting IDs, SLS IDs need to be globally unique.",
+                    "The conflicting ID is 'pacman_db_warmup'",
+                ]
+            }
+        }
+
+    class DummySocket:
+        def __init__(self):
+            self.messages = []
+
+        def sendall(self, payload):
+            self.messages.append(payload.decode().strip())
+
+    sock = DummySocket()
+    rc = salt_daemon.run_state({}, DummyMinion(), "system_description", {}, "", sock)
+
+    assert rc == 1
+    assert any('"type": "exit", "code": 1' in msg for msg in sock.messages)
+
+
 def test_progress_handler_emits_periodic_completed_state_updates_and_warnings():
     salt_daemon = _load_salt_daemon()
     emitted = []

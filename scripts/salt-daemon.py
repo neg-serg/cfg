@@ -310,6 +310,22 @@ def _format_compact_highstate(result: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _highstate_failed(result) -> bool:
+    if isinstance(result, dict):
+        state_entries = [entry for entry in result.values() if isinstance(entry, dict)]
+        if state_entries:
+            return any(entry.get("result") is False for entry in state_entries)
+
+        errors = result.get("local")
+        if isinstance(errors, list) and errors:
+            return True
+        if isinstance(errors, str) and errors.strip():
+            return True
+        return False
+
+    return True
+
+
 def run_state(
     opts: dict,
     minion,
@@ -396,11 +412,8 @@ def run_state(
 
         # ── Format and emit output ───────────────────────────────────────
         # Determine exit code from state results before formatting
-        if isinstance(result, dict):
-            for state_result in result.values():
-                if isinstance(state_result, dict) and state_result.get("result") is False:
-                    exit_code = 1
-                    break
+        if _highstate_failed(result):
+            exit_code = 1
 
         if isinstance(result, dict):
             formatted_output = _format_compact_highstate(result)

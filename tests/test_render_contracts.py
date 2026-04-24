@@ -911,6 +911,15 @@ def test_system_description_includes_os_release_state():
     assert "system_os_release" in source
 
 
+def test_system_description_uses_shared_pacman_db_warmup_state_without_duplicate_id():
+    path = os.path.join(REPO_ROOT, "states", "system_description.sls")
+    with open(path) as fh:
+        source = fh.read()
+
+    assert "- pacman_db_warmup" in source
+    assert "\npacman_db_warmup:\n" not in source
+
+
 def test_loki_quadlet_does_not_defer_to_graphical_target_when_wanted_by_multi_user():
     path = os.path.join(REPO_ROOT, "states", "units", "loki-container.container")
     with open(path) as fh:

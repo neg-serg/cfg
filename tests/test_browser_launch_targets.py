@@ -239,7 +239,7 @@ def test_hypr_shared_browser_matchers_include_zen_for_routing_and_navigation():
         "google-chrome(?:-(?:stable|beta|unstable))?|com\\.google\\.chrome|"
         "microsoft-edge(?:-(?:beta|dev|canary))?|com\\.microsoft\\.edge)$"
     ) in vars_conf
-    assert "windowrule = match:class ^(zen)$, workspace 2 silent" in workspaces
+    assert "windowrule = match:class ^(zen)$, workspace 2 silent" not in workspaces
     assert "windowrule = match:initial_class ^(zen)$, workspace 2 silent" in workspaces
     assert "windowrule = $web, workspace 2 silent" in workspaces
     assert "$browser = zen-browser" in bindings

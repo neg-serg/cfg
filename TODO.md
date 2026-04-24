@@ -94,7 +94,7 @@ Current runtime behavior:
 
 **Optional enhancements:**
 - [ ] Add more workspaces to telecode config (currently only `~/src/salt`)
-- [ ] Configure STT (voice transcription) for opencode-telegram-bot
+- [ ] Verify voice message flow end-to-end for `opencode-telegram-bot` (STT backend is already wired to local `whisper-stt` on `127.0.0.1:8002/v1`)
 - [ ] Add telecode to `salt-monitor` health checks
 
 ---

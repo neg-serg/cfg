@@ -45,11 +45,12 @@ Item {
     function syncFromSink() {
         if (_audio) {
             muted = _audio.muted
-            if (_isProAudioSink()) {
-                volume = 99
-            } else {
-                volume = _audio.muted ? 0 : Math.round((_audio.volume || 0) * 100)
-            }
+            volume = _audio.muted ? 0 : Math.round((_audio.volume || 0) * 100)
+            // Pro-audio devices (RME AIO Pro) have no software volume
+            // control; PipeWire may report 0 until fully initialised.
+            // Clamp to 100 so the bar doesn't show a misleading "off" icon.
+            if (_isProAudioSink() && !muted && volume === 0)
+                volume = 100
         } else {
             muted = false
             volume = 0
@@ -59,11 +60,9 @@ Item {
     function syncFromSource() {
         if (_micAudio) {
             micMuted = _micAudio.muted
-            if (_isProAudioSource()) {
-                micVolume = 99
-            } else {
-                micVolume = _micAudio.muted ? 0 : Math.round((_micAudio.volume || 0) * 100)
-            }
+            micVolume = _micAudio.muted ? 0 : Math.round((_micAudio.volume || 0) * 100)
+            if (_isProAudioSource() && !micMuted && micVolume === 0)
+                micVolume = 100
         } else {
             micMuted = false
             micVolume = 0

@@ -11,7 +11,7 @@ LocalMods.AudioEndpointTile {
     iconLow: "volume_down"
     iconHigh: (Services.Audio && Services.Audio.currentRoute === "phones") ? "headphones" : "volume_up"
     labelSuffix: "%"
-    labelText: (Services.Audio && Services.Audio.isProAudioSink) ? ((Services.Audio.currentRoute === "aes") ? "AES" : (Services.Audio.currentRoute === "phones") ? "HP" : (Services.Audio.currentRoute === "spdif") ? "SPDIF" : (Services.Audio.currentRoute === "an") ? "AN" : "?") : ""
+    labelText: ""
     levelProperty: "volume"
     mutedProperty: "muted"
     changeMethod: "changeVolume"

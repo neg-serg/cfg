@@ -24,6 +24,12 @@ LocalComponents.WidgetCapsule {
     property string lastIconCategory: "up"
     property bool containsMouse: false
 
+    // Track previous values so updateFrom() does not re-show the pill
+    // when nothing actually changed (which prevents auto-hide from ever
+    // completing).
+    property int _prevClamped: -1
+    property bool _prevMuted: false
+
     readonly property alias pill: pillIndicator
 
     signal wheelStep(int direction)
@@ -119,21 +125,21 @@ LocalComponents.WidgetCapsule {
 
     function updateFrom(value, mutedValue) {
         const clamped = Utils.clamp(value, 0, 100);
+        const category = resolveIconCategory(clamped, mutedValue);
+
+        // Always update presentation (text, icon, colour)
         level = clamped;
         muted = mutedValue;
-
         pillIndicator.text = labelText.length ? labelText : clamped + labelSuffix;
-        const category = resolveIconCategory(clamped, mutedValue);
         if (category !== "off")
             lastIconCategory = category;
         pillIndicator.icon = iconNameForCategory(category);
-
         const levelColor = levelColorFor(clamped);
         pillIndicator.iconCircleColor = levelColor;
         pillIndicator.collapsedIconColor = levelColor;
 
-        // Auto-hide when icon is "off" (muted or volume at zero)
         if (autoHideWhenMuted && category === "off") {
+            // Off / muted branch — always update visibility timers
             if (!root.visible)
                 root.visible = true;
             mutedHideTimer.restart();
@@ -142,20 +148,25 @@ LocalComponents.WidgetCapsule {
             firstChange = false;
             if (fullHideTimer.running)
                 fullHideTimer.stop();
+            _prevClamped = clamped;
+            _prevMuted = mutedValue;
             return;
         }
 
-        // No longer "off": cancel the hide timer
         if (mutedHideTimer.running)
             mutedHideTimer.stop();
 
-        if (!root.visible && clamped !== 100) {
+        if (!root.visible && clamped !== 100)
             root.visible = true;
-        }
 
-        if (!firstChange || clamped !== 100) {
-            pillIndicator.show();
-        }
+        // Only show the pill when the value *actually* changed, so the
+        // auto-hide timer can complete instead of being restarted on
+        // every idle sync.
+        if (clamped !== _prevClamped || mutedValue !== _prevMuted)
+            if (!firstChange || clamped !== 100)
+                pillIndicator.show();
+        _prevClamped = clamped;
+        _prevMuted = mutedValue;
         firstChange = false;
 
         if (clamped === 100) {

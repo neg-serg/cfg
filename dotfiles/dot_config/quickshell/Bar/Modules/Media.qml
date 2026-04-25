@@ -67,7 +67,7 @@ Item {
             + capsule.horizontalPadding * 2)
     height: baseHeight
     implicitHeight: baseHeight
-    visible: Settings.settings.showMediaInBar && MusicManager.hasPlayer
+    visible: Settings.settings.showMediaInBar && MusicManager.hasPlayer && (MusicManager.isPlaying || MusicManager.isPaused)
 
     property int musicTextPx: Math.round(Theme.fontSizeSmall * capsuleScale)
     // Accent derived from current cover art — centralized in MusicManager

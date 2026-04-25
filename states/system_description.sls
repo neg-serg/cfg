@@ -79,7 +79,7 @@ include:
   - services
   - monitoring_alerts
   - user_services
-# - code_rag
+  - code_rag
 
 {% if host.features.services.get('jellyfin', false) %}
   - jellyfin

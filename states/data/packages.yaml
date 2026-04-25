@@ -41,7 +41,6 @@ desktop:
   - television
   - wl-clipboard
   - wlr-randr
-  - xdg-desktop-portal-gtk
   - xdg-desktop-portal-hyprland
   - yazi
   - ark
@@ -71,7 +70,6 @@ desktop:
   - sushi
   - swayosd
   - wofi
-  - xdg-desktop-portal-gnome
   - xdg-user-dirs-gtk
   - xdg-utils
   - yelp
@@ -98,8 +96,7 @@ dev:
   - python-poetry
   - python-orjson
   - python-numpy
-  - python-telethon
-  - python-transformers
+
   - ruby
   - jupyterlab
   - rustup
@@ -171,7 +168,6 @@ system:
   - parted
   - strace
   - stress-ng
-  - swtpm
   - sysstat
   - pacman-contrib
   - rebuild-detector
@@ -199,7 +195,6 @@ other:
   - bluez-utils
   - borg
   - bpftrace
-  - pam_ssh_agent_auth
   - bucklespring
   - carla
   - cava
@@ -477,7 +472,6 @@ other:
   - inxi
   - kate
   - libpulse
-  - libvirt
   - malcontent
   - nano
   - orca
@@ -606,8 +600,6 @@ aur:
   - wl-debug
   - wlr-which-key
   - xdg-ninja
-  - xdg-desktop-portal-termfilechooser-hunkyburrito-git
   - youtube-tui
-  - espanso-wayland
   - bazecor
   - zen-browser-bin

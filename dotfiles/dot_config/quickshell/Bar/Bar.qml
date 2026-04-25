@@ -491,7 +491,8 @@ Scope {
                     property real seamTaperTop: Theme.panelSeamTaperTop
                     property real seamTaperBottom: Theme.panelSeamTaperBottom
                     property real seamOpacity: rootScope.isTerminalWs ? Theme.panelSeamOpacity : Theme.panelSeamOpacity * nonTerminalSeamOpacity
-                    property real nonTerminalSeamOpacity: 0
+                    property real nonTerminalSeamOpacity: 0.5
+                    property real nonTerminalGapOpacity: 0.5
                     readonly property real seamTiltSign: 1.0
                     readonly property real seamTaperTopClamped: Utils.clamp01(seamTaperTop)
                     readonly property real seamTaperBottomClamped: Utils.clamp01(seamTaperBottom)
@@ -546,7 +547,7 @@ Scope {
                         readonly property int sw: leftPanel.seamWidth
                         readonly property real topInset: Math.round(sw * 0.25)
                         readonly property real bottomInset: Math.round(sw * 2.0)
-                        readonly property real _gapFactor: leftPanel.nonTerminalSeamOpacity
+                        readonly property real _gapFactor: leftPanel.nonTerminalGapOpacity
                         onPaint: {
                             var ctx = getContext('2d');
                             ctx.reset();
@@ -969,7 +970,8 @@ Scope {
                     property real seamTaperTop: Theme.panelSeamTaperTop
                     property real seamTaperBottom: Theme.panelSeamTaperBottom
                     property real seamOpacity: rootScope.isTerminalWs ? Theme.panelSeamOpacity : Theme.panelSeamOpacity * nonTerminalSeamOpacity
-                    property real nonTerminalSeamOpacity: 0
+                    property real nonTerminalSeamOpacity: 0.5
+                    property real nonTerminalGapOpacity: 0.5
                     readonly property real seamTiltSign: -1.0
                     readonly property real seamTaperTopClamped: Utils.clamp01(seamTaperTop)
                     readonly property real seamTaperBottomClamped: Utils.clamp01(seamTaperBottom)
@@ -1026,7 +1028,7 @@ Scope {
                         readonly property int sw: rightPanel.seamWidth
                         readonly property real topInset: Math.round(sw * 0.25)
                         readonly property real bottomInset: Math.round(sw * 2.0)
-                        readonly property real _gapFactor: rightPanel.nonTerminalSeamOpacity
+                        readonly property real _gapFactor: rightPanel.nonTerminalGapOpacity
                         onPaint: {
                             var ctx = getContext('2d');
                             ctx.reset();
@@ -1550,7 +1552,8 @@ Scope {
                     property int seamHeightPx: Math.round(Theme.panelHeight * s)
                     property real seamTaperTop: 0.12
                     property real seamTaperBottom: 0.65
-                    property real nonTerminalSeamOpacity: 0
+                    property real nonTerminalSeamOpacity: 0.5
+                    property real nonTerminalGapOpacity: 0.5
                     property bool gapBlurEnabled: false
                     property real seamEffectOpacity: rootScope.isTerminalWs ? 0.85 : 0.85 * nonTerminalSeamOpacity
                     property color seamFillColor: Color.mix(Theme.surfaceVariant, Theme.background, 0.35)

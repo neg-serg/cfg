@@ -1,0 +1,44 @@
+{%- import_yaml 'data/kernel_params.yaml' as kp -%}
+{%- import_yaml 'data/hosts.yaml' as hosts_data -%}
+{%- set defaults = hosts_data.defaults -%}
+{%- set aliases = hosts_data.get('aliases', {}) -%}
+{%- set current_host = aliases.get(grains['host'], grains['host']) -%}
+{%- set host = salt['slsutil.merge'](defaults, hosts_data.hosts.get(current_host, {}), strategy='recurse') -%}
+{%- if not host.get('home') -%}
+{%-   do host.update({'home': '/home/' ~ host.user}) -%}
+{%- endif -%}
+{%- set parts = [] -%}
+{%- do parts.append('root=PARTUUID=06f6b019-39ba-4735-81c7-28d8700b26d7') -%}
+{%- do parts.append('zswap.enabled=0') -%}
+{%- do parts.append('rw') -%}
+{%- do parts.append('rootfstype=xfs') -%}
+{%- do parts.append('amd_iommu=on') -%}
+{%- do parts.append('amd_iommu=pt') -%}
+{%- for p in kp.common -%}
+{%-   do parts.append(p) -%}
+{%- endfor -%}
+{%- if host.cpu_vendor == 'amd' -%}
+{%-   for p in kp.amd -%}
+{%-     do parts.append(p) -%}
+{%-   endfor -%}
+{%- elif host.cpu_vendor == 'intel' -%}
+{%-   for p in kp.intel -%}
+{%-     do parts.append(p) -%}
+{%-   endfor -%}
+{%- endif -%}
+{%- if host.is_laptop -%}
+{%-   for p in kp.laptop -%}
+{%-     do parts.append(p) -%}
+{%-   endfor -%}
+{%- else -%}
+{%-   for p in kp.desktop -%}
+{%-     do parts.append(p) -%}
+{%-   endfor -%}
+{%- endif -%}
+{%- if host.display -%}
+{%-   do parts.append('video=' ~ host.display) -%}
+{%- endif -%}
+{%- for karg in host.extra_kargs -%}
+{%-   do parts.append(karg) -%}
+{%- endfor -%}
+{{ parts | join(' ') }}

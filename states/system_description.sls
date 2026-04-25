@@ -49,10 +49,12 @@ include:
 
   # Kernel tuning, hardware, sysctl
   - kernel_modules
-  - kernel_params_limine
   - mkinitcpio
   - sysctl
   - hardware
+
+  # CachyOS: kernel packages, settings, sched-ext, kernel cmdline
+  - cachyos
 
   # Desktop: audio stack, DE config, login manager, fonts
   - audio

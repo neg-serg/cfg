@@ -10,7 +10,6 @@ include:
   - windows_mount
   - fstab_column
   - kernel_modules
-  - kernel_params_limine
   - mkinitcpio
   - sysctl
   - hardware

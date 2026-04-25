@@ -1,5 +1,5 @@
-# Kernel boot parameters for CachyOS (Limine bootloader).
-# Grouped by condition; kernel_params_limine.sls assembles the final list.
+# Kernel boot parameters.
+# Grouped by condition; assembled by states/configs/kernel-cmdline.j2.
 #
 # ── Schema ────────────────────────────────────────────────────────────
 #
@@ -20,17 +20,35 @@
 # ─────────────────────────────────────────────────────────────────────
 
 common:
-  - 8250.nr_uarts=0
+  # Performance tweaks
+  - mitigations=off
+  - numa_balancing=disable
+  - processor.max_cstate=1
+  - cpufreq.default_governor=performance
+  - workqueue.power_efficient=0
+  - skew_tick=1
+  - clocksource=tsc
+  # Storage
+  - nvme_core.io_timeout=4294967295
   - nvme_core.default_ps_max_latency_us=0
+  # Virtualisation
+  - kvm.ignore_msrs=1
+  - kvm.report_ignored_msrs=0
+  # Serial — not needed on modern hw
+  - 8250.nr_uarts=0
+  # LRU
   - lru_gen=1
   - lru_gen.min_ttl_ms=1000
+  # Memory
   - transparent_hugepage=madvise
   - page_alloc.shuffle=1
   - slab_nomerge
   - init_on_alloc=1
+  # Hardening
   - randomize_kstack_offset=on
   - vsyscall=none
   - debugfs=off
+  # Misc
   - vt.global_cursor_default=0
   - noreplace-smp
   - pcie_aspm=performance
@@ -45,6 +63,7 @@ common:
 amd:
   - amd_pstate=active
   - amdgpu.ppfeaturemask=0xffffffff
+  - amd_prefcore=enable
 
 intel:
   - intel_pstate=active
@@ -53,5 +72,5 @@ laptop:
   - mem_sleep_default=deep
 
 desktop:
-  - "acpi_osi=!"
+  - acpi_osi=!
   - acpi_osi=Linux

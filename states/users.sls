@@ -23,7 +23,7 @@ plugdev_group:
     - system: True
 
 # realtime-privileges: creates `realtime` group + rtprio/memlock limits,
-# required by pipewire loopback nodes on pro-audio profile devices (ADI-2)
+# required by pipewire loopback nodes on pro-audio profile devices (HDSPe AIO Pro)
 {{ paru_install('realtime-privileges', 'realtime-privileges') }}
 
 # user.present groups broken on Python 3.14 (crypt module removed)

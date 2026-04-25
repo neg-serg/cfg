@@ -1,6 +1,0 @@
-#!/usr/bin/env zsh
-set -eu
-# Restart Quickshell, reload Hyprland config
-hyprctl reload > /dev/null 2>&1 || true
-sleep 0.15
-systemctl --user restart quickshell.service > /dev/null 2>&1 || true

@@ -47,6 +47,40 @@ Scope {
     readonly property bool wedgeClipAllowed: ((Quickshell.env("QS_DISABLE_WEDGE") || "") !== "1")
     readonly property bool trianglesAllowed: ((Quickshell.env("QS_DISABLE_TRIANGLES") || "") !== "1")
 
+    // Terminal workspace detection — makes seam gap fully transparent on non-terminal workspaces
+    readonly property var _terminalIcons: ["\uf120", "\ue795", "\ue7a2"]
+    property bool isTerminalWs: false
+
+    function _recalcTerminalWs() {
+        const name = HyprlandWatcher.activeWorkspaceName || "";
+        let glyph = "";
+        let rest = name;
+        if (name.length > 0) {
+            const cp = name.codePointAt(0);
+            if (cp >= 0xE000 && cp <= 0xF8FF) {
+                const skip = (cp > 0xFFFF) ? 2 : 1;
+                glyph = String.fromCodePoint(cp);
+                rest = name.substring(skip).replace(/^\s+/, "");
+            }
+        }
+        const rn = rest.toLowerCase().trim();
+        let terminal = false;
+        if (glyph && _terminalIcons.indexOf(glyph) !== -1) { terminal = true; }
+        else if (rn.startsWith("term")) { terminal = true; }
+        else if (rn.endsWith("term")) { terminal = true; }
+        isTerminalWs = terminal;
+        if (Settings.settings && Settings.settings.debugLogs)
+            console.debug('[Bar] workspace:', JSON.stringify(name), 'glyph:', JSON.stringify(glyph), 'rest:', JSON.stringify(rest), 'rn:', JSON.stringify(rn), 'isTerminalWs:', terminal);
+    }
+
+    Connections {
+        target: HyprlandWatcher
+        function onActiveWorkspaceNameChanged() { rootScope._recalcTerminalWs(); }
+        function onActiveWorkspaceIdChanged() { rootScope._recalcTerminalWs(); }
+    }
+
+    Component.onCompleted: { _recalcTerminalWs(); }
+
     component TriangleOverlay : Canvas {
         property color color: Theme.background
         property bool flipX: false
@@ -456,7 +490,9 @@ Scope {
                     property color barBgColor: "transparent"
                     property real seamTaperTop: Theme.panelSeamTaperTop
                     property real seamTaperBottom: Theme.panelSeamTaperBottom
-                    property real seamOpacity: Theme.panelSeamOpacity
+                    property real seamOpacity: rootScope.isTerminalWs ? Theme.panelSeamOpacity : 0
+                    property real seamGapTopInset: Math.round(seamWidth * 0.25)
+                    property real seamGapBottomInset: Math.round(seamWidth * 2.0)
                     readonly property real seamTiltSign: 1.0
                     readonly property real seamTaperTopClamped: Utils.clamp01(seamTaperTop)
                     readonly property real seamTaperBottomClamped: Utils.clamp01(seamTaperBottom)
@@ -494,17 +530,52 @@ Scope {
                             anchors.fill: parent
                             transform: Translate { y: leftPanel.barHeightPx * (1 - monitorItem.barSlideProgress) }
 
-                    // Outer backdrop: covers full panel width at seam opacity
-                    // (semi-transparent — lets wallpaper show through in seam/gap area)
-                    Rectangle {
+                    // Outer backdrop: covers the panel at seam opacity.
+                    // On terminal workspaces: fills the full width.
+                    // On non-terminal workspaces: fills only the content area (matching the
+                    // inner backdrop's diagonal), leaving the gap area fully transparent.
+                    Canvas {
                         id: leftBarBackdropOuter
                         width: Math.max(1, leftPanel.width)
                         height: leftPanel.barHeightPx
-                        color: Theme.panelBackdropColor
-                        opacity: Theme.panelSeamOpacity
                         anchors.top: parent.top
                         anchors.left: parent.left
                         z: -2
+                        readonly property color bgColor: Theme.panelBackdropColor
+                        readonly property real baseOpacity: Theme.panelSeamOpacity
+                        readonly property real _innerWidth: Math.max(1, leftBarFill.width - leftPanel.interWidgetSpacing + leftPanel.seamWidth)
+                        readonly property int sw: leftPanel.seamWidth
+                        readonly property real topInset: Math.round(sw * 0.25)
+                        readonly property real bottomInset: Math.round(sw * 2.0)
+                        onPaint: {
+                            var ctx = getContext('2d');
+                            ctx.reset();
+                            ctx.clearRect(0, 0, width, height);
+                            ctx.fillStyle = bgColor.toString();
+                            if (rootScope.isTerminalWs) {
+                                ctx.globalAlpha = baseOpacity;
+                                ctx.fillRect(0, 0, width, height);
+                            } else {
+                                ctx.globalAlpha = baseOpacity;
+                                ctx.beginPath();
+                                ctx.moveTo(0, 0);
+                                ctx.lineTo(Math.max(0, _innerWidth - topInset), 0);
+                                ctx.lineTo(Math.max(0, _innerWidth - bottomInset), height);
+                                ctx.lineTo(0, height);
+                                ctx.closePath();
+                                ctx.fill();
+                            }
+                        }
+                        onWidthChanged: requestPaint()
+                        onHeightChanged: requestPaint()
+                        onBaseOpacityChanged: requestPaint()
+                        onTopInsetChanged: requestPaint()
+                        onBottomInsetChanged: requestPaint()
+                        onBgColorChanged: requestPaint()
+                        Connections {
+                            target: rootScope
+                            function onIsTerminalWsChanged() { leftBarBackdropOuter.requestPaint() }
+                        }
                     }
                     // Inner backdrop: trapezoid with bottom-right triangle cut off.
                     // Canvas draws the shape directly — no ShaderEffect needed.
@@ -883,7 +954,9 @@ Scope {
                     property color barBgColor: "transparent"
                     property real seamTaperTop: Theme.panelSeamTaperTop
                     property real seamTaperBottom: Theme.panelSeamTaperBottom
-                    property real seamOpacity: Theme.panelSeamOpacity
+                    property real seamOpacity: rootScope.isTerminalWs ? Theme.panelSeamOpacity : 0
+                    property real seamGapTopInset: Math.round(seamWidth * 0.25)
+                    property real seamGapBottomInset: Math.round(seamWidth * 2.0)
                     readonly property real seamTiltSign: -1.0
                     readonly property real seamTaperTopClamped: Utils.clamp01(seamTaperTop)
                     readonly property real seamTaperBottomClamped: Utils.clamp01(seamTaperBottom)
@@ -922,17 +995,55 @@ Scope {
                             anchors.fill: parent
                             transform: Translate { y: rightPanel.barHeightPx * (1 - monitorItem.barSlideProgress) }
     
-                    // Outer backdrop: covers full panel width at seam opacity
-                    Rectangle {
+                    // Outer backdrop: covers the panel at seam opacity.
+                    // On terminal workspaces: fills the full width.
+                    // On non-terminal workspaces: fills only the content area (matching the
+                    // inner backdrop's diagonal), leaving the gap area fully transparent.
+                    Canvas {
                         id: rightBarBackdropOuter
                         width: Math.max(1, rightPanel.width)
                         height: rightPanel.barHeightPx
-                        color: Theme.panelBackdropColor
-                        opacity: Theme.panelSeamOpacity
                         anchors.top: parent.top
                         anchors.right: parent.right
                         z: -2
                         visible: rightPanel.baseFillVisible
+                        readonly property color bgColor: Theme.panelBackdropColor
+                        readonly property real baseOpacity: Theme.panelSeamOpacity
+                        readonly property real _innerWidth: Math.max(1, rightBarFill.width - rightPanel.interWidgetSpacing + rightPanel.seamWidth)
+                        readonly property int sw: rightPanel.seamWidth
+                        readonly property real topInset: Math.round(sw * 0.25)
+                        readonly property real bottomInset: Math.round(sw * 2.0)
+                        onPaint: {
+                            var ctx = getContext('2d');
+                            ctx.reset();
+                            ctx.clearRect(0, 0, width, height);
+                            ctx.fillStyle = bgColor.toString();
+                            if (rootScope.isTerminalWs) {
+                                ctx.globalAlpha = baseOpacity;
+                                ctx.fillRect(0, 0, width, height);
+                            } else {
+                                ctx.globalAlpha = baseOpacity;
+                                var diagTopX = Math.max(0, width - _innerWidth + topInset);
+                                var diagBottomX = Math.max(0, width - _innerWidth + bottomInset);
+                                ctx.beginPath();
+                                ctx.moveTo(diagTopX, 0);
+                                ctx.lineTo(width, 0);
+                                ctx.lineTo(width, height);
+                                ctx.lineTo(diagBottomX, height);
+                                ctx.closePath();
+                                ctx.fill();
+                            }
+                        }
+                        onWidthChanged: requestPaint()
+                        onHeightChanged: requestPaint()
+                        onBaseOpacityChanged: requestPaint()
+                        onTopInsetChanged: requestPaint()
+                        onBottomInsetChanged: requestPaint()
+                        onBgColorChanged: requestPaint()
+                        Connections {
+                            target: rootScope
+                            function onIsTerminalWsChanged() { rightBarBackdropOuter.requestPaint() }
+                        }
                     }
                     // Inner backdrop: trapezoid with bottom-left triangle cut off (mirrored).
                     Canvas {
@@ -1413,7 +1524,7 @@ Scope {
                     property int seamHeightPx: Math.round(Theme.panelHeight * s)
                     property real seamTaperTop: 0.12
                     property real seamTaperBottom: 0.65
-                    property real seamEffectOpacity: 0.85
+                    property real seamEffectOpacity: rootScope.isTerminalWs ? 0.85 : 0
                     property color seamFillColor: Color.mix(Theme.surfaceVariant, Theme.background, 0.35)
                     Behavior on seamFillColor {
                         enabled: Theme._themeLoaded && Theme.animationsEnabled
@@ -1426,10 +1537,10 @@ Scope {
                         enabled: Theme._themeLoaded
                         ColorAnimation { duration: Theme.panelAnimFastMs }
                     }
-                    property real seamTintOpacity: 0.9
+                    property real seamTintOpacity: rootScope.isTerminalWs ? 0.9 : 0
                     property color seamBaseColor: Theme.background
-                    property real seamBaseOpacityTop: 0.5
-                    property real seamBaseOpacityBottom: 0.65
+                    property real seamBaseOpacityTop: rootScope.isTerminalWs ? 0.5 : 0
+                    property real seamBaseOpacityBottom: rootScope.isTerminalWs ? 0.65 : 0
                     function seamEdgeBaseForTilt(tiltSign, frac) {
                         var f = Utils.clamp01(frac);
                         return (tiltSign > 0) ? (1.0 - f) : f;

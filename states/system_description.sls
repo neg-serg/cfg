@@ -58,7 +58,7 @@ include:
   - audio
   - desktop
   - fonts
-# - greetd
+  - greetd
 
   # Shared systemd-managed service identities and paths
   - systemd_resources

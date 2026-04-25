@@ -16,6 +16,10 @@ StartLimitIntervalSec=60
 
 [Service]
 Type=simple
+# Kill any rogue wl-daemon left over from a non-systemd start,
+# then remove its orphaned socket so the new daemon can bind.
+ExecStartPre=-/usr/bin/pkill -x wl-daemon
+ExecStartPre=/usr/bin/sleep 0.3
 ExecStartPre=/usr/bin/rm -f %t/wl.sock
 ExecStart=/usr/bin/wl-daemon
 ExecStartPost=/bin/sh -c 'for i in 1 2 3 4 5; do /usr/bin/wl restore && exit 0; sleep 0.5; done'

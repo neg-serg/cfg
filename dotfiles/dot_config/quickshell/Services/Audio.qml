@@ -3,6 +3,7 @@ import QtQuick
 import "../Helpers/Utils.js" as Utils
 import Quickshell
 import Quickshell.Services.Pipewire
+import qs.Components
 
 // Non-visual helper for centralizing PipeWire audio volume/mute state
 Item {
@@ -103,5 +104,42 @@ Item {
     Component.onCompleted: {
         syncFromSink()
         syncFromSource()
+    }
+
+    // ---- RME AIO Pro route detection ----
+
+    property string currentRoute: "unknown"
+    readonly property var routeNames: ({
+        "an": "Speakers",
+        "aes": "AES",
+        "spdif": "SPDIF",
+        "phones": "Headphones",
+        "unknown": "Unknown"
+    })
+    readonly property string routeDisplayName: routeNames[currentRoute] || "Unknown"
+    readonly property var routeKeys: ["an", "aes", "spdif", "phones"]
+
+    function setRoute(name) {
+        if (name === currentRoute || name === "unknown") return;
+        Quickshell.execDetached(["pw-route", name]);
+    }
+
+    function toggleRoute() {
+        Quickshell.execDetached(["pw-route", "toggle"]);
+    }
+
+    ProcessRunner {
+        id: routeWatcher
+        cmd: ["pw-route", "current"]
+        intervalMs: 2000
+        autoStart: true
+        onLine: (route) => {
+            if (route && route.length > 0) {
+                var trimmed = route.trim();
+                if (trimmed !== root.currentRoute) {
+                    root.currentRoute = trimmed;
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 import QtQuick
 import qs.Settings
 import qs.Components
+import qs.Services
 import "." as LocalMods
 
 LocalMods.AudioEndpointTile {
@@ -8,7 +9,7 @@ LocalMods.AudioEndpointTile {
     settingsKey: "volume"
     iconOff: "volume_off"
     iconLow: "volume_down"
-    iconHigh: "volume_up"
+    iconHigh: (Services.Audio && Services.Audio.currentRoute === "phones") ? "headphones" : "volume_up"
     labelSuffix: "%"
     levelProperty: "volume"
     mutedProperty: "muted"
@@ -16,13 +17,17 @@ LocalMods.AudioEndpointTile {
     toggleOnClick: false
     tooltipTitle: "Volume"
     tooltipHints: [
-        "Left click for advanced settings.",
+        "Route: " + (Services.Audio ? Services.Audio.routeDisplayName : "?"),
+        "Left click to cycle route.",
         "Scroll up/down to change volume."
     ]
-    enableAdvancedToggle: true
+    enableAdvancedToggle: false
     autoHideWhenMuted: true
 
     Item { id: ioSelector; visible: false }
     advancedSelector: ioSelector
 
+    onClicked: {
+        if (Services.Audio) Services.Audio.toggleRoute();
+    }
 }

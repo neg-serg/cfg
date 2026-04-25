@@ -11,15 +11,18 @@ LocalMods.AudioEndpointTile {
     iconLow: "volume_down"
     iconHigh: (Services.Audio && Services.Audio.currentRoute === "phones") ? "headphones" : "volume_up"
     labelSuffix: "%"
+    labelText: (Services.Audio && Services.Audio.isProAudioSink) ? ((Services.Audio.currentRoute === "aes") ? "AES" : (Services.Audio.currentRoute === "phones") ? "HP" : (Services.Audio.currentRoute === "spdif") ? "SPDIF" : (Services.Audio.currentRoute === "an") ? "AN" : "?") : ""
     levelProperty: "volume"
     mutedProperty: "muted"
     changeMethod: "changeVolume"
+    wheelEnabled: !(Services.Audio && Services.Audio.isProAudioSink)
     toggleOnClick: false
-    tooltipTitle: "Volume"
+    tooltipTitle: "Output"
+    tooltipValue: (Services.Audio && Services.Audio.isProAudioSink) ? ((Services.Audio.currentRoute === "aes") ? "AES" : (Services.Audio.currentRoute === "phones") ? "HP" : (Services.Audio.currentRoute === "spdif") ? "SPDIF" : (Services.Audio.currentRoute === "an") ? "AN" : "?") : ""
     tooltipHints: [
-        "Route: " + (Services.Audio ? Services.Audio.routeDisplayName : "?"),
-        "Left click to cycle route.",
-        "Scroll up/down to change volume."
+        "Mirror: " + (Services.Audio ? Services.Audio.routeDisplayName : "?"),
+        "Left click to toggle AES / Analog.",
+        "Scroll changes volume only on non-pro outputs."
     ]
     enableAdvancedToggle: false
     autoHideWhenMuted: true

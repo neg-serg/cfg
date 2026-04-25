@@ -13,8 +13,10 @@ LocalComponents.WidgetCapsule {
     property string iconLow: "volume_down"
     property string iconHigh: "volume_up"
     property string labelSuffix: "%"
+    property string labelText: ""
     property bool autoHideWhenMuted: false
     property bool panelHovering: false
+    property bool wheelEnabled: true
 
     property int level: 0
     property bool muted: false
@@ -120,7 +122,7 @@ LocalComponents.WidgetCapsule {
         level = clamped;
         muted = mutedValue;
 
-        pillIndicator.text = clamped + labelSuffix;
+        pillIndicator.text = labelText.length ? labelText : clamped + labelSuffix;
         const category = resolveIconCategory(clamped, mutedValue);
         if (category !== "off")
             lastIconCategory = category;
@@ -206,7 +208,7 @@ LocalComponents.WidgetCapsule {
                 pillIndicator.hide();
             }
             onWheel: wheel => {
-                if (wheel.angleDelta.y === 0)
+                if (!root.wheelEnabled || wheel.angleDelta.y === 0)
                     return;
                 root.wheelStep(wheel.angleDelta.y > 0 ? 1 : -1);
             }

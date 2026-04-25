@@ -61,6 +61,8 @@ AudioLevelCapsule {
         function onMutedChanged() { root._maybeHandle("muted"); }
         function onMicVolumeChanged() { root._maybeHandle("micVolume"); }
         function onMicMutedChanged() { root._maybeHandle("micMuted"); }
+        function onCurrentRouteChanged() { root.refreshFromService(); }
+        function onIsProAudioSinkChanged() { root.refreshFromService(); }
     }
 
     Connections {

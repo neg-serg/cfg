@@ -6,11 +6,14 @@ AudioEndpointCapsule {
     id: root
 
     property string tooltipTitle: ""
+    property string tooltipValue: ""
     property var tooltipHints: []
     property bool enableAdvancedToggle: false
     property Item advancedSelector: defaultSelector
 
     readonly property string _computedValue: (function() {
+        if (tooltipValue.length)
+            return tooltipValue;
         var lvl = (root.level !== undefined && root.level !== null) ? root.level : 0;
         return lvl + "%";
     })()

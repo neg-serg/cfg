@@ -163,6 +163,10 @@ Singleton {
             // Pill tracker reminder deadline (HH:MM format)
             property string pillReminderDeadline: "10:00"
 
+            // Audio off reminder cooldown override in milliseconds.
+            // -1 means: use Theme.panelVolumeOffReminderCooldownMs.
+            property int audioOffReminderCooldownMs: -1
+
             // Wallpaper accent extraction
             property bool wallpaperAccent: true
         }

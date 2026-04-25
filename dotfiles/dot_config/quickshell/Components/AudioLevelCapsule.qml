@@ -17,6 +17,13 @@ LocalComponents.WidgetCapsule {
     property bool autoHideWhenMuted: false
     property bool panelHovering: false
     property bool wheelEnabled: true
+    property string offReminderStateKey: ""
+    readonly property int effectiveOffReminderCooldownMs: {
+        const raw = Settings.settings ? Number(Settings.settings.audioOffReminderCooldownMs) : -1;
+        if (isFinite(raw) && raw >= 0)
+            return Math.round(raw);
+        return Theme.panelVolumeOffReminderCooldownMs;
+    }
 
     property int level: 0
     property bool muted: false
@@ -29,6 +36,7 @@ LocalComponents.WidgetCapsule {
     // completing).
     property int _prevClamped: -1
     property bool _prevMuted: false
+    property string _prevCategory: ""
 
     readonly property alias pill: pillIndicator
 
@@ -123,9 +131,25 @@ LocalComponents.WidgetCapsule {
         }
     }
 
+    function shouldShowOffReminder(category) {
+        const enteringOff = category === "off" && _prevCategory !== "off";
+        if (!enteringOff)
+            return false;
+        if (!offReminderStateKey.length || !StateCache.state)
+            return true;
+
+        const lastShownAt = Number(StateCache.state[offReminderStateKey] || 0);
+        const now = Date.now();
+        const expired = !isFinite(lastShownAt) || lastShownAt <= 0 || (now - lastShownAt) >= effectiveOffReminderCooldownMs;
+        if (expired)
+            StateCache.state[offReminderStateKey] = now;
+        return expired;
+    }
+
     function updateFrom(value, mutedValue) {
         const clamped = Utils.clamp(value, 0, 100);
         const category = resolveIconCategory(clamped, mutedValue);
+        const showOffReminder = autoHideWhenMuted && shouldShowOffReminder(category);
 
         // Always update presentation (text, icon, colour)
         level = clamped;
@@ -139,17 +163,24 @@ LocalComponents.WidgetCapsule {
         pillIndicator.collapsedIconColor = levelColor;
 
         if (autoHideWhenMuted && category === "off") {
-            // Off / muted branch — always update visibility timers
-            if (!root.visible)
-                root.visible = true;
-            mutedHideTimer.restart();
-            if (!firstChange)
-                pillIndicator.show();
+            if (showOffReminder) {
+                if (!root.visible)
+                    root.visible = true;
+                mutedHideTimer.restart();
+                if (!firstChange)
+                    pillIndicator.show();
+            } else {
+                if (mutedHideTimer.running)
+                    mutedHideTimer.stop();
+                root.visible = false;
+                pillIndicator.hide();
+            }
             firstChange = false;
             if (fullHideTimer.running)
                 fullHideTimer.stop();
             _prevClamped = clamped;
             _prevMuted = mutedValue;
+            _prevCategory = category;
             return;
         }
 
@@ -167,6 +198,7 @@ LocalComponents.WidgetCapsule {
                 pillIndicator.show();
         _prevClamped = clamped;
         _prevMuted = mutedValue;
+        _prevCategory = category;
         firstChange = false;
 
         if (clamped === 100) {

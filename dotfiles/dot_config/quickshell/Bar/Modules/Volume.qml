@@ -11,11 +11,12 @@ LocalMods.AudioEndpointTile {
     iconLow: "volume_down"
     iconHigh: (Services.Audio && Services.Audio.currentRoute === "phones") ? "headphones" : "volume_up"
     labelSuffix: "%"
-    labelText: ""
+    labelText: (Services.Audio && Services.Audio.isProAudioSink) ? ((Services.Audio.currentRoute === "aes") ? "AES" : (Services.Audio.currentRoute === "phones") ? "HP" : (Services.Audio.currentRoute === "spdif") ? "SPDIF" : (Services.Audio.currentRoute === "an") ? "AN" : "?") : ""
     levelProperty: "volume"
     mutedProperty: "muted"
     changeMethod: "changeVolume"
     wheelEnabled: !(Services.Audio && Services.Audio.isProAudioSink)
+    offReminderStateKey: "audioOffReminderLastShownAt"
     toggleOnClick: false
     tooltipTitle: "Output"
     tooltipValue: (Services.Audio && Services.Audio.isProAudioSink) ? ((Services.Audio.currentRoute === "aes") ? "AES" : (Services.Audio.currentRoute === "phones") ? "HP" : (Services.Audio.currentRoute === "spdif") ? "SPDIF" : (Services.Audio.currentRoute === "an") ? "AN" : "?") : ""

@@ -30,10 +30,19 @@ Item {
 
     function roundToStep(v) { return Math.round(v / step) * step }
 
+    function _isProAudio() {
+        return defaultAudioSink && defaultAudioSink.properties
+            && defaultAudioSink.properties["device.profile.pro"] === "true";
+    }
+
     function syncFromSink() {
         if (_audio) {
             muted = _audio.muted
-            volume = _audio.muted ? 0 : Math.round((_audio.volume || 0) * 100)
+            if (_isProAudio()) {
+                volume = 100
+            } else {
+                volume = _audio.muted ? 0 : Math.round((_audio.volume || 0) * 100)
+            }
         } else {
             muted = false
             volume = 0
@@ -52,6 +61,7 @@ Item {
 
     // Set absolute volume in percent (0..100), quantized to `step`
     function setVolume(vol) {
+        if (_isProAudio()) return
         var clamped = Utils.clamp(Math.round(vol), 0, 100)
         var stepped = roundToStep(clamped)
         if (_audio) {
@@ -67,7 +77,7 @@ Item {
     // Relative change helper
     function changeVolume(delta) { setVolume(volume + (Number(delta) || 0)) }
 
-    function toggleMute() { if (_audio) _audio.muted = !_audio.muted }
+    function toggleMute() { if (_isProAudio()) return; if (_audio) _audio.muted = !_audio.muted }
 
     function setMicVolume(vol) {
         var clamped = Utils.clamp(Math.round(vol), 0, 100)

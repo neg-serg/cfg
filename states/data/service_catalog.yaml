@@ -326,6 +326,7 @@ opencode_telegram_bot:         # OpenCode Telegram bot
 telecode:                      # Telecode Telegram agent
   unit: telecode
   scope: user
+  manual_start: true
   health_cmd: "pgrep -f telecode"
   container_image: telecode
   gpu: none

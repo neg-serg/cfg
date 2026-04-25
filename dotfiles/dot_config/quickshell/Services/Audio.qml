@@ -30,15 +30,22 @@ Item {
 
     function roundToStep(v) { return Math.round(v / step) * step }
 
-    function _isProAudio() {
-        return defaultAudioSink && defaultAudioSink.properties
-            && defaultAudioSink.properties["device.profile.pro"] === "true";
+    function _isProAudioSink() {
+        if (!defaultAudioSink || !defaultAudioSink.properties) return false
+        var val = defaultAudioSink.properties["device.profile.pro"]
+        return val === true || val === "true"
+    }
+
+    function _isProAudioSource() {
+        if (!defaultAudioSource || !defaultAudioSource.properties) return false
+        var val = defaultAudioSource.properties["device.profile.pro"]
+        return val === true || val === "true"
     }
 
     function syncFromSink() {
         if (_audio) {
             muted = _audio.muted
-            if (_isProAudio()) {
+            if (_isProAudioSink()) {
                 volume = 100
             } else {
                 volume = _audio.muted ? 0 : Math.round((_audio.volume || 0) * 100)
@@ -52,7 +59,11 @@ Item {
     function syncFromSource() {
         if (_micAudio) {
             micMuted = _micAudio.muted
-            micVolume = _micAudio.muted ? 0 : Math.round((_micAudio.volume || 0) * 100)
+            if (_isProAudioSource()) {
+                micVolume = 100
+            } else {
+                micVolume = _micAudio.muted ? 0 : Math.round((_micAudio.volume || 0) * 100)
+            }
         } else {
             micMuted = false
             micVolume = 0
@@ -61,7 +72,7 @@ Item {
 
     // Set absolute volume in percent (0..100), quantized to `step`
     function setVolume(vol) {
-        if (_isProAudio()) return
+        if (_isProAudioSink()) return
         var clamped = Utils.clamp(Math.round(vol), 0, 100)
         var stepped = roundToStep(clamped)
         if (_audio) {
@@ -77,9 +88,10 @@ Item {
     // Relative change helper
     function changeVolume(delta) { setVolume(volume + (Number(delta) || 0)) }
 
-    function toggleMute() { if (_isProAudio()) return; if (_audio) _audio.muted = !_audio.muted }
+    function toggleMute() { if (_isProAudioSink()) return; if (_audio) _audio.muted = !_audio.muted }
 
     function setMicVolume(vol) {
+        if (_isProAudioSource()) return
         var clamped = Utils.clamp(Math.round(vol), 0, 100)
         var stepped = roundToStep(clamped)
         if (_micAudio) {
@@ -93,7 +105,7 @@ Item {
 
     function changeMicVolume(delta) { setMicVolume(micVolume + (Number(delta) || 0)) }
 
-    function toggleMicMute() { if (_micAudio) _micAudio.muted = !_micAudio.muted }
+    function toggleMicMute() { if (_isProAudioSource()) return; if (_micAudio) _micAudio.muted = !_micAudio.muted }
 
     // Keep in sync with the PipeWire sink
     Connections {

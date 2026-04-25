@@ -181,59 +181,6 @@ test -e {{ _path }}
 {%- endif %}
 {%- endmacro -%}
 
-{# Apply one or more file.replace mutations and control the affected service only on change.
-   replacements: list of tuples (state_id, pattern, repl[, flags]). Defaults flags to MULTILINE.
-   action: 'restart' (default) or 'reload' to choose the post-change service.running behavior.
-   Emits N file.replace states, {{ name }}_stop_before_change, and {{ name }}_<action>_after_change.
-   Usage: {{ config_replace_with_service_control('transmission_settings', transmission_cfg, 'transmission', replacements, requires=['cmd: install_transmission'], service_require=['service: transmission_enabled']) }}
-#}
-{%- macro config_replace_with_service_control(name, path, service, replacements, requires=None, service_require=None, action='restart') -%}
-{%- set control_action = 'reload' if action == 'reload' else 'restart' -%}
-{% for replacement in replacements %}
-  {% set state_id = replacement[0] %}
-  {% set pattern = replacement[1] %}
-  {% set repl = replacement[2] %}
-  {% set flags = replacement[3] if replacement|length > 3 else 'MULTILINE' %}
-{{ state_id }}:
-  file.replace:
-    - name: {{ path }}
-    - pattern: '{{ pattern }}'
-    - repl: '{{ repl }}'
-    - flags: {{ flags }}
-{%- if requires %}
-    - require:
-{%- for req in requires %}
-      - {{ req }}
-{%- endfor %}
-{%- endif %}
-
-{% endfor %}
-{{ name }}_stop_before_change:
-  service.dead:
-    - name: {{ service }}
-    - prereq:
-{%- for replacement in replacements %}
-      - file: {{ replacement[0] }}
-{%- endfor %}
-
-{{ name }}_{{ control_action }}_after_change:
-  service.running:
-    - name: {{ service }}
-{%- if control_action == 'reload' %}
-    - reload: True
-{%- endif %}
-    - watch:
-{%- for replacement in replacements %}
-      - file: {{ replacement[0] }}
-{%- endfor %}
-{%- if service_require %}
-    - require:
-{%- for req in service_require %}
-      - {{ req }}
-{%- endfor %}
-{%- endif %}
-{%- endmacro -%}
-
 {# Restart service and poll a health-check command until it succeeds.
    Skips entirely if the check already passes (unless guard).
    check_cmd: shell command that returns 0 when service is ready (explicit override).
@@ -624,23 +571,6 @@ test -e {{ _path }}
     - require:
       - service: {{ name }}_enabled
       - cmd: {{ name }}_reset_failed
-{%- endif %}
-{%- endmacro -%}
-
-{# Deploy unit file + manage service + run healthcheck — all in one.
-   Combines service_with_unit() + service_with_healthcheck() for the common
-   pattern where both are always used together.
-   healthcheck_requires: custom requisites for the healthcheck state
-     (defaults to ['service: <name>_enabled']).
-   catalog/check_cmd: if neither is provided, no healthcheck is generated.
-   Usage: {{ service_with_unit_and_healthcheck('loki', 'salt://units/loki.service', running=True, watch=['file: loki_config'], requires=['cmd: install_loki', 'file: loki_config'], catalog=catalog) }}
-          {{ service_with_unit_and_healthcheck('ollama', 'salt://units/ollama.service.j2', template='jinja', context={...}, onlyif='command -v ollama', catalog=catalog) }}
-#}
-{%- macro service_with_unit_and_healthcheck(name, source, unit_type='service', running=False, enabled=True, requires=None, template=None, context=None, onlyif=None, companion=None, watch=None, check_cmd=None, timeout=_healthcheck_timeout, catalog=None, healthcheck_requires=None) -%}
-{{ service_with_unit(name, source, unit_type=unit_type, running=running, enabled=enabled, requires=requires, template=template, context=context, onlyif=onlyif, companion=companion, watch=watch) }}
-{%- if catalog is not none or check_cmd is not none %}
-
-{{ service_with_healthcheck(name ~ '_start', name, check_cmd=check_cmd, timeout=timeout, catalog=catalog, requires=healthcheck_requires or ['service: ' ~ name ~ '_enabled']) }}
 {%- endif %}
 {%- endmacro -%}
 

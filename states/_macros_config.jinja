@@ -42,50 +42,6 @@
 {%- endif %}
 {%- endmacro -%}
 
-{# File-management macros for user config files, secret files, and desktop entries #}
-
-{# Create a managed file with user ownership and optional replace=False.
-   Usage: {{ user_config_file('my_config', '/path/to/file', contents='config data', mode='0644', replace=False, require=['file: config_dir']) }}
-#}
-{%- macro user_config_file(name, path, contents, user=_user, mode='0644', replace=True, require=None, group=None, context=None, template='jinja', source=None) -%}
-{% if group is none %}{% set group = user %}{% endif %}
-{{ name }}:
-  file.managed:
-    - name: {{ path }}
-    - user: {{ user }}
-    - group: {{ group }}
-    - mode: '{{ mode }}'
-    {% if not replace %}
-    - replace: False
-    {% endif %}
-    {%- if source %}
-    - source: {{ source }}
-    {%- if template %}
-    - template: {{ template }}
-    {%- endif %}
-    {%- if context %}
-    - context:
-      {{ context | tojson | indent(8) }}
-    {%- endif %}
-    {%- else %}
-    - contents: |
-{{ contents | trim | indent(8, first=True) }}
-    {%- endif %}
-    {%- if require %}
-    - require:
-    {%- for req in require %}
-      - {{ req }}
-    {%- endfor %}
-    {% endif %}
-{%- endmacro -%}
-
-{# Shortcut for secret files (0600 mode, replace=False).
-   Usage: {{ secret_file('my_secret', '/path/to/secret', contents='secret data', require=['user: my_user']) }}
-#}
-{%- macro secret_file(name, path, contents, user=_user, require=None) -%}
-{{ user_config_file(name, path, contents, user=user, mode='0600', replace=False, require=require) }}
-{%- endmacro -%}
-
 {# Create desktop entry (.desktop) files with standard format.
    Usage: {{ desktop_entry('vr_session', '/usr/share/xsessions/vr.desktop', 'Xorg VR', 'VR session', 'startx', 'i3') }}
 #}
@@ -105,25 +61,4 @@
         DesktopNames={{ desktop_names }}
 {%- endmacro -%}
 
-{# Generate multiple config files in a loop.
-   Usage: {{ config_files_loop('kde', '/home/user/.config', {'kdeglobals': '...', 'plasmarc': '...'}, user='user', mode='0644') }}
-#}
-{%- macro config_files_loop(base_name, config_dir, files, user=_user, mode='0644', replace=False, require_base=None) -%}
-{%- for filename, contents in files.items() %}
-{{ base_name }}_{{ filename }}:
-  file.managed:
-    - name: {{ config_dir }}/{{ filename }}
-    - user: {{ user }}
-    - group: {{ user }}
-    - mode: '{{ mode }}'
-    {%- if not replace %}
-    - replace: False
-    {%- endif %}
-    - contents: |
-{{ contents | trim | indent(8, first=True) }}
-    {%- if require_base %}
-    - require:
-      - file: {{ require_base }}
-    {%- endif %}
-{%- endfor %}
-{%- endmacro -%}
+

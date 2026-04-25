@@ -242,43 +242,6 @@ install_{{ name | replace('-', '_') }}:
 
 {%- endmacro -%}
 
-{# Download and extract a .7z archive to dest using 7z. #}
-{%- macro curl_extract_7z(name, url, dest, creates=None, hash=None, version=None, user=_user, home=_home, require=None) -%}
-{%- set _dest = dest | replace('~', home) -%}
-{%- set _vd = _ver_dir if user else _sys_ver_dir -%}
-{%- set _creates = creates or _dest -%}
-{%- set _cache_key = name ~ '-' ~ (version if version else 'latest') -%}
-{%- set _cache_path = _download_cache ~ '/' ~ _cache_key ~ '.7z' -%}
-install_{{ name | replace('-', '_') }}:
-  cmd.run:
-    - name: |
-        set -eo pipefail
-{{ _download_cached(url, _cache_path, hash=hash) }}
-        _td=$(mktemp -d)
-        trap 'rm -rf "$_td"' EXIT
-        cp "$cache" "$_td/archive.7z"
-        mkdir -p '{{ _dest }}'
-        7z x -aoa "$_td/archive.7z" -o'{{ _dest }}'
-{%- if version %}
-        {{ _ver_stamp(_vd, name, version, target=_creates) }}
-{%- endif %}
-{%- if user %}
-    - runas: {{ user }}
-{%- endif %}
-    - shell: /bin/bash
-    - creates: {{ _vd ~ '/' ~ name ~ '@' ~ version if version else _creates }}
-    - parallel: True
-    - retry:
-        attempts: {{ _retry_attempts }}
-        interval: {{ _retry_interval }}
-{%- if require %}
-    - require:
-{%- for req in require %}
-      - {{ req }}
-{%- endfor %}
-{%- endif %}
-{%- endmacro -%}
-
 {# Download Firefox/Floorp extension .xpi from addons.mozilla.org.
    ext: dict with 'id' (extension GUID) and 'slug' (AMO slug).
    profile: path to browser profile directory.

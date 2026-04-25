@@ -6,23 +6,9 @@ Auto-generated from active feature plans. Last updated: 2026-04-21
 - Jinja2 + YAML Salt states, Python 3, Bash/Zsh helper scripts
 - Salt 3006.x masterless workflow with shared `_macros_*.jinja`
 - `just`, `pytest`, `ruff`, `shellcheck`, `yamllint`, `salt-lint`
-- Repository artifacts under `states/`, `scripts/`, `tests/`, `docs/`
-- Markdown documentation, shell-based operator workflow, existing `gopass` CLI usage in Salt/chezmoi scripts + `gopass` 1.16.x, current git-backed password store, `chezmoi`, Salt masterless workflow, existing docs under `docs/` (072-gopass-age-migration)
-- File-based `gopass` store plus git history and local backup artifacts (072-gopass-age-migration)
-- Jinja2 + YAML Salt states, Python 3, Bash/Zsh helper scripts + Salt 3006.x masterless workflow, existing `_macros_*.jinja`, systemd, Arch/CachyOS package management, `zapret2` AUR package (`0.9.4.5-1` observed during planning) (073-zapret2-dry-run)
-- Repository-managed config templates and data files plus local file-based readiness/rollback metadata on the target machine (073-zapret2-dry-run)
-- Jinja2 + YAML Salt states, Python 3, Bash/Zsh helper scripts + Salt 3006.x masterless workflow, existing `_macros_*.jinja`, systemd, Arch/CachyOS package management, repository-managed unit/config trees (074-sysusers-tmpfiles-adoption)
-- Repository-managed Salt states, config templates, unit files, and generated `sysusers.d` / `tmpfiles.d` policy fragments on the target machine (074-sysusers-tmpfiles-adoption)
-- Markdown, YAML, Bash/Zsh operator workflows, `gopass` 1.16.x + `gopass`, `age`, existing git-backed password store, chezmoi, Salt masterless workflow, spec-kit artifacts (072-gopass-age-migration)
-- File-based `gopass` store plus git history and offline rollback artifacts (072-gopass-age-migration)
-- Jinja2 + YAML Salt states, Python 3 helper script, Markdown operator docs + Salt 3006.x masterless workflow, existing `_macros_*.jinja`, `zen-browser-bin`, Surfingkeys browser extension, systemd user services, Hyprland/Wayfire launcher config, spec-kit artifacts (077-zen-browser-cutover)
-- Repository-managed state/data files plus browser profile files under the existing Zen profile directory and user-service-managed local helper process (077-zen-browser-cutover)
-- Bash menu script, vicinae/dmenu/rofi launcher integration, Hyprland keybinding + `switch-proxy` script, `set-zen-proxy` Python helper, existing HTTP helper server, Zen Browser profile management (dynamic-proxy-switching)
-- Repository-managed menu script and Hyprland binding plus local user profile configuration and helper server (dynamic-proxy-switching)
-- Markdown, shell command evidence, `gopass` 1.16.1, `age`-backed store observations + `gopass`, `age`, GitHub upstream discussions/releases, local `gopass` configuration and CLI behavior, spec-kit artifacts (078-gopass-age-research)
-- File-based `gopass` store plus local encrypted `~/.config/gopass/age/identities` and captured command outputs (078-gopass-age-research)
-- Markdown planning artifacts, Salt/Jinja states, shell-based operator workflow, `gopass` 1.16.1, `age` 1.3.1, `yubikey-manager` 5.9.0 + `gopass`, `age`, `age-plugin-yubikey`, `yubikey-manager`, `pcsclite` / `pcscd`, systemd user services, existing Salt data/state files, existing chezmoi templates (079-age-yubikey-cutover)
-- Existing file-based `gopass` store plus backend identity references, local user/systemd config, and rollback artifacts on the workstation (079-age-yubikey-cutover)
+- Repository artifacts under `states/`, `scripts/`, `tests/`, `docs/`, `specs/`
+- Markdown documentation, shell-based operator workflow, `gopass` 1.16.x + `age` + `age-plugin-yubikey`, `chezmoi`, systemd, Arch/CachyOS package management
+- Zen Browser (`zen-browser-bin`), Surfingkeys, Hyprland/Wayfire launcher config, vicinae/dmenu/rofi
 
 ## Project Structure
 

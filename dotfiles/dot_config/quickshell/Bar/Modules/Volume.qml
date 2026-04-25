@@ -1,7 +1,7 @@
 import QtQuick
 import qs.Settings
 import qs.Components
-import qs.Services
+import qs.Services as Services
 import "." as LocalMods
 
 LocalMods.AudioEndpointTile {

@@ -2,7 +2,6 @@ import QtQuick
 import qs.Settings
 import qs.Services as Services
 import qs.Components
-import qs.Services
 
 WidgetCapsule {
     id: root

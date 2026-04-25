@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily RKN domains update with autocorrection
+OnFailure=rkn-domains-fetcher-retry@%i.service
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=3600
+
+[Install]
+WantedBy=timers.target

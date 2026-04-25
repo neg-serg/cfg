@@ -490,9 +490,8 @@ Scope {
                     property color barBgColor: "transparent"
                     property real seamTaperTop: Theme.panelSeamTaperTop
                     property real seamTaperBottom: Theme.panelSeamTaperBottom
-                    property real seamOpacity: rootScope.isTerminalWs ? Theme.panelSeamOpacity : 0
-                    property real seamGapTopInset: Math.round(seamWidth * 0.25)
-                    property real seamGapBottomInset: Math.round(seamWidth * 2.0)
+                    property real seamOpacity: rootScope.isTerminalWs ? Theme.panelSeamOpacity : nonTerminalSeamOpacity
+                    property real nonTerminalSeamOpacity: 0
                     readonly property real seamTiltSign: 1.0
                     readonly property real seamTaperTopClamped: Utils.clamp01(seamTaperTop)
                     readonly property real seamTaperBottomClamped: Utils.clamp01(seamTaperBottom)
@@ -954,9 +953,8 @@ Scope {
                     property color barBgColor: "transparent"
                     property real seamTaperTop: Theme.panelSeamTaperTop
                     property real seamTaperBottom: Theme.panelSeamTaperBottom
-                    property real seamOpacity: rootScope.isTerminalWs ? Theme.panelSeamOpacity : 0
-                    property real seamGapTopInset: Math.round(seamWidth * 0.25)
-                    property real seamGapBottomInset: Math.round(seamWidth * 2.0)
+                    property real seamOpacity: rootScope.isTerminalWs ? Theme.panelSeamOpacity : nonTerminalSeamOpacity
+                    property real nonTerminalSeamOpacity: 0
                     readonly property real seamTiltSign: -1.0
                     readonly property real seamTaperTopClamped: Utils.clamp01(seamTaperTop)
                     readonly property real seamTaperBottomClamped: Utils.clamp01(seamTaperBottom)
@@ -1524,7 +1522,9 @@ Scope {
                     property int seamHeightPx: Math.round(Theme.panelHeight * s)
                     property real seamTaperTop: 0.12
                     property real seamTaperBottom: 0.65
-                    property real seamEffectOpacity: rootScope.isTerminalWs ? 0.85 : 0
+                    property real nonTerminalSeamOpacity: 0
+                    property bool gapBlurEnabled: false
+                    property real seamEffectOpacity: rootScope.isTerminalWs ? 0.85 : nonTerminalSeamOpacity
                     property color seamFillColor: Color.mix(Theme.surfaceVariant, Theme.background, 0.35)
                     Behavior on seamFillColor {
                         enabled: Theme._themeLoaded && Theme.animationsEnabled
@@ -1537,10 +1537,10 @@ Scope {
                         enabled: Theme._themeLoaded
                         ColorAnimation { duration: Theme.panelAnimFastMs }
                     }
-                    property real seamTintOpacity: rootScope.isTerminalWs ? 0.9 : 0
+                    property real seamTintOpacity: rootScope.isTerminalWs ? 0.9 : nonTerminalSeamOpacity
                     property color seamBaseColor: Theme.background
-                    property real seamBaseOpacityTop: rootScope.isTerminalWs ? 0.5 : 0
-                    property real seamBaseOpacityBottom: rootScope.isTerminalWs ? 0.65 : 0
+                    property real seamBaseOpacityTop: rootScope.isTerminalWs ? 0.5 : nonTerminalSeamOpacity
+                    property real seamBaseOpacityBottom: rootScope.isTerminalWs ? 0.65 : nonTerminalSeamOpacity
                     function seamEdgeBaseForTilt(tiltSign, frac) {
                         var f = Utils.clamp01(frac);
                         return (tiltSign > 0) ? (1.0 - f) : f;

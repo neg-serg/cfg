@@ -546,6 +546,7 @@ Scope {
                         readonly property int sw: leftPanel.seamWidth
                         readonly property real topInset: Math.round(sw * 0.25)
                         readonly property real bottomInset: Math.round(sw * 2.0)
+                        readonly property real _gapFactor: leftPanel.nonTerminalSeamOpacity
                         onPaint: {
                             var ctx = getContext('2d');
                             ctx.reset();
@@ -555,11 +556,25 @@ Scope {
                                 ctx.globalAlpha = baseOpacity;
                                 ctx.fillRect(0, 0, width, height);
                             } else {
+                                var gapTopX = Math.max(0, _innerWidth - topInset);
+                                var gapBottomX = Math.max(0, _innerWidth - bottomInset);
+                                // Gap area (beyond diagonal) at scaled opacity
+                                if (_gapFactor > 0) {
+                                    ctx.globalAlpha = baseOpacity * _gapFactor;
+                                    ctx.beginPath();
+                                    ctx.moveTo(gapTopX, 0);
+                                    ctx.lineTo(width, 0);
+                                    ctx.lineTo(width, height);
+                                    ctx.lineTo(gapBottomX, height);
+                                    ctx.closePath();
+                                    ctx.fill();
+                                }
+                                // Content area at full base opacity
                                 ctx.globalAlpha = baseOpacity;
                                 ctx.beginPath();
                                 ctx.moveTo(0, 0);
-                                ctx.lineTo(Math.max(0, _innerWidth - topInset), 0);
-                                ctx.lineTo(Math.max(0, _innerWidth - bottomInset), height);
+                                ctx.lineTo(gapTopX, 0);
+                                ctx.lineTo(gapBottomX, height);
                                 ctx.lineTo(0, height);
                                 ctx.closePath();
                                 ctx.fill();
@@ -1011,6 +1026,7 @@ Scope {
                         readonly property int sw: rightPanel.seamWidth
                         readonly property real topInset: Math.round(sw * 0.25)
                         readonly property real bottomInset: Math.round(sw * 2.0)
+                        readonly property real _gapFactor: rightPanel.nonTerminalSeamOpacity
                         onPaint: {
                             var ctx = getContext('2d');
                             ctx.reset();
@@ -1020,9 +1036,21 @@ Scope {
                                 ctx.globalAlpha = baseOpacity;
                                 ctx.fillRect(0, 0, width, height);
                             } else {
-                                ctx.globalAlpha = baseOpacity;
                                 var diagTopX = Math.max(0, width - _innerWidth + topInset);
                                 var diagBottomX = Math.max(0, width - _innerWidth + bottomInset);
+                                // Gap area (left of diagonal) at scaled opacity
+                                if (_gapFactor > 0) {
+                                    ctx.globalAlpha = baseOpacity * _gapFactor;
+                                    ctx.beginPath();
+                                    ctx.moveTo(0, 0);
+                                    ctx.lineTo(diagTopX, 0);
+                                    ctx.lineTo(diagBottomX, height);
+                                    ctx.lineTo(0, height);
+                                    ctx.closePath();
+                                    ctx.fill();
+                                }
+                                // Content area (right of diagonal) at full base opacity
+                                ctx.globalAlpha = baseOpacity;
                                 ctx.beginPath();
                                 ctx.moveTo(diagTopX, 0);
                                 ctx.lineTo(width, 0);

@@ -15,8 +15,14 @@ Item {
         || (Quickshell.env("HOME") + "/.cache")) + "/quickshell-wallpaper-path"
 
     // Push accent into Theme to avoid circular qs.Settings / qs.Services import
-    onWallpaperAccentChanged: { Theme._wpAccent = wallpaperAccent; }
-    onHasAccentChanged: { Theme._wpHasAccent = hasAccent; }
+    onWallpaperAccentChanged: {
+        console.log(`[DBG WallpaperAccent] color=${wallpaperAccent} r=${wallpaperAccent.r.toFixed(3)} g=${wallpaperAccent.g.toFixed(3)} b=${wallpaperAccent.b.toFixed(3)}`);
+        Theme._wpAccent = wallpaperAccent;
+    }
+    onHasAccentChanged: {
+        console.log(`[DBG WallpaperAccent] hasAccent=${hasAccent}`);
+        Theme._wpHasAccent = hasAccent;
+    }
 
     FileView {
         id: pathFile

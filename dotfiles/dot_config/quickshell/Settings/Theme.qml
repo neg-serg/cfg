@@ -734,7 +734,10 @@ Singleton {
     // WallpaperAccent is in qs.Services; we read it via _wpAccent to avoid circular import
     property color _wpAccent: "#000000"
     property bool _wpHasAccent: false
-    property color accentPrimary: _wpHasAccent ? _wpAccent : val('colors.accent.primary', "#006FCC")
+    property color accentPrimary: _wpHasAccent
+        ? Color.matchHue(_wpAccent, val('colors.accent.primary', "#006FCC"))
+        : val('colors.accent.primary', "#006FCC")
+    onAccentPrimaryChanged: console.log(`[DBG Theme] accentPrimary=${accentPrimary} _wpHasAccent=${_wpHasAccent} _wpAccent=${_wpAccent}`)
     // Status colors
     property color error: val('colors.status.error', "#FF6B81")
     property color warning: val('colors.status.warning', "#FFB347")

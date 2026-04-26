@@ -174,3 +174,16 @@ function matchLightness(source, lightnessRef) {
         return _hslToRgb(srcHsl);
     } catch(e) { console.warn("[Color.matchLightness]", e); return source }
 }
+// Take only hue from source, preserve saturation and lightness from reference
+function matchHue(source, ref) {
+    try {
+        var srcHsl = toHsl(source);
+        var refHsl = toHsl(ref);
+        console.log(`[DBG matchHue] source=${source} ref=${ref} srcHSL=(${srcHsl ? srcHsl.h.toFixed(3)+','+srcHsl.s.toFixed(3)+','+srcHsl.l.toFixed(3) : 'null'}) refHSL=(${refHsl ? refHsl.h.toFixed(3)+','+refHsl.s.toFixed(3)+','+refHsl.l.toFixed(3) : 'null'})`);
+        if (!srcHsl || !refHsl) return source;
+        refHsl.h = srcHsl.h;
+        var result = _hslToRgb(refHsl);
+        console.log(`[DBG matchHue] result=${result} r=${result.r.toFixed(3)} g=${result.g.toFixed(3)} b=${result.b.toFixed(3)}`);
+        return result;
+    } catch(e) { console.warn("[Color.matchHue]", e); return source }
+}

@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
-import Qt5Compat.GraphicalEffects as GE
 import qs.Bar.Modules
 import qs.Components
 import "Modules" as LocalMods
@@ -493,29 +492,6 @@ Scope {
                     // Panel background transparency is configurable via Settings:
                     // - panelBgAlphaScale: 0..1 multiplier applied to the base theme alpha
                     property color barBgColor: "transparent"
-                    property real seamTaperTop: Theme.panelSeamTaperTop
-                    property real seamTaperBottom: Theme.panelSeamTaperBottom
-                    property real seamOpacity: rootScope.isTerminalWs ? Theme.panelSeamOpacity : Theme.panelSeamOpacity * nonTerminalSeamOpacity
-                    property real nonTerminalSeamOpacity: 0.5
-                    property real nonTerminalGapOpacity: 0.5
-                    readonly property real seamTiltSign: 1.0
-                    readonly property real seamTaperTopClamped: Utils.clamp01(seamTaperTop)
-                    readonly property real seamTaperBottomClamped: Utils.clamp01(seamTaperBottom)
-                    readonly property real seamEdgeBaseTop: (seamTiltSign > 0)
-                        ? (1.0 - seamTaperTopClamped)
-                        : seamTaperTopClamped
-                    readonly property real seamEdgeSlope: ((seamTiltSign > 0)
-                        ? (1.0 - seamTaperBottomClamped)
-                        : seamTaperBottomClamped) - seamEdgeBaseTop
-                    property color seamFillColor: Color.withAlpha(
-                        Color.mix(Theme.surfaceVariant, Theme.background, Theme.panelSeamColorMixRatio),
-                        seamOpacity
-                    )
-                    Behavior on seamFillColor {
-                        enabled: Theme._themeLoaded && Theme.animationsEnabled
-                        ColorAnimation { duration: Theme.panelAnimFastMs }
-                    }
-                    readonly property real seamSlackWidth: Math.max(0, leftBarBackground.width - leftBarFill.width)
                     property bool panelTintEnabled: true
                     property color panelTintColor: Color.withAlpha(Theme.panelTintColor, Theme.panelTintAlpha)
                     Behavior on panelTintColor {
@@ -535,78 +511,6 @@ Scope {
                             anchors.fill: parent
                             transform: Translate { y: leftPanel.barHeightPx * (1 - monitorItem.barSlideProgress) }
 
-                    // Outer backdrop: covers the panel at seam opacity.
-                    // On terminal workspaces: fills the full width.
-                    // On non-terminal workspaces: fills only the content area (matching the
-                    // inner backdrop's diagonal), leaving the gap area fully transparent.
-                    Canvas {
-                        id: leftBarBackdropOuter
-                        width: Math.max(1, leftPanel.width)
-                        height: leftPanel.barHeightPx
-                        anchors.top: parent.top
-                        anchors.left: parent.left
-                        z: -2
-                        visible: false
-                        readonly property color bgColor: Theme.panelBackdropColor
-                        readonly property real baseOpacity: Theme.panelSeamOpacity
-                        onPaint: {
-                            var ctx = getContext('2d');
-                            ctx.reset();
-                            ctx.clearRect(0, 0, width, height);
-                            ctx.fillStyle = bgColor.toString();
-                            if (rootScope.isTerminalWs) {
-                                ctx.globalAlpha = baseOpacity;
-                            } else {
-                                ctx.globalAlpha = baseOpacity * leftPanel.nonTerminalGapOpacity;
-                            }
-                            ctx.fillRect(0, 0, width, height);
-                        }
-                        onWidthChanged: requestPaint()
-                        onHeightChanged: requestPaint()
-                        onBaseOpacityChanged: requestPaint()
-                        onBgColorChanged: requestPaint()
-                        Connections {
-                            target: rootScope
-                            function onIsTerminalWsChanged() { leftBarBackdropOuter.requestPaint() }
-                        }
-                    }
-                    // Inner backdrop: trapezoid with bottom-right triangle cut off.
-                    // Canvas draws the shape directly — no ShaderEffect needed.
-                    Canvas {
-                        id: leftBarBackdrop
-                        width: Math.max(1, leftBarFill.width - leftPanel.interWidgetSpacing + leftPanel.seamWidth)
-                        height: leftPanel.barHeightPx
-                        anchors.top: parent.top
-                        anchors.left: parent.left
-                        z: -1
-                        visible: false
-                        readonly property int sw: leftPanel.seamWidth
-                        readonly property color bgColor: Theme.panelBackdropColor
-                        readonly property real bgOpacity: Theme.panelBackdropOpacity
-                        readonly property real topInset: Math.round(sw * 0.25)
-                        readonly property real bottomInset: Math.round(sw * 2.0)
-                        onPaint: {
-                            var ctx = getContext('2d');
-                            ctx.reset();
-                            ctx.clearRect(0, 0, width, height);
-                            ctx.globalAlpha = bgOpacity;
-                            ctx.fillStyle = bgColor.toString();
-                            ctx.beginPath();
-                            ctx.moveTo(0, 0);
-                            ctx.lineTo(Math.max(0, width - topInset), 0);
-                            ctx.lineTo(Math.max(0, width - bottomInset), height);
-                            ctx.lineTo(0, height);
-                            ctx.closePath();
-                            ctx.fill();
-                        }
-                        onWidthChanged: requestPaint()
-                        onHeightChanged: requestPaint()
-                        onSwChanged: requestPaint()
-                        onTopInsetChanged: requestPaint()
-                        onBottomInsetChanged: requestPaint()
-                        onBgColorChanged: requestPaint()
-                        onBgOpacityChanged: requestPaint()
-                    }
                     Rectangle {
                         id: leftBarBackground
                         width: Math.max(1, leftPanel.width)
@@ -729,65 +633,6 @@ Scope {
                                     0, 0)
                                 blending: true
                             }
-                        }
-
-                        Item {
-                            id: leftSeamFill
-                            width: Math.min(leftBarBackground.width, leftPanel.seamWidth)
-                            height: leftBarBackground.height
-                            anchors.bottom: leftBarBackground.bottom
-                            anchors.right: leftBarBackground.right
-                            z: 1000
-                            // Draw local seam wedge only when the shader path is active,
-                            // and hide it while QS_WEDGE_DEBUG is enabled so the shader's
-                            // magenta overlay remains visible for validation.
-                            visible: leftFaceClipLoader.active === true && ((Quickshell.env("QS_WEDGE_DEBUG") || "") !== "1")
-                            ShaderEffect {
-                                id: leftSeamFX
-                                anchors.fill: parent
-                                fragmentShader: Qt.resolvedUrl("../shaders/seam.frag.qsb")
-                                property color baseColor: leftPanel.seamFillColor
-                                // params0: edgeBase, edgeSlope, tilt, opacity
-                                property vector4d params0: Qt.vector4d(leftPanel.seamEdgeBaseTop, leftPanel.seamEdgeSlope, leftPanel.seamTiltSign, leftPanel.seamOpacity)
-                                blending: true
-                            }
-                        }
-
-                        // Mask the left seam fill so its visible area becomes a triangle
-                        // matching the wedge; this prevents rectangular seam blocks.
-                        ShaderEffectSource {
-                            id: leftSeamSource
-                            anchors.fill: leftSeamFill
-                            sourceItem: leftSeamFX
-                            hideSource: true
-                            live: true
-                            recursive: true
-                        }
-                        Canvas {
-                            id: leftSeamMask
-                            anchors.fill: leftSeamFill
-                            visible: false
-                            onPaint: {
-                                var ctx = getContext('2d');
-                                ctx.reset();
-                                ctx.clearRect(0, 0, width, height);
-                                ctx.fillStyle = '#ffffffff';
-                                ctx.fillRect(0, 0, width, height);
-                                // Cut triangle adjacent to the seam boundary (x = 0 in this local space)
-                                ctx.fillStyle = '#000000ff';
-                                ctx.beginPath();
-                                // Default orientation: bottom-left → top-right
-                                ctx.moveTo(0, height);
-                                ctx.lineTo(width, 0);
-                                ctx.lineTo(width, height);
-                                ctx.closePath();
-                                ctx.fill();
-                            }
-                        }
-                        GE.OpacityMask {
-                            anchors.fill: leftSeamFill
-                            source: leftSeamSource
-                            maskSource: leftSeamMask
                         }
 
                         Component.onCompleted: rootScope.barHeight = leftBarBackground.height
@@ -946,29 +791,6 @@ Scope {
                     // Panel background transparency is configurable via Settings:
                     // - panelBgAlphaScale: 0..1 multiplier applied to the base theme alpha
                     property color barBgColor: "transparent"
-                    property real seamTaperTop: Theme.panelSeamTaperTop
-                    property real seamTaperBottom: Theme.panelSeamTaperBottom
-                    property real seamOpacity: rootScope.isTerminalWs ? Theme.panelSeamOpacity : Theme.panelSeamOpacity * nonTerminalSeamOpacity
-                    property real nonTerminalSeamOpacity: 0.5
-                    property real nonTerminalGapOpacity: 0.5
-                    readonly property real seamTiltSign: -1.0
-                    readonly property real seamTaperTopClamped: Utils.clamp01(seamTaperTop)
-                    readonly property real seamTaperBottomClamped: Utils.clamp01(seamTaperBottom)
-                    readonly property real seamEdgeBaseTop: (seamTiltSign > 0)
-                        ? (1.0 - seamTaperTopClamped)
-                        : seamTaperTopClamped
-                    readonly property real seamEdgeSlope: ((seamTiltSign > 0)
-                        ? (1.0 - seamTaperBottomClamped)
-                        : seamTaperBottomClamped) - seamEdgeBaseTop
-                    property color seamFillColor: Color.withAlpha(
-                        Color.mix(Theme.surfaceVariant, Theme.background, Theme.panelSeamColorMixRatio),
-                        seamOpacity
-                    )
-                    Behavior on seamFillColor {
-                        enabled: Theme._themeLoaded && Theme.animationsEnabled
-                        ColorAnimation { duration: Theme.panelAnimFastMs }
-                    }
-                    readonly property real seamSlackWidth: Math.max(0, rightBarBackground.width - rightBarFill.width)
                     property bool panelTintEnabled: true
                     property color panelTintColor: Color.withAlpha(Theme.panelTintColor, Theme.panelTintAlpha)
                     Behavior on panelTintColor {
@@ -989,77 +811,6 @@ Scope {
                             anchors.fill: parent
                             transform: Translate { y: rightPanel.barHeightPx * (1 - monitorItem.barSlideProgress) }
     
-                    // Outer backdrop: covers the panel at seam opacity.
-                    // On terminal workspaces: fills the full width.
-                    // On non-terminal workspaces: fills only the content area (matching the
-                    // inner backdrop's diagonal), leaving the gap area fully transparent.
-                    Canvas {
-                        id: rightBarBackdropOuter
-                        width: Math.max(1, rightPanel.width)
-                        height: rightPanel.barHeightPx
-                        anchors.top: parent.top
-                        anchors.right: parent.right
-                        z: -2
-                        visible: false
-                        readonly property color bgColor: Theme.panelBackdropColor
-                        readonly property real baseOpacity: Theme.panelSeamOpacity
-                        onPaint: {
-                            var ctx = getContext('2d');
-                            ctx.reset();
-                            ctx.clearRect(0, 0, width, height);
-                            ctx.fillStyle = bgColor.toString();
-                            if (rootScope.isTerminalWs) {
-                                ctx.globalAlpha = baseOpacity;
-                            } else {
-                                ctx.globalAlpha = baseOpacity * rightPanel.nonTerminalGapOpacity;
-                            }
-                            ctx.fillRect(0, 0, width, height);
-                        }
-                        onWidthChanged: requestPaint()
-                        onHeightChanged: requestPaint()
-                        onBaseOpacityChanged: requestPaint()
-                        onBgColorChanged: requestPaint()
-                        Connections {
-                            target: rootScope
-                            function onIsTerminalWsChanged() { rightBarBackdropOuter.requestPaint() }
-                        }
-                    }
-                    // Inner backdrop: trapezoid with bottom-left triangle cut off (mirrored).
-                    Canvas {
-                        id: rightBarBackdrop
-                        width: Math.max(1, rightBarFill.width - rightPanel.interWidgetSpacing + rightPanel.seamWidth)
-                        height: rightPanel.barHeightPx
-                        anchors.top: parent.top
-                        anchors.right: parent.right
-                        z: -1
-                        visible: false
-                        readonly property int sw: rightPanel.seamWidth
-                        readonly property color bgColor: Theme.panelBackdropColor
-                        readonly property real bgOpacity: Theme.panelBackdropOpacity
-                        readonly property real topInset: Math.round(sw * 0.25)
-                        readonly property real bottomInset: Math.round(sw * 2.0)
-                        onPaint: {
-                            var ctx = getContext('2d');
-                            ctx.reset();
-                            ctx.clearRect(0, 0, width, height);
-                            ctx.globalAlpha = bgOpacity;
-                            ctx.fillStyle = bgColor.toString();
-                            ctx.beginPath();
-                            ctx.moveTo(Math.min(width, topInset), 0);
-                            ctx.lineTo(width, 0);
-                            ctx.lineTo(width, height);
-                            ctx.lineTo(Math.min(width, bottomInset), height);
-                            ctx.closePath();
-                            ctx.fill();
-                        }
-                        onWidthChanged: requestPaint()
-                        onHeightChanged: requestPaint()
-                        onSwChanged: requestPaint()
-                        onTopInsetChanged: requestPaint()
-                        onBottomInsetChanged: requestPaint()
-                        onBgColorChanged: requestPaint()
-                        onBgOpacityChanged: requestPaint()
-                    }
                     Rectangle {
                         id: rightBarBackground
                         width: Math.max(1, rightPanel.width)
@@ -1184,67 +935,6 @@ Scope {
                                     0, 0)
                                 blending: true
                             }
-                        }
-
-                        // (old right Canvas triangle overlay removed)
-                        Item {
-                            id: rightSeamFill
-                            width: Math.min(rightBarBackground.width, rightPanel.seamWidth)
-                            height: rightBarBackground.height
-                            anchors.bottom: rightBarBackground.bottom
-                            anchors.left: rightBarBackground.left
-                            z: 1000
-                            // Draw local seam wedge only when the shader path is active,
-                            // and hide it while QS_WEDGE_DEBUG is enabled so the shader's
-                            // magenta overlay remains visible for validation.
-                            visible: rightPanel.renderActive
-                                && rightFaceClipLoader.active === true
-                                && ((Quickshell.env("QS_WEDGE_DEBUG") || "") !== "1")
-                            ShaderEffect {
-                                id: rightSeamFX
-                                anchors.fill: parent
-                                fragmentShader: Qt.resolvedUrl("../shaders/seam.frag.qsb")
-                                property color baseColor: rightPanel.seamFillColor
-                                // params0: edgeBase, edgeSlope, tilt, opacity
-                                property vector4d params0: Qt.vector4d(rightPanel.seamEdgeBaseTop, rightPanel.seamEdgeSlope, rightPanel.seamTiltSign, rightPanel.seamOpacity)
-                                blending: true
-                            }
-                        }
-
-                        // Mask the right seam fill similarly to form a triangular visible area.
-                        ShaderEffectSource {
-                            id: rightSeamSource
-                            anchors.fill: rightSeamFill
-                            sourceItem: rightSeamFX
-                            hideSource: true
-                            live: true
-                            recursive: true
-                        }
-                        Canvas {
-                            id: rightSeamMask
-                            anchors.fill: rightSeamFill
-                            visible: false
-                            onPaint: {
-                                var ctx = getContext('2d');
-                                ctx.reset();
-                                ctx.clearRect(0, 0, width, height);
-                                ctx.fillStyle = '#ffffffff';
-                                ctx.fillRect(0, 0, width, height);
-                                // Cut triangle adjacent to the seam boundary (x = width in this local space)
-                                ctx.fillStyle = '#000000ff';
-                                ctx.beginPath();
-                                // Default orientation: bottom-left → top-right (seam edge on the right)
-                                ctx.moveTo(width, height);
-                                ctx.lineTo(0, 0);
-                                ctx.lineTo(0, height);
-                                ctx.closePath();
-                                ctx.fill();
-                            }
-                        }
-                        GE.OpacityMask {
-                            anchors.fill: rightSeamFill
-                            source: rightSeamSource
-                            maskSource: rightSeamMask
                         }
 
                         RowLayout {
@@ -1472,191 +1162,6 @@ Scope {
                         Rectangle { visible: false }
                     }
 
-                }
-
-                PanelLayer {
-                    id: seamPanel
-                    screen: modelData
-                    color: "transparent"
-                    anchors.bottom: true
-                    anchors.left: true
-                    anchors.right: true
-                    // Ensure the seam window has a real height; without this the window
-                    // collapses to 0px and shaders never render (stays invisible).
-                    implicitHeight: seamPanel.seamHeightPx
-                    // Readiness filter: when enabled, only show seam once geometry stabilizes.
-                    // Prevents early full-width flash while rows are still measuring.
-                    property bool useReadinessFilter: true
-                    property bool rightPanelActive: rightPanel.renderActive
-                    property bool panelSlidesComplete: !monitorItem.barSlideAnimating
-                    visible: false
-                    exclusionMode: ExclusionMode.Ignore
-                    exclusiveZone: 0
-                    WlrLayershell.namespace: "quickshell-bar-seam"
-                    // Place seam below panel elements so debug fill shows through the center gap only
-                    WlrLayershell.layer: WlrLayer.Bottom
-                    property real s: Theme.scale(seamPanel.screen)
-                    property int seamHeightPx: Math.round(Theme.panelHeight * s)
-                    property real seamTaperTop: 0.12
-                    property real seamTaperBottom: 0.65
-                    property real nonTerminalSeamOpacity: 0.5
-                    property real nonTerminalGapOpacity: 0.5
-                    property bool gapBlurEnabled: false
-                    property real seamEffectOpacity: rootScope.isTerminalWs ? 0.85 : 0.85 * nonTerminalSeamOpacity
-                    property color seamFillColor: Color.mix(Theme.surfaceVariant, Theme.background, 0.35)
-                    Behavior on seamFillColor {
-                        enabled: Theme._themeLoaded && Theme.animationsEnabled
-                        ColorAnimation { duration: Theme.panelAnimFastMs }
-                    }
-                    property bool seamTintEnabled: true
-                    // Use theme accent for seam tint to avoid hardcoded red
-                    property color seamTintColor: Theme.accentPrimary
-                    Behavior on seamTintColor {
-                        enabled: Theme._themeLoaded
-                        ColorAnimation { duration: Theme.panelAnimFastMs }
-                    }
-                    property real seamTintOpacity: rootScope.isTerminalWs ? 0.9 : 0.9 * nonTerminalSeamOpacity
-                    property color seamBaseColor: Theme.background
-                    property real seamBaseOpacityTop: rootScope.isTerminalWs ? 0.5 : 0.5 * nonTerminalSeamOpacity
-                    property real seamBaseOpacityBottom: rootScope.isTerminalWs ? 0.65 : 0.65 * nonTerminalSeamOpacity
-                    function seamEdgeBaseForTilt(tiltSign, frac) {
-                        var f = Utils.clamp01(frac);
-                        return (tiltSign > 0) ? (1.0 - f) : f;
-                    }
-                    function seamEdgeParamsFor(tiltSign) {
-                        var topEdge = seamEdgeBaseForTilt(tiltSign, seamTaperTop);
-                        var bottomEdge = seamEdgeBaseForTilt(tiltSign, seamTaperBottom);
-                        return ({ base: topEdge, slope: (bottomEdge - topEdge) });
-                    }
-                    readonly property var seamEdgeLeft: seamEdgeParamsFor(-1)
-                    readonly property var seamEdgeRight: seamEdgeParamsFor(1)
-                    property real seamTintTopInsetPx: Math.round(Theme.panelWidgetSpacing * 0.55 * s)
-                    property real seamTintBottomInsetPx: Math.round(Theme.panelWidgetSpacing * 0.2 * s)
-                    property real seamTintFeatherPx: Math.max(1, Math.round(Theme.uiRadiusSmall * 0.35 * s))
-                    readonly property real monitorWidth: seamPanel.screen ? seamPanel.screen.width : seamPanel.width
-                    // Consider geometry "ready" only when left/right fills are measured and gap is sane
-                    readonly property bool leftReady: _leftFillWidth > Math.max(8, leftPanel.sideMargin + leftPanel.widgetSpacing)
-                    readonly property bool rightReady: _rightFillWidth > Math.max(8, rightPanel.sideMargin + rightPanel.widgetSpacing)
-                    readonly property bool gapSane: rawGapWidth < (monitorWidth * 0.98)
-                    readonly property bool geometryReady: leftReady && rightReady && gapSane
-
-                    readonly property real _leftFillWidth: leftBarFill ? leftBarFill.width : seamPanel.monitorWidth / 2
-                    readonly property real _rightFillWidth: rightBarFill ? rightBarFill.width : seamPanel.monitorWidth / 2
-                    readonly property real _leftVisibleEdge: Math.max(
-                        0,
-                        Math.min(seamPanel.monitorWidth, _leftFillWidth - Math.max(0, leftPanel.seamWidth || 0))
-                    )
-                    readonly property real _rightFillVisibleWidth: Math.max(0, _rightFillWidth - Math.max(0, rightPanel.seamWidth || 0))
-                    readonly property real _rightVisibleEdge: Math.max(
-                        _leftVisibleEdge,
-                        seamPanel.monitorWidth - Math.min(seamPanel.monitorWidth, _rightFillVisibleWidth)
-                    )
-                    readonly property real gapStart: _leftVisibleEdge
-                    readonly property real gapEnd: _rightVisibleEdge
-                    readonly property real rawGapWidth: Math.max(0, gapEnd - gapStart)
-                    readonly property real seamWidthPx: Math.min(
-                        seamPanel.monitorWidth,
-                        Math.max(Math.round(Theme.panelWidgetSpacing * seamPanel.s * 2.4), rawGapWidth)
-                    )
-                    readonly property real seamLeftMargin: Math.max(
-                        0,
-                        Math.min(
-                            seamPanel.monitorWidth - seamPanel.seamWidthPx,
-                            gapStart - Math.max(0, (seamPanel.seamWidthPx - rawGapWidth) / 2)
-                        )
-                    )
-                    readonly property real seamTintLeftTop: seamPanel._normalizedInset(seamPanel.seamTintTopInsetPx)
-                    readonly property real seamTintLeftBottom: seamPanel._normalizedInset(seamPanel.seamTintBottomInsetPx)
-                    readonly property real seamTintRightTop: 1 - seamPanel.seamTintLeftTop
-                    readonly property real seamTintRightBottom: 1 - seamPanel.seamTintLeftBottom
-                    readonly property real seamTintFeatherLeft: seamPanel._normalizedFeather(seamPanel.seamTintFeatherPx)
-                    readonly property real seamTintFeatherRight: seamPanel.seamTintFeatherLeft
-
-                    function _normalizedInset(px) {
-                        const width = Math.max(1, seamPanel.seamWidthPx);
-                        return Math.min(0.49, Math.max(0, px / width));
-                    }
-
-                    function _normalizedFeather(px) {
-                        const width = Math.max(1, seamPanel.seamWidthPx);
-                        return Math.min(0.25, Math.max(0.005, px / width));
-                    }
-
-                    Item {
-                        // Render shader content only after geometry stabilizes
-                        visible: seamPanel.geometryReady
-                        width: seamPanel.seamWidthPx + 2
-                        height: seamPanel.seamHeightPx
-                        anchors.bottom: parent.bottom
-                        anchors.left: parent.left
-                        anchors.leftMargin: Math.max(0, seamPanel.seamLeftMargin - 1)
-
-                        // Hidden visuals (used as source for mask)
-                        Item {
-                            id: seamVisuals
-                            anchors.fill: parent
-                            visible: false
-                            ShaderEffect {
-                                z: 0
-                                anchors.fill: parent
-                                fragmentShader: Qt.resolvedUrl("../shaders/seam_fill.frag.qsb")
-                                property color baseColor: seamPanel.seamBaseColor
-                                property vector4d params0: Qt.vector4d(
-                                    seamPanel.seamBaseOpacityTop,
-                                    seamPanel.seamBaseOpacityBottom - seamPanel.seamBaseOpacityTop,
-                                    0,
-                                    0
-                                )
-                            }
-                            ShaderEffect {
-                                z: 50
-                                visible: seamPanel.seamTintEnabled
-                                anchors.fill: parent
-                                fragmentShader: Qt.resolvedUrl("../shaders/seam_tint.frag.qsb")
-                                property color tintColor: seamPanel.seamTintColor
-                                property vector4d params0: Qt.vector4d(
-                                    seamPanel.seamTintLeftTop,
-                                    seamPanel.seamTintLeftBottom,
-                                    seamPanel.seamTintRightTop,
-                                    seamPanel.seamTintRightBottom
-                                )
-                                property vector4d params1: Qt.vector4d(
-                                    seamPanel.seamTintFeatherLeft,
-                                    seamPanel.seamTintFeatherRight,
-                                    seamPanel.seamTintOpacity,
-                                    0
-                                )
-                                property color baseColor: seamPanel.seamBaseColor
-                                blending: true
-                            }
-                            Row {
-                                z: 10
-                                anchors.fill: parent
-                            ShaderEffect {
-                                width: parent.width / 2
-                                height: parent.height
-                                fragmentShader: Qt.resolvedUrl("../shaders/seam.frag.qsb")
-                                property color baseColor: seamPanel.seamFillColor
-                                property vector4d params0: Qt.vector4d(seamPanel.seamEdgeLeft.base, seamPanel.seamEdgeLeft.slope, -1, seamPanel.seamEffectOpacity)
-                                blending: true
-                            }
-                            ShaderEffect {
-                                width: parent.width / 2
-                                height: parent.height
-                                fragmentShader: Qt.resolvedUrl("../shaders/seam.frag.qsb")
-                                property color baseColor: seamPanel.seamFillColor
-                                property vector4d params0: Qt.vector4d(seamPanel.seamEdgeRight.base, seamPanel.seamEdgeRight.slope, 1, seamPanel.seamEffectOpacity)
-                                blending: true
-                            }
-                            }
-                        }
-
-                        // (removed) Previously we punched holes in the seam visuals.
-                        // The new approach is to mask panel fills instead, so the seam
-                        // remains intact and shows through the wedges.
-                    }
-
-                    // (debug logging removed)
                 }
 
             }

@@ -38,8 +38,10 @@ fi
 mkdir -p "${BACKUP_DIR}"
 
 # Dump Vaultwarden SQLite (WAL-safe)
-if [[ -f "${VAULTWARDEN_DB}" ]]; then
+if [[ -f "${VAULTWARDEN_DB}" && -r "${VAULTWARDEN_DB}" ]]; then
     sqlite3 "${VAULTWARDEN_DB}" ".backup '${TMPDIR}/vaultwarden.db'"
+else
+    echo "  WARNING: ${VAULTWARDEN_DB} not readable — skipping SQLite dump"
 fi
 
 # Create tarball — fail hard on missing sources
@@ -58,3 +60,14 @@ fi
 age -p -o "${BACKUP_FILE}" "${TMPDIR}/vault-full.tar.gz" <<< "${PASSPHRASE}"
 
 echo "vault-full-backup: created ${BACKUP_FILE} ($(stat -c%s "${BACKUP_FILE}") bytes)"
+
+# Verify integrity
+echo "${PASSPHRASE}" | age -d "${BACKUP_FILE}" >/dev/null 2>&1 || {
+    echo "ERROR: backup verification FAILED — ${BACKUP_FILE} is corrupt"
+    rm -f "${BACKUP_FILE}"
+    exit 1
+}
+echo "vault-full-backup: integrity verified"
+
+# Prune backups older than 90 days
+find "${BACKUP_DIR}" -maxdepth 1 -name 'vault-full-*.age' -mtime +90 -delete

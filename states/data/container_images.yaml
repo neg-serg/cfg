@@ -139,5 +139,5 @@ vaultwarden:
   image: vaultwarden/server
   variant: null
   digest: sha256:1e6ebcede9be39fc1a7617eec4c984899edd954c09bd651b121cd89732e7aef4
-  approved_at: null
+  approved_at: "2026-04-26"
   note: "Vaultwarden password manager"

@@ -336,6 +336,7 @@ telecode:                      # Telecode Telegram agent
       mode: rw
   env_file: null
 
+# ─── Password management ────────────────────────────────────────────
 vaultwarden:
   port: 8222
   health_path: /

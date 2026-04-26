@@ -11,6 +11,34 @@ include:
 # AUR package for Bitwarden CLI
 {{ paru_install('bitwarden_cli', 'bitwarden-cli') }}
 
+# Sync and backup scripts in ~/.local/bin
+bw_sync_script_dir:
+  file.directory:
+    - name: {{ home }}/.local/bin
+    - user: {{ user }}
+    - group: {{ user }}
+    - mode: '0755'
+
+bw_sync_script:
+  file.managed:
+    - name: {{ home }}/.local/bin/bw-sync
+    - source: salt://scripts/bw-sync.py
+    - user: {{ user }}
+    - group: {{ user }}
+    - mode: '0755'
+    - require:
+      - file: bw_sync_script_dir
+
+vault_full_backup_script:
+  file.managed:
+    - name: {{ home }}/.local/bin/vault-full-backup
+    - source: salt://scripts/vault-full-backup.sh
+    - user: {{ user }}
+    - group: {{ user }}
+    - mode: '0755'
+    - require:
+      - file: bw_sync_script_dir
+
 # Host data directory for Vaultwarden SQLite
 {{ ensure_dir('vaultwarden_data_dir', '/var/lib/vaultwarden', mode='0700') }}
 

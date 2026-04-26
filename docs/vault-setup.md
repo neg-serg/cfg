@@ -10,9 +10,16 @@ just apply vaultwarden
 
 This installs vaultwarden (Podman Quadlet container on localhost:8222), bitwarden-cli, deploys systemd user units and timers, creates `/var/lib/vaultwarden`.
 
+**Note:** The Salt state deploys systemd *user* timers (`bw-sync.timer`, `vault-full-backup.timer`). These timers only fire if the user has lingering enabled. Run once:
+
+```bash
+sudo loginctl enable-linger "$(whoami)"
+```
+
 **Failure modes:**
 - Port 8222 already in use → edit `states/units/vaultwarden-container.container` line 20 before applying, or stop the conflicting service.
 - Missing `just` → run `scripts/salt-apply.sh vaultwarden` directly.
+- Timers don't fire after reboot → forgot `loginctl enable-linger` (see above).
 
 ## 2. Vaultwarden initial user registration
 
@@ -90,6 +97,8 @@ gopass generate backup/recovery-passphrase 32
 ```
 
 This generates a 32-character passphrase stored in gopass. The `vault-full-backup.sh` script reads it via `gopass show -o backup/recovery-passphrase` to encrypt the backup tarball with `age -p`.
+
+> **WARNING:** Write down this passphrase on paper or store it in a separate physical location. The backup archive contains the gopass store and age identity — if you lose both gopass AND the passphrase, the backup is permanently undecryptable. The passphrase is the single point of failure for disaster recovery.
 
 **Failure mode:** The backup script exits with an error if this passphrase is missing. Verify: `gopass show -o backup/recovery-passphrase`.
 

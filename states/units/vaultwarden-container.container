@@ -27,7 +27,7 @@ EnvironmentFile={{ catalog_entry.env_file }}
 Environment=SIGNUPS_ALLOWED=false
 Environment=DOMAIN=https://vw.{{ salt['grains.get']('host') }}.local
 # Vaultwarden health endpoint
-HealthCmd=curl -sf http://127.0.0.1:80 >/dev/null 2>&1 || exit 1
+HealthCmd=curl -sf http://127.0.0.1:80 >/dev/null 2>&1
 HealthInterval=5s
 HealthStartPeriod=15s
 HealthRetries=3

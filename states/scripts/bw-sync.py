@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bidirectional sync between Vaultwarden (via Bitwarden CLI) and gopass.
+"""One-way import from Vaultwarden (via Bitwarden CLI) to gopass.
 
 gopass is authoritative — conflicts resolve in its favor.
 
@@ -35,7 +35,7 @@ def bw_unlock():
         return bw_session
     bw_password = os.environ.get("BW_PASSWORD")
     if bw_password:
-        result = run(["bw", "unlock", "--passwordenv", "BW_PASSWORD"])
+        result = run(["bw", "unlock", "--passwordenv", "BW_PASSWORD", "--raw"])
         return result.stdout.strip()
     result = run(["bw", "unlock", "--raw"])
     return result.stdout.strip()

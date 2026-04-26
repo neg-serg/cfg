@@ -19,7 +19,6 @@ import subprocess
 import sys
 from urllib.parse import urlparse
 
-
 GOPASS_PREFIX = "bw"
 
 

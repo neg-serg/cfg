@@ -912,22 +912,6 @@ Scope {
                                 implicitHeight: mediaModule.parent === mediaRowSlot ? Math.max(mediaModule.implicitHeight, 1) : 0
                                 visible: WidgetRegistry.isVisible("media") && mediaModule.parent === mediaRowSlot && Settings.settings.showMediaInBar && MusicManager.hasPlayer && (MusicManager.isPlaying || MusicManager.isPaused)
 
-                                readonly property real _triangleSize: Math.max(1, Math.round(Theme.panelSeparatorWidthFactor * Math.max(1, Theme.uiBorderWidth) * 16))
-
-                                TriangleOverlay {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    x: -parent._triangleSize
-                                    width: parent._triangleSize
-                                    height: parent.height
-                                    color: Theme.background
-                                    flipX: true
-                                    flipY: true
-                                    xCoverage: 0.95
-                                    highlightEnabled: true
-                                    highlightColor: Color.towardsBlack(Color.saturate(Color.towardsBlack(Color.saturate(rootScope.vpnAccentColor(), 0.2), 0.3), 0.2), 0.3)
-                                    highlightWidth: Math.max(2, Math.round(rightPanel.s * 3))
-                                }
-
                                 Media {
                                     id: mediaModule
                                     anchors.fill: parent

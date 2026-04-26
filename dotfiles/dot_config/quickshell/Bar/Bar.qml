@@ -546,6 +546,7 @@ Scope {
                         anchors.top: parent.top
                         anchors.left: parent.left
                         z: -2
+                        visible: false
                         readonly property color bgColor: Theme.panelBackdropColor
                         readonly property real baseOpacity: Theme.panelSeamOpacity
                         onPaint: {
@@ -999,7 +1000,7 @@ Scope {
                         anchors.top: parent.top
                         anchors.right: parent.right
                         z: -2
-                        visible: rightPanel.baseFillVisible
+                        visible: false
                         readonly property color bgColor: Theme.panelBackdropColor
                         readonly property real baseOpacity: Theme.panelSeamOpacity
                         onPaint: {

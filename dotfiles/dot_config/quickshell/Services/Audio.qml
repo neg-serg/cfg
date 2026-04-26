@@ -64,7 +64,7 @@ Item {
             if (_isProAudioSource() && !micMuted && micVolume === 0)
                 micVolume = 100
         } else {
-            micMuted = false
+            micMuted = true
             micVolume = 0
         }
     }

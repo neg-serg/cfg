@@ -777,8 +777,8 @@ Singleton {
     property color panelTintColor: val('panel.tint.color', "#ff2a36")
     property real panelTintAlpha: val('panel.tint.alpha', 0.75)
     property real panelTintStrength: val('panel.tint.strength', 1.0)
-    property real panelTintFeatherTop: val('panel.tint.featherTop', 0.08)
-    property real panelTintFeatherBottom: val('panel.tint.featherBottom', 0.35)
+    property real panelTintFeatherTop: val('panel.tint.featherTop', 0)
+    property real panelTintFeatherBottom: val('panel.tint.featherBottom', 0)
     // Panel backdrop
     property color panelBackdropColor: val('panel.backdrop.color', "#000000")
     property real panelBackdropOpacity: val('panel.backdrop.opacity', 1.0)

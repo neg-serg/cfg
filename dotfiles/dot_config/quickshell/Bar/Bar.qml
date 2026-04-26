@@ -643,25 +643,8 @@ Scope {
                                     showKeyboardIcon: true
                                     showLayoutLabel: true
                                     iconSquare: false
-                                    rightTriangleVisible: true
-                                    rightTriangleWidthFactor: 0.75
                                 }
                             }
-                            PanelSeparator {
-                                scaleFactor: leftPanel.s
-                                panelHeightPx: leftPanel.barHeightPx
-                                userVisible: netCluster.visible
-                                triangleEnabled: netCluster.visible
-                                triangleWidthFactor: 0.75
-                                mirrorTriangle: netCluster.visible
-                                widthScale: 2.0
-                                highlightHypotenuse: netCluster.visible
-                                highlightMirror: true
-                                highlightColor: Color.towardsBlack(Color.saturate(Color.towardsBlack(Color.saturate(rootScope.vpnAccentColor(), 0.2), 0.3), 0.2), 0.3)
-                                highlightWidth: Math.max(2, Math.round(leftPanel.s * 3))
-                                backgroundKey: "keyboard"
-                            }
-                            Item { Layout.fillWidth: true }
                             Row {
                                 id: netCluster
                                 visible: WidgetRegistry.isVisible("network")
@@ -673,8 +656,6 @@ Scope {
                                         screen: leftPanel.screen
                                         vpnIconRounded: true
                                         throughputText: ConnectivityState.throughputText
-                                        leftTriangleVisible: true
-                                        leftTriangleWidthFactor: 0.75
                                 }
                             }
                             LocalMods.SystemMonitorCapsule {
@@ -687,18 +668,8 @@ Scope {
                                 id: weatherButton
                                 visible: WidgetRegistry.isVisible("weather") && Settings.settings.showWeatherInBar === true
                                 Layout.alignment: Qt.AlignVCenter
-                            }
-                            PanelSeparator {
-                                scaleFactor: leftPanel.s
-                                panelHeightPx: leftPanel.barHeightPx
-                                triangleEnabled: true
-                                triangleWidthFactor: 0.95
-                                mirrorTriangle: false
-                                widthScale: 1.0
-                                highlightHypotenuse: true
-                                highlightColor: Color.towardsBlack(Color.saturate(Color.towardsBlack(Color.saturate(rootScope.vpnAccentColor(), 0.2), 0.3), 0.2), 0.3)
-                                highlightWidth: Math.max(2, Math.round(leftPanel.s * 3))
-                                backgroundKey: "weather"
+                                capsule.rightTriangleVisible: true
+                                capsule.rightTriangleWidthFactor: 0.75
                             }
                         }
                     }
@@ -920,27 +891,6 @@ Scope {
                             anchors.right: rightBarBackground.right
                             anchors.rightMargin: rightPanel.sideMargin
                             spacing: 0
-                            PanelSeparator {
-                                id: mediaLeadingSeparator
-                                scaleFactor: rightPanel.s
-                                panelHeightPx: rightPanel.barHeightPx
-                                panelActive: rightPanel.renderActive
-                                triangleEnabled: true
-                                triangleWidthFactor: 0.95
-                                mirrorTriangle: false
-                                widthScale: 1.0
-                                flipAcrossVerticalAxis: true
-                                highlightHypotenuse: true
-                                highlightColor: Color.towardsBlack(Color.saturate(Color.towardsBlack(Color.saturate(rootScope.vpnAccentColor(), 0.2), 0.3), 0.2), 0.3)
-                                highlightWidth: Math.max(2, Math.round(rightPanel.s * 3))
-                            }
-                            PillSeparator {
-                                scaleFactor: rightPanel.s
-                                panelHeightPx: rightPanel.barHeightPx
-                                panelActive: rightPanel.renderActive
-                                triangleEnabled: false
-                                widthScale: 0.5
-                            }
                             Item {
                                 id: mediaRowSlot
                                 Layout.alignment: Qt.AlignVCenter
@@ -950,6 +900,19 @@ Scope {
                                 implicitWidth: mediaModule.parent === mediaRowSlot ? Math.max(mediaModule.implicitWidth, 1) : 0
                                 implicitHeight: mediaModule.parent === mediaRowSlot ? Math.max(mediaModule.implicitHeight, 1) : 0
                                 visible: WidgetRegistry.isVisible("media") && mediaModule.parent === mediaRowSlot && Settings.settings.showMediaInBar && MusicManager.hasPlayer && (MusicManager.isPlaying || MusicManager.isPaused)
+
+                                readonly property real _triangleSize: Math.max(1, Math.round(Theme.panelSeparatorWidthFactor * Math.max(1, Theme.uiBorderWidth) * 16))
+
+                                TriangleOverlay {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    x: -parent._triangleSize
+                                    width: parent._triangleSize
+                                    height: parent.height
+                                    color: Theme.background
+                                    flipX: true
+                                    flipY: true
+                                    xCoverage: 0.95
+                                }
 
                                 Media {
                                     id: mediaModule

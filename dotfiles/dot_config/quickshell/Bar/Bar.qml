@@ -80,52 +80,6 @@ Scope {
 
     Component.onCompleted: { _recalcTerminalWs(); }
 
-    component TriangleOverlay : Canvas {
-        property color color: Theme.background
-        property bool flipX: false
-        property bool flipY: false
-        property real xCoverage: 1.0
-
-        antialiasing: true
-        enabled: visible
-        contextType: "2d"
-
-        onPaint: {
-            var ctx = getContext("2d");
-            var w = width;
-            var h = height;
-            ctx.clearRect(0, 0, w, h);
-            if (w <= 0 || h <= 0) {
-                return;
-            }
-            var coverage = Utils.clamp01(xCoverage);
-            var span = Math.max(1, w * coverage);
-            span = Math.min(span, w);
-            var xBase = flipX ? w : 0;
-            var xEdge = flipX ? Math.max(0, w - span) : span;
-            var yBase = flipY ? 0 : h;
-            var yOpp = flipY ? h : 0;
-            ctx.lineWidth = 0;
-            ctx.lineJoin = "miter";
-            ctx.lineCap = "butt";
-            ctx.beginPath();
-            ctx.moveTo(xBase, yBase);
-            ctx.lineTo(xBase, yOpp);
-            ctx.lineTo(xEdge, yBase);
-            ctx.closePath();
-            ctx.fillStyle = color;
-            ctx.fill();
-        }
-
-        onWidthChanged: requestPaint()
-        onHeightChanged: requestPaint()
-        onColorChanged: requestPaint()
-        onFlipXChanged: requestPaint()
-        onFlipYChanged: requestPaint()
-        onXCoverageChanged: requestPaint()
-        Component.onCompleted: requestPaint()
-    }
-
     function makeTriangleVariant(widthPx, heightPx, variantSelector) {
         const w = Math.max(1, Math.round(widthPx || 0));
         const h = Math.max(1, Math.round(heightPx || 0));
@@ -194,6 +148,20 @@ Scope {
         property bool mirrorTriangle: false
         property real mirrorTriangleWidthFactor: triangleWidthFactor
         property real widthScale: 1.0
+        property Item snapLeft: null
+        property Item snapRight: null
+        property real snapWidth: 0
+        property real snapInset: 0
+
+        readonly property bool _snapLeftVisible: snapLeft ? snapLeft.visible : true
+        readonly property bool _snapRightVisible: snapRight ? snapRight.visible : true
+        readonly property bool _snapGated: {
+            if (!snapLeft && !snapRight) return true;
+            if (snapRight) return snapRight.visible;
+            return snapLeft.visible;
+        }
+        readonly property bool _snapPrimaryEnabled: snapLeft ? snapLeft.visible : true
+        readonly property bool _snapMirrorEnabled: snapRight ? snapRight.visible : true
         readonly property real _heightRaw: panelHeightPx
         readonly property int triangleHeightPx: Math.max(2, Math.round(_heightRaw))
         property bool highlightHypotenuse: false
@@ -204,7 +172,9 @@ Scope {
         property bool useMirrorTriangleOnly: false
         property bool usePrimaryTriangleOnly: false
         property bool flipAcrossVerticalAxis: false
-        width: Math.max(1, Math.round(widthScale * Theme.panelSeparatorWidthFactor * scaleFactor * Math.max(1, Theme.uiBorderWidth) * 16))
+        width: snapWidth > 0
+            ? Math.max(1, Math.round(snapWidth))
+            : Math.max(1, Math.round(widthScale * Theme.panelSeparatorWidthFactor * scaleFactor * Math.max(1, Theme.uiBorderWidth) * 16))
         height: triangleHeightPx
         implicitHeight: triangleHeightPx
         Layout.preferredHeight: triangleHeightPx
@@ -216,17 +186,21 @@ Scope {
         readonly property var triangleVariants: rootScope.makeTriangleVariantSet(width, height)
         readonly property bool _preferPrimary: usePrimaryTriangleOnly && useMirrorTriangleOnly
         readonly property bool primaryTriangleEnabled: (triangleEnabled && visible
-                                                        && !(useMirrorTriangleOnly && !usePrimaryTriangleOnly))
+                                                        && !(useMirrorTriangleOnly && !usePrimaryTriangleOnly)
+                                                        && _snapPrimaryEnabled)
         readonly property bool mirrorTriangleEnabled: (triangleEnabled && mirrorTriangle && visible
                                                         && !(usePrimaryTriangleOnly && !useMirrorTriangleOnly)
-                                                        && !_preferPrimary)
+                                                        && !_preferPrimary
+                                                        && _snapMirrorEnabled)
         readonly property bool primaryFlipX: flipAcrossVerticalAxis ? !triangleFlipX : triangleFlipX
         readonly property bool mirrorFlipX: flipAcrossVerticalAxis ? triangleFlipX : !triangleFlipX
         radius: 0
         color: Color.withAlpha(Theme.textPrimary, alpha)
         opacity: 1.0
         Layout.alignment: Qt.AlignVCenter
-        visible: panelActive && userVisible && rootScope.trianglesAllowed
+        Layout.leftMargin: snapInset > 0 ? -Math.round(snapInset) : 0
+        Layout.rightMargin: snapInset > 0 ? -Math.round(snapInset) : 0
+        visible: panelActive && userVisible && rootScope.trianglesAllowed && _snapGated
 
 
         TriangleOverlay {
@@ -330,6 +304,7 @@ Scope {
         anchors.fill: parent
 
         Variants {
+            id: barVariants
             model: Quickshell.screens
 
             Item {
@@ -668,6 +643,8 @@ Scope {
                                     showKeyboardIcon: true
                                     showLayoutLabel: true
                                     iconSquare: false
+                                    rightTriangleVisible: true
+                                    rightTriangleWidthFactor: 0.75
                                 }
                             }
                             PanelSeparator {
@@ -696,6 +673,8 @@ Scope {
                                         screen: leftPanel.screen
                                         vpnIconRounded: true
                                         throughputText: ConnectivityState.throughputText
+                                        leftTriangleVisible: true
+                                        leftTriangleWidthFactor: 0.75
                                 }
                             }
                             LocalMods.SystemMonitorCapsule {
@@ -970,7 +949,7 @@ Scope {
                                 Layout.preferredWidth: implicitWidth
                                 implicitWidth: mediaModule.parent === mediaRowSlot ? Math.max(mediaModule.implicitWidth, 1) : 0
                                 implicitHeight: mediaModule.parent === mediaRowSlot ? Math.max(mediaModule.implicitHeight, 1) : 0
-                                visible: WidgetRegistry.isVisible("media") && mediaModule.parent === mediaRowSlot && mediaModule.visible
+                                visible: WidgetRegistry.isVisible("media") && mediaModule.parent === mediaRowSlot && Settings.settings.showMediaInBar && MusicManager.hasPlayer && (MusicManager.isPlaying || MusicManager.isPaused)
 
                                 Media {
                                     id: mediaModule

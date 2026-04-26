@@ -335,3 +335,17 @@ telecode:                      # Telecode Telegram agent
       container: /data
       mode: rw
   env_file: null
+
+vaultwarden:
+  port: 8222
+  health_path: /
+  unit: vaultwarden
+  scope: system
+  packages: null
+  container_image: vaultwarden
+  gpu: none
+  bind_mounts:
+    - host: /var/lib/vaultwarden
+      container: /data
+      mode: rw
+  env_file: null

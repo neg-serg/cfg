@@ -133,3 +133,11 @@ telecode:
   digest: null
   approved_at: null
   note: "Local image — build: podman build -t localhost/telecode ."
+
+vaultwarden:
+  registry: docker.io
+  image: vaultwarden/server
+  variant: null
+  digest: sha256:1e6ebcede9be39fc1a7617eec4c984899edd954c09bd651b121cd89732e7aef4
+  approved_at: null
+  note: "Vaultwarden password manager"

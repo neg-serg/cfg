@@ -1,0 +1,12 @@
+[Unit]
+Description=Create age-encrypted vault backup
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/vault-full-backup
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+NoNewPrivileges=true
+ProtectSystem=strict
+PrivateTmp=yes

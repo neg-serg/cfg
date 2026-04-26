@@ -1,0 +1,7 @@
+[Unit]
+Description=Hourly Vaultwarden-to-gopass sync
+[Timer]
+OnCalendar=hourly
+Persistent=true
+[Install]
+WantedBy=timers.target

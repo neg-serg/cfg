@@ -1,0 +1,12 @@
+[Unit]
+Description=Sync Vaultwarden to gopass
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/bw-sync
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+NoNewPrivileges=true
+ProtectSystem=strict
+PrivateTmp=yes

@@ -1,5 +1,17 @@
 # TODO
 
+## Периодическая очистка кэшей (cron / systemd timer)
+
+После уборки ~34G кэшей вручную стоит автоматизировать очистку того, что не покрывает `paccache.timer`:
+
+- **`paru -Sc`** — очистка AUR clone-кэша (14G было). Paru хранит все клонированные PKGBUILD-ы. Добавить еженедельный systemd timer или cron.
+- **`pip cache purge`** — 2.9G кэша pip. Ежемесячно.
+- **`npm cache clean --force`** — 1.7G кэша npm. Ежемесячно.
+- **`flatpak uninstall --unused`** — удаление неиспользуемых flatpak-рантаймов. Раз в месяц.
+- **`cargo cache -a`** — очистка cargo registry (если cargo используется активно). Ежемесячно.
+
+Предпочтительный вариант: systemd timers (единообразно с существующим `paccache.timer`), по одному юниту на сервис. Либо один shell-скрипт, запускаемый из `cron` или одного systemd timer.
+
 ## Пайплайн анализа музыки (essentia + annoy)
 
 Скрипты `music-highlevel`, `music-similar`, `music-index` требуют:

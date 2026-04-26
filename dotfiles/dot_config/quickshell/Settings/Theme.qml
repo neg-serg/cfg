@@ -737,7 +737,6 @@ Singleton {
     property color accentPrimary: _wpHasAccent
         ? Color.matchHue(_wpAccent, val('colors.accent.primary', "#006FCC"))
         : val('colors.accent.primary', "#006FCC")
-    onAccentPrimaryChanged: console.log(`[DBG Theme] accentPrimary=${accentPrimary} _wpHasAccent=${_wpHasAccent} _wpAccent=${_wpAccent}`)
     // Status colors
     property color error: val('colors.status.error', "#FF6B81")
     property color warning: val('colors.status.warning', "#FFB347")

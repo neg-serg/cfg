@@ -78,7 +78,11 @@ Scope {
         function onActiveWorkspaceIdChanged() { rootScope._recalcTerminalWs(); }
     }
 
-    Component.onCompleted: { _recalcTerminalWs(); }
+    Component.onCompleted: {
+        // Force WallpaperAccent singleton to instantiate
+        var wa = WallpaperAccent;
+        _recalcTerminalWs();
+    }
 
     function makeTriangleVariant(widthPx, heightPx, variantSelector) {
         const w = Math.max(1, Math.round(widthPx || 0));
@@ -1004,6 +1008,132 @@ Scope {
                                 visible: WidgetRegistry.isVisible("volume")
                                 Layout.alignment: Qt.AlignVCenter
                                 panelHovering: rightPanel.panelHovering
+                            }
+                        }
+
+                        // Wallpaper accent sampler — inside visible panel so Canvas can paint
+                        Item {
+                            id: _wpSampler
+                            opacity: 0
+                            property int _accentRetryCount: 0
+
+                            property string _wpPath: WallpaperAccent.currentWallpaperPath
+                            on_WpPathChanged: {
+                                if (_wpPath.length > 0) {
+                                    _accentRetryCount = 0;
+                                    _wpImage.source = "file://" + _wpPath;
+                                    _wpDebounce.restart();
+                                }
+                            }
+                            Component.onCompleted: {
+                                var p = WallpaperAccent.currentWallpaperPath || _wpPath;
+                                if (p.length > 0) {
+                                    _accentRetryCount = 0;
+                                    _wpImage.source = "file://" + p;
+                                    _wpDebounce.restart();
+                                }
+                            }
+
+                            Image {
+                                id: _wpImage
+                                opacity: 0
+                                width: 48; height: 48
+                                sourceSize.width: 48; sourceSize.height: 48
+                                asynchronous: true
+                                onStatusChanged: {
+                                    if (status === Image.Ready)
+                                        _wpDebounce.restart();
+                                }
+                            }
+
+                            Timer {
+                                id: _wpDebounce
+                                interval: 50
+                                repeat: false
+                                onTriggered: {
+                                    if (_wpImage.status === Image.Ready) {
+                                        _wpRetry.stop();
+                                        _wpCanvas.requestPaint();
+                                    } else {
+                                        _wpRetry.restart();
+                                    }
+                                }
+                            }
+
+                            Timer {
+                                id: _wpRetry
+                                interval: 200
+                                repeat: true
+                                onTriggered: {
+                                    if (++_wpSampler._accentRetryCount > 10) {
+                                        stop();
+                                        Theme._wpHasAccent = false;
+                                        return;
+                                    }
+                                    if (_wpImage.status === Image.Ready) {
+                                        _wpRetry.stop();
+                                        _wpCanvas.requestPaint();
+                                    }
+                                }
+                            }
+
+                            function _sampleAccent(imageData) {
+                                if (!imageData || !imageData.data) return null;
+                                var data = imageData.data;
+                                var len = data.length;
+                                var satMin = 10, lumMin = 20, lumMax = 235;
+                                var satRelax = 8, lumRelaxMin = 20, lumRelaxMax = 240;
+                                var rs = 0, gs = 0, bs = 0, n = 0;
+                                for (var i = 0; i < len; i += 4) {
+                                    var a = data[i + 3]; if (a < 128) continue;
+                                    var r = data[i], g = data[i + 1], b = data[i + 2];
+                                    var maxv = Math.max(r, g, b), minv = Math.min(r, g, b);
+                                    var sat = maxv - minv; if (sat < satMin) continue;
+                                    var lum = (r + g + b) / 3; if (lum < lumMin || lum > lumMax) continue;
+                                    rs += r; gs += g; bs += b; ++n;
+                                }
+                                if (n === 0) {
+                                    rs = 0; gs = 0; bs = 0; n = 0;
+                                    for (var j = 0; j < len; j += 4) {
+                                        var a2 = data[j + 3]; if (a2 < 128) continue;
+                                        var r2 = data[j], g2 = data[j + 1], b2 = data[j + 2];
+                                        var max2 = Math.max(r2, g2, b2), min2 = Math.min(r2, g2, b2);
+                                        var sat2 = max2 - min2; if (sat2 < satRelax) continue;
+                                        var lum2 = (r2 + g2 + b2) / 3; if (lum2 < lumRelaxMin || lum2 > lumRelaxMax) continue;
+                                        rs += r2; gs += g2; bs += b2; ++n;
+                                    }
+                                }
+                                if (n > 0) return { r: Math.min(255, Math.round(rs / n)), g: Math.min(255, Math.round(gs / n)), b: Math.min(255, Math.round(bs / n)) };
+                                // Ultimate fallback: average all non-transparent pixels (handles dark grayscale images)
+                                rs = 0; gs = 0; bs = 0; n = 0;
+                                for (var k = 0; k < len; k += 4) {
+                                    var a3 = data[k + 3]; if (a3 < 128) continue;
+                                    rs += data[k]; gs += data[k + 1]; bs += data[k + 2]; ++n;
+                                }
+                                if (n > 0) return { r: Math.min(255, Math.round(rs / n)), g: Math.min(255, Math.round(gs / n)), b: Math.min(255, Math.round(bs / n)) };
+                                return null;
+                            }
+
+                            Canvas {
+                                id: _wpCanvas
+                                width: 48
+                                height: 48
+                                opacity: 0
+                                renderStrategy: Canvas.Cooperative
+                                onPaint: {
+                                    var ctx = getContext('2d');
+                                    if (_wpImage.status !== Image.Ready) return;
+                                    ctx.clearRect(0, 0, width, height);
+                                    ctx.drawImage(_wpImage, 0, 0, width, height);
+                                    var img = ctx.getImageData(0, 0, width, height);
+                                    var rgb = _wpSampler._sampleAccent(img);
+                                    if (!rgb) {
+                                        _wpRetry.restart();
+                                        return;
+                                    }
+                                    Theme._wpAccent = Qt.rgba(rgb.r / 255.0, rgb.g / 255.0, rgb.b / 255.0, 1);
+                                    Theme._wpHasAccent = true;
+                                }
                             }
                         }
 

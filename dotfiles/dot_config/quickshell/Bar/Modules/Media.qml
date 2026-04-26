@@ -178,6 +178,9 @@ Item {
         centerContent: false
         borderVisible: !mediaControl.mediaBorderless
         leftTriangleVisible: true
+        triangleHighlightEnabled: true
+        triangleHighlightColor: Color.towardsBlack(Color.saturate(Color.towardsBlack(Color.saturate(Theme.accentPrimary, 0.2), 0.3), 0.2), 0.3)
+        triangleHighlightWidth: Math.max(2, Math.round(capsule.capsuleScale * 3))
         backgroundColorOverride: mediaControl.mediaBorderless ? Theme.surface : "transparent"
         // Disable vertical padding to allow square cover art in all modes
         verticalPaddingScale: 0

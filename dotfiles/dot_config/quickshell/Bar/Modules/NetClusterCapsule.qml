@@ -67,6 +67,7 @@ ConnectivityCapsule {
             id: vpnSlotWrapper
             width: vpnSlot.width
             height: vpnSlot.height
+            visible: root.vpnConnected
             anchors.verticalCenter: parent.verticalCenter
 
             LocalComponents.ConnectivityIconSlot {

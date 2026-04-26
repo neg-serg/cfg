@@ -499,6 +499,7 @@ Scope {
                                 width: Math.min(leftBarBackground.width, Math.ceil(leftPanel.sideMargin + leftPanel.contentWidth))
                                 height: leftBarBackground.height
                                 color: leftPanel.barBgColor
+                                radius: Theme.cornerRadius
                                 anchors.top: leftBarBackground.top
                             anchors.left: leftBarBackground.left
                             // Keep visible; ShaderEffectSource will hide it from the scene
@@ -776,6 +777,7 @@ Scope {
                                 width: Math.min(rightBarBackground.width, Math.ceil(rightPanel.sideMargin + rightPanel.contentWidth))
                                 height: rightBarBackground.height
                                 color: rightPanel.barBgColor
+                                radius: Theme.cornerRadius
                             anchors.top: rightBarBackground.top
                             anchors.right: rightBarBackground.right
                             // Keep visible; ShaderEffectSource will hide it from the scene

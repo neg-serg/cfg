@@ -51,3 +51,6 @@ docs/superpowers/plans/*.md
 
 # OpenCode session files
 session-*.md
+
+# Superpowers tool metadata
+.superpowers/

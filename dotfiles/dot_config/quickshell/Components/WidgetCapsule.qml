@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Settings
+import qs.Components
 import "../Helpers/CapsuleMetrics.js" as Capsule
 import "../Helpers/WidgetBg.js" as WidgetBg
 import "../Helpers/Color.js" as ColorHelpers
@@ -24,6 +25,16 @@ Rectangle {
     property real borderWidthOverride: -1
     property real contentYOffset: 0
     property int cursorShape: Qt.ArrowCursor
+
+    // Triangle overlays (extend beyond capsule bounds into layout spacing)
+    property bool rightTriangleVisible: false
+    property bool leftTriangleVisible: false
+    property real rightTriangleWidthFactor: 0.75
+    property real leftTriangleWidthFactor: 0.75
+    property color triangleColor: "transparent"
+
+    readonly property int _triangleWidth: Math.max(1, Math.round(capsuleScale * Theme.panelSeparatorWidthFactor * Math.max(1, Theme.uiBorderWidth) * 16))
+    readonly property color _triangleFillColor: triangleColor.a > 0 ? triangleColor : _baseColor
 
     readonly property real _scale: Theme.scale(screen || Screen)
     readonly property var _metrics: Capsule.metrics(Theme, _scale)
@@ -100,6 +111,34 @@ Rectangle {
         strokeColor: borderVisible ? _borderColor : "transparent"
         enabled: borderVisible
         zIndex: root.z + 1
+    }
+
+    // Right-side triangle overlay (extends past capsule right edge into spacing)
+    TriangleOverlay {
+        anchors.verticalCenter: parent.verticalCenter
+        x: parent.width
+        width: parent._triangleWidth
+        height: parent.height
+        color: parent._triangleFillColor
+        flipX: false
+        flipY: true
+        xCoverage: parent.rightTriangleWidthFactor
+        visible: parent.rightTriangleVisible
+        z: parent.z + 0.5
+    }
+
+    // Left-side triangle overlay (extends past capsule left edge into spacing)
+    TriangleOverlay {
+        anchors.verticalCenter: parent.verticalCenter
+        x: -parent._triangleWidth
+        width: parent._triangleWidth
+        height: parent.height
+        color: parent._triangleFillColor
+        flipX: true
+        flipY: false
+        xCoverage: parent.leftTriangleWidthFactor
+        visible: parent.leftTriangleVisible
+        z: parent.z + 0.5
     }
 
     default property alias content: centerHost.data

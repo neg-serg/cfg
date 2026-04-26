@@ -297,6 +297,21 @@ Scope {
         fallbackColor: pillColor
         color: pillColor
         alpha: pillColor.a
+    // Workaround: Hyprland skips wallpaper render behind transparent bar
+    // on first workspace (term). Brief opacity toggle forces a full repaint.
+    Timer {
+        interval: 1200
+        running: true
+        repeat: false
+        onTriggered: {
+            barRootItem.opacity = 0.99
+            fadeBack.start()
+        }
+        Timer {
+            id: fadeBack
+            interval: 50
+            onTriggered: barRootItem.opacity = 1.0
+        }
     }
 
     Item {

@@ -1018,7 +1018,7 @@ Singleton {
     // MPD flags polling (fallback interval)
     property int mpdFlagsFallbackMs: val('media.mpd.flags.fallbackMs', 2500)
     // Time/Clock module
-    property real timeFontScale: val('time.font.scale', 0.85)
+    property real timeFontScale: val('time.font.scale', 0.7)
     property int timeFontWeight: val('time.font.weight', Font.Medium)
     property color timeTextColor: val('time.text.color', textPrimary)
     // UI easing (configurable via string names)

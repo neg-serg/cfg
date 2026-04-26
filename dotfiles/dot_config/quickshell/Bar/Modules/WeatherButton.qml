@@ -10,10 +10,12 @@ OverlayToggleCapsule {
     id: root
     readonly property real capsuleScale: capsule.capsuleScale
     readonly property int iconBox: capsule.capsuleInner
+    capsule.forceHeightFromMetrics: false
     capsule.backgroundKey: "weather"
     capsule.centerContent: true
     capsule.cursorShape: Qt.PointingHandCursor
     capsule.implicitWidth: capsule.horizontalPadding * 2 + weatherContent.implicitWidth
+    capsule.implicitHeight: capsule.verticalPadding * 2 + iconBox
     capsuleVisible: true
     autoToggleOnTap: true
     overlayNamespace: "sideleft-weather"

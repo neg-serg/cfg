@@ -48,6 +48,8 @@ LocalComponents.CapsuleButton {
         ? fontPixelSize
         : Utils.computedInlineFontPx(desiredInnerHeight, textPadding, Theme.panelComputedFontScale)
 
+    forceHeightFromMetrics: false
+    Layout.alignment: Qt.AlignVCenter
     centerContent: true
     contentYOffset: 0
     interactive: false

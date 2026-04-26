@@ -5,6 +5,7 @@ import qs.Components
 
 WidgetCapsule {
     id: root
+    forceHeightFromMetrics: false
     enabled: false
     property int fallbackIntervalMs:Theme.mpdFlagsFallbackMs
     property color iconColor: Theme.textPrimary

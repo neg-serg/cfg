@@ -27,6 +27,22 @@ zen_userchrome:
     - group: {{ user }}
     - makedirs: True
 
+zen_true_black_theme_chrome:
+  file.managed:
+    - name: {{ zen_profile }}/chrome/zen-themes/e8976c92-47dc-4065-bf53-67326dd47007/chrome.css
+    - source: salt://dotfiles/dot_config/zen-browser/themes/true-black-zen-mod/chrome.css
+    - user: {{ user }}
+    - group: {{ user }}
+    - makedirs: True
+
+zen_true_black_theme_json:
+  file.managed:
+    - name: {{ zen_profile }}/chrome/zen-themes/e8976c92-47dc-4065-bf53-67326dd47007/theme.json
+    - source: salt://dotfiles/dot_config/zen-browser/themes/true-black-zen-mod/theme.json
+    - user: {{ user }}
+    - group: {{ user }}
+    - makedirs: True
+
 {{ ensure_dir('zen_migration_dir', zen_migration_dir) }}
 
 {% if host.get('migrate_floorp_profile_to_zen', false) and host.features.floorp and host.floorp_profile %}

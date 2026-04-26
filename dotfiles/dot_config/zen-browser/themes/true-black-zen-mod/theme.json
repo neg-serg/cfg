@@ -1,0 +1,11 @@
+{
+  "id": "e8976c92-47dc-4065-bf53-67326dd47007",
+  "name": "True Black",
+  "description": "Pure black (#000) for every chrome surface — toolbar, sidebar, tabs, popups, fields. No exceptions.",
+  "style": {
+    "chrome": "chrome.css"
+  },
+  "author": "neg",
+  "version": "1.0.0",
+  "tags": ["black", "dark", "amoled"]
+}

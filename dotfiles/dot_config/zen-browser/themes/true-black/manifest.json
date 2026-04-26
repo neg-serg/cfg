@@ -1,0 +1,46 @@
+{
+  "manifest_version": 2,
+  "version": "1.0",
+  "name": "True Black Zen",
+  "description": "True black theme for Zen Browser chrome — all surfaces #000",
+  "theme": {
+    "colors": {
+      "frame": "#000000",
+      "frame_inactive": "#000000",
+      "toolbar": "#000000",
+      "toolbar_text": "#cccccc",
+      "toolbar_field": "#1a1a1a",
+      "toolbar_field_text": "#cccccc",
+      "toolbar_field_border": "#000000",
+      "toolbar_top_separator": "#000000",
+      "toolbar_bottom_separator": "#000000",
+      "toolbar_vertical_separator": "#000000",
+      "bookmark_text": "#cccccc",
+      "tab_background_text": "#999999",
+      "tab_selected": "#0a0a0a",
+      "tab_line": "#333333",
+      "tab_loading": "#333333",
+      "tabs_border": "#000000",
+      "sidebar": "#000000",
+      "sidebar_text": "#cccccc",
+      "sidebar_border": "#000000",
+      "sidebar_highlight": "#1a1a1a",
+      "sidebar_highlight_text": "#ffffff",
+      "ntp_background": "#000000",
+      "ntp_text": "#cccccc",
+      "popup": "#1a1a1a",
+      "popup_text": "#cccccc",
+      "popup_border": "#333333",
+      "popup_highlight": "#333333",
+      "popup_highlight_text": "#ffffff",
+      "button_background_active": "#333333",
+      "button_background_hover": "#2a2a2a",
+      "icons": "#cccccc",
+      "icon_attention": "#ffffff"
+    },
+    "properties": {
+      "color_scheme": "dark",
+      "content_color_scheme": "dark"
+    }
+  }
+}

@@ -1,3 +1,6 @@
+/* --- True Black: force #000 on all chrome surfaces --- */
+@import url("zen-themes/e8976c92-47dc-4065-bf53-67326dd47007/chrome.css");
+
 /* --- Bottom navbar for Zen Browser ---
  * Moves the navigation bar (URL bar + toolbar) to the bottom of the window.
  * DOM: #zen-appcontent-wrapper (vbox) > #zen-appcontent-navbar-wrapper + #zen-tabbox-wrapper

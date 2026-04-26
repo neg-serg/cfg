@@ -1,0 +1,110 @@
+* {
+  scrollbar-color: #333 #000 !important;
+}
+
+:root {
+  /* Zen-specific backgrounds */
+  --zen-main-browser-background: #000000 !important;
+  --zen-main-browser-background-toolbar: #000000 !important;
+  --zen-primary-color: #000000 !important;
+  --zen-colors-tertiary: #000000 !important;
+  --zen-colors-secondary: #000000 !important;
+  --zen-workspaces-strip-background-color: #000000 !important;
+
+  /* Firefox LWT theme vars */
+  --lwt-accent-color: #000000 !important;
+  --lwt-text-color: #cccccc !important;
+  --lwt-toolbar-field-background-color: #1a1a1a !important;
+  --lwt-toolbar-field-color: #cccccc !important;
+  --lwt-toolbar-field-border-color: #000000 !important;
+  --lwt-toolbar-field-highlight: #333333 !important;
+  --lwt-toolbar-field-highlight-text: #ffffff !important;
+  --lwt-sidebar-background-color: #000000 !important;
+  --lwt-sidebar-text-color: #cccccc !important;
+
+  /* Toolbar */
+  --toolbar-bgcolor: #000000 !important;
+  --toolbar-color: #cccccc !important;
+  --toolbar-field-bgcolor: #1a1a1a !important;
+  --toolbar-field-color: #cccccc !important;
+  --toolbar-field-border-color: #000000 !important;
+  --toolbar-field-focus-bgcolor: #1a1a1a !important;
+  --toolbar-field-focus-color: #cccccc !important;
+  --toolbar-field-focus-border-color: #333333 !important;
+  --toolbar-hover-background: #2a2a2a !important;
+  --toolbarbutton-hover-background: #2a2a2a !important;
+  --toolbarbutton-active-background: #333333 !important;
+
+  /* Tabs */
+  --tab-selected-bgcolor: #0a0a0a !important;
+  --tab-hover-background-color: #1a1a1a !important;
+  --tab-line-color: #333333 !important;
+  --tab-loading-fill: #333333 !important;
+  --tabs-border-color: #000000 !important;
+  --tab-background-color: #000000 !important;
+
+  /* Panels & Popups */
+  --arrowpanel-background: #1a1a1a !important;
+  --arrowpanel-color: #cccccc !important;
+  --arrowpanel-border-color: #000000 !important;
+  --panel-background: #1a1a1a !important;
+  --panel-color: #cccccc !important;
+  --panel-border-color: #000000 !important;
+  --panel-item-hover-bgcolor: #333333 !important;
+
+  /* Sidebar */
+  --sidebar-background-color: #000000 !important;
+  --sidebar-text-color: #cccccc !important;
+  --sidebar-border-color: #000000 !important;
+
+  /* URL bar / address bar */
+  --urlbar-background-color: #1a1a1a !important;
+  --urlbar-view-background: #1a1a1a !important;
+  --urlbar-color: #cccccc !important;
+  --urlbar-border-color: #000000 !important;
+
+  /* Find bar */
+  --better-findbar-background-color: #1a1a1a !important;
+
+  /* Button states */
+  --button-bgcolor: #000000 !important;
+  --button-hover-bgcolor: #2a2a2a !important;
+  --button-active-bgcolor: #333333 !important;
+  --button-color: #cccccc !important;
+  --button-primary-bgcolor: #333333 !important;
+  --button-primary-color: #ffffff !important;
+
+  /* Icons */
+  --icon-color: #cccccc !important;
+
+  /* Workspace */
+  --workspace-button-bg: #0a0a0a !important;
+}
+
+/* Force black on the browser background container */
+.zen-browser-generic-background {
+  background: #000000 !important;
+}
+
+/* Sidebar elements */
+#sidebar-box,
+#sidebar {
+  background-color: #000000 !important;
+}
+
+/* Web panel sidebar */
+#zen-sidebar-web-panel {
+  background-color: #000000 !important;
+}
+
+/* Force black on the main browser chrome */
+#main-window,
+#browser,
+#navigator-toolbox {
+  background-color: #000000 !important;
+}
+
+/* Workspace strip */
+#zen-workspaces-strip {
+  background-color: #000000 !important;
+}

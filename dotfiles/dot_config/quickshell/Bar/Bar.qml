@@ -970,7 +970,7 @@ Scope {
                                 Layout.preferredWidth: implicitWidth
                                 implicitWidth: mediaModule.parent === mediaRowSlot ? Math.max(mediaModule.implicitWidth, 1) : 0
                                 implicitHeight: mediaModule.parent === mediaRowSlot ? Math.max(mediaModule.implicitHeight, 1) : 0
-                                visible: WidgetRegistry.isVisible("media") && mediaModule.parent === mediaRowSlot
+                                visible: WidgetRegistry.isVisible("media") && mediaModule.parent === mediaRowSlot && mediaModule.visible
 
                                 Media {
                                     id: mediaModule
@@ -980,7 +980,7 @@ Scope {
                             }
                             LocalMods.MpdFlags {
                                 id: mpdFlagsBar
-                                visible: WidgetRegistry.isVisible("mpdFlags") && _mediaVisible
+                                visible: WidgetRegistry.isVisible("mpdFlags") && _mediaVisible && activeFlags.length > 0
                                 Layout.alignment: Qt.AlignVCenter
                                 property bool _mediaVisible: Settings.settings.showMediaInBar && MusicManager.hasPlayer
                                 enabled: _mediaVisible && MusicManager.isCurrentMpdPlayer()
@@ -995,6 +995,7 @@ Scope {
                             }
                             Item {
                                 id: systemTrayWrapper
+                                visible: trayVisible
                                 Layout.alignment: Qt.AlignVCenter
                                 Layout.fillHeight: true
                                 Layout.preferredHeight: rightPanel.barHeightPx

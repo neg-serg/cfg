@@ -11,10 +11,8 @@ ExecReload=/bin/kill -HUP $MAINPID
 Restart=on-failure
 RestartSec=60
 KillMode=process
-NoNewPrivileges=true
 ProtectSystem=full
 PrivateTmp=yes
-RestrictNamespaces=yes
 RestrictRealtime=yes
 LockPersonality=yes
 [Install]

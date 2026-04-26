@@ -432,20 +432,7 @@ Scope {
 
                         ShaderEffect {
                             anchors.fill: parent
-                            visible: shadowPanel.visible
-                            property color baseColor: Theme.panelPillColor
-                            property color accentColor: Theme.panelPillColor
-                            property vector4d params0: Qt.vector4d(0.0, 0.0, 0.0, 0.0)
-                            // params1.w = gap center (normalized), params2.x = gap half-width (normalized)
-                            readonly property real _mw: Math.max(1, seamPanel.monitorWidth)
-                            readonly property real _gapCenter: seamPanel.geometryReady
-                                ? (seamPanel.gapStart + seamPanel.gapEnd) / 2 / _mw : 0.0
-                            readonly property real _gapHalf: seamPanel.geometryReady
-                                ? Math.max(0, seamPanel.gapEnd - seamPanel.gapStart) / 2 / _mw : 0.0
-                            // Shadow panel disabled: outer backdrops handle seam opacity
-                            property vector4d params1: Qt.vector4d(0.0, 0.0, 0.0, _gapCenter)
-                            property vector4d params2: Qt.vector4d(_gapHalf, 0.0, 0.0, 0.0)
-                            fragmentShader: Qt.resolvedUrl("../shaders/diag.frag.qsb")
+                            visible: false
                         }
 
                         MouseArea {
@@ -543,11 +530,6 @@ Scope {
                         z: -2
                         readonly property color bgColor: Theme.panelBackdropColor
                         readonly property real baseOpacity: Theme.panelSeamOpacity
-                        readonly property real _innerWidth: Math.max(1, leftBarFill.width - leftPanel.interWidgetSpacing + leftPanel.seamWidth)
-                        readonly property int sw: leftPanel.seamWidth
-                        readonly property real topInset: Math.round(sw * 0.25)
-                        readonly property real bottomInset: Math.round(sw * 2.0)
-                        readonly property real _gapFactor: leftPanel.nonTerminalGapOpacity
                         onPaint: {
                             var ctx = getContext('2d');
                             ctx.reset();
@@ -555,37 +537,14 @@ Scope {
                             ctx.fillStyle = bgColor.toString();
                             if (rootScope.isTerminalWs) {
                                 ctx.globalAlpha = baseOpacity;
-                                ctx.fillRect(0, 0, width, height);
                             } else {
-                                var gapTopX = Math.max(0, _innerWidth - topInset);
-                                var gapBottomX = Math.max(0, _innerWidth - bottomInset);
-                                // Gap area (beyond diagonal) at scaled opacity
-                                if (_gapFactor > 0) {
-                                    ctx.globalAlpha = baseOpacity * _gapFactor;
-                                    ctx.beginPath();
-                                    ctx.moveTo(gapTopX, 0);
-                                    ctx.lineTo(width, 0);
-                                    ctx.lineTo(width, height);
-                                    ctx.lineTo(gapBottomX, height);
-                                    ctx.closePath();
-                                    ctx.fill();
-                                }
-                                // Content area at full base opacity
-                                ctx.globalAlpha = baseOpacity;
-                                ctx.beginPath();
-                                ctx.moveTo(0, 0);
-                                ctx.lineTo(gapTopX, 0);
-                                ctx.lineTo(gapBottomX, height);
-                                ctx.lineTo(0, height);
-                                ctx.closePath();
-                                ctx.fill();
+                                ctx.globalAlpha = baseOpacity * leftPanel.nonTerminalGapOpacity;
                             }
+                            ctx.fillRect(0, 0, width, height);
                         }
                         onWidthChanged: requestPaint()
                         onHeightChanged: requestPaint()
                         onBaseOpacityChanged: requestPaint()
-                        onTopInsetChanged: requestPaint()
-                        onBottomInsetChanged: requestPaint()
                         onBgColorChanged: requestPaint()
                         Connections {
                             target: rootScope
@@ -601,6 +560,7 @@ Scope {
                         anchors.top: parent.top
                         anchors.left: parent.left
                         z: -1
+                        visible: false
                         readonly property int sw: leftPanel.seamWidth
                         readonly property color bgColor: Theme.panelBackdropColor
                         readonly property real bgOpacity: Theme.panelBackdropOpacity
@@ -1024,11 +984,6 @@ Scope {
                         visible: rightPanel.baseFillVisible
                         readonly property color bgColor: Theme.panelBackdropColor
                         readonly property real baseOpacity: Theme.panelSeamOpacity
-                        readonly property real _innerWidth: Math.max(1, rightBarFill.width - rightPanel.interWidgetSpacing + rightPanel.seamWidth)
-                        readonly property int sw: rightPanel.seamWidth
-                        readonly property real topInset: Math.round(sw * 0.25)
-                        readonly property real bottomInset: Math.round(sw * 2.0)
-                        readonly property real _gapFactor: rightPanel.nonTerminalGapOpacity
                         onPaint: {
                             var ctx = getContext('2d');
                             ctx.reset();
@@ -1036,37 +991,14 @@ Scope {
                             ctx.fillStyle = bgColor.toString();
                             if (rootScope.isTerminalWs) {
                                 ctx.globalAlpha = baseOpacity;
-                                ctx.fillRect(0, 0, width, height);
                             } else {
-                                var diagTopX = Math.max(0, width - _innerWidth + topInset);
-                                var diagBottomX = Math.max(0, width - _innerWidth + bottomInset);
-                                // Gap area (left of diagonal) at scaled opacity
-                                if (_gapFactor > 0) {
-                                    ctx.globalAlpha = baseOpacity * _gapFactor;
-                                    ctx.beginPath();
-                                    ctx.moveTo(0, 0);
-                                    ctx.lineTo(diagTopX, 0);
-                                    ctx.lineTo(diagBottomX, height);
-                                    ctx.lineTo(0, height);
-                                    ctx.closePath();
-                                    ctx.fill();
-                                }
-                                // Content area (right of diagonal) at full base opacity
-                                ctx.globalAlpha = baseOpacity;
-                                ctx.beginPath();
-                                ctx.moveTo(diagTopX, 0);
-                                ctx.lineTo(width, 0);
-                                ctx.lineTo(width, height);
-                                ctx.lineTo(diagBottomX, height);
-                                ctx.closePath();
-                                ctx.fill();
+                                ctx.globalAlpha = baseOpacity * rightPanel.nonTerminalGapOpacity;
                             }
+                            ctx.fillRect(0, 0, width, height);
                         }
                         onWidthChanged: requestPaint()
                         onHeightChanged: requestPaint()
                         onBaseOpacityChanged: requestPaint()
-                        onTopInsetChanged: requestPaint()
-                        onBottomInsetChanged: requestPaint()
                         onBgColorChanged: requestPaint()
                         Connections {
                             target: rootScope
@@ -1081,7 +1013,7 @@ Scope {
                         anchors.top: parent.top
                         anchors.right: parent.right
                         z: -1
-                        visible: rightPanel.baseFillVisible
+                        visible: false
                         readonly property int sw: rightPanel.seamWidth
                         readonly property color bgColor: Theme.panelBackdropColor
                         readonly property real bgOpacity: Theme.panelBackdropOpacity
@@ -1538,11 +1470,7 @@ Scope {
                     property bool useReadinessFilter: true
                     property bool rightPanelActive: rightPanel.renderActive
                     property bool panelSlidesComplete: !monitorItem.barSlideAnimating
-                    visible: monitorEnabled && seamPanel.rightPanelActive && seamPanel.panelSlidesComplete && (
-                        !seamPanel.useReadinessFilter
-                        ? (seamPanel.rawGapWidth > 0)
-                        : (seamPanel.geometryReady)
-                    )
+                    visible: false
                     exclusionMode: ExclusionMode.Ignore
                     exclusiveZone: 0
                     WlrLayershell.namespace: "quickshell-bar-seam"

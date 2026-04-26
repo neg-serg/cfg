@@ -177,7 +177,8 @@ Item {
         backgroundKey: "media"
         centerContent: false
         borderVisible: !mediaControl.mediaBorderless
-        backgroundColorOverride: mediaControl.mediaBorderless ? Theme.background : "transparent"
+        leftTriangleVisible: true
+        backgroundColorOverride: mediaControl.mediaBorderless ? Theme.surface : "transparent"
         // Disable vertical padding to allow square cover art in all modes
         verticalPaddingScale: 0
         verticalPaddingMin: 0

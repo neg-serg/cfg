@@ -139,7 +139,7 @@ Scope {
         property real alpha: 0.0
         property bool triangleEnabled: false
         property string backgroundKey: ""
-        property color fallbackColor: Qt.rgba(0, 0, 0, 1)
+        property color fallbackColor: Theme.surface
         property color backgroundColorOverride: "transparent"
         property color triangleColor: backgroundColorOverride.a > 0
             ? backgroundColorOverride
@@ -292,7 +292,7 @@ Scope {
     }
 
     component PillSeparator : PanelSeparator {
-        readonly property color pillColor: Theme.panelPillColor
+        readonly property color pillColor: Theme.surface
         backgroundColorOverride: pillColor
         fallbackColor: pillColor
         color: pillColor
@@ -959,7 +959,7 @@ Scope {
                                 readonly property bool trayVisible: WidgetRegistry.isVisible("systray") && (!trayCapsuleHidden || systemTrayModule.expanded)
                                 readonly property bool tightSpacing: Settings.settings.systemTrayTightSpacing !== false
                                 readonly property int horizontalPadding: tightSpacing ? 0 : Math.max(4, Math.round(Theme.panelTrayInlinePadding * rightPanel.s * 0.75))
-                                readonly property color capsuleColor: WidgetBg.color(Settings.settings, "systemTray", Theme.background)
+                                readonly property color capsuleColor: WidgetBg.color(Settings.settings, "systemTray", Theme.surface)
                                 readonly property real trayContentHeight: (
                                     systemTrayModule.capsuleHeight !== undefined
                                         ? systemTrayModule.capsuleHeight

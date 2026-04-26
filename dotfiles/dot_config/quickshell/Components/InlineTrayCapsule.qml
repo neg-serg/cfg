@@ -6,7 +6,7 @@ LocalComponents.WidgetCapsule {
     id: root
 
     // Defaults tailored for inline SystemTray usage, but overridable.
-    property color inlineBackground: Theme.background
+    property color inlineBackground: Theme.surface
     property color inlineBorder: Theme.borderSubtle
     property real inlinePaddingScale: 1
     property real inlineVerticalPaddingScale: 1

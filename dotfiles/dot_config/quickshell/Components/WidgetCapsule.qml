@@ -21,6 +21,7 @@ Rectangle {
     property real verticalPaddingMin: 2
     property bool forceHeightFromMetrics: true
     property bool centerContent: true
+    property real cornerRadius: Theme.cornerRadiusSmall
     property real cornerRadiusOverride: -1
     property real borderWidthOverride: -1
     property real contentYOffset: 0
@@ -66,7 +67,11 @@ Rectangle {
     width: implicitWidth
     height: implicitHeight
 
-    radius: cornerRadiusOverride >= 0 ? cornerRadiusOverride : Theme.cornerRadiusSmall
+    radius: 0
+    topLeftRadius: leftTriangleVisible ? 0 : (cornerRadiusOverride >= 0 ? cornerRadiusOverride : cornerRadius)
+    topRightRadius: rightTriangleVisible ? 0 : (cornerRadiusOverride >= 0 ? cornerRadiusOverride : cornerRadius)
+    bottomLeftRadius: leftTriangleVisible ? 0 : (cornerRadiusOverride >= 0 ? cornerRadiusOverride : cornerRadius)
+    bottomRightRadius: rightTriangleVisible ? 0 : (cornerRadiusOverride >= 0 ? cornerRadiusOverride : cornerRadius)
     antialiasing: true
     border.width: 0
     border.color: "transparent"
@@ -109,7 +114,10 @@ Rectangle {
     OverlayFrame {
         anchorTarget: root
         inset: Theme.panelCapsuleBorderInset
-        baseRadius: root.radius
+        baseTopLeftRadius: root.topLeftRadius
+        baseTopRightRadius: root.topRightRadius
+        baseBottomLeftRadius: root.bottomLeftRadius
+        baseBottomRightRadius: root.bottomRightRadius
         strokeWidth: borderVisible ? _borderWidth : 0
         strokeColor: borderVisible ? _borderColor : "transparent"
         enabled: borderVisible

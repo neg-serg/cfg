@@ -213,7 +213,7 @@ LocalComponents.WidgetCapsule {
         anchors.centerIn: parent
         icon: iconHigh
         text: "0" + labelSuffix
-        pillColor: WidgetBg.color(Settings.settings, settingsKey)
+        pillColor: WidgetBg.color(Settings.settings, settingsKey, Theme.surface)
         iconCircleColor: levelColorFor(level)
         iconTextColor: Theme.background
         textColor: Theme.textPrimary

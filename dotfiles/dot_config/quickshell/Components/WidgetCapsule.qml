@@ -32,6 +32,9 @@ Rectangle {
     property real rightTriangleWidthFactor: 0.75
     property real leftTriangleWidthFactor: 0.75
     property color triangleColor: "transparent"
+    property bool triangleHighlightEnabled: false
+    property color triangleHighlightColor: Theme.accentPrimary
+    property real triangleHighlightWidth: 2
 
     readonly property int _triangleWidth: Math.max(1, Math.round(capsuleScale * Theme.panelSeparatorWidthFactor * Math.max(1, Theme.uiBorderWidth) * 16))
     readonly property color _triangleFillColor: triangleColor.a > 0 ? triangleColor : _baseColor
@@ -125,6 +128,9 @@ Rectangle {
         xCoverage: parent.rightTriangleWidthFactor
         visible: parent.rightTriangleVisible
         z: parent.z + 0.5
+        highlightEnabled: parent.triangleHighlightEnabled
+        highlightColor: parent.triangleHighlightColor
+        highlightWidth: parent.triangleHighlightWidth
     }
 
     // Left-side triangle overlay (extends past capsule left edge into spacing)
@@ -139,6 +145,9 @@ Rectangle {
         xCoverage: parent.leftTriangleWidthFactor
         visible: parent.leftTriangleVisible
         z: parent.z + 0.5
+        highlightEnabled: parent.triangleHighlightEnabled
+        highlightColor: parent.triangleHighlightColor
+        highlightWidth: parent.triangleHighlightWidth
     }
 
     default property alias content: centerHost.data

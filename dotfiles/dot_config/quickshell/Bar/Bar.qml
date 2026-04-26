@@ -670,6 +670,9 @@ Scope {
                                 Layout.alignment: Qt.AlignVCenter
                                 capsule.rightTriangleVisible: true
                                 capsule.rightTriangleWidthFactor: 0.75
+                                capsule.triangleHighlightEnabled: true
+                                capsule.triangleHighlightColor: Color.towardsBlack(Color.saturate(Color.towardsBlack(Color.saturate(rootScope.vpnAccentColor(), 0.2), 0.3), 0.2), 0.3)
+                                capsule.triangleHighlightWidth: Math.max(2, Math.round(leftPanel.s * 3))
                             }
                         }
                     }
@@ -912,6 +915,9 @@ Scope {
                                     flipX: true
                                     flipY: true
                                     xCoverage: 0.95
+                                    highlightEnabled: true
+                                    highlightColor: Color.towardsBlack(Color.saturate(Color.towardsBlack(Color.saturate(rootScope.vpnAccentColor(), 0.2), 0.3), 0.2), 0.3)
+                                    highlightWidth: Math.max(2, Math.round(rightPanel.s * 3))
                                 }
 
                                 Media {

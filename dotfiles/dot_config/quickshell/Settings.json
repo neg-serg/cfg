@@ -37,6 +37,7 @@
     "networkNoLinkColor": "#D81B60",
     "networkPingIntervalMs": 30000,
     "panelBgAlphaScale": 0.2,
+    "panel.capsule.borderWidth": 0,
     "pinnedPlayers": [],
     "playerSelectionPreset": "default",
     "playerSelectionPriority": [

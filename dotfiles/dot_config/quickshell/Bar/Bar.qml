@@ -407,32 +407,50 @@ Scope {
                 }
 
                 PanelLayer {
-                    id: shadowPanel
+                    id: backdropPanel
                     screen: modelData
                     color: "transparent"
-                    WlrLayershell.namespace: "quickshell-bar-shadow"
+                    WlrLayershell.namespace: "qs-panel"
                     readonly property bool _forceOverlay: (((Quickshell.env("QS_WEDGE_DEBUG") || "") === "1")
                                                              || ((Quickshell.env("QS_WEDGE_SHADER_TEST") || "") === "1"))
-                    WlrLayershell.layer: shadowPanel._forceOverlay ? WlrLayer.Overlay : WlrLayer.Bottom
+                    WlrLayershell.layer: backdropPanel._forceOverlay ? WlrLayer.Overlay : WlrLayer.Bottom
                     anchors.bottom: true
                     anchors.left: true
                     anchors.right: true
                     visible: monitorEnabled
                     exclusionMode: ExclusionMode.Ignore
                     exclusiveZone: 0
-                    // flag unavailable; keep default
-                    property real s: Theme.scale(shadowPanel.screen)
+                    property real s: Theme.scale(backdropPanel.screen)
                     property int barHeightPx: Math.round(Theme.panelHeight * s)
+                    property real nonTerminalOpacity: 0.5
                     implicitHeight: barHeightPx
-                    Component.onCompleted: { if (contentItem) contentItem.enabled = false }
 
                     Item {
                         anchors.fill: parent
-                        transform: Translate { y: shadowPanel.barHeightPx * (1 - monitorItem.barSlideProgress) }
+                        transform: Translate { y: backdropPanel.barHeightPx * (1 - monitorItem.barSlideProgress) }
 
-                        ShaderEffect {
+                        Canvas {
+                            id: sharedBarBackdrop
                             anchors.fill: parent
-                            visible: false
+                            readonly property color bgColor: Theme.panelBackdropColor
+                            readonly property real baseOpacity: Theme.panelSeamOpacity
+                            readonly property real effectiveOpacity: rootScope.isTerminalWs
+                                ? baseOpacity
+                                : baseOpacity * backdropPanel.nonTerminalOpacity
+
+                            onPaint: {
+                                var ctx = getContext("2d");
+                                ctx.reset();
+                                ctx.clearRect(0, 0, width, height);
+                                ctx.fillStyle = bgColor.toString();
+                                ctx.globalAlpha = effectiveOpacity;
+                                ctx.fillRect(0, 0, width, height);
+                            }
+
+                            onWidthChanged: requestPaint()
+                            onHeightChanged: requestPaint()
+                            onBgColorChanged: requestPaint()
+                            onEffectiveOpacityChanged: requestPaint()
                         }
 
                         MouseArea {
@@ -448,7 +466,7 @@ Scope {
                     screen: modelData
                     color: "transparent"
                     property bool panelHovering: false
-                    WlrLayershell.namespace: "quickshell-bar-left"
+                    WlrLayershell.namespace: "qs-content-left"
                     // Debug/testing: put bars on Overlay when wedge debug or shader-test enabled
                     WlrLayershell.layer: (((Quickshell.env("QS_WEDGE_DEBUG") || "") === "1")
                                           || ((Quickshell.env("QS_WEDGE_SHADER_TEST") || "") === "1"))
@@ -884,7 +902,7 @@ Scope {
                     screen: modelData
                     color: "transparent"
                     property bool panelHovering: false
-                    WlrLayershell.namespace: "quickshell-bar-right"
+                    WlrLayershell.namespace: "qs-content-right"
                     // Debug/testing: put bars on Overlay when wedge debug or shader-test enabled
                     WlrLayershell.layer: (((Quickshell.env("QS_WEDGE_DEBUG") || "") === "1")
                                           || ((Quickshell.env("QS_WEDGE_SHADER_TEST") || "") === "1"))

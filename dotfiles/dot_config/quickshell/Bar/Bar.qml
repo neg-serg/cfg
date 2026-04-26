@@ -764,7 +764,7 @@ Scope {
                     property real s: Theme.scale(rightPanel.screen)
                     property int barHeightPx: Math.round(Theme.panelHeight * s)
                     readonly property bool _mediaSlotVisible: !!(mediaModule && mediaModule.visible)
-                    readonly property bool _mediaOverlayVisible: !!(mediaOverlayHost && mediaOverlayHost.visible)
+                    readonly property bool _mediaOverlayVisible: !!(mediaOverlayHost && mediaOverlayHost.visible && mediaModule && mediaModule.visible)
                     readonly property bool _mpdFlagsVisible: !!(mpdFlagsBar && mpdFlagsBar.visible)
                     readonly property bool _trayVisible: !!(systemTrayWrapper && systemTrayWrapper.trayVisible)
                     readonly property bool _microphoneVisible: !!(widgetsMicrophone && widgetsMicrophone.visible)
@@ -774,8 +774,6 @@ Scope {
                         || _mediaOverlayVisible
                         || _mpdFlagsVisible
                         || _trayVisible
-                        || _microphoneVisible
-                        || _volumeVisible
                     )
                     readonly property bool baseFillVisible: monitorEnabled
                     readonly property bool renderActive: baseFillVisible && _hasPanelContent

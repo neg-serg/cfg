@@ -77,7 +77,7 @@
       "iconSize": 16,
       "itemFontScale": 0.9
     },
-    "overlayRadius": 20,
+    "overlayRadius": 5,
     "netCluster": {
       "spacing": 2
     },

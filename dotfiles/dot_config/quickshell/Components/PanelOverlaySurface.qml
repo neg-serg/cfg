@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Settings
+import "../Helpers/Color.js" as Color
 
 /*!
  * PanelOverlaySurface standardizes the background chrome (radius, border,
@@ -18,7 +19,9 @@ Rectangle {
         : Theme.scale(screen || Screen)
 
     property color backgroundColor: Theme.overlayWeak
-    property color borderColor: Theme.borderSubtle
+    property color borderColor: Theme._wpHasAccent
+        ? Color.towardsBlack(Theme._wpAccent, 1/3)
+        : Theme.borderSubtle
     property real borderWidth: Theme.uiBorderWidth
     property real borderInset: 0
     property real cornerRadiusOverride: -1

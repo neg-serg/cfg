@@ -47,6 +47,10 @@ Rectangle {
     readonly property int capsulePadding: _metrics.padding
     readonly property int capsuleInner: _metrics.inner
     readonly property int capsuleHeight: _metrics.height
+    readonly property int uniformCapsuleHeight: Math.max(
+        _metrics.height,
+        Math.round(Theme.panelHeight * 0.55 * _scale)
+    )
     readonly property color _baseColor: backgroundColorOverride.a > 0
             ? backgroundColorOverride
             : WidgetBg.color(Settings.settings, backgroundKey, fallbackColor)
@@ -63,7 +67,7 @@ Rectangle {
                 : ColorHelpers.withAlpha(Theme.textPrimary, Theme.panelCapsuleBorderOpacity))
 
     implicitWidth: 0
-    implicitHeight: forceHeightFromMetrics ? _metrics.height : 0
+    implicitHeight: forceHeightFromMetrics ? uniformCapsuleHeight : 0
     width: implicitWidth
     height: implicitHeight
 

@@ -13,12 +13,10 @@ OverlayToggleCapsule {
     readonly property real capsuleScale: capsule.capsuleScale
     readonly property int iconBox: capsule.capsuleInner
     readonly property int barH: Math.round(Theme.panelHeight * 0.55 * capsuleScale)
-    capsule.forceHeightFromMetrics: false
     capsule.backgroundKey: "systemMonitor"
     capsule.centerContent: true
     capsule.cursorShape: Qt.PointingHandCursor
     capsule.implicitWidth: capsule.horizontalPadding * 2 + metricsRow.implicitWidth
-    capsule.implicitHeight: capsule.verticalPadding * 2 + Math.max(iconBox, barH)
     capsuleVisible: _anyVisible
     autoToggleOnTap: true
     overlayNamespace: "sysmon-popup"

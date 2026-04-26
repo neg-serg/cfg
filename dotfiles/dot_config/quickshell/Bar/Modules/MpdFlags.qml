@@ -5,7 +5,7 @@ import qs.Components
 
 WidgetCapsule {
     id: root
-    forceHeightFromMetrics: false
+    forceHeightFromMetrics: true
     enabled: false
     property int fallbackIntervalMs:Theme.mpdFlagsFallbackMs
     property color iconColor: Theme.textPrimary
@@ -134,6 +134,6 @@ WidgetCapsule {
 
     implicitWidth: horizontalPadding * 2 + content.implicitWidth
     implicitHeight: forceHeightFromMetrics
-        ? Math.max(capsuleMetrics.height, content.implicitHeight + verticalPadding * 2)
+        ? Math.max(uniformCapsuleHeight, content.implicitHeight + verticalPadding * 2)
         : content.implicitHeight + verticalPadding * 2
 }

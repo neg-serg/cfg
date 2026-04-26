@@ -951,10 +951,9 @@ Scope {
                             }
                             Item {
                                 id: systemTrayWrapper
-                                visible: trayVisible
                                 Layout.alignment: Qt.AlignVCenter
                                 Layout.fillHeight: true
-                                Layout.preferredHeight: rightPanel.barHeightPx
+                                Layout.preferredHeight: pillCapsule.capsule.uniformCapsuleHeight
                                 readonly property bool trayCapsuleHidden: Settings.settings.hideSystemTrayCapsule === true
                                 readonly property bool trayVisible: WidgetRegistry.isVisible("systray") && (!trayCapsuleHidden || systemTrayModule.expanded)
                                 readonly property bool tightSpacing: Settings.settings.systemTrayTightSpacing !== false
@@ -966,7 +965,7 @@ Scope {
                                         : (systemTrayModule.implicitHeight || systemTrayModule.height || 0)
                                 )
                                 readonly property int capsuleWidth: Math.max(1, systemTrayModule.implicitWidth) + systemTrayWrapper.horizontalPadding * 2
-                                readonly property int capsuleHeight: rightPanel.barHeightPx
+                                readonly property int capsuleHeight: pillCapsule.capsule.uniformCapsuleHeight
                                 implicitWidth: trayVisible ? capsuleWidth : 0
                                 implicitHeight: trayVisible ? capsuleHeight : 0
                                 Layout.preferredWidth: implicitWidth

@@ -48,7 +48,7 @@ LocalComponents.CapsuleButton {
         ? fontPixelSize
         : Utils.computedInlineFontPx(desiredInnerHeight, textPadding, Theme.panelComputedFontScale)
 
-    forceHeightFromMetrics: false
+    forceHeightFromMetrics: true
     Layout.alignment: Qt.AlignVCenter
     centerContent: true
     contentYOffset: 0
@@ -155,6 +155,6 @@ LocalComponents.CapsuleButton {
 
     implicitWidth: root.horizontalPadding * 2 + lineBox.width
     implicitHeight: root.forceHeightFromMetrics
-        ? Math.max(root.capsuleMetrics.height, lineBox.implicitHeight + root.verticalPadding * 2)
+        ? Math.max(root.uniformCapsuleHeight, lineBox.implicitHeight + root.verticalPadding * 2)
         : lineBox.implicitHeight + root.verticalPadding * 2
 }

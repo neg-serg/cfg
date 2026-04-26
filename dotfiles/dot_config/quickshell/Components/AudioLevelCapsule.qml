@@ -45,7 +45,7 @@ LocalComponents.WidgetCapsule {
 
     backgroundKey: settingsKey
     centerContent: true
-    forceHeightFromMetrics: false
+    forceHeightFromMetrics: true
     verticalPaddingScale: 0
     verticalPaddingMin: 0
 
@@ -261,5 +261,5 @@ LocalComponents.WidgetCapsule {
     default property alias extraContent: overlayLayer.data
 
     implicitWidth: horizontalPadding * 2 + Math.max(pillIndicator.width, capsuleMetrics.inner)
-    implicitHeight: forceHeightFromMetrics ? Math.max(capsuleMetrics.height, pillIndicator.height + verticalPadding * 2) : pillIndicator.height + verticalPadding * 2
+    implicitHeight: forceHeightFromMetrics ? Math.max(uniformCapsuleHeight, pillIndicator.height + verticalPadding * 2) : pillIndicator.height + verticalPadding * 2
 }

@@ -12,12 +12,10 @@ OverlayToggleCapsule {
     readonly property int iconBox: capsule.capsuleInner
     readonly property int fontPxMedium: Math.round(Theme.fontSizeMedium * capsuleScale)
 
-    capsule.forceHeightFromMetrics: false
     capsule.backgroundKey: "pills"
     capsule.centerContent: true
     capsule.cursorShape: Qt.PointingHandCursor
     capsule.implicitWidth: capsule.horizontalPadding * 2 + pillIcon.width
-    capsule.implicitHeight: capsule.verticalPadding * 2 + iconBox
     capsuleVisible: !Services.PillTracker.taken
     autoToggleOnTap: false
     overlayNamespace: "pill-tracker"

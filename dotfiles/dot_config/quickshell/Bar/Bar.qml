@@ -297,6 +297,8 @@ Scope {
         fallbackColor: pillColor
         color: pillColor
         alpha: pillColor.a
+    }
+
     // Workaround: Hyprland skips wallpaper render behind transparent bar
     // on first workspace (term). Brief opacity toggle forces a full repaint.
     Timer {

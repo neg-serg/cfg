@@ -307,12 +307,7 @@ Scope {
         repeat: false
         onTriggered: {
             barRootItem.opacity = 0.99
-            fadeBack.start()
-        }
-        Timer {
-            id: fadeBack
-            interval: 50
-            onTriggered: barRootItem.opacity = 1.0
+            Qt.callLater(function() { barRootItem.opacity = 1.0 })
         }
     }
 

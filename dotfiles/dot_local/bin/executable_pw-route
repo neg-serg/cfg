@@ -37,8 +37,9 @@ find_rme_sink() {
     local sink_name
 
     sink_name="$(pw-cli list-objects Node | awk '
-        /node.name/ && /alsa_output/ { node=$3; gsub(/"/, "", node) }
-        /node.nick = "RME AIO Pro"/ && node ~ /alsa_output/ { print node; exit }
+        /^id/ { node = "" }
+        /node.name/ && /alsa_output/ { node = $3; gsub(/"/, "", node) }
+        /node.nick = "RME AIO Pro"/ && node != "" { print node; exit }
     ')"
 
     [[ -n "$sink_name" ]] || die "RME AIO Pro sink not found"

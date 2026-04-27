@@ -45,17 +45,14 @@ return {
       })
     end
 
-    local capabilities = require('blink.cmp').get_lsp_capabilities(
-      vim.lsp.protocol.make_client_capabilities()
-    )
-
-    local base_config = {
-      capabilities = capabilities,
-    }
+    local base_config = {}
 
     -- configure: set custom config; optionally enable (for non-Mason servers)
     local function configure(server, extra, enable)
-      local resolved = vim.tbl_deep_extend('force', {}, base_config, extra or {})
+      local capabilities = require('blink.cmp').get_lsp_capabilities(
+        vim.lsp.protocol.make_client_capabilities()
+      )
+      local resolved = vim.tbl_deep_extend('force', { capabilities = capabilities }, extra or {})
       local config = vim.tbl_extend('force', resolved, { autostart = enable or false })
       require('lspconfig')[server].setup(config)
     end

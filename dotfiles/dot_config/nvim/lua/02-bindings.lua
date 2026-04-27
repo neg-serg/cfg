@@ -74,10 +74,9 @@ map('n', xk[[<C-S-p>]], function() require('fzf-lua').commands() end, {desc = 'C
 map('n', xk[[<M-Space>]], function() require('fzf-lua').buffers() end, {desc = 'Buffer picker'})
 map('n', xk[[<C-S-t>]], function() require('fzf-lua').tabs() end, {desc = 'Tab picker'})
 
--- Terminal: C-/ toggle (replaces removed snacks terminal binding)
+-- Terminal: C-/ toggle
 map({'n', 't'}, xk[[<C-/>]], function()
-  local tt = require('toggleterm')
-  tt.toggle()
+  Snacks.terminal.toggle()
 end, {silent=true, desc = 'Toggle terminal'})
 
 -- Code: C-S-r rename, C-S-a code action, C-S-o symbols outline
@@ -107,7 +106,7 @@ end, {desc = 'Toggle inlay hints'})
 
 -- Misc: C-S-u undo tree, C-` zen mode, M-c copy file path
 map('n', xk[[<C-S-u>]], '<Cmd>TimeMachineToggle<CR>', {desc = 'Undo tree'})
-map('n', xk[[<C-`>]], '<Cmd>ZenMode<CR>', {desc = 'Zen mode'})
+map('n', xk[[<C-`>]], function() Snacks.zen.zoom() end, {desc = 'Zen mode'})
 map('n', xk[[<M-c>]], function()
   local path = vim.fn.expand('%:.')
   vim.fn.setreg('+', path)

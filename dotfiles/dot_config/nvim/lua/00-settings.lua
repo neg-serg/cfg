@@ -19,11 +19,8 @@ local disabled_built_ins={
     'matchparen',
 
     'optwin',
-    'perl_provider',
-    'python3_provider',
     'rplugin',
     'rrhelper',
-    'ruby_provider',
     'spellfile_plugin',
     'synmenu',
     'syntax',
@@ -39,6 +36,8 @@ for _, plugin in pairs(disabled_built_ins) do
     vim.g['loaded_'..plugin]=1
 end
 vim.g.loaded_node_provider=0
+vim.g.loaded_perl_provider=0
+vim.g.loaded_ruby_provider=0
 
 -- Defer executable() checks to VeryLazy (synchronous PATH scans are slow at startup)
 vim.api.nvim_create_autocmd('User', {
@@ -88,6 +87,8 @@ o.isfname='#,$,%,+,,,-,.,/,48-57,=,@,_,~,@-@'  -- Scan in filenames in such brac
 o.matchtime=0                                -- Default time to hi brackets too long for me
 o.matchpairs='(:),{:},[:],<:>'                 -- More matchpairs
 o.foldenable=false                           -- Disable folds as
+o.relativenumber=true                         -- Relative line numbers
+o.number=true                                 -- Show absolute number for current line
 o.numberwidth=3                              -- Shorter number width
 o.signcolumn='yes:1'                         -- Merge sign and numbers
 o.pumblend=15                                -- setup pmenu transparency
@@ -126,7 +127,7 @@ o.mouse='a'                                  -- Add mouse support
 o.mousescroll={'ver:2','hor:1'}              -- More conservative mouse scroll
 o.backupdir=home_..'/trash/'               -- Setup backupdir
 o.directory=home_..'/trash/'               -- Directory for swap files
-o.undodir=home_..'/trash/'                 -- Setup undo dir
+o.undodir=data_dir..'/undo'                 -- Setup undo dir
 o.undofile=true                              -- Enable undofile
 o.swapfile=false                             -- Do not use swapfiles
 

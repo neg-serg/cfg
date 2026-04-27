@@ -1,4 +1,4 @@
--- Edit plugins: inc-rename, mini, suda, vim-matchup
+-- Edit plugins: inc-rename, mini, suda
 return {
   -- │ █▓▒░ smjonas/inc-rename.nvim                                                  │
   {
@@ -58,10 +58,4 @@ return {
   -- │ █▓▒░ lambdalisue/suda.vim                                                     │
   {'lambdalisue/suda.vim', cmd = {'SudaRead', 'SudaWrite'}},
 
-  -- │ █▓▒░ andymass/vim-matchup                                                     │
-  {'andymass/vim-matchup',
-    config=function()
-      vim.g.matchup_motion_enabled=0
-    end,
-    event={'BufRead','BufNewFile'}},
 }

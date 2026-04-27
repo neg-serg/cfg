@@ -41,12 +41,32 @@ return {
               { section = "startup" },
           },
       },
-      indent = { enabled = false },
+      indent = {
+        enabled = true,
+        chunk = {
+          enabled = true,
+          char = '│',
+          priority = 50,
+          filter = function(buf)
+            local ft = vim.bo[buf].filetype
+            return ft ~= 'help' and ft ~= 'markdown' and ft ~= 'norg' and ft ~= 'org'
+          end,
+        },
+        -- rainbow scope highlighting replaces rainbow-delimiters
+        scope = {
+          enabled = true,
+          priority = 200,
+          animate = { enabled = false },
+          char = '│',
+        },
+      },
       input = { enabled = true },
       notifier = { enabled = true },
       quickfile = { enabled = has_args },
       scroll = { enabled = false },
+      terminal = { enabled = true },
       statuscolumn = { enabled = true },
+      zen = { enabled = true, zoom = { enabled = true } },
       words = { enabled = true },
     }
   end,
@@ -62,7 +82,7 @@ return {
     { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
     { "<leader>gl", function() Snacks.lazygit.log() end, desc = "Lazygit Log (cwd)" },
     { "<leader>un", function() Snacks.notifier.hide() end, desc = "Dismiss All Notifications" },
-    -- Terminal: use toggleterm (ei) instead; snacks terminal bindings removed
+    { "ei", function() Snacks.terminal.toggle() end, desc = "Toggle terminal" },
     { "]]",         function() Snacks.words.jump(1, true) end, desc = "Next Reference", mode = { "n", "t" } },
     { "[[",         function() Snacks.words.jump(-1, true) end, desc = "Prev Reference", mode = { "n", "t" } },
   },

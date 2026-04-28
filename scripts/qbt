@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+import os, sys, re, json, time, argparse, urllib.parse, html
+from pathlib import Path
+import requests
+import http.cookiejar
+
+QB_URL = 'http://localhost:8080'
+QB_USER = 'admin'
+QB_PASS = 'adminadmin'
+PROXY = 'socks5h://127.0.0.1:10808'
+COOKIES = '/tmp/rutracker_cookies.txt'
+SAVE = '/home/neg/Downloads'
+
+s = requests.Session()
+s.post(f'{QB_URL}/api/v2/auth/login', data={'username': QB_USER, 'password': QB_PASS})
+
+def qb_get(method, **kw):
+    r = s.get(f'{QB_URL}/api/v2/{method}', params=kw)
+    r.raise_for_status()
+    return r.json() if r.text else {}
+
+def qb_post(method, **kw):
+    r = s.post(f'{QB_URL}/api/v2/{method}', data=kw)
+    r.raise_for_status()
+    return r.text
+
+def rt_session():
+    rt = requests.Session()
+    rt.proxies = {'http': PROXY, 'https': PROXY}
+    if os.path.exists(COOKIES):
+        cj = http.cookiejar.MozillaCookieJar(COOKIES)
+        cj.load(ignore_discard=True)
+        rt.cookies.update(cj)
+    return rt
+
+def cmd_status(args):
+    for t in qb_get('torrents/info'):
+        print(f"{t.get('name','?')[:55]:55s} {t.get('progress',0)*100:6.1f}% {t.get('state','?'):12s} ↓{t.get('dlspeed',0):>8d} ↑{t.get('upspeed',0):>6d} {t.get('downloaded',0)/1024/1024:>6.1f}MB")
+
+def cmd_search(args):
+    rt = rt_session()
+    url = 'https://rutracker.org/forum/tracker.php'
+    r = rt.get(url, params={'nm': args.query}, timeout=15)
+    r.encoding = 'windows-1251'
+    text = r.text
+    results = []
+    for m in re.finditer(
+        r'<a[^>]*data-topic_id="(\d+)"[^>]*class="[^"]*(?:tLink|torTopic)[^"]*"[^>]*>([^<]+)</a>',
+        text):
+        tid = m.group(1)
+        title = html.unescape(m.group(2).strip())
+        results.append((tid, title))
+    if not results:
+        print("Nothing found")
+        return
+    results = results[:20]
+    for i, (tid, title) in enumerate(results, 1):
+        print(f"{i:>3}. {title[:80]}")
+        print(f"     https://rutracker.org/forum/viewtopic.php?t={tid}")
+    print(f"\nUse: qbt get <tid>")
+
+def cmd_get(args):
+    rt = rt_session()
+    url = f'https://rutracker.org/forum/dl.php?t={args.tid}'
+    r = rt.get(url, timeout=30)
+    if len(r.content) < 100:
+        print(f"Error: {r.text[:200]}")
+        return
+    fname = re.search(r'filename="?([^"]+)"?', r.headers.get('Content-Disposition', ''))
+    fname = fname.group(1) if fname else f'{args.tid}.torrent'
+    path = f'/tmp/{fname}'
+    with open(path, 'wb') as f:
+        f.write(r.content)
+    print(f"Saved: {path}")
+    files = {'torrents': (fname, r.content)}
+    r2 = s.post(f'{QB_URL}/api/v2/torrents/add', files=files, data={'savepath': SAVE})
+    print(f"Added to qBittorrent: {'OK' if r2.status_code == 200 else r2.text[:100]}")
+
+def cmd_add(args):
+    path = args.path
+    if path.startswith('t='):
+        tid = path[2:]
+        return cmd_get(argparse.Namespace(tid=tid))
+    files = {'torrents': (os.path.basename(path), open(path, 'rb'))}
+    r = s.post(f'{QB_URL}/api/v2/torrents/add', files=files, data={'savepath': SAVE})
+    print(f"{'OK' if r.status_code == 200 else r.text[:100]}")
+
+def cmd_info(args):
+    for t in qb_get('torrents/info'):
+        if (args.query and args.query.lower() not in t.get('name','').lower()):
+            continue
+        print(f"\n{'='*60}")
+        print(f"Name: {t.get('name','?')}")
+        print(f"State: {t.get('state','?')}  Progress: {t.get('progress',0)*100:.1f}%")
+        print(f"DL: {t.get('dlspeed',0)//1024} KB/s  UL: {t.get('upspeed',0)//1024} KB/s")
+        print(f"Downloaded: {t.get('downloaded',0)/1024/1024:.1f} MB / {t.get('total_size',0)/1024/1024:.0f} MB")
+        print(f"Peers: {t.get('num_peers','?')}  Seeds: {t.get('num_seeds','?')}  Connections: {t.get('num_connections','?')}")
+        trs = qb_get('torrents/trackers', hash=t['hash'])
+        for tr in trs:
+            if tr.get('num_peers',0) > 0 or tr.get('num_seeds',0) > 0:
+                print(f"  Trk: {tr['url'][:45]:45s} peers={tr.get('num_peers')} seeds={tr.get('num_seeds')}")
+
+def main():
+    p = argparse.ArgumentParser(prog='qbt', description='qBittorrent + rutracker CLI')
+    p.add_argument('--url', default=os.environ.get('QB_URL', QB_URL))
+    sub = p.add_subparsers()
+
+    sp = sub.add_parser('status', help='List torrents')
+    sp.set_defaults(func=cmd_status)
+
+    sp = sub.add_parser('search', help='Search rutracker')
+    sp.add_argument('query', nargs='+')
+    sp.set_defaults(func=lambda a: cmd_search(argparse.Namespace(query=' '.join(a.query))))
+
+    sp = sub.add_parser('get', help='Download .torrent from rutracker by ID')
+    sp.add_argument('tid')
+    sp.set_defaults(func=cmd_get)
+
+    sp = sub.add_parser('add', help='Add .torrent file or t=XXXXX')
+    sp.add_argument('path')
+    sp.set_defaults(func=cmd_add)
+
+    sp = sub.add_parser('info', help='Detailed torrent info')
+    sp.add_argument('query', nargs='?', default='')
+    sp.set_defaults(func=cmd_info)
+
+    args = p.parse_args()
+    if hasattr(args, 'func'):
+        args.func(args)
+    else:
+        p.print_help()
+
+if __name__ == '__main__':
+    main()

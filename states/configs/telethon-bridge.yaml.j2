@@ -40,12 +40,16 @@ profiles:
 allowlist:
   - user_id: {{ telegram_uid }}
     profile: "owner"
+{% if telegram_uid_levra and telegram_uid_levra | length > 0 %}
   - user_id: {{ telegram_uid_levra }}
     profile: "guest"
     name: "Levra"
+{% endif %}
+{% if telegram_uid_guest2 and telegram_uid_guest2 | length > 0 %}
   - user_id: {{ telegram_uid_guest2 }}
     profile: "guest"
     name: "Guest2"
+{% endif %}
 
 groups:
   allowed: []

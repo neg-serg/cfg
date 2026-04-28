@@ -116,7 +116,7 @@ include:
   - floorp
 {% endif %}
   - nyxt
-{% if host.features.network.get('hiddify', True) %}
+{% if host.features.network.get('hiddify', false) %}
   - hiddify
 {% endif %}
 {% if host.zen_profile %}

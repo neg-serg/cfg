@@ -466,7 +466,8 @@ other:
   - zoxide
   - zsh
   - handlr-regex
-  - hiddify
+
+
   - i3status
   - i3-wm
   - inxi

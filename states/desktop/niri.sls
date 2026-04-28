@@ -5,7 +5,7 @@
 # --- Niri compositor installation ---
 # spec skeleton: niri-pkg pkg.installed with refresh: true
 # project convention: paru_install macro for AUR packages
-{{ paru_install('niri-pkg', 'niri-bin') }}
+{{ paru_install('niri-pkg', 'niri') }}
 
 # spec skeleton: niri-xwayland-satellite pkg.installed with refresh: true
 {{ paru_install('niri-xwayland-satellite', 'xwayland-satellite') }}
@@ -27,3 +27,16 @@ niri_config_file:
     - makedirs: true
     - require:
       - file: niri_config_dir
+
+# --- Niri session entry for greetd ---
+# Uses absolute path so it works regardless of session-wrapper's PATH.
+# Overrides the package-provided niri.desktop (which uses Exec=niri-session
+# without full path).
+niri_session_entry:
+  file.managed:
+    - name: /usr/share/wayland-sessions/niri.desktop
+    - source: salt://desktop/niri.desktop
+    - user: root
+    - group: root
+    - mode: '0644'
+    - makedirs: true

@@ -12,6 +12,7 @@ import os
 import sys
 from pathlib import Path
 
+import socks
 import yaml
 from telethon import TelegramClient
 
@@ -49,12 +50,22 @@ def main():
     api_id = int(api_id_raw)
     session_path = os.path.expanduser(tg["session_path"])
 
+    proxy_cfg = tg.get("proxy") or {}
+    proxy = None
+    proxy_scheme = str(proxy_cfg.get("scheme", "")).lower()
+    proxy_host = proxy_cfg.get("host")
+    proxy_port = proxy_cfg.get("port")
+    if proxy_scheme == "socks5" and proxy_host and proxy_port:
+        proxy = (socks.SOCKS5, proxy_host, int(proxy_port))
+
     print(f"Initializing Telethon session at: {session_path}")
+    print(f"Proxy: {proxy_host}:{proxy_port} (SOCKS5)" if proxy else "Proxy: none")
     print("You will be prompted for your phone number and verification code.")
     print()
 
     client = TelegramClient(
         session_path, api_id, api_hash,
+        proxy=proxy,
         device_model="Desktop",
         system_version="Windows 10",
     )

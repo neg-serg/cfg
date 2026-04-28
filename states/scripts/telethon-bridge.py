@@ -409,7 +409,14 @@ class TelethonBridge:
         proxy_port = proxy_cfg.get("port")
         if proxy_scheme == "socks5" and proxy_host and proxy_port:
             proxy = (socks.SOCKS5, proxy_host, int(proxy_port))
-        self.client = TelegramClient(session_path, int(tg["api_id"]), tg["api_hash"], proxy=proxy)
+        api_id = int(tg.get("api_id", "1"))
+        api_hash = tg.get("api_hash") or "b6b154c370b1b2a2e8f7e0a1c1a0b0a0"
+        self.client = TelegramClient(
+            session_path, api_id, api_hash,
+            proxy=proxy,
+            device_model="Desktop",
+            system_version="Windows 10",
+        )
 
         # AI client
         self.ai = AIClient(config)

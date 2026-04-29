@@ -262,10 +262,10 @@ Audit (2026-04-15): 106 tests across 19 files + 1 shell script. 3 failing, sever
 When the Wayland compositor emits a fast output-remove-and-readd sequence (monitor hotplug, mode change, `hyprctl reload`, DPMS cycle), `wl-daemon` can race a pending `wl_display_flush()` against the now-closed `wl_output`. The flush returns `EPIPE` (Broken pipe), the error propagates as `wayland flush error` to the main loop, and the daemon currently chooses to `shutting down` cleanly (exit status 0).
 
 **Proper fix (upstream):**
-- [ ] Treat `EPIPE` on `wl_display_flush()` as recoverable rather than fatal
-- [ ] Wrap reconnect behind bounded retry (5 attempts over 10s)
+- [x] Treat dispatch/flush errors as recoverable — call `reconnect_wayland()` instead of `break`
+- [ ] Add bounded retry (5 attempts over 10s) inside reconnect loop
 - [ ] Emit clear log line: `wayland connection lost, reconnecting (attempt N/5)`
-- [ ] Keep `Restart=always` in wl.service as defense-in-depth
+- [x] Keep `Restart=always` in wl.service as defense-in-depth
 
 **Secondary cleanup** (cosmetic): `ExecStartPost=wl restore` retry-loop in the unit file fires before daemon's IPC socket is ready. Fix: `sd_notify(READY=1)` + `Type=notify` + drop sleep-based retry loop.
 

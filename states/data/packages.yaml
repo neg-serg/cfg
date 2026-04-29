@@ -155,6 +155,7 @@ gaming:
   - xf86-video-ati
   - nethack
   - proton-ge-custom-bin
+  - amdvlk
 
 system:
   - bottom
@@ -498,6 +499,7 @@ other:
 
 aur:
 
+  - amdgpu-vulkan-switcher-git
   - act-bin
   - optiscaler-universal
   - advancecomp

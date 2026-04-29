@@ -24,9 +24,9 @@ Volume={{ m.host }}:{{ m.container }}:{{ m.mode }}
 {% if catalog_entry.env_file -%}
 EnvironmentFile={{ catalog_entry.env_file }}
 {% endif -%}
-# Linuxserver image uses USER_UID/USER_GID for file ownership
-Environment=USER_UID=1000
-Environment=USER_GID=1000
+# Linuxserver image uses PUID/PGID for file ownership
+Environment=PUID=1000
+Environment=PGID=1000
 # Health check — transmission web UI
 HealthCmd=curl -sf http://127.0.0.1:9091/transmission/web/ >/dev/null 2>&1 || exit 1
 HealthInterval=5s

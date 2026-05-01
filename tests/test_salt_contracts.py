@@ -476,6 +476,56 @@ def test_check_managed_resources_schema_accepts_real_repo_inventory():
     assert errors == []
 
 
+def test_check_managed_resources_identities_schema_requires_user_group_home(tmp_path):
+    salt_contracts = _load_salt_contracts()
+
+    _write(
+        tmp_path / "states" / "data" / "managed_resources.yaml",
+        """
+managed_service_identities:
+  broken_identity:
+    shell: /usr/sbin/nologin
+    gecos: missing required fields
+managed_service_paths: {}
+""",
+    )
+
+    errors = salt_contracts.check_managed_resources_identities_schema(tmp_path)
+
+    assert errors == [
+        "managed_service_identities entry 'broken_identity' missing valid user",
+        "managed_service_identities entry 'broken_identity' missing valid group",
+        "managed_service_identities entry 'broken_identity' missing valid home",
+    ]
+
+
+def test_check_managed_resources_identities_schema_accepts_real_repo_inventory():
+    salt_contracts = _load_salt_contracts()
+
+    errors = salt_contracts.check_managed_resources_identities_schema(REPO_ROOT_PATH)
+
+    assert errors == []
+
+
+def test_check_managed_resources_identities_schema_rejects_non_mapping(tmp_path):
+    salt_contracts = _load_salt_contracts()
+
+    _write(
+        tmp_path / "states" / "data" / "managed_resources.yaml",
+        """
+managed_service_identities:
+  bad_entry: not a mapping
+managed_service_paths: {}
+""",
+    )
+
+    errors = salt_contracts.check_managed_resources_identities_schema(tmp_path)
+
+    assert errors == [
+        "managed_service_identities entry 'bad_entry' must be a mapping",
+    ]
+
+
 def test_check_user_service_unit_files_requires_units_user_directory(tmp_path):
     salt_contracts = _load_salt_contracts()
 

@@ -339,6 +339,25 @@ def check_managed_resources_schema(repo_root: Path = REPO_ROOT) -> list[str]:
     return errors
 
 
+def check_managed_resources_identities_schema(repo_root: Path = REPO_ROOT) -> list[str]:
+    managed_resources = load_yaml_file(repo_root / "states" / "data" / "managed_resources.yaml")
+    errors = []
+    required_fields = ["user", "group", "home"]
+
+    for identity_name, config in managed_resources.get("managed_service_identities", {}).items():
+        if not isinstance(config, dict):
+            errors.append(f"managed_service_identities entry '{identity_name}' must be a mapping")
+            continue
+        for field in required_fields:
+            value = config.get(field)
+            if not isinstance(value, str) or not value:
+                errors.append(
+                    f"managed_service_identities entry '{identity_name}' missing valid {field}"
+                )
+
+    return errors
+
+
 def check_user_service_unit_files(repo_root: Path = REPO_ROOT) -> list[str]:
     user_services = load_yaml_file(repo_root / "states" / "data" / "user_services.yaml")
     errors = []
@@ -453,6 +472,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_services_yaml_service_references(repo_root))
     errors.extend(check_managed_resource_services(repo_root))
     errors.extend(check_managed_resources_schema(repo_root))
+    errors.extend(check_managed_resources_identities_schema(repo_root))
     errors.extend(check_user_services_schema(repo_root))
     errors.extend(check_user_service_unit_files(repo_root))
     return errors

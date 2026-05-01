@@ -7,6 +7,10 @@
 {% set identities = managed.get('managed_service_identities', {}) %}
 {% set paths = managed.get('managed_service_paths', {}) %}
 
+# =============================================================================
+# Subdomain: managed service identities (sysusers.d)
+# =============================================================================
+
 managed_service_accounts_dir:
   file.directory:
     - name: /etc/sysusers.d
@@ -47,6 +51,10 @@ managed_service_accounts_ensure:
 {% endif %}
     - require:
       - file: managed_service_accounts_conf
+
+# =============================================================================
+# Subdomain: managed service paths (tmpfiles.d)
+# =============================================================================
 
 managed_service_paths_dir:
   file.directory:

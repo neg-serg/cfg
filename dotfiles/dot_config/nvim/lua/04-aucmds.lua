@@ -8,6 +8,7 @@ local hi_yank = gr("hi_yank", {clear=true})
 -- Auto set window-local cwd to project root for reliable gf/path resolution.
 -- Root detection delegates to utils/nav.lua (cached, unified marker set).
 do
+  local nav = require('utils.nav')
   local pr = gr('AutoProjectRoot', { clear = true })
   au({ 'BufEnter', 'BufNewFile' }, {
     group = pr,
@@ -16,8 +17,7 @@ do
       local name = vim.api.nvim_buf_get_name(args.buf)
       if not name or name == '' then return end
       local filedir = vim.fn.fnamemodify(name, ':p:h')
-      local ok, nav = pcall(require, 'utils.nav')
-      local root = ok and nav.project_root(filedir) or filedir
+      local root = nav.project_root(filedir) or filedir
       if root and vim.fn.getcwd(0) ~= root then pcall(vim.cmd.lcd, root) end
     end,
     desc = 'Auto-set local cwd to project root',

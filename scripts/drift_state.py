@@ -59,7 +59,9 @@ def build_expected_snapshot(
         try:
             rev = subprocess.run(
                 ["git", "rev-parse", "--short", "HEAD"],
-                capture_output=True, text=True, check=False,
+                capture_output=True,
+                text=True,
+                check=False,
                 cwd=project_dir,
             ).stdout.strip()
             if rev:
@@ -213,22 +215,31 @@ def classify_drift(
     for pkg in actual.get("packages", {}).get("unmanaged", []):
         records.append(
             {
-                "category": "package", "object": pkg, "status": "unmanaged",
-                "severity": "warning", "source": "expected-vs-actual",
+                "category": "package",
+                "object": pkg,
+                "status": "unmanaged",
+                "severity": "warning",
+                "source": "expected-vs-actual",
             }
         )
     for pkg in actual.get("packages", {}).get("missing", []):
         records.append(
             {
-                "category": "package", "object": pkg, "status": "missing",
-                "severity": "critical", "source": "expected-vs-actual",
+                "category": "package",
+                "object": pkg,
+                "status": "missing",
+                "severity": "critical",
+                "source": "expected-vs-actual",
             }
         )
     for pkg in actual.get("packages", {}).get("orphans", []):
         records.append(
             {
-                "category": "package", "object": pkg, "status": "orphaned",
-                "severity": "info", "source": "expected-vs-actual",
+                "category": "package",
+                "object": pkg,
+                "status": "orphaned",
+                "severity": "info",
+                "source": "expected-vs-actual",
             }
         )
 
@@ -322,9 +333,7 @@ def main() -> int:
     parser.add_argument(
         "--maintenance", choices=["on", "off"], help="Create or remove maintenance lock file"
     )
-    parser.add_argument(
-        "--salt-target", help="Salt state target applied when snapshot was created"
-    )
+    parser.add_argument("--salt-target", help="Salt state target applied when snapshot was created")
     args = parser.parse_args()
 
     project_dir = Path(args.project_dir)
@@ -361,7 +370,9 @@ def main() -> int:
     if args.command in {"fast", "full"}:
         mode = args.command
         actual = collect_actual_snapshot(
-            project_dir, cache_dir, expected or {"files": [], "system_units": [], "user_units": []},
+            project_dir,
+            cache_dir,
+            expected or {"files": [], "system_units": [], "user_units": []},
             mode=mode,
         )
         write_json(actual_full_path if args.command == "full" else actual_fast_path, actual)

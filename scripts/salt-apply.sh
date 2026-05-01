@@ -4,16 +4,32 @@
 # Bootstraps venv + runtime config on first run, then uses the running
 # salt-daemon if available, otherwise falls back to direct salt-call.
 # Runs chezmoi apply after a successful state run.
+# Refreshes drift baseline after a fully successful apply (RC=0).
 #
 # Usage:
 #   scripts/salt-apply.sh                        # apply system_description
 #   scripts/salt-apply.sh cachyos                # smoke-test bootstrap
 #   scripts/salt-apply.sh hardware --test        # dry-run a specific state
 #   scripts/salt-apply.sh kernel_modules
+#   scripts/salt-apply.sh auto                   # minimal-rollout mode (git diff)
+#   scripts/salt-apply.sh auto --plan            # show impact plan, no exec
+#   scripts/salt-apply.sh auto --plan file1.sls  # plan with explicit files
+#
+# Auto mode:
+#   git diff against AUTO_BASE (default: HEAD~1) → salt_impact.py maps
+#   changed files to minimal Salt state target. Falls back to
+#   system_description for shared inputs, multi-target, or unmapped files.
+#   Set SALT_AUTO_DISABLE=1 to force system_description unconditionally.
+#
+# Gating:
+#   Maintenance lock is always held during apply (suppresses salt-monitor
+#   alerts). Drift baseline is refreshed only on RC=0 + chezmoi success.
 #
 # Environment:
 #   SALT_DAEMON_SOCK  Unix socket path (default: /tmp/salt-daemon.sock)
 #   SALT_LOG_FILE     Override log file path
+#   AUTO_BASE         Git diff base for auto mode (default: HEAD~1)
+#   SALT_AUTO_DISABLE Disable minimal-rollout, force system_description
 
 set -euo pipefail
 

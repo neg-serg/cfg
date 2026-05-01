@@ -1,14 +1,15 @@
 # Salt configuration management
 #
 # Usage:
-#   just          # apply system_description
+#   just          # auto mode — apply minimal Salt state via git diff
 #   just apply    # same
+#   just apply system_description
 #   just apply hardware
 #   just test     # dry-run system_description
 #   just test kernel_modules
 
-# Apply a state (default: system_description)
-apply STATE="system_description":
+# Apply a state (default: auto — minimal-rollout via git diff)
+apply STATE="auto":
     scripts/salt-apply.sh {{STATE}}
 
 apply-plan *FILES:
@@ -149,6 +150,22 @@ drift-full:
 
 drift-status:
     python3 scripts/drift_state.py status --project-dir "${PWD}"
+
+# Drift report (JSON format)
+drift-report:
+    python3 scripts/drift_state.py status --project-dir "${PWD}" --json
+
+# Suppress salt-monitor alerts during maintenance
+drift-maintenance-on:
+    python3 scripts/drift_state.py --maintenance on --cache-dir "${HOME}/.cache/salt-monitor"
+
+# Re-enable salt-monitor alerts after maintenance
+drift-maintenance-off:
+    python3 scripts/drift_state.py --maintenance off --cache-dir "${HOME}/.cache/salt-monitor"
+
+# Refresh expected-snapshot.json baseline
+drift-refresh TARGET="system_description":
+    python3 scripts/drift_state.py refresh-expected --project-dir "${PWD}" --salt-target "{{TARGET}}"
 
 # Check if salt-daemon is running and responsive
 daemon-health:

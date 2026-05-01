@@ -129,14 +129,12 @@ def test_maintenance_lock_suppresses_drift_to_degraded(tmp_path):
         "runtime_alerts": [],
     }
 
-    payload = drift_state.classify_drift(
-        expected, actual, maintenance_lock_path=str(lock_file)
-    )
+    payload = drift_state.classify_drift(expected, actual, maintenance_lock_path=str(lock_file))
 
     assert payload["status"] != "drifted", "should not report drifted during maintenance"
-    assert all(
-        r["severity"] == "info" for r in payload["records"]
-    ), "all records should be info severity during maintenance"
+    assert all(r["severity"] == "info" for r in payload["records"]), (
+        "all records should be info severity during maintenance"
+    )
 
 
 def test_drift_records_include_source_field():
@@ -167,6 +165,7 @@ def test_build_expected_snapshot_includes_git_revision(monkeypatch, tmp_path):
     inventory = {"files": [], "system_units": [], "user_units": []}
 
     import subprocess as sp
+
     original_run = sp.run
 
     def mock_run(cmd, **kwargs):
@@ -248,3 +247,85 @@ def test_collect_actual_defaults_to_full_mode(monkeypatch):
 
     assert runtime_only["status"] == "degraded"
     assert config_and_runtime["status"] == "drifted"
+
+
+def test_gating_round_trip_expected_matches_actual_returns_ok():
+    """Simulates the full gating pipeline: refresh-expected → collect → classify."""
+    expected = {
+        "generated_at": "2026-04-17T00:00:00+00:00",
+        "hostname": "testbox",
+        "git_revision": "abc123",
+        "salt_target": "services",
+        "files": [
+            {"id": "cfg", "path": "/tmp/cfg.yaml", "severity": "critical", "sha256": "abc"},
+        ],
+        "system_units": [
+            {"name": "sshd.service", "enabled": True, "severity": "critical"},
+        ],
+        "user_units": [
+            {"name": "salt-monitor.service", "enabled": True, "severity": "info"},
+        ],
+    }
+    actual = {
+        "generated_at": "2026-04-17T00:00:00+00:00",
+        "packages": {"unmanaged": [], "missing": [], "orphans": []},
+        "files": [
+            {"id": "cfg", "path": "/tmp/cfg.yaml", "exists": True, "sha256": "abc"},
+        ],
+        "system_units": [
+            {
+                "name": "sshd.service",
+                "enabled": True,
+                "masked": False,
+                "load_state": "loaded",
+                "active_state": "active",
+                "expected_enabled": True,
+                "severity": "critical",
+            },
+        ],
+        "user_units": [
+            {
+                "name": "salt-monitor.service",
+                "enabled": True,
+                "masked": False,
+                "load_state": "loaded",
+                "active_state": "active",
+                "expected_enabled": True,
+                "severity": "info",
+            },
+        ],
+        "runtime_alerts": [],
+    }
+
+    payload = drift_state.classify_drift(expected, actual)
+
+    assert payload["status"] == "clean", f"expected clean, got {payload['status']}"
+    assert payload["records"] == [], f"expected no records, got {payload['records']}"
+
+
+def test_gating_round_trip_no_baseline_and_then_refreshed(tmp_path):
+    """Simulates first-run (no baseline) then after refresh-expected both succeed."""
+    cache_dir = tmp_path / "cache"
+    cache_dir.mkdir()
+    expected_path = cache_dir / "expected-snapshot.json"
+
+    assert not expected_path.exists()
+
+    host = {"home": "/tmp", "runtime_dir": "/run/user/1000", "hostname": "testbox"}
+    inventory = {"files": [], "system_units": [], "user_units": []}
+
+    snapshot = drift_state.build_expected_snapshot(host, inventory)
+    drift_state.write_json(expected_path, snapshot)
+    assert expected_path.exists()
+
+    payload = drift_state.classify_drift(
+        snapshot,
+        {
+            "packages": {"unmanaged": [], "missing": [], "orphans": []},
+            "files": [],
+            "system_units": [],
+            "user_units": [],
+            "runtime_alerts": [],
+        },
+    )
+    assert payload["status"] == "clean"

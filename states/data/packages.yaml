@@ -155,7 +155,7 @@ gaming:
   - xf86-video-ati
   - nethack
   - proton-ge-custom-bin
-  - amdvlk
+  # amdvlk removed 2026-05: AUR PKGBUILD broken; vulkan-radeon (CachyOS) replaces it
 
 system:
   - bottom

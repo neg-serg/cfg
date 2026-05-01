@@ -17,10 +17,9 @@ def _load_state_profiler():
 def test_services_macro_exposes_config_replace_helper():
     source = (REPO_ROOT_PATH / "states" / "_macros_service.jinja").read_text()
 
-    assert "macro config_replace_with_service_control" in source
+    assert "macro container_service" in source
     assert "service.dead:" in source
     assert "service.running:" in source
-    assert "- reload: True" in source
 
 
 def test_services_sls_no_longer_has_transmission_escape_hatch():

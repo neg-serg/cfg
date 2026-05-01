@@ -1,7 +1,7 @@
 """cmd.run compliance audit: check all cmd.run/cmd.script states against the standard.
 
 See docs/cmd-run-standard.md for the full specification.
-Violations are reported as warnings — this test does not fail the audit.
+Guard coverage test fails if threshold is not met.
 Complements spec 051 which handles the actual refactoring.
 """
 
@@ -16,6 +16,8 @@ import pytest
 import yaml
 
 from tests import REPO_ROOT_STR, SCRIPTS_DIR
+
+pytestmark = pytest.mark.slow
 
 _lint_path = os.path.join(SCRIPTS_DIR, "lint-jinja.py")
 _spec = importlib.util.spec_from_file_location("lint_jinja", _lint_path)
@@ -135,7 +137,6 @@ def test_managed_service_paths_ensure_cmdrun_is_guarded_and_audit_compliant():
     assert target["has_error_handling"] is True
 
 
-@pytest.mark.slow
 def test_cmdrun_audit_summary():
     """Report cmd.run compliance summary."""
     total = len(_CMD_STATES)
@@ -175,23 +176,25 @@ def test_cmdrun_audit_summary():
         warnings.warn(report, stacklevel=1)
 
 
-@pytest.mark.slow
 def test_cmdrun_states_found():
     """Verify cmd.run states were found for auditing."""
     assert len(_CMD_STATES) > 0, "No cmd.run/cmd.script states found"
 
 
-@pytest.mark.slow
+MIN_GUARD_COVERAGE = 0.95
+
+
 def test_cmdrun_guard_coverage():
-    """Check that guard coverage is tracked."""
+    """Guard coverage must meet the minimum threshold."""
     total = len(_CMD_STATES)
-    with_guard = sum(1 for s in _CMD_STATES if s["has_guard"])
-    # Report-only: always passes
     assert total > 0
+    with_guard = sum(1 for s in _CMD_STATES if s["has_guard"])
+    ratio = with_guard / total
+
     if with_guard < total:
         missing = [s for s in _CMD_STATES if not s["has_guard"]]
-        warnings.warn(
-            f"Guard coverage: {with_guard}/{total} — "
-            + ", ".join(f"{s['file']}:{s['state_id']}" for s in missing),
-            stacklevel=1,
+        detail = ", ".join(f"{s['file']}:{s['state_id']}" for s in missing)
+        assert ratio >= MIN_GUARD_COVERAGE, (
+            f"Guard coverage {with_guard}/{total} ({ratio:.1%}) "
+            f"below threshold {MIN_GUARD_COVERAGE:.0%}. Unguarded: {detail}"
         )

@@ -15,6 +15,8 @@ import yaml
 
 from tests import REPO_ROOT_STR, SCRIPTS_DIR
 
+pytestmark = pytest.mark.slow
+
 _lint_path = os.path.join(SCRIPTS_DIR, "lint-jinja.py")
 _spec = importlib.util.spec_from_file_location("lint_jinja", _lint_path)
 _lint = importlib.util.module_from_spec(_spec)
@@ -104,19 +106,16 @@ for _sls in _CONSUMERS:
         _ALL_CMD_STATES.append(_entry)
 
 
-@pytest.mark.slow
 def test_macro_files_exist():
     """Verify macro files are found."""
     assert len(MACRO_FILES) > 0, "No _macros_*.jinja files found"
 
 
-@pytest.mark.slow
 def test_macro_consumers_found():
     """Verify states that use macros are found."""
     assert len(_CONSUMERS) > 0, "No .sls files importing macros found"
 
 
-@pytest.mark.slow
 def test_macro_generated_states_have_guards():
     """All macro-generated cmd.run/cmd.script states must have idempotency guards."""
     missing = [s for s in _ALL_CMD_STATES if not s["has_guard"]]

@@ -52,6 +52,25 @@ systemctl --user enable --now ydotool.service
 текущий AUR-пакет может быть достаточным, или может потребоваться собственный PKGBUILD.
 
 
+## Managed Telegram Bots (Bot API 9.6)
+
+Bot API 9.6 (3 апреля 2026) — программное создание ботов без BotFather.
+Бот с `can_manage_bots: true` может создавать других ботов через кнопку, ссылку
+или Mini App, получать их токены через `getManagedBotToken(user_id)`.
+
+**Документация:** `docs/managed-telegram-bots.ru.md`
+
+- [ ] Включить управление ботами для opencode-telegram-bot (или отдельного бота-менеджера) через @BotFather Mini App
+- [ ] Проверить `can_manage_bots: true` в ответе `getMe`
+- [ ] Спроектировать архитектуру мульти-бот раннера: бот-менеджер → создаёт ботов под задачи (мониторинг, секреты, скриншоты, VPN и т.д.)
+- [ ] Реализовать бота-менеджера (Python/NodeJS) с Salt-managed systemd-сервисом
+- [ ] Реализовать `getManagedBotToken` + `replaceManagedBotToken` для автоматического жизненного цикла токенов
+- [ ] Добавить `t.me/newbot/` как альтернативный метод создания
+- [ ] Добавить health checks для managed-ботов от менеджера
+- [ ] Документировать мульти-бот раннер в `docs/managed-telegram-bots.ru.md`
+- [ ] Обеспечить хранение токенов в gopass для каждого managed-бота
+- [ ] Периодическая ротация токенов через `replaceManagedBotToken`
+
 ## Домашний LLM-кластер — exo / llama.cpp RPC
 
 При сборке многонодового домашнего кластера оценить варианты распределённого LLM-инференса:

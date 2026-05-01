@@ -121,6 +121,27 @@ Note: `my.telegram.org` currently times out directly on this network; use the lo
 
 ---
 
+## Managed Telegram Bots (Bot API 9.6)
+
+Bot API 9.6 (April 3, 2026) introduces Managed Bots — programmatic bot creation without BotFather.
+A bot with `can_manage_bots: true` can create other bots via keyboard button, link, or Mini App,
+and get their tokens via `getManagedBotToken(user_id)`.
+
+**Documentation:** `docs/managed-telegram-bots.md`
+
+- [ ] Enable bot management for the opencode-telegram-bot (or a dedicated manager bot) via @BotFather Mini App
+- [ ] Verify `can_manage_bots: true` in `getMe` response
+- [ ] Design multi-bot runner architecture: manager bot → creates per-task bots (monitoring, secrets, screenshots, VPN, etc.)
+- [ ] Implement manager bot (Python/NodeJS) with Salt-managed systemd service
+- [ ] Implement `getManagedBotToken` + `replaceManagedBotToken` for automated token lifecycle
+- [ ] Add `t.me/newbot/` link flow as alternative creation method
+- [ ] Add health checks for managed bots from the manager
+- [ ] Document the multi-bot runner in `docs/managed-telegram-bots.md`
+- [ ] Ensure token storage in gopass for each managed bot
+- [ ] Rotate tokens periodically via `replaceManagedBotToken`
+
+---
+
 ## Verify end-to-end alert pipeline for containerized services (FR-016)
 
 After containerization lands, verify that container failures surface through the existing Loki/Grafana/`monitoring_alerts.sls` stack.

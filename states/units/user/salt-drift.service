@@ -1,7 +1,7 @@
 [Unit]
-Description=Salt package drift detection
+Description=Salt comprehensive drift detection (files, packages, units, runtime)
 
 [Service]
 Type=oneshot
-ExecStart=%h/src/salt/scripts/drift-notify.sh
-WorkingDirectory=%h/src/salt
+ExecStart=%h/src/cfg/scripts/drift_state.py full --project-dir %h/src/cfg
+WorkingDirectory=%h/src/cfg

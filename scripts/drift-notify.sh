@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# drift-notify.sh — run pkg-drift and notify on drift detected
+# drift-notify.sh — run full drift check via drift_state.py and notify on drift
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -9,8 +9,8 @@ LOG_FILE="${LOG_DIR}/drift-$(date +%F).log"
 
 mkdir -p "$LOG_DIR"
 
-# Run drift check; exit 0 = clean, exit 1 = drift detected
-if "${SCRIPT_DIR}/pkg-drift.zsh" > "$LOG_FILE" 2>&1; then
+# Run comprehensive drift check; exit 0 = clean, exit 1 = drift detected
+if "${SCRIPT_DIR}/drift_state.py" full --project-dir "$PROJECT_DIR" > "$LOG_FILE" 2>&1; then
     exit 0
 fi
 
@@ -18,7 +18,7 @@ fi
 if command -v notify-send &>/dev/null; then
     notify-send --urgency=normal \
         "Salt Drift" \
-        "Package drift detected. Run: just drift-check\nSee: ${LOG_FILE}"
+        "Drift detected. Run: just drift-status\nSee: ${LOG_FILE}"
 fi
 
 echo "Drift detected. Report: ${LOG_FILE}" >&2

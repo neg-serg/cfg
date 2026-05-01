@@ -28,10 +28,12 @@ run_drift_helper() {
 }
 
 case "${1:-}" in
-    --drift-fast)   shift; run_drift_helper fast "$@" ; exit $? ;;
-    --drift-full)   shift; run_drift_helper full "$@" ; exit $? ;;
-    --drift-status) shift; run_drift_helper status "$@" ; exit $? ;;
-    --drift-report) shift; run_drift_helper report "$@" ; exit $? ;;
+    --drift-fast)       shift; run_drift_helper fast "$@" ; exit $? ;;
+    --drift-full)       shift; run_drift_helper full "$@" ; exit $? ;;
+    --drift-status)     shift; run_drift_helper status "$@" ; exit $? ;;
+    --drift-report)     shift; run_drift_helper report "$@" ; exit $? ;;
+    --maintenance-on)   touch "$MAINTENANCE_LOCK"; echo "maintenance lock created"; exit 0 ;;
+    --maintenance-off)  rm -f "$MAINTENANCE_LOCK"; echo "maintenance lock removed"; exit 0 ;;
 esac
 
 # ── Service inventory (injected by Salt/Jinja) ──────────────────────

@@ -124,7 +124,9 @@ def load_runtime_alerts(cache_dir: Path) -> list[dict]:
     return records
 
 
-def collect_actual_snapshot(project_dir: Path, cache_dir: Path, expected: dict) -> dict:
+def collect_actual_snapshot(
+    project_dir: Path, cache_dir: Path, expected: dict, mode: str = "full"
+) -> dict:
     files = []
     for entry in expected.get("files", []):
         path = Path(entry["path"])
@@ -148,18 +150,31 @@ def collect_actual_snapshot(project_dir: Path, cache_dir: Path, expected: dict) 
         )
         for entry in expected.get("user_units", [])
     ]
+    if mode == "fast":
+        packages = {"unmanaged": [], "missing": [], "orphans": []}
+        runtime_alerts: list = []
+    else:
+        packages = run_pkg_drift(project_dir)
+        runtime_alerts = load_runtime_alerts(cache_dir)
     return {
         "generated_at": now_iso(),
-        "packages": run_pkg_drift(project_dir),
+        "packages": packages,
         "files": files,
         "system_units": system_units,
         "user_units": user_units,
-        "runtime_alerts": load_runtime_alerts(cache_dir),
+        "runtime_alerts": runtime_alerts,
     }
 
 
-def classify_drift(expected: dict | None, actual: dict, stale_after_hours: int = 72) -> dict:
+def classify_drift(
+    expected: dict | None,
+    actual: dict,
+    stale_after_hours: int = 72,
+    maintenance_lock_path: str | None = None,
+) -> dict:
     del stale_after_hours
+    in_maintenance = maintenance_lock_path is not None and Path(maintenance_lock_path).exists()
+
     if expected is None:
         return {
             "generated_at": now_iso(),
@@ -173,6 +188,7 @@ def classify_drift(expected: dict | None, actual: dict, stale_after_hours: int =
                     "expected": "fresh baseline",
                     "actual": "missing baseline",
                     "evidence": "expected-snapshot.json is absent",
+                    "source": "meta",
                 }
             ],
         }
@@ -180,15 +196,24 @@ def classify_drift(expected: dict | None, actual: dict, stale_after_hours: int =
     records = []
     for pkg in actual.get("packages", {}).get("unmanaged", []):
         records.append(
-            {"category": "package", "object": pkg, "status": "unmanaged", "severity": "warning"}
+            {
+                "category": "package", "object": pkg, "status": "unmanaged",
+                "severity": "warning", "source": "expected-vs-actual",
+            }
         )
     for pkg in actual.get("packages", {}).get("missing", []):
         records.append(
-            {"category": "package", "object": pkg, "status": "missing", "severity": "critical"}
+            {
+                "category": "package", "object": pkg, "status": "missing",
+                "severity": "critical", "source": "expected-vs-actual",
+            }
         )
     for pkg in actual.get("packages", {}).get("orphans", []):
         records.append(
-            {"category": "package", "object": pkg, "status": "orphaned", "severity": "info"}
+            {
+                "category": "package", "object": pkg, "status": "orphaned",
+                "severity": "info", "source": "expected-vs-actual",
+            }
         )
 
     expected_files = {entry["path"]: entry for entry in expected.get("files", [])}
@@ -203,6 +228,7 @@ def classify_drift(expected: dict | None, actual: dict, stale_after_hours: int =
                     "severity": baseline["severity"],
                     "expected": baseline.get("sha256"),
                     "actual": entry.get("sha256"),
+                    "source": "expected-vs-actual",
                 }
             )
 
@@ -221,6 +247,7 @@ def classify_drift(expected: dict | None, actual: dict, stale_after_hours: int =
                     "severity": entry["severity"],
                     "expected": baseline.get("enabled"),
                     "actual": entry.get("enabled"),
+                    "source": "expected-vs-actual",
                 }
             )
 
@@ -233,8 +260,14 @@ def classify_drift(expected: dict | None, actual: dict, stale_after_hours: int =
                 "severity": "warning",
                 "expected": "healthy",
                 "actual": entry["type"],
+                "source": "runtime",
             }
         )
+
+    if in_maintenance:
+        for record in records:
+            if record["severity"] in ("critical", "warning"):
+                record["severity"] = "info"
 
     top = "clean"
     if any(record["category"] in {"file", "package", "unit"} for record in records):
@@ -243,6 +276,10 @@ def classify_drift(expected: dict | None, actual: dict, stale_after_hours: int =
         top = "degraded"
     elif any(record["status"] == "stale_baseline" for record in records):
         top = "unknown"
+
+    if in_maintenance and top == "drifted":
+        top = "degraded"
+
     return {"generated_at": now_iso(), "status": top, "records": records}
 
 
@@ -266,10 +303,25 @@ def main() -> int:
     parser.add_argument("--project-dir", default=str(Path.home() / "src" / "cfg"))
     parser.add_argument("--cache-dir", default=str(Path.home() / ".cache" / "salt-monitor"))
     parser.add_argument("--json", action="store_true")
+    parser.add_argument(
+        "--maintenance", choices=["on", "off"], help="Create or remove maintenance lock file"
+    )
     args = parser.parse_args()
 
     project_dir = Path(args.project_dir)
     cache_dir = Path(args.cache_dir)
+    maintenance_lock_path = cache_dir / "maintenance.lock"
+
+    if args.maintenance == "on":
+        maintenance_lock_path.parent.mkdir(parents=True, exist_ok=True)
+        maintenance_lock_path.write_text("")
+        print(f"maintenance lock created at {maintenance_lock_path}")
+        return 0
+    if args.maintenance == "off":
+        maintenance_lock_path.unlink(missing_ok=True)
+        print(f"maintenance lock removed from {maintenance_lock_path}")
+        return 0
+
     hosts_data = load_hosts_yaml()
     host = build_host(socket.gethostname(), hosts_data)
     inventory = load_inventory(project_dir)
@@ -286,11 +338,13 @@ def main() -> int:
 
     expected = read_json(expected_path)
     if args.command in {"fast", "full"}:
+        mode = args.command
         actual = collect_actual_snapshot(
-            project_dir, cache_dir, expected or {"files": [], "system_units": [], "user_units": []}
+            project_dir, cache_dir, expected or {"files": [], "system_units": [], "user_units": []},
+            mode=mode,
         )
         write_json(actual_full_path if args.command == "full" else actual_fast_path, actual)
-        payload = classify_drift(expected, actual)
+        payload = classify_drift(expected, actual, maintenance_lock_path=str(maintenance_lock_path))
         write_json(status_path, payload)
         print_report(payload, json_mode=args.json)
         return 1 if payload["status"] in {"drifted", "degraded", "unknown"} else 0

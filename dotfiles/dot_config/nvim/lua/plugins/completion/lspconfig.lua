@@ -32,15 +32,12 @@ return {
           local function bmap(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, { buffer = buf, silent = true, desc = desc })
           end
-          -- Only add keymaps without native equivalents.
           bmap('n', '<leader>D', vim.lsp.buf.type_definition, 'LSP: type definition')
           bmap('n', '<leader>ws', vim.lsp.buf.workspace_symbol, 'LSP: workspace symbol')
-          if vim.lsp.inlay_hint then
-            bmap('n', '<leader>uh', function()
-              local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = buf })
-              vim.lsp.inlay_hint.enable(not enabled, { bufnr = buf })
-            end, 'Inlay Hints: toggle')
-          end
+          bmap('n', '<leader>uh', function()
+            local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = buf })
+            vim.lsp.inlay_hint.enable(not enabled, { bufnr = buf })
+          end, 'Inlay Hints: toggle')
         end,
       })
     end

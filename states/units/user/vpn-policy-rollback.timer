@@ -1,0 +1,10 @@
+[Unit]
+Description=Auto-rollback timer for VPN routing policy
+
+[Timer]
+OnActiveSec=5min
+Persistent=false
+Unit=vpn-policy-rollback.service
+
+[Install]
+WantedBy=timers.target

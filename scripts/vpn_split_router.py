@@ -3,8 +3,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import shutil
 import socket
 import ssl
+import subprocess
+import sys
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -18,6 +22,8 @@ DEFAULT_OBSERVED_PATH = (
 )
 DEFAULT_VPN_DOMAINS_PATH = Path.home() / ".local" / "state" / "vpn-split-router" / "vpn-domains.txt"
 DEFAULT_RUNTIME_CONFIG_PATH = Path.home() / ".config" / "sing-box-tun" / "config.json"
+DEFAULT_POLICY_PATH = Path.home() / ".config" / "vpn-split-router" / "policy.yaml"
+DEFAULT_POLICY_ROLLBACK_PATH = Path.home() / ".config" / "vpn-split-router" / "policy.yaml.rollback"
 
 
 def now_utc() -> datetime:
@@ -190,14 +196,64 @@ def resolve_vpn_outbound(payload: dict) -> str:
     return "vpn"
 
 
+def load_policy(path: Path) -> dict:
+    if not path.exists():
+        return {"always_direct": {"domains": []}, "always_vpn": {"domains": []}}
+    payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    payload.setdefault("always_direct", {"domains": []})
+    payload.setdefault("always_vpn", {"domains": []})
+    payload["always_direct"].setdefault("domains", [])
+    payload["always_vpn"].setdefault("domains", [])
+    return payload
+
+
+def save_policy(path: Path, policy: dict) -> bool:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    content = yaml.safe_dump(policy, default_flow_style=False, sort_keys=False)
+    return write_text_if_changed(path, content)
+
+
+def policy_sync_to_routing(
+    policy_path: Path,
+    runtime_config_path: Path,
+    probe_vpn_domains: list[str] | None = None,
+) -> bool:
+    if not runtime_config_path.exists():
+        return False
+    policy = load_policy(policy_path)
+    payload = json.loads(runtime_config_path.read_text(encoding="utf-8"))
+    route = payload.setdefault("route", {})
+
+    managed_tags = {"vpn-policy-direct", "vpn-policy-vpn", "vpn-split-router-managed"}
+    rules = [rule for rule in route.get("rules", []) if rule.get("tag") not in managed_tags]
+
+    outbound_tag = resolve_vpn_outbound(payload)
+
+    # Policy always-direct (highest priority)
+    direct_domains = sorted(policy.get("always_direct", {}).get("domains", []))
+    if direct_domains:
+        rules.insert(0, {"tag": "vpn-policy-direct", "domain_suffix": direct_domains, "outbound": "direct"})
+
+    # Policy always-vpn
+    vpn_domains = sorted(policy.get("always_vpn", {}).get("domains", []))
+    if vpn_domains:
+        rules.insert(0, {"tag": "vpn-policy-vpn", "domain_suffix": vpn_domains, "outbound": outbound_tag})
+
+    # Probe-based managed rules
+    if probe_vpn_domains:
+        rules.insert(0, {"tag": "vpn-split-router-managed", "domain_suffix": sorted(probe_vpn_domains), "outbound": outbound_tag})
+
+    route["rules"] = rules
+    return write_text_if_changed(runtime_config_path, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+
+
 def sync_runtime_config(config_path: Path, vpn_domains: list[str]) -> bool:
     if not config_path.exists():
         return False
     payload = json.loads(config_path.read_text(encoding="utf-8"))
     route = payload.setdefault("route", {})
-    rules = [
-        rule for rule in route.get("rules", []) if rule.get("tag") != "vpn-split-router-managed"
-    ]
+    managed_tags = {"vpn-policy-direct", "vpn-policy-vpn", "vpn-split-router-managed"}
+    rules = [rule for rule in route.get("rules", []) if rule.get("tag") not in managed_tags]
     if vpn_domains:
         outbound_tag = resolve_vpn_outbound(payload)
         rules.insert(
@@ -242,6 +298,7 @@ def refresh_outputs(
     observed_path: Path,
     vpn_domains_path: Path,
     runtime_config_path: Path,
+    policy_path: Path | None = None,
     now_value: str | None = None,
 ) -> None:
     expire_routes(state, now_iso=now_value)
@@ -255,6 +312,8 @@ def refresh_outputs(
     write_text_if_changed(observed_path, "".join(f"{domain}\n" for domain in observed))
     write_text_if_changed(vpn_domains_path, "".join(f"{domain}\n" for domain in vpn_domains))
     sync_runtime_config(runtime_config_path, vpn_domains)
+    if policy_path:
+        policy_sync_to_routing(policy_path, runtime_config_path, probe_vpn_domains=vpn_domains)
 
 
 def command_status(args: argparse.Namespace) -> int:
@@ -300,7 +359,7 @@ def command_recheck(args: argparse.Namespace) -> int:
         )
         apply_probe_result(record, config, probe)
     write_json(state_path, state)
-    refresh_outputs(state, config, observed_path, vpn_domains_path, runtime_config_path)
+    refresh_outputs(state, config, observed_path, vpn_domains_path, runtime_config_path, policy_path=args.policy)
     return 0
 
 
@@ -310,7 +369,7 @@ def command_forget(args: argparse.Namespace) -> int:
         state.setdefault("domains", {}).pop(domain.lower(), None)
     write_json(args.state, state)
     config = load_config(args.config)
-    refresh_outputs(state, config, args.observed, args.vpn_domains, args.runtime_config)
+    refresh_outputs(state, config, args.observed, args.vpn_domains, args.runtime_config, policy_path=args.policy)
     return 0
 
 
@@ -330,7 +389,7 @@ def command_mark_vpn(args: argparse.Namespace) -> int:
         record["confidence"] = "high"
         record["ttl_until"] = (now_utc() + timedelta(seconds=ttl_seconds)).isoformat()
     write_json(args.state, state)
-    refresh_outputs(state, config, args.observed, args.vpn_domains, args.runtime_config)
+    refresh_outputs(state, config, args.observed, args.vpn_domains, args.runtime_config, policy_path=args.policy)
     return 0
 
 
@@ -350,7 +409,7 @@ def command_mark_direct(args: argparse.Namespace) -> int:
         record["confidence"] = "high"
         record["ttl_until"] = (now_utc() + timedelta(seconds=ttl_seconds)).isoformat()
     write_json(args.state, state)
-    refresh_outputs(state, config, args.observed, args.vpn_domains, args.runtime_config)
+    refresh_outputs(state, config, args.observed, args.vpn_domains, args.runtime_config, policy_path=args.policy)
     return 0
 
 
@@ -368,12 +427,111 @@ def command_observe(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_policy_show(args: argparse.Namespace) -> int:
+    policy = load_policy(args.policy)
+    print(yaml.safe_dump(policy, default_flow_style=False, sort_keys=False).strip())
+    return 0
+
+
+def command_policy_add_direct(args: argparse.Namespace) -> int:
+    policy = load_policy(args.policy)
+    domains = policy.setdefault("always_direct", {}).setdefault("domains", [])
+    for target in args.targets:
+        normalized = target.lower()
+        if normalized not in domains:
+            domains.append(normalized)
+    save_policy(args.policy, policy)
+    print(f"Added {len(args.targets)} domain(s) to always-direct")
+    return 0
+
+
+def command_policy_add_vpn(args: argparse.Namespace) -> int:
+    policy = load_policy(args.policy)
+    domains = policy.setdefault("always_vpn", {}).setdefault("domains", [])
+    for target in args.targets:
+        normalized = target.lower()
+        if normalized not in domains:
+            domains.append(normalized)
+    save_policy(args.policy, policy)
+    print(f"Added {len(args.targets)} domain(s) to always-vpn")
+    return 0
+
+
+def command_policy_remove(args: argparse.Namespace) -> int:
+    policy = load_policy(args.policy)
+    removed = 0
+    for target in args.targets:
+        normalized = target.lower()
+        for section in ("always_direct", "always_vpn"):
+            domains = policy.get(section, {}).get("domains", [])
+            if normalized in domains:
+                domains.remove(normalized)
+                removed += 1
+    save_policy(args.policy, policy)
+    print(f"Removed {removed} domain(s) from policy")
+    return 0
+
+
+def command_policy_apply(args: argparse.Namespace) -> int:
+    policy = load_policy(args.policy)
+    if not policy.get("always_direct", {}).get("domains") and not policy.get("always_vpn", {}).get("domains"):
+        print("Policy is empty, nothing to apply", file=sys.stderr)
+        return 1
+    shutil.copy2(args.policy, args.policy_rollback)
+    subprocess.run(
+        ["systemctl", "--user", "start", "vpn-policy-rollback.timer"],
+        capture_output=True, check=False,
+    )
+    changed = policy_sync_to_routing(args.policy, args.runtime_config)
+    print(f"Policy applied with 5min auto-rollback timer (run 'vpn-split-router policy confirm' to keep)")
+    if changed:
+        print("Routing config updated")
+    return 0
+
+
+def command_policy_confirm(args: argparse.Namespace) -> int:
+    args.policy_rollback.unlink(missing_ok=True)
+    subprocess.run(
+        ["systemctl", "--user", "stop", "vpn-policy-rollback.timer"],
+        capture_output=True, check=False,
+    )
+    print("Policy confirmed, rollback timer cancelled")
+    return 0
+
+
+def command_policy_rollback(args: argparse.Namespace) -> int:
+    if not args.policy_rollback.exists():
+        print("No rollback snapshot found", file=sys.stderr)
+        return 1
+    shutil.copy2(args.policy_rollback, args.policy)
+    args.policy_rollback.unlink()
+    subprocess.run(
+        ["systemctl", "--user", "stop", "vpn-policy-rollback.timer"],
+        capture_output=True, check=False,
+    )
+    changed = policy_sync_to_routing(args.policy, args.runtime_config)
+    print("Policy rolled back to previous state")
+    if changed:
+        print("Routing config reverted")
+    return 0
+
+
+def command_policy_sync(args: argparse.Namespace) -> int:
+    changed = policy_sync_to_routing(args.policy, args.runtime_config)
+    print("Policy synced to routing")
+    if changed:
+        print("Routing config updated")
+    return 0
+
+
 def add_shared_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG_PATH)
     parser.add_argument("--state", type=Path, default=DEFAULT_STATE_PATH)
     parser.add_argument("--observed", type=Path, default=DEFAULT_OBSERVED_PATH)
     parser.add_argument("--vpn-domains", type=Path, default=DEFAULT_VPN_DOMAINS_PATH)
     parser.add_argument("--runtime-config", type=Path, default=DEFAULT_RUNTIME_CONFIG_PATH)
+    parser.add_argument("--policy", type=Path, default=DEFAULT_POLICY_PATH)
+    parser.add_argument("--policy-rollback", type=Path, default=DEFAULT_POLICY_ROLLBACK_PATH)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -411,6 +569,44 @@ def build_parser() -> argparse.ArgumentParser:
     add_shared_arguments(observe_parser)
     observe_parser.add_argument("domains", nargs="+")
     observe_parser.set_defaults(func=command_observe)
+
+    policy_parser = subparsers.add_parser("policy")
+    policy_sub = policy_parser.add_subparsers(dest="policy_command", required=True)
+
+    show_parser = policy_sub.add_parser("show")
+    add_shared_arguments(show_parser)
+    show_parser.set_defaults(func=command_policy_show)
+
+    add_direct_parser = policy_sub.add_parser("add-direct")
+    add_shared_arguments(add_direct_parser)
+    add_direct_parser.add_argument("targets", nargs="+")
+    add_direct_parser.set_defaults(func=command_policy_add_direct)
+
+    add_vpn_parser = policy_sub.add_parser("add-vpn")
+    add_shared_arguments(add_vpn_parser)
+    add_vpn_parser.add_argument("targets", nargs="+")
+    add_vpn_parser.set_defaults(func=command_policy_add_vpn)
+
+    remove_parser = policy_sub.add_parser("remove")
+    add_shared_arguments(remove_parser)
+    remove_parser.add_argument("targets", nargs="+")
+    remove_parser.set_defaults(func=command_policy_remove)
+
+    apply_parser = policy_sub.add_parser("apply")
+    add_shared_arguments(apply_parser)
+    apply_parser.set_defaults(func=command_policy_apply)
+
+    confirm_parser = policy_sub.add_parser("confirm")
+    add_shared_arguments(confirm_parser)
+    confirm_parser.set_defaults(func=command_policy_confirm)
+
+    rollback_parser = policy_sub.add_parser("rollback")
+    add_shared_arguments(rollback_parser)
+    rollback_parser.set_defaults(func=command_policy_rollback)
+
+    sync_parser = policy_sub.add_parser("sync")
+    add_shared_arguments(sync_parser)
+    sync_parser.set_defaults(func=command_policy_sync)
 
     return parser
 

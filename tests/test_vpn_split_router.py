@@ -384,6 +384,8 @@ def test_command_recheck_clears_observed_queue_and_prunes_stale_state(tmp_path):
         observed=observed_path,
         vpn_domains=vpn_domains_path,
         runtime_config=runtime_config_path,
+        policy=tmp_path / "policy.yaml",
+        policy_rollback=tmp_path / "policy.yaml.rollback",
     )
 
     assert router.command_recheck(args) == 0
@@ -391,3 +393,348 @@ def test_command_recheck_clears_observed_queue_and_prunes_stale_state(tmp_path):
     final_state = json.loads(state_path.read_text(encoding="utf-8"))
     assert "stale.example" not in final_state["domains"]
     assert observed_path.read_text(encoding="utf-8") == ""
+
+
+# ── Policy layer ─────────────────────────────────────────────────
+
+
+def test_load_policy_returns_defaults_when_file_missing(tmp_path):
+    router = _load_module()
+    policy = router.load_policy(tmp_path / "nonexistent.yaml")
+    assert policy == {"always_direct": {"domains": []}, "always_vpn": {"domains": []}}
+
+
+def test_load_policy_reads_existing_file(tmp_path):
+    router = _load_module()
+    path = tmp_path / "policy.yaml"
+    path.write_text("always_direct:\n  domains:\n    - google.com\n", encoding="utf-8")
+    policy = router.load_policy(path)
+    assert policy["always_direct"]["domains"] == ["google.com"]
+    assert policy["always_vpn"]["domains"] == []
+
+
+def test_save_policy_writes_readable_yaml(tmp_path):
+    router = _load_module()
+    path = tmp_path / "policy.yaml"
+    router.save_policy(path, {"always_direct": {"domains": ["a.com"]}, "always_vpn": {"domains": ["b.com"]}})
+    raw = path.read_text(encoding="utf-8")
+    assert "a.com" in raw
+    assert "b.com" in raw
+
+
+def test_save_policy_idempotent_no_write(tmp_path):
+    router = _load_module()
+    path = tmp_path / "policy.yaml"
+    policy = {"always_direct": {"domains": ["x.com"]}, "always_vpn": {"domains": []}}
+    assert router.save_policy(path, policy) is True
+    assert router.save_policy(path, policy) is False
+
+
+def test_policy_sync_to_routing_injects_direct_and_vpn_rules(tmp_path):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    policy_path.write_text(
+        "always_direct:\n  domains:\n    - direct.example\n"
+        "always_vpn:\n  domains:\n    - vpn.example\n",
+        encoding="utf-8",
+    )
+    runtime_path = tmp_path / "config.json"
+    runtime_path.write_text(
+        json.dumps({
+            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+            "route": {"rules": [{"outbound": "direct", "protocol": "dns"}]},
+        }) + "\n",
+        encoding="utf-8",
+    )
+
+    router.policy_sync_to_routing(policy_path, runtime_path)
+    payload = json.loads(runtime_path.read_text(encoding="utf-8"))
+    rules = payload["route"]["rules"]
+
+    direct_rule = next(r for r in rules if r["tag"] == "vpn-policy-direct")
+    assert direct_rule["domain_suffix"] == ["direct.example"]
+    assert direct_rule["outbound"] == "direct"
+
+    vpn_rule = next(r for r in rules if r["tag"] == "vpn-policy-vpn")
+    assert vpn_rule["domain_suffix"] == ["vpn.example"]
+    assert vpn_rule["outbound"] == "vpn"
+
+    # original non-managed rule survives
+    assert {"outbound": "direct", "protocol": "dns"} in rules
+    # policy rules before original
+    assert rules.index(direct_rule) < rules.index({"outbound": "direct", "protocol": "dns"})
+
+
+def test_policy_sync_to_routing_priority_order(tmp_path):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    policy_path.write_text(
+        "always_direct:\n  domains:\n    - a.example\n"
+        "always_vpn:\n  domains:\n    - b.example\n",
+        encoding="utf-8",
+    )
+    runtime_path = tmp_path / "config.json"
+    runtime_path.write_text(
+        json.dumps({
+            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+            "route": {"rules": []},
+        }) + "\n",
+        encoding="utf-8",
+    )
+
+    router.policy_sync_to_routing(policy_path, runtime_path, probe_vpn_domains=["c.example"])
+    payload = json.loads(runtime_path.read_text(encoding="utf-8"))
+    rules = payload["route"]["rules"]
+    tags = [r["tag"] for r in rules]
+    # order: probe → policy-vpn → policy-direct (inserted at head in reverse)
+    assert tags == ["vpn-split-router-managed", "vpn-policy-vpn", "vpn-policy-direct"]
+
+
+def test_policy_sync_to_routing_removes_stale_policy_rules(tmp_path):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    policy_path.write_text(
+        "always_direct:\n  domains:\n    - new.example\n"
+        "always_vpn:\n  domains: []\n",
+        encoding="utf-8",
+    )
+    runtime_path = tmp_path / "config.json"
+    runtime_path.write_text(
+        json.dumps({
+            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+            "route": {
+                "rules": [
+                    {"tag": "vpn-policy-direct", "domain_suffix": ["old.example"], "outbound": "direct"},
+                    {"tag": "vpn-policy-vpn", "domain_suffix": ["old-vpn.example"], "outbound": "vpn"},
+                    {"tag": "vpn-split-router-managed", "domain_suffix": ["survivor.example"], "outbound": "vpn"},
+                ]
+            },
+        }) + "\n",
+        encoding="utf-8",
+    )
+
+    router.policy_sync_to_routing(policy_path, runtime_path, probe_vpn_domains=["survivor.example"])
+    payload = json.loads(runtime_path.read_text(encoding="utf-8"))
+    rules = payload["route"]["rules"]
+    tags = [r["tag"] for r in rules]
+    assert "vpn-policy-vpn" not in tags
+    assert tags == ["vpn-split-router-managed", "vpn-policy-direct"]
+    direct_rule = next(r for r in rules if r["tag"] == "vpn-policy-direct")
+    assert direct_rule["domain_suffix"] == ["new.example"]
+
+
+def test_sync_runtime_config_cleans_policy_tags(tmp_path):
+    router = _load_module()
+    config_path = tmp_path / "config.json"
+    config_path.write_text(
+        json.dumps({
+            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+            "route": {
+                "rules": [
+                    {"tag": "vpn-policy-direct", "domain_suffix": ["stale.example"], "outbound": "direct"},
+                    {"tag": "vpn-policy-vpn", "domain_suffix": ["stale-vpn.example"], "outbound": "vpn"},
+                ]
+            },
+        }) + "\n",
+        encoding="utf-8",
+    )
+
+    router.sync_runtime_config(config_path, ["active.example"])
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    tags = [r["tag"] for r in payload["route"]["rules"] if r.get("tag")]
+    assert "vpn-policy-direct" not in tags
+    assert "vpn-policy-vpn" not in tags
+    assert "vpn-split-router-managed" in tags
+
+
+def test_refresh_outputs_with_policy_injects_policy_rules(tmp_path):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    policy_path.write_text("always_direct:\n  domains:\n    - policy-direct.example\n", encoding="utf-8")
+    runtime_config_path = tmp_path / "config.json"
+    runtime_config_path.write_text(
+        json.dumps({
+            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+            "route": {"rules": []},
+        }) + "\n",
+        encoding="utf-8",
+    )
+    state = {
+        "domains": {
+            "probe-vpn.example": {
+                "domain": "probe-vpn.example", "source": "seed",
+                "route": "vpn", "ttl_until": "2099-01-01T00:00:00+00:00",
+            }
+        }
+    }
+    config = {"settings": {}}
+    observed_path = tmp_path / "observed.txt"
+    vpn_path = tmp_path / "vpn-domains.txt"
+
+    router.refresh_outputs(state, config, observed_path, vpn_path, runtime_config_path, policy_path=policy_path)
+    payload = json.loads(runtime_config_path.read_text(encoding="utf-8"))
+    tags = [r["tag"] for r in payload["route"]["rules"]]
+    assert "vpn-policy-direct" in tags
+    assert "vpn-split-router-managed" in tags
+
+
+def test_command_policy_add_direct(tmp_path):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    args = SimpleNamespace(policy=policy_path, targets=["google.com", "youtube.com"])
+    assert router.command_policy_add_direct(args) == 0
+    policy = router.load_policy(policy_path)
+    assert "google.com" in policy["always_direct"]["domains"]
+    assert "youtube.com" in policy["always_direct"]["domains"]
+
+
+def test_command_policy_add_direct_idempotent(tmp_path):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    policy_path.write_text("always_direct:\n  domains:\n    - google.com\n", encoding="utf-8")
+    args = SimpleNamespace(policy=policy_path, targets=["google.com", "google.com"])
+    router.command_policy_add_direct(args)
+    policy = router.load_policy(policy_path)
+    assert policy["always_direct"]["domains"] == ["google.com"]
+
+
+def test_command_policy_add_vpn(tmp_path):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    args = SimpleNamespace(policy=policy_path, targets=["netflix.com"])
+    assert router.command_policy_add_vpn(args) == 0
+    policy = router.load_policy(policy_path)
+    assert "netflix.com" in policy["always_vpn"]["domains"]
+
+
+def test_command_policy_remove(tmp_path):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    policy_path.write_text(
+        "always_direct:\n  domains:\n    - a.example\n"
+        "always_vpn:\n  domains:\n    - a.example\n",
+        encoding="utf-8",
+    )
+    args = SimpleNamespace(policy=policy_path, targets=["a.example"])
+    assert router.command_policy_remove(args) == 0
+    policy = router.load_policy(policy_path)
+    assert "a.example" not in policy["always_direct"]["domains"]
+    assert "a.example" not in policy["always_vpn"]["domains"]
+
+
+def test_command_policy_apply_creates_rollback_and_starts_timer(tmp_path, monkeypatch):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    rollback_path = tmp_path / "policy.yaml.rollback"
+    policy_path.write_text("always_direct:\n  domains:\n    - x.example\n", encoding="utf-8")
+    runtime_path = tmp_path / "config.json"
+    runtime_path.write_text(
+        json.dumps({
+            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+            "route": {"rules": []},
+        }) + "\n",
+        encoding="utf-8",
+    )
+
+    subprocess_called = []
+    monkeypatch.setattr(router.subprocess, "run", lambda *a, **kw: subprocess_called.append(a[0]))
+
+    args = SimpleNamespace(
+        policy=policy_path, policy_rollback=rollback_path, runtime_config=runtime_path,
+    )
+    assert router.command_policy_apply(args) == 0
+
+    assert rollback_path.exists()
+    assert rollback_path.read_text(encoding="utf-8") == policy_path.read_text(encoding="utf-8")
+    assert any("vpn-policy-rollback.timer" in str(c) for c in subprocess_called)
+
+
+def test_command_policy_apply_rejects_empty_policy(tmp_path):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    policy_path.write_text("always_direct:\n  domains: []\nalways_vpn:\n  domains: []\n", encoding="utf-8")
+    args = SimpleNamespace(
+        policy=policy_path, policy_rollback=tmp_path / "rollback.yaml", runtime_config=tmp_path / "cfg.json",
+    )
+    assert router.command_policy_apply(args) == 1
+
+
+def test_command_policy_confirm_removes_backup_and_stops_timer(tmp_path, monkeypatch):
+    router = _load_module()
+    rollback_path = tmp_path / "policy.yaml.rollback"
+    rollback_path.write_text("dummy\n", encoding="utf-8")
+
+    subprocess_called = []
+    monkeypatch.setattr(router.subprocess, "run", lambda *a, **kw: subprocess_called.append(a[0]))
+
+    args = SimpleNamespace(policy=tmp_path / "policy.yaml", policy_rollback=rollback_path)
+    assert router.command_policy_confirm(args) == 0
+
+    assert not rollback_path.exists()
+    assert any("stop" in str(c) for c in subprocess_called)
+
+
+def test_command_policy_rollback_restores_from_backup(tmp_path, monkeypatch):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    rollback_path = tmp_path / "policy.yaml.rollback"
+    policy_path.write_text("corrupted\n", encoding="utf-8")
+    rollback_path.write_text("always_direct:\n  domains:\n    - saved.example\n", encoding="utf-8")
+    runtime_path = tmp_path / "config.json"
+    runtime_path.write_text(
+        json.dumps({
+            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+            "route": {"rules": []},
+        }) + "\n",
+        encoding="utf-8",
+    )
+
+    subprocess_called = []
+    monkeypatch.setattr(router.subprocess, "run", lambda *a, **kw: subprocess_called.append(a[0]))
+
+    args = SimpleNamespace(
+        policy=policy_path, policy_rollback=rollback_path, runtime_config=runtime_path,
+    )
+    assert router.command_policy_rollback(args) == 0
+
+    assert "saved.example" in policy_path.read_text(encoding="utf-8")
+    assert not rollback_path.exists()
+    assert any("stop" in str(c) for c in subprocess_called)
+
+
+def test_command_policy_rollback_fails_without_backup(tmp_path):
+    router = _load_module()
+    args = SimpleNamespace(
+        policy=tmp_path / "policy.yaml", policy_rollback=tmp_path / "nonexistent.rollback",
+        runtime_config=tmp_path / "cfg.json",
+    )
+    assert router.command_policy_rollback(args) == 1
+
+
+def test_command_policy_sync_injects_policy_rules(tmp_path):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    policy_path.write_text("always_vpn:\n  domains:\n    - v.example\n", encoding="utf-8")
+    runtime_path = tmp_path / "config.json"
+    runtime_path.write_text(
+        json.dumps({
+            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+            "route": {"rules": []},
+        }) + "\n",
+        encoding="utf-8",
+    )
+
+    args = SimpleNamespace(policy=policy_path, runtime_config=runtime_path)
+    assert router.command_policy_sync(args) == 0
+
+    payload = json.loads(runtime_path.read_text(encoding="utf-8"))
+    tags = [r["tag"] for r in payload["route"]["rules"]]
+    assert "vpn-policy-vpn" in tags
+
+
+def test_command_policy_show(tmp_path):
+    router = _load_module()
+    policy_path = tmp_path / "policy.yaml"
+    policy_path.write_text("always_direct:\n  domains:\n    - x.example\n", encoding="utf-8")
+    args = SimpleNamespace(policy=policy_path)
+    assert router.command_policy_show(args) == 0

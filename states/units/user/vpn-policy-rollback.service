@@ -1,0 +1,7 @@
+[Unit]
+Description=Roll back VPN routing policy to last snapshot
+After=default.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/vpn-split-router policy rollback

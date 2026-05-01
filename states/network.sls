@@ -61,6 +61,8 @@ vpn_split_router_config:
 
 {{ user_service_file('vpn_split_router_service', 'vpn-split-router.service') }}
 {{ user_service_file('vpn_split_router_timer', 'vpn-split-router.timer') }}
+{{ user_service_file('vpn_policy_rollback_service', 'vpn-policy-rollback.service') }}
+{{ user_service_file('vpn_policy_rollback_timer', 'vpn-policy-rollback.timer') }}
 
 {{ user_service_enable('vpn_split_router_enabled',
     start_now=['vpn-split-router.timer'],

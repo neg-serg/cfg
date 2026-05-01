@@ -87,7 +87,7 @@ o.isfname='#,$,%,+,,,-,.,/,48-57,=,@,_,~,@-@'  -- Scan in filenames in such brac
 o.matchtime=0                                -- Default time to hi brackets too long for me
 o.matchpairs='(:),{:},[:],<:>'                 -- More matchpairs
 o.foldenable=false                           -- Disable folds as
-o.relativenumber=true                         -- Relative line numbers
+o.relativenumber=false                        -- Relative line numbers
 o.number=true                                 -- Show absolute number for current line
 o.numberwidth=3                              -- Shorter number width
 o.signcolumn='yes:1'                         -- Merge sign and numbers

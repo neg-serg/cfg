@@ -5,26 +5,42 @@ export NVIM_APPNAME=
 . /etc/profile
 SOCKET="/tmp/nvim.sock"
 
+_is_image() {
+  local ext="${1:e:l}"
+  [[ "$ext" == png || "$ext" == jpg || "$ext" == jpeg || "$ext" == gif || "$ext" == webp || "$ext" == avif ]]
+}
+
+IMAGES=()
+FILES=()
+for arg in "$@"; do
+  if _is_image "$arg"; then IMAGES+=("$arg"); else FILES+=("$arg"); fi
+done
+
+# Show images inline in terminal via kitty icat
+if [ "${#IMAGES[@]}" -gt 0 ]; then
+  for img in "${IMAGES[@]}"; do
+    kitty +kitten icat "$img"
+  done
+fi
+
+# If only images were given, we're done — no nvim needed
+if [ "${#FILES[@]}" -eq 0 ] && [ "${#IMAGES[@]}" -gt 0 ]; then
+  exit 0
+fi
+
 if ! command -v nvr >/dev/null 2>&1; then
   echo "error: nvr is required for remote attachment; reinstall neovim-remote" >&2
   exit 127
 fi
 
-# 1. Check if socket exists AND is responsive (has a listener)
-# We use nc -zU for a reliable, non-blocking check.
+# Open non-image files in existing nvim instance
 if [ -S "$SOCKET" ] && nc -zU "$SOCKET" >/dev/null 2>&1; then
-  # 2. Open file(s) in existing instance
-  if [ "$#" -gt 0 ]; then
-      nvr --servername "$SOCKET" --remote-silent "$@"
+  if [ "${#FILES[@]}" -gt 0 ]; then
+    nvr --servername "$SOCKET" --remote-silent "${FILES[@]}"
   fi
-
-  # 3. Raise Window (via hyprctl)
   hyprctl dispatch focuswindow "class:nwim" >/dev/null
   echo "↗  nvim (attached)"
 else
-  # 4. Socket might be stale or missing, remove it if it exists
   rm -f "$SOCKET"
-  # Start new instance acting as server
-  exec nvim --listen "$SOCKET" "$@"
+  exec nvim --listen "$SOCKET" "${FILES[@]}"
 fi
-# vim:filetype=sh

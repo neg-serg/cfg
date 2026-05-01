@@ -142,7 +142,7 @@ After containerization lands, verify that container failures surface through the
 ## Research / evaluation items
 
 - [ ] Audit already-implemented docs and planning artifacts for obsolete references, duplicate examples, and dead guidance; queue any safe removals as a separate cleanup task.
-- [ ] Revisit `v` after the `nvr` restore: Neovim has built-in remote/server flags, so a future migration away from `nvr` is possible, but it needs a careful proof that the attach flow and UX stay correct.
+- [x] Revisit `v` after the `nvr` restore — decision: keep `nvr`. Built-in `--remote-send`/`--remote-expr` lack `--remote-wait` (needed for `EDITOR`/`GIT_EDITOR`), `--remote-silent`, and tab control. `v` now also handles image files via `kitty +kitten icat`.
 
 ### Salt minimal rollout UX
 
@@ -246,7 +246,6 @@ Audit (2026-05-02): 393 tests, 0 failing.
 - [x] **Add tests for nanoclaw.sls and ollama.sls** — `test_nanoclaw.py` (113 lines), `test_ollama.py` (95 lines)
 - [x] **Add YAML schema validation** — `test_yaml_schemas.py` covers packages.yaml, versions.yaml, hosts.yaml
 - [x] **Add idempotency test** — `test_render_idempotent.py` renders states twice and compares
-
 
 
 ---

@@ -35,6 +35,8 @@ return {
       vim.g.loaded_netrwPlugin = 1
       vim.api.nvim_create_autocmd("BufEnter", {
         callback = function(args)
+          if vim.b[args.buf]._yazi_checked then return end
+          vim.b[args.buf]._yazi_checked = true
           if not vim.bo[args.buf].buflisted then return end
           if vim.bo[args.buf].buftype ~= "" then return end
           if vim.fn.isdirectory(vim.api.nvim_buf_get_name(args.buf)) == 1 then

@@ -4,9 +4,7 @@
 return {'folke/noice.nvim', -- better UX
     event={'VeryLazy'},
     config=function()
-        local status, noice = pcall(require, 'noice')
-        if (not status) then return end
-
+        local noice = require('noice')
         local border = 'rounded'
         noice.setup({
             cmdline={

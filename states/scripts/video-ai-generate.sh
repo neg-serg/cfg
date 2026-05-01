@@ -22,7 +22,8 @@ HEIGHT=480
 FRAMES=97  # ~4 seconds at 24fps
 COMPAT=false
 LOWVRAM=false
-STEPS=0  # 0 = use workflow default
+STEPS=8
+CFG=4.0
 
 usage() {
     cat >&2 <<'EOF'
@@ -34,6 +35,8 @@ Options:
   --image PATH    Reference image for image-to-video (optional)
   --width W       Output width (default: 854)
   --height H      Output height (default: 480)
+  --steps N       Sampling steps (default: 8)
+  --cfg VALUE     CFG guidance scale (default: 4.0)
   --frames N      Number of frames (default: 97, ~4s at 24fps)
   --compat        Encode as H.264 instead of H.265
   --lowvram       Enable ComfyUI low VRAM mode (for 24GB GPUs)
@@ -50,6 +53,8 @@ while [[ $# -gt 0 ]]; do
         --image)  IMAGE="$2"; shift 2 ;;
         --width)  WIDTH="$2"; shift 2 ;;
         --height) HEIGHT="$2"; shift 2 ;;
+        --steps)  STEPS="$2"; shift 2 ;;
+        --cfg)    CFG="$2"; shift 2 ;;
         --frames) FRAMES="$2"; shift 2 ;;
         --compat) COMPAT=true; shift ;;
         --lowvram) LOWVRAM=true; shift ;;
@@ -146,6 +151,7 @@ sed -e "s|__PROMPT__|${PROMPT//|/\\|}|g" \
     -e "s|__WIDTH__|${WIDTH}|g" \
     -e "s|__HEIGHT__|${HEIGHT}|g" \
     -e "s|__STEPS__|${STEPS}|g" \
+    -e "s|__CFG__|${CFG}|g" \
     -e "s|__FRAMES__|${FRAMES}|g" \
     "${WORKFLOW_FILE}" > "${WORKFLOW_RESOLVED}"
 

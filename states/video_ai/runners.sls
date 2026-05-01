@@ -1,4 +1,4 @@
-{% from '_imports.jinja' import host, user %}
+{% from '_imports.jinja' import host, user, home %}
 {% set base_dir = host.mnt_one ~ '/video-ai' %}
 
 # ── Generation runner deployment ─────────────────────────────────────
@@ -21,3 +21,13 @@ video_ai_generate_image_script:
     - mode: '0755'
     - require:
       - cmd: video_ai_comfyui_setup
+
+video_ai_gen_video_script:
+  file.managed:
+    - name: {{ home }}/.local/bin/gen-video
+    - source: salt://scripts/gen-video
+    - user: {{ user }}
+    - group: {{ user }}
+    - mode: '0755'
+    - require:
+      - file: video_ai_generate_script

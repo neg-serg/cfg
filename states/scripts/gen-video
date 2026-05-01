@@ -1,0 +1,107 @@
+#!/usr/bin/env zsh
+# gen-video — user-facing CLI for video generation
+set -euo pipefail
+
+GEN_SCRIPT="/mnt/one/video-ai/generate.sh"
+MODELS_DIR="/mnt/one/video-ai/models"
+
+# ── Resolution presets ───────────────────────────────────────────────
+typeset -A RES_MAP
+RES_MAP=(480p "854x480" 540p "960x540" 720p "1280x720" 1080p "1920x1080")
+
+# ── Defaults ─────────────────────────────────────────────────────────
+MODEL="ltx-23-distilled-fp8"
+RES="540p"
+IMAGE=""
+CFG=4.0
+STEPS=8
+FRAMES=97
+LOWVRAM=false
+COMPAT=false
+DRY_RUN=false
+LIST=false
+
+usage() {
+    cat >&2 <<'EOF'
+Usage: gen-video [OPTIONS] "prompt"
+
+Options:
+  -m, --model ID     Model ID (default: ltx-23-distilled-fp8)
+  -r, --res PRESET   Resolution: 480p, 540p, 720p, 1080p (default: 540p)
+  -i, --image PATH   Reference image for image-to-video
+  -c, --cfg VALUE    CFG guidance scale (default: 4.0)
+  -s, --steps N      Sampling steps (default: 8)
+  -f, --frames N     Number of frames (default: 97, ~4s at 24fps)
+  --lowvram          Enable ComfyUI low VRAM mode
+  --compat           Encode as H.264 instead of H.265
+  --list             List installed models
+  --dry-run          Show command without executing
+  --help             Show this help
+EOF
+    exit 1
+}
+
+# ── Parse arguments ──────────────────────────────────────────────────
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -m|--model)  MODEL="$2"; shift 2 ;;
+        -r|--res)    RES="$2"; shift 2 ;;
+        -i|--image)  IMAGE="$2"; shift 2 ;;
+        -c|--cfg)    CFG="$2"; shift 2 ;;
+        -s|--steps)  STEPS="$2"; shift 2 ;;
+        -f|--frames) FRAMES="$2"; shift 2 ;;
+        --lowvram)   LOWVRAM=true; shift ;;
+        --compat)    COMPAT=true; shift ;;
+        --list)      LIST=true; shift ;;
+        --dry-run)   DRY_RUN=true; shift ;;
+        --help)      usage ;;
+        *)           PROMPT="$*"; break ;;
+    esac
+done
+
+# ── List models ──────────────────────────────────────────────────────
+if [[ "$LIST" == "true" ]]; then
+    echo "Installed models:"
+    for d in "$MODELS_DIR"/*(/); do
+        id="${d:t}"
+        if [[ "$id" == "ltx-23-distilled-fp8" ]]; then
+            echo "  $id (default)"
+        else
+            echo "  $id"
+        fi
+    done
+    exit 0
+fi
+
+# ── Validate ─────────────────────────────────────────────────────────
+[[ -z "${PROMPT:-}" ]] && { echo "Error: prompt is required" >&2; usage; }
+
+# Resolve preset
+if [[ -n "${RES_MAP[$RES]:-}" ]]; then
+    WIDTH="${RES_MAP[$RES]%%x*}"
+    HEIGHT="${RES_MAP[$RES]##*x}"
+else
+    # Allow raw WxH like "1920x1080"
+    if [[ "$RES" == *x* ]]; then
+        WIDTH="${RES%%x*}"
+        HEIGHT="${RES##*x}"
+    else
+        echo "Error: unknown preset '$RES'. Use: 480p, 540p, 720p, 1080p" >&2
+        exit 1
+    fi
+fi
+
+# ── Build command ────────────────────────────────────────────────────
+CMD=("$GEN_SCRIPT" --model "$MODEL" --prompt "$PROMPT" --width "$WIDTH" --height "$HEIGHT"
+     --cfg "$CFG" --steps "$STEPS" --frames "$FRAMES")
+[[ -n "$IMAGE" ]] && CMD+=(--image "$IMAGE")
+[[ "$LOWVRAM" == "true" ]] && CMD+=(--lowvram)
+[[ "$COMPAT" == "true" ]] && CMD+=(--compat)
+
+if [[ "$DRY_RUN" == "true" ]]; then
+    echo "${CMD[@]}"
+    exit 0
+fi
+
+# ── Execute ──────────────────────────────────────────────────────────
+"${CMD[@]}"

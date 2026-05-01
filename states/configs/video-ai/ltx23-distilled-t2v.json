@@ -65,7 +65,7 @@
         "model": ["20", 0],
         "positive": ["5", 0],
         "negative": ["5", 1],
-        "cfg": 4.0,
+        "cfg": __CFG__,
         "stg": 1.0,
         "rescale": 0.7
       }

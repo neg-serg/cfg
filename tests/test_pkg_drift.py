@@ -3,7 +3,8 @@ import os
 import subprocess
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+from tests import REPO_ROOT_PATH as REPO_ROOT
+
 SCRIPT = REPO_ROOT / "scripts" / "pkg-drift.zsh"
 
 

@@ -10,7 +10,8 @@ from pathlib import Path
 
 import yaml
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+from tests import REPO_ROOT_PATH as REPO_ROOT
+
 SCRIPT = REPO_ROOT / "scripts" / "zapret2-rollout.sh"
 
 

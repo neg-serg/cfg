@@ -1,0 +1,118 @@
+"""Contract tests for the nanoclaw Salt state.
+
+Uses source‑level assertions because the state depends on Jinja macros
+(proxypilot_key, tg_secret) that call external tools at render time.
+"""
+
+import re
+
+import pytest
+
+from tests import REPO_ROOT_PATH
+
+pytestmark = pytest.mark.slow
+
+_STATE_PATH = REPO_ROOT_PATH / "states" / "nanoclaw.sls"
+_SOURCE = _STATE_PATH.read_text()
+
+GUARD_KEYS = {"creates", "unless", "onlyif"}
+CMPATTERN = re.compile(r"^\s+\-( (creates|unless|onlyif)\b)")
+
+
+def _find_state_ids(source: str):
+    """Extract all state IDs (lines not indented, before colon at bol)."""
+    ids = []
+    for line in source.splitlines():
+        stripped = line.strip()
+        if stripped and not stripped.startswith(("#", "{%", "%}", "{#", "{%")):
+            parts = stripped.split(":")
+            if parts and parts[0].strip() and " " not in parts[0].strip():
+                ids.append(parts[0].strip())
+    return ids
+
+
+def _find_cmd_states(source: str):
+    """Find state IDs followed by cmd.run or cmd.script."""
+    pattern = re.compile(
+        r"^(\w+):\s*\n\s+cmd\.(?:run|script):", re.MULTILINE
+    )
+    return pattern.findall(source)
+
+
+def _cmd_has_guard(source: str, state_id: str) -> bool:
+    """Check whether the cmd.run block for state_id has a guard key."""
+    lines = source.splitlines()
+    in_block = False
+    for line in lines:
+        if re.match(rf"^{state_id}:", line):
+            in_block = True
+            continue
+        if in_block and re.match(r"^\w", line) and ":" in line:
+            break
+        if in_block and line.strip().startswith("- "):
+            key = line.strip().split(":")[0].removeprefix("- ").strip()
+            if key in GUARD_KEYS:
+                return True
+    return False
+
+
+def test_state_file_exists():
+    assert _STATE_PATH.is_file()
+
+
+def test_nanoclaw_clone_present():
+    assert "nanoclaw_clone:" in _SOURCE
+
+
+def test_nanoclaw_clone_has_guard():
+    assert _cmd_has_guard(_SOURCE, "nanoclaw_clone")
+
+
+def test_nanoclaw_clone_uses_creates():
+    assert "creates:" in _SOURCE.split("nanoclaw_clone:")[1].split("\n\n")[0]
+
+
+def test_nanoclaw_version_uses_npm_build_workflow():
+    assert "npm_build_workflow('nanoclaw'" in _SOURCE
+
+
+def test_nanoclaw_config_dir_uses_ensure_dir():
+    assert "ensure_dir('nanoclaw_config_dir'" in _SOURCE
+
+
+def test_nanoclaw_store_dir_uses_ensure_dir():
+    assert "ensure_dir('nanoclaw_store_dir'" in _SOURCE
+
+
+def test_nanoclaw_data_dir_uses_ensure_dir():
+    assert "ensure_dir('nanoclaw_data_dir'" in _SOURCE
+
+
+def test_nanoclaw_env_managed():
+    assert "nanoclaw_env:" in _SOURCE
+    assert "file.managed" in _SOURCE.split("nanoclaw_env:")[1].split("\n\n")[0]
+
+
+def test_nanoclaw_sender_allowlist_managed():
+    assert "nanoclaw_sender_allowlist:" in _SOURCE
+
+
+def test_nanoclaw_mount_allowlist_managed():
+    assert "nanoclaw_mount_allowlist:" in _SOURCE
+
+
+def test_nanoclaw_native_unit_absent():
+    assert "nanoclaw_native_unit_absent:" in _SOURCE
+    assert "file.absent" in _SOURCE.split("nanoclaw_native_unit_absent:")[1].split("\n\n")[0]
+
+
+def test_nanoclaw_native_unit_daemon_reload_has_onlyif():
+    assert _cmd_has_guard(_SOURCE, "nanoclaw_native_unit_daemon_reload")
+
+
+def test_nanoclaw_container_uses_container_service():
+    assert "container_service('nanoclaw'" in _SOURCE
+
+
+def test_restart_on_env_change():
+    assert "user_service_restart('restart_nanoclaw_on_env_change'" in _SOURCE

@@ -1,8 +1,6 @@
 """Integration checks for the Zapret2 Salt-managed surface."""
 
-from pathlib import Path
-
-REPO_ROOT = Path(__file__).resolve().parents[2]
+from tests import REPO_ROOT_PATH as REPO_ROOT
 
 
 def test_system_description_feature_gates_zapret2():

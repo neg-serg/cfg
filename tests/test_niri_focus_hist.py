@@ -3,9 +3,9 @@
 import re
 import subprocess
 import sys
-from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+from tests import REPO_ROOT_PATH as REPO_ROOT
+
 SCRIPT_PATH = REPO_ROOT / "dotfiles" / "dot_local" / "bin" / "executable_niri-focus-hist"
 
 

@@ -215,6 +215,20 @@ duckdns:                       # Dynamic DNS updater (containerized)
       mode: ro                 # DUCKDNS_TOKEN and DUCKDNS_DOMAIN
   env_file: null
 
+alertmanager:                  # Alert notification routing for Loki
+  port: 9093
+  health_path: /-/ready
+  unit: alertmanager
+  scope: system
+  packages: null               # installed via container_service image pull
+  container_image: alertmanager
+  gpu: none
+  bind_mounts:
+    - host: /etc/alertmanager
+      container: /etc/alertmanager
+      mode: ro,Z               # config only; no persistent state
+  env_file: null
+
 unbound:                       # Recursive DNS resolver
   health_cmd: "unbound-control status >/dev/null 2>&1"
   unit: unbound

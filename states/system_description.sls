@@ -165,6 +165,9 @@ include:
   - xen
 {% endif %}
   - monitoring_loki
+{% if host.features.monitoring.loki and host.features.monitoring.alertmanager %}
+  - monitoring_alertmanager
+{% endif %}
 {% if host.features.network.get('zapret2', false) %}
   - zapret2
 {% endif %}

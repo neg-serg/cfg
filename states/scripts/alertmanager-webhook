@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+# alertmanager-webhook — receives Alertmanager webhook POST and sends via Telegram.
+# Template variables injected by Salt/Jinja.
+TELEGRAM_TOKEN = "{{ telegram_token }}"
+TELEGRAM_UID = "{{ telegram_uid }}"
+LISTEN_ADDR = "127.0.0.1"
+LISTEN_PORT = 9094
+{% raw %}
+import http.server
+import json
+import textwrap
+import urllib.request
+
+
+def send_telegram(text):
+    payload = json.dumps({
+        "chat_id": TELEGRAM_UID,
+        "text": text,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+    }).encode()
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+    req = urllib.request.Request(url, data=payload,
+                                 headers={"Content-Type": "application/json"})
+    urllib.request.urlopen(req, timeout=10)
+
+
+def format_alerts(webhook_data):
+    alerts = webhook_data.get("alerts", [])
+    status = webhook_data.get("status", "firing")
+    parts = []
+
+    if status == "resolved":
+        for a in alerts:
+            labels = a.get("labels", {})
+            annotations = a.get("annotations", {})
+            name = labels.get("alertname", "unknown")
+            parts.append(f"\u2705 <b>RESOLVED</b>: {name}")
+            if annotations.get("summary"):
+                parts[-1] += f"\n  {annotations['summary']}"
+        return "\n\n".join(parts)
+
+    emoji = "\U0001f525" if status == "firing" else "\U0001f534"
+    title = f"{emoji} <b>{status.upper()} ({len(alerts)})</b>"
+    parts.append(title)
+
+    for a in alerts:
+        labels = a.get("labels", {})
+        annotations = a.get("annotations", {})
+        name = labels.get("alertname", "unknown")
+        severity = labels.get("severity", "warning")
+        sev_emoji = "\U0001f534" if severity == "critical" else "\U0001f7e1"
+
+        lines = [f"{sev_emoji} <b>{name}</b>"]
+        if annotations.get("summary"):
+            lines.append(f"  {annotations['summary']}")
+        if annotations.get("description"):
+            desc = textwrap.shorten(annotations["description"], 200)
+            lines.append(f"  {desc}")
+        parts.append("\n".join(lines))
+
+    return "\n\n".join(parts)
+
+
+class WebhookHandler(http.server.BaseHTTPRequestHandler):
+    def do_POST(self):
+        length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(length)
+        try:
+            data = json.loads(body)
+            text = format_alerts(data)
+            send_telegram(text)
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"ok")
+        except Exception as e:
+            self.send_response(500)
+            self.end_headers()
+            self.wfile.write(str(e).encode())
+
+    def log_message(self, fmt, *args):
+        import os
+        if "POST" in fmt % args:
+            os.system(f'logger -t alertmanager-webhook "{fmt % args}"')
+
+
+def main():
+    server = http.server.HTTPServer((LISTEN_ADDR, LISTEN_PORT), WebhookHandler)
+    server.serve_forever()
+
+
+if __name__ == "__main__":
+    main()
+{% endraw %}

@@ -1,0 +1,15 @@
+# Alertmanager config — deployed by monitoring_alertmanager.sls
+# Routes Loki alert rules to Telegram via local webhook bridge
+route:
+  receiver: telegram
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 15m
+
+receivers:
+  - name: telegram
+    webhook_configs:
+      - url: http://127.0.0.1:9094/alert
+        send_resolved: true
+        max_alerts: 20

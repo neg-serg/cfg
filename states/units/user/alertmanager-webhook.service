@@ -1,0 +1,15 @@
+# alertmanager-webhook — bridges Alertmanager webhook to Telegram
+[Unit]
+Description=Alertmanager Telegram webhook bridge
+Documentation=https://prometheus.io/docs/alerting/latest/configuration/#webhook_config
+After=network-online.target
+PartOf=alertmanager-container.service
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/alertmanager-webhook
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

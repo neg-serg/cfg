@@ -11,6 +11,7 @@
         loki: true
         promtail: true
         grafana: true
+        alertmanager: true
 
 - name: matrix-services
   description: Home-server services (DNS + Samba/Jellyfin/DuckDNS/Transmission)
@@ -78,5 +79,6 @@
         loki: true
         promtail: true
         grafana: true
+        alertmanager: true
       ollama: true
       llama_embed: true

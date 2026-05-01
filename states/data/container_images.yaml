@@ -85,6 +85,15 @@ jellyfin:
   approved_at: "2026-04-15"
   note: "Jellyfin media server; VA-API hardware transcoding via /dev/dri"
 
+# ─── Alerting ─────────────────────────────────────────────────────────
+alertmanager:
+  registry: docker.io
+  image: prom/alertmanager
+  variant: v0.28.0
+  digest: sha256:9139cd2c7ab7ff951e5ed9ffc4f70122a7de9678fb51065061a5f72549c91bab
+  approved_at: "2026-05-01"
+  note: "Alertmanager for Loki alert routing to Telegram"
+
 # ─── Bridge tier (localhost images, built manually) ──────────────────
 proxypilot:
   registry: localhost

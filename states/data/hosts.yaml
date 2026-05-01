@@ -30,6 +30,7 @@ defaults:
       loki: false
       promtail: false
       grafana: false
+      alertmanager: false
       alerts: false
     fancontrol: false
     dns:
@@ -93,6 +94,7 @@ hosts:
         loki: true
         promtail: true
         grafana: false
+        alertmanager: true
       services:
         transmission: true
       user_services:

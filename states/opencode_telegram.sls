@@ -115,6 +115,30 @@ telecode_config:
       - file: telecode_config_dir
 {% endif %}
 
-# ── Telecode container ───────────────────────────────────────────────
+# ── Legacy unit cleanup (cutover to Quadlet) ─────────────────────────
+telecode_legacy_unit_absent:
+  file.absent:
+    - name: {{ home }}/.config/systemd/user/telecode.service
+
+telecode_legacy_unit_daemon_reload:
+  cmd.run:
+    - name: systemctl --user daemon-reload
+    - onchanges:
+      - file: telecode_legacy_unit_absent
+
+{% if not _has_tc_token %}
+telecode_legacy_unit_stopped:
+  service.dead:
+    - name: telecode.service
+    - enable: False
+    - scope: user
+    - require:
+      - file: telecode_legacy_unit_absent
+{% endif %}
+
+# ── Telecode container (only when token is present) ──────────────────
+{% if _has_tc_token %}
 {{ container_service('telecode', catalog.telecode, image_registry,
-    user_scope=True) }}
+    user_scope=True,
+    requires=['file: telecode_legacy_unit_absent']) }}
+{% endif %}

@@ -327,7 +327,7 @@ telecode:                      # Telecode Telegram agent
   unit: telecode
   scope: user
   manual_start: true
-  health_cmd: "pgrep -f telecode"
+  health_cmd: "systemctl --user is-active --quiet telecode.service"
   container_image: telecode
   gpu: none
   bind_mounts:

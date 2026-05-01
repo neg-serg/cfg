@@ -40,19 +40,7 @@ Multiple Floorp profiles with persistent data (cookies, localStorage, sessions).
 
 ---
 
-## ydotool service not enabled
 
-`ydotool.service` (systemd user unit) is installed but **disabled and inactive**.
-Hyprland MCP tools (`mouse_click`, `click_text`, `key_press`, etc.) depend on `ydotoold` running.
-
-**Fix**: Enable the user service in Salt (`user_services.sls` or similar):
-```
-systemctl --user enable --now ydotool.service
-```
-
-Without this, the Hyprland MCP server's mouse/keyboard automation tools fail silently or error on click/type operations. Screenshots still work (they use `grim`/`slurp`, not ydotool).
-
----
 
 ## tg-cli: register own Telegram API credentials
 
@@ -248,13 +236,15 @@ Evaluate [SaluteSpeech](https://developers.sber.ru/docs/ru/salutespeech/overview
 
 ## Test suite improvements
 
-Audit (2026-04-15): 106 tests across 19 files + 1 shell script. 3 failing, several gaps.
+Audit (2026-05-01): 249 tests, 0 failing, several gaps.
 
-### HIGH PRIORITY
+### DONE
 
-- [ ] **Fix 3 failing tests:**
-  - `test_managed_resources_inventory_covers_phase1_services` — remove `adguardhome`, `bitcoind` (now containerized)
-  - `test_transmission_uses_shared_config_replace_helper` — update to match consolidated services.sls pattern
+- [x] **Fix 4 failing tests (2026-05-01):**
+  - `test_system_description_includes_hiddify_state_by_default` — updated default from `True` to `false` (hiddify disabled by default)
+  - `test_hiddify_wrapper_launches_system_binary_after_loopback_fix` — removed (wrapper script deleted with hiddify cleanup)
+  - `test_hiddify_fix_loopback_removes_ipv6_loopback_inbounds_and_rewrites_kde_proxy` — removed (fix-loopback script deleted)
+  - `test_services_macro_exposes_config_replace_helper` — updated to check `container_service` macro (replaced `config_replace_with_service_control`)
 - [ ] **Create `tests/conftest.py`** — shared `REPO_ROOT`, `sys.path` setup, fixtures, pytest markers (`@pytest.mark.slow`, `@pytest.mark.integration`)
 - [ ] **Move `cmd.run` audit from report-only to failing** — currently 70/499 unguarded states silently pass checks. Add threshold-based fail.
 - [ ] **Add `@pytest.mark.slow` to module-level render tests** — `test_macro_idempotency.py` and `test_cmdrun_audit.py` render ALL .sls at import time
@@ -289,6 +279,17 @@ When the Wayland compositor emits a fast output-remove-and-readd sequence (monit
 - [x] Keep `Restart=always` in wl.service as defense-in-depth
 
 **Secondary cleanup** (cosmetic): `ExecStartPost=wl restore` retry-loop in the unit file fires before daemon's IPC socket is ready. Fix: `sd_notify(READY=1)` + `Type=notify` + drop sleep-based retry loop.
+
+---
+
+## Cache cleanup timers (systemd)
+
+> Implements the task from TODO.ru.md — periodic cleanup of caches not covered by `paccache.timer`.
+
+- [x] `scripts/cache-cleanup.sh` — single shell script cleaning paru, pip, npm, flatpak, cargo caches
+- [x] `states/units/user/cache-cleanup.service` — `Type=oneshot` systemd user service
+- [x] `states/units/user/cache-cleanup.timer` — weekly, with `Persistent=true` + `RandomizedDelaySec=2h`
+- [x] Registered in `states/data/user_services.yaml` under `unit_files` + `enable_now_timers`
 
 ---
 

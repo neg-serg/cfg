@@ -1,16 +1,13 @@
 # TODO
 
-## Периодическая очистка кэшей (cron / systemd timer)
+## Периодическая очистка кэшей (systemd timer) ✅
 
-После уборки ~34G кэшей вручную стоит автоматизировать очистку того, что не покрывает `paccache.timer`:
+Сделано 2026-05-01. Один shell-скрипт + один systemd timer (еженедельно).
 
-- **`paru -Sc`** — очистка AUR clone-кэша (14G было). Paru хранит все клонированные PKGBUILD-ы. Добавить еженедельный systemd timer или cron.
-- **`pip cache purge`** — 2.9G кэша pip. Ежемесячно.
-- **`npm cache clean --force`** — 1.7G кэша npm. Ежемесячно.
-- **`flatpak uninstall --unused`** — удаление неиспользуемых flatpak-рантаймов. Раз в месяц.
-- **`cargo cache -a`** — очистка cargo registry (если cargo используется активно). Ежемесячно.
-
-Предпочтительный вариант: systemd timers (единообразно с существующим `paccache.timer`), по одному юниту на сервис. Либо один shell-скрипт, запускаемый из `cron` или одного systemd timer.
+- [x] `scripts/cache-cleanup.sh` — очистка paru, pip, npm, flatpak, cargo кэшей
+- [x] `states/units/user/cache-cleanup.service` — `Type=oneshot` systemd user service
+- [x] `states/units/user/cache-cleanup.timer` — еженедельно, `Persistent=true`, `RandomizedDelaySec=2h`
+- [x] Зарегистрировано в `states/data/user_services.yaml` (`unit_files` + `enable_now_timers`)
 
 ## Пайплайн анализа музыки (essentia + annoy)
 
@@ -22,19 +19,6 @@
 1. Сборка/установка `essentia` через paru или PKGBUILD
 2. Установка `python-annoy` через макрос pip_pkg
 3. Идемпотентные проверки для обоих
-
-
-## Сервис ydotool не включён
-
-`ydotool.service` (systemd user unit) установлен, но **отключён и неактивен**.
-Инструменты Hyprland MCP (`mouse_click`, `click_text`, `key_press` и др.) зависят от работающего `ydotoold`.
-
-**Исправление**: включить пользовательский сервис через Salt (`user_services.sls` или аналог):
-```
-systemctl --user enable --now ydotool.service
-```
-
-Без этого инструменты автоматизации мыши/клавиатуры Hyprland MCP молча падают или выдают ошибки при click/type операциях. Скриншоты работают (используют `grim`/`slurp`, а не ydotool).
 
 
 ## Косметические улучшения

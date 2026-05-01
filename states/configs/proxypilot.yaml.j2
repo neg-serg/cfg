@@ -82,8 +82,8 @@ openai-compatibility:
       - api-key: "{{ p.api_key }}"
     models:
 {%- for m in p.models %}
-      - name: "{{ m.name }}"
-        alias: "{{ m.alias }}"
+      - name: "{{ m.name }}"        # local model ID (client receives this)
+        alias: "{{ m.alias }}"      # what the client sends in its request
 {%- endfor %}
 {%- endfor %}
 {% endif %}

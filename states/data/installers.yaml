@@ -62,6 +62,10 @@ curl_bin:
 github_tar:
   parm:
     url: "https://github.com/yhoundz/parm/releases/download/v${VER}/parm-linux-amd64.tar.gz"
+  nyxt:
+    url: "https://github.com/atlas-engineer/nyxt/releases/download/${VER}/Linux-Nyxt-x86_64.tar.gz"
+    binary_pattern: "Nyxt-x86_64.AppImage"
+    bin: nyxt
 
 pip_pkg:
   httpstat: {}

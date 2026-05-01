@@ -51,6 +51,11 @@ tdl_legacy_cleanup:
     - name: {{ home }}/.local/bin/tdl
     - onlyif: test -f {{ home }}/.local/bin/tdl
 
+# Remove legacy system nyxt package (replaced by AppImage 4.0.0 from installers)
+nyxt_system_cleanup:
+  pkg.removed:
+    - name: nyxt
+
 # ===========================================================================
 # Custom installs (not data-driven — unique logic or version interpolation)
 # ===========================================================================

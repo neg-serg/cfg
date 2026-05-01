@@ -4,7 +4,7 @@
 return {
   "folke/snacks.nvim",
   priority = 1000,
-  event = { "UIEnter", "BufReadPre" },
+  event = "VeryLazy",
   opts = function()
     local has_args = vim.fn.argc(-1) > 0
 

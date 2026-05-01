@@ -146,15 +146,12 @@ def test_generated_repo_files_are_in_sync_with_the_generator(tmp_path):
     )
 
 
-def test_todo_tracks_future_hierarchical_key_hint_mode_note():
-    todo_text = (REPO_ROOT_PATH / "TODO.md").read_text()
+def test_hierarchical_key_hint_mode_runs_from_shortcuts():
+    misc_conf = (
+        REPO_ROOT_PATH / "dotfiles" / "dot_config" / "hypr" / "bindings" / "misc.conf"
+    ).read_text()
 
-    assert "## Hyprland hotkey UX" in todo_text
-    assert (
-        "optional hierarchical key-hint mode generated from "
-        "`dotfiles/dot_config/hypr/shortcuts.yaml`" in todo_text
-    )
-    assert "alternative to the search-first `Mod4+/` launcher" in todo_text
+    assert "bind = $M4, i, exec, wlr-which-key" in misc_conf
 
 
 PRIMARY_BROWSER_REGEX = (

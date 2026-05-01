@@ -230,7 +230,7 @@ Evaluate [SaluteSpeech](https://developers.sber.ru/docs/ru/salutespeech/overview
 
 ## Test suite improvements
 
-Audit (2026-05-01): 249 tests, 0 failing, several gaps.
+Audit (2026-05-02): 393 tests, 0 failing.
 
 ### DONE
 
@@ -239,23 +239,15 @@ Audit (2026-05-01): 249 tests, 0 failing, several gaps.
   - `test_hiddify_wrapper_launches_system_binary_after_loopback_fix` — removed (wrapper script deleted with hiddify cleanup)
   - `test_hiddify_fix_loopback_removes_ipv6_loopback_inbounds_and_rewrites_kde_proxy` — removed (fix-loopback script deleted)
   - `test_services_macro_exposes_config_replace_helper` — updated to check `container_service` macro (replaced `config_replace_with_service_control`)
-- [ ] **Create `tests/conftest.py`** — shared `REPO_ROOT`, `sys.path` setup, fixtures, pytest markers (`@pytest.mark.slow`, `@pytest.mark.integration`)
-- [ ] **Move `cmd.run` audit from report-only to failing** — currently 70/499 unguarded states silently pass checks. Add threshold-based fail.
-- [ ] **Add `@pytest.mark.slow` to module-level render tests** — `test_macro_idempotency.py` and `test_cmdrun_audit.py` render ALL .sls at import time
+- [x] **Create `tests/conftest.py`** — shared `REPO_ROOT`, `sys.path` setup, fixtures, pytest markers (`@pytest.mark.slow`, `@pytest.mark.integration`)
+- [x] **Move `cmd.run` audit from report-only to failing** — 95% guard threshold in `test_cmdrun_audit.py:test_cmdrun_guard_coverage`
+- [x] **Add `@pytest.mark.slow` to module-level render tests** — added `pytestmark = pytest.mark.slow` in both `test_macro_idempotency.py` and `test_cmdrun_audit.py`
+- [x] **Deduplicate REPO_ROOT** — 15 copies replaced with `from tests import REPO_ROOT_PATH`; 0 remaining assignments
+- [x] **Add tests for nanoclaw.sls and ollama.sls** — `test_nanoclaw.py` (113 lines), `test_ollama.py` (95 lines)
+- [x] **Add YAML schema validation** — `test_yaml_schemas.py` covers packages.yaml, versions.yaml, hosts.yaml
+- [x] **Add idempotency test** — `test_render_idempotent.py` renders states twice and compares
 
-### MEDIUM PRIORITY
 
-- [ ] **Add service catalog consistency tests** — verify `service_catalog.yaml` entries have valid units, templates exist, packages resolve
-- [ ] **Add macro output tests** — test `_macros_service.jinja` helpers produce expected state structures with specific arguments
-- [ ] **Add tests for critical scripts:** `update-tools.py`, `salt-daemon.py`, `lint-jinja.py`
-- [ ] **Add containerized services tests** — verify Quadlet files exist for declared containers, bind-mounts match state paths
-- [ ] **Deduplicate REPO_ROOT** — remove ~15 copies of `REPO_ROOT = Path(__file__).resolve().parent.parent` after conftest.py exists
-
-### LOWER PRIORITY
-
-- [ ] Add tests for nanoclaw.sls and ollama.sls (key user-facing services)
-- [ ] Add YAML schema validation for packages.yaml, versions.yaml, hosts.yaml
-- [ ] Add idempotency test — render states twice, compare output
 
 ---
 

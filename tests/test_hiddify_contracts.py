@@ -1,8 +1,6 @@
 """Contract tests for managed Hiddify automation."""
 
-from tests import REPO_ROOT_PATH
-
-REPO_ROOT = REPO_ROOT_PATH
+from tests import REPO_ROOT_PATH as REPO_ROOT
 
 
 def test_system_description_includes_hiddify_state_by_default():

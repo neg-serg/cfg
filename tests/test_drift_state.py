@@ -162,6 +162,50 @@ def test_drift_records_include_source_field():
         assert "source" in record, f"record {record['category']}/{record['object']} missing source"
 
 
+def test_build_expected_snapshot_includes_git_revision(monkeypatch, tmp_path):
+    host = {"home": "/tmp", "runtime_dir": "/run/user/1000", "hostname": "testbox"}
+    inventory = {"files": [], "system_units": [], "user_units": []}
+
+    import subprocess as sp
+    original_run = sp.run
+
+    def mock_run(cmd, **kwargs):
+        if cmd == ["git", "rev-parse", "--short", "HEAD"]:
+            return type("Result", (), {"stdout": "abc123\n", "stderr": "", "returncode": 0})()
+        return original_run(cmd, **kwargs)
+
+    monkeypatch.setattr(drift_state.subprocess, "run", mock_run)
+
+    snapshot = drift_state.build_expected_snapshot(host, inventory, project_dir=tmp_path)
+    assert snapshot["git_revision"] == "abc123"
+
+
+def test_build_expected_snapshot_includes_salt_target():
+    host = {"home": "/tmp", "runtime_dir": "/run/user/1000", "hostname": "testbox"}
+    inventory = {"files": [], "system_units": [], "user_units": []}
+
+    snapshot = drift_state.build_expected_snapshot(host, inventory, salt_target="services")
+    assert snapshot["salt_target"] == "services"
+
+
+def test_build_expected_snapshot_skips_git_revision_when_not_a_repo(monkeypatch, tmp_path):
+    host = {"home": "/tmp", "runtime_dir": "/run/user/1000", "hostname": "testbox"}
+    inventory = {"files": [], "system_units": [], "user_units": []}
+
+    import subprocess as sp
+
+    def mock_run(cmd, **kwargs):
+        if cmd[:3] == ["git", "rev-parse", "--short"]:
+            res = {"stdout": "", "stderr": "fatal: not a git repo\n", "returncode": 128}
+            return type("Result", (), res)()
+        return sp.run(cmd, **kwargs)
+
+    monkeypatch.setattr(drift_state.subprocess, "run", mock_run)
+
+    snapshot = drift_state.build_expected_snapshot(host, inventory, project_dir=tmp_path)
+    assert "git_revision" not in snapshot
+
+
 def test_collect_actual_defaults_to_full_mode(monkeypatch):
     called = []
 

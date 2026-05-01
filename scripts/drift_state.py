@@ -34,7 +34,9 @@ def load_inventory(project_dir: Path) -> dict:
         return yaml.safe_load(fh.read()) or {}
 
 
-def build_expected_snapshot(host: dict, inventory: dict) -> dict:
+def build_expected_snapshot(
+    host: dict, inventory: dict, project_dir: Path | None = None, salt_target: str | None = None
+) -> dict:
     files = []
     for entry in inventory.get("files", []):
         path = Path(resolve_path(entry["path"], host))
@@ -46,13 +48,27 @@ def build_expected_snapshot(host: dict, inventory: dict) -> dict:
                 "sha256": sha256_file(path),
             }
         )
-    return {
+    result = {
         "generated_at": now_iso(),
         "hostname": host["hostname"],
         "files": files,
         "system_units": inventory.get("system_units", []),
         "user_units": inventory.get("user_units", []),
     }
+    if project_dir is not None:
+        try:
+            rev = subprocess.run(
+                ["git", "rev-parse", "--short", "HEAD"],
+                capture_output=True, text=True, check=False,
+                cwd=project_dir,
+            ).stdout.strip()
+            if rev:
+                result["git_revision"] = rev
+        except Exception:
+            pass
+    if salt_target:
+        result["salt_target"] = salt_target
+    return result
 
 
 def write_json(path: Path, payload: dict) -> None:
@@ -306,6 +322,9 @@ def main() -> int:
     parser.add_argument(
         "--maintenance", choices=["on", "off"], help="Create or remove maintenance lock file"
     )
+    parser.add_argument(
+        "--salt-target", help="Salt state target applied when snapshot was created"
+    )
     args = parser.parse_args()
 
     project_dir = Path(args.project_dir)
@@ -331,7 +350,9 @@ def main() -> int:
     status_path = cache_dir / "drift-status.json"
 
     if args.command == "refresh-expected":
-        payload = build_expected_snapshot(host, inventory)
+        payload = build_expected_snapshot(
+            host, inventory, project_dir=project_dir, salt_target=args.salt_target
+        )
         write_json(expected_path, payload)
         print(f"refreshed {expected_path}")
         return 0
@@ -353,6 +374,24 @@ def main() -> int:
         None, {"packages": {"unmanaged": [], "missing": [], "orphans": []}}
     )
     print_report(payload, json_mode=args.json)
+
+    expected = read_json(expected_path)
+    if expected and not args.json:
+        meta_parts = []
+        if "git_revision" in expected:
+            meta_parts.append(f"revision: {expected['git_revision']}")
+        if "salt_target" in expected:
+            meta_parts.append(f"target: {expected['salt_target']}")
+        if "hostname" in expected:
+            meta_parts.append(f"host: {expected['hostname']}")
+        if "generated_at" in expected:
+            meta_parts.append(f"generated: {expected['generated_at']}")
+        if meta_parts:
+            print("")
+            print("Baseline snapshot:")
+            for line in meta_parts:
+                print(f"  {line}")
+
     return 1 if payload["status"] in {"drifted", "degraded", "unknown"} else 0
 
 

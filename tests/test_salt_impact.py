@@ -236,6 +236,49 @@ def test_main_writes_debug_bundle_and_exits_nonzero_on_unexpected_planning_failu
     }
 
 
+def test_plan_empty_files_list_falls_back():
+    salt_impact = _load_salt_impact()
+
+    plan = salt_impact.plan_for_changed_files([])
+
+    assert plan["selected_states"] == []
+    assert plan["final_target"] == "system_description"
+    assert plan["fallback_reasons"] == ["no changed files mapped to a safe workflow target"]
+
+
+def test_plan_normalizes_duplicate_paths():
+    salt_impact = _load_salt_impact()
+
+    plan = salt_impact.plan_for_changed_files(
+        ["states/services.sls", "states/services.sls",
+         "states/desktop/system.sls", "states/desktop/system.sls"]
+    )
+
+    assert plan["selected_states"] == ["desktop", "services"]
+    # duplicates should not cause multiple-workflow-target fallback
+    assert plan["final_target"] == "system_description"
+
+
+def test_plan_non_state_file_outside_states_falls_back():
+    salt_impact = _load_salt_impact()
+
+    plan = salt_impact.plan_for_changed_files(["scripts/salt-apply.sh"])
+
+    assert plan["selected_states"] == []
+    assert plan["final_target"] == "system_description"
+    assert plan["fallback_reasons"] == ["scripts/salt-apply.sh has no safe workflow target mapping"]
+
+
+def test_plan_shared_data_file_as_single_change_falls_back():
+    salt_impact = _load_salt_impact()
+
+    plan = salt_impact.plan_for_changed_files(["states/data/services.yaml"])
+
+    assert plan["selected_states"] == []
+    assert plan["final_target"] == "system_description"
+    assert plan["fallback_reasons"] == ["states/data/services.yaml is a shared data input"]
+
+
 def test_main_writes_auto_state_bundle_when_args_missing_on_unexpected_failure(
     monkeypatch, tmp_path
 ):

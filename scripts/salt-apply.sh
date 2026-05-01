@@ -57,9 +57,46 @@ if [[ "$STATE" == "auto" && "$PLAN_MODE" == true ]]; then
 fi
 
 if [[ "$STATE" == "auto" ]]; then
-	# Minimal rollout planning is deferred until impact analysis is implemented.
-	# For now, keep the operator UX safe and predictable by applying the full tree.
-	STATE="system_description"
+	if [[ -n "${SALT_AUTO_DISABLE:-}" ]]; then
+		echo "(auto: disabled via SALT_AUTO_DISABLE, applying system_description)"
+		STATE="system_description"
+	else
+		AUTO_BASE="${AUTO_BASE:-HEAD~1}"
+		CHANGED_STR=$(git -C "$PROJECT_DIR" diff --name-only "$AUTO_BASE" 2>/dev/null || true)
+
+		if [[ -z "$CHANGED_STR" ]]; then
+			echo "(auto: no changed files since $AUTO_BASE, applying system_description)"
+			STATE="system_description"
+		else
+			CHANGED_FILES=(${(f)CHANGED_STR})
+			PLAN_JSON=$(python3 "${SCRIPT_DIR}/salt_impact.py" \
+				--files "${CHANGED_FILES[@]}" --json 2>/dev/null || \
+				python3 -c "import json; print(json.dumps({'changed_files':[],'selected_states':[],'fallback_reasons':['salt_impact.py failed'],'final_target':'system_description'}))")
+
+			echo "--- Salt impact plan ---"
+			echo "$PLAN_JSON" | python3 -c "
+import json, sys
+plan = json.load(sys.stdin)
+cf = plan.get('changed_files', [])
+ss = plan.get('selected_states', [])
+fr = plan.get('fallback_reasons', [])
+print(f'Changed files ({len(cf)}):')
+for f in cf:
+    print(f'  - {f}')
+if ss:
+    print('Target states: ' + ', '.join(ss))
+else:
+    print('Target states: none (fallback)')
+if fr:
+    for r in fr:
+        print(f'Reason: {r}')
+print(f'Result: {plan["final_target"]}')
+print('------------------------')
+"
+			STATE=$(echo "$PLAN_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin)['final_target'])")
+			[[ "$STATE" != "system_description" ]] && echo "(auto: narrowed to $STATE)"
+		fi
+	fi
 fi
 
 # Normalise state name: accept both group/core and group.core
@@ -307,7 +344,8 @@ if [[ $RC -eq 0 ]]; then
 	fi
 	python3 "${PROJECT_DIR}/scripts/drift_state.py" refresh-expected \
 		--project-dir "${PROJECT_DIR}" \
-		--cache-dir "${HOME}/.cache/salt-monitor"
+		--cache-dir "${HOME}/.cache/salt-monitor" \
+		--salt-target "${STATE}"
 else
 	echo "--- ${STATE}: some states failed (see log above) ---"
 	exit $RC

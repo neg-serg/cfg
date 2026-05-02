@@ -52,7 +52,7 @@ opencode_telegram_model_whitelist_patch:
   file.replace:
     - name: {{ home }}/.local/lib/node_modules/@grinev/opencode-telegram-bot/dist/model/manager.js
     - pattern: 'function filterModelsByCatalog\(models, validModelKeys\) \{\n    if \(!validModelKeys\) \{\n        return models;\n    \}\n    return models\.filter\(\(model\) => validModelKeys\.has\(getModelKey\(model\.providerID, model\.modelID\)\)\);\n\}'
-    - repl: 'function filterModelsByCatalog(models, validModelKeys) {\n    const deepseekWhitelist = new Set(["deepseek/deepseek-chat", "deepseek/deepseek-reasoner"]);\n    const catalogFiltered = !validModelKeys\n        ? models\n        : models.filter((model) => validModelKeys.has(getModelKey(model.providerID, model.modelID)));\n    return catalogFiltered.filter((model) => deepseekWhitelist.has(getModelKey(model.providerID, model.modelID)));\n}'
+    - repl: 'function filterModelsByCatalog(models, validModelKeys) {\n    const deepseekWhitelist = new Set(["deepseek/deepseek-v4-flash", "deepseek/deepseek-v4-pro"]);\n    const catalogFiltered = !validModelKeys\n        ? models\n        : models.filter((model) => validModelKeys.has(getModelKey(model.providerID, model.modelID)));\n    return catalogFiltered.filter((model) => deepseekWhitelist.has(getModelKey(model.providerID, model.modelID)));\n}'
     - count: 1
     - require:
       - cmd: install_opencode_telegram

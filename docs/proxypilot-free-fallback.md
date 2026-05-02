@@ -21,8 +21,8 @@ Emergency fallback system providing free AI model access when paid providers (An
 | 2 | Cerebras | llama3.1-8b | fallback-small | 1M tokens/day |
 | 3 | OpenRouter | qwen/qwen3-coder-480b-a35b:free | fallback-code | 200 RPD |
 | 3 | OpenRouter | openrouter/auto | fallback-large | 200 RPD |
-| 4 | DeepSeek | deepseek-chat | fallback-code | Optional (trial 5M tokens/30d, then $0.28/M) |
-| 4 | DeepSeek | deepseek-reasoner | fallback-large | Optional (trial 5M tokens/30d, then $0.28/M) |
+| 4 | DeepSeek | deepseek-v4-flash | fallback-code | Optional (trial 5M tokens/30d, then $0.28/M) |
+| 4 | DeepSeek | deepseek-v4-pro | fallback-large | Optional (trial 5M tokens/30d, then $0.28/M) |
 | 5 | Ollama | qwen3.5:27b | fallback-large | Local GPU |
 | 5 | Ollama | qwen2.5-coder:7b | fallback-code | Local GPU |
 | 5 | Ollama | qwen3:8b-q8_0 | fallback-medium | Local GPU |

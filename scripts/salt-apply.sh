@@ -122,6 +122,10 @@ print(f'Result: {plan[\"final_target\"]}')
 print('------------------------')
 "
 			STATE=$(echo "$PLAN_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin)['final_target'])")
+			if [[ "$STATE" == "none" ]]; then
+				echo "(auto: no impactful changes, nothing to apply)"
+				exit 0
+			fi
 			[[ "$STATE" != "system_description" ]] && echo "(auto: narrowed to $STATE)"
 		fi
 	fi

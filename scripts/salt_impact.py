@@ -26,6 +26,14 @@ SHARED_PATHS = {
     "states/data/services.yaml": "shared data input",
     "states/data/service_catalog.yaml": "shared data input",
 }
+NOOP_PREFIXES = (
+    "scripts/",
+    "tests/",
+    "docs/",
+    "dotfiles/",
+    "specs/",
+    ".specify/",
+)
 
 
 def _normalize_changed_files(changed_files: list[str]) -> list[str]:
@@ -69,6 +77,9 @@ def plan_for_changed_files(changed_files: list[str]) -> dict[str, object]:
             fallback_reasons.append(f"{path} is a {SHARED_PATHS[path]}")
             continue
 
+        if path.startswith(NOOP_PREFIXES):
+            continue
+
         target = _group_target(path) or _top_level_state_target(path) or _owner_target(path)
         if target is not None:
             selected_states.append(target)
@@ -77,7 +88,9 @@ def plan_for_changed_files(changed_files: list[str]) -> dict[str, object]:
         fallback_reasons.append(f"{path} has no safe workflow target mapping")
 
     selected_states = sorted(dict.fromkeys(selected_states))
-    if fallback_reasons:
+    if not selected_states and not fallback_reasons:
+        final_target = "none"
+    elif fallback_reasons:
         final_target = "system_description"
     elif len(selected_states) == 1:
         final_target = selected_states[0]

@@ -113,7 +113,7 @@ resources:
       critical_pct: 98
       optional: true
     - path: /mnt/zero
-      warning_pct: 90
+      warning_pct: 96
       critical_pct: 98
       optional: true
 

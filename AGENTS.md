@@ -1,6 +1,6 @@
 # salt Development Guidelines
 
-Auto-generated from active feature plans. Last updated: 2026-04-21
+Auto-generated from active feature plans. Last updated: 2026-05-02
 
 ## Active Technologies
 - Jinja2 + YAML Salt states, Python 3, Bash/Zsh helper scripts
@@ -47,11 +47,20 @@ specs/
 - 079-age-yubikey-cutover: Added Markdown planning artifacts, Salt/Jinja states, shell-based operator workflow, `gopass` 1.16.1, `age` 1.3.1, `yubikey-manager` 5.9.0 + `gopass`, `age`, `age-plugin-yubikey`, `yubikey-manager`, `pcsclite` / `pcscd`, systemd user services, existing Salt data/state files, existing chezmoi templates
 - 078-gopass-age-research: Added Markdown, shell command evidence, `gopass` 1.16.1, `age`-backed store observations + `gopass`, `age`, GitHub upstream discussions/releases, local `gopass` configuration and CLI behavior, spec-kit artifacts
 - 077-zen-browser-cutover: Added Jinja2 + YAML Salt states, Python 3 helper script, Markdown operator docs + Salt 3006.x masterless workflow, existing `_macros_*.jinja`, `zen-browser-bin`, Surfingkeys browser extension, systemd user services, Hyprland/Wayfire launcher config, spec-kit artifacts
+- Russian documentation removal: Deleted 50 `.ru.md` files, removed `.ru.md` generation from `index-salt.py`, updated lint-docs, README, CLAUDE.md, constitution (`docs`/`cleanup`)
+- Module index added: Auto-generated `docs/module-index.yaml` with full project map (79 states, 6 macros, 34+37 scripts, 36 data files, 33 tests, 49 docs); LLMs must read it first (`docs`/`tooling`)
 
+
+## LLM Entry Point
+
+**Start by reading `docs/module-index.yaml`** — it's an auto-generated machine-readable YAML index of all project entities: states, macros, scripts, data files, tests, and documentation with their purposes, dependencies, feature gates, secrets, services, and config references. It provides a complete mental map of the project in a single file.
+
+`docs/state-map.md` and `docs/data-inventory.md` are also auto-generated and provide complementary prose views (dependency graph, data file summaries).
 
 <!-- MANUAL ADDITIONS START -->
 - `docs/superpowers/plans/*.md` are temporary working artifacts by default: do not commit them unless they are explicitly being kept as active shared planning documents. Remove stale plan files periodically once the related work is finished or abandoned.
 - Do not add GitHub automation files unless the user explicitly asks for them.
+- **No Russian documentation.** All documentation must be in English only. Do not create or maintain `.ru.md` files.
 <!-- MANUAL ADDITIONS END -->
 
 <!-- FUTURE WORK -->

@@ -1,0 +1,1108 @@
+version: 1
+generated: '2026-05-02T05:30:23'
+states:
+- id: adguardhome
+  path: states/adguardhome.sls
+  purpose: ── Cleanup legacy binary ──
+  data_files:
+  - data/container_images.yaml
+  - data/service_catalog.yaml
+  services:
+  - adguardhome.container
+  configs:
+  - configs/adguardhome-initial.yaml
+  - configs/resolved-adguardhome.conf
+- id: amnezia
+  path: states/amnezia.sls
+  purpose: ''
+  data_files:
+  - data/versions.yaml
+- id: audio
+  path: states/audio.sls
+  purpose: ''
+- id: bind_mounts
+  path: states/bind_mounts.sls
+  purpose: ''
+  data_files:
+  - data/bind_mounts.yaml
+- id: bitcoind
+  path: states/bitcoind.sls
+  purpose: 'In-place cutover: remove native systemd unit if it exists'
+  data_files:
+  - data/container_images.yaml
+  - data/service_catalog.yaml
+  services:
+  - bitcoind.container
+- id: cachyos
+  path: states/cachyos.sls
+  purpose: ''
+  configs:
+  - configs/kernel-cmdline.j2
+  - configs/mkinitcpio-cachyos-preset.j2
+- id: code_rag
+  path: states/code_rag.sls
+  purpose: 'code-rag: hybrid text+code RAG with AST-aware chunking and LanceDB vector
+    search.'
+- id: custom_pkgs
+  path: states/custom_pkgs.sls
+  purpose: ''
+  data_files:
+  - data/custom_pkgs.yaml
+- id: desktop
+  path: states/desktop.sls
+  purpose: ''
+  includes:
+  - desktop.hyprland
+  - desktop.packages
+  - desktop.portal
+  - desktop.system
+  - desktop.user
+  - desktop.vm_win11
+- id: desktop.hyprland
+  path: states/desktop/hyprland.sls
+  purpose: ''
+  configs:
+  - configs/hyprpm-update.hook.j2
+- id: desktop.niri
+  path: states/desktop/niri.sls
+  purpose: ''
+- id: desktop.packages
+  path: states/desktop/packages.sls
+  purpose: ''
+  data_files:
+  - data/desktop.yaml
+- id: desktop.portal
+  path: states/desktop/portal.sls
+  purpose: ''
+- id: desktop.system
+  path: states/desktop/system.sls
+  purpose: ''
+  data_files:
+  - data/desktop.yaml
+  configs:
+  - configs/pacman-salt-cache.hook
+  - configs/sshd-hardening.conf
+- id: desktop.user
+  path: states/desktop/user.sls
+  purpose: ''
+  data_files:
+  - data/desktop.yaml
+- id: desktop.vm_win11
+  path: states/desktop/vm_win11.sls
+  purpose: ''
+  configs:
+  - configs/win11.xml
+- id: dns
+  path: states/dns.sls
+  purpose: ''
+  feature_gate:
+  - dns.unbound
+- id: duckdns
+  path: states/duckdns.sls
+  purpose: 'In-place cutover: remove native timer + service + script'
+  data_files:
+  - data/container_images.yaml
+  - data/service_catalog.yaml
+  services:
+  - duckdns.container
+- id: espanso
+  path: states/espanso.sls
+  purpose: ''
+- id: flatpak
+  path: states/flatpak.sls
+  purpose: ''
+  data_files:
+  - data/flatpak.yaml
+- id: floorp
+  path: states/floorp.sls
+  purpose: ''
+  feature_gate:
+  - floorp
+  data_files:
+  - data/floorp.yaml
+- id: fonts
+  path: states/fonts.sls
+  purpose: ''
+  data_files:
+  - data/fonts.yaml
+  - data/versions.yaml
+- id: fstab_column
+  path: states/fstab_column.sls
+  purpose: ''
+- id: greetd
+  path: states/greetd.sls
+  purpose: ''
+- id: group.ai
+  path: states/group/ai.sls
+  purpose: ''
+  feature_gate:
+  - image_gen
+  - llama_embed
+  - nanoclaw
+  - ollama
+  - opencode
+  - opencode_telegram
+  - t5_summarization
+  - telethon_bridge
+  - video_ai
+- id: group.core
+  path: states/group/core.sls
+  purpose: ''
+  includes:
+  - bind_mounts
+  - fstab_column
+  - hardware
+  - kernel_modules
+  - mkinitcpio
+  - mounts
+  - pacman_db_warmup
+  - sysctl
+  - systemd_resources
+  - users
+  - windows_mount
+  - zsh
+- id: group.desktop
+  path: states/group/desktop.sls
+  purpose: ''
+  includes:
+  - audio
+  - desktop
+  - fonts
+- id: group.network
+  path: states/group/network.sls
+  purpose: ''
+  includes:
+  - dns
+  - network
+- id: group.packages
+  path: states/group/packages.sls
+  purpose: ''
+  includes:
+  - custom_pkgs
+  - installers
+  - installers_desktop
+  - installers_mpv
+  - installers_themes
+  - packages
+- id: group.services
+  path: states/group/services.sls
+  purpose: ''
+  includes:
+  - monitoring_alerts
+  - services
+  - user_services
+- id: hardware
+  path: states/hardware.sls
+  purpose: ''
+  feature_gate:
+  - fancontrol
+  - network.wifi
+  configs:
+  - configs/udev-custom.rules
+- id: hiddify
+  path: states/hiddify.sls
+  purpose: ''
+- id: image_generation
+  path: states/image_generation.sls
+  purpose: Resolve image provider API keys from gopass (free-tier providers).
+  data_files:
+  - data/image_providers.yaml
+  configs:
+  - configs/image-gen-providers.yaml.j2
+- id: installers
+  path: states/installers.sls
+  purpose: ''
+  data_files:
+  - data/installers.yaml
+  - data/versions.yaml
+- id: installers_desktop
+  path: states/installers_desktop.sls
+  purpose: ''
+  data_files:
+  - data/installers_desktop.yaml
+- id: installers_mpv
+  path: states/installers_mpv.sls
+  purpose: ''
+  data_files:
+  - data/mpv_scripts.yaml
+  - data/versions.yaml
+- id: installers_themes
+  path: states/installers_themes.sls
+  purpose: ''
+  data_files:
+  - data/installers_themes.yaml
+  configs:
+  - configs/vicinae/flight-dark.toml
+- id: jellyfin
+  path: states/jellyfin.sls
+  purpose: 'In-place cutover: remove native systemd unit if it exists so the'
+  data_files:
+  - data/container_images.yaml
+  - data/service_catalog.yaml
+  services:
+  - jellyfin.container
+- id: kanata
+  path: states/kanata.sls
+  purpose: ''
+  configs:
+  - configs/kanata.kbd
+- id: kernel_modules
+  path: states/kernel_modules.sls
+  purpose: ''
+  configs:
+  - configs/modprobe-blacklist.conf.j2
+- id: llama_embed
+  path: states/llama_embed.sls
+  purpose: ''
+  data_files:
+  - data/container_images.yaml
+  - data/llama_embed.yaml
+  - data/service_catalog.yaml
+  services:
+  - llama_embed.container
+- id: mkinitcpio
+  path: states/mkinitcpio.sls
+  purpose: ''
+  configs:
+  - configs/mkinitcpio.conf.j2
+- id: monitoring_alertmanager
+  path: states/monitoring_alertmanager.sls
+  purpose: ''
+  feature_gate:
+  - monitoring.alertmanager
+  - monitoring.loki
+  secrets:
+  - api/nanoclaw-telegram
+  - api/nanoclaw-telegram-uid
+  data_files:
+  - data/container_images.yaml
+  - data/service_catalog.yaml
+  services:
+  - alertmanager-webhook.service
+  - alertmanager.container
+  configs:
+  - configs/alertmanager.yml.j2
+  tests:
+  - tests/test_monitoring_alertmanager.py
+- id: monitoring_alerts
+  path: states/monitoring_alerts.sls
+  purpose: ''
+  feature_gate:
+  - monitoring.alerts
+  - monitoring.loki
+  secrets:
+  - api/nanoclaw-telegram
+  - api/nanoclaw-telegram-uid
+  data_files:
+  - data/monitored_services.yaml
+  services:
+  - salt-monitor-watchdog.service
+  - salt-monitor-watchdog.timer
+  - salt-monitor.service
+  configs:
+  - configs/loki-alert-rules.yaml.j2
+- id: monitoring_loki
+  path: states/monitoring_loki.sls
+  purpose: '── Loki: log aggregation ──'
+  feature_gate:
+  - monitoring.grafana
+  - monitoring.loki
+  - monitoring.promtail
+  data_files:
+  - data/container_images.yaml
+  - data/service_catalog.yaml
+  services:
+  - grafana.container
+  - loki.container
+  - promtail.container
+  configs:
+  - configs/grafana-dashboard-proxypilot.json
+  - configs/grafana-dashboards-provider.yaml
+  - configs/grafana-loki-datasource.yaml.j2
+  - configs/grafana.ini.j2
+  - configs/loki.yaml.j2
+  - configs/promtail.yaml.j2
+- id: mounts
+  path: states/mounts.sls
+  purpose: ''
+  data_files:
+  - data/mounts.yaml
+- id: mpd
+  path: states/mpd.sls
+  purpose: ''
+  secrets:
+  - lastfm/password
+  - lastfm/username
+  services:
+  - mpdas.service
+- id: music_analysis
+  path: states/music_analysis.sls
+  purpose: ''
+  data_files:
+  - data/installers.yaml
+  - data/versions.yaml
+- id: nanoclaw
+  path: states/nanoclaw.sls
+  purpose: ''
+  secrets:
+  - api/nanoclaw-telegram
+  - api/nanoclaw-telegram-uid
+  data_files:
+  - data/container_images.yaml
+  - data/service_catalog.yaml
+  - data/versions.yaml
+  services:
+  - nanoclaw.container
+  tests:
+  - tests/test_nanoclaw.py
+- id: network
+  path: states/network.sls
+  purpose: '--- AmneziaVPN config import script (shared by vpn_split_router and vpn_hybrid)
+    ---'
+  feature_gate:
+  - network.vm_bridge
+  - network.vpn_hybrid
+  - network.vpn_split_router
+  data_files:
+  - data/vpn_split_router.yaml
+  services:
+  - amnezia-import-tun.service
+  - vpn-policy-rollback.service
+  - vpn-policy-rollback.timer
+  - vpn-split-router.service
+  - vpn-split-router.timer
+  configs:
+  - configs/br0.network
+  - configs/sing-box-hybrid-config.json.j2
+  - configs/vpn-split-router.yaml.j2
+- id: nyxt
+  path: states/nyxt.sls
+  purpose: ''
+- id: ollama
+  path: states/ollama.sls
+  purpose: 'Resolve manifest path: "model:tag" → library/model/tag, "ns/model:tag"
+    → ns/model/tag.'
+  feature_gate:
+  - network.zapret2
+  data_files:
+  - data/container_images.yaml
+  - data/ollama.yaml
+  - data/service_catalog.yaml
+  services:
+  - ollama.container
+  tests:
+  - tests/test_ollama.py
+- id: opencode
+  path: states/opencode.sls
+  purpose: ''
+- id: opencode_telegram
+  path: states/opencode_telegram.sls
+  purpose: ''
+  secrets:
+  - api/nanoclaw-telegram-uid
+  - api/opencode-telegram-bot
+  services:
+  - '@grinev/opencode-telegram-bot (npm)'
+  - opencode-serve.service
+  - opencode-telegram-bot.service
+  configs:
+  - configs/opencode-telegram-bot.env.j2
+- id: packages
+  path: states/packages.sls
+  purpose: '- pacman -Qq checks ALL packages — fails if ANY is missing, triggering
+    install'
+  data_files:
+  - data/packages.yaml
+- id: pacman_db_warmup
+  path: states/pacman_db_warmup.sls
+  purpose: ''
+- id: proxypilot
+  path: states/proxypilot.sls
+  purpose: ── Secret resolution (same logic as opencode.sls) ──
+  data_files:
+  - data/container_images.yaml
+  - data/free_providers.yaml
+  - data/service_catalog.yaml
+  services:
+  - proxypilot.container
+  configs:
+  - configs/proxypilot.yaml.j2
+- id: services
+  path: states/services.sls
+  purpose: Renders one service section from services.yaml data.
+  feature_gate:
+  - dns.*
+  - monitoring.netdata
+  - monitoring.sysstat
+  - monitoring.vnstat
+  - network.*
+  - services.*
+  data_files:
+  - data/services.yaml
+- id: steam
+  path: states/steam.sls
+  purpose: ''
+  configs:
+  - configs/gamemode.ini
+- id: sysctl
+  path: states/sysctl.sls
+  purpose: ''
+  configs:
+  - configs/sysctl-custom.conf
+- id: system_description
+  path: states/system_description.sls
+  purpose: ''
+  feature_gate:
+  - amnezia
+  - dns.adguardhome
+  - espanso
+  - flatpak
+  - floorp
+  - image_gen
+  - kanata
+  - llama_embed
+  - monitoring.alertmanager
+  - monitoring.loki
+  - mpd
+  - music_analysis
+  - nanoclaw
+  - network.hiddify
+  - network.zapret2
+  - ollama
+  - opencode
+  - opencode_telegram
+  - proxypilot
+  - services.bitcoind
+  - services.duckdns
+  - services.jellyfin
+  - services.transmission
+  - steam
+  - telethon_bridge
+  - tidal
+  - video_ai
+  - xen_vr
+  configs:
+  - configs/os-release.j2
+- id: systemd_resources
+  path: states/systemd_resources.sls
+  purpose: ''
+  data_files:
+  - data/managed_resources.yaml
+  configs:
+  - configs/managed-service-accounts.conf.j2
+  - configs/managed-service-paths.conf.j2
+- id: t5_summarization
+  path: states/t5_summarization.sls
+  purpose: ''
+  data_files:
+  - data/container_images.yaml
+  - data/service_catalog.yaml
+  - data/t5_summarization.yaml
+  services:
+  - t5_summarization.container
+- id: telethon_bridge
+  path: states/telethon_bridge.sls
+  purpose: ''
+  secrets:
+  - api/nanoclaw-telegram-uid
+  - api/telegram-telethon-hash
+  - api/telegram-telethon-id
+  - api/telegram-uid-guest2
+  - api/telegram-uid-levra
+  data_files:
+  - data/container_images.yaml
+  - data/service_catalog.yaml
+  - data/versions.yaml
+  services:
+  - telethon-bridge-react.path
+  - telethon-bridge-react.service
+  - telethon-bridge.service
+  configs:
+  - configs/telethon-bridge.yaml.j2
+- id: tidal
+  path: states/tidal.sls
+  purpose: ''
+- id: transmission
+  path: states/transmission.sls
+  purpose: 'In-place cutover: remove native systemd unit if it exists so the'
+  data_files:
+  - data/container_images.yaml
+  - data/service_catalog.yaml
+  services:
+  - transmission.container
+- id: user_services
+  path: states/user_services.sls
+  purpose: ''
+  feature_gate:
+  - mpd
+  - user_services.mail
+  data_files:
+  - data/user_services.yaml
+- id: users
+  path: states/users.sls
+  purpose: ''
+  feature_gate:
+  - sudo_ssh_agent
+  configs:
+  - configs/pam-sudo.j2
+  - configs/sudo-authorized-keys.j2
+  - configs/sudoers-nopasswd.j2
+  - configs/sudoers-ssh-agent-auth.j2
+- id: vaultwarden
+  path: states/vaultwarden.sls
+  purpose: ''
+  data_files:
+  - data/container_images.yaml
+  - data/service_catalog.yaml
+  services:
+  - bw-sync.service
+  - bw-sync.timer
+  - vault-full-backup.service
+  - vault-full-backup.timer
+  - vaultwarden.container
+- id: video_ai
+  path: states/video_ai.sls
+  purpose: ''
+  includes:
+  - video_ai.base
+  - video_ai.models
+  - video_ai.runners
+  - video_ai.workflows
+- id: video_ai.base
+  path: states/video_ai/base.sls
+  purpose: ''
+  data_files:
+  - data/video_ai.yaml
+- id: video_ai.models
+  path: states/video_ai/models.sls
+  purpose: ''
+  data_files:
+  - data/video_ai.yaml
+- id: video_ai.runners
+  path: states/video_ai/runners.sls
+  purpose: ''
+- id: video_ai.workflows
+  path: states/video_ai/workflows.sls
+  purpose: ''
+  data_files:
+  - data/video_ai.yaml
+  configs:
+  - configs/video-ai/{{
+- id: windows_mount
+  path: states/windows_mount.sls
+  purpose: ''
+  data_files:
+  - data/windows_mount.yaml
+- id: xen
+  path: states/xen.sls
+  purpose: ''
+- id: zapret2
+  path: states/zapret2.sls
+  purpose: ''
+  data_files:
+  - data/zapret2.yaml
+  configs:
+  - configs/zapret2-hosts-user.txt.j2
+  - configs/zapret2.conf.j2
+- id: zen_browser
+  path: states/zen_browser.sls
+  purpose: ''
+  feature_gate:
+  - floorp
+  data_files:
+  - data/zen_browser.yaml
+- id: zsh
+  path: states/zsh.sls
+  purpose: ''
+macros:
+- id: _macros_common
+  path: states/_macros_common.jinja
+  provides:
+  - download_cached
+  - ver_stamp
+  - gopass_secret
+  - proxypilot_key
+  - tg_secret
+- id: _macros_config
+  path: states/_macros_config.jinja
+  provides:
+  - config_file_edit
+  - desktop_entry
+- id: _macros_desktop
+  path: states/_macros_desktop.jinja
+  provides:
+  - browser_extensions
+  - hyprpm_update
+  - hyprpm_add
+  - hyprpm_enable
+  - dconf_settings
+- id: _macros_install
+  path: states/_macros_install.jinja
+  provides:
+  - go_pkg
+  - curl_bin
+  - pip_pkg
+  - cargo_pkg
+  - curl_extract_tar
+  - curl_extract_zip
+  - firefox_extension
+  - download_font_zip
+  - git_clone_deploy
+  - git_clone_build
+  - http_file
+  - huggingface_file
+  - npm_build_workflow
+  - github_release_to
+  - install_catalog
+- id: _macros_pkg
+  path: states/_macros_pkg.jinja
+  provides:
+  - paru_install
+  - simple_service
+  - pkgbuild_install
+  - npm_pkg
+  - flatpak_install
+- id: _macros_service
+  path: states/_macros_service.jinja
+  provides:
+  - _env_block
+  - managed_resource_value
+  - managed_mode_value
+  - managed_sysusers_line
+  - managed_identity_guard
+  - managed_tmpfiles_line
+  - managed_path_guard
+  - ensure_dir
+  - udev_rule
+  - ensure_running
+  - service_stopped
+  - service_with_healthcheck
+  - unit_override
+  - user_service_file
+  - user_unit_override
+  - user_service_enable
+  - user_service_with_unit
+  - user_service_restart
+  - user_service_disable
+  - user_linger
+  - service_with_unit
+  - _tilde_expand
+  - _cs_fail
+  - container_service
+scripts_py:
+- path: scripts/cleanup-logs.py
+  purpose: Delete Salt log files older than the given number of days.
+- path: scripts/dep-graph.py
+  purpose: Generate dependency graph of Salt states (include/require/watch/onchanges).
+- path: scripts/drift_state.py
+  purpose: ''
+- path: scripts/format-fstab.py
+  purpose: Format /etc/fstab with aligned columns, preserving comments and blank lines.
+- path: scripts/generate_hypr_shortcuts.py
+  purpose: Generate Hyprland shortcut search data and wlr-which-key config.
+- path: scripts/host_model.py
+  purpose: Shared host model builder — single source of truth for Python tooling.
+- path: scripts/index-qml.py
+  purpose: Generate QML component and JS helper indexes for Claude Code memory.
+- path: scripts/index-salt.py
+  purpose: Generate Salt state, macro, and data indexes for Claude Code memory.
+- path: scripts/lint-docs.py
+  purpose: 'Lint documentation: language consistency only (Russian docs discontinued).'
+- path: scripts/lint-dotfiles.py
+  purpose: 'Lint dotfiles: shebang conventions, XDG path usage, zsh syntax.'
+- path: scripts/lint-jinja.py
+  purpose: 'Lint Salt state files: Jinja2 syntax, YAML validity, duplicate state IDs,'
+- path: scripts/lint-ownership.py
+  purpose: 'Lint file ownership: detect salt://dotfiles/ refs not covered by .chezmoiignore.'
+- path: scripts/lint-qml.py
+  purpose: Lint QML files via qmllint with QuickShell type info.
+- path: scripts/lint-sysctl.py
+  purpose: 'lint-sysctl: two-part sysctl hygiene check.'
+- path: scripts/lint-units.py
+  purpose: Lint systemd unit files via systemd-analyze verify.
+- path: scripts/proxypilot_recover.py
+  purpose: Recover ProxyPilot free-provider config from gopass-backed provider data.
+- path: scripts/render-matrix.py
+  purpose: Render Salt states for each feature-matrix host scenario.
+- path: scripts/rkn-domains-autocorrect.py
+  purpose: Check if we can reach the internet
+- path: scripts/rkn-domains-fetcher.py
+  purpose: Download content using wget2 (faster, handles large files better)
+- path: scripts/salt-daemon.py
+  purpose: salt-daemon.py — pre-loaded Salt Caller daemon for faster state.apply
+- path: scripts/salt-runner.py
+  purpose: Salt-call wrapper with compatibility shims for Python 3.13+.
+- path: scripts/salt-show.py
+  purpose: Show which states a Salt SLS would apply, without executing anything.
+- path: scripts/salt_compat.py
+  purpose: Python 3.13+ compatibility shims for Salt (PEP 594 module removals).
+- path: scripts/salt_contracts.py
+  purpose: Explicit contract checks for Salt inventory data.
+- path: scripts/salt_debug_report.py
+  purpose: Write structured Salt debug bundles for failure analysis.
+- path: scripts/salt_impact.py
+  purpose: Conservative impact planner for Salt auto-plan preview.
+- path: scripts/salt_provenance.py
+  purpose: Query minimal provenance for Salt states and imported data files.
+- path: scripts/salt_source_model.py
+  purpose: Shared discovery helpers for Salt source analysis.
+- path: scripts/singbox-with-rkn-domains.py
+  purpose: Generate sing-box config with RKN domains integration.
+- path: scripts/state-profiler.py
+  purpose: Parse salt-apply logs and print the slowest states with include context.
+- path: scripts/update-tools.py
+  purpose: Update tools defined in data/installers.yaml.
+- path: scripts/vpn-split-router-integration.py
+  purpose: Integrate RKN domains with vpn-split-router.
+- path: scripts/vpn_split_router.py
+  purpose: ''
+- path: scripts/xray-to-singbox.py
+  purpose: Convert Xray configuration to sing-box configuration.
+scripts_sh:
+- path: scripts/amnezia-import-tun-config.sh
+  purpose: 'Source: ~/.config/AmneziaVPN.ORG/AmneziaVPN.conf'
+- path: scripts/boot-benchmark.sh
+  purpose: 'Boot benchmark: captures systemd-analyze output for before/after comparison.'
+- path: scripts/bootstrap-cachyos.sh
+  purpose: Bootstrap CachyOS (Zen4/5 optimized) rootfs via Podman + Arch container.
+- path: scripts/cache-cleanup.sh
+  purpose: Periodic cache cleanup for user-level caches not covered by paccache.timer.
+- path: scripts/cachyos-packages.sh
+  purpose: Install all user packages on CachyOS after bootstrap
+- path: scripts/check-vpn-status.sh
+  purpose: VPN Status Check Script
+- path: scripts/convert-hyprcursor.sh
+  purpose: Convert an XCursor theme to native hyprcursor format.
+- path: scripts/deploy-cachyos-ext4.sh
+  purpose: Deploy CachyOS rootfs to ext4 partition with existing ESP.
+- path: scripts/drift-notify.sh
+  purpose: drift-notify.sh — run full drift check via drift_state.py and notify on
+    drift
+- path: scripts/enable-vpn-hybrid.sh
+  purpose: Enable hybrid VPN (Xray + sing-box TUN) via Salt states
+- path: scripts/get-grafana-token.sh
+  purpose: Print Grafana API token from gopass for QML sysmon popup usage.
+- path: scripts/gopass-gpg-cutover-live.sh
+  purpose: ''
+- path: scripts/gopass-gpg-cutover-rehearsal.sh
+  purpose: ''
+- path: scripts/gopass-gpg-postcutover.sh
+  purpose: ''
+- path: scripts/health-check.sh
+  purpose: health-check.sh — check health of all Salt-managed services
+- path: scripts/hot-reload.sh
+  purpose: hot-reload.sh — fast restart of user-scope services without Salt
+- path: scripts/lint-all.sh
+  purpose: ''
+- path: scripts/manual-tun-routes.sh
+  purpose: Manual TUN interface setup for sing-box when auto_route fails
+- path: scripts/migrate-floorp-to-zen-profile.sh
+  purpose: ''
+- path: scripts/migrate-transmission-downloads.sh
+  purpose: 'One-time migration: move Transmission downloads to ~/torrent/data'
+- path: scripts/pkg-drift.zsh
+  purpose: pkg-drift.zsh — Compare declared packages against actual system state
+- path: scripts/pkg-snapshot.zsh
+  purpose: pkg-snapshot.zsh — Capture current system packages into states/data/packages.yaml
+- path: scripts/rkn-domains-integration.sh
+  purpose: RKN Domains Integration Script
+- path: scripts/salt-apply.sh
+  purpose: salt-apply.sh — apply Salt states (daemon-aware)
+- path: scripts/salt-runtime.sh
+  purpose: ''
+- path: scripts/salt-validate.sh
+  purpose: Validate all Salt state files render without errors.
+- path: scripts/start-hybrid-vpn.sh
+  purpose: 'Hybrid VPN setup: Xray handles XHTTP transport, sing-box handles TUN interface'
+- path: scripts/telethon-bridge-react.sh
+  purpose: ''
+- path: scripts/test-browser-vpn.sh
+  purpose: Test browser VPN integration
+- path: scripts/test-cachyos-vm.sh
+  purpose: Boot CachyOS rootfs in a QEMU VM to verify networking and services.
+- path: scripts/test-hybrid-routing.sh
+  purpose: ''
+- path: scripts/test-singbox-vpn.sh
+  purpose: Test sing-box VPN connection with safe fallback
+- path: scripts/test-vpn-connection.sh
+  purpose: Test VPN connection using imported AmneziaVPN config
+- path: scripts/vm-smoke.sh
+  purpose: vm-smoke.sh — run CachyOS VM smoke test inside a Podman container
+- path: scripts/vpn-browser-quickstart.sh
+  purpose: Quick start script for VPN browser integration
+- path: scripts/zapret2-rollout.sh
+  purpose: ''
+- path: scripts/zen-vpn.sh
+  purpose: Launch zen-browser with VPN SOCKS5 proxy
+data_files:
+- path: states/data/autoparallel-candidates.yaml
+  consumers: null
+- path: states/data/bind_mounts.yaml
+  consumers:
+  - bind_mounts.sls
+- path: states/data/container_images.yaml
+  consumers:
+  - adguardhome.sls
+  - bitcoind.sls
+  - duckdns.sls
+  - jellyfin.sls
+  - llama_embed.sls
+  - monitoring_alertmanager.sls
+  - monitoring_loki.sls
+  - nanoclaw.sls
+  - ollama.sls
+  - proxypilot.sls
+  - t5_summarization.sls
+  - telethon_bridge.sls
+  - transmission.sls
+  - vaultwarden.sls
+- path: states/data/custom_pkgs.yaml
+  consumers:
+  - custom_pkgs.sls
+- path: states/data/desktop.yaml
+  consumers:
+  - desktop/packages.sls
+  - desktop/system.sls
+  - desktop/user.sls
+- path: states/data/docs_sources.yaml
+  consumers: null
+- path: states/data/drift_inventory.yaml
+  consumers: null
+- path: states/data/feature_matrix.yaml
+  consumers: null
+- path: states/data/flatpak.yaml
+  consumers:
+  - flatpak.sls
+- path: states/data/floorp.yaml
+  consumers:
+  - floorp.sls
+- path: states/data/fonts.yaml
+  consumers:
+  - fonts.sls
+- path: states/data/free_providers.yaml
+  consumers:
+  - proxypilot.sls
+- path: states/data/hosts.yaml
+  consumers: null
+- path: states/data/image_providers.yaml
+  consumers:
+  - image_generation.sls
+- path: states/data/installers.yaml
+  consumers:
+  - installers.sls
+  - music_analysis.sls
+- path: states/data/installers_desktop.yaml
+  consumers:
+  - installers_desktop.sls
+- path: states/data/installers_themes.yaml
+  consumers:
+  - installers_themes.sls
+- path: states/data/kernel_params.yaml
+  consumers: null
+- path: states/data/llama_embed.yaml
+  consumers:
+  - llama_embed.sls
+- path: states/data/managed_resources.yaml
+  consumers:
+  - systemd_resources.sls
+- path: states/data/monitored_services.yaml
+  consumers:
+  - monitoring_alerts.sls
+- path: states/data/mounts.yaml
+  consumers:
+  - mounts.sls
+- path: states/data/mpv_scripts.yaml
+  consumers:
+  - installers_mpv.sls
+- path: states/data/ollama.yaml
+  consumers:
+  - ollama.sls
+- path: states/data/packages.yaml
+  consumers:
+  - packages.sls
+- path: states/data/rkn_domains_fetcher.yaml
+  consumers: null
+- path: states/data/service_catalog.yaml
+  consumers:
+  - adguardhome.sls
+  - bitcoind.sls
+  - duckdns.sls
+  - jellyfin.sls
+  - llama_embed.sls
+  - monitoring_alertmanager.sls
+  - monitoring_loki.sls
+  - nanoclaw.sls
+  - ollama.sls
+  - proxypilot.sls
+  - t5_summarization.sls
+  - telethon_bridge.sls
+  - transmission.sls
+  - vaultwarden.sls
+- path: states/data/services.yaml
+  consumers:
+  - services.sls
+- path: states/data/t5_summarization.yaml
+  consumers:
+  - t5_summarization.sls
+- path: states/data/user_services.yaml
+  consumers:
+  - user_services.sls
+- path: states/data/versions.yaml
+  consumers:
+  - amnezia.sls
+  - fonts.sls
+  - installers.sls
+  - installers_mpv.sls
+  - music_analysis.sls
+  - nanoclaw.sls
+  - telethon_bridge.sls
+- path: states/data/video_ai.yaml
+  consumers:
+  - video_ai/base.sls
+  - video_ai/models.sls
+  - video_ai/workflows.sls
+- path: states/data/vpn_split_router.yaml
+  consumers:
+  - network.sls
+- path: states/data/windows_mount.yaml
+  consumers:
+  - windows_mount.sls
+- path: states/data/zapret2.yaml
+  consumers:
+  - zapret2.sls
+- path: states/data/zen_browser.yaml
+  consumers:
+  - zen_browser.sls
+test_files:
+- path: tests/test_browser_launch_targets.py
+- path: tests/test_cmdrun_audit.py
+- path: tests/test_data_crossrefs.py
+- path: tests/test_dep_graph.py
+- path: tests/test_drift_state.py
+- path: tests/test_feature_matrix.py
+- path: tests/test_hiddify_contracts.py
+- path: tests/test_host_model.py
+- path: tests/test_hypr_shortcuts_generation.py
+- path: tests/test_index_salt.py
+- path: tests/test_macro_idempotency.py
+- path: tests/test_monitoring_alertmanager.py
+- path: tests/test_nanoclaw.py
+- path: tests/test_niri_focus_hist.py
+- path: tests/test_ollama.py
+- path: tests/test_pkg_drift.py
+- path: tests/test_proxypilot_recover.py
+- path: tests/test_pw_route.py
+- path: tests/test_quickshell_audio_route_contract.py
+- path: tests/test_render_idempotent.py
+- path: tests/test_render_matrix.py
+- path: tests/test_salt_compat.py
+- path: tests/test_salt_contracts.py
+- path: tests/test_salt_daemon_output.py
+- path: tests/test_salt_impact.py
+- path: tests/test_salt_provenance.py
+- path: tests/test_salt_source_model.py
+- path: tests/test_service_guardrails.py
+- path: tests/test_surfingkeys_zen_contract.py
+- path: tests/test_video_ai_gen.py
+- path: tests/test_vpn_split_router.py
+- path: tests/test_yaml_schemas.py
+- path: tests/test_zen_profile_migration.py
+docs:
+- path: docs/adding-host.md
+  purpose: Adding a New Host
+- path: docs/ai-state-group.md
+  purpose: AI State Group
+- path: docs/audit-report.md
+  purpose: Salt Infrastructure Audit Report
+- path: docs/autoparallel-research.md
+  purpose: Compiler Auto-Parallelism Research for CachyOS Workstation
+- path: docs/best-practices.md
+  purpose: Salt Best Practices — Implemented
+- path: docs/boot-optimization.md
+  purpose: Boot Optimization Guide
+- path: docs/clipboard-issues.md
+  purpose: Clipboard Issues Analysis and Solutions
+- path: docs/cmd-run-standard.md
+  purpose: cmd.run Error Handling Standard
+- path: docs/containerized-services.md
+  purpose: Containerized Services (Podman Quadlet)
+- path: docs/data-inventory.md
+  purpose: Data Inventory
+- path: docs/deploy-cachyos.md
+  purpose: CachyOS Deployment Guide
+- path: docs/gh-issues-export.md
+  purpose: gh-issues-export
+- path: docs/gopass-age-recovery.md
+  purpose: gopass age Recovery
+- path: docs/gopass-breakglass-recovery.md
+  purpose: gopass Break-Glass Recovery
+- path: docs/gopass-setup.md
+  purpose: gopass Setup Guide
+- path: docs/hdspe-post-install.md
+  purpose: 'RME HDSPe AIO Pro: installation & verification'
+- path: docs/hyprland-to-niri-migration-notes.md
+  purpose: Hyprland → Niri Migration Notes
+- path: docs/hyprland-to-niri-parity-dossier.md
+  purpose: Hyprland -> Niri Feature-Parity Dossier
+- path: docs/image-gen-roster.md
+  purpose: Image Generation Provider Roster
+- path: docs/managed-telegram-bots.md
+  purpose: Managed Telegram Bots (Bot API 9.6+)
+- path: docs/mcp-research-prompt.md
+  purpose: ''
+- path: docs/neovim-ai-setup.md
+  purpose: Neovim AI Setup
+- path: docs/neovim-startup-benchmark.md
+  purpose: Neovim Startup Benchmark
+- path: docs/notebooklm-setup.md
+  purpose: NotebookLM Setup Guide
+- path: docs/ollama-models.md
+  purpose: Ollama Models
+- path: docs/proxypilot-free-fallback.md
+  purpose: ProxyPilot Free Model Fallback
+- path: docs/proxypilot-recovery.md
+  purpose: ProxyPilot Recovery
+- path: docs/proxypilot-setup.md
+  purpose: ProxyPilot Setup Guide
+- path: docs/pyinfra-migration-research.md
+  purpose: 'pyinfra Migration Research: Salt vs pyinfra for Single-Host Workstation'
+- path: docs/salt-3008-upgrade-worktree-guide.md
+  purpose: Salt 3008+ Upgrade Guide with Git Worktrees
+- path: docs/salt-best-practices.md
+  purpose: Salt Best Practices & LLM Integration Guide (2023-2026)
+- path: docs/salt-explainability.md
+  purpose: Salt Explainability
+- path: docs/salt-refactoring-recommendations.md
+  purpose: Salt Refactoring Recommendations
+- path: docs/secrets-scheme.md
+  purpose: Secrets Management Scheme
+- path: docs/sonobus-setup.md
+  purpose: SonoBus Setup
+- path: docs/state-map.md
+  purpose: Salt State Dependency Map
+- path: docs/tailscale-setup.md
+  purpose: Tailscale VPN Setup
+- path: docs/telethon-bridge-setup.md
+  purpose: Telethon Bridge Setup
+- path: docs/tidal-setup.md
+  purpose: TidalCycles Live Coding Setup
+- path: docs/vault-recovery.md
+  purpose: Vault Recovery
+- path: docs/vault-setup.md
+  purpose: Vaultwarden Initial Setup
+- path: docs/video-ai-setup.md
+  purpose: Video AI Setup Guide
+- path: docs/vpn-browser-integration.md
+  purpose: VPN Browser Integration Guide
+- path: docs/vpn-policy.md
+  purpose: Policy Layer for VPN Split Router
+- path: docs/vpn-quickstart.md
+  purpose: VPN via Command Line - Quick Start
+- path: docs/windows-vm-setup.md
+  purpose: Windows VM Setup (QEMU/KVM + Looking Glass)
+- path: docs/xray-vpn-cli.md
+  purpose: Xray VPN - CLI Usage
+- path: docs/yubikey.md
+  purpose: Yubikey Reset Guide
+- path: docs/zapret2-setup.md
+  purpose: Zapret2 Safe Rollout

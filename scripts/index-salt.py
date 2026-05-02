@@ -416,7 +416,8 @@ def generate_data_inventory_docs(summaries, usage):
     ]
 
     for rel in sorted(info_map):
-        consumers = usage.get(rel, [])
+        data_key = os.path.join(STATES_DIR, rel.removeprefix("states/"))
+        consumers = usage.get(data_key, [])
         sections = info_map[rel]
 
         eng.append(f"\n## `{rel}`")
@@ -438,6 +439,199 @@ def generate_data_inventory_docs(summaries, usage):
             rus.append("")
 
     return "\n".join(eng) + "\n", "\n".join(rus) + "\n"
+
+
+# --- Module index generation (LLM-oriented YAML) ---
+
+_SECRET_RE = re.compile(r"(?:tg_secret|gopass_secret)\s*\(\s*'([^']+)'")
+_SERVICE_FILE_RE = re.compile(r"user_service_file\s*\(\s*'[^']+'\s*,\s*'([^']+)'")
+_SERVICE_ENABLE_RE = re.compile(r"user_service_enable\s*\(\s*'[^']+'(?:\s*,\s*start_now\s*=\s*\[([^\]]*)\])?")
+_CONTAINER_RE = re.compile(r"container_service\s*\(\s*'([^']+)'")
+_CONFIG_RE = re.compile(r"salt://(configs/[^\s'\"}]+)")
+_DATA_IMPORT_RE = re.compile(r"import_yaml\s+['\"](data/[^'\"]+)['\"]")
+_NPM_PKG_RE = re.compile(r"npm_pkg\s*\(\s*'[^']+'\s*,\s*pkg\s*=\s*'([^']+)'")
+_DOC_COMMENT_RE = re.compile(r"\{#\s*(.*?)\s*#\}", re.DOTALL)
+
+
+def _scan_state_source(relpath):
+    """Scan a .sls file for secrets, services, configs, data refs."""
+    full = os.path.join(STATES_DIR, relpath.removeprefix("states/"))
+    secrets = []
+    services = []
+    configs = []
+    data_files = []
+    purpose = ""
+    try:
+        with open(full) as f:
+            src = f.read()
+    except (OSError, IOError):
+        return secrets, services, configs, data_files, purpose
+
+    secrets = sorted(set(_SECRET_RE.findall(src)))
+    configs = sorted(set(_CONFIG_RE.findall(src)))
+    data_files = sorted(set(o for o in _DATA_IMPORT_RE.findall(src) if o.startswith("data/")))
+
+    for m in _SERVICE_FILE_RE.finditer(src):
+        services.append(m.group(1))
+    for m in _CONTAINER_RE.finditer(src):
+        services.append(f"{m.group(1)}.container")
+    for m in _NPM_PKG_RE.finditer(src):
+        services.append(f"{m.group(1)} (npm)")
+
+    # First line after header or doc comment as purpose hint
+    doc_m = _DOC_COMMENT_RE.search(src)
+    if doc_m:
+        purpose = doc_m.group(1).strip().split("\n")[0].strip()
+
+    return secrets, sorted(set(services)), configs, data_files, purpose
+
+
+def _find_tests_for_state(state_name):
+    """Heuristic: find test files that likely test a given state."""
+    base = os.path.basename(state_name).removeprefix("test_").removesuffix(".sls").replace(".", "_")
+    matches = []
+    for f in sorted(glob.glob("tests/test_*.py")):
+        name = os.path.basename(f).removeprefix("test_").removesuffix(".py")
+        if name == base or name == base.replace("_", ""):
+            matches.append(f)
+    return matches
+
+
+def _find_tests_for_data(data_basename):
+    base = data_basename.removesuffix(".yaml")
+    match = f"tests/test_{base}.py"
+    return [match] if os.path.isfile(match) else []
+
+
+def generate_module_index(state_results, macros, summaries, usage):
+    """Generate docs/module-index.yaml — LLM-oriented project map."""
+    info_map = {rel: info for rel, info in summaries}
+
+    index = {
+        "version": 1,
+        "generated": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+    }
+
+    # States
+    states_list = []
+    for rel, state_ids, includes, requires, guards in state_results:
+        state_name = _state_name_from_relpath(rel)
+        secrets, services, configs, data_files, purpose = _scan_state_source(rel)
+        tests = _find_tests_for_state(rel)
+
+        entry = {
+            "id": state_name,
+            "path": f"states/{rel}" if not rel.startswith("states/") else rel,
+            "purpose": purpose,
+            "feature_gate": sorted(set(guards)) if guards else None,
+            "secrets": secrets if secrets else None,
+            "includes": sorted(set(includes)) if includes else None,
+            "data_files": data_files if data_files else None,
+            "services": services if services else None,
+            "configs": configs if configs else None,
+            "tests": tests if tests else None,
+        }
+        # Remove None fields for compactness
+        entry = {k: v for k, v in entry.items() if v is not None}
+        states_list.append(entry)
+    index["states"] = states_list
+
+    # Macros
+    macros_list = []
+    by_file = {}
+    for name, params, src, doc in macros:
+        by_file.setdefault(src, []).append(name)
+    for src in sorted(by_file):
+        macros_list.append({
+            "id": os.path.basename(src).replace(".jinja", ""),
+            "path": src,
+            "provides": by_file[src],
+        })
+    index["macros"] = macros_list
+
+    # Python scripts
+    py_scripts = []
+    for f in sorted(glob.glob("scripts/*.py")):
+        py_scripts.append({
+            "path": f,
+            "purpose": _purpose_from_docstring(f),
+        })
+    index["scripts_py"] = py_scripts
+
+    # Shell scripts
+    sh_scripts = []
+    for f in sorted(glob.glob("scripts/*.sh") + glob.glob("scripts/*.zsh")):
+        sh_scripts.append({
+            "path": f,
+            "purpose": _purpose_from_shebang_comment(f),
+        })
+    index["scripts_sh"] = sh_scripts
+
+    # Data files
+    data_list = []
+    for rel, _ in summaries:
+        data_key = os.path.join(STATES_DIR, rel.removeprefix("states/"))
+        consumers = usage.get(data_key, [])
+        data_list.append({
+            "path": rel,
+            "consumers": sorted(consumers) if consumers else None,
+        })
+    index["data_files"] = data_list
+
+    # Test files
+    test_list = []
+    for f in sorted(glob.glob("tests/test_*.py")):
+        test_list.append({
+            "path": f,
+        })
+    index["test_files"] = test_list
+
+    # Docs
+    docs_list = []
+    for f in sorted(glob.glob("docs/*.md")):
+        docs_list.append({
+            "path": f,
+            "purpose": _purpose_from_first_heading(f),
+        })
+    index["docs"] = docs_list
+
+    return yaml.dump(index, default_flow_style=False, allow_unicode=True, sort_keys=False)
+
+
+def _purpose_from_docstring(path):
+    try:
+        with open(path) as f:
+            src = f.read()
+        m = re.search(r'"""(.+?)"""', src, re.DOTALL)
+        if m:
+            return m.group(1).strip().split("\n")[0].strip()
+    except Exception:
+        pass
+    return ""
+
+
+def _purpose_from_shebang_comment(path):
+    try:
+        with open(path) as f:
+            lines = f.readlines()
+        for line in lines[:5]:
+            line = line.strip()
+            if line.startswith("# ") and not line.startswith("#!"):
+                return line[2:].strip()
+    except Exception:
+        pass
+    return ""
+
+
+def _purpose_from_first_heading(path):
+    try:
+        with open(path) as f:
+            for line in f:
+                if line.startswith("# "):
+                    return line[2:].strip()
+    except Exception:
+        pass
+    return ""
 
 
 def main():
@@ -477,25 +671,26 @@ def main():
     print(f"Wrote {data_path} ({len(summaries)} files, {data_md.count(chr(10))} lines)")
 
     usage = collect_data_usage()
-    eng_inventory, rus_inventory = generate_data_inventory_docs(summaries, usage)
+    eng_inventory, _ = generate_data_inventory_docs(summaries, usage)
     inventory_path = os.path.join(DOCS_DIR, "data-inventory.md")
-    inventory_ru_path = os.path.join(DOCS_DIR, "data-inventory.ru.md")
     with open(inventory_path, "w") as f:
         f.write(eng_inventory)
-    with open(inventory_ru_path, "w") as f:
-        f.write(rus_inventory)
-    print(f"Wrote {inventory_path} and {inventory_ru_path}")
+    print(f"Wrote {inventory_path}")
 
     # 4. State dependency map docs
     graph, reverse, guards_map = build_state_graph(state_results)
-    eng_map, rus_map = generate_state_map_docs(graph, reverse, guards_map)
+    eng_map, _ = generate_state_map_docs(graph, reverse, guards_map)
     eng_path = os.path.join(DOCS_DIR, "state-map.md")
-    rus_path = os.path.join(DOCS_DIR, "state-map.ru.md")
     with open(eng_path, "w") as f:
         f.write(eng_map)
-    with open(rus_path, "w") as f:
-        f.write(rus_map)
-    print(f"Wrote {eng_path} and {rus_path}")
+    print(f"Wrote {eng_path}")
+
+    # 5. Module index (LLM-oriented YAML)
+    module_index_yaml = generate_module_index(state_results, macros, summaries, usage)
+    module_index_path = os.path.join(DOCS_DIR, "module-index.yaml")
+    with open(module_index_path, "w") as f:
+        f.write(module_index_yaml)
+    print(f"Wrote {module_index_path}")
 
     write_knowledge_base(macros, state_results, summaries)
 

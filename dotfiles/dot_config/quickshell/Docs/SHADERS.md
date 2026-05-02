@@ -1,7 +1,7 @@
 # Quickshell Shaders and Wedge Clip
 
 This document summarizes how shaders are used in this setup, how the subtractive triangular wedge
-works, and how to build/debug the shader bundle. For the Russian translation see `SHADERS.ru.md`.
+works, and how to build/debug the shader bundle.
 triangular "wedge" clip works, and how to build and debug the shaders.
 
 ______________________________________________________________________

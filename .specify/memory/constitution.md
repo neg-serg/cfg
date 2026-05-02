@@ -87,7 +87,7 @@ All contributions MUST follow established conventions:
 - **Commit style**: `[scope] imperative description` where scope matches what changed (e.g., `[nvim] add formatter toggle`, `[zsh] fix PATH order`, `[dns] refresh blocklist`); multiple scopes are allowed when the change genuinely spans them, and subjects must not end with a period
 - **Shell scripts**: `#!/usr/bin/env zsh` for all scripts in `dotfiles/dot_local/bin/`
 - **Inline content thresholds**: configs >=10 lines go to `configs/`, systemd units to `units/`, scripts to `scripts/`
-- **Documentation**: English primary, Russian `.ru.md` translation for each doc in `docs/`
+- **Documentation**: English only. No translations maintained.
 - **URL opening**: `handlr open`, never `xdg-open`
 - **XDG paths**: custom short paths (`~/music`, `~/pic`, `~/vid`, `~/doc`, `~/dw`), never canonical defaults
 

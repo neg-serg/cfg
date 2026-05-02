@@ -10,9 +10,6 @@ LTX 2.3 22B distilled FP8 works on 7900 XTX (24GB, `--lowvram`). Tested: 512x320
 Goal: Full HD (1920x1080) at maximum quality.
 
 **gen-video CLI integration:**
-- [x] `--lowvram` flag added to `video-ai-generate.sh`
-- [x] `__MODEL_FILE__`, `__STEPS__` placeholder substitution added
-- [x] `ltx23-distilled-i2v.json` workflow created
 - [ ] Update default model to `ltx-23-distilled-fp8`
 - [ ] Add 1080p (1920x1080) and 720p (1280x720) resolution presets
 
@@ -22,7 +19,6 @@ Goal: Full HD (1920x1080) at maximum quality.
 - [ ] Width/height must be divisible by 32, frames = 8N+1 (9, 17, 25, 33...)
 
 **Salt state updates:**
-- [x] Gemma FP4 + text_projection + tokenizer.model download states added to video_ai.yaml
 - [ ] LTX23 VAE download state (repo TBD)
 - [ ] Workflow deployment for ltx23-distilled-t2v.json
 
@@ -37,51 +33,6 @@ Multiple Floorp profiles with persistent data (cookies, localStorage, sessions).
 - Profile switching via CLI or Hyprland keybind
 - Salt-managed profile templates with pre-configured settings (extensions, privacy, proxy)
 - Consider: `browser-cookie3` (Python) for cross-browser cookie extraction
-
----
-
-
-
-
-
-## OpenCode Telegram Bots (manual setup)
-
-`opencode-telegram` is now deployed and running.
-
-Current runtime behavior:
-- access is restricted to the owner user ID only
-- bot only responds in private chat
-- available models are restricted to DeepSeek (`deepseek-chat`, `deepseek-reasoner`), default = `deepseek-chat`
-
-**Manual steps (Telegram-side):**
-- [ ] Verify the running bot still responds correctly after token rotation / service restarts: `systemctl --user status opencode-telegram-bot opencode-serve`
-- [x] telecode removed — decided it adds no value over opencode-telegram-bot + telethon-bridge
-
-**Operational note:**
-- [ ] Rotate the current `opencode-telegram-bot` token after validation; the token was pasted in chat and should be treated as compromised
-
-**Optional enhancements:**
-- [x] Verify voice message flow end-to-end for `opencode-telegram-bot` (local `whisper-stt` on `127.0.0.1:8002/v1` — tested, transcribes Russian OK)
-- [x] Decide whether to keep `piper-tts` as the primary always-on local TTS fallback for future Telegram/voice workflows, or switch to another local engine
-  Decision: Keep `piper-tts`. Provides `ru_RU-irina-medium` voice, converts to MP3 via ffmpeg,
-  OpenAI-compatible API. No auth needed, CPU-only (~46 MB peak). TTS vars added to bot `.env`.
-  To disable: user runs `/tts` in bot chat.
-
----
-
-## Telethon Bridge bring-up ✅
-
-Сделано 2026-05-02. Сервис активен, авторизован как личный аккаунт (id=109503498).
-
-- [x] Получены `api_id` (23244142) и `api_hash` из my.telegram.org через SOCKS5 прокси
-- [x] Сохранены в gopass как `api/telegram-telethon-id` и `api/telegram-telethon-hash`
-- [x] Перезапущен `./scripts/salt-apply.sh telethon_bridge` — конфиг с реальными ключами
-- [x] Запущен `telethon-bridge-init` интерактивно — session-файл создан
-- [x] Сервис запущен, health endpoint возвращает `{"connected": true, ...}`
-
-**Известные проблемы:**
-- ProxyPilot (порт 8317) не отвечает (connection reset) — предшествующая проблема, не связана с настройкой ключей/прокси. Bridge сообщает `proxypilot_ok: false`.
-- Для AI-ответов через Telethon bridge нужно сначала починить ProxyPilot.
 
 ---
 
@@ -118,7 +69,6 @@ After containerization lands, verify that container failures surface through the
 ## Research / evaluation items
 
 - [ ] Audit already-implemented docs and planning artifacts for obsolete references, duplicate examples, and dead guidance; queue any safe removals as a separate cleanup task.
-- [x] Revisit `v` after the `nvr` restore — decision: keep `nvr`. Built-in `--remote-send`/`--remote-expr` lack `--remote-wait` (needed for `EDITOR`/`GIT_EDITOR`), `--remote-silent`, and tab control. `v` now also handles image files via `kitty +kitten icat`.
 
 ### Salt minimal rollout UX
 
@@ -202,21 +152,6 @@ Evaluate [SaluteSpeech](https://developers.sber.ru/docs/ru/salutespeech/overview
 
 Audit (2026-05-02): 393 tests, 0 failing.
 
-### DONE
-
-- [x] **Fix 4 failing tests (2026-05-01):**
-  - `test_system_description_includes_hiddify_state_by_default` — updated default from `True` to `false` (hiddify disabled by default)
-  - `test_hiddify_wrapper_launches_system_binary_after_loopback_fix` — removed (wrapper script deleted with hiddify cleanup)
-  - `test_hiddify_fix_loopback_removes_ipv6_loopback_inbounds_and_rewrites_kde_proxy` — removed (fix-loopback script deleted)
-  - `test_services_macro_exposes_config_replace_helper` — updated to check `container_service` macro (replaced `config_replace_with_service_control`)
-- [x] **Create `tests/conftest.py`** — shared `REPO_ROOT`, `sys.path` setup, fixtures, pytest markers (`@pytest.mark.slow`, `@pytest.mark.integration`)
-- [x] **Move `cmd.run` audit from report-only to failing** — 95% guard threshold in `test_cmdrun_audit.py:test_cmdrun_guard_coverage`
-- [x] **Add `@pytest.mark.slow` to module-level render tests** — added `pytestmark = pytest.mark.slow` in both `test_macro_idempotency.py` and `test_cmdrun_audit.py`
-- [x] **Deduplicate REPO_ROOT** — 15 copies replaced with `from tests import REPO_ROOT_PATH`; 0 remaining assignments
-- [x] **Add tests for nanoclaw.sls and ollama.sls** — `test_nanoclaw.py` (113 lines), `test_ollama.py` (95 lines)
-- [x] **Add YAML schema validation** — `test_yaml_schemas.py` covers packages.yaml, versions.yaml, hosts.yaml
-- [x] **Add idempotency test** — `test_render_idempotent.py` renders states twice and compares
-
 
 ---
 
@@ -228,10 +163,8 @@ Audit (2026-05-02): 393 tests, 0 failing.
 When the Wayland compositor emits a fast output-remove-and-readd sequence (monitor hotplug, mode change, `hyprctl reload`, DPMS cycle), `wl-daemon` can race a pending `wl_display_flush()` against the now-closed `wl_output`. The flush returns `EPIPE` (Broken pipe), the error propagates as `wayland flush error` to the main loop, and the daemon currently chooses to `shutting down` cleanly (exit status 0).
 
 **Proper fix (upstream):**
-- [x] Treat dispatch/flush errors as recoverable — call `reconnect_wayland()` instead of `break`
 - [ ] Add bounded retry (5 attempts over 10s) inside reconnect loop
 - [ ] Emit clear log line: `wayland connection lost, reconnecting (attempt N/5)`
-- [x] Keep `Restart=always` in wl.service as defense-in-depth
 
 **Secondary cleanup** (cosmetic): `ExecStartPost=wl restore` retry-loop in the unit file fires before daemon's IPC socket is ready. Fix: `sd_notify(READY=1)` + `Type=notify` + drop sleep-based retry loop.
 
@@ -264,17 +197,6 @@ Without this, `npm list -g` and `npm outdated -g` don't work (Salt workaround us
 
 `nyxt-bin` — binary packaging of Nyxt browser. Requires investigation:
 the current AUR package may be sufficient, or a custom PKGBUILD may be needed.
-
----
-
-## Cache cleanup timers (systemd)
-
-> Implements the task from TODO.ru.md — periodic cleanup of caches not covered by `paccache.timer`.
-
-- [x] `scripts/cache-cleanup.sh` — single shell script cleaning paru, pip, npm, flatpak, cargo caches
-- [x] `states/units/user/cache-cleanup.service` — `Type=oneshot` systemd user service
-- [x] `states/units/user/cache-cleanup.timer` — weekly, with `Persistent=true` + `RandomizedDelaySec=2h`
-- [x] Registered in `states/data/user_services.yaml` under `unit_files` + `enable_now_timers`
 
 ---
 

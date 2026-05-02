@@ -106,7 +106,7 @@ else:
 if fr:
     for r in fr:
         print(f'Reason: {r}')
-print(f'Result: {plan["final_target"]}')
+print(f'Result: {plan[\"final_target\"]}')
 print('------------------------')
 "
 			STATE=$(echo "$PLAN_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin)['final_target'])")

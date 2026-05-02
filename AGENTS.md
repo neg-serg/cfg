@@ -71,7 +71,7 @@ specs/
 The `.specify/templates/` directory contains YAML schema templates for the speckit workflow (spec, plan, tasks, constitution, checklist, agent-file). These define the canonical document structure for all feature artifacts.
 
 <!-- MANUAL ADDITIONS START -->
-- `docs/superpowers/plans/*.md` and `docs/superpowers/plans/*.yaml` are temporary working artifacts by default: do not commit them unless they are explicitly being kept as active shared planning documents. Remove stale plan files periodically once the related work is finished or abandoned.
+
 - Do not add GitHub automation files unless the user explicitly asks for them.
 - **No Russian documentation.** All documentation must be in English only. Do not create or maintain `.ru.md` files.
 <!-- MANUAL ADDITIONS END -->

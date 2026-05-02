@@ -8,8 +8,14 @@ LISTEN_PORT = 9094
 {% raw %}
 import http.server
 import json
+import socket
+import socks
 import textwrap
 import urllib.request
+
+SOCKS5_PROXY = ("127.0.0.1", 10808)
+socks.set_default_proxy(socks.SOCKS5, *SOCKS5_PROXY)
+socket.socket = socks.socksocket
 
 
 def send_telegram(text):

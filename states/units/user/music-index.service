@@ -1,0 +1,6 @@
+[Unit]
+Description=Music index update (Annoy + Essentia)
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/music-index

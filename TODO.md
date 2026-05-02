@@ -61,8 +61,11 @@ Current runtime behavior:
 - [ ] Rotate the current `opencode-telegram-bot` token after validation; the token was pasted in chat and should be treated as compromised
 
 **Optional enhancements:**
-- [ ] Verify voice message flow end-to-end for `opencode-telegram-bot` (local `whisper-stt` on `127.0.0.1:8002/v1` now returns successful transcriptions)
-- [ ] Decide whether to keep `piper-tts` as the primary always-on local TTS fallback for future Telegram/voice workflows, or switch to another local engine
+- [x] Verify voice message flow end-to-end for `opencode-telegram-bot` (local `whisper-stt` on `127.0.0.1:8002/v1` — tested, transcribes Russian OK)
+- [x] Decide whether to keep `piper-tts` as the primary always-on local TTS fallback for future Telegram/voice workflows, or switch to another local engine
+  Decision: Keep `piper-tts`. Provides `ru_RU-irina-medium` voice, converts to MP3 via ffmpeg,
+  OpenAI-compatible API. No auth needed, CPU-only (~46 MB peak). TTS vars added to bot `.env`.
+  To disable: user runs `/tts` in bot chat.
 
 ---
 

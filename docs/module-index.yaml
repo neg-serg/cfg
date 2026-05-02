@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-02T06:17:35'
+generated: '2026-05-03T00:55:20'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -171,9 +171,9 @@ states:
 - id: group.network
   path: states/group/network.sls
   purpose: ''
-  includes:
-  - dns
-  - network
+  feature_gate:
+  - network.ipv6
+  - network.ipv6_tunnel
 - id: group.packages
   path: states/group/packages.sls
   purpose: ''
@@ -233,6 +233,18 @@ states:
   - data/installers_themes.yaml
   configs:
   - configs/vicinae/flight-dark.toml
+- id: ipv6
+  path: states/ipv6.sls
+  purpose: ''
+  data_files:
+  - data/ipv6.yaml
+- id: ipv6_tunnel
+  path: states/ipv6_tunnel.sls
+  purpose: ════════════════════════════════════════════════════════════════════
+  secrets:
+  - api/he-tunnel
+  data_files:
+  - data/ipv6.yaml
 - id: jellyfin
   path: states/jellyfin.sls
   purpose: 'In-place cutover: remove native systemd unit if it exists so the'
@@ -341,6 +353,11 @@ states:
   data_files:
   - data/installers.yaml
   - data/versions.yaml
+  services:
+  - music-index.service
+  - music-index.timer
+  tests:
+  - tests/test_music_analysis.py
 - id: nanoclaw
   path: states/nanoclaw.sls
   purpose: ''
@@ -399,6 +416,7 @@ states:
   path: states/opencode_telegram.sls
   purpose: ''
   secrets:
+  - api/deepseek
   - api/nanoclaw-telegram-uid
   - api/opencode-telegram-bot
   - api/telegram-uid-levra
@@ -408,8 +426,6 @@ states:
   - opencode-telegram-bot.service
   configs:
   - configs/opencode-telegram-bot.env.j2
-  tests:
-  - tests/test_opencode_telegram.py
 - id: packages
   path: states/packages.sls
   purpose: '- pacman -Qq checks ALL packages — fails if ANY is missing, triggering
@@ -698,7 +714,7 @@ scripts_py:
 - path: scripts/dep-graph.py
   purpose: Generate dependency graph of Salt states (include/require/watch/onchanges).
 - path: scripts/drift_state.py
-  purpose: ''
+  purpose: Compute file entry with optional cache reuse (mtime+size match → skip SHA-256).
 - path: scripts/format-fstab.py
   purpose: Format /etc/fstab with aligned columns, preserving comments and blank lines.
 - path: scripts/generate_hypr_shortcuts.py
@@ -772,6 +788,8 @@ scripts_sh:
   purpose: Periodic cache cleanup for user-level caches not covered by paccache.timer.
 - path: scripts/cachyos-packages.sh
   purpose: Install all user packages on CachyOS after bootstrap
+- path: scripts/check-ipv6.sh
+  purpose: IPv6 diagnostics script
 - path: scripts/check-vpn-status.sh
   purpose: VPN Status Check Script
 - path: scripts/convert-hyprcursor.sh
@@ -900,6 +918,10 @@ data_files:
 - path: states/data/installers_themes.yaml
   consumers:
   - installers_themes.sls
+- path: states/data/ipv6.yaml
+  consumers:
+  - ipv6.sls
+  - ipv6_tunnel.sls
 - path: states/data/kernel_params.yaml
   consumers: null
 - path: states/data/llama_embed.yaml
@@ -989,17 +1011,14 @@ test_files:
 - path: tests/test_index_salt.py
 - path: tests/test_macro_idempotency.py
 - path: tests/test_monitoring_alertmanager.py
+- path: tests/test_music_analysis.py
 - path: tests/test_nanoclaw.py
 - path: tests/test_niri_focus_hist.py
 - path: tests/test_ollama.py
-- path: tests/test_opencode_telegram.py
-- path: tests/test_optiscaler_universal.py
 - path: tests/test_pkg_drift.py
 - path: tests/test_proxypilot_recover.py
 - path: tests/test_pw_route.py
-- path: tests/test_quickshell_audio_route_contract.py
 - path: tests/test_render_idempotent.py
-- path: tests/test_render_matrix.py
 - path: tests/test_salt_compat.py
 - path: tests/test_salt_contracts.py
 - path: tests/test_salt_daemon_output.py
@@ -1055,6 +1074,8 @@ docs:
   purpose: Managed Telegram Bots (Bot API 9.6+)
 - path: docs/mcp-research-prompt.md
   purpose: ''
+- path: docs/music-analysis.md
+  purpose: Music Analysis Pipeline
 - path: docs/neovim-ai-setup.md
   purpose: Neovim AI Setup
 - path: docs/neovim-startup-benchmark.md

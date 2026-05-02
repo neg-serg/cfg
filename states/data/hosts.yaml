@@ -52,6 +52,9 @@ defaults:
       wifi: false
       vpn_split_router: false
       vpn_hybrid: false
+      ipv6: false
+      ipv6_6to4: false
+      ipv6_tunnel: false
     user_services:
       mail: true
       vdirsyncer: true
@@ -103,6 +106,7 @@ hosts:
       network:
         tailscale: false
         zapret2: false
+        ipv6: true
       floorp: false
       opencode: true
       opencode_telegram: true

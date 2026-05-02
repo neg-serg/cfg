@@ -16,7 +16,7 @@
         "server": "223.5.5.5"
       }
     ],
-    "strategy": "ipv4_only",
+    "strategy": "{{ ipv6_dns_strategy | default('ipv4_only') }}",
     "final": "local"
   },
   "inbounds": [

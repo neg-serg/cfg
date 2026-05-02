@@ -147,6 +147,8 @@ sing_box_tun_hybrid_config:
     - user: {{ user }}
     - group: {{ user }}
     - makedirs: True
+    - context:
+        ipv6_dns_strategy: {{ 'prefer_ipv4' if net.get('ipv6_tunnel', false) or net.get('ipv6_6to4', false) else 'ipv4_only' }}
 
 sing_box_tun_hybrid_service_unit:
   file.managed:

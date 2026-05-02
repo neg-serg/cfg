@@ -1,0 +1,39 @@
+# IPv6 diagnostics and tunnel configuration
+# Feature gates: features.network.ipv6 (diagnostics), features.network.ipv6_tunnel (HE tunnel)
+
+diagnostics:
+  # Periodic health check interval (systemd timer)
+  timer:
+    on_calendar: "daily"
+    randomized_delay_sec: 600
+
+  # Connectivity test targets
+  ping_hosts:
+    - "ipv6.google.com"
+    - "he.net"
+
+  dns_aaaa_hosts:
+    - "ipv6.google.com"
+    - "he.net"
+    - "ip6.me"
+
+tunnel:
+  # HE.net tunnel parameters (resolved from gopass api/he-tunnel at render time)
+  # gopass key format: server_ipv4=<IP> client_ipv6=<IP> routed_prefix=<PREFIX>
+  interface_name: "he-ipv6"
+  ttl: 64
+
+  # Firewall: open ICMPv6 on tunnel interface
+  ip6tables_enable: true
+
+  # Router advertisement for LAN (radvd)
+  radvd:
+    enable: false
+    lan_interface: "enp0s31f6"
+    adv_interval_min: 30
+    adv_interval_max: 60
+
+  # Sysctl: enable RA acceptance and autoconf on LAN
+  sysctl:
+    accept_ra: true
+    autoconf: true

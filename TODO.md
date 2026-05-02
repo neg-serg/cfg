@@ -200,9 +200,18 @@ the current AUR package may be sufficient, or a custom PKGBUILD may be needed.
 
 ---
 
-## IPv6 diagnostics and configuration
+## IPv6 diagnostics and configuration (in progress)
 
 IPv6 testing revealed that the stack is functional but global addresses are missing and external connectivity is impossible.
+
+**Infrastructure deployed (see states/ipv6.sls, states/ipv6_6to4.sls, states/ipv6_tunnel.sls):**
+- Diagnostic script: `check-ipv6.sh` (deployed via Salt when `features.network.ipv6: true`)
+- 6to4 tunnel: `tun6to4.service` systemd unit (gated by `features.network.ipv6_6to4`)
+- HE.net tunnel: `he-tunnel.service` systemd unit + firewall + sysctl (gated by `features.network.ipv6_tunnel`)
+- Sing-box DNS strategy auto-switches from `ipv4_only` → `prefer_ipv4` when either tunnel is enabled
+
+**2026-05-03: 6to4 tested — anycast relay 192.88.99.1 unreachable via ISP.**
+Tunnel interface (2002:b2ed:f82c::/16) and route (2000::/3) created successfully, but anycast relay doesn't respond — 100% packet loss, traceroute dies at hop 7. 6to4 effectively dead (RFC 7526 Historic, most operators dropped anycast). HE.net tunnel remains the recommended path.
 
 **Issues:**
 - ❌ Global IPv6 addresses missing (only link‑local `fe80::`)

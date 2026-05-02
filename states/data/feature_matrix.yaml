@@ -70,6 +70,16 @@
       flatpak: false
       opencode: false
 
+- name: matrix-ipv6-tunnel
+  description: IPv6 diagnostics + 6to4 + HE.net tunnel enabled
+  overrides:
+    hostname: matrix-ipv6-tunnel
+    features:
+      network:
+        ipv6: true
+        ipv6_6to4: true
+        ipv6_tunnel: true
+
 - name: matrix-containerized
   description: All US1/US2 containerized services enabled (exercises the Quadlet/container_service render path)
   overrides:

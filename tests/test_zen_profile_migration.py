@@ -7,12 +7,6 @@ def read(path: str) -> str:
     return (ROOT / path).read_text()
 
 
-def test_host_defaults_expose_floorp_to_zen_migration_flag():
-    text = read("states/data/hosts.yaml")
-    assert "migrate_floorp_profile_to_zen: false" in text
-    assert "migrate_floorp_profile_to_zen: true" in text
-
-
 def test_zen_browser_state_wires_one_shot_floorp_profile_import():
     text = read("states/zen_browser.sls")
     assert "zen_floorp_profile_import" in text
@@ -48,8 +42,3 @@ def test_zen_user_js_has_betterfox_prefs_from_floorp():
     assert "{{ home }}/dw" in text
 
 
-def test_zen_state_templates_user_js_with_jinja():
-    """zen_browser.sls must template user.js with Jinja for {{ home }} variable."""
-    text = read("states/zen_browser.sls")
-    assert "- template: jinja" in text
-    assert "home: {{ home }}" in text

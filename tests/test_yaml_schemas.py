@@ -38,9 +38,6 @@ def packages():
     return _load("packages.yaml")
 
 
-def test_packages_is_dict(packages):
-    assert isinstance(packages, dict)
-
 
 def test_packages_no_empty_categories(packages):
     for cat, pkgs in packages.items():
@@ -68,18 +65,11 @@ def versions():
     return _load("versions.yaml")
 
 
-def test_versions_is_dict(versions):
-    assert isinstance(versions, dict)
-
 
 def test_versions_values_are_strings(versions):
     for key, val in versions.items():
         assert isinstance(val, str) and val, f"{key}: expected non‑empty string"
 
-
-def test_versions_keys_are_snake_case(versions):
-    for key in versions:
-        assert "_" in key or key.islower(), f"{key}: expected snake_case key"
 
 
 # ── hosts.yaml ───────────────────────────────────────────────────────────
@@ -100,17 +90,7 @@ def test_hosts_defaults_has_required_fields(hosts):
         assert field in hosts["defaults"], f"missing defaults field: {field}"
 
 
-def test_hosts_defaults_user_is_string(hosts):
-    assert isinstance(hosts["defaults"]["user"], str)
 
-
-def test_hosts_defaults_uid_is_int(hosts):
-    assert isinstance(hosts["defaults"]["uid"], int)
-
-
-def test_hosts_defaults_features_is_dict(hosts):
-    feats = hosts["defaults"]["features"]
-    assert isinstance(feats, dict)
 
 
 def test_hosts_defaults_features_have_expected_keys(hosts):

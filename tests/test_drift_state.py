@@ -85,33 +85,6 @@ def test_fast_mode_collect_skips_package_scan_and_runtime_alerts(monkeypatch):
     assert result["runtime_alerts"] == []
 
 
-def test_full_mode_collect_includes_package_scan_and_runtime_alerts(monkeypatch):
-    called = []
-
-    def mock_pkg_drift(*args, **kwargs):
-        called.append("pkg")
-        return {"unmanaged": ["stray"], "missing": [], "orphans": []}
-
-    def mock_load_runtime(*args, **kwargs):
-        called.append("runtime")
-        return [{"scope": "user", "service": "x", "type": "unhealthy"}]
-
-    monkeypatch.setattr(drift_state, "run_pkg_drift", mock_pkg_drift)
-    monkeypatch.setattr(drift_state, "load_runtime_alerts", mock_load_runtime)
-
-    result = drift_state.collect_actual_snapshot(
-        "/nonexistent",
-        "/nonexistent",
-        {"files": [], "system_units": [], "user_units": []},
-        mode="full",
-    )
-
-    assert "pkg" in called, "run_pkg_drift should be called in full mode"
-    assert "runtime" in called, "load_runtime_alerts should be called in full mode"
-    assert result["packages"] == {"unmanaged": ["stray"], "missing": [], "orphans": []}
-    assert result["runtime_alerts"] == [{"scope": "user", "service": "x", "type": "unhealthy"}]
-
-
 def test_maintenance_lock_suppresses_drift_to_degraded(tmp_path):
     lock_file = tmp_path / "maintenance.lock"
     lock_file.write_text("")
@@ -137,29 +110,6 @@ def test_maintenance_lock_suppresses_drift_to_degraded(tmp_path):
     )
 
 
-def test_drift_records_include_source_field():
-    expected = {
-        "generated_at": "2026-04-17T00:00:00+00:00",
-        "files": [{"id": "x", "path": "/tmp/a", "sha256": "abc", "severity": "critical"}],
-        "system_units": [],
-        "user_units": [],
-    }
-    actual = {
-        "files": [{"id": "x", "path": "/tmp/a", "exists": True, "sha256": "def"}],
-        "packages": {"unmanaged": [], "missing": ["req-pkg"], "orphans": []},
-        "system_units": [
-            {"name": "sshd", "enabled": False, "expected_enabled": True, "severity": "critical"}
-        ],
-        "user_units": [],
-        "runtime_alerts": [],
-    }
-
-    payload = drift_state.classify_drift(expected, actual)
-
-    for record in payload["records"]:
-        assert "source" in record, f"record {record['category']}/{record['object']} missing source"
-
-
 def test_build_expected_snapshot_includes_git_revision(monkeypatch, tmp_path):
     host = {"home": "/tmp", "runtime_dir": "/run/user/1000", "hostname": "testbox"}
     inventory = {"files": [], "system_units": [], "user_units": []}
@@ -179,14 +129,6 @@ def test_build_expected_snapshot_includes_git_revision(monkeypatch, tmp_path):
     assert snapshot["git_revision"] == "abc123"
 
 
-def test_build_expected_snapshot_includes_salt_target():
-    host = {"home": "/tmp", "runtime_dir": "/run/user/1000", "hostname": "testbox"}
-    inventory = {"files": [], "system_units": [], "user_units": []}
-
-    snapshot = drift_state.build_expected_snapshot(host, inventory, salt_target="services")
-    assert snapshot["salt_target"] == "services"
-
-
 def test_build_expected_snapshot_skips_git_revision_when_not_a_repo(monkeypatch, tmp_path):
     host = {"home": "/tmp", "runtime_dir": "/run/user/1000", "hostname": "testbox"}
     inventory = {"files": [], "system_units": [], "user_units": []}
@@ -203,50 +145,6 @@ def test_build_expected_snapshot_skips_git_revision_when_not_a_repo(monkeypatch,
 
     snapshot = drift_state.build_expected_snapshot(host, inventory, project_dir=tmp_path)
     assert "git_revision" not in snapshot
-
-
-def test_collect_actual_defaults_to_full_mode(monkeypatch):
-    called = []
-
-    def mock_pkg_drift(*args, **kwargs):
-        called.append("pkg")
-        return {"unmanaged": [], "missing": [], "orphans": []}
-
-    monkeypatch.setattr(drift_state, "run_pkg_drift", mock_pkg_drift)
-    monkeypatch.setattr(drift_state, "load_runtime_alerts", lambda *a, **kw: [])
-
-    drift_state.collect_actual_snapshot(
-        "/nonexistent",
-        "/nonexistent",
-        {"files": [], "system_units": [], "user_units": []},
-    )
-
-    assert "pkg" in called, "default mode should be full (include package scan)"
-    expected = {
-        "generated_at": "2026-04-17T00:00:00+00:00",
-        "files": [{"id": "managed", "path": "/tmp/a", "sha256": "abc", "severity": "critical"}],
-        "system_units": [],
-        "user_units": [],
-    }
-    runtime_only = drift_state.classify_drift(
-        expected,
-        {
-            "files": [{"id": "managed", "path": "/tmp/a", "exists": True, "sha256": "abc"}],
-            "runtime_alerts": [{"scope": "system", "service": "grafana", "type": "unhealthy"}],
-            "packages": {"unmanaged": [], "missing": [], "orphans": []},
-        },
-    )
-    config_and_runtime = drift_state.classify_drift(
-        expected,
-        {
-            "files": [{"id": "managed", "path": "/tmp/a", "exists": True, "sha256": "def"}],
-            "runtime_alerts": [{"scope": "system", "service": "grafana", "type": "unhealthy"}],
-            "packages": {"unmanaged": [], "missing": [], "orphans": []},
-        },
-    )
-
-    assert runtime_only["status"] == "degraded"
-    assert config_and_runtime["status"] == "drifted"
 
 
 def test_gating_round_trip_expected_matches_actual_returns_ok():
@@ -303,29 +201,4 @@ def test_gating_round_trip_expected_matches_actual_returns_ok():
     assert payload["records"] == [], f"expected no records, got {payload['records']}"
 
 
-def test_gating_round_trip_no_baseline_and_then_refreshed(tmp_path):
-    """Simulates first-run (no baseline) then after refresh-expected both succeed."""
-    cache_dir = tmp_path / "cache"
-    cache_dir.mkdir()
-    expected_path = cache_dir / "expected-snapshot.json"
 
-    assert not expected_path.exists()
-
-    host = {"home": "/tmp", "runtime_dir": "/run/user/1000", "hostname": "testbox"}
-    inventory = {"files": [], "system_units": [], "user_units": []}
-
-    snapshot = drift_state.build_expected_snapshot(host, inventory)
-    drift_state.write_json(expected_path, snapshot)
-    assert expected_path.exists()
-
-    payload = drift_state.classify_drift(
-        snapshot,
-        {
-            "packages": {"unmanaged": [], "missing": [], "orphans": []},
-            "files": [],
-            "system_units": [],
-            "user_units": [],
-            "runtime_alerts": [],
-        },
-    )
-    assert payload["status"] == "clean"

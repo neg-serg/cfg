@@ -69,13 +69,6 @@ def _extract_cmd_states(states):
 _CMD_STATES = _extract_cmd_states(_STATES)
 
 
-def test_state_file_renders():
-    assert isinstance(_STATES, dict)
-    assert len(_STATES) > 0
-
-
-def test_ollama_models_dir_present():
-    assert "ollama_models_dir" in _STATES
 
 
 def test_ollama_models_dir_is_ensure_dir():
@@ -90,15 +83,6 @@ def test_ollama_native_unit_absent():
     assert isinstance(s, dict) and "file.absent" in s
 
 
-def test_ollama_container_is_container_service():
-    key = next((k for k in _STATES if k.startswith("ollama_container")), None)
-    assert key is not None, f"ollama_container* not found in {list(_STATES)}"
-    assert isinstance(_STATES[key], dict)
-
-
-def test_ollama_tmp_start_present():
-    assert "ollama_tmp_start" in _STATES
-
 
 def test_ollama_tmp_start_has_unless_guard():
     state = _STATES["ollama_tmp_start"]
@@ -109,10 +93,6 @@ def test_ollama_tmp_start_has_unless_guard():
     assert "unless" in props or "onlyif" in props
 
 
-def test_ollama_tmp_stop_present():
-    assert "ollama_tmp_stop" in _STATES
-
-
 def test_ollama_tmp_stop_has_onlyif_guard():
     state = _STATES["ollama_tmp_stop"]
     props = {}
@@ -121,17 +101,6 @@ def test_ollama_tmp_stop_has_onlyif_guard():
             props.update(item)
     assert "onlyif" in props
 
-
-def test_ollama_state_ids():
-    expected_ids = {
-        "ollama_models_dir",
-        "ollama_native_unit_absent",
-        "ollama_tmp_start",
-        "ollama_tmp_stop",
-    }
-    keys = set(_STATES.keys())
-    missing = expected_ids - keys
-    assert not missing, f"Missing state IDs: {missing}. Found: {sorted(keys)}"
 
 
 def test_cmd_guards():

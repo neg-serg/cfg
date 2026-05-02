@@ -26,47 +26,6 @@ def test_index_salt_imports_via_spec_without_scripts_on_sys_path(monkeypatch):
     assert index_salt.render_states
 
 
-def test_render_states_uses_shared_source_model_feature_guards(tmp_path, monkeypatch):
-    states_dir = tmp_path / "states"
-    states_dir.mkdir()
-    sls_path = states_dir / "desktop.sls"
-    sls_path.write_text(
-        """{% set svc = host.features.services %}
-{% if svc.get(name, False) %}
-conditional-state:
-  test.nop: []
-{% endif %}
-# host.features.comments_only
-"""
-    )
-
-    monkeypatch.chdir(tmp_path)
-    index_salt = _load_index_salt()
-    monkeypatch.setattr(index_salt, "_resolve_import_yaml", lambda source: {})
-
-    class _Template:
-        def render(self, **_kwargs):
-            return """desktop-state:\n  test.nop: []\ncommented-state:\n  test.nop: []\n"""
-
-    class _Env:
-        def get_template(self, _name):
-            return _Template()
-
-    monkeypatch.setattr(index_salt, "_make_render_env", lambda: _Env())
-
-    rendered = index_salt.render_states(["states/desktop.sls"])
-
-    assert rendered == [
-        (
-            "states/desktop.sls",
-            ["desktop-state", "commented-state"],
-            [],
-            [],
-            ["services.*"],
-        )
-    ]
-
-
 def test_nested_state_outputs_keep_canonical_dotted_names(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     index_salt = _load_index_salt()

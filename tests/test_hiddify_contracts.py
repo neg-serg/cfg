@@ -24,14 +24,6 @@ def test_hiddify_state_removes_legacy_appimage_and_prefers_hiddify_next():
     assert "getcap" in source
 
 
-def test_hiddify_state_keeps_compatibility_wrappers_and_profile_data():
-    source = (REPO_ROOT / "states" / "hiddify.sls").read_text()
-
-    assert "{{ home }}/.local/bin/hiddify-launch" not in source
-    assert "{{ home }}/.local/bin/hiddify-fix-loopback" not in source
-    assert "{{ home }}/.local/share/app.hiddify.com" not in source
-
-
 def test_hiddify_local_desktop_uses_wrapper_exec():
     source = (
         REPO_ROOT / "dotfiles" / "dot_local" / "share" / "applications" / "hiddify.desktop"

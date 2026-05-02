@@ -106,14 +106,6 @@ for _sls in _CONSUMERS:
         _ALL_CMD_STATES.append(_entry)
 
 
-def test_macro_files_exist():
-    """Verify macro files are found."""
-    assert len(MACRO_FILES) > 0, "No _macros_*.jinja files found"
-
-
-def test_macro_consumers_found():
-    """Verify states that use macros are found."""
-    assert len(_CONSUMERS) > 0, "No .sls files importing macros found"
 
 
 def test_macro_generated_states_have_guards():

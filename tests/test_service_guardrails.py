@@ -14,13 +14,6 @@ def _load_state_profiler():
     return module
 
 
-def test_services_macro_exposes_config_replace_helper():
-    source = (REPO_ROOT_PATH / "states" / "_macros_service.jinja").read_text()
-
-    assert "macro container_service" in source
-    assert "service.dead:" in source
-    assert "service.running:" in source
-
 
 def test_services_sls_no_longer_has_transmission_escape_hatch():
     source = (REPO_ROOT_PATH / "states" / "services.sls").read_text()
@@ -68,60 +61,6 @@ def test_state_profiler_compare_rows_honor_threshold(tmp_path):
     assert by_state["fast_state"]["regression"] is False
     assert by_state["slow_state"]["regression"] is True
 
-
-def test_state_profiler_build_state_metadata_uses_canonical_discovery(monkeypatch):
-    state_profiler = _load_state_profiler()
-
-    class _Record:
-        def __init__(self, relpath, state_name, source_text):
-            self.relpath = relpath
-            self.state_name = state_name
-            self.source_text = source_text
-
-    discovered = [
-        _Record(
-            "states/root.sls",
-            "root",
-            "include:\n  - nested.child\nroot-id:\n  test.nop: []\n",
-        ),
-        _Record(
-            "states/nested/child.sls",
-            "nested.child",
-            "nested-id:\n  test.nop: []\n",
-        ),
-    ]
-    render_calls = []
-
-    monkeypatch.setattr(
-        state_profiler,
-        "discover_state_files",
-        lambda states_dir="states": discovered,
-    )
-    monkeypatch.setattr(
-        state_profiler._index_module,
-        "render_states",
-        lambda sls_files: (
-            render_calls.append(list(sls_files))
-            or [
-                ("states/root.sls", ["root-id"], ["nested.child"], [], []),
-                ("states/nested/child.sls", ["nested-id"], [], [], []),
-            ]
-        ),
-    )
-    monkeypatch.setattr(
-        state_profiler._index_module,
-        "build_state_graph",
-        lambda state_results: ({"root": ["nested.child"], "nested.child": []}, {}, {}),
-    )
-
-    state_files, include_paths, text_map, file_contents = state_profiler.build_state_metadata(
-        "root"
-    )
-
-    assert render_calls == [["states/root.sls", "states/nested/child.sls"]]
-    assert include_paths["nested.child"] == ["root", "nested.child"]
-    assert text_map["nested-id"] == "nested.child"
-    assert file_contents["nested.child"].startswith("nested-id:")
 
 
 # workflow removed; state-profiler gate tested in

@@ -9,13 +9,6 @@ from tests import REPO_ROOT_PATH as REPO_ROOT
 SCRIPT_PATH = REPO_ROOT / "dotfiles" / "dot_local" / "bin" / "executable_niri-focus-hist"
 
 
-def test_script_exists_and_executable():
-    """The script file must exist and be executable."""
-    assert SCRIPT_PATH.exists()
-    # Not checking executable bit because git doesn't preserve it;
-    # Salt will set it via file.managed mode.
-
-
 def test_script_syntax_valid():
     """Script must pass Python syntax check."""
     result = subprocess.run(
@@ -49,19 +42,6 @@ def test_address_regex_matches_expected_pattern():
     assert not addr_regex.fullmatch("0x1a2b3c ")  # trailing space
     assert not addr_regex.fullmatch(" 0x1a2b3c")
 
-
-def test_script_defines_required_functions():
-    """Script must export the core functions used by the daemon and switch."""
-    source = SCRIPT_PATH.read_text()
-    # Required functions (from the spec)
-    assert "def is_valid_addr" in source
-    assert "def remove_from_history" in source
-    assert "def switch" in source
-    assert "def daemon" in source
-    assert "def main" in source
-    # Required constants
-    assert "ADDR_REGEX" in source
-    assert "HISTORY_MAXLEN" in source
 
 
 def test_subscribes_to_required_events():

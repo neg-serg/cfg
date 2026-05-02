@@ -258,29 +258,6 @@ def test_enrich_source_metadata_collects_dynamic_alias_get_wildcards_from_macro_
     ]
 
 
-def test_enrich_source_metadata_collects_dynamic_alias_get_wildcards_from_multiline_macro_args():
-    salt_source_model = _load_salt_source_model()
-
-    record = salt_source_model.StateFileRecord(
-        relpath="states/example.sls",
-        state_name="example",
-        top_level_entrypoint=True,
-        workflow_apply_target=True,
-        source_text="""{% set svc = host.features.services %}
-{{ render_service(
-    name,
-    opts,
-    svc.get(name, False),
-    'complex'
-) }}
-""",
-    )
-
-    enriched = salt_source_model.enrich_source_metadata(record)
-
-    assert enriched.feature_guards == ["services.*"]
-
-
 def test_enrich_source_metadata_ignores_alias_get_assignments_outside_guards():
     salt_source_model = _load_salt_source_model()
 

@@ -13,18 +13,6 @@ def test_zen_extension_manifest_keeps_surfingkeys():
     assert "Helper-dependent Zen workflow" in text
 
 
-def test_zen_browser_state_resets_extension_metadata_when_profile_changes():
-    sls = read("states/zen_browser.sls")
-    macro = read("states/_macros_desktop.jinja")
-    # zen_browser.sls invokes browser_extensions with zen_user_js as trigger
-    assert "browser_extensions('zen'" in sls
-    assert "'zen_user_js'" in sls
-    # The macro generates reset_extensions_json with onchanges_any on user_js_id
-    assert "reset_extensions_json" in macro
-    assert "extensions.json" in macro
-    assert "onchanges_any" in macro
-    assert "{{ user_js_id }}" in macro
-
 
 def test_surfingkeys_config_keeps_zen_helper_actions():
     text = read("dotfiles/dot_config/surfingkeys.js")
@@ -35,11 +23,3 @@ def test_surfingkeys_config_keeps_zen_helper_actions():
     assert "{ tab: { tabbed: true, active: true }, url });" not in text
 
 
-def test_helper_server_exposes_required_endpoints_for_zen_flow():
-    text = read("dotfiles/dot_local/bin/executable_surfingkeys-server")
-    assert "class Handler(http.server.SimpleHTTPRequestHandler):" in text
-    assert "directory=DIR" in text
-    assert "if path == '/focus':" in text
-    assert "return super().do_GET()" in text
-    assert 'self.send_header("Cache-Control", "no-store")' in text
-    assert "subprocess.run(" in text

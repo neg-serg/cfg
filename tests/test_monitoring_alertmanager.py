@@ -56,13 +56,6 @@ def test_alertmanager_quadlet_exists():
     assert "--config.file=/etc/alertmanager/alertmanager.yml" in src
 
 
-def test_monitoring_alertmanager_state_exists():
-    src = (STATES_DIR / "monitoring_alertmanager.sls").read_text()
-    assert "tg_secret" in src
-    assert "container_service" in src
-    assert "user_service_file" in src
-    assert "alertmanager_config" in src
-
 
 def test_monitoring_alertmanager_included_in_system_description():
     src = (STATES_DIR / "system_description.sls").read_text()

@@ -23,6 +23,10 @@
 # DeepSeek is optional: only active if operator provisions api/deepseek gopass key.
 # System functions correctly without DeepSeek — all aliases have mandatory coverage.
 #
+# Model deprecation: deepseek-chat and deepseek-reasoner deprecated 2026/07/24.
+# deepseek-chat → deepseek-v4-flash (fast, non-thinking)
+# deepseek-reasoner → deepseek-v4-pro (thinking, reasoning_effort)
+#
 # Adding a provider: add entry here + gopass insert api/<name> + just
 # Removing a provider: remove entry here + just
 
@@ -62,9 +66,9 @@ providers:
     gopass_key: "api/deepseek"
     priority: 4
     models:
-      - name: "deepseek-chat"
+      - name: "deepseek-v4-flash"
         alias: "fallback-code"
-      - name: "deepseek-reasoner"
+      - name: "deepseek-v4-pro"
         alias: "fallback-large"
 
   - name: "ollama"

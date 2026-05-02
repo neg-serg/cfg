@@ -1,14 +1,16 @@
-{% from '_imports.jinja' import user, home, tg_secret %}
+{% from '_imports.jinja' import user, home, tg_secret, gopass_secret %}
 {% from '_macros_pkg.jinja' import npm_pkg %}
-{% from '_macros_service.jinja' import ensure_dir, user_service_enable, user_service_file %}
+{% from '_macros_service.jinja' import ensure_dir, user_service_enable, user_service_file, user_unit_override %}
 
 # ── Secret resolution ─────────────────────────────────────────────────
 {% set _telegram_token_otb = tg_secret('api/opencode-telegram-bot', 'telegram-token', cred_base=home ~ '/.config/opencode-telegram-bot/credentials') %}
 {% set _telegram_uid = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
 {% set _telegram_uid_levra = tg_secret('api/telegram-uid-levra', 'telegram-uid-levra') %}
+{% set _deepseek_api_key = gopass_secret('api/deepseek') %}
 
-# Guard: deploy config only when token is available.
+# Guards
 {% set _has_otb_token = _telegram_token_otb | length > 0 %}
+{% set _has_deepseek_key = _deepseek_api_key | length > 0 %}
 
 # ══════════════════════════════════════════════════════════════════════
 # 1. OpenCode Telegram Bot (npm, requires opencode serve)
@@ -74,6 +76,23 @@ opencode_telegram_bot_env:
       - file: opencode_telegram_bot_config_dir
 {% endif %}
 
+# ── DeepSeek API key for opencode-serve ─────────────────────────────
+{% if _has_deepseek_key %}
+opencode_deepseek_env:
+  file.managed:
+    - name: {{ home }}/.config/opencode/env
+    - user: {{ user }}
+    - group: {{ user }}
+    - mode: '0600'
+    - makedirs: True
+    - contents: |
+        DEEPSEEK_API_KEY={{ _deepseek_api_key }}
+
+{{ user_unit_override('opencode_serve_env', 'opencode-serve.service',
+    contents='[Service]\nEnvironmentFile=%h/.config/opencode/env',
+    requires=['file: opencode_deepseek_env']) }}
+{% endif %}
+
 # ── OpenCode serve + bot (direct user services) ───────────────────────
 {{ user_service_file('opencode_serve_service', 'opencode-serve.service') }}
 {{ user_service_file('opencode_telegram_bot_service', 'opencode-telegram-bot.service') }}
@@ -89,5 +108,6 @@ opencode_telegram_bot_env:
         'cmd: opencode_serve_service_daemon_reload',
         'file: opencode_telegram_bot_service',
         'cmd: opencode_telegram_bot_service_daemon_reload',
-    ] + (['file: opencode_telegram_bot_env'] if _has_otb_token else []),
+    ] + (['file: opencode_telegram_bot_env'] if _has_otb_token else [])
+      + (['file: opencode_deepseek_env', 'file: opencode_serve_env', 'cmd: opencode_serve_env_daemon_reload'] if _has_deepseek_key else []),
 ) }}

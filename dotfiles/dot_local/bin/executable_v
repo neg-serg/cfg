@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-# v: open Neovim with system profile sourced
+# v: universal file opener
 # Usage: v [ARGS...]
 export NVIM_APPNAME=
 . /etc/profile
@@ -10,30 +10,53 @@ _is_image() {
   [[ "$ext" == png || "$ext" == jpg || "$ext" == jpeg || "$ext" == gif || "$ext" == webp || "$ext" == avif ]]
 }
 
+_has_handlr() {
+  local ext="${1:e}"
+  [[ -z "$ext" ]] && return 1
+  command -v handlr >/dev/null 2>&1 || return 1
+  local handler
+  handler=$(handlr get ".$ext" 2>/dev/null) || return 1
+  [[ -z "$handler" ]] && return 1
+  # Known editors — keep single-instance via nvr
+  local lc="${handler:l}"
+  [[ "$lc" == *nvim* || "$lc" == *neovim* || "$lc" == *vim* || "$lc" == *gvim* || "$lc" == *emacs* || "$lc" == *code* || "$lc" == *pycharm* || "$lc" == *helix* || "$lc" == *kakoune* ]] && return 1
+  return 0
+}
+
 IMAGES=()
+HANDLR=()
 FILES=()
 for arg in "$@"; do
-  if _is_image "$arg"; then IMAGES+=("$arg"); else FILES+=("$arg"); fi
+  if _is_image "$arg"; then
+    IMAGES+=("$arg")
+  elif _has_handlr "$arg"; then
+    HANDLR+=("$arg")
+  else
+    FILES+=("$arg")
+  fi
 done
 
-# Show images inline in terminal via kitty icat
-if [ "${#IMAGES[@]}" -gt 0 ]; then
-  for img in "${IMAGES[@]}"; do
-    kitty +kitten icat "$img"
-  done
-fi
+# 1. Show images inline via kitty icat
+for img in "${IMAGES[@]}"; do
+  kitty +kitten icat "$img"
+done
 
-# If only images were given, we're done — no nvim needed
-if [ "${#FILES[@]}" -eq 0 ] && [ "${#IMAGES[@]}" -gt 0 ]; then
+# 2. Open registered non-editor types via handlr
+for nf in "${HANDLR[@]}"; do
+  handlr open "$nf"
+done
+
+# If only images/handlr files were given (not zero args), we're done
+if [ "${#FILES[@]}" -eq 0 ] && { [ "${#IMAGES[@]}" -gt 0 ] || [ "${#HANDLR[@]}" -gt 0 ]; }; then
   exit 0
 fi
 
+# 3. Open remaining files in nvim (single-instance)
 if ! command -v nvr >/dev/null 2>&1; then
   echo "error: nvr is required for remote attachment; reinstall neovim-remote" >&2
   exit 127
 fi
 
-# Open non-image files in existing nvim instance
 if [ -S "$SOCKET" ] && nc -zU "$SOCKET" >/dev/null 2>&1; then
   if [ "${#FILES[@]}" -gt 0 ]; then
     nvr --servername "$SOCKET" --remote-silent "${FILES[@]}"

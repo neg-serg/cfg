@@ -58,7 +58,7 @@ mkdir -p {{ vd }} && rm -f '{{ vd }}/{{ name }}' {{ vd }}/{{ name }}@* && {% if 
 {%- set _u = runas if runas is not none else host.user -%}
 {%- set _try_gopass = (not _gopass_ns.checked) or _gopass_ns.available -%}
 {%- if _try_gopass -%}
-{%- set _r = salt['cmd.run_all']('gopass show -o ' ~ key ~ ' 2>/dev/null', runas=_u, python_shell=True, ignore_retcode=True) -%}
+{%- set _r = salt['cmd.run_all']('PASSWORD_STORE_DIR=' ~ home ~ '/.local/share/pass GNUPGHOME=' ~ home ~ '/.local/share/gnupg XDG_RUNTIME_DIR=/run/user/$(id -u) gopass show -o ' ~ key ~ ' 2>/dev/null', runas=_u, python_shell=True, ignore_retcode=True) -%}
 {%- if not _gopass_ns.checked -%}
 {%- set _gopass_ns.checked = True -%}
 {%- set _gopass_ns.available = (_r.get('retcode', 1) == 0) -%}

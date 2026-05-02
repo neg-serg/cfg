@@ -288,7 +288,16 @@ gopass insert api/anthropic
 # Enter: sk-ant-xxx (Anthropic API key)
 ```
 
-### 7d. NanoClaw Telegram Bot
+### 7d. OpenCode Telegram bot allowlist
+
+Used by `opencode_telegram.sls` to authorize the primary user plus the `levra` user.
+
+```bash
+gopass insert api/telegram-uid-levra
+# Enter: Telegram user ID for LevRa7
+```
+
+### 7e. NanoClaw Telegram Bot
 
 Used by NanoClaw (Telegram bot) and `monitoring_alerts.sls` (Salt alert
 delivery). Fallback credential files live in `~/.nanoclaw/credentials/`.

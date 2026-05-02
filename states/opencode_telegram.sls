@@ -5,6 +5,7 @@
 # ── Secret resolution ─────────────────────────────────────────────────
 {% set _telegram_token_otb = tg_secret('api/opencode-telegram-bot', 'telegram-token', cred_base=home ~ '/.config/opencode-telegram-bot/credentials') %}
 {% set _telegram_uid = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
+{% set _telegram_uid_levra = tg_secret('api/telegram-uid-levra', 'telegram-uid-levra') %}
 
 # Guard: deploy config only when token is available.
 {% set _has_otb_token = _telegram_token_otb | length > 0 %}
@@ -23,7 +24,7 @@ opencode_telegram_auth_patch:
   file.replace:
     - name: {{ home }}/.local/lib/node_modules/@grinev/opencode-telegram-bot/dist/bot/middleware/auth.js
     - pattern: 'if \(userId && userId === config\.telegram\.allowedUserId\) \{'
-    - repl: 'if (userId && userId === config.telegram.allowedUserId && ctx.chat?.type === "private") {'
+    - repl: 'if (userId && (Array.isArray(config.telegram.allowedUserIds) ? config.telegram.allowedUserIds.includes(userId) : userId === config.telegram.allowedUserId) && ctx.chat?.type === "private") {'
     - count: 1
     - require:
       - cmd: install_opencode_telegram
@@ -36,6 +37,15 @@ opencode_telegram_auth_bot_guard_patch:
     - count: 1
     - require:
       - file: opencode_telegram_auth_patch
+
+opencode_telegram_config_allowlist_patch:
+  file.replace:
+    - name: {{ home }}/.local/lib/node_modules/@grinev/opencode-telegram-bot/dist/config.js
+    - pattern: '        allowedUserId: parseInt\(getEnvVar\("TELEGRAM_ALLOWED_USER_ID"\), 10\),\n'
+    - repl: '        allowedUserId: parseInt(getEnvVar("TELEGRAM_ALLOWED_USER_ID"), 10),\n        allowedUserIds: getOptionalAllowedUserIdsEnvVar("TELEGRAM_ALLOWED_USER_IDS", parseInt(getEnvVar("TELEGRAM_ALLOWED_USER_ID"), 10)),\n'
+    - count: 1
+    - require:
+      - cmd: install_opencode_telegram
 
 opencode_telegram_model_whitelist_patch:
   file.replace:
@@ -58,6 +68,7 @@ opencode_telegram_bot_env:
     - context:
         telegram_token: {{ _telegram_token_otb | tojson }}
         telegram_uid: {{ _telegram_uid | tojson }}
+        telegram_uid_levra: {{ _telegram_uid_levra | tojson }}
     - require:
       - file: opencode_telegram_bot_config_dir
 {% endif %}

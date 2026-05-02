@@ -3,6 +3,8 @@
 import importlib.util
 import sys
 
+import yaml
+
 from tests import REPO_ROOT_PATH, SCRIPTS_DIR
 
 
@@ -111,7 +113,8 @@ def test_write_knowledge_base_keeps_canonical_dotted_state_names(tmp_path, monke
         [],
     )
 
-    knowledge_base = (memory_dir / "salt-knowledge.jsonl").read_text()
+    knowledge_base = yaml.safe_load((memory_dir / "salt-knowledge.yaml").read_text())
 
-    assert '"name": "desktop.system"' in knowledge_base
-    assert '"name": "system"' not in knowledge_base
+    states = [s for s in knowledge_base.get("states", [])]
+    assert any(s["name"] == "desktop.system" for s in states)
+    assert all(s["name"] != "system" for s in states)

@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-02T05:30:23'
+generated: '2026-05-02T06:17:35'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -401,12 +401,15 @@ states:
   secrets:
   - api/nanoclaw-telegram-uid
   - api/opencode-telegram-bot
+  - api/telegram-uid-levra
   services:
   - '@grinev/opencode-telegram-bot (npm)'
   - opencode-serve.service
   - opencode-telegram-bot.service
   configs:
   - configs/opencode-telegram-bot.env.j2
+  tests:
+  - tests/test_opencode_telegram.py
 - id: packages
   path: states/packages.sls
   purpose: '- pacman -Qq checks ALL packages — fails if ANY is missing, triggering
@@ -989,6 +992,8 @@ test_files:
 - path: tests/test_nanoclaw.py
 - path: tests/test_niri_focus_hist.py
 - path: tests/test_ollama.py
+- path: tests/test_opencode_telegram.py
+- path: tests/test_optiscaler_universal.py
 - path: tests/test_pkg_drift.py
 - path: tests/test_proxypilot_recover.py
 - path: tests/test_pw_route.py

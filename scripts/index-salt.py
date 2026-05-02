@@ -9,9 +9,9 @@ Reuses parsing infrastructure from lint-jinja.py.
 Outputs markdown to memory/generated/salt-macros.md, salt-states.md, salt-data.md.
 """
 
+import fnmatch
 import glob
 import importlib.util
-import json
 import os
 import re
 import sys
@@ -282,49 +282,61 @@ def generate_state_map_docs(graph, reverse, guards_map):
     return "\n".join(eng) + "\n", "\n".join(rus) + "\n"
 
 
+def _yaml_safe(obj):
+    """Recursively convert tuples to lists for YAML serialization."""
+    if isinstance(obj, dict):
+        return {k: _yaml_safe(v) for k, v in obj.items()}
+    if isinstance(obj, tuple):
+        return [_yaml_safe(i) for i in obj]
+    if isinstance(obj, list):
+        return [_yaml_safe(i) for i in obj]
+    return obj
+
+
 def write_knowledge_base(macros, state_results, summaries):
-    kb_path = os.path.join(MEMORY_DIR, "salt-knowledge.jsonl")
+    kb = {}
+
+    macros_list = []
+    for name, params, src, doc in macros:
+        entry = {"name": name, "file": src}
+        if params:
+            entry["params"] = params
+        if doc:
+            entry["doc"] = doc
+        macros_list.append(entry)
+    if macros_list:
+        kb["macros"] = macros_list
+
+    states_list = []
+    for rel, state_ids, includes, requires, guards in state_results:
+        entry = {
+            "name": _state_name_from_relpath(rel),
+            "file": rel,
+        }
+        if state_ids:
+            entry["state_ids"] = _yaml_safe(state_ids)
+        if includes:
+            entry["includes"] = _yaml_safe(includes)
+        if requires:
+            entry["requires"] = _yaml_safe(requires)
+        if guards:
+            entry["feature_guards"] = _yaml_safe(guards)
+        states_list.append(entry)
+    if states_list:
+        kb["states"] = states_list
+
+    data_list = []
+    for rel, info in summaries:
+        entry = {"file": rel}
+        if info:
+            entry["info"] = _yaml_safe(info)
+        data_list.append(entry)
+    if data_list:
+        kb["data"] = data_list
+
+    kb_path = os.path.join(MEMORY_DIR, "salt-knowledge.yaml")
     with open(kb_path, "w") as fh:
-        for name, params, src, doc in macros:
-            json.dump(
-                {
-                    "type": "macro",
-                    "name": name,
-                    "file": src,
-                    "params": params,
-                    "doc": doc,
-                },
-                fh,
-            )
-            fh.write("\n")
-
-        for rel, state_ids, includes, requires, guards in state_results:
-            fh.write(
-                json.dumps(
-                    {
-                        "type": "state",
-                        "name": _state_name_from_relpath(rel),
-                        "file": rel,
-                        "state_ids": state_ids,
-                        "includes": includes,
-                        "requires": requires,
-                        "feature_guards": guards,
-                    }
-                )
-                + "\n"
-            )
-
-        for rel, info in summaries:
-            fh.write(
-                json.dumps(
-                    {
-                        "type": "data",
-                        "file": rel,
-                        "info": info,
-                    }
-                )
-                + "\n"
-            )
+        yaml.dump(kb, fh, default_flow_style=False, allow_unicode=True, sort_keys=False)
     print(f"Wrote {kb_path}")
 
 
@@ -598,6 +610,86 @@ def generate_module_index(state_results, macros, summaries, usage):
     return yaml.dump(index, default_flow_style=False, allow_unicode=True, sort_keys=False)
 
 
+def validate_knowledge_references(knowledge_path, state_results, macros, summaries):
+    """Cross-validate knowledge.yaml related_entities/related_docs against project entities.
+
+    Returns list of (severity, message) tuples.
+    """
+    with open(knowledge_path) as f:
+        knowledge = yaml.safe_load(f)
+
+    # Build entity lookup sets
+    state_ids = set()
+    for rel, _state_ids, _includes, _requires, _guards in state_results:
+        state_ids.add(_state_name_from_relpath(rel))
+
+    macro_ids = set()
+    for _name, _params, src, _doc in macros:
+        macro_ids.add(os.path.basename(src).replace(".jinja", ""))
+
+    script_basenames = set()
+    for f in glob.glob("scripts/*.py"):
+        script_basenames.add(os.path.basename(f))
+    for f in glob.glob("scripts/*.sh") + glob.glob("scripts/*.zsh"):
+        script_basenames.add(os.path.basename(f))
+
+    data_basenames = set()
+    for rel, _info in summaries:
+        data_basenames.add(os.path.basename(rel))
+        data_basenames.add(rel)
+
+    service_names = set()
+    for rel, _state_ids, _includes, _requires, _guards in state_results:
+        _s, services, _c, _d, _p = _scan_state_source(rel)
+        for svc in services:
+            service_names.add(svc)
+            service_names.add(svc.split(".")[0].split(" (")[0])
+
+    all_doc_ids = set()
+    for cat in knowledge.get("categories", {}).values():
+        for doc_id in cat.get("docs", {}):
+            all_doc_ids.add(doc_id)
+
+    issues = []
+
+    for cat_name, category in knowledge.get("categories", {}).items():
+        for doc_id, doc in category.get("docs", {}).items():
+            for ref in doc.get("related_entities", []):
+                if ref in ("state:*", "macro:*"):
+                    continue
+                if ref == "macro:_macros_*.jinja":
+                    if not any(fnmatch.fnmatch(mid, "_macros_*") for mid in macro_ids):
+                        issues.append(("error", f"[{cat_name}/{doc_id}] {ref}: no matching macros"))
+                    continue
+
+                prefix, name = ref.split(":", 1)
+
+                if prefix == "state":
+                    if name not in state_ids:
+                        alt = name.replace("-", "_").replace(".", "_")
+                        if alt not in state_ids:
+                            issues.append(("warn", f"[{cat_name}/{doc_id}] {ref}: state not found in module index"))
+                elif prefix == "macro":
+                    mid = name.replace(".jinja", "")
+                    if mid not in macro_ids:
+                        issues.append(("error", f"[{cat_name}/{doc_id}] {ref}: macro not found"))
+                elif prefix == "data":
+                    if name not in data_basenames:
+                        issues.append(("error", f"[{cat_name}/{doc_id}] {ref}: data file not found"))
+                elif prefix == "script":
+                    if name not in script_basenames:
+                        issues.append(("error", f"[{cat_name}/{doc_id}] {ref}: script not found"))
+                elif prefix == "service":
+                    if name not in service_names:
+                        issues.append(("warn", f"[{cat_name}/{doc_id}] {ref}: service not found in any state definition"))
+
+            for ref in doc.get("related_docs", []):
+                if ref not in all_doc_ids:
+                    issues.append(("error", f"[{cat_name}/{doc_id}] related_docs '{ref}': target doc not found in knowledge.yaml"))
+
+    return issues
+
+
 def _purpose_from_docstring(path):
     try:
         with open(path) as f:
@@ -694,6 +786,18 @@ def main():
 
     write_knowledge_base(macros, state_results, summaries)
 
+    # 6. Cross-validate knowledge.yaml references
+    knowledge_path = os.path.join(DOCS_DIR, "knowledge.yaml")
+    if os.path.isfile(knowledge_path):
+        issues = validate_knowledge_references(knowledge_path, state_results, macros, summaries)
+        if issues:
+            errs = sum(1 for sev, _ in issues if sev == "error")
+            warns = sum(1 for sev, _ in issues if sev == "warn")
+            print(f"\nknowledge.yaml validation: {errs} errors, {warns} warnings")
+            for severity, msg in issues:
+                print(f"  [{severity.upper()}] {msg}")
+        else:
+            print("knowledge.yaml validation: all references OK")
 
 if __name__ == "__main__":
     main()

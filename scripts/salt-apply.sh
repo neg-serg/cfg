@@ -16,10 +16,12 @@
 #   scripts/salt-apply.sh auto --plan file1.sls  # plan with explicit files
 #
 # Auto mode:
-#   git diff against AUTO_BASE (default: HEAD~1) → salt_impact.py maps
-#   changed files to minimal Salt state target. Falls back to
-#   system_description for shared inputs, multi-target, or unmapped files.
-#   Set SALT_AUTO_DISABLE=1 to force system_description unconditionally.
+#   git diff against last-applied-commit marker (stored in .salt_runtime/)
+#   → salt_impact.py maps changed files to minimal Salt state target.
+#   Falls back to system_description for shared inputs, multi-target, or
+#   unmapped files. Marker advances on every successful apply.
+#   Override: set AUTO_BASE env var to any git ref.
+#   Disable: SALT_AUTO_DISABLE=1 forces system_description unconditionally.
 #
 # Gating:
 #   Maintenance lock is always held during apply (suppresses salt-monitor
@@ -28,7 +30,7 @@
 # Environment:
 #   SALT_DAEMON_SOCK  Unix socket path (default: /tmp/salt-daemon.sock)
 #   SALT_LOG_FILE     Override log file path
-#   AUTO_BASE         Git diff base for auto mode (default: HEAD~1)
+#   AUTO_BASE         Git diff base for auto mode (default: last-applied marker or HEAD~1)
 #   SALT_AUTO_DISABLE Disable minimal-rollout, force system_description
 
 set -euo pipefail
@@ -72,12 +74,22 @@ if [[ "$STATE" == "auto" && "$PLAN_MODE" == true ]]; then
 	exit $?
 fi
 
+AUTO_MODE=false
 if [[ "$STATE" == "auto" ]]; then
+	AUTO_MODE=true
 	if [[ -n "${SALT_AUTO_DISABLE:-}" ]]; then
 		echo "(auto: disabled via SALT_AUTO_DISABLE, applying system_description)"
 		STATE="system_description"
 	else
-		AUTO_BASE="${AUTO_BASE:-HEAD~1}"
+		AUTO_BASE="${AUTO_BASE:-}"
+		MARKER_FILE="${RUNTIME_CONFIG_DIR}/last-applied-commit"
+
+		if [[ -z "$AUTO_BASE" && -f "$MARKER_FILE" ]]; then
+			AUTO_BASE=$(cat "$MARKER_FILE")
+		elif [[ -z "$AUTO_BASE" ]]; then
+			AUTO_BASE="HEAD~1"
+		fi
+
 		CHANGED_STR=$(git -C "$PROJECT_DIR" diff --name-only "$AUTO_BASE" 2>/dev/null || true)
 
 		if [[ -z "$CHANGED_STR" ]]; then
@@ -357,6 +369,10 @@ if [[ $RC -eq 0 ]]; then
 			printf '\033[33m  Re-run: chezmoi apply --force --source %s/dotfiles\033[0m\n' "${PROJECT_DIR}"
 			exit 1
 		fi
+	fi
+	# Record last applied commit for future auto-mode diffs
+	if $AUTO_MODE; then
+		git -C "$PROJECT_DIR" rev-parse HEAD > "${RUNTIME_CONFIG_DIR}/last-applied-commit" 2>/dev/null || true
 	fi
 	python3 "${PROJECT_DIR}/scripts/drift_state.py" refresh-expected \
 		--project-dir "${PROJECT_DIR}" \

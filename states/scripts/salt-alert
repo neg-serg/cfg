@@ -49,7 +49,8 @@ now_epoch() {
 send_telegram() {
     local msg="$1"
     [[ -z "$TELEGRAM_TOKEN" || -z "$TELEGRAM_UID" ]] && return 1
-    curl -fsSL --max-time 10 \
+    # SOCKS5 proxy required because Telegram is blocked in Russia
+    curl -fsSL --max-time 10 --socks5-hostname 127.0.0.1:10808 \
         "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
         -d chat_id="$TELEGRAM_UID" \
         -d parse_mode=HTML \
@@ -411,9 +412,11 @@ cmd_health() {
 # ── Subcommand: --test ───────────────────────────────────────────────
 cmd_test() {
     echo "Sending test alert to Telegram..."
+    local host
+    host=$(hostnamectl hostname 2>/dev/null || cat /proc/sys/kernel/hostname 2>/dev/null || echo 'unknown')
     local msg="<b>🧪 TEST ALERT</b>
 salt-alert is working correctly.
-Host: $(hostname)
+Host: ${host}
 Time: $(date '+%Y-%m-%d %H:%M:%S')"
 
     if send_telegram "$msg"; then

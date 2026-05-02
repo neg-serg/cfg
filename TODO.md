@@ -42,26 +42,7 @@ Multiple Floorp profiles with persistent data (cookies, localStorage, sessions).
 
 
 
-## tg-cli: register own Telegram API credentials
 
-`tg-cli` (pipx, `kabi-tg-cli`) is installed and working with default Telegram Desktop credentials (`api_id=2040`).
-This increases the risk of account restrictions from Telegram.
-
-Current blocker: direct access to `https://my.telegram.org` times out on this network.
-`curl --socks5 127.0.0.1:10808 https://my.telegram.org` works, so browser access must go through the local Telegram SOCKS5 proxy.
-
-- [ ] Restart Zen Browser after running `python3 scripts/set-zen-proxy telegram`
-- [ ] Re-test `https://my.telegram.org` in Zen with Telegram SOCKS5 proxy enabled
-- [ ] If Zen still shows generic `ERROR`, retry in a clean/private window and/or another browser routed through `127.0.0.1:10808`
-
-- [ ] Register own app at https://my.telegram.org/apps (requires SMS/Telegram code)
-- [ ] Create `~/.config/tg-cli/.env` with `TG_API_ID` and `TG_API_HASH`
-- [ ] Re-authenticate: `tg status` (will pick up new credentials)
-- [ ] Optionally: store credentials in gopass (`api/telegram-api`)
-
-Note: my.telegram.org form may silently reject — known issue, retry later or from a different browser/IP.
-
----
 
 ## OpenCode Telegram Bots (manual setup)
 

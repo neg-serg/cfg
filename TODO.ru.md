@@ -71,24 +71,7 @@ Bot API 9.6 (3 апреля 2026) — программное создание б
 В будущем: попробовать [exo](https://github.com/exo-explore/exo) (P2P-кластер, автошардинг, OpenAI-совместимый API).
 
 
-## tg-cli: зарегистрировать собственные API-ключи Telegram
 
-`tg-cli` (pipx, `kabi-tg-cli`) установлен и работает с дефолтными ключами Telegram Desktop (`api_id=2040`).
-Это повышает риск ограничения аккаунта со стороны Telegram.
-
-Текущий блокер: прямой доступ к `https://my.telegram.org` не открывается в этой сети.
-`curl --socks5 127.0.0.1:10808 https://my.telegram.org` работает, поэтому доступ через браузер должен идти через локальный SOCKS5 прокси Telegram.
-
-- [ ] Перезапустить Zen Browser после выполнения `python3 scripts/set-zen-proxy telegram`
-- [ ] Перетестировать `https://my.telegram.org` в Zen с включённым SOCKS5 прокси Telegram
-- [ ] Если Zen всё ещё показывает generic `ERROR`, попробовать в чистом/приватном окне и/или другом браузере, направленном через `127.0.0.1:10808`
-
-- [ ] Зарегистрировать приложение на https://my.telegram.org/apps (потребуется SMS/код из Telegram)
-- [ ] Создать `~/.config/tg-cli/.env` с `TG_API_ID` и `TG_API_HASH`
-- [ ] Переавторизоваться: `tg status` (подхватит новые ключи)
-- [ ] Опционально: сохранить ключи в gopass (`api/telegram-api`)
-
-Примечание: форма my.telegram.org может молча отказывать — известная проблема, попробовать позже или из другого браузера/IP.
 
 
 ## SaluteSpeech — оценка STT/TTS

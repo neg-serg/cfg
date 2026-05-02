@@ -21,7 +21,7 @@ ContainerName=alertmanager
 {% for m in expanded_mounts -%}
 Volume={{ m.host }}:{{ m.container }}:{{ m.mode }}
 {% endfor -%}
-Exec=/bin/alertmanager --config.file=/etc/alertmanager/alertmanager.yml --storage.path=/var/lib/alertmanager
+Exec=--config.file=/etc/alertmanager/alertmanager.yml --storage.path=/alertmanager
 
 [Service]
 Restart=on-failure

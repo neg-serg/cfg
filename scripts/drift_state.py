@@ -6,6 +6,7 @@ import hashlib
 import json
 import socket
 import subprocess
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -21,8 +22,21 @@ def sha256_file(path: Path) -> str | None:
     if not path.exists() or not path.is_file():
         return None
     digest = hashlib.sha256()
-    digest.update(path.read_bytes())
+    with open(path, "rb") as f:
+        while True:
+            chunk = f.read(65536)
+            if not chunk:
+                break
+            digest.update(chunk)
     return digest.hexdigest()
+
+
+def file_stat(path: Path) -> tuple[int, int] | None:
+    try:
+        st = path.stat()
+        return (int(st.st_mtime), st.st_size)
+    except OSError:
+        return None
 
 
 def resolve_path(raw: str, host: dict) -> str:
@@ -34,20 +48,58 @@ def load_inventory(project_dir: Path) -> dict:
         return yaml.safe_load(fh.read()) or {}
 
 
+def hash_file_entry(path: Path, file_id: str, severity: str, cache: dict | None) -> dict:
+    """Compute file entry with optional cache reuse (mtime+size match → skip SHA-256)."""
+    st = file_stat(path)
+    sha = None
+    mtime = None
+    size = None
+
+    if st is not None:
+        mtime, size = st
+        if cache is not None:
+            cached = cache.get(str(path))
+            if cached is not None and cached.get("mtime") == mtime and cached.get("size") == size:
+                sha = cached.get("sha256")
+        if sha is None:
+            sha = sha256_file(path)
+
+    return {
+        "id": file_id,
+        "path": str(path),
+        "severity": severity,
+        "sha256": sha,
+        "mtime": mtime,
+        "size": size,
+    }
+
+
 def build_expected_snapshot(
-    host: dict, inventory: dict, project_dir: Path | None = None, salt_target: str | None = None
+    host: dict,
+    inventory: dict,
+    project_dir: Path | None = None,
+    salt_target: str | None = None,
+    previous_snapshot: dict | None = None,
 ) -> dict:
-    files = []
-    for entry in inventory.get("files", []):
-        path = Path(resolve_path(entry["path"], host))
-        files.append(
-            {
-                "id": entry["id"],
-                "path": str(path),
-                "severity": entry["severity"],
-                "sha256": sha256_file(path),
-            }
-        )
+    cache = (
+        {entry["path"]: entry for entry in previous_snapshot.get("files", [])}
+        if previous_snapshot
+        else None
+    )
+    entries = [
+        (entry["id"], Path(resolve_path(entry["path"], host)), entry["severity"])
+        for entry in inventory.get("files", [])
+    ]
+
+    files = [None] * len(entries)
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        fut = {
+            pool.submit(hash_file_entry, path, eid, sev, cache): i
+            for i, (eid, path, sev) in enumerate(entries)
+        }
+        for f in as_completed(fut):
+            files[fut[f]] = f.result()
+
     result = {
         "generated_at": now_iso(),
         "hostname": host["hostname"],
@@ -145,17 +197,31 @@ def load_runtime_alerts(cache_dir: Path) -> list[dict]:
 def collect_actual_snapshot(
     project_dir: Path, cache_dir: Path, expected: dict, mode: str = "full"
 ) -> dict:
-    files = []
-    for entry in expected.get("files", []):
+    cache = {entry["path"]: entry for entry in expected.get("files", [])}
+    expected_files = expected.get("files", [])
+    results = [None] * len(expected_files)
+
+    def _hash(i: int, entry: dict) -> None:
         path = Path(entry["path"])
-        files.append(
-            {
-                "id": entry["id"],
-                "path": entry["path"],
-                "exists": path.exists(),
-                "sha256": sha256_file(path),
-            }
-        )
+        st = file_stat(path)
+        sha = None
+        if st is not None:
+            cached = cache.get(entry["path"])
+            if cached is not None and cached.get("mtime") == st[0] and cached.get("size") == st[1]:
+                sha = cached.get("sha256")
+            if sha is None:
+                sha = sha256_file(path)
+        results[i] = {
+            "id": entry["id"],
+            "path": entry["path"],
+            "exists": path.exists(),
+            "sha256": sha,
+        }
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        fut = {pool.submit(_hash, i, entry): i for i, entry in enumerate(expected_files)}
+        for f in as_completed(fut):
+            pass
     system_units = [
         collect_unit_state(
             entry["name"], user=False, expected_enabled=entry["enabled"], severity=entry["severity"]
@@ -177,7 +243,7 @@ def collect_actual_snapshot(
     return {
         "generated_at": now_iso(),
         "packages": packages,
-        "files": files,
+        "files": results,
         "system_units": system_units,
         "user_units": user_units,
         "runtime_alerts": runtime_alerts,
@@ -359,8 +425,13 @@ def main() -> int:
     status_path = cache_dir / "drift-status.json"
 
     if args.command == "refresh-expected":
+        previous = read_json(expected_path)
         payload = build_expected_snapshot(
-            host, inventory, project_dir=project_dir, salt_target=args.salt_target
+            host,
+            inventory,
+            project_dir=project_dir,
+            salt_target=args.salt_target,
+            previous_snapshot=previous,
         )
         write_json(expected_path, payload)
         print(f"refreshed {expected_path}")

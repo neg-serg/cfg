@@ -161,18 +161,15 @@ LTX 2.3 22B distilled FP8 работает на 7900 XTX (24GB, `--lowvram`). П
 - доступные модели ограничены DeepSeek (`deepseek-chat`, `deepseek-reasoner`), по умолчанию = `deepseek-chat`
 
 **Ручные шаги (со стороны Telegram):**
-- [ ] Создать бота через @BotFather для telecode → `gopass insert api/telecode-telegram`
 - [ ] Проверить, что работающий бот всё ещё отвечает после ротации токена / перезапуска сервиса: `systemctl --user status opencode-telegram-bot opencode-serve`
-- [ ] Решить, нужен ли `telecode` как второй Telegram-стек или его следует удалить/заморозить
+- [x] telecode удалён — не даёт преимуществ поверх opencode-telegram-bot + telethon-bridge
 
 **Операционное примечание:**
 - [ ] Сменить текущий токен `opencode-telegram-bot` после валидации; токен был вставлен в чат и должен считаться скомпрометированным
 
 **Опциональные улучшения:**
-- [ ] Добавить больше рабочих пространств в telecode config (сейчас только `~/src/salt`)
 - [ ] Проверить end-to-end поток голосовых сообщений для `opencode-telegram-bot` (локальный `whisper-stt` на `127.0.0.1:8002/v1` теперь возвращает успешные транскрипции)
 - [ ] Решить, оставить ли `piper-tts` как основной постоянно включённый локальный TTS fallback для будущих Telegram/голосовых workflow, или переключиться на другой локальный движок
-- [ ] Добавить telecode в health checks `salt-monitor`
 
 ## Запуск Telethon Bridge ✅
 

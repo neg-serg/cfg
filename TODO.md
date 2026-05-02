@@ -73,18 +73,15 @@ Current runtime behavior:
 - available models are restricted to DeepSeek (`deepseek-chat`, `deepseek-reasoner`), default = `deepseek-chat`
 
 **Manual steps (Telegram-side):**
-- [ ] Create bot via @BotFather for telecode → `gopass insert api/telecode-telegram`
 - [ ] Verify the running bot still responds correctly after token rotation / service restarts: `systemctl --user status opencode-telegram-bot opencode-serve`
-- [ ] Decide whether `telecode` is still needed as a second Telegram stack or should be removed/frozen
+- [x] telecode removed — decided it adds no value over opencode-telegram-bot + telethon-bridge
 
 **Operational note:**
 - [ ] Rotate the current `opencode-telegram-bot` token after validation; the token was pasted in chat and should be treated as compromised
 
 **Optional enhancements:**
-- [ ] Add more workspaces to telecode config (currently only `~/src/salt`)
 - [ ] Verify voice message flow end-to-end for `opencode-telegram-bot` (local `whisper-stt` on `127.0.0.1:8002/v1` now returns successful transcriptions)
 - [ ] Decide whether to keep `piper-tts` as the primary always-on local TTS fallback for future Telegram/voice workflows, or switch to another local engine
-- [ ] Add telecode to `salt-monitor` health checks
 
 ---
 

@@ -337,19 +337,6 @@ opencode_telegram_bot:         # OpenCode Telegram bot
       mode: rw
   env_file: null
 
-telecode:                      # Telecode Telegram agent
-  unit: telecode
-  scope: user
-  manual_start: true
-  health_cmd: "systemctl --user is-active --quiet telecode.service"
-  container_image: telecode
-  gpu: none
-  bind_mounts:
-    - host: ~/.telecode
-      container: /data
-      mode: rw
-  env_file: null
-
 # ─── Password management ────────────────────────────────────────────
 vaultwarden:
   port: 8222

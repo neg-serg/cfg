@@ -1,19 +1,13 @@
 {% from '_imports.jinja' import user, home, tg_secret %}
 {% from '_macros_pkg.jinja' import npm_pkg %}
-{% from '_macros_install.jinja' import curl_bin %}
-{% import_yaml 'data/service_catalog.yaml' as catalog %}
-{% import_yaml 'data/container_images.yaml' as image_registry %}
-{% from '_macros_service.jinja' import ensure_dir, container_service, user_service_enable, user_service_file %}
-{% import_yaml 'data/versions.yaml' as ver %}
+{% from '_macros_service.jinja' import ensure_dir, user_service_enable, user_service_file %}
 
 # ── Secret resolution ─────────────────────────────────────────────────
 {% set _telegram_token_otb = tg_secret('api/opencode-telegram-bot', 'telegram-token', cred_base=home ~ '/.config/opencode-telegram-bot/credentials') %}
-{% set _telegram_token_tc = tg_secret('api/telecode-telegram', 'telegram-token', cred_base=home ~ '/.telecode/credentials') %}
 {% set _telegram_uid = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
 
-# Guards: deploy configs only when tokens are available.
+# Guard: deploy config only when token is available.
 {% set _has_otb_token = _telegram_token_otb | length > 0 %}
-{% set _has_tc_token = _telegram_token_tc | length > 0 %}
 
 # ══════════════════════════════════════════════════════════════════════
 # 1. OpenCode Telegram Bot (npm, requires opencode serve)
@@ -85,60 +79,3 @@ opencode_telegram_bot_env:
         'cmd: opencode_telegram_bot_service_daemon_reload',
     ] + (['file: opencode_telegram_bot_env'] if _has_otb_token else []),
 ) }}
-
-# ══════════════════════════════════════════════════════════════════════
-# 2. Telecode (Go binary, spawns CLI directly) — containerized
-# ══════════════════════════════════════════════════════════════════════
-
-{{ curl_bin('telecode',
-    'https://github.com/futureCreator/telecode/releases/download/v' ~ ver.telecode ~ '/telecode-linux-amd64',
-    version=ver.telecode) }}
-
-# ── Config directory + credentials fallback ────────────────────────────
-{{ ensure_dir('telecode_config_dir', home ~ '/.telecode') }}
-{{ ensure_dir('telecode_credentials_dir', home ~ '/.telecode/credentials', mode='0700') }}
-
-{% if _has_tc_token %}
-telecode_config:
-  file.managed:
-    - name: {{ home }}/.telecode/config.yml
-    - source: salt://configs/telecode.yaml.j2
-    - template: jinja
-    - user: {{ user }}
-    - group: {{ user }}
-    - mode: '0600'
-    - context:
-        home: {{ home }}
-        bot_token: {{ _telegram_token_tc | tojson }}
-        telegram_uid: {{ _telegram_uid | tojson }}
-    - require:
-      - file: telecode_config_dir
-{% endif %}
-
-# ── Legacy unit cleanup (cutover to Quadlet) ─────────────────────────
-telecode_legacy_unit_absent:
-  file.absent:
-    - name: {{ home }}/.config/systemd/user/telecode.service
-
-telecode_legacy_unit_daemon_reload:
-  cmd.run:
-    - name: systemctl --user daemon-reload
-    - onchanges:
-      - file: telecode_legacy_unit_absent
-
-{% if not _has_tc_token %}
-telecode_legacy_unit_stopped:
-  service.dead:
-    - name: telecode.service
-    - enable: False
-    - scope: user
-    - require:
-      - file: telecode_legacy_unit_absent
-{% endif %}
-
-# ── Telecode container (only when token is present) ──────────────────
-{% if _has_tc_token %}
-{{ container_service('telecode', catalog.telecode, image_registry,
-    user_scope=True,
-    requires=['file: telecode_legacy_unit_absent']) }}
-{% endif %}

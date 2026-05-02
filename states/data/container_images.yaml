@@ -135,14 +135,6 @@ opencode_telegram_bot:
   approved_at: null
   note: "Local image — build: podman build -t localhost/opencode-telegram-bot ."
 
-telecode:
-  registry: localhost
-  image: telecode
-  variant: null
-  digest: null
-  approved_at: null
-  note: "Local image — build: podman build -t localhost/telecode ."
-
 vaultwarden:
   registry: docker.io
   image: vaultwarden/server

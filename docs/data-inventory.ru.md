@@ -58,7 +58,6 @@
 - `telethon_bridge` (6 entries)
 - `opencode_serve` (6 entries)
 - `opencode_telegram_bot` (6 entries)
-- `telecode` (6 entries)
 
 
 ## `states/data/custom_pkgs.yaml`
@@ -264,7 +263,6 @@ _Root type: list_
 - `telethon_bridge` (8 entries)
 - `opencode_serve` (8 entries)
 - `opencode_telegram_bot` (7 entries)
-- `telecode` (7 entries)
 
 
 ## `states/data/services.yaml`
@@ -306,7 +304,6 @@ _Root type: list_
 - `hiddify`: 2.5.7
 - `nanoclaw`: 1.2.0
 - `telethon`: 1.42.0
-- `telecode`: 0.1.3
 - `modern_steam`: 0.2.7
 - `mpv_mpris`: 1.2
 - `uosc`: 5.12.0

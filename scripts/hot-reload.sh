@@ -9,7 +9,6 @@
 #   scripts/hot-reload.sh nanoclaw           # restart NanoClaw (Quadlet)
 #   scripts/hot-reload.sh telethon-bridge    # restart Telethon bridge (Quadlet)
 #   scripts/hot-reload.sh opencode-telegram  # restart OpenCode Telegram bot (Quadlet)
-#   scripts/hot-reload.sh telecode           # restart Telecode agent (Quadlet)
 #   scripts/hot-reload.sh all                # restart all running services
 #
 # Environment:
@@ -39,10 +38,6 @@ SVC_TYPE[telethon-bridge]='quadlet'
 SVC_UNIT[opencode-telegram]='opencode-telegram-bot.service'
 SVC_HEALTH[opencode-telegram]='pgrep -f opencode-telegram >/dev/null'
 SVC_TYPE[opencode-telegram]='quadlet'
-
-SVC_UNIT[telecode]='telecode.service'
-SVC_HEALTH[telecode]='pgrep -f telecode >/dev/null'
-SVC_TYPE[telecode]='quadlet'
 
 SVC_UNIT[opencode-serve]='opencode-serve.service'
 SVC_HEALTH[opencode-serve]='curl -sf http://127.0.0.1:4096/ >/dev/null 2>&1'

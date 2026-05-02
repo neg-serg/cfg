@@ -1,12 +1,10 @@
 // Niri configuration (KDL)
-// See https://github.com/YaLTeR/niri/blob/main/examples/config.kdl for full examples
 
 output "DP-2" {
     mode "3840x2160@240"
     scale 2.0
     position x=0 y=0
     variable-refresh-rate
-    // Note: bitdepth not configurable in Niri
 }
 
 output "DP-1" {
@@ -22,82 +20,152 @@ input {
         repeat_delay 250
         repeat_rate 35
     }
-    
+
     touchpad {
         tap
         natural-scroll
     }
-    
+
     mouse {
-        // natural-scroll
     }
 }
 
-// Workspace layout
 layout {
     gaps 0
     center-focused-column "never"
-    
-    // Hyprland scrolling features not supported in Niri:
-    // - fullscreen_on_one_column
-    // - follow_focus
-    // - follow_min_visible
-    // - direction
-    // - focus_fit_method
-    // (see Hyprland config for details)
-    
+
     focus-ring {
         width 4
         active-color "#7fc8ff"
         inactive-color "#505050"
     }
-    
+
     border {
         width 1
         active-color "#00285981"
         inactive-color "#00000000"
     }
-    
+
     shadow {
-        off
         softness 30
         spread 5
         offset x=0 y=5
         color "#0007"
     }
-    
+
     default-column-width { proportion 0.5; }
     preset-column-widths {
+        proportion 0.25
+        proportion 0.33
         proportion 0.5
+        proportion 0.66
+        proportion 0.75
         proportion 1.0
     }
 }
 
-// Keybindings
 binds {
+    // ── Navigation ──────────────────────────────────────
     Mod+H { focus-column-left; }
     Mod+J { focus-window-down; }
     Mod+K { focus-window-up; }
     Mod+L { focus-column-right; }
-    
+
     Mod+Ctrl+H { move-column-left; }
     Mod+Ctrl+J { move-window-down; }
     Mod+Ctrl+K { move-window-up; }
     Mod+Ctrl+L { move-column-right; }
-    
+
     Mod+Page_Down { focus-workspace-down; }
     Mod+Page_Up   { focus-workspace-up; }
     Mod+U         { focus-workspace-down; }
     Mod+I         { focus-workspace-up; }
-    
-    Mod+Return { spawn "kitty" "--single-instance"; }
-    Mod+D { spawn "vicinae" "toggle"; }
-    Mod+Shift+D { spawn "zen-browser"; }
-    
-    Mod+Q { close-window; }
-    Mod+Shift+Q { exit; }
+
+    Mod+Home { focus-workspace-first; }
+    Mod+End  { focus-workspace-last; }
+
+    // ── Windows ─────────────────────────────────────────
+    Mod+Q     { close-window; }
     Mod+Escape { close-window; }
-    Mod+Space { toggle-overview; }
+    Mod+F     { fullscreen-window; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+E     { toggle-window-floating; }
+
+    // Column resize
+    Mod+Equal        { set-column-width "+50"; }
+    Mod+Minus        { set-column-width "-50"; }
+    Mod+BracketRight { set-column-width "+10"; }
+    Mod+BracketLeft  { set-column-width "-10"; }
+    Mod+Shift+BracketRight { set-column-width "+100"; }
+    Mod+Shift+BracketLeft  { set-column-width "-100"; }
+    Mod+1 { set-column-width "0.25"; }
+    Mod+2 { set-column-width "0.33"; }
+    Mod+3 { set-column-width "0.5"; }
+    Mod+4 { set-column-width "0.66"; }
+    Mod+5 { set-column-width "0.75"; }
+    Mod+6 { set-column-width "1.0"; }
+
+    // ── Launcher / UI ───────────────────────────────────
+    Mod+Return    { spawn "kitty" "--single-instance"; }
+    Mod+D         { spawn "vicinae" "toggle"; }
+    Mod+Shift+D   { spawn "zen-browser"; }
+    Mod+Space     { toggle-overview; }
+    Mod+Shift+Q   { exit; }
+    Mod+Slash     { spawn "sh" "-c" "~/.local/bin/hypr-shortcuts"; }
+
+    // ── Apps ────────────────────────────────────────────
+    Mod+X     { spawn "kitty" "--single-instance" "--class" "term"; }
+    Mod+W     { spawn "zen-browser"; }
+    Mod+Shift+W { spawn "floorp"; }
+    Mod+B     { spawn "sh" "-c" "~/.local/bin/pl video"; }
+    Mod+G     { spawn "steam"; }
+    Mod+O     { spawn "zathura"; }
+    Mod+Ctrl+O { spawn "obs"; }
+
+    // ── Media keys ──────────────────────────────────────
+    XF86AudioRaiseVolume { spawn "swayosd-client" "--output-volume" "+5"; }
+    XF86AudioLowerVolume { spawn "swayosd-client" "--output-volume" "-5"; }
+    XF86AudioMute        { spawn "swayosd-client" "--output-volume" "mute-toggle"; }
+    XF86AudioMicMute     { spawn "swayosd-client" "--input-volume" "mute-toggle"; }
+    XF86MonBrightnessUp   { spawn "swayosd-client" "--brightness" "+10"; }
+    XF86MonBrightnessDown { spawn "swayosd-client" "--brightness" "-10"; }
+    XF86AudioNext  { spawn "playerctl" "next"; }
+    XF86AudioPause { spawn "playerctl" "play-pause"; }
+    XF86AudioPlay  { spawn "playerctl" "play-pause"; }
+    XF86AudioPrev  { spawn "playerctl" "previous"; }
+
+    Mod+Shift+S { spawn "playerctl" "play-pause"; }
+    Mod+Comma   { spawn "sh" "-c" "~/.local/bin/pl cmd previous"; }
+    Mod+Period  { spawn "sh" "-c" "~/.local/bin/pl cmd next"; }
+    Mod+M       { spawn "sh" "-c" "~/.local/bin/music-rename current"; }
+
+    // ── Screenshots ─────────────────────────────────────
+    Mod+Shift+R     { spawn "sh" "-c" "shot=\"$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png\"; grim \"$shot\" && pic-info \"$shot\""; }
+    Mod+Ctrl+Shift+R { spawn "sh" "-c" "shot=\"$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png\"; grim -g \"$(slurp)\" \"$shot\" && pic-info \"$shot\""; }
+    Mod+Shift+V     { spawn "sh" "-c" "~/.local/bin/screenrec screen"; }
+    Mod+Ctrl+Shift+V { spawn "sh" "-c" "~/.local/bin/screenrec area"; }
+
+    // ── Misc ────────────────────────────────────────────
+    Mod+N           { spawn "sh" "-c" "dunstctl history-pop"; }
+    Mod+Alt+G       { spawn "sh" "-c" "~/.local/bin/hypr-win-list"; }
+    Mod+Alt+Backslash { spawn "sh" "-c" "~/.local/bin/hypr-win-list"; }
+    Mod+Shift+M     { spawn "sh" "-c" "~/.local/bin/main-menu"; }
+    Caps_Lock       { spawn "swayosd-client" "--caps-lock"; }
+    Mod+Apostrophe  { spawn "sh" "-c" "~/.local/bin/hypr-fix"; }
+    Mod+Ctrl+N      { spawn "sh" "-c" "~/.local/bin/sys-relief"; }
+    Mod+Alt+P       { spawn "sh" "-c" "~/.local/bin/switch-proxy"; }
+
+    // ── Startup ─────────────────────────────────────────
+    spawn-at-startup "sh" "-c" "~/.local/bin/unlock"
+    spawn-at-startup "dunst"
+    spawn-at-startup "swayosd-server"
+    spawn-at-startup "sh" "-c" "pkill -f 'wl-paste --watch cliphist store' 2>/dev/null; wl-paste --watch cliphist store"
+    spawn-at-startup "nicotine"
+    spawn-at-startup "sh" "-c" "~/.local/bin/niri-focus-hist"
+    spawn-at-startup "sh" "-c" "~/.local/bin/gpg-warmup"
+    spawn-at-startup "systemctl" "--user" "start" "--no-block" "vicinae.service"
+    spawn-at-startup "systemctl" "--user" "start" "--no-block" "surfingkeys-server.service"
+    spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY XDG_SESSION_TYPE && systemctl --user restart --no-block quickshell.service"
 }
 
 // Window rules
@@ -106,7 +174,6 @@ window-rule {
     match app-id=r#"^floorp$"#
     match app-id=r#"^one\.ablaze\.floorp$"#
     match app-id=r#"^floorpdeveloperedition$"#
-    // Optional: open-floating true if needed
 }
 
 window-rule {
@@ -124,16 +191,11 @@ window-rule {
     open-floating true
 }
 
-// Status bar (optional)
-// bar { ... }
-
-// Animations
 animations {
     enabled true
     spring 400,0.5
 }
 
-// Misc
 misc {
     focus_on_window_activation true
     border_width 1

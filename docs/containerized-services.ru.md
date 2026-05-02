@@ -13,7 +13,6 @@
 | `loki` | `docker.io/grafana/loki:3.x` | system | Агрегация логов |
 | `promtail` | `docker.io/grafana/promtail:3.x` | system | Отправка логов в Loki |
 | `grafana` | `docker.io/grafana/grafana-oss:11.x-oss` | system | Дашборды |
-| `telecode` | `localhost/telecode` | user | Собирается локально; Go бинарник |
 
 Сервисы, которые **остаются нативными**:
 
@@ -60,13 +59,17 @@ podman build -t localhost/<имя-сервиса> .
 - System: `/etc/containers/systemd/<name>.container`
 - User: `~/.config/containers/systemd/<name>.container`
 
+Quadlet генерирует соответствующий systemd unit в `/run/systemd/system/<name>.service` (system) или `~/.config/systemd/user/<name>.service` (user).
+
 **Как проверить health?**
 
 ```bash
-systemctl status <unit>.service
-sudo podman ps
-curl http://127.0.0.1:<port><health_path>
+systemctl status <unit>.service        # systemd view
+sudo podman ps --format '...'          # Podman view
+curl http://127.0.0.1:<port><health_path>   # HTTP probe
 ```
+
+Для контейнерных сервисов с `Notify=healthy` команда `systemctl status` покажет active ТОЛЬКО после прохождения внутреннего HealthCmd контейнера.
 
 **Куда идут логи?**
 

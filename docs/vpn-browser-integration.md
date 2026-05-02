@@ -281,7 +281,7 @@ For issues or questions:
 
 ## Related Documentation
 
-- VPN Quick Start (docs/vpn-quickstart.ru.md, Russian only)
+- VPN Quick Start (docs/vpn-quickstart.md)
 - Hybrid VPN Architecture
 - [Salt States for VPN](../states/README.md)
 - [RKN Domains Fetcher Source Code](../scripts/rkn-domains-fetcher.py)

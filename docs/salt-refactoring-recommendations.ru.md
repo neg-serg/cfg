@@ -56,6 +56,37 @@
 - заменит читаемую Salt-логику на generic YAML schema или meta-template
 - усложнит отладку без снижения реального дублирования
 
+## Статус бэклога
+
+| Пункт | Классификация | Статус | Примечания |
+| --- | --- | --- | --- |
+| 1. Runtime-dir normalization | safe now | выполнено в `071-salt-refactor-program` | `host.runtime_dir` теперь управляет всеми user-session references |
+| 2. Shared Hugging Face download path | safe now | выполнено в `071-salt-refactor-program` | `video_ai` использует общий макрос пути |
+| 3. YAML-driven user-service feature tags | safe now | выполнено в `071-salt-refactor-program` | параллельные хардкодные списки удалены из `user_services.sls` |
+| 4. Shared Salt runtime bootstrap shell module | safe now | выполнено в `071-salt-refactor-program` | `salt-apply.sh` и `salt-validate.sh` используют одну реализацию bootstrap |
+| 5. Extract `Justfile` lint recipe | safe now | выполнено в `071-salt-refactor-program` | линтер вынесен в `scripts/lint-all.sh` |
+| 6. Narrow config+restart helper | requires validation | выполнено в `071-salt-refactor-program` | применён только к повторяющемуся паттерну Transmission settings |
+| 7. Contract tests for macros/rendering | safe now | выполнено в `071-salt-refactor-program` | добавлены регрессионные тесты в `tests/` |
+| 8. Performance gate | requires validation | выполнено в `071-salt-refactor-program` | path-scoped PASS/FAIL/INCONCLUSIVE gate встроен в валидацию |
+| 9. Selective SLS decomposition | requires validation | выполнено в `071-salt-refactor-program` | `video_ai` и `desktop` разделены на тематические includes |
+| 10. Keep refactor backlog synchronized | safe now | выполнено в `071-salt-refactor-program` | этот документ и spec-kit задачи синхронизированы |
+
+## Подтверждение валидации
+
+Последний прогон на `071-salt-refactor-program`:
+
+- `pytest tests/` → `48 passed`
+- `just lint` → пройдено
+- `just validate` → `Validated 49 states, 0 failed`
+- `just render-matrix` → все сценарии отрендерены успешно
+- `python3 scripts/state-profiler.py --compare <baseline> <baseline> --gate --min-sample-count 10` → `PASS`
+
+## Порядок внедрения
+
+1. Внедрить уже реализованные safe-now пункты: runtime-dir normalization, shared downloads, YAML user-services, shared runtime bootstrap, lint extraction, contract tests, backlog sync.
+2. Внедрить validation-gated, но завершённые пункты с записанными данными: config+restart helper, performance gate, selective SLS decomposition.
+3. Будущие follow-up держать узкими; не расширять include-графы и не вводить meta-генерируемую топологию.
+
 ## Safe Now
 
 ### REC-001: заменить захардкоженные `/run/user/1000` на `host.runtime_dir`
@@ -74,6 +105,8 @@
 
 - `just validate`
 - проверить отрендеренные значения окружения для затронутых user services
+
+**Статус**: выполнено в ветке `071-salt-refactor-program`
 
 ---
 
@@ -151,6 +184,29 @@
 - `just validate`
 - `just render-matrix`
 - сравнить отрендеренные enable/disable lists до и после
+
+**Статус**: выполнено в ветке `071-salt-refactor-program`
+
+---
+
+### REC-013: направить загрузки `video_ai.sls` через общий Hugging Face макрос
+
+**Scope**: `states/video_ai.sls`, `states/_macros_install.jinja`, `states/llama_embed.sls`
+
+**Problem**: `video_ai.sls` дублирует несколько блоков загрузки с Hugging Face, что создаёт риск расхождения в retry, cache и idempotency.
+
+**Recommendation**: Добавить узкий helper для Hugging Face на основе `http_file` и использовать его для артефактов моделей `video_ai`.
+
+**Why here**: В репозитории уже есть стабильная абстракция `http_file`. Небольшой provider-specific wrapper сохраняет macro-first правило без изобретения широкого DSL для загрузок.
+
+**Performance impact**: `neutral`
+
+**Validation**:
+
+- `just validate`
+- отрендерить `video_ai` и проверить, что state ID и `creates` цели остались стабильными
+
+**Статус**: выполнено в ветке `071-salt-refactor-program`
 
 ---
 

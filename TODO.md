@@ -88,24 +88,19 @@ Current runtime behavior:
 
 ---
 
-## Telethon Bridge bring-up
+## Telethon Bridge bring-up ✅
 
-Repository/runtime prep is done, but the service is still blocked on external Telegram MTProto prerequisites.
+Сделано 2026-05-02. Сервис активен, авторизован как личный аккаунт (id=109503498).
 
-Current state:
-- `telethon_bridge` feature is enabled for `telfir`
-- config/runtime paths were moved to XDG-style directories
-- service healthcheck is honest now and stays red until a real session exists
-- `telethon-bridge-init` now fails with a clear error instead of traceback when MTProto credentials are missing
+- [x] Получены `api_id` (23244142) и `api_hash` из my.telegram.org через SOCKS5 прокси
+- [x] Сохранены в gopass как `api/telegram-telethon-id` и `api/telegram-telethon-hash`
+- [x] Перезапущен `./scripts/salt-apply.sh telethon_bridge` — конфиг с реальными ключами
+- [x] Запущен `telethon-bridge-init` интерактивно — session-файл создан
+- [x] Сервис запущен, health endpoint возвращает `{"connected": true, ...}`
 
-Remaining blockers:
-- [ ] Obtain `api_id` and `api_hash` from `https://my.telegram.org/apps`
-- [ ] Store them in `gopass` as `api/telegram-telethon-id` and `api/telegram-telethon-hash`
-- [ ] Re-run `./scripts/salt-apply.sh telethon_bridge`
-- [ ] Run `telethon-bridge-init` interactively to create `~/.local/state/telethon-bridge/telethon.session`
-- [ ] Start and verify: `systemctl --user restart telethon-bridge && curl -s http://127.0.0.1:8319/health`
-
-Note: `my.telegram.org` currently times out directly on this network; use the local Telegram SOCKS5 proxy path from the section above.
+**Известные проблемы:**
+- ProxyPilot (порт 8317) не отвечает (connection reset) — предшествующая проблема, не связана с настройкой ключей/прокси. Bridge сообщает `proxypilot_ok: false`.
+- Для AI-ответов через Telethon bridge нужно сначала починить ProxyPilot.
 
 ---
 
@@ -209,13 +204,7 @@ Add dark theme configuration for Nyxt browser:
 
 ### Home LLM cluster — exo / llama.cpp RPC
 
-When building a multi-node home cluster, evaluate distributed LLM inference options:
-
-- **[exo](https://github.com/exo-explore/exo)** (~42k stars) — P2P cluster, auto-discovery via libp2p, auto-sharding across heterogeneous devices. AMD ROCm supported via tinygrad. No AUR package (pip-only). OpenAI-compatible API — plugs into ProxyPilot. Best for: models >VRAM (70B–235B class).
-- **llama.cpp RPC backend** — already installed (`llama.cpp-vulkan`). Run `rpc-server` on remote nodes, connect via `--rpc host:50052`. No extra dependencies. Vulkan support. Best for: extending existing stack with minimal overhead.
-- **Ollama cluster mode** — in development upstream, may land before cluster is built. Monitor progress.
-
-Decision: prefer llama.cpp RPC (already in stack, AUR package, Vulkan). Revisit exo when AMD ROCm support matures and/or AUR package appears.
+Future: try [exo](https://github.com/exo-explore/exo) (P2P cluster, auto-sharding, OpenAI-compatible API).
 
 ### SaluteSpeech — STT/TTS evaluation
 
@@ -264,6 +253,36 @@ When the Wayland compositor emits a fast output-remove-and-readd sequence (monit
 - [x] Keep `Restart=always` in wl.service as defense-in-depth
 
 **Secondary cleanup** (cosmetic): `ExecStartPost=wl restore` retry-loop in the unit file fires before daemon's IPC socket is ready. Fix: `sd_notify(READY=1)` + `Type=notify` + drop sleep-based retry loop.
+
+---
+
+## Music Analysis Pipeline (essentia + annoy)
+
+Scripts `music-highlevel`, `music-similar`, `music-index` require:
+- `essentia` (provides `streaming_extractor_music`) — not in Arch repos, needs AUR or custom PKGBUILD
+- `python-annoy` — approximate nearest neighbor library, pip or AUR
+
+Create a separate Salt state (`music_analysis.sls` or extend `installers.sls`):
+1. Build/install `essentia` via paru or PKGBUILD
+2. Install `python-annoy` via pip_pkg macro
+3. Idempotency checks for both
+
+---
+
+## Cosmetic improvements
+
+**npmrc prefix**: global npm prefix is set to `/nonexistent` (from `/etc/npmrc`).
+Create `~/.npmrc` with `prefix=$HOME/.local` via chezmoi (`dotfiles/dot_npmrc`).
+Without this, `npm list -g` and `npm outdated -g` don't work (Salt workaround uses `--prefix`).
+
+**ProxyPilot alias comment**: the `name/alias` format in `proxypilot.yaml.j2` is non-obvious. Add a comment explaining the mapping direction (alias = what the client sends, name = local model ID).
+
+---
+
+## Nyxt Browser Packaging
+
+`nyxt-bin` — binary packaging of Nyxt browser. Requires investigation:
+the current AUR package may be sufficient, or a custom PKGBUILD may be needed.
 
 ---
 

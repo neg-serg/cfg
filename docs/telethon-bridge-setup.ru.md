@@ -54,6 +54,12 @@ Telethon использует MTProto (не Bot API), для чего нужны
 
 ## Шаги установки
 
+### Предварительные требования
+
+- `api/telegram-telethon-id` и `api/telegram-telethon-hash` должны существовать в `gopass`
+- `telethon-bridge-init` должен создать `~/.local/state/telethon-bridge/telethon.session`
+- `telethon-bridge` остаётся неактивным, пока файл сессии не существует — юнит пользователя имеет `ConditionPathExists=%h/.local/state/telethon-bridge/telethon.session`
+
 ### 1. Создание секретов в gopass
 
 После получения ключей с my.telegram.org:

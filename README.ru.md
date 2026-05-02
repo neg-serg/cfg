@@ -1,5 +1,7 @@
 # salt
 
+> [English version](README.md)
+
 Salt states + chezmoi dotfiles для конфигурации рабочей станции на CachyOS (Arch-based).
 
 ## Структура

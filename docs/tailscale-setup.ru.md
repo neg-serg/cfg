@@ -274,3 +274,4 @@ tailscale status --json | python3 -c "import json,sys; d=json.load(sys.stdin); p
 | Ключ истёк | 180-дневный цикл | `sudo tailscale up --accept-dns=false` |
 | Локальный DNS сломался после Tailscale | Запуск без `--accept-dns=false` | `sudo tailscale set --accept-dns=false`, затем `sudo systemctl restart systemd-resolved` |
 | `tailscaled` не запускается | Конфликт порта или устаревшее состояние | Проверьте `journalctl -u tailscaled -n 50`; при необходимости удалите `/var/lib/tailscale/tailscaled.state` |
+| Local DNS broken after Tailscale | Started without `--accept-dns=false` | `sudo tailscale set --accept-dns=false` then `sudo systemctl restart systemd-resolved` |

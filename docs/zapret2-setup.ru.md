@@ -53,11 +53,34 @@ scripts/zapret2-rollout.sh preview
 scripts/zapret2-rollout.sh smoke
 ```
 
-Точка входа для live-активации после отдельного явного разрешения:
+## Режимы активации
+
+После явного одобрения поддерживаются два стиля активации:
+
+1. Отдельная live-активация после того, как артефакты rollout уже развёрнуты.
+2. Активация в том же окне rollout, которая применяет управляемые артефакты Zapret2 и затем запускает unit как финальный шаг оператора.
+
+Точка входа для отдельной live-активации:
 
 ```bash
 sudo systemctl start zapret2.service
 ```
+
+Активация в окне rollout:
+
+```bash
+scripts/salt-apply.sh zapret2
+sudo systemctl start zapret2.service
+```
+
+Если флаг функции уже включён в `states/data/hosts.yaml`, в том же окне активации можно использовать полный host rollout:
+
+```bash
+scripts/salt-apply.sh
+sudo systemctl start zapret2.service
+```
+
+Salt rollout по-прежнему сначала подготавливает пакет, конфиг, helper и unit. Влияющий на трафик шаг остаётся явным запуском сервиса, будь то сразу после rollout или позже в отдельном окне.
 
 Проверка после активации:
 

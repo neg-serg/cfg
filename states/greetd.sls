@@ -99,6 +99,12 @@ greetd_cleanup_stale:
       - /etc/greetd/hyprland-greeter-config.conf
       - /etc/greetd/kitty.conf
 
+greetd_remove_broken_sessions:
+  file.absent:
+    - names:
+      - /usr/share/wayland-sessions/gnome.desktop
+      - /usr/share/wayland-sessions/hyprland-uwsm.desktop
+
 greetd_enabled:
   service.enabled:
     - name: greetd

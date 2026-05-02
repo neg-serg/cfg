@@ -44,6 +44,7 @@ opencode_telegram_config_allowlist_patch:
     - pattern: '        allowedUserId: parseInt\(getEnvVar\("TELEGRAM_ALLOWED_USER_ID"\), 10\),\n'
     - repl: '        allowedUserId: parseInt(getEnvVar("TELEGRAM_ALLOWED_USER_ID"), 10),\n        allowedUserIds: getOptionalAllowedUserIdsEnvVar("TELEGRAM_ALLOWED_USER_IDS", parseInt(getEnvVar("TELEGRAM_ALLOWED_USER_ID"), 10)),\n'
     - count: 1
+    - unless: 'grep -qF "getOptionalAllowedUserIdsEnvVar" {{ home }}/.local/lib/node_modules/@grinev/opencode-telegram-bot/dist/config.js'
     - require:
       - cmd: install_opencode_telegram
 

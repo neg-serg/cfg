@@ -1,0 +1,39 @@
+name: constitution-template
+version: 1.0
+description: "Template for project constitution documents"
+
+document:
+  metadata:
+    project_name: {type: string, required: true}
+    version: {type: string, required: true, description: "Semantic version, e.g. 1.0.0"}
+    ratified: {type: date, required: true}
+    last_amended: {type: date, required: true}
+
+  sections:
+    - name: Core Principles
+      required: true
+      items:
+        - principle: {type: string, required: true, description: "Principle name"}
+          description: {type: string, required: true, description: "Detailed explanation of the principle"}
+          non_negotiable: {type: boolean, default: false}
+          example: {type: string, required: false}
+
+    - name: Additional Constraints
+      required: false
+      description: "Security requirements, performance standards, technology stack requirements, compliance standards, deployment policies"
+      content: {type: string, required: true}
+
+    - name: Development Workflow
+      required: false
+      description: "Review process, quality gates, testing requirements"
+      content: {type: string, required: true}
+
+  governance:
+    description: "Constitution supersedes all other practices; amendments require documentation, approval, migration plan"
+    rules:
+      - rule: "All PRs/reviews must verify compliance"
+        required: true
+      - rule: "Complexity must be justified"
+        required: true
+      - rule: "Use guidance file for runtime development guidance"
+        required: false

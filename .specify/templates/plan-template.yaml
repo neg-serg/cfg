@@ -1,0 +1,86 @@
+name: plan-template
+version: 1.0
+description: "Template for implementation plan documents"
+
+document:
+  metadata:
+    branch: {type: string, pattern: "###-feature-name", required: true}
+    date: {type: date, required: true}
+    spec_ref: {type: string, required: true, description: "Path to feature specification"}
+    input_description: {type: string, required: true}
+
+  sections:
+    - name: Summary
+      required: true
+      description: "Extract from feature spec: primary requirement + technical approach"
+
+    - name: Technical Context
+      required: true
+      fields:
+        language_version: {type: string, required: true, description: "e.g. Python 3.11"}
+        primary_dependencies: {type: string, required: true, description: "e.g. FastAPI"}
+        storage: {type: string, required: false, description: "e.g. PostgreSQL, files, N/A"}
+        testing: {type: string, required: true, description: "e.g. pytest"}
+        target_platform: {type: string, required: true, description: "e.g. Linux server"}
+        project_type: {type: string, required: true, description: "e.g. library/cli/web-service"}
+        performance_goals: {type: string, required: false, description: "e.g. 1000 req/s"}
+        constraints: {type: string, required: false, description: "e.g. <200ms p95"}
+        scale_scope: {type: string, required: false, description: "e.g. 10k users"}
+
+    - name: Constitution Check
+      required: true
+      description: "Gate check - must pass before Phase 0 research. Re-check after Phase 1 design."
+      gates:
+        - name: {type: string, required: true}
+          passed: {type: boolean, required: true}
+          notes: {type: string, required: false}
+
+    - name: Project Structure
+      required: true
+      docs_layout:
+        path: {type: string, required: true, pattern: "specs/###-feature/"}
+        files:
+          - {name: "plan.yaml", type: "implementation plan"}
+          - {name: "research.yaml", type: "Phase 0 research output"}
+          - {name: "data-model.yaml", type: "Phase 1 data model"}
+          - {name: "quickstart.yaml", type: "Phase 1 quickstart guide"}
+          - {name: "contracts/", type: "Phase 1 contracts directory"}
+          - {name: "tasks.yaml", type: "Phase 2 task list (created by speckit.tasks)"}
+      source_layout:
+        description: "Choose and document the selected directory structure"
+        options:
+          - name: "Single project (default)"
+            structure: |
+              src/models/
+              src/services/
+              src/cli/
+              src/lib/
+              tests/contract/
+              tests/integration/
+              tests/unit/
+          - name: "Web application"
+            structure: |
+              backend/src/models/
+              backend/src/services/
+              backend/src/api/
+              backend/tests/
+              frontend/src/components/
+              frontend/src/pages/
+              frontend/src/services/
+              frontend/tests/
+          - name: "Mobile + API"
+            structure: |
+              api/src/models/
+              api/src/services/
+              api/tests/
+              ios/ or android/
+        selected: {type: string, required: true}
+        decision_rationale: {type: string, required: true}
+
+    - name: Complexity Tracking
+      required: false
+      description: "Fill ONLY if Constitution Check has violations that must be justified"
+      items:
+        - violation: {type: string, required: true}
+          why_needed: {type: string, required: true}
+          simpler_rejected: {type: string, required: true}

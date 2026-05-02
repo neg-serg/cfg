@@ -1,0 +1,20 @@
+name: checklist-template
+version: 1.0
+description: "Template for feature checklists"
+
+document:
+  metadata:
+    checklist_type: {type: string, required: true, description: "e.g. Security, Deployment, Testing"}
+    feature_name: {type: string, required: true}
+    purpose: {type: string, required: true}
+    created: {type: date, required: true}
+    feature_ref: {type: string, required: false, description: "Link to spec.yaml or relevant documentation"}
+
+  categories:
+    - name: {type: string, required: true, description: "Category heading"}
+      items:
+        - id: {type: string, required: true, pattern: "CHK\\d{3}"}
+          description: {type: string, required: true}
+          completed: {type: boolean, default: false}
+          notes: {type: string, required: false}
+          links: {type: list, required: false, description: "References to relevant resources"}

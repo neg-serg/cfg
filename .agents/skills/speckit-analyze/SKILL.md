@@ -1,6 +1,6 @@
 ---
 name: "speckit-analyze"
-description: "Perform a non-destructive cross-artifact consistency and quality analysis across spec.md, plan.md, and tasks.md after task generation."
+description: "Perform a non-destructive cross-artifact consistency and quality analysis across spec.yaml, plan.yaml, and tasks.yaml after task generation."
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
   author: "github-spec-kit"
@@ -18,7 +18,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Goal
 
-Identify inconsistencies, duplications, ambiguities, and underspecified items across the three core artifacts (`spec.md`, `plan.md`, `tasks.md`) before implementation. This command MUST run only after `/speckit.tasks` has successfully produced a complete `tasks.md`.
+Identify inconsistencies, duplications, ambiguities, and underspecified items across the three core artifacts (`spec.yaml`, `plan.yaml`, `tasks.yaml`) before implementation. This command MUST run only after `/speckit.tasks` has successfully produced a complete `tasks.yaml`.
 
 ## Operating Constraints
 
@@ -32,9 +32,9 @@ Identify inconsistencies, duplications, ambiguities, and underspecified items ac
 
 Run `.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks` once from repo root and parse JSON for FEATURE_DIR and AVAILABLE_DOCS. Derive absolute paths:
 
-- SPEC = FEATURE_DIR/spec.md
-- PLAN = FEATURE_DIR/plan.md
-- TASKS = FEATURE_DIR/tasks.md
+- SPEC = FEATURE_DIR/spec.yaml
+- PLAN = FEATURE_DIR/plan.yaml
+- TASKS = FEATURE_DIR/tasks.yaml
 
 Abort with an error message if any required file is missing (instruct the user to run missing prerequisite command).
 For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
@@ -43,7 +43,7 @@ For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot
 
 Load only the minimal necessary context from each artifact:
 
-**From spec.md:**
+**From spec.yaml:**
 
 - Overview/Context
 - Functional Requirements
@@ -51,14 +51,14 @@ Load only the minimal necessary context from each artifact:
 - User Stories
 - Edge Cases (if present)
 
-**From plan.md:**
+**From plan.yaml:**
 
 - Architecture/stack choices
 - Data Model references
 - Phases
 - Technical constraints
 
-**From tasks.md:**
+**From tasks.yaml:**
 
 - Task IDs
 - Descriptions
@@ -134,7 +134,7 @@ Output a Markdown report (no file writes) with the following structure:
 
 | ID | Category | Severity | Location(s) | Summary | Recommendation |
 |----|----------|----------|-------------|---------|----------------|
-| A1 | Duplication | HIGH | spec.md:L120-134 | Two similar requirements ... | Merge phrasing; keep clearer version |
+| A1 | Duplication | HIGH | spec.yaml:L120-134 | Two similar requirements ... | Merge phrasing; keep clearer version |
 
 (Add one row per finding; generate stable IDs prefixed by category initial.)
 
@@ -162,7 +162,7 @@ At end of report, output a concise Next Actions block:
 
 - If CRITICAL issues exist: Recommend resolving before `/speckit.implement`
 - If only LOW/MEDIUM: User may proceed, but provide improvement suggestions
-- Provide explicit command suggestions: e.g., "Run /speckit.specify with refinement", "Run /speckit.plan to adjust architecture", "Manually edit tasks.md to add coverage for 'performance-metrics'"
+- Provide explicit command suggestions: e.g., "Run /speckit.specify with refinement", "Run /speckit.plan to adjust architecture", "Manually edit tasks.yaml to add coverage for 'performance-metrics'"
 
 ### 8. Offer Remediation
 

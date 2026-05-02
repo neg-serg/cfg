@@ -82,9 +82,9 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Infer any missing context from spec/plan/tasks (do NOT hallucinate)
 
 4. **Load feature context**: Read from FEATURE_DIR:
-   - spec.md: Feature requirements and scope
-   - plan.md (if exists): Technical details, dependencies
-   - tasks.md (if exists): Implementation tasks
+   - spec.yaml: Feature requirements and scope
+   - plan.yaml (if exists): Technical details, dependencies
+   - tasks.yaml (if exists): Implementation tasks
 
    **Context Loading Strategy**:
    - Load only necessary portions relevant to active focus areas (avoid full-file dumping)
@@ -95,8 +95,8 @@ You **MUST** consider the user input before proceeding (if not empty).
 5. **Generate checklist** - Create "Unit Tests for Requirements":
    - Create `FEATURE_DIR/checklists/` directory if it doesn't exist
    - Generate unique checklist filename:
-     - Use short, descriptive name based on domain (e.g., `ux.md`, `api.md`, `security.md`)
-     - Format: `[domain].md`
+     - Use short, descriptive name based on domain (e.g., `ux.yaml`, `api.yaml`, `security.yaml`)
+     - Format: `[domain].yaml`
    - File handling behavior:
      - If file does NOT exist: Create new file and number items starting from CHK001
      - If file exists: Append new items to existing file, continuing from the last CHK ID (e.g., if last item is CHK015, start new items at CHK016)
@@ -210,7 +210,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - ✅ "Are [edge cases/scenarios] addressed in requirements?"
    - ✅ "Does the spec define [missing aspect]?"
 
-6. **Structure Reference**: Generate the checklist following the canonical template in `.specify/templates/checklist-template.md` for title, meta section, category headings, and ID formatting. If template is unavailable, use: H1 title, purpose/created meta lines, `##` category sections containing `- [ ] CHK### <requirement item>` lines with globally incrementing IDs starting at CHK001.
+6. **Structure Reference**: Generate the checklist following the canonical template in `.specify/templates/checklist-template.yaml` for title, meta section, category headings, and ID formatting. If template is unavailable, use: H1 title, purpose/created meta lines, `##` category sections containing `- [ ] CHK### <requirement item>` lines with globally incrementing IDs starting at CHK001.
 
 7. **Report**: Output full path to checklist file, item count, and summarize whether the run created a new file or appended to an existing one. Summarize:
    - Focus areas selected
@@ -220,7 +220,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 **Important**: Each `/speckit.checklist` command invocation uses a short, descriptive checklist filename and either creates a new file or appends to an existing one. This allows:
 
-- Multiple checklists of different types (e.g., `ux.md`, `test.md`, `security.md`)
+- Multiple checklists of different types (e.g., `ux.yaml`, `test.yaml`, `security.yaml`)
 - Simple, memorable filenames that indicate checklist purpose
 - Easy identification and navigation in the `checklists/` folder
 
@@ -228,7 +228,7 @@ To avoid clutter, use descriptive types and clean up obsolete checklists when do
 
 ## Example Checklist Types & Sample Items
 
-**UX Requirements Quality:** `ux.md`
+**UX Requirements Quality:** `ux.yaml`
 
 Sample items (testing the requirements, NOT the implementation):
 
@@ -239,7 +239,7 @@ Sample items (testing the requirements, NOT the implementation):
 - "Is fallback behavior defined when images fail to load? [Edge Case, Gap]"
 - "Can 'prominent display' be objectively measured? [Measurability, Spec §FR-4]"
 
-**API Requirements Quality:** `api.md`
+**API Requirements Quality:** `api.yaml`
 
 Sample items:
 
@@ -249,7 +249,7 @@ Sample items:
 - "Are retry/timeout requirements defined for external dependencies? [Coverage, Gap]"
 - "Is versioning strategy documented in requirements? [Gap]"
 
-**Performance Requirements Quality:** `performance.md`
+**Performance Requirements Quality:** `performance.yaml`
 
 Sample items:
 
@@ -259,7 +259,7 @@ Sample items:
 - "Can performance requirements be objectively measured? [Measurability]"
 - "Are degradation requirements defined for high-load scenarios? [Edge Case, Gap]"
 
-**Security Requirements Quality:** `security.md`
+**Security Requirements Quality:** `security.yaml`
 
 Sample items:
 

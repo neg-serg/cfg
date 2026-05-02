@@ -6,9 +6,9 @@
   Added sections: None
   Removed sections: None
   Templates requiring updates:
-    - .specify/templates/plan-template.md ✅ (Constitution Check aligns with principles)
-    - .specify/templates/spec-template.md ✅ (no changes needed)
-    - .specify/templates/tasks-template.md ✅ (no changes needed)
+    - .specify/templates/plan-template.yaml ✅ (Constitution Check aligns with principles)
+    - .specify/templates/spec-template.yaml ✅ (no changes needed)
+    - .specify/templates/tasks-template.yaml ✅ (no changes needed)
     - README.md ✅ (top-level secrets wording generalized)
     - .specify/templates/commands/*.md ✅ (directory absent; no command template updates required)
   Follow-up TODOs:

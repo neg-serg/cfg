@@ -1,0 +1,60 @@
+name: spec-template
+version: 1.0
+description: "Template for feature specification documents"
+
+document:
+  metadata:
+    feature_name: {type: string, required: true}
+    feature_branch: {type: string, pattern: "###-feature-name", required: true}
+    created: {type: date, required: true, description: "ISO date format"}
+    status: {type: string, default: "Draft"}
+    input_description: {type: string, required: true, description: "Original user description"}
+
+  sections:
+    - name: User Stories
+      required: true
+      description: "Prioritized user journeys ordered by importance. Each story must be independently testable as a viable MVP increment."
+      items:
+        - title: {type: string, required: true}
+          priority: {type: string, enum: [P1, P2, P3], required: true, description: "P1=critical MVP, P2=important, P3=enhancement"}
+          description: {type: string, required: true, description: "User journey in plain language"}
+          why_priority: {type: string, required: true}
+          independent_test: {type: string, required: true, description: "How to test this story independently"}
+          acceptance_scenarios:
+            - given: {type: string, required: true}
+              when: {type: string, required: true}
+              then: {type: string, required: true}
+
+    - name: Edge Cases
+      required: true
+      description: "Boundary conditions and error scenarios"
+      items:
+        - scenario: {type: string, required: true}
+          description: {type: string, required: true}
+
+    - name: Functional Requirements
+      required: true
+      items:
+        - id: {type: string, required: true, pattern: "FR-\\d{3}"}
+          description: {type: string, required: true}
+          must: {type: boolean, default: true}
+          clarification_needed:
+            type: boolean
+            default: false
+            description: "True when requirement needs clarification (e.g. auth method not specified)"
+
+    - name: Key Entities
+      required: false
+      description: "Include if feature involves data"
+      items:
+        - name: {type: string, required: true}
+          description: {type: string, required: true, description: "What entity represents, key attributes without implementation"}
+          relationships: {type: string, required: false}
+
+    - name: Success Criteria
+      required: true
+      description: "Measurable, technology-agnostic outcomes"
+      items:
+        - id: {type: string, required: true, pattern: "SC-\\d{3}"}
+          metric: {type: string, required: true, description: "Measurable metric, e.g. 'Users can complete account creation in under 2 minutes'"}
+          type: {type: string, enum: [performance, satisfaction, business, quality], required: false}

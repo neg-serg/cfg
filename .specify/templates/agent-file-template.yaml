@@ -1,0 +1,52 @@
+name: agent-file-template
+version: 1.0
+description: "Template for project development guidelines files (AGENTS.md)"
+
+document:
+  metadata:
+    project_name: {type: string, required: true}
+    generated_from: {type: string, default: "All active feature plans"}
+    last_updated: {type: date, required: true}
+
+  sections:
+    - name: Active Technologies
+      required: true
+      description: "Extracted from all plan.yaml files"
+      items:
+        - technology: {type: string, required: true}
+          version: {type: string, required: false}
+
+    - name: Project Structure
+      required: true
+      structure:
+        directories:
+          - {path: "states/", description: "Salt states"}
+          - {path: "scripts/", description: "Helper scripts"}
+          - {path: "tests/", description: "Test files"}
+          - {path: "docs/", description: "Documentation"}
+          - {path: "specs/", description: "Feature specifications"}
+
+    - name: Commands
+      required: true
+      description: "Only commands for active technologies"
+      items:
+        - command: {type: string, required: true}
+          description: {type: string, required: true}
+
+    - name: Code Style
+      required: true
+      description: "Language-specific guidelines for languages in use"
+      rules:
+        - rule: {type: string, required: true}
+
+    - name: Recent Changes
+      required: true
+      description: "Last N features and what they added (newest first)"
+      items:
+        - feature: {type: string, required: true}
+          description: {type: string, required: true}
+          branch: {type: string, required: false}
+
+    - name: Manual Additions
+      required: false
+      description: "User-defined entries not auto-generated"

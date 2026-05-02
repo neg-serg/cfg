@@ -1,0 +1,108 @@
+name: tasks-template
+version: 1.0
+description: "Template for feature implementation task lists"
+
+document:
+  metadata:
+    feature_name: {type: string, required: true}
+    input_refs: {type: string, required: true, description: "Paths to plan.yaml, spec.yaml, etc."}
+    prerequisites: {type: string, default: "plan.yaml (required), spec.yaml (required for user stories)"}
+
+  conventions:
+    task_format: "[P?] [Story] Description with exact file paths"
+    parallel_marker: "[P] = different files, no dependencies"
+    story_marker: "[US1], [US2], [US3] = which user story"
+
+  phases:
+    - name: Setup
+      order: 1
+      description: "Project initialization and basic structure"
+      purpose: "Shared infrastructure"
+      tasks:
+        - id: "T{order}{seq}"
+          description: {type: string, required: true}
+          parallel: {type: boolean, default: false}
+
+    - name: Foundational
+      order: 2
+      description: "Core infrastructure blocking all user stories"
+      purpose: "CRITICAL: No user story work until this phase completes"
+      tasks:
+        - id: "T{order}{seq}"
+          description: {type: string, required: true}
+          parallel: {type: boolean, default: false}
+      checkpoint: "Foundation ready - user story implementation can now begin"
+
+    - name: User Story
+      order_start: 3
+      repeats: true
+      max_repeats: 10
+      items:
+        - story_number: {type: integer, required: true}
+          title: {type: string, required: true}
+          priority: {type: string, enum: [P1, P2, P3], required: true}
+          goal: {type: string, required: true}
+          independent_test: {type: string, required: true}
+          test_tasks:
+            - id: "T{phase}{seq}"
+              description: {type: string, required: true}
+              parallel: {type: boolean, default: true}
+              story: {type: string, required: true}
+          implementation_tasks:
+            - id: "T{phase}{seq}"
+              description: {type: string, required: true}
+              parallel: {type: boolean, default: false}
+              story: {type: string, required: true}
+              depends_on: {type: list, required: false, description: "Task IDs this depends on"}
+          checkpoint: "Story N should be fully functional and testable independently"
+
+    - name: Polish
+      order: 99
+      description: "Cross-cutting improvements"
+      purpose: "Improvements affecting multiple user stories"
+      tasks:
+        - id: "T{order}{seq}"
+          description: {type: string, required: true}
+          parallel: {type: boolean, default: false}
+
+  dependencies:
+    phase_dependencies:
+      - phase: "Setup"
+        depends_on: []
+      - phase: "Foundational"
+        depends_on: ["Setup"]
+        blocks: ["all user stories"]
+      - phase: "User Stories"
+        depends_on: ["Foundational"]
+      - phase: "Polish"
+        depends_on: ["all desired user stories complete"]
+    story_dependencies:
+      - story: "US1 (P1)"
+        depends_on: ["Foundational"]
+        independent: true
+      - story: "US2 (P2)"
+        depends_on: ["Foundational"]
+        may_integrate_with: ["US1"]
+        independent: true
+      - story: "US3 (P3)"
+        depends_on: ["Foundational"]
+        may_integrate_with: ["US1", "US2"]
+        independent: true
+    within_story_order:
+      - "Tests (if included) MUST be written and FAIL before implementation"
+      - "Models before services"
+      - "Services before endpoints"
+      - "Core implementation before integration"
+
+  strategy:
+    mvp_first:
+      - "Complete Phase 1: Setup"
+      - "Complete Phase 2: Foundational"
+      - "Complete US1 (P1) implementation"
+      - "STOP and VALIDATE: Test US1 independently"
+      - "Deploy/demo if ready"
+    incremental_delivery:
+      - "Setup + Foundational => Foundation ready"
+      - "Add US1 => Test independently => Deploy/Demo (MVP)"
+      - "Add US2 => Test independently => Deploy/Demo"
+      - "Add US3 => Test independently => Deploy/Demo"

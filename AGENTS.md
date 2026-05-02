@@ -18,6 +18,14 @@ scripts/
 tests/
 docs/
 specs/
+.specify/
+└── templates/                # YAML templates for speckit workflow artifacts
+    ├── spec-template.yaml
+    ├── plan-template.yaml
+    ├── tasks-template.yaml
+    ├── constitution-template.yaml
+    ├── checklist-template.yaml
+    └── agent-file-template.yaml
 ```
 
 ## Mandatory Agent Requirements
@@ -49,16 +57,21 @@ specs/
 - 077-zen-browser-cutover: Added Jinja2 + YAML Salt states, Python 3 helper script, Markdown operator docs + Salt 3006.x masterless workflow, existing `_macros_*.jinja`, `zen-browser-bin`, Surfingkeys browser extension, systemd user services, Hyprland/Wayfire launcher config, spec-kit artifacts
 - Russian documentation removal: Deleted 50 `.ru.md` files, removed `.ru.md` generation from `index-salt.py`, updated lint-docs, README, CLAUDE.md, constitution (`docs`/`cleanup`)
 - Module index added: Auto-generated `docs/module-index.yaml` with full project map (79 states, 6 macros, 34+37 scripts, 36 data files, 33 tests, 49 docs); LLMs must read it first (`docs`/`tooling`)
+- Speckit templates converted to YAML: All 6 `.specify/templates/*-template.md` files converted to YAML schema; all 9 SKILL.md files updated to reference YAML paths; knowledge.yaml is the canonical machine-readable doc index (`docs`/`cleanup`)
 
 
 ## LLM Entry Point
 
 **Start by reading `docs/module-index.yaml`** — it's an auto-generated machine-readable YAML index of all project entities: states, macros, scripts, data files, tests, and documentation with their purposes, dependencies, feature gates, secrets, services, and config references. It provides a complete mental map of the project in a single file.
 
+**Then read `docs/knowledge.yaml`** — the hand-authored machine-readable knowledge base containing all operational guides, recovery runbooks, standards, research analysis, and reference documentation in structured YAML format. Every entry cross-references entities in module-index.yaml.
+
 `docs/state-map.md` and `docs/data-inventory.md` are also auto-generated and provide complementary prose views (dependency graph, data file summaries).
 
+The `.specify/templates/` directory contains YAML schema templates for the speckit workflow (spec, plan, tasks, constitution, checklist, agent-file). These define the canonical document structure for all feature artifacts.
+
 <!-- MANUAL ADDITIONS START -->
-- `docs/superpowers/plans/*.md` are temporary working artifacts by default: do not commit them unless they are explicitly being kept as active shared planning documents. Remove stale plan files periodically once the related work is finished or abandoned.
+- `docs/superpowers/plans/*.md` and `docs/superpowers/plans/*.yaml` are temporary working artifacts by default: do not commit them unless they are explicitly being kept as active shared planning documents. Remove stale plan files periodically once the related work is finished or abandoned.
 - Do not add GitHub automation files unless the user explicitly asks for them.
 - **No Russian documentation.** All documentation must be in English only. Do not create or maintain `.ru.md` files.
 <!-- MANUAL ADDITIONS END -->

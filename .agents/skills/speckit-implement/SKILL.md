@@ -1,6 +1,6 @@
 ---
 name: "speckit-implement"
-description: "Execute the implementation plan by processing and executing all tasks defined in tasks.md"
+description: "Execute the implementation plan by processing and executing all tasks defined in tasks.yaml"
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
   author: "github-spec-kit"
@@ -65,9 +65,9 @@ You **MUST** consider the user input before proceeding (if not empty).
      ```text
      | Checklist | Total | Completed | Incomplete | Status |
      |-----------|-------|-----------|------------|--------|
-     | ux.md     | 12    | 12        | 0          | ✓ PASS |
-     | test.md   | 8     | 5         | 3          | ✗ FAIL |
-     | security.md | 6   | 6         | 0          | ✓ PASS |
+      | ux.yaml     | 12    | 12        | 0          | ✓ PASS |
+      | test.yaml   | 8     | 5         | 3          | ✗ FAIL |
+      | security.yaml | 6   | 6         | 0          | ✓ PASS |
      ```
 
    - Calculate overall status:
@@ -86,12 +86,12 @@ You **MUST** consider the user input before proceeding (if not empty).
      - Automatically proceed to step 3
 
 3. Load and analyze the implementation context:
-   - **REQUIRED**: Read tasks.md for the complete task list and execution plan
-   - **REQUIRED**: Read plan.md for tech stack, architecture, and file structure
-   - **IF EXISTS**: Read data-model.md for entities and relationships
+   - **REQUIRED**: Read tasks.yaml for the complete task list and execution plan
+   - **REQUIRED**: Read plan.yaml for tech stack, architecture, and file structure
+   - **IF EXISTS**: Read data-model.yaml for entities and relationships
    - **IF EXISTS**: Read contracts/ for API specifications and test requirements
-   - **IF EXISTS**: Read research.md for technical decisions and constraints
-   - **IF EXISTS**: Read quickstart.md for integration scenarios
+   - **IF EXISTS**: Read research.yaml for technical decisions and constraints
+   - **IF EXISTS**: Read quickstart.yaml for integration scenarios
 
 4. **Project Setup Verification**:
    - **REQUIRED**: Create/verify ignore files based on actual project setup:
@@ -103,7 +103,7 @@ You **MUST** consider the user input before proceeding (if not empty).
      git rev-parse --git-dir 2>/dev/null
      ```
 
-   - Check if Dockerfile* exists or Docker in plan.md → create/verify .dockerignore
+   - Check if Dockerfile* exists or Docker in plan.yaml → create/verify .dockerignore
    - Check if .eslintrc* exists → create/verify .eslintignore
    - Check if eslint.config.* exists → ensure the config's `ignores` entries cover required patterns
    - Check if .prettierrc* exists → create/verify .prettierignore
@@ -114,7 +114,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    **If ignore file already exists**: Verify it contains essential patterns, append missing critical patterns only
    **If ignore file missing**: Create with full pattern set for detected technology
 
-   **Common Patterns by Technology** (from plan.md tech stack):
+   **Common Patterns by Technology** (from plan.yaml tech stack):
    - **Node.js/JavaScript/TypeScript**: `node_modules/`, `dist/`, `build/`, `*.log`, `.env*`
    - **Python**: `__pycache__/`, `*.pyc`, `.venv/`, `venv/`, `dist/`, `*.egg-info/`
    - **Java**: `target/`, `*.class`, `*.jar`, `.gradle/`, `build/`
@@ -137,7 +137,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Terraform**: `.terraform/`, `*.tfstate*`, `*.tfvars`, `.terraform.lock.hcl`
    - **Kubernetes/k8s**: `*.secret.yaml`, `secrets/`, `.kube/`, `kubeconfig*`, `*.key`, `*.crt`
 
-5. Parse tasks.md structure and extract:
+5. Parse tasks.yaml structure and extract:
    - **Task phases**: Setup, Tests, Core, Integration, Polish
    - **Task dependencies**: Sequential vs parallel execution rules
    - **Task details**: ID, description, file paths, parallel markers [P]
@@ -172,7 +172,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Confirm the implementation follows the technical plan
    - Report final status with summary of completed work
 
-Note: This command assumes a complete task breakdown exists in tasks.md. If tasks are incomplete or missing, suggest running `/speckit.tasks` first to regenerate the task list.
+Note: This command assumes a complete task breakdown exists in tasks.yaml. If tasks are incomplete or missing, suggest running `/speckit.tasks` first to regenerate the task list.
 
 10. **Check for extension hooks**: After completion validation, check if `.specify/extensions.yml` exists in the project root.
     - If it exists, read it and look for entries under the `hooks.after_implement` key

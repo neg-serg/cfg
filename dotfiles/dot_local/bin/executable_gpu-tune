@@ -22,10 +22,12 @@ die() { print -u2 "\e[31m$1\e[0m"; exit 1; }
 warn() { print -u2 "\e[33m$1\e[0m"; }
 good() { print "\e[32m$1\e[0m"; }
 
+typeset -r SELF=${${(%):-%x}:A}
+
 require_root() {
     if (( EUID != 0 )); then
         if command -v sudo >/dev/null 2>&1; then
-            exec sudo -E zsh "$0" "$@"
+            exec sudo -E zsh "${SELF}" "$@"
         fi
         die "Need root. Run with sudo."
     fi

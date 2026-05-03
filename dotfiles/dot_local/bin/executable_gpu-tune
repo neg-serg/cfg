@@ -132,16 +132,30 @@ show_status() {
 run_stress() {
     local secs=${1:-60}
     local gpu_busy_path=/sys/class/drm/card1/device/gpu_busy_percent
+    local stress_cmd stress_label
 
-    if command -v furmark >/dev/null 2>&1; then
-        print "\n\e[1;36m═══ FurMark stress test: ${secs}s (Vulkan, fullscreen 4K) ═══\e[0m"
-        print "\e[33mWindow will open — watch for artifacts, flickering, or black screen.\e[0m"
-        print "\e[33mCheck dmesg after: dmesg -T | grep -i 'amdgpu.*reset\|GPU.*hang'\e[0m\n"
+    if command -v glmark2-wayland >/dev/null 2>&1; then
+        stress_cmd="glmark2-wayland --fullscreen --run-forever"
+        stress_label="glmark2 (Wayland, fullscreen)"
+    elif command -v glmark2 >/dev/null 2>&1; then
+        stress_cmd="glmark2 --fullscreen --run-forever"
+        stress_label="glmark2 (fullscreen)"
+    elif command -v vkcube >/dev/null 2>&1; then
+        stress_cmd="vkcube --duration $(( secs + 5 ))"
+        stress_label="vkcube"
+    else
+        stress_cmd=""
+    fi
+
+    if [[ -n "$stress_cmd" ]]; then
+        print "\n\e[1;36m═══ Stress test: ${secs}s — ${stress_label} ═══\e[0m"
+        print "\e[33mWindow will open. Watch for artifacts, flickering. Check dmesg after:\e[0m"
+        print "\e[33m  dmesg -T | grep -i 'amdgpu.*reset\|GPU.*hang'\e[0m\n"
+
+        eval "$stress_cmd" >/dev/null 2>&1 &
+        local stress_pid=$!
 
         local elapsed=0 start_t util temp
-        furmark --demo furmark-vk --benchmark --max-time "$secs" --fullscreen --no-score-box >/dev/null 2>&1 &
-        local furmark_pid=$!
-
         start_t=$SECONDS
         while (( elapsed < secs )); do
             util=$(<"${gpu_busy_path}" 2>/dev/null || print "?")
@@ -151,22 +165,17 @@ run_stress() {
             sleep 1
             elapsed=$(( SECONDS - start_t ))
         done
-        wait "$furmark_pid" 2>/dev/null || true
+        kill "$stress_pid" 2>/dev/null || true
+        wait "$stress_pid" 2>/dev/null || true
         print
-        print "\n\e[32mFurMark stress test complete — no driver crash detected.\e[0m"
-        print "Check dmesg for GPU resets:  \e[33mdmesg -T | grep -i 'amdgpu.*reset\|GPU.*hang'\e[0m"
+        print "\n\e[32mStress test complete.\e[0m"
+        print "Check for GPU resets: \e[33mdmesg -T | grep -i 'amdgpu.*reset\|GPU.*hang'\e[0m"
         return 0
     fi
 
-    # Fallback: lightweight monitoring with whatever GPU load is present
-    if command -v vkcube >/dev/null 2>&1; then
-        vkcube --duration $(( secs + 5 )) >/dev/null 2>&1 &
-    elif command -v glxgears >/dev/null 2>&1; then
-        glxgears -fullscreen >/dev/null 2>&1 &
-    fi
-
-    print "\n\e[1;36m═══ Stress test: ${secs}s (no furmark — monitoring existing load) ═══\e[0m"
-    print "\e[33mInstall furmark (paru -S furmark) for a real stress test.\e[0m\n"
+    # No stress tool — just monitor whatever runs
+    print "\n\e[1;36m═══ Monitoring: ${secs}s (no stress tool — install glmark2) ═══\e[0m"
+    print "\e[33mRun a game or GPU workload in parallel for real testing.\e[0m\n"
 
     local elapsed=0 start_t util temp
     start_t=$SECONDS
@@ -178,9 +187,7 @@ run_stress() {
         sleep 1
         elapsed=$(( SECONDS - start_t ))
     done
-    kill %1 2>/dev/null || true
     print
-    print "\n\e[32mStress test complete — no driver crash detected.\e[0m"
 }
 
 # ── Persistence ─────────────────────────────────────────────────────────

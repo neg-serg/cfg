@@ -1,0 +1,52 @@
+commands:
+  - command: /start
+    handler: send_welcome
+    description: "Sends welcome message with 'Create Bot' button (request_managed_bot KeyboardButton)"
+    scope: all users (private chat only)
+    response: "Inline keyboard with one button: 'Create Bot'. If user is allowlisted (FR-012 self-service), also show their current bot count."
+    guards: none
+
+  - command: /bots
+    handler: list_bots
+    description: "Lists all managed bots with metadata"
+    scope: owner only (FR-007)
+    response: |
+      Managed bots (3):
+      - @myhelper (id: 123456789) created 2026-01-15 by uid 987654321
+      - @testbot (id: 987654321) created 2026-02-20 by uid 987654321
+      - @monbot (id: 555555555) created 2026-03-10 by uid 111111111 [DELETED]
+    guards:
+      - "User UID must match owner list in config"
+      - "If not owner: reply 'Not authorized'"
+
+  - command: /rotate_token <username>
+    handler: rotate_token
+    description: "Rotates managed bot token via replaceManagedBotToken, stores new token in gopass"
+    scope: owner only (FR-007)
+    response: "Token for @<username> rotated and stored. Old token revoked."
+    guards:
+      - "User UID must match owner list"
+      - "Bot <username> must exist in registry"
+      - "Bot must not be marked [DELETED]"
+    error_responses:
+      - "Bot <username> not found"
+      - "Not authorized"
+      - "Token rotation failed: <API error message>"
+
+  - update: ManagedBotUpdated
+    handler: on_managed_bot_updated
+    description: "Triggered when Bot API sends managed_bot update (new bot created or owner changed)"
+    actions:
+      - "Extract bot User object (id, username)"
+      - "Extract creator User object (id)"
+      - "Call getManagedBotToken(bot_user_id)"
+      - "Store token in gopass: telegram/managed-bots/<username>"
+      - "Append to registry YAML"
+      - "Reply to creator: 'Bot @<username> created! Token stored.'"
+
+  - update: managed_bot_created (message)
+    handler: on_managed_bot_message
+    description: "Message with managed_bot_created field (duplicate notification)"
+    actions:
+      - "Log event (already handled by ManagedBotUpdated)"
+      - "Ignore (no duplicate token storage)"

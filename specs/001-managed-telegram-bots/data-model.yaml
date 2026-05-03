@@ -1,0 +1,60 @@
+entities:
+  - name: ManagedBot
+    description: "A child bot created by the manager bot via Bot API 9.6 Managed Bots"
+    fields:
+      - name: bot_user_id
+        type: integer
+        description: "Telegram user ID of the managed bot"
+        required: true
+      - name: username
+        type: string
+        description: "Telegram @username of the managed bot (without @)"
+        required: true
+      - name: creator_uid
+        type: integer
+        description: "Telegram user ID of the human who created this bot"
+        required: true
+      - name: created_at
+        type: datetime (ISO 8601)
+        description: "When the bot was created (received from Telegram)"
+        required: true
+      - name: last_rotated_at
+        type: datetime (ISO 8601, optional)
+        description: "When the token was last rotated via replaceManagedBotToken"
+        required: false
+      - name: token_gopass_path
+        type: string
+        description: "gopass path where the token is stored, e.g. telegram/managed-bots/mybot"
+        required: true
+    relationships:
+      - "Belongs to ManagerBot (the parent bot with can_manage_bots: true)"
+      - "Referenced by Salt child bot states via gopass secrets"
+    state_transitions:
+      - "active: bot exists, token valid, in registry"
+      - "deleted: bot deleted externally (EC-6), kept in registry with marker"
+      - "token_rotated: token was replaced, old token revoked"
+
+  - name: BotOwner
+    description: "A Telegram user authorized to execute privileged commands on the manager bot"
+    fields:
+      - name: telegram_uid
+        type: integer
+        description: "Telegram user ID"
+        required: true
+    relationships:
+      - "Owns ManagerBot (can run /bots, /rotate_token)"
+      - "May also be a creator of ManagedBots"
+
+  - name: AllowlistedUser
+    description: "A Telegram user authorized to create managed bots via self-service (US-5, FR-012)"
+    fields:
+      - name: telegram_uid
+        type: integer
+        description: "Telegram user ID"
+        required: true
+      - name: max_bots
+        type: integer
+        description: "Maximum number of managed bots this user can create (default: 1)"
+        required: false
+    relationships:
+      - "May create 0..N ManagedBots (up to max_bots)"

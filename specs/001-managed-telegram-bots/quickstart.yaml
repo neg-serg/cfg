@@ -1,0 +1,35 @@
+steps:
+  - step: 1
+    action: "Enable bot management in @BotFather"
+    details: "Open @BotFather, send /mybots, select your bot, go to Bot Management Settings, enable 'Allow creating bots'. Verify: call getMe API, check `can_manage_bots: true`."
+
+  - step: 2
+    action: "Store manager bot token in gopass"
+    details: "If using the opencode-telegram-bot token: already stored at api/opencode-telegram-bot. If separate manager bot: gopass insert api/telegram-manager-bot."
+
+  - step: 3
+    action: "Deploy Salt state"
+    details: "salt-call state.apply managed_bots --local. This installs python-telegram-bot, deploys the config and script, starts the systemd service."
+
+  - step: 4
+    action: "Verify manager bot is running"
+    details: "systemctl --user status managed-bots. Journal should show 'Manager bot started, can_manage_bots: True'."
+
+  - step: 5
+    action: "Create a test managed bot"
+    details: "Open private chat with manager bot, send /start, tap 'Create Bot', complete Telegram dialog. Manager bot should reply with confirmation and token storage status."
+
+  - step: 6
+    action: "Verify token in gopass"
+    details: "gopass show telegram/managed-bots/<test_bot_username> should output the token."
+
+  - step: 7
+    action: "Test owner commands"
+    details: "Send /bots to see the test bot. Send /rotate_token <username> to rotate its token."
+
+configuration:
+  config_file: "~/.config/opencode/managed-bots.yaml"
+  registry_file: "~/.config/opencode/managed-bots-registry.yaml"
+  gopass_prefix: "telegram/managed-bots/"
+  owner_uids: "gopass secrets api/telegram-uid-levra, api/nanoclaw-telegram-uid"
+  allowlist_uids: "configurable in states/data/telegram_managed_bots.yaml"

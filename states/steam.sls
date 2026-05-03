@@ -5,6 +5,9 @@
 
 {% from '_macros_config.jinja' import config_file_edit %}
 
+include:
+  - pacman_db_warmup
+
 # Steam + gaming tools (native pacman install)
 # Requires multilib repo for lib32 dependencies.
 # Inline cmd.run (not paru_install macro): --ask 4 resolves CachyOS
@@ -30,6 +33,13 @@ steam_pkg:
     - unless: grep -qxF 'steam' {{ pkg_list }}
     - require:
       - cmd: vulkan_radeon_pkg
+
+steam_lib32_audio:
+  cmd.run:
+    - name: pacman -S --noconfirm --needed --ask 4 lib32-pipewire lib32-pipewire-jack lib32-alsa-plugins lib32-libpulse
+    - unless: pacman -Qi lib32-pipewire >/dev/null 2>&1
+    - require:
+      - cmd: steam_pkg
 
 {{ ensure_dir('steam_library_dir', host.mnt_zero ~ '/steam/steamapps', require=['mount: mount_zero']) }}
 {{ paru_install('p7zip', '7zip') }}

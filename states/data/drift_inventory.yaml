@@ -1,3 +1,5 @@
+# Drift detection inventory: files monitored for unauthorized changes.
+# Used by drift_state.py and drift-notify.sh.
 files:
   - id: salt-monitor-script
     path: "{{ home }}/.local/bin/salt-monitor"

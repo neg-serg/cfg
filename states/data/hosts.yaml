@@ -1,3 +1,5 @@
+# Host configuration: per-machine defaults (user, mounts, partitions, features).
+# Loaded by host_config.jinja → re-exported through _imports.jinja.
 defaults:
   user: neg
   home: ""

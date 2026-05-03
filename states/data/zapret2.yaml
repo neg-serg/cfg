@@ -1,3 +1,5 @@
+# Zapret2 DPI bypass: package source, config paths, hosts, rules.
+# Used by zapret2.sls and zapret2-rollout.sh.
 package:
   source: aur
   name: zapret2

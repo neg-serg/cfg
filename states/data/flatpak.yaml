@@ -1,3 +1,4 @@
+# Flatpak application list: installed via flatpak_install() macro.
 apps:
   - com.github.qarmin.czkawka                   # duplicate/similar file finder
   - com.github.tmewett.BrogueCE                 # Brogue Community Edition roguelike

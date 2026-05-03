@@ -15,17 +15,6 @@
 include:
   - users
 
-# ── Xorg + i3 packages ──────────────────────────────────────────────
-
-
-
-# ── KDE Plasma X11 packages ───────────────────────────────────────
-# plasma-desktop: core KDE shell; plasma-workspace: startplasma-x11;
-# breeze: dark theme + icons; konsole: terminal emulator
-
-
-
-
 # ── User account ────────────────────────────────────────────────────
 xen_group:
   group.present:

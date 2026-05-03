@@ -1,3 +1,5 @@
+# VPN split router: probe timeouts, TTLs, seed failure thresholds.
+# Consumed by network.sls → renders vpn-split-router.yaml.j2.
 settings:
   probe_timeout_seconds: 3.0
   probe_interval_seconds: 900

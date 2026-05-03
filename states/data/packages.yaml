@@ -1,3 +1,5 @@
+# System packages grouped by category (base, dev, desktop, media, etc.).
+# Consumed by packages.sls via pacman -Qq idempotency check.
 base:
   - base
   - base-devel

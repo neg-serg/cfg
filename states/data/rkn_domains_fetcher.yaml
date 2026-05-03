@@ -1,3 +1,5 @@
+# RKN domains fetcher: sources, integration targets, emergency config.
+# Used by rkn-domains-fetcher.py and rkn-domains-integration.sh.
 rkn_domains_fetcher:
   enabled: true
 

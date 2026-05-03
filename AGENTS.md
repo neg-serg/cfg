@@ -68,6 +68,7 @@ The `.specify/templates/` directory contains YAML schema templates for the speck
 
 - Do not add GitHub automation files unless the user explicitly asks for them.
 - **No Russian documentation.** All documentation must be in English only. Do not create or maintain `.ru.md` files.
+- **Auto-commit**: Commit every completed change immediately without asking. Use `[scope] description` format. Small atomic commits preferred over batching.
 <!-- MANUAL ADDITIONS END -->
 
 <!-- FUTURE WORK -->

@@ -138,45 +138,55 @@ show_status() {
 run_stress() {
     local secs=${1:-60}
     local gpu_busy_path=/sys/class/drm/card1/device/gpu_busy_percent
-    local cmd
-    typeset -a stress_cmds=()
 
-    # Detect available stress tools
-    if command -v glxgears >/dev/null 2>&1; then
-        stress_cmds+=("glxgears -fullscreen")
+    if command -v furmark >/dev/null 2>&1; then
+        print "\n\e[1;36m═══ FurMark stress test: ${secs}s (Vulkan, fullscreen 4K) ═══\e[0m"
+        print "\e[33mWindow will open — watch for artifacts, flickering, or black screen.\e[0m"
+        print "\e[33mCheck dmesg after: dmesg -T | grep -i 'amdgpu.*reset\|GPU.*hang'\e[0m\n"
+
+        local elapsed=0 start_t util temp
+        furmark --demo furmark-vk --benchmark --max-time "$secs" --fullscreen --no-score-box >/dev/null 2>&1 &
+        local furmark_pid=$!
+
+        start_t=$SECONDS
+        while (( elapsed < secs )); do
+            util=$(<"${gpu_busy_path}" 2>/dev/null || print "?")
+            temp=$(( $(<"${TEMP_PATH}") / 1000 ))
+            printf "\r  [%3ds/%3ds]  GPU: %3s%%  Temp: %2d°C  SCLK: %4sMHz  Power: %3sW" \
+                "$elapsed" "$secs" "$util" "$temp" "$(get_current_sclk)" "$(get_power)"
+            sleep 1
+            elapsed=$(( SECONDS - start_t ))
+        done
+        wait "$furmark_pid" 2>/dev/null || true
+        print
+        print "\n\e[32mFurMark stress test complete — no driver crash detected.\e[0m"
+        print "Check dmesg for GPU resets:  \e[33mdmesg -T | grep -i 'amdgpu.*reset\|GPU.*hang'\e[0m"
+        return 0
     fi
+
+    # Fallback: lightweight monitoring with whatever GPU load is present
     if command -v vkcube >/dev/null 2>&1; then
-        stress_cmds+=("vkcube --duration $(( secs + 5 ))")
-    fi
-    if command -v mangohud >/dev/null 2>&1 && command -v vkcube >/dev/null 2>&1; then
-        stress_cmds+=("mangohud vkcube --duration $(( secs + 5 ))")
-    fi
-
-    if (( ${#stress_cmds} == 0 )); then
-        warn "No stress tools found (glxgears, vkcube). Install vulkan-tools or mesa-utils."
-        print "You can manually run a game or benchmark and watch temps/clocks with: gpu-status"
-        return 1
+        vkcube --duration $(( secs + 5 )) >/dev/null 2>&1 &
+    elif command -v glxgears >/dev/null 2>&1; then
+        glxgears -fullscreen >/dev/null 2>&1 &
     fi
 
-    print "\n\e[1;36m═══ Stress test: ${secs}s ═══\e[0m"
-    print "Using: ${stress_cmds[1]}"
-    print "Watch for: artifacts, flickering, GPU resets (dmesg), or driver crash."
-    print "\e[33mRun your game in parallel for real-world validation.\e[0m\n"
+    print "\n\e[1;36m═══ Stress test: ${secs}s (no furmark — monitoring existing load) ═══\e[0m"
+    print "\e[33mInstall furmark (paru -S furmark) for a real stress test.\e[0m\n"
 
-    local elapsed=0 start_t end_t util temp
+    local elapsed=0 start_t util temp
     start_t=$SECONDS
     while (( elapsed < secs )); do
         util=$(<"${gpu_busy_path}" 2>/dev/null || print "?")
-        temp=0
         temp=$(( $(<"${TEMP_PATH}") / 1000 ))
-        printf "\r  [%3ds/%3ds]  GPU: %3s%%  Temp: %2d°C  SCLK: %4sMHz" \
-            "$elapsed" "$secs" "$util" "$temp" "$(get_current_sclk)"
+        printf "\r  [%3ds/%3ds]  GPU: %3s%%  Temp: %2d°C  SCLK: %4sMHz  Power: %3sW" \
+            "$elapsed" "$secs" "$util" "$temp" "$(get_current_sclk)" "$(get_power)"
         sleep 1
         elapsed=$(( SECONDS - start_t ))
     done
+    kill %1 2>/dev/null || true
     print
     print "\n\e[32mStress test complete — no driver crash detected.\e[0m"
-    print "Check dmesg for GPU resets:  \e[33mdmesg -T | grep -i 'amdgpu.*reset\|GPU.*hang'\e[0m"
 }
 
 # ── Persistence ─────────────────────────────────────────────────────────

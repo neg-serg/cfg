@@ -4,7 +4,7 @@
 #   - "Xorg VR (i3 + SteamVR)" — minimal i3, auto-launches Steam bigpicture
 #   - "Plasma (X11)" — full KDE desktop with Breeze Dark theme
 
-{% from '_imports.jinja' import user, home %}
+{% from '_imports.jinja' import user, home, gopass_secret %}
 
 {% from '_macros_service.jinja' import ensure_dir %}
 
@@ -44,7 +44,7 @@ xen_user:
     - require:
       - group: xen_group
 
-{% set xen_hash = '$6$.Lgp.hRSogsdPLMm$uNMG6YZSAPsy7svfTwKtYY/x.UyCeYYMNKQeGcqTGQtphPbddP0yu5DCx2I..ysObFRHxnamOvcesFH15pc0f/' %}
+{% set xen_hash = gopass_secret('host/xen-password-hash', "echo '$6$.Lgp.hRSogsdPLMm$uNMG6YZSAPsy7svfTwKtYY/x.UyCeYYMNKQeGcqTGQtphPbddP0yu5DCx2I..ysObFRHxnamOvcesFH15pc0f/'") %}
 xen_password:
   cmd.run:
     - name: usermod -p '{{ xen_hash }}' {{ xen_user }}

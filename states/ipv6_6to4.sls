@@ -4,12 +4,17 @@
 {# ════════════════════════════════════════════════════════════════════
    IPv6 6to4 tunnel — Phase 2a.
    Feature gate: features.network.ipv6_6to4
-   Zero-config: auto-detects public IPv4, no gopass secrets needed.
+   Zero-config: auto-detects public IPv4 via cached file (1h TTL), no gopass secrets needed.
    Uses anycast relay at 192.88.99.1 (RFC 3068).
    ════════════════════════════════════════════════════════════════════ #}
 
-# --- Detect public IPv4 ---
-{% set _public_v4 = salt['cmd.run_stdout']('curl -4 --max-time 10 --silent https://ifconfig.me 2>/dev/null || true', python_shell=True).strip() %}
+{% set _ipv4_cache = '/var/cache/salt/public-ipv4.txt' %}
+{% set _cached_v4 = salt['cmd.run_stdout']('cat ' ~ _ipv4_cache ~ ' 2>/dev/null || true', python_shell=True).strip() %}
+{% if _cached_v4 and _cached_v4.count('.') == 3 %}
+{% set _public_v4 = _cached_v4 %}
+{% else %}
+{% set _public_v4 = salt['cmd.run_stdout']('curl -4 --max-time 3 --silent https://ifconfig.me 2>/dev/null || true', python_shell=True).strip() %}
+{% endif %}
 {% set _has_v4 = (_public_v4 | length > 0) and (_public_v4.count('.') == 3) %}
 
 # --- Compute 6to4 prefix ---
@@ -24,6 +29,11 @@
 
 # --- Tunnel interface ---
 {% if _has_v4 %}
+cache_public_v4:
+  cmd.run:
+    - name: curl -4 --max-time 3 --silent https://ifconfig.me | tee {{ _ipv4_cache }}
+    - unless: test -f {{ _ipv4_cache }} && test $(find {{ _ipv4_cache }} -mmin -60 | wc -l) -gt 0
+
 tun6to4_service:
   file.managed:
     - name: /etc/systemd/system/tun6to4.service

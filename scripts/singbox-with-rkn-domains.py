@@ -8,22 +8,7 @@ import json
 import sys
 from pathlib import Path
 
-
-def load_rkn_domains(domains_path: Path) -> list[str]:
-    """Load RKN domains from file."""
-    if not domains_path.exists():
-        print(f"Warning: RKN domains file not found: {domains_path}")
-        return []
-
-    domains = []
-    with open(domains_path, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#"):
-                domains.append(line)
-
-    print(f"Loaded {len(domains)} domains from {domains_path}")
-    return domains
+from _rkn_utils import load_rkn_domains
 
 
 def generate_singbox_config(

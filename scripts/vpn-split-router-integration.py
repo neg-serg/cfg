@@ -9,44 +9,7 @@ from pathlib import Path
 
 import yaml
 
-
-def load_rkn_domains(domains_path: Path, limit: int = 100) -> list[str]:
-    """Load important RKN domains (AI, social media, etc.)."""
-    if not domains_path.exists():
-        print(f"Warning: RKN domains file not found: {domains_path}")
-        return []
-
-    important_domains = []
-    categories = ["ai_services", "social_media", "vpn_proxy"]
-
-    # Try to load categorized domains first
-    categories_path = domains_path.parent / "rkn-domains-categorized.txt"
-    if categories_path.exists():
-        with open(categories_path, "r", encoding="utf-8") as f:
-            current_category = None
-            for line in f:
-                line = line.strip()
-                if line.startswith("#"):
-                    # Extract category from comment
-                    if "category:" in line:
-                        current_category = line.split("category:")[1].strip()
-                elif line and current_category in categories:
-                    important_domains.append(line)
-
-    # Fallback to all domains
-    if not important_domains:
-        with open(domains_path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#"):
-                    important_domains.append(line)
-
-    # Limit for seed domains
-    if len(important_domains) > limit:
-        important_domains = important_domains[:limit]
-
-    print(f"Loaded {len(important_domains)} important domains from {domains_path}")
-    return important_domains
+from _rkn_utils import load_rkn_domains
 
 
 def update_vpn_split_router_config(config_path: Path, domains: list[str]) -> bool:
@@ -121,7 +84,7 @@ def main() -> None:
     config_path = Path(args.config_path).expanduser()
 
     # Load domains
-    domains = load_rkn_domains(domains_path, args.limit)
+    domains = load_rkn_domains(domains_path, limit=args.limit, categories=["ai_services", "social_media", "vpn_proxy"])
     if not domains:
         print("No domains loaded. Exiting.")
         sys.exit(0)

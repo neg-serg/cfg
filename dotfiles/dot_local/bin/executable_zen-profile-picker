@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+
+PROFILE=$(zen-profile list 2>/dev/null | tail -n +2 | rofi -dmenu -p "Zen Profile" -i | awk '{print $2}')
+
+if [ -n "$PROFILE" ]; then
+    zen-profile switch "$PROFILE"
+    notify-send "Zen Profile" "Switched to $PROFILE" -t 2000
+fi

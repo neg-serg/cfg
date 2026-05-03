@@ -122,6 +122,7 @@ include:
 {% endif %}
 {% if host.zen_profile %}
   - zen_browser
+  - zen_profiles
 {% endif %}
 {% if host.features.kanata %}
   - kanata

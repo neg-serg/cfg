@@ -1,0 +1,187 @@
+#!/usr/bin/env python3
+"""Zen Browser profile manager — create, list, switch, import cookies."""
+
+import configparser
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+ZEN_DIR = os.path.expanduser("~/.config/zen")
+PROFILES_INI = os.path.join(ZEN_DIR, "profiles.ini")
+ZEN_BIN = "zen-browser"
+
+
+def read_profiles_ini() -> configparser.ConfigParser:
+    cp = configparser.ConfigParser()
+    cp.read(PROFILES_INI)
+    return cp
+
+
+def write_profiles_ini(cp: configparser.ConfigParser):
+    with open(PROFILES_INI, "w") as f:
+        cp.write(f)
+
+
+def find_install_section(cp: configparser.ConfigParser) -> str | None:
+    for s in cp.sections():
+        if s.startswith("Install"):
+            return s
+    return None
+
+
+def cmd_list():
+    cp = read_profiles_ini()
+    default_path = None
+    install_sec = find_install_section(cp)
+    if install_sec:
+        default_path = cp.get(install_sec, "Default", fallback=None)
+
+    for s in cp.sections():
+        if not s.startswith("Profile"):
+            continue
+        name = cp.get(s, "Name", fallback="?")
+        path = cp.get(s, "Path", fallback="?")
+        is_default = (path == default_path)
+        marker = " [DEFAULT]" if is_default else ""
+        print(f"  {name:30s} path={path}{marker}")
+
+
+def cmd_create(name: str):
+    result = subprocess.run(
+        [ZEN_BIN, "-CreateProfile", f"{name} {ZEN_DIR}/{name}"],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        print(f"Error: {result.stderr.strip()}", file=sys.stderr)
+        sys.exit(1)
+    print(f"Profile '{name}' created at {ZEN_DIR}/{name}")
+
+
+def cmd_switch(name: str):
+    cp = read_profiles_ini()
+    target_path = None
+    target_name = None
+    for s in cp.sections():
+        if not s.startswith("Profile"):
+            continue
+        if cp.get(s, "Name", fallback="") == name:
+            target_path = cp.get(s, "Path", fallback="")
+            target_name = s
+            break
+
+    if not target_name:
+        print(f"Profile '{name}' not found. Use 'zen-profile list' to see available profiles.", file=sys.stderr)
+        sys.exit(1)
+
+    for s in cp.sections():
+        if s.startswith("Profile"):
+            cp.remove_option(s, "Default")
+
+    cp.set(target_name, "Default", "1")
+
+    install_sec = find_install_section(cp)
+    if install_sec:
+        cp.set(install_sec, "Default", target_path)
+        cp.set(install_sec, "Locked", "1")
+    else:
+        cp.add_section("InstallX")
+        cp.set("InstallX", "Default", target_path)
+        cp.set("InstallX", "Locked", "1")
+
+    write_profiles_ini(cp)
+    print(f"Switched default profile to '{name}' ({target_path})")
+
+
+def cmd_cookies(name: str, from_browser: str):
+    try:
+        import browser_cookie3
+    except ImportError:
+        print("Install browser-cookie3: pipx install browser-cookie3", file=sys.stderr)
+        sys.exit(1)
+
+    cp = read_profiles_ini()
+    target_path = None
+    for s in cp.sections():
+        if not s.startswith("Profile"):
+            continue
+        if cp.get(s, "Name", fallback="") == name:
+            target_path = cp.get(s, "Path", fallback="")
+            break
+
+    if not target_path:
+        print(f"Profile '{name}' not found.", file=sys.stderr)
+        sys.exit(1)
+
+    profile_dir = os.path.join(ZEN_DIR, target_path)
+    cookies_db = os.path.join(profile_dir, "cookies.sqlite")
+
+    try:
+        if from_browser == "chromium":
+            cj = browser_cookie3.chromium()
+        elif from_browser == "firefox":
+            cj = browser_cookie3.firefox()
+        elif from_browser == "floorp":
+            cj = browser_cookie3.firefox(cookie_file=os.path.expanduser("~/.floorp/profiles.ini"))
+        else:
+            print(f"Unknown browser: {from_browser}", file=sys.stderr)
+            sys.exit(1)
+
+        import sqlite3
+        conn = sqlite3.connect(cookies_db)
+        conn.execute("PRAGMA journal_mode=WAL")
+        count = 0
+        for cookie in cj:
+            try:
+                conn.execute(
+                    "INSERT OR REPLACE INTO moz_cookies "
+                    "(host, name, value, path, expiry, isSecure, isHttpOnly, sameSite) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    (cookie.domain, cookie.name or "", cookie.value or "",
+                     cookie.path or "/", cookie.expires or 0,
+                     1 if cookie.secure else 0,
+                     0, 0),
+                )
+                count += 1
+            except Exception:
+                pass
+        conn.commit()
+        conn.close()
+        print(f"Imported {count} cookies from {from_browser} into profile '{name}'")
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+USAGE = """Usage: zen-profile <command>
+
+Commands:
+  list                    List all Zen profiles
+  create <name>           Create a new profile
+  switch <name>           Set default profile
+  cookies <name> --from <chromium|firefox|floorp>
+                          Import cookies from another browser"""
+
+
+def main():
+    args = sys.argv[1:]
+    if not args or args[0] in ("-h", "--help", "help"):
+        print(USAGE)
+        sys.exit(0)
+
+    cmd = args[0]
+    if cmd == "list":
+        cmd_list()
+    elif cmd == "create" and len(args) >= 2:
+        cmd_create(args[1])
+    elif cmd == "switch" and len(args) >= 2:
+        cmd_switch(args[1])
+    elif cmd == "cookies" and len(args) >= 4 and args[2] == "--from":
+        cmd_cookies(args[1], args[3])
+    else:
+        print(USAGE, file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

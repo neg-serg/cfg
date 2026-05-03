@@ -1,7 +1,7 @@
 # Espanso: cross-platform text expander (Wayland variant).
-{% from '_imports.jinja' import user %}
+{% from '_imports.jinja' import host, user %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import user_service_with_unit, _env_block %}
+{% from '_macros_service.jinja' import user_service_with_unit %}
 # Espanso: cross-platform text expander (Wayland variant)
 
 # --- Install espanso-wayland from AUR ---
@@ -19,7 +19,8 @@ espanso_healthcheck:
     - name: espanso restart
     - runas: {{ user }}
     - env:
-{{ _env_block() }}
+      - XDG_RUNTIME_DIR: {{ host.runtime_dir }}
+      - DBUS_SESSION_BUS_ADDRESS: unix:path={{ host.runtime_dir }}/bus
     - unless: espanso status 2>/dev/null | grep -q running
     - require:
       - cmd: espanso_enabled

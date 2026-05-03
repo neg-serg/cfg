@@ -4,7 +4,8 @@
 {% from '_imports.jinja' import host %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
-{% from '_macros_service.jinja' import ensure_dir, container_service, remove_native_unit %}
+{% from '_macros_service.jinja' import ensure_dir, remove_native_unit, remove_native_package %}
+{% from '_macros_container.jinja' import container_service %}
 
 {% set mon = host.features.monitoring %}
 
@@ -27,12 +28,7 @@ loki_config:
 
 # In-place cutover: remove native systemd unit so Quadlet-generated unit is not shadowed.
 {{ remove_native_unit('loki') }}
-
-# Remove native package (idempotent — no-op if already removed)
-loki_native_package_removed:
-  pkg.removed:
-    - pkgs:
-      - loki
+{{ remove_native_package('loki', ['loki']) }}
 
 {{ container_service('loki', catalog.loki, image_registry,
     quadlet_unit_name='loki-container',
@@ -57,25 +53,9 @@ promtail_config:
 
 {{ ensure_dir('promtail_cache_dir', '/var/cache/promtail', user='promtail') }}
 
-# In-place cutover: remove the native systemd unit file so the
-# Quadlet-generated unit is no longer shadowed by the pacman-deployed
-# /etc/systemd/system/promtail.service.
-promtail_native_unit_absent:
-  file.absent:
-    - name: /etc/systemd/system/promtail.service
-
-promtail_native_unit_daemon_reload:
-  cmd.run:
-    - name: systemctl daemon-reload
-    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
-    - onchanges:
-      - file: promtail_native_unit_absent
-
-# Remove native package (idempotent — no-op if already removed)
-promtail_native_package_removed:
-  pkg.removed:
-    - pkgs:
-      - promtail
+# In-place cutover: remove native systemd unit and package so Quadlet-generated unit is not shadowed.
+{{ remove_native_unit('promtail') }}
+{{ remove_native_package('promtail', ['promtail']) }}
 
 {{ container_service('promtail', catalog.promtail, image_registry,
     quadlet_unit_name='promtail-container',
@@ -126,25 +106,9 @@ grafana_proxypilot_dashboard:
 
 {{ ensure_dir('grafana_container_state_dir', '/var/lib/grafana-container', user='grafana', mode='0755') }}
 
-# In-place cutover: remove the native systemd unit file so the
-# Quadlet-generated unit is no longer shadowed by the pacman-deployed
-# /etc/systemd/system/grafana.service.
-grafana_native_unit_absent:
-  file.absent:
-    - name: /etc/systemd/system/grafana.service
-
-grafana_native_unit_daemon_reload:
-  cmd.run:
-    - name: systemctl daemon-reload
-    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
-    - onchanges:
-      - file: grafana_native_unit_absent
-
-# Remove native package (idempotent — no-op if already removed)
-grafana_native_package_removed:
-  pkg.removed:
-    - pkgs:
-      - grafana
+# In-place cutover: remove native systemd unit and package so Quadlet-generated unit is not shadowed.
+{{ remove_native_unit('grafana') }}
+{{ remove_native_package('grafana', ['grafana']) }}
 
 {% set _grafana_watch = ['file: grafana_config', 'file: grafana_dashboards_provider', 'file: grafana_proxypilot_dashboard'] + (['file: grafana_loki_datasource'] if mon.loki else []) %}
 {{ container_service('grafana', catalog.grafana, image_registry,

@@ -1,7 +1,8 @@
 {% from '_imports.jinja' import host, user %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
-{% from '_macros_service.jinja' import ensure_dir, container_service, remove_native_unit %}
+{% from '_macros_service.jinja' import ensure_dir, remove_native_unit, remove_native_package %}
+{% from '_macros_container.jinja' import container_service %}
 {% from '_macros_install.jinja' import huggingface_file %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/t5_summarization.yaml' as t5 %}
@@ -47,10 +48,7 @@ t5_summarization_convert:
 {{ remove_native_unit('t5_summarization') }}
 
 # Remove native package (idempotent — no-op if already removed)
-t5_summarization_native_package_removed:
-  pkg.removed:
-    - pkgs:
-      - llama.cpp-vulkan
+{{ remove_native_package('t5_summarization', ['llama.cpp-vulkan']) }}
 
 {{ container_service('t5_summarization', catalog.t5_summarization, image_registry,
     requires=['file: t5_summarization_hf_dir', 'cmd: t5_summarization_convert', 'cmd: t5_summarization_native_unit_daemon_reload']) }}

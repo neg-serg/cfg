@@ -3,7 +3,8 @@
 {% from '_imports.jinja' import host, user %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
-{% from '_macros_service.jinja' import ensure_dir, container_service, remove_native_unit %}
+{% from '_macros_service.jinja' import ensure_dir, remove_native_unit, remove_native_package %}
+{% from '_macros_container.jinja' import container_service %}
 {% from '_macros_install.jinja' import http_file %}
 {% import_yaml 'data/llama_embed.yaml' as embed %}
 # llama.cpp embedding server: Qwen3-Embedding-8B via Vulkan.
@@ -20,10 +21,7 @@
 {{ remove_native_unit('llama_embed') }}
 
 # Remove native package (idempotent — no-op if already removed)
-llama_embed_native_package_removed:
-  pkg.removed:
-    - pkgs:
-      - llama.cpp-vulkan
+{{ remove_native_package('llama_embed', ['llama.cpp-vulkan']) }}
 
 {{ container_service('llama_embed', catalog.llama_embed, image_registry,
     requires=['file: llama_embed_models_dir', 'cmd: llama_embed_model', 'cmd: llama_embed_native_unit_daemon_reload']) }}

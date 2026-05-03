@@ -42,23 +42,3 @@
 {%- endif %}
 {%- endmacro -%}
 
-{# Create desktop entry (.desktop) files with standard format.
-   Usage: {{ desktop_entry('vr_session', '/usr/share/xsessions/vr.desktop', 'Xorg VR', 'VR session', 'startx', 'i3') }}
-#}
-{%- macro desktop_entry(name, path, entry_name, comment, exec, desktop_names, type='XSession', user='root', group='root', mode='0644') -%}
-{{ name }}:
-  file.managed:
-    - name: {{ path }}
-    - user: {{ user }}
-    - group: {{ group }}
-    - mode: '{{ mode }}'
-    - contents: |
-        [Desktop Entry]
-        Name={{ entry_name }}
-        Comment={{ comment }}
-        Exec={{ exec }}
-        Type={{ type }}
-        DesktopNames={{ desktop_names }}
-{%- endmacro -%}
-
-

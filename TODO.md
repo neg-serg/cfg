@@ -148,9 +148,9 @@ Evaluate [SaluteSpeech](https://developers.sber.ru/docs/ru/salutespeech/overview
 
 ---
 
-## Test suite improvements
+## ~~Test suite improvements~~
 
-Audit (2026-05-02): 393 tests, 0 failing.
+~~Audit (2026-05-02): 393 tests, 0 failing.~~
 
 
 ---
@@ -170,16 +170,16 @@ When the Wayland compositor emits a fast output-remove-and-readd sequence (monit
 
 ---
 
-## Music Analysis Pipeline (essentia + annoy)
+## ~~Music Analysis Pipeline (essentia + annoy)~~
 
-Scripts `music-highlevel`, `music-similar`, `music-index` require:
-- `essentia` (provides `streaming_extractor_music`) — not in Arch repos, needs AUR or custom PKGBUILD
-- `python-annoy` — approximate nearest neighbor library, pip or AUR
+~~Scripts `music-highlevel`, `music-similar`, `music-index` require:~~
+~~- `essentia` (provides `streaming_extractor_music`) — not in Arch repos, needs AUR or custom PKGBUILD~~
+~~- `python-annoy` — approximate nearest neighbor library, pip or AUR~~
 
-Create a separate Salt state (`music_analysis.sls` or extend `installers.sls`):
-1. Build/install `essentia` via paru or PKGBUILD
-2. Install `python-annoy` via pip_pkg macro
-3. Idempotency checks for both
+~~Create a separate Salt state (`music_analysis.sls` or extend `installers.sls`):~~
+~~1. Build/install `essentia` via paru or PKGBUILD~~
+~~2. Install `python-annoy` via pip_pkg macro~~
+~~3. Idempotency checks for both~~
 
 ---
 
@@ -200,29 +200,29 @@ the current AUR package may be sufficient, or a custom PKGBUILD may be needed.
 
 ---
 
-## IPv6 diagnostics and configuration (in progress)
+## IPv6 diagnostics and configuration
 
 IPv6 testing revealed that the stack is functional but global addresses are missing and external connectivity is impossible.
 
-**Infrastructure deployed (see states/ipv6.sls, states/ipv6_6to4.sls, states/ipv6_tunnel.sls):**
-- Diagnostic script: `check-ipv6.sh` (deployed via Salt when `features.network.ipv6: true`)
-- 6to4 tunnel: `tun6to4.service` systemd unit (gated by `features.network.ipv6_6to4`)
-- HE.net tunnel: `he-tunnel.service` systemd unit + firewall + sysctl (gated by `features.network.ipv6_tunnel`)
-- Sing-box DNS strategy auto-switches from `ipv4_only` → `prefer_ipv4` when either tunnel is enabled
+**~~Infrastructure deployed (see states/ipv6.sls, states/ipv6_6to4.sls, states/ipv6_tunnel.sls):~~**
+~~- Diagnostic script: `check-ipv6.sh` (deployed via Salt when `features.network.ipv6: true`)~~
+~~- 6to4 tunnel: `tun6to4.service` systemd unit (gated by `features.network.ipv6_6to4`)~~
+~~- HE.net tunnel: `he-tunnel.service` systemd unit + firewall + sysctl (gated by `features.network.ipv6_tunnel`)~~
+~~- Sing-box DNS strategy auto-switches from `ipv4_only` → `prefer_ipv4` when either tunnel is enabled~~
 
-**2026-05-03: 6to4 tested — anycast relay 192.88.99.1 unreachable via ISP.**
-Tunnel interface (2002:b2ed:f82c::/16) and route (2000::/3) created successfully, but anycast relay doesn't respond — 100% packet loss, traceroute dies at hop 7. 6to4 effectively dead (RFC 7526 Historic, most operators dropped anycast). HE.net tunnel remains the recommended path.
+**~~2026-05-03: 6to4 tested — anycast relay 192.88.99.1 unreachable via ISP.~~**
+~~Tunnel interface (2002:b2ed:f82c::/16) and route (2000::/3) created successfully, but anycast relay doesn't respond — 100% packet loss, traceroute dies at hop 7. 6to4 effectively dead (RFC 7526 Historic, most operators dropped anycast).~~
+
+**Remaining:**
+- HE.net tunnel — requires manual registration at tunnelbroker.net, then `gopass insert api/he-tunnel` + `ipv6_tunnel: true`
 
 **Issues:**
 - ❌ Global IPv6 addresses missing (only link‑local `fe80::`)
 - ❌ Default route (`default`) not configured
 - ❌ Connectivity to external IPv6 hosts impossible (`Network is unreachable`)
 - ✅ AAAA DNS resolution works
-- ❌ Tunnel mechanisms (6to4, Teredo, Miredo) not installed
-- ⚠️  `ip6tables` active with `DROP` policy on INPUT/FORWARD (may block ICMPv6)
 
 **Actions:**
-1. Check IPv6 settings on router/switch (enable SLAAC/DHCPv6)
-2. If ISP doesn't provide IPv6, configure a tunnel (Hurricane Electric, SixXS)
-3. If needed, temporarily disable `ufw` for IPv6 (`sudo ufw disable` for IPv6) or add rules for ICMPv6
-4. For testing, use `ping -6` with interface specification (`-I`) or `curl --interface`
+1. Register at https://tunnelbroker.net, create Regular Tunnel
+2. `gopass insert api/he-tunnel` with server_ipv4, client_ipv6, routed_prefix
+3. `hosts.yaml: features.network.ipv6_tunnel: true`, then `just group network`

@@ -37,7 +37,7 @@ steam_pkg:
 steam_lib32_audio:
   cmd.run:
     - name: pacman -S --noconfirm --needed --ask 4 lib32-pipewire lib32-pipewire-jack lib32-alsa-plugins lib32-libpulse
-    - unless: pacman -Qi lib32-pipewire >/dev/null 2>&1
+    - unless: pacman -Qi lib32-pipewire-jack >/dev/null 2>&1
     - require:
       - cmd: steam_pkg
 

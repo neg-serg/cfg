@@ -66,7 +66,7 @@ parse_od_range() {
 get_current_sclk() {
     local raw
     raw=$(<"${SCLK_PATH}")
-    print -r -- "$raw" | awk '/\*$/ {gsub(/[^0-9]/, ""); print $1; exit}'
+    print -r -- "$raw" | awk '/\*$/ {match($0, /([0-9]+)Mhz/, a); print a[1]; exit}'
 }
 
 get_power() {

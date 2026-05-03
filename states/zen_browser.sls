@@ -63,4 +63,22 @@ zen_floorp_profile_import:
 {% endif %}
 
 {{ browser_extensions('zen', zen_profile, zen.extensions, 'zen_user_js') }}
+
+zen_set_proxy_script:
+  file.managed:
+    - name: {{ home }}/.local/bin/set-zen-proxy
+    - source: salt://states/scripts/set-zen-proxy
+    - user: {{ user }}
+    - group: {{ user }}
+    - mode: '0755'
+    - makedirs: True
+
+zen_switch_proxy_script:
+  file.managed:
+    - name: {{ home }}/.local/bin/switch-proxy
+    - source: salt://states/scripts/switch-proxy
+    - user: {{ user }}
+    - group: {{ user }}
+    - mode: '0755'
+    - makedirs: True
 {% endif %}

@@ -1,8 +1,47 @@
 #!/bin/bash
 set -e
 
-NULL_SINK="game_stereo"
-RME_OUT="alsa_output.pci-0000_05_00.0.pro-output-0"
+ROUTING_YAML="$HOME/.config/audio/routing.yaml"
+
+read_yaml() {
+    python3 -c "
+import yaml, shlex
+with open('$ROUTING_YAML') as f:
+    d = yaml.safe_load(f)
+b = d['bridge']
+t = d['rme']['routes'][b['target']]
+rme = d['rme']
+print(f'NULL_SINK={shlex.quote(b[\"null_sink\"])}')
+print(f'TARGET_LEFT={t[\"left\"]}')
+print(f'TARGET_RIGHT={t[\"right\"]}')
+print(f'RME_NICK={shlex.quote(rme[\"nick\"])}')
+"
+}
+
+if [[ -f "$ROUTING_YAML" ]]; then
+    eval "$(read_yaml)"
+else
+    NULL_SINK="game_stereo"
+    TARGET_LEFT=0
+    TARGET_RIGHT=1
+    RME_NICK="RME AIO Pro"
+fi
+
+find_rme_sink() {
+    pw-cli list-objects Node 2>/dev/null | awk -v nick="$RME_NICK" '
+        /^id/ { node = "" }
+        /node.name/ && /alsa_output/ { node = $3; gsub(/"/, "", node) }
+        index($0, "node.nick = \"" nick "\"") && node != "" { print node; exit }
+    '
+}
+
+RME_OUT=""
+for i in $(seq 1 30); do
+    RME_OUT="$(find_rme_sink)"
+    [[ -n "$RME_OUT" ]] && break
+    sleep 0.5
+done
+[[ -n "$RME_OUT" ]] || { echo "game-audio-bridge: RME sink not found" >&2; exit 1; }
 
 if ! pactl list short sinks 2>/dev/null | grep -q "$NULL_SINK"; then
     pactl load-module module-null-sink \
@@ -17,7 +56,7 @@ for i in $(seq 1 10); do
     sleep 0.2
 done
 
-pw-link "${NULL_SINK}:monitor_FL" "${RME_OUT}:playback_AUX0" 2>/dev/null || true
-pw-link "${NULL_SINK}:monitor_FR" "${RME_OUT}:playback_AUX1" 2>/dev/null || true
+pw-link "${NULL_SINK}:monitor_FL" "${RME_OUT}:playback_AUX${TARGET_LEFT}" 2>/dev/null || true
+pw-link "${NULL_SINK}:monitor_FR" "${RME_OUT}:playback_AUX${TARGET_RIGHT}" 2>/dev/null || true
 
 pactl set-default-sink "$NULL_SINK" 2>/dev/null || true

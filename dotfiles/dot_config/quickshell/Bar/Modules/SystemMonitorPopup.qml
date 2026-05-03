@@ -19,6 +19,8 @@ PanelOverlaySurface {
     readonly property int _iconSz: Math.round(Theme.fontSizeSmall * overlayScale)
     readonly property int _fontSize: Math.round(Theme.fontSizeSmall * overlayScale)
     readonly property int _fontSizeSmall: Math.round(Theme.fontSizeSmall * 0.85 * overlayScale)
+    readonly property int _fontSizeMedium: Math.round(Theme.fontSizeMedium * overlayScale)
+    readonly property int _fontSizeTiny: Math.round(9 * overlayScale)
     readonly property int _pad: Math.round(10 * overlayScale)
     readonly property int _spacing: Math.round(6 * overlayScale)
     readonly property string _lokiBase: "http://127.0.0.1:3100"
@@ -212,7 +214,7 @@ PanelOverlaySurface {
                         Text {
                             text: root.totalLogs.toString()
                             font.family: Theme.fontFamily
-                            font.pixelSize: Math.round(Theme.fontSizeMedium * overlayScale)
+                            font.pixelSize: root._fontSizeMedium
                             color: Theme.textPrimary
                             font.bold: true
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -242,7 +244,7 @@ PanelOverlaySurface {
                         Text {
                             text: root.errorCount.toString()
                             font.family: Theme.fontFamily
-                            font.pixelSize: Math.round(Theme.fontSizeMedium * overlayScale)
+                            font.pixelSize: root._fontSizeMedium
                             color: root.errorCount > 0 ? "#ef4444" : Theme.textPrimary
                             font.bold: true
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -272,7 +274,7 @@ PanelOverlaySurface {
                         Text {
                             text: root.serviceCount.toString()
                             font.family: Theme.fontFamily
-                            font.pixelSize: Math.round(Theme.fontSizeMedium * overlayScale)
+                            font.pixelSize: root._fontSizeMedium
                             color: Theme.textPrimary
                             font.bold: true
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -497,7 +499,7 @@ PanelOverlaySurface {
                 text: "API: loki-ready=" + root.lokiReady + " grafana-token=" +
                       (root.grafanaToken.length > 0 ? "yes" : "no")
                 font.family: Theme.fontFamily
-                font.pixelSize: Math.round(9 * overlayScale)
+                font.pixelSize: root._fontSizeTiny
                 color: Theme.textSecondary
                 visible: Settings.settings.debugLogs === true
             }

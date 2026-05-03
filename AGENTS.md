@@ -1,6 +1,6 @@
 # salt Development Guidelines
 
-Auto-generated from active feature plans. Last updated: 2026-05-02
+Auto-generated from active feature plans. Last updated: 2026-05-03
 
 ## Active Technologies
 - Jinja2 + YAML Salt states, Python 3, Bash/Zsh helper scripts
@@ -52,11 +52,6 @@ docs/
 ## Recent Changes
 - Dynamic proxy switching for Zen Browser: Added menu script `switch-proxy` with Super+Alt+P binding for vicinae/dmenu/rofi selection, `set-zen-proxy` Python helper, integration with existing HTTP helper server (dynamic-proxy-switching)
 - 079-age-yubikey-cutover: Added Markdown planning artifacts, Salt/Jinja states, shell-based operator workflow, `gopass` 1.16.1, `age` 1.3.1, `yubikey-manager` 5.9.0 + `gopass`, `age`, `age-plugin-yubikey`, `yubikey-manager`, `pcsclite` / `pcscd`, systemd user services, existing Salt data/state files, existing chezmoi templates
-- 078-gopass-age-research: Added Markdown, shell command evidence, `gopass` 1.16.1, `age`-backed store observations + `gopass`, `age`, GitHub upstream discussions/releases, local `gopass` configuration and CLI behavior, spec-kit artifacts
-- 077-zen-browser-cutover: Added Jinja2 + YAML Salt states, Python 3 helper script, Markdown operator docs + Salt 3006.x masterless workflow, existing `_macros_*.jinja`, `zen-browser-bin`, Surfingkeys browser extension, systemd user services, Hyprland/Wayfire launcher config, spec-kit artifacts
-- Russian documentation removal: Deleted 50 `.ru.md` files, removed `.ru.md` generation from `index-salt.py`, updated lint-docs, README, CLAUDE.md, constitution (`docs`/`cleanup`)
-- Module index added: Auto-generated `docs/module-index.yaml` with full project map (79 states, 6 macros, 34+37 scripts, 36 data files, 33 tests, 49 docs); LLMs must read it first (`docs`/`tooling`)
-- Speckit templates converted to YAML: All 6 `.specify/templates/*-template.md` files converted to YAML schema; all 9 SKILL.md files updated to reference YAML paths; knowledge.yaml is the canonical machine-readable doc index (`docs`/`cleanup`)
 
 
 ## LLM Entry Point

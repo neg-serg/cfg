@@ -1,0 +1,24 @@
+rme:
+  nick: "RME AIO Pro"
+  card_name: "HDSPe24048964"
+  profile: "pro-audio"
+  routes:
+    an:
+      left: 0
+      right: 1
+      label: "Speakers"
+    aes:
+      left: 2
+      right: 3
+      label: "AES"
+    spdif:
+      left: 4
+      right: 5
+      label: "SPDIF"
+    phones:
+      left: 6
+      right: 7
+      label: "Headphones"
+bridge:
+  null_sink: "game_stereo"
+  target: "an"

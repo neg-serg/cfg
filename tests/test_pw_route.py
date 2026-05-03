@@ -84,7 +84,7 @@ alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX1
     result, pw_link_log = _run_pw_route(tmp_path, "toggle", listing)
 
     assert result.returncode == 0, result.stderr
-    assert "default stereo mix -> an (AUX0/AUX1)" in result.stdout
+    assert "an -> AUX0/AUX1" in result.stdout
     assert "-d alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX0 alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX2" in pw_link_log
     assert "-d alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX1 alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX3" in pw_link_log
     assert "alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX0 alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX0" in pw_link_log
@@ -101,7 +101,7 @@ alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX1
     result, _ = _run_pw_route(tmp_path, "toggle", listing)
 
     assert result.returncode == 0, result.stderr
-    assert "default stereo mix -> aes (AUX2/AUX3)" in result.stdout
+    assert "aes -> AUX2/AUX3" in result.stdout
 
 
 def test_current_matches_known_pair_even_when_monitor_ports_have_extra_links(tmp_path: Path):

@@ -153,6 +153,9 @@ include:
 {% if host.features.get('opencode_telegram', false) %}
   - opencode_telegram
 {% endif %}
+{% if host.features.get('managed_bots', false) %}
+  - managed_bots
+{% endif %}
 {% if host.features.get('image_gen', True) %}
   - image_generation
 {% endif %}

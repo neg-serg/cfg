@@ -11,7 +11,15 @@ Item {
     readonly property string _pwRouteCommand: "PATH=\"$HOME/.local/bin:$PATH\" pw-route"
 
     property var defaultAudioSink: Pipewire.defaultAudioSink
-    onDefaultAudioSinkChanged: syncFromSink()
+    onDefaultAudioSinkChanged: {
+        syncFromSink()
+        if (_isProAudioSink()) {
+            if (!routeTimer.running) routeTimer.running = true
+        } else {
+            routeTimer.running = false
+            currentRoute = ""
+        }
+    }
     readonly property var _audio: (defaultAudioSink && defaultAudioSink.audio) ? defaultAudioSink.audio : null
 
     property var defaultAudioSource: Pipewire.defaultAudioSource
@@ -46,9 +54,6 @@ Item {
         if (_audio) {
             muted = _audio.muted
             volume = _audio.muted ? 0 : Math.round((_audio.volume || 0) * 100)
-            // Pro-audio devices (RME AIO Pro) have no software volume
-            // control; PipeWire may report 0 until fully initialised.
-            // Clamp to 100 so the bar doesn't show a misleading "off" icon.
             if (_isProAudioSink() && !muted && volume === 0)
                 volume = 100
         } else {
@@ -115,11 +120,8 @@ Item {
     Component.onCompleted: {
         syncFromSink()
         syncFromSource()
-        // PipeWire may not have reported the real audio state during
-        // initial QML evaluation (esp. after panel restart).  Re-sync
-        // once after a short delay to catch the asynchronously
-        // delivered initial volume / mute state.
         reSyncTimer.start()
+        loadRoutesProc.running = true
     }
 
     Timer {
@@ -131,19 +133,35 @@ Item {
         }
     }
 
-    // ---- RME AIO Pro route detection ----
+    // ---- RME AIO Pro route detection (data-driven via pw-route list) ----
 
+    property var routeNames: ({})
+    property var routeKeys: []
     property string currentRoute: "unknown"
     onCurrentRouteChanged: routeRefresh.restart()
-    readonly property var routeNames: ({
-        "an": "Speakers",
-        "aes": "AES",
-        "spdif": "SPDIF",
-        "phones": "Headphones",
-        "unknown": "Unknown"
-    })
-    readonly property string routeDisplayName: routeNames[currentRoute] || "Unknown"
-    readonly property var routeKeys: ["an", "aes", "spdif", "phones"]
+    readonly property string routeDisplayName: routeNames[currentRoute] || currentRoute || "Unknown"
+
+    Process {
+        id: loadRoutesProc
+        command: ["sh", "-c", _pwRouteCommand + " list"]
+        stdout: StdioCollector {
+            waitForEnd: true
+            onStreamFinished: {
+                try {
+                    var routes = JSON.parse(text.trim())
+                    var names = {}
+                    var keys = []
+                    for (var i = 0; i < routes.length; i++) {
+                        var r = routes[i]
+                        names[r.key] = r.label
+                        keys.push(r.key)
+                    }
+                    root.routeNames = names
+                    root.routeKeys = keys
+                } catch(e) {}
+            }
+        }
+    }
 
     function setRoute(name) {
         if (name === currentRoute || name === "unknown") return;
@@ -156,9 +174,9 @@ Item {
 
     Timer {
         id: routeTimer
-        interval: 2000
+        interval: 3000
         repeat: true
-        running: true
+        running: false
         onTriggered: {
             if (!routeProc.running) routeProc.running = true
         }

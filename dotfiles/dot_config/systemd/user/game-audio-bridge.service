@@ -2,6 +2,7 @@
 Description=Game Audio Bridge (Stereo Null Sink -> RME AIO Pro)
 After=pipewire-pulse.service
 Requires=pipewire-pulse.service
+PartOf=pipewire-pulse.service
 
 [Service]
 Type=oneshot

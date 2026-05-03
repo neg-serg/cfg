@@ -25,6 +25,9 @@ include:
 {% if host.features.get('opencode_telegram', False) %}
   - opencode_telegram
 {% endif %}
+{% if host.features.get('managed_bots', False) %}
+  - managed_bots
+{% endif %}
 {% if host.features.get('video_ai', False) %}
   - video_ai
 {% endif %}

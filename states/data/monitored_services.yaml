@@ -77,6 +77,11 @@ user_services:
     health_cmd: "pgrep -f opencode-telegram"
     optional: true
     keepalive: true
+  - name: managed-bots
+    severity: warning
+    health_cmd: "pgrep -f managed-bots-runner"
+    optional: true
+    keepalive: true
   - name: mpd
     severity: info
     optional: true

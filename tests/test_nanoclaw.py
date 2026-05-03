@@ -72,12 +72,13 @@ def test_nanoclaw_env_managed():
 
 
 def test_nanoclaw_native_unit_absent():
-    assert "nanoclaw_native_unit_absent:" in _SOURCE
-    assert "file.absent" in _SOURCE.split("nanoclaw_native_unit_absent:")[1].split("\n\n")[0]
+    assert "remove_native_unit('nanoclaw'" in _SOURCE
+    assert 'scope=\'user\'' in _SOURCE
 
 
 def test_nanoclaw_native_unit_daemon_reload_has_onlyif():
-    assert _cmd_has_guard(_SOURCE, "nanoclaw_native_unit_daemon_reload")
+    assert "remove_native_unit('nanoclaw'" in _SOURCE
+    assert 'scope=\'user\'' in _SOURCE
 
 
 

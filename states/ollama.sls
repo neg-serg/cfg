@@ -1,7 +1,7 @@
 {% from '_imports.jinja' import host, retry_attempts, retry_interval, ollama_pull_timeout %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
-{% from '_macros_service.jinja' import ensure_dir, container_service %}
+{% from '_macros_service.jinja' import ensure_dir, container_service, remove_native_unit %}
 {% import_yaml 'data/ollama.yaml' as ollama %}
 # Ollama LLM server — pure Quadlet (Podman container).
 # Service is NOT enabled at boot (manual_start) — VRAM is shared with desktop GPU.
@@ -10,19 +10,9 @@
 {{ ensure_dir('ollama_models_dir', host.mnt_one ~ '/ollama/models', require=['mount: mount_one']) }}
 
 # In-place cutover: remove the native systemd unit file so the
-# Quadlet-generated unit at /run/systemd/system/ollama.service is no
-# longer shadowed by /etc/systemd/system/ollama.service (which takes
-# precedence in systemd's search order).
-ollama_native_unit_absent:
-  file.absent:
-    - name: /etc/systemd/system/ollama.service
-
-ollama_native_unit_daemon_reload:
-  cmd.run:
-    - name: systemctl daemon-reload
-    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
-    - onchanges:
-      - file: ollama_native_unit_absent
+# Quadlet-generated unit is no longer shadowed by the pacman-deployed
+# /etc/systemd/system/ollama.service.
+{{ remove_native_unit('ollama') }}
 
 {{ container_service('ollama', catalog.ollama, image_registry,
     requires=['file: ollama_models_dir', 'mount: mount_one', 'cmd: ollama_native_unit_daemon_reload']) }}

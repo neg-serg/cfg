@@ -1,7 +1,7 @@
 {% from '_imports.jinja' import home %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
-{% from '_macros_service.jinja' import ensure_dir, container_service, service_stopped %}
+{% from '_macros_service.jinja' import ensure_dir, container_service, service_stopped, remove_native_unit %}
 
 # Transmission BitTorrent client — pure Quadlet (Podman container).
 # Replaces native pacman package (transmission-cli) + escape hatch logic.
@@ -12,19 +12,8 @@
 # - config replacement (sed on settings.json) was for download-dir/watch-dir
 #   → replaced by bind mount paths + linuxserver env vars
 
-{# In-place cutover: remove native systemd unit if it exists so the
-   Quadlet-generated unit at /run/systemd/system/transmission.service is
-   no longer shadowed by /etc/systemd/system/transmission.service. #}
-transmission_native_unit_absent:
-  file.absent:
-    - name: /etc/systemd/system/transmission.service
-
-transmission_native_unit_daemon_reload:
-  cmd.run:
-    - name: systemctl daemon-reload
-    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
-    - onchanges:
-      - file: transmission_native_unit_absent
+{# In-place cutover: remove native systemd unit so Quadlet-generated unit is not shadowed. #}
+{{ remove_native_unit('transmission') }}
 
 {{ service_stopped('transmission_native_service_disabled', 'transmission', requires=['cmd: transmission_native_unit_daemon_reload']) }}
 

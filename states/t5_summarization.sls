@@ -1,7 +1,7 @@
 {% from '_imports.jinja' import host, user %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
-{% from '_macros_service.jinja' import ensure_dir, container_service %}
+{% from '_macros_service.jinja' import ensure_dir, container_service, remove_native_unit %}
 {% from '_macros_install.jinja' import huggingface_file %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/t5_summarization.yaml' as t5 %}
@@ -44,16 +44,7 @@ t5_summarization_convert:
       - cmd: install_python_transformers
 
 # In-place cutover: remove the native systemd unit file
-t5_summarization_native_unit_absent:
-  file.absent:
-    - name: /etc/systemd/system/t5_summarization.service
-
-t5_summarization_native_unit_daemon_reload:
-  cmd.run:
-    - name: systemctl daemon-reload
-    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
-    - onchanges:
-      - file: t5_summarization_native_unit_absent
+{{ remove_native_unit('t5_summarization') }}
 
 # Remove native package (idempotent — no-op if already removed)
 t5_summarization_native_package_removed:

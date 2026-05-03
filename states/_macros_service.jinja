@@ -1,4 +1,4 @@
-{# Service-related macros: ensure_dir, udev_rule, ensure_running, service_stopped, service_with_healthcheck, unit_override, config_replace_with_service_control, service_with_unit, service_with_unit_and_healthcheck, user_service_file, user_unit_override, user_service_enable, user_linger, managed_sysusers_line, managed_tmpfiles_line, managed_identity_guard, managed_path_guard #}
+{# Service-related macros: remove_native_unit, ensure_dir, udev_rule, ensure_running, service_stopped, service_with_healthcheck, unit_override, config_replace_with_service_control, service_with_unit, service_with_unit_and_healthcheck, user_service_file, user_unit_override, user_service_enable, user_linger, managed_sysusers_line, managed_tmpfiles_line, managed_identity_guard, managed_path_guard, container_service #}
 
 {% from '_macros_common.jinja' import user as _user, home as _home, healthcheck_timeout as _healthcheck_timeout, host, retry_attempts as _retry_attempts, retry_interval as _retry_interval %}
 
@@ -14,6 +14,44 @@
 {%- for entry in _systemctl_env %}
       - {{ entry }}
 {%- endfor %}
+{%- endmacro -%}
+
+{# In-place cutover: remove a native systemd unit file and run daemon-reload.
+   Eliminates the 9-line duplication repeated across 10 containerized-services.
+   Usage:
+     {{ remove_native_unit('ollama') }}
+     {{ remove_native_unit('nanoclaw', unit_path=home ~ '/.config/systemd/user/nanoclaw.service', scope='user') }}
+   Emits:
+     {name}_native_unit_absent + {name}_native_unit_daemon_reload
+#}
+{%- macro remove_native_unit(name, unit_path=None, scope='system') -%}
+{%- if unit_path is none -%}
+{%- if scope == 'user' -%}
+{%- set _unit_path = _home ~ '/.config/systemd/user/' ~ name ~ '.service' -%}
+{%- else -%}
+{%- set _unit_path = '/etc/systemd/system/' ~ name ~ '.service' -%}
+{%- endif -%}
+{%- else -%}
+{%- set _unit_path = unit_path -%}
+{%- endif %}
+
+{{ name }}_native_unit_absent:
+  file.absent:
+    - name: {{ _unit_path }}
+
+{{ name }}_native_unit_daemon_reload:
+  cmd.run:
+    - name: systemctl {% if scope == 'user' %}--user {% endif %}daemon-reload
+{%- if scope == 'user' %}
+    - onlyif: systemctl --user show-environment >/dev/null 2>&1
+    - runas: {{ _user }}
+    - env:
+{{ _env_block() }}
+{%- else %}
+    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
+{%- endif %}
+    - onchanges:
+      - file: {{ name }}_native_unit_absent
 {%- endmacro -%}
 
 {# Resolve symbolic inventory values for managed systemd resources.
@@ -740,31 +778,20 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
 
 # container_service({{ name }}): enable + reset_failed + running + healthcheck
 {{ name }}_enabled:
-{%- if user_scope %}
   cmd.run:
-    - name: systemctl --user is-enabled {{ _quadlet_name }}.service >/dev/null 2>&1 || systemctl --user enable {{ _quadlet_name }}.service
+    - name: systemctl {% if user_scope %}--user {% endif %}is-enabled {{ _quadlet_name }}.service >/dev/null 2>&1 || systemctl {% if user_scope %}--user {% endif %}enable {{ _quadlet_name }}.service
+{%- if user_scope %}
     - runas: {{ _user }}
     - env:
 {{ _env_block() }}
-    - unless: systemctl --user is-enabled {{ _quadlet_name }}.service >/dev/null 2>&1
+{%- endif %}
+    - unless: systemctl {% if user_scope %}--user {% endif %}is-enabled {{ _quadlet_name }}.service >/dev/null 2>&1
     - require:
 {%- if _is_localhost %}
       - cmd: {{ name }}_daemon_reload
 {%- else %}
       - cmd: {{ name }}_image_pull
       - cmd: {{ name }}_daemon_reload
-{%- endif %}
-{%- else %}
-  cmd.run:
-    - name: systemctl is-enabled {{ _quadlet_name }}.service >/dev/null 2>&1 || systemctl enable {{ _quadlet_name }}.service
-    - unless: systemctl is-enabled {{ _quadlet_name }}.service >/dev/null 2>&1
-    - require:
-{%- if _is_localhost %}
-      - cmd: {{ name }}_daemon_reload
-{%- else %}
-      - cmd: {{ name }}_image_pull
-      - cmd: {{ name }}_daemon_reload
-{%- endif %}
 {%- endif %}
 
 {{ name }}_reset_failed:
@@ -777,11 +804,7 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
 {{ _env_block() }}
 {%- endif %}
     - require:
-{%- if user_scope %}
       - cmd: {{ name }}_enabled
-{%- else %}
-      - cmd: {{ name }}_enabled
-{%- endif %}
 
 {{ name }}_running:
 {%- if user_scope %}
@@ -801,11 +824,7 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
       - {{ w }}
 {%- endfor %}
     - require:
-{%- if user_scope %}
       - cmd: {{ name }}_enabled
-{%- else %}
-      - cmd: {{ name }}_enabled
-{%- endif %}
       - cmd: {{ name }}_reset_failed
 {%- endif %}
 

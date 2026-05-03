@@ -1,5 +1,5 @@
 {% from '_imports.jinja' import user, home, host, retry_attempts, retry_interval, proxypilot_key, tg_secret %}
-{% from '_macros_service.jinja' import ensure_dir, container_service, user_service_restart %}
+{% from '_macros_service.jinja' import ensure_dir, container_service, user_service_restart, remove_native_unit %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
 {% import_yaml 'data/versions.yaml' as ver %}
@@ -90,20 +90,7 @@ nanoclaw_mount_allowlist:
       - file: nanoclaw_config_dir
 
 # ── In-place cutover: remove native user unit ──
-nanoclaw_native_unit_absent:
-  file.absent:
-    - name: {{ home }}/.config/systemd/user/nanoclaw.service
-
-nanoclaw_native_unit_daemon_reload:
-  cmd.run:
-    - name: systemctl --user daemon-reload
-    - onlyif: systemctl --user show-environment >/dev/null 2>&1
-    - runas: {{ user }}
-    - env:
-      - XDG_RUNTIME_DIR: {{ host.runtime_dir }}
-      - DBUS_SESSION_BUS_ADDRESS: unix:path={{ host.runtime_dir }}/bus
-    - onchanges:
-      - file: nanoclaw_native_unit_absent
+{{ remove_native_unit('nanoclaw', scope='user') }}
 
 # ── Container deployment ──
 {{ container_service('nanoclaw', catalog.nanoclaw, image_registry,

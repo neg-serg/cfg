@@ -4,7 +4,7 @@
 {% from '_imports.jinja' import host, user %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
-{% from '_macros_service.jinja' import ensure_dir, container_service, service_with_healthcheck %}
+{% from '_macros_service.jinja' import ensure_dir, container_service, service_with_healthcheck, remove_native_unit %}
 
 # AdGuard Home DNS filter — pure Quadlet (Podman container).
 # Replaces native pacman package (adguardhome) + custom systemd unit.
@@ -18,17 +18,7 @@ adguardhome_legacy_cleanup:
     - name: /usr/local/bin/AdGuardHome
     - onlyif: test -f /usr/local/bin/AdGuardHome
 
-{# ── In-place cutover: remove native systemd unit ── #}
-adguardhome_native_unit_absent:
-  file.absent:
-    - name: /etc/systemd/system/adguardhome.service
-
-adguardhome_native_unit_daemon_reload:
-  cmd.run:
-    - name: systemctl daemon-reload
-    - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
-    - onchanges:
-      - file: adguardhome_native_unit_absent
+{{ remove_native_unit('adguardhome') }}
 
 {# ── Work directory for container bind-mount ── #}
 {{ ensure_dir('adguardhome_work_dir', '/var/lib/adguardhome-container', mode='0755', user='root') }}

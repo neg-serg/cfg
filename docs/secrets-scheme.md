@@ -111,7 +111,7 @@ Salt states using `gopass_secret()` macro (graceful fallback if gopass unavailab
 | `opencode.sls` | `api/proxypilot-local`, `api/proxypilot-management`, `api/groq`, `api/cerebras`, `api/openrouter` | Parse existing ProxyPilot config (AWK fallback) |
 | `nanoclaw.sls` | `api/proxypilot-local`, `api/nanoclaw-telegram`, `api/nanoclaw-telegram-uid` | Credential files in `~/.nanoclaw/credentials/` |
 | `monitoring_alerts.sls` | `api/nanoclaw-telegram`, `api/nanoclaw-telegram-uid` | Credential files in `~/.nanoclaw/credentials/` |
-| `opencode_telegram.sls` | `api/nanoclaw-telegram-uid`, `api/telegram-uid-levra` | Credential files |
+| `managed_bots.sls` | `api/opencode-telegram-bot`, `api/telegram-uid-levra`, `api/nanoclaw-telegram-uid` | Managed bot tokens at `telegram/managed-bots/*` |
 | `telethon_bridge.sls` | `api/proxypilot-local`, `api/telegram-telethon-id`, `api/telegram-telethon-hash`, `api/nanoclaw-telegram-uid`, `api/telegram-uid-levra`, `api/telegram-uid-guest2` | Credential files |
 
 ## Setup Steps

@@ -414,6 +414,7 @@ other:
   - tcpdump
   - tealdeer
   - telegram-desktop
+  - python-telegram-bot
   - tesseract
   - tesseract-data-eng
   - tesseract-data-rus

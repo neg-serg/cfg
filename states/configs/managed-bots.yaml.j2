@@ -1,0 +1,27 @@
+telegram:
+  token: {{ telegram_token }}
+  proxy:
+    host: "127.0.0.1"
+    port: 10808
+    scheme: "socks5"
+
+owner_uids:
+{% for uid in owner_uids %}
+  - {{ uid }}
+{% endfor %}
+
+allowlist_uids:
+{% for uid in allowlist_uids %}
+  - {{ uid }}
+{% endfor %}
+
+registry:
+  path: "/home/neg/.config/opencode/managed-bots-registry.yaml"
+
+gopass:
+  token_prefix: "telegram/managed-bots"
+  binary: "/usr/bin/gopass"
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s %(levelname)s %(message)s"

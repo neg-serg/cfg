@@ -57,8 +57,8 @@ parse_od_range() {
         OD_MAX[$key]=$high
     done <<< "$raw"
     # Current values
-    OD_CUR[SCLK_OFFSET]=$(print -r -- "$raw" | awk '/^OD_SCLK_OFFSET:/ {getline; print $1; exit}')
-    OD_CUR[VDDGFX_OFFSET]=$(print -r -- "$raw" | awk '/^OD_VDDGFX_OFFSET:/ {getline; print $1; exit}')
+    OD_CUR[SCLK_OFFSET]=$(print -r -- "$raw" | awk '/^OD_SCLK_OFFSET:/ {getline; gsub(/[^0-9-]/, ""); print $1; exit}')
+    OD_CUR[VDDGFX_OFFSET]=$(print -r -- "$raw" | awk '/^OD_VDDGFX_OFFSET:/ {getline; gsub(/[^0-9-]/, ""); print $1; exit}')
     OD_CUR[SCLK_OFFSET]=${OD_CUR[SCLK_OFFSET]:-0}
     OD_CUR[VDDGFX_OFFSET]=${OD_CUR[VDDGFX_OFFSET]:-0}
 }

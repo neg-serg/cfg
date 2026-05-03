@@ -48,6 +48,10 @@ nct6775_module:
 
 {% endif %}
 
+{% if host.cpu_vendor == 'amd' %}
+{{ service_with_unit('gpu-power-profile', 'salt://units/gpu-power-profile.service', enabled=True) }}
+{% endif %}
+
 # --- Mask rfkill on hosts without WiFi (avoids 5s+ timeout at boot) ---
 {% if not host.features.network.wifi %}
 

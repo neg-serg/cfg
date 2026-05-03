@@ -12,7 +12,7 @@ ExecStart=/bin/sh -c '\
     set -a; . /etc/gpu-tune.conf; set +a; \
     [ -n "${VDDGFX_OFFSET:-}" ] && { echo "vo ${VDDGFX_OFFSET}" > /sys/class/drm/card1/device/pp_od_clk_voltage; echo c > /sys/class/drm/card1/device/pp_od_clk_voltage; }; \
     [ -n "${SCLK_OFFSET:-}" ] && [ "${SCLK_OFFSET}" != "0" ] && { echo "s 0 ${SCLK_OFFSET}" > /sys/class/drm/card1/device/pp_od_clk_voltage; echo c > /sys/class/drm/card1/device/pp_od_clk_voltage; }; \
-    [ -n "${POWER_LIMIT_W:-}" ] && echo "$(( POWER_LIMIT_W * 1000000 ))" > /sys/class/drm/card1/device/hwmon/hwmon0/power1_cap; \
+    [ -n "${POWER_LIMIT_W:-}" ] && { _hw=$(ls -d /sys/class/drm/card1/device/hwmon/hwmon* 2>/dev/null | head -1); echo "$(( POWER_LIMIT_W * 1000000 ))" > "${_hw}/power1_cap"; }; \
   fi'
 
 [Install]

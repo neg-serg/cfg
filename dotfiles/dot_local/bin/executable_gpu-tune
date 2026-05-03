@@ -8,11 +8,19 @@ setopt ERR_EXIT NO_UNSET PIPE_FAIL
 
 autoload -Uz zutil
 
+# Resolve hwmon path dynamically (RDNA4 uses unpredictable hwmonN)
+typeset _HW=''
+for _h in /sys/class/drm/card1/device/hwmon/hwmon*(N); do
+    [[ -f "${_h}/power1_cap" ]] && { _HW="${_h}"; break; }
+done
+[[ -z "${_HW}" ]] && die "Cannot find hwmon for card1 power monitoring"
+
 typeset -r OD_PATH=/sys/class/drm/card1/device/pp_od_clk_voltage
-typeset -r POWER_PATH=/sys/class/drm/card1/device/hwmon/hwmon0/power1_cap
-typeset -r POWER_MAX=/sys/class/drm/card1/device/hwmon/hwmon0/power1_cap_max
-typeset -r POWER_MIN=/sys/class/drm/card1/device/hwmon/hwmon0/power1_cap_min
-typeset -r POWER_DEFAULT=/sys/class/drm/card1/device/hwmon/hwmon0/power1_cap_default
+typeset -r POWER_PATH="${_HW}/power1_cap"
+typeset -r POWER_MAX="${_HW}/power1_cap_max"
+typeset -r POWER_MIN="${_HW}/power1_cap_min"
+typeset -r POWER_DEFAULT="${_HW}/power1_cap_default"
+typeset -r TEMP_PATH="${_HW}/temp1_input"
 typeset -r SCLK_PATH=/sys/class/drm/card1/device/pp_dpm_sclk
 typeset -r PERSIST_FILE=/etc/gpu-tune.conf
 
@@ -167,10 +175,7 @@ run_stress() {
     while (( elapsed < secs )); do
         util=$(<"${gpu_busy_path}" 2>/dev/null || print "?")
         temp=0
-        for hwmon in /sys/class/drm/card1/device/hwmon/hwmon*/temp1_input(N); do
-            temp=$(( $(<"${hwmon}") / 1000 ))
-            break
-        done
+        temp=$(( $(<"${TEMP_PATH}") / 1000 ))
         printf "\r  [%3ds/%3ds]  GPU: %3s%%  Temp: %2d°C  SCLK: %4sMHz" \
             "$elapsed" "$secs" "$util" "$temp" "$(get_current_sclk)"
         sleep 1

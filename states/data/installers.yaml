@@ -70,6 +70,9 @@ github_tar:
 pip_pkg:
   httpstat: {}
   scdl: {}
+  sqlit:
+    pkg: "git+https://github.com/Maxteabag/sqlit"
+    bin: sqlit
   # push-to-talk voice typing for terminal via local Whisper (lmacan1/talktype)
   # talktype:
   #   pkg: "talktype[local] @ git+https://github.com/lmacan1/talktype.git"

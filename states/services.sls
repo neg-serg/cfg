@@ -143,9 +143,10 @@
     - name: {{ sc.name }}
 {% if sc.get('creates') %}
     - creates: {{ sc.creates }}
-{% endif %}
-{% if sc.get('onlyif') %}
+{% elif sc.get('onlyif') %}
     - onlyif: {{ sc.onlyif }}
+{% else %}
+    - creates: /var/cache/salt/setup-{{ name }}-{{ loop.index0 }}.stamp
 {% endif %}
 {% if opts.packages is defined %}
     - require:

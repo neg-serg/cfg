@@ -39,7 +39,7 @@ group GROUP:
 
 # Show which states would be applied (without executing)
 show STATE="system_description":
-    python3 scripts/salt-show.py {{STATE}}
+    python3 scripts/salt_show.py {{STATE}}
 
 # Capture current system packages into states/data/packages.yaml
 pkg-snapshot *ARGS:

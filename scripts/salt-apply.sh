@@ -282,7 +282,7 @@ PYEOF
 }
 
 # ── Fallback: direct salt-call ─────────────────────────────────────────────────
-SALT_RUNNER="${SCRIPT_DIR}/salt-runner.py"
+SALT_RUNNER="${SCRIPT_DIR}/salt_runner.py"
 
 run_direct() {
 	echo "=== Applying ${STATE} directly (daemon not running) ($(date)) ==="

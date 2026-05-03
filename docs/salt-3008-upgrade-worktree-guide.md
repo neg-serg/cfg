@@ -288,7 +288,7 @@ print(f'Modules loaded: {len(modules)}')
 
 ### 5.2 Runner Script Updates
 
-Update `scripts/salt-runner.py`:
+Update `scripts/salt_runner.py`:
 - CLI argument parsing changes
 - Output format compatibility
 - Error handling improvements

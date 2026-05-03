@@ -93,7 +93,7 @@ The system integrates with `vpn-split-router` to dynamically detect blocked doma
 
 ```bash
 # Check integration status
-python3 /home/neg/src/cfg/scripts/vpn-split-router-integration.py
+python3 /home/neg/src/cfg/scripts/vpn_split_router_integration.py
 
 # Start VPN split router daemon
 python3 /home/neg/src/cfg/scripts/vpn_split_router.py --daemon

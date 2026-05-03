@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Show which states a Salt SLS would apply, without executing anything.
 
-Usage: salt-show.py <state>           # e.g. group.core, desktop, system_description
-       salt-show.py group/core        # slash syntax also works
+Usage: salt_show.py <state>           # e.g. group.core, desktop, system_description
+       salt_show.py group/core        # slash syntax also works
 
 Outputs a compact list grouped by source .sls file.
 """
@@ -17,12 +17,12 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.dirname(SCRIPT_DIR)
 RUNTIME_DIR = os.path.join(PROJECT_DIR, ".salt_runtime")
 VENV_PYTHON = os.path.join(PROJECT_DIR, ".venv", "bin", "python3")
-SALT_RUNNER = os.path.join(SCRIPT_DIR, "salt-runner.py")
+SALT_RUNNER = os.path.join(SCRIPT_DIR, "salt_runner.py")
 
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: salt-show.py <state>", file=sys.stderr)
+        print("Usage: salt_show.py <state>", file=sys.stderr)
         sys.exit(1)
 
     state = sys.argv[1].replace("/", ".")

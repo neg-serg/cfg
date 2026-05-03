@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-03T03:24:52'
+generated: '2026-05-03T10:25:03'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -27,7 +27,7 @@ states:
   - data/bind_mounts.yaml
 - id: bitcoind
   path: states/bitcoind.sls
-  purpose: 'In-place cutover: remove native systemd unit if it exists'
+  purpose: Data directory for blockchain state
   data_files:
   - data/container_images.yaml
   - data/service_catalog.yaml
@@ -253,7 +253,8 @@ states:
   - data/ipv6.yaml
 - id: jellyfin
   path: states/jellyfin.sls
-  purpose: 'In-place cutover: remove native systemd unit if it exists so the'
+  purpose: 'In-place cutover: remove native systemd unit file so Quadlet-generated
+    unit is not shadowed.'
   data_files:
   - data/container_images.yaml
   - data/service_catalog.yaml
@@ -443,7 +444,9 @@ states:
   purpose: ''
 - id: proxypilot
   path: states/proxypilot.sls
-  purpose: ── Secret resolution (same logic as opencode.sls) ──
+  purpose: ── Secret resolution ──
+  secrets:
+  - api/proxypilot-management
   data_files:
   - data/container_images.yaml
   - data/free_providers.yaml
@@ -549,7 +552,8 @@ states:
   purpose: ''
 - id: transmission
   path: states/transmission.sls
-  purpose: 'In-place cutover: remove native systemd unit if it exists so the'
+  purpose: 'In-place cutover: remove native systemd unit so Quadlet-generated unit
+    is not shadowed.'
   data_files:
   - data/container_images.yaml
   - data/service_catalog.yaml
@@ -621,6 +625,8 @@ states:
 - id: xen
   path: states/xen.sls
   purpose: ''
+  secrets:
+  - host/xen-password-hash
 - id: zapret2
   path: states/zapret2.sls
   purpose: ''
@@ -652,7 +658,13 @@ macros:
   path: states/_macros_config.jinja
   provides:
   - config_file_edit
-  - desktop_entry
+- id: _macros_container
+  path: states/_macros_container.jinja
+  provides:
+  - _env_block
+  - _tilde_expand
+  - _cs_fail
+  - container_service
 - id: _macros_desktop
   path: states/_macros_desktop.jinja
   provides:
@@ -691,6 +703,8 @@ macros:
   path: states/_macros_service.jinja
   provides:
   - _env_block
+  - remove_native_unit
+  - remove_native_package
   - managed_resource_value
   - managed_mode_value
   - managed_sysusers_line
@@ -711,10 +725,9 @@ macros:
   - user_service_disable
   - user_linger
   - service_with_unit
-  - _tilde_expand
-  - _cs_fail
-  - container_service
 scripts_py:
+- path: scripts/_rkn_utils.py
+  purpose: Shared RKN domain loading utilities for VPN/routing scripts.
 - path: scripts/cleanup-logs.py
   purpose: Delete Salt log files older than the given number of days.
 - path: scripts/dep-graph.py
@@ -755,10 +768,6 @@ scripts_py:
   purpose: Download content using wget2 (faster, handles large files better)
 - path: scripts/salt-daemon.py
   purpose: salt-daemon.py — pre-loaded Salt Caller daemon for faster state.apply
-- path: scripts/salt-runner.py
-  purpose: Salt-call wrapper with compatibility shims for Python 3.13+.
-- path: scripts/salt-show.py
-  purpose: Show which states a Salt SLS would apply, without executing anything.
 - path: scripts/salt_compat.py
   purpose: Python 3.13+ compatibility shims for Salt (PEP 594 module removals).
 - path: scripts/salt_contracts.py
@@ -769,6 +778,10 @@ scripts_py:
   purpose: Conservative impact planner for Salt auto-plan preview.
 - path: scripts/salt_provenance.py
   purpose: Query minimal provenance for Salt states and imported data files.
+- path: scripts/salt_runner.py
+  purpose: Salt-call wrapper with compatibility shims for Python 3.13+.
+- path: scripts/salt_show.py
+  purpose: Show which states a Salt SLS would apply, without executing anything.
 - path: scripts/salt_source_model.py
   purpose: Shared discovery helpers for Salt source analysis.
 - path: scripts/singbox-with-rkn-domains.py
@@ -777,17 +790,15 @@ scripts_py:
   purpose: Parse salt-apply logs and print the slowest states with include context.
 - path: scripts/update-tools.py
   purpose: Update tools defined in data/installers.yaml.
-- path: scripts/vpn-split-router-integration.py
-  purpose: Integrate RKN domains with vpn-split-router.
 - path: scripts/vpn_split_router.py
   purpose: ''
+- path: scripts/vpn_split_router_integration.py
+  purpose: Integrate RKN domains with vpn-split-router.
 - path: scripts/xray-to-singbox.py
   purpose: Convert Xray configuration to sing-box configuration.
 scripts_sh:
 - path: scripts/amnezia-import-tun-config.sh
   purpose: 'Source: ~/.config/AmneziaVPN.ORG/AmneziaVPN.conf'
-- path: scripts/boot-benchmark.sh
-  purpose: 'Boot benchmark: captures systemd-analyze output for before/after comparison.'
 - path: scripts/bootstrap-cachyos.sh
   purpose: Bootstrap CachyOS (Zen4/5 optimized) rootfs via Podman + Arch container.
 - path: scripts/cache-cleanup.sh
@@ -796,10 +807,10 @@ scripts_sh:
   purpose: Install all user packages on CachyOS after bootstrap
 - path: scripts/check-ipv6.sh
   purpose: IPv6 diagnostics script
+- path: scripts/check-opencode.sh
+  purpose: OpenCode health check script
 - path: scripts/check-vpn-status.sh
   purpose: VPN Status Check Script
-- path: scripts/convert-hyprcursor.sh
-  purpose: Convert an XCursor theme to native hyprcursor format.
 - path: scripts/deploy-cachyos-ext4.sh
   purpose: Deploy CachyOS rootfs to ext4 partition with existing ESP.
 - path: scripts/drift-notify.sh
@@ -809,16 +820,8 @@ scripts_sh:
   purpose: Enable hybrid VPN (Xray + sing-box TUN) via Salt states
 - path: scripts/get-grafana-token.sh
   purpose: Print Grafana API token from gopass for QML sysmon popup usage.
-- path: scripts/gopass-gpg-cutover-live.sh
-  purpose: ''
-- path: scripts/gopass-gpg-cutover-rehearsal.sh
-  purpose: ''
-- path: scripts/gopass-gpg-postcutover.sh
-  purpose: ''
 - path: scripts/health-check.sh
   purpose: health-check.sh — check health of all Salt-managed services
-- path: scripts/hot-reload.sh
-  purpose: hot-reload.sh — fast restart of user-scope services without Salt
 - path: scripts/lint-all.sh
   purpose: ''
 - path: scripts/manual-tun-routes.sh
@@ -862,8 +865,6 @@ scripts_sh:
 - path: scripts/zen-vpn.sh
   purpose: Launch zen-browser with VPN SOCKS5 proxy
 data_files:
-- path: states/data/autoparallel-candidates.yaml
-  consumers: null
 - path: states/data/bind_mounts.yaml
   consumers:
   - bind_mounts.sls
@@ -1016,6 +1017,7 @@ test_files:
 - path: tests/test_host_model.py
 - path: tests/test_hypr_shortcuts_generation.py
 - path: tests/test_index_salt.py
+- path: tests/test_macro_container.py
 - path: tests/test_macro_idempotency.py
 - path: tests/test_monitoring_alertmanager.py
 - path: tests/test_music_analysis.py

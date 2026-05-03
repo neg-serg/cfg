@@ -2,7 +2,7 @@
 """Salt-call wrapper with compatibility shims for Python 3.13+.
 
 Usage:
-  python3 scripts/salt-runner.py --config-dir=.salt_runtime --local state.sls ...
+  python3 scripts/salt_runner.py --config-dir=.salt_runtime --local state.sls ...
 """
 
 import salt_compat

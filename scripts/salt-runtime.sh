@@ -51,11 +51,6 @@ fileserver_limit_traversal: True
 fileserver_followsymlinks: False
 process_count_max: 16
 
-# --- Renderer cache (Salt 3007+) — avoids re-rendering unchanged SLS ---
-renderer: jinja|yaml
-renderer_cache: localfs
-renderer_cache_ttl: 604800
-
 # --- Grains overrides: map Arch derivatives so pkg module loads ---
 grains:
   os_family: Arch

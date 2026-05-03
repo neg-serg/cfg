@@ -50,12 +50,18 @@ mkdir -p {{ vd }} && rm -f '{{ vd }}/{{ name }}' {{ vd }}/{{ name }}@* && {% if 
     Optimisation: the first call probes gopass availability; if gopass is
     unreachable (daemon context — no GPG agent), subsequent calls skip the
     gopass attempt entirely and use the fallback command directly.
+    Caches resolved values in _gopass_ns.values to avoid re-spawning gopass
+    for the same key across multiple .sls files.
     Usage: {% set key = gopass_secret('api/my-key') %}
            {% set key = gopass_secret('api/my-key', "awk '...' /path/to/config") %}
 -#}
-{%- set _gopass_ns = namespace(checked=False, available=False) -%}
+{%- set _gopass_ns = namespace(checked=False, available=False, values={}) -%}
 {%- macro gopass_secret(key, fallback_cmd='true', runas=None) -%}
 {%- set _u = runas if runas is not none else host.user -%}
+{%- set _cached = _gopass_ns.values.get(key) -%}
+{%- if _cached is not none -%}
+{{- _cached -}}
+{%- else -%}
 {%- set _try_gopass = (not _gopass_ns.checked) or _gopass_ns.available -%}
 {%- if _try_gopass -%}
 {%- set _r = salt['cmd.run_all']('PASSWORD_STORE_DIR=' ~ home ~ '/.local/share/pass GNUPGHOME=' ~ home ~ '/.local/share/gnupg XDG_RUNTIME_DIR=/run/user/$(id -u) gopass show -o ' ~ key ~ ' 2>/dev/null', runas=_u, python_shell=True, ignore_retcode=True) -%}
@@ -64,12 +70,19 @@ mkdir -p {{ vd }} && rm -f '{{ vd }}/{{ name }}' {{ vd }}/{{ name }}@* && {% if 
 {%- set _gopass_ns.available = (_r.get('retcode', 1) == 0) -%}
 {%- endif -%}
 {%- if _r.get('retcode', 1) == 0 -%}
-{{- _r['stdout'].strip() -}}
+{%- set _val = _r['stdout'].strip() -%}
+{%- set _ = _gopass_ns.values.update({key: _val}) -%}
+{{- _val -}}
 {%- else -%}
-{{- salt['cmd.run_stdout'](fallback_cmd, runas=_u, python_shell=True).strip() -}}
+{%- set _val = salt['cmd.run_stdout'](fallback_cmd, runas=_u, python_shell=True).strip() -%}
+{%- set _ = _gopass_ns.values.update({key: _val}) -%}
+{{- _val -}}
 {%- endif -%}
 {%- else -%}
-{{- salt['cmd.run_stdout'](fallback_cmd, runas=_u, python_shell=True).strip() -}}
+{%- set _val = salt['cmd.run_stdout'](fallback_cmd, runas=_u, python_shell=True).strip() -%}
+{%- set _ = _gopass_ns.values.update({key: _val}) -%}
+{{- _val -}}
+{%- endif -%}
 {%- endif -%}
 {%- endmacro -%}
 

@@ -170,7 +170,6 @@ bootstrap_salt() {
 
 # ── Runtime config: generate .salt_runtime/minion ─────────────────────────────
 setup_config() {
-	[[ -f "${RUNTIME_CONFIG_DIR}/minion" ]] && return 0
 	salt_runtime_prepare_dirs "${PROJECT_DIR}" "${RUNTIME_CONFIG_DIR}"
 	salt_runtime_write_minion_config "${PROJECT_DIR}" "${RUNTIME_CONFIG_DIR}" apply
 }

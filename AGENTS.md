@@ -6,7 +6,7 @@ Auto-generated from active feature plans. Last updated: 2026-05-02
 - Jinja2 + YAML Salt states, Python 3, Bash/Zsh helper scripts
 - Salt 3006.x masterless workflow with shared `_macros_*.jinja`
 - `just`, `pytest`, `ruff`, `shellcheck`, `yamllint`, `salt-lint`
-- Repository artifacts under `states/`, `scripts/`, `tests/`, `docs/`, `specs/`
+- Repository artifacts under `states/`, `scripts/`, `tests/`, `docs/`, `.specify/`
 - Markdown documentation, shell-based operator workflow, `gopass` 1.16.x + `age` + `age-plugin-yubikey`, `chezmoi`, systemd, Arch/CachyOS package management
 - Zen Browser (`zen-browser-bin`), Surfingkeys, Hyprland/Wayfire launcher config, vicinae/dmenu/rofi
 
@@ -17,7 +17,6 @@ states/
 scripts/
 tests/
 docs/
-specs/
 .specify/
 └── templates/                # YAML templates for speckit workflow artifacts
     ├── spec-template.yaml

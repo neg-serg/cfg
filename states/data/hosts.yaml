@@ -114,7 +114,7 @@ hosts:
       music_analysis: true
       tidal: true
       xen_vr: false
-      nanoclaw: true           # sole Telegram bot (openclaw removed 2026-04-11)
+      nanoclaw: true           # Telegram bot
 
 aliases:
   cachyos: telfir

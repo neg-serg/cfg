@@ -74,7 +74,7 @@ repos:
         entry: python3 scripts/lint-docs.py
         language: system
         pass_filenames: false
-        files: \.(md|ru\.md)$
+        files: \.md$
 
       - id: taplo-check
         name: taplo-check

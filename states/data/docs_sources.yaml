@@ -1,6 +1,5 @@
 # Documentation sources for docs-rag (deployed by code_rag.sls)
 # Consumed by: docs-import --all --config <this file>
-# Format reference: specs/023-external-docs-rag/data-model.md
 
 salt-states:
   type: web

@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-03T00:55:20'
+generated: '2026-05-03T03:24:52'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -173,6 +173,7 @@ states:
   purpose: ''
   feature_gate:
   - network.ipv6
+  - network.ipv6_6to4
   - network.ipv6_tunnel
 - id: group.packages
   path: states/group/packages.sls
@@ -236,6 +237,11 @@ states:
 - id: ipv6
   path: states/ipv6.sls
   purpose: ''
+  data_files:
+  - data/ipv6.yaml
+- id: ipv6_6to4
+  path: states/ipv6_6to4.sls
+  purpose: ════════════════════════════════════════════════════════════════════
   data_files:
   - data/ipv6.yaml
 - id: ipv6_tunnel
@@ -921,6 +927,7 @@ data_files:
 - path: states/data/ipv6.yaml
   consumers:
   - ipv6.sls
+  - ipv6_6to4.sls
   - ipv6_tunnel.sls
 - path: states/data/kernel_params.yaml
   consumers: null

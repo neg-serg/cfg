@@ -108,7 +108,6 @@ The alias resolves before the merge, so the correct host config applies even bef
 | `features.monitoring.promtail` | bool | False | Log shipper for Loki |
 | `features.monitoring.grafana` | bool | False | Metrics visualization |
 | `features.fancontrol` | bool | False | Fan speed control |
-| `features.kernel.variant` | str | 'lto' | Kernel variant |
 | `features.dns.unbound` | bool | False | Local DNS resolver |
 | `features.dns.adguardhome` | bool | False | DNS ad blocking |
 | `features.dns.avahi` | bool | True | mDNS/DNS-SD |
@@ -121,6 +120,9 @@ The alias resolves before the merge, so the correct host config applies even bef
 | `features.network.xray` | bool | False | Xray proxy |
 | `features.network.singbox` | bool | False | sing-box proxy |
 | `features.network.wifi` | bool | False | Wireless networking |
+| `features.network.ipv6` | bool | False | IPv6 diagnostics (check-ipv6.sh) |
+| `features.network.ipv6_6to4` | bool | False | 6to4 IPv6 tunnel (auto, no gopass) |
+| `features.network.ipv6_tunnel` | bool | False | HE.net IPv6 tunnel (requires gopass) |
 | `features.user_services.mail` | bool | True | Mail sync service |
 | `features.user_services.vdirsyncer` | bool | True | CalDAV/CardDAV sync |
 | `features.amnezia` | bool | True | AmneziaVPN |

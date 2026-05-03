@@ -93,5 +93,5 @@ paru -S webapp-manager
 
 ## See Also
 
-- [docs-rag spec](../specs/023-external-docs-rag/spec.md) — local documentation RAG pipeline
+- Local documentation RAG pipeline
 - [docs_sources.yaml](../states/data/docs_sources.yaml) — documentation source registry

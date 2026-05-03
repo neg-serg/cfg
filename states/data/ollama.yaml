@@ -4,7 +4,7 @@
 # ── Schema ────────────────────────────────────────────────────────────
 #
 # models:
-#   - <model>:<tag>                — Ollama model specifier (e.g. "deepseek-r1:8b")
+#   - <model>:<tag>                — Ollama model specifier (e.g. "qwen3:8b-q8_0")
 #                                    pulled via POST /api/pull; guarded by /api/tags check
 #
 # ── Quantization tiers ────────────────────────────────────────────────
@@ -41,15 +41,15 @@ models:
   - huihui_ai/qwen3.5-abliterated:35b-a3b    # huihui-ai; uncensored newest MoE 3B active ~19GB Q4
   # ── Fast ─────────────────────────────────────────────────────────
   - qwen3:8b-q8_0             # Alibaba; fast general+thinking mode, hybrid CoT ~9GB Q8_0
-  # ── Вытеснены ────────────────────────────────────────────────────
-  # starcoder2:15b          → вытеснен qwen3-coder:30b (превосходит на всех бенчмарках)
-  # deepseek-coder-v2:16b   → вытеснен qwen3-coder:30b (та же ниша, слабее)
-  # codestral:22b           → заменён devstral:24b (тот же Mistral, новее, agentic)
-  # mistral-nemo            → заменён qwen3:8b-q8_0 (лучше качество при том же размере)
-  # qwen3:14b               → вытеснен qwen3.5:27b (та же семья, новее, сильнее)
-  # gemma3:12b              → вытеснен gemma3:27b → удалён (нет tool calling)
-  # gemma3:27b              → удалён: не поддерживает tool calling (Ollama API 400)
-  # llama3.1:70b            → заменён llama3.3:70b (тот же размер, лучше качество)
-  # deepseek-coder:6.7b     → вытеснен deepseek-coder-v2:16b (та же семья, новее)
-  # codellama:7b            → вытеснен qwen2.5-coder:7b (проигрывает на всех бенчмарках)
-  # codegemma:7b            → вытеснен gemma3:12b (та же семья Google, старше)
+  # ── Superseded ──────────────────────────────────────────────────────────────────
+  # starcoder2:15b          → superseded by qwen3-coder:30b (outperforms on all benchmarks)
+  # deepseek-coder-v2:16b   → superseded by qwen3-coder:30b (same niche, weaker)
+  # codestral:22b           → replaced by devstral:24b (same Mistral, newer, agentic)
+  # mistral-nemo            → replaced by qwen3:8b-q8_0 (better quality at same size)
+  # qwen3:14b               → superseded by qwen3.5:27b (same family, newer, stronger)
+  # gemma3:12b              → superseded by gemma3:27b → removed (no tool calling)
+  # gemma3:27b              → removed: no tool calling support (Ollama API 400)
+  # llama3.1:70b            → replaced by llama3.3:70b (same size, better quality)
+  # deepseek-coder:6.7b     → superseded by deepseek-coder-v2:16b (same family, newer)
+  # codellama:7b            → superseded by qwen2.5-coder:7b (loses on all benchmarks)
+  # codegemma:7b            → superseded by gemma3:12b (same Google family, older)

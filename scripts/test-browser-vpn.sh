@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Test browser VPN integration
 
-set -e
+set -euo pipefail
 
 echo "=== Testing Browser VPN Integration ==="
 echo

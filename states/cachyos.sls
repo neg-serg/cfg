@@ -4,7 +4,7 @@
 # Run: sudo salt-call --local -c .salt_runtime state.sls cachyos
 
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_common.jinja' import host %}
+{% from '_imports.jinja' import host %}
 
 include:
   - pacman_db_warmup

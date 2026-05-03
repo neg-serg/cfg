@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Quick start script for VPN browser integration
 
-set -e
+set -euo pipefail
 
 echo "=== VPN Browser Integration Quick Start ==="
 echo

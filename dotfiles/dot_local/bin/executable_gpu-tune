@@ -106,9 +106,16 @@ set_undervolt() {
 }
 
 set_sclk_max() {
-    local mhz=$1
-    [[ "$mhz" =~ '^[0-9]+$' ]] || die "Invalid frequency: $mhz"
-    apply_od "s 0 ${mhz}" "SCLK max → ${mhz}MHz"
+    local val=$1
+    if [[ "$val" =~ '^\+[0-9]+$' ]]; then
+        # Offset from current max: read top frequency from pp_dpm_sclk
+        local cur_max
+        cur_max=$(<"${SCLK_PATH}" | awk 'END {match($0, /([0-9]+)Mhz/, a); print a[1]}')
+        [[ -z "$cur_max" ]] && cur_max=2460
+        val=$(( cur_max + ${val#+} ))
+    fi
+    [[ "$val" =~ '^[0-9]+$' ]] || die "Invalid frequency: $val"
+    apply_od "s 0 ${val}" "SCLK max → ${val}MHz"
 }
 
 set_power_limit() {
@@ -225,7 +232,7 @@ menu() {
         show_status
         print "\e[1mActions:\e[0m"
         print "  \e[36m1\e[0m  Set voltage offset  (e.g. -50, -75, -100)"
-        print "  \e[36m2\e[0m  Set SCLK max         (e.g. 2500, 2600)"
+        print "  \e[36m2\e[0m  Set SCLK max         (absolute MHz, or +N for offset, e.g. 2600 or +100)"
         print "  \e[36m3\e[0m  Set power limit      (e.g. 340, 280)"
         print "  \e[36m4\e[0m  \e[31mReset to stock\e[0m"
         print "  \e[36m5\e[0m  Stress test"
@@ -276,7 +283,7 @@ Usage:
   gpu-tune               Interactive TUI
   gpu-tune --status      Show current settings
   gpu-tune --undervolt N Set VDDGFX offset to N mV (negative = undervolt)
-  gpu-tune --sclk N      Set max SCLK to N MHz
+  gpu-tune --sclk N      Set max SCLK to N MHz (or +N for offset, e.g. --sclk +100)
   gpu-tune --power N     Set power limit to N watts
   gpu-tune --reset       Reset to stock
   gpu-tune --test [SEC]  Run stress test (default 60s)

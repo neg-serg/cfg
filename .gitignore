@@ -8,6 +8,8 @@ logs/
 build/pkgbuilds/*/src/
 build/pkgbuilds/*/pkg/
 build/pkgbuilds/*/*.tar.gz
+build/pkgbuilds/*/proxypilot-*
+build/pkgbuilds/**/target/
 build/pretty-printer/build/
 build/pretty-printer/dist/
 build/pretty-printer/src/*.egg-info/
@@ -17,6 +19,7 @@ build/pretty-printer/src/*.egg-info/
 __pycache__/
 *.pyc
 .pytest_cache/
+.ruff_cache/
 uv.lock
 
 # Salt runtime (keep minion config, ignore runtime dirs)
@@ -36,6 +39,7 @@ salt_config/var/
 CLAUDE.md
 .claude/
 .claude.json
+.cache/
 .worktrees/
 .serena/
 _catalog/
@@ -49,4 +53,8 @@ Thumbs.db
 
 # OpenCode session files
 session-*.md
+
+# Cloned repos (not submodules)
+ProteinView/
+sqlit/
 

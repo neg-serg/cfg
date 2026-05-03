@@ -5,8 +5,8 @@ import requests
 import http.cookiejar
 
 QB_URL = 'http://localhost:8080'
-QB_USER = 'admin'
-QB_PASS = 'adminadmin'
+QB_USER = os.environ.get('QB_USER', 'admin')
+QB_PASS = os.environ.get('QB_PASS', 'adminadmin')
 PROXY = 'socks5h://127.0.0.1:10808'
 COOKIES = '/tmp/rutracker_cookies.txt'
 SAVE = '/home/neg/Downloads'

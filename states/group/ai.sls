@@ -34,3 +34,4 @@ include:
 {% if host.features.get('t5_summarization', False) %}
   - t5_summarization
 {% endif %}
+  - code_rag

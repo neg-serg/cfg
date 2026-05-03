@@ -14,4 +14,5 @@ include:
   - mkinitcpio
   - sysctl
   - hardware
+  - cachyos
   - systemd_resources

@@ -193,10 +193,9 @@ Without this, `npm list -g` and `npm outdated -g` don't work (Salt workaround us
 
 ---
 
-## Nyxt Browser Packaging
+## ~~Nyxt Browser Packaging~~
 
-`nyxt-bin` — binary packaging of Nyxt browser. Requires investigation:
-the current AUR package may be sufficient, or a custom PKGBUILD may be needed.
+~~`nyxt-bin` — binary packaging of Nyxt browser. Deployed via `states/nyxt.sls`.~~
 
 ---
 

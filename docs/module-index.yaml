@@ -3,7 +3,7 @@ generated: '2026-05-03T10:50:15'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
-  purpose: ── Cleanup legacy binary ──
+  purpose: 'AdGuard Home DNS filter: Quadlet container deployment'
   data_files:
   - data/container_images.yaml
   - data/service_catalog.yaml
@@ -253,12 +253,12 @@ states:
   - data/ipv6.yaml
 - id: ipv6_6to4
   path: states/ipv6_6to4.sls
-  purpose: ════════════════════════════════════════════════════════════════════
+  purpose: IPv6 6to4 tunnel deployment
   data_files:
   - data/ipv6.yaml
 - id: ipv6_tunnel
   path: states/ipv6_tunnel.sls
-  purpose: ════════════════════════════════════════════════════════════════════
+  purpose: IPv6 HE tunnel deployment
   secrets:
   - api/he-tunnel
   data_files:
@@ -296,6 +296,22 @@ states:
   purpose: 'mkinitcpio initramfs configuration: hooks, modules, and compression settings'
   configs:
   - configs/mkinitcpio.conf.j2
+- id: managed_bots
+  path: states/managed_bots.sls
+  purpose: 'Managed Telegram Bots: Bot API integration with systemd supervision and
+    config-driven lifecycle'
+  feature_gate:
+  - managed_bots
+  secrets:
+  - api/nanoclaw-telegram-uid
+  - api/opencode-telegram-bot
+  - api/telegram-uid-levra
+  data_files:
+  - data/telegram_managed_bots.yaml
+  services:
+  - managed-bots.service
+  configs:
+  - configs/managed-bots.yaml.j2
 - id: monitoring_alertmanager
   path: states/monitoring_alertmanager.sls
   purpose: 'Alertmanager: Telegram webhook alerts from Loki log rules'
@@ -334,7 +350,7 @@ states:
   - configs/loki-alert-rules.yaml.j2
 - id: monitoring_loki
   path: states/monitoring_loki.sls
-  purpose: '── Loki: log aggregation ──'
+  purpose: 'Loki log aggregation, Promtail, Grafana deployment'
   feature_gate:
   - monitoring.grafana
   - monitoring.loki
@@ -457,7 +473,7 @@ states:
     other states'
 - id: proxypilot
   path: states/proxypilot.sls
-  purpose: ── Secret resolution ──
+  purpose: 'ProxyPilot LLM proxy: Quadlet container with secret resolution and provider config'
   secrets:
   - api/proxypilot-management
   data_files:
@@ -503,6 +519,7 @@ states:
   - image_gen
   - kanata
   - llama_embed
+  - managed_bots
   - monitoring.alertmanager
   - monitoring.loki
   - mpd
@@ -523,6 +540,7 @@ states:
   - tidal
   - video_ai
   - xen_vr
+  - zen_profile
   configs:
   - configs/os-release.j2
 - id: systemd_resources
@@ -632,7 +650,7 @@ states:
   data_files:
   - data/video_ai.yaml
   configs:
-  - configs/video-ai/{{
+  - configs/video-ai/*.json
 - id: windows_mount
   path: states/windows_mount.sls
   purpose: Windows NTFS partition mount with proper permissions and fstab integration
@@ -661,6 +679,14 @@ states:
   - floorp
   data_files:
   - data/zen_browser.yaml
+- id: zen_profiles
+  path: states/zen_profiles.sls
+  purpose: 'Zen Browser profiles: profile creation, configuration, and feature-gated
+    management'
+  feature_gate:
+  - zen_profile
+  data_files:
+  - data/zen_profiles.yaml
 - id: zsh
   path: states/zsh.sls
   purpose: 'Zsh shell environment: prezto framework, plugins, completions, and prompt
@@ -918,7 +944,10 @@ data_files:
 - path: states/data/drift_inventory.yaml
   consumers: null
 - path: states/data/feature_matrix.yaml
-  consumers: null
+  consumers:
+  - host_config.jinja
+  - render-matrix.py
+  - host_model.py
 - path: states/data/flatpak.yaml
   consumers:
   - flatpak.sls
@@ -932,7 +961,9 @@ data_files:
   consumers:
   - proxypilot.sls
 - path: states/data/hosts.yaml
-  consumers: null
+  consumers:
+  - host_config.jinja
+  - zen_profiles.sls
 - path: states/data/image_providers.yaml
   consumers:
   - image_generation.sls
@@ -952,7 +983,8 @@ data_files:
   - ipv6_6to4.sls
   - ipv6_tunnel.sls
 - path: states/data/kernel_params.yaml
-  consumers: null
+  consumers:
+  - cachyos.sls
 - path: states/data/llama_embed.yaml
   consumers:
   - llama_embed.sls
@@ -998,6 +1030,9 @@ data_files:
 - path: states/data/t5_summarization.yaml
   consumers:
   - t5_summarization.sls
+- path: states/data/telegram_managed_bots.yaml
+  consumers:
+  - managed_bots.sls
 - path: states/data/user_services.yaml
   consumers:
   - user_services.sls
@@ -1027,6 +1062,9 @@ data_files:
 - path: states/data/zen_browser.yaml
   consumers:
   - zen_browser.sls
+- path: states/data/zen_profiles.yaml
+  consumers:
+  - zen_profiles.sls
 test_files:
 - path: tests/test_browser_launch_targets.py
 - path: tests/test_cmdrun_audit.py

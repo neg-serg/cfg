@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""DNS-based VPN split routing: observe, learn, and route domains through VPN/proxy."""
+
 from __future__ import annotations
 
 import argparse

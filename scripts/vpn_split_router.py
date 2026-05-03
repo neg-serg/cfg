@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import shutil
 import socket
 import ssl
@@ -483,7 +482,7 @@ def command_policy_apply(args: argparse.Namespace) -> int:
         capture_output=True, check=False,
     )
     changed = policy_sync_to_routing(args.policy, args.runtime_config)
-    print(f"Policy applied with 5min auto-rollback timer (run 'vpn-split-router policy confirm' to keep)")
+    print("Policy applied with 5min auto-rollback timer (run 'vpn-split-router policy confirm' to keep)")
     if changed:
         print("Routing config updated")
     return 0

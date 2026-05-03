@@ -105,20 +105,7 @@ set_undervolt() {
     apply_od "vo ${mv}" "VDDGFX offset → ${mv}mV"
 }
 
-set_sclk_max() {
-    local val=$1
-    if [[ "$val" =~ '^\+[0-9]+$' ]]; then
-        # Offset from current max: read top frequency from pp_dpm_sclk
-        local cur_max
-        cur_max=$(<"${SCLK_PATH}" | awk 'END {match($0, /([0-9]+)Mhz/, a); print a[1]}')
-        [[ -z "$cur_max" ]] && cur_max=2460
-        val=$(( cur_max + ${val#+} ))
-    fi
-    [[ "$val" =~ '^[0-9]+$' ]] || die "Invalid frequency: $val"
-    apply_od "s 0 ${val}" "SCLK max → ${val}MHz"
-}
-
-set_power_limit() {
+set_power_limit_target() {
     local watts=$1
     local uw=$(( watts * 1000000 ))
     local min_u max_u
@@ -132,18 +119,17 @@ set_power_limit() {
 # ── Status display ─────────────────────────────────────────────────────
 
 show_status() {
-    local sclk_cur power vddgfx sclk_offset
+    local sclk_cur power vddgfx
     parse_od_range
     sclk_cur=$(get_current_sclk)
     power=$(get_power)
     vddgfx=${OD_CUR[VDDGFX_OFFSET]}
-    sclk_offset=${OD_CUR[SCLK_OFFSET]}
 
     print "\n\e[1;36m═══ GPU Overdrive Status (card1: RX 9070) ═══\e[0m"
     printf "  %-18s \e[33m%+dmV\e[0m   (%+d … %+d mV)\n" "VDDGFX offset:" "$vddgfx" "${OD_MIN[VDDGFX_OFFSET]}" "${OD_MAX[VDDGFX_OFFSET]}"
-    printf "  %-18s \e[33m%dMHz\e[0m  (%d … %d MHz)\n" "SCLK offset:" "$sclk_offset" "${OD_MIN[SCLK_OFFSET]}" "${OD_MAX[SCLK_OFFSET]}"
-    printf "  %-18s \e[33m%dMHz\e[0m  (current render)\n" "SCLK current:" "$sclk_cur"
-    printf "  %-18s \e[33m%dW\e[0m     (%d … %d W)\n" "Power limit:" "$power" "$(( $(<"${POWER_MIN}") / 1000000 ))" "$(( $(<"${POWER_MAX}") / 1000000 ))"
+    printf "  %-18s \e[33m%dMHz\e[0m  (current sclk)\n" "SCLK current:" "$sclk_cur"
+    printf "  %-18s \e[33m%dW\e[0m     (%d … %d W, stock %dW)\n" "Power limit:" "$power" "$(( $(<"${POWER_MIN}") / 1000000 ))" "$(( $(<"${POWER_MAX}") / 1000000 ))" "$(( $(<"${POWER_DEFAULT}") / 1000000 ))"
+    print "\e[2m  RDNA4: SCLK offset not yet supported by kernel — GPU auto-boosts\n  within power/thermal budget; use UV + power limit instead.\e[0m"
     print
 }
 
@@ -198,14 +184,12 @@ run_stress() {
 save_persist() {
     parse_od_range
     local vddgfx=${OD_CUR[VDDGFX_OFFSET]}
-    local sclk_off=${OD_CUR[SCLK_OFFSET]}
     local power=$(get_power)
 
     cat > "${PERSIST_FILE}" <<EOF
 # GPU overdrive settings — applied by gpu-power-profile.service at boot
 # Managed by: gpu-tune --save
 VDDGFX_OFFSET=${vddgfx}
-SCLK_OFFSET=${sclk_off}
 POWER_LIMIT_W=${power}
 EOF
     good "Settings saved to ${PERSIST_FILE}"
@@ -214,11 +198,10 @@ EOF
 
 load_persist() {
     [[ -f "${PERSIST_FILE}" ]] || return 1
-    local vddgfx sclk_off power
+    local vddgfx power
     source "${PERSIST_FILE}" 2>/dev/null || return 1
     [[ -n "${VDDGFX_OFFSET:-}" ]] && set_undervolt "$VDDGFX_OFFSET"
-    [[ -n "${SCLK_OFFSET:-}" && "$SCLK_OFFSET" != "0" ]] && set_sclk_max "$SCLK_OFFSET"
-    [[ -n "${POWER_LIMIT_W:-}" ]] && set_power_limit "$POWER_LIMIT_W"
+    [[ -n "${POWER_LIMIT_W:-}" ]] && set_power_limit_target "$POWER_LIMIT_W"
     return 0
 }
 
@@ -232,16 +215,15 @@ menu() {
         show_status
         print "\e[1mActions:\e[0m"
         print "  \e[36m1\e[0m  Set voltage offset  (e.g. -50, -75, -100)"
-        print "  \e[36m2\e[0m  Set SCLK max         (absolute MHz, or +N for offset, e.g. 2600 or +100)"
-        print "  \e[36m3\e[0m  Set power limit      (e.g. 340, 280)"
-        print "  \e[36m4\e[0m  \e[31mReset to stock\e[0m"
-        print "  \e[36m5\e[0m  Stress test"
-        print "  \e[36m6\e[0m  Apply saved profile  (${PERSIST_FILE})"
+        print "  \e[36m2\e[0m  Set power limit      (e.g. 340, 374)"
+        print "  \e[36m3\e[0m  \e[31mReset to stock\e[0m"
+        print "  \e[36m4\e[0m  Stress test"
+        print "  \e[36m5\e[0m  Apply saved profile  (${PERSIST_FILE})"
         print "  \e[36ms\e[0m  Save current → boot-persistent"
         print "  \e[36mq\e[0m  Quit"
         print
 
-        print -n "\e[1mChoose [1-6/s/q]: \e[0m"
+        print -n "\e[1mChoose [1-5/s/q]: \e[0m"
         read -r choice
         case "$choice" in
             1)
@@ -250,22 +232,17 @@ menu() {
                 [[ -n "$val" ]] && set_undervolt "$val"
                 ;;
             2)
-                print -n "SCLK max in MHz: "
-                read -r val
-                [[ -n "$val" ]] && set_sclk_max "$val"
-                ;;
-            3)
                 print -n "Power limit in W ($(( $(<"${POWER_MIN}") / 1000000 )) … $(( $(<"${POWER_MAX}") / 1000000 ))): "
                 read -r val
-                [[ -n "$val" ]] && set_power_limit "$val"
+                [[ -n "$val" ]] && set_power_limit_target "$val"
                 ;;
-            4) reset_stock ;;
-            5)
+            3) reset_stock ;;
+            4)
                 print -n "Duration in seconds [60]: "
                 read -r val
                 run_stress "${val:-60}"
                 ;;
-            6) load_persist || warn "No saved profile found." ;;
+            5) load_persist || warn "No saved profile found." ;;
             s|S) save_persist ;;
             q|Q) print "\nBye."; exit 0 ;;
             *) warn "Invalid choice" ;;
@@ -283,8 +260,7 @@ Usage:
   gpu-tune               Interactive TUI
   gpu-tune --status      Show current settings
   gpu-tune --undervolt N Set VDDGFX offset to N mV (negative = undervolt)
-  gpu-tune --sclk N      Set max SCLK to N MHz (or +N for offset, e.g. --sclk +100)
-  gpu-tune --power N     Set power limit to N watts
+  gpu-tune --power N     Set power limit to N watts (GPU auto-boosts higher)
   gpu-tune --reset       Reset to stock
   gpu-tune --test [SEC]  Run stress test (default 60s)
   gpu-tune --save        Save current settings to boot-persistent config
@@ -293,9 +269,9 @@ Usage:
 Typical workflow:
   gpu-tune               # enter interactive mode
   → 1, set -50           # start conservative undervolt
-  → 5, test 120          # stress test 2 min
+  → 4, test 120          # stress test 2 min
   → repeat: -75, -100, -125 until unstable
-  → 2, set 2500          # light OC after UV is stable
+  → 2, set 340           # raise power limit for extra boost headroom
   → s                    # save for autoload at boot
 EOF
     exit "${1:-0}"
@@ -315,8 +291,7 @@ while (( $# )); do
     case "$1" in
         --status)   show_status ;;
         --undervolt) shift; set_undervolt "$1" ;;
-        --sclk)      shift; set_sclk_max "$1" ;;
-        --power)     shift; set_power_limit "$1" ;;
+        --power)     shift; set_power_limit_target "$1" ;;
         --reset)     reset_stock ;;
         --test)      run_stress "${2:-60}"; shift $(( $# > 1 ? 1 : 0 )) ;;
         --save)      save_persist ;;

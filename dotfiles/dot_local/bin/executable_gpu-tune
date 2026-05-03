@@ -30,14 +30,10 @@ die() { print -u2 "\e[31m$1\e[0m"; exit 1; }
 warn() { print -u2 "\e[33m$1\e[0m"; }
 good() { print "\e[32m$1\e[0m"; }
 
-typeset -r SELF=${${(%):-%x}:A}
-
-require_root() {
+sudo_write() { print -r -- "$1" | sudo tee "$2" >/dev/null 2>&1; }
+ensure_sudo() {
     if (( EUID != 0 )); then
-        if command -v sudo >/dev/null 2>&1; then
-            exec sudo -E zsh "${SELF}" "$@"
-        fi
-        die "Need root. Run with sudo."
+        sudo -v >/dev/null 2>&1 || die "sudo required. Run: sudo -v"
     fi
 }
 
@@ -79,8 +75,7 @@ get_power() {
 
 apply_od() {
     local cmd="$1" label="$2"
-    if print -r -- "$cmd" | tee "${OD_PATH}" >/dev/null 2>&1; then
-        print -r -- "c" > "${OD_PATH}" 2>/dev/null || true
+    if sudo_write "$cmd" "${OD_PATH}" && sudo_write "c" "${OD_PATH}"; then
         good "  ✓ ${label} applied"
         return 0
     else
@@ -91,10 +86,9 @@ apply_od() {
 
 reset_stock() {
     apply_od "r" "Reset to stock"
-    # Reset power limit to default
     local def
     def=$(<"${POWER_DEFAULT}")
-    print -r -- "$def" > "${POWER_PATH}" 2>/dev/null || true
+    sudo_write "$def" "${POWER_PATH}"
     good "  ✓ Power limit reset to $(( def / 1000000 ))W"
 }
 
@@ -112,7 +106,7 @@ set_power_limit_target() {
     min_u=$(<"${POWER_MIN}")
     max_u=$(<"${POWER_MAX}")
     (( uw < min_u || uw > max_u )) && die "Power out of range ($(( min_u / 1000000 ))..$(( max_u / 1000000 )) W)"
-    print -r -- "$uw" > "${POWER_PATH}" 2>/dev/null || die "Failed to set power limit"
+    sudo_write "$uw" "${POWER_PATH}" || die "Failed to set power limit"
     good "  ✓ Power limit → ${watts}W"
 }
 
@@ -192,11 +186,12 @@ run_stress() {
 # ── Persistence ─────────────────────────────────────────────────────────
 
 save_persist() {
+    ensure_sudo
     parse_od_range
     local vddgfx=${OD_CUR[VDDGFX_OFFSET]}
     local power=$(get_power)
 
-    cat > "${PERSIST_FILE}" <<EOF
+    sudo tee "${PERSIST_FILE}" >/dev/null <<EOF
 # GPU overdrive settings — applied by gpu-power-profile.service at boot
 # Managed by: gpu-tune --save
 VDDGFX_OFFSET=${vddgfx}
@@ -207,6 +202,7 @@ EOF
 }
 
 load_persist() {
+    ensure_sudo
     [[ -f "${PERSIST_FILE}" ]] || return 1
     local vddgfx power
     source "${PERSIST_FILE}" 2>/dev/null || return 1
@@ -218,6 +214,7 @@ load_persist() {
 # ── Main menu ───────────────────────────────────────────────────────────
 
 menu() {
+    ensure_sudo
     parse_od_range
     local choice
 
@@ -288,8 +285,6 @@ EOF
 }
 
 [[ ! -f "${OD_PATH}" ]] && die "OD interface not found at ${OD_PATH}. Is this an AMD GPU with overdrive support?"
-
-require_root "$@"
 
 # Parse CLI args
 if (( $# == 0 )); then

@@ -1,3 +1,4 @@
+{# Kanata keyboard remapper: advanced key remapping daemon configuration #}
 # Kanata: software keyboard remapper (uinput-based).
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}

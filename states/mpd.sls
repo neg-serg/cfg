@@ -1,3 +1,4 @@
+{# Music Player Daemon: audio playback server with Last.fm scrobbling #}
 # MPD (Music Player Daemon) — native deployment with systemd user service and PipeWire output.
 {% from '_imports.jinja' import host, user, home, pkg_list, gopass_secret %}
 {% from '_macros_install.jinja' import cargo_pkg %}

@@ -1,3 +1,4 @@
+{# Desktop application installers: data-driven AUR package installation #}
 # Desktop application installers: data-driven AUR packages.
 {% from '_imports.jinja' import user, pkg_list, retry_attempts, retry_interval %}
 {% from '_macros_pkg.jinja' import paru_install %}

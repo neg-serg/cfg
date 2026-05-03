@@ -1,3 +1,4 @@
+{# IPv6 diagnostics: connectivity check, firewall rules, and health monitoring #}
 {% from '_imports.jinja' import host, user, home %}
 {% import_yaml 'data/ipv6.yaml' as ipv6_config %}
 

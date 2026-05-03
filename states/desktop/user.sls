@@ -1,3 +1,4 @@
+{# User-level desktop configuration: dotfiles, services, and session autostart #}
 # =============================================================================
 # Desktop user session — dconf, SSH keys, user services
 # =============================================================================

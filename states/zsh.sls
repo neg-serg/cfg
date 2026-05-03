@@ -1,3 +1,4 @@
+{# Zsh shell environment: prezto framework, plugins, completions, and prompt configuration #}
 # Zsh: system-wide config, ZDOTDIR, user dotfiles, force shell for users
 {% from '_imports.jinja' import user %}
 {% from '_macros_service.jinja' import ensure_dir %}

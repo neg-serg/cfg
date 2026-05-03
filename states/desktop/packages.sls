@@ -1,3 +1,4 @@
+{# Desktop application packages: browsers, terminals, media, productivity tools #}
 {% from '_imports.jinja' import home, user %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/desktop.yaml' as desktop %}

@@ -1,3 +1,4 @@
+{# Windows NTFS partition mount with proper permissions and fstab integration #}
 # Windows NTFS partition — automount on first access.
 # Uses x-systemd.automount so the partition is NOT mounted at boot.
 # The ntfs3 in-kernel driver is used (no extra package needed on Linux 5.15+).

@@ -1,3 +1,4 @@
+{# Services group: systemd services, user services, and monitoring alerts #}
 # Group: system services, monitoring, user units
 # Usage: just apply group/services
 

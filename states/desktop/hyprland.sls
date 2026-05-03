@@ -1,3 +1,4 @@
+{# Hyprland Wayland compositor: plugins, config, and session management #}
 {% from '_imports.jinja' import user %}
 {% from '_macros_desktop.jinja' import hyprpm_add, hyprpm_enable, hyprpm_update %}
 {% from '_macros_service.jinja' import ensure_dir %}

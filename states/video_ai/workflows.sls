@@ -1,3 +1,4 @@
+{# Video AI workflows: automated processing pipelines and job scheduling #}
 {% from '_imports.jinja' import host, user %}
 {% import_yaml 'data/video_ai.yaml' as video_ai %}
 {% set workflows_dir = host.mnt_one ~ '/video-ai/workflows' %}

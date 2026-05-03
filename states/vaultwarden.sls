@@ -1,3 +1,4 @@
+{# Vaultwarden Bitwarden server: Quadlet container, backup timers, and bw-sync #}
 # Vaultwarden password manager — Podman Quadlet container + Bitwarden CLI.
 include:
   - pacman_db_warmup

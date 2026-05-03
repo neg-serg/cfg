@@ -1,3 +1,4 @@
+{# Font installation: pacman, AUR, downloaded, and custom PKGBUILD builds #}
 # All font installs: pacman, AUR, downloaded, custom PKGBUILD builds
 # Run: sudo salt-call --local state.apply fonts
 {% from '_imports.jinja' import user, home %}

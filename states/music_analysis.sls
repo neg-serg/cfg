@@ -1,3 +1,4 @@
+{# Music analysis pipeline: BPM/key detection, fingerprinting, and indexing #}
 # Music analysis: Python dependencies for Annoy-based scripts + Essentia audio extractor.
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import user_service_file, user_service_enable %}

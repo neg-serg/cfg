@@ -1,3 +1,4 @@
+{# Niri scrolling-tiling Wayland compositor: package install and session setup #}
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir %}

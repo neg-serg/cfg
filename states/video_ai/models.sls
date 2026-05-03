@@ -1,3 +1,4 @@
+{# Video AI models: HuggingFace model downloads and safetensors management #}
 {% from '_imports.jinja' import host, user %}
 {% from '_macros_install.jinja' import huggingface_file %}
 {% from '_macros_service.jinja' import ensure_dir %}

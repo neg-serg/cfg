@@ -1,3 +1,4 @@
+{# Amnezia VPN: builds AmneziaWG kernel module and Amnezia VPN desktop client from source. #}
 # Amnezia VPN — builds and deploys AmneziaWG + Amnezia VPN client from source.
 # All 3 components build in parallel for faster deployment.
 # Run: sudo salt-call --local state.apply amnezia

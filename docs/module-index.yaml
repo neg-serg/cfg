@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-03T10:25:03'
+generated: '2026-05-03T10:50:15'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -14,15 +14,17 @@ states:
   - configs/resolved-adguardhome.conf
 - id: amnezia
   path: states/amnezia.sls
-  purpose: ''
+  purpose: 'Amnezia VPN: builds AmneziaWG kernel module and Amnezia VPN desktop client
+    from source.'
   data_files:
   - data/versions.yaml
 - id: audio
   path: states/audio.sls
-  purpose: ''
+  purpose: 'PipeWire audio stack: ensures all runtime components (ALSA, JACK, Pulse)
+    are installed'
 - id: bind_mounts
   path: states/bind_mounts.sls
-  purpose: ''
+  purpose: Bind mounts for user directories on external storage devices
   data_files:
   - data/bind_mounts.yaml
 - id: bitcoind
@@ -35,7 +37,7 @@ states:
   - bitcoind.container
 - id: cachyos
   path: states/cachyos.sls
-  purpose: ''
+  purpose: CachyOS kernel packages, boot configuration, and kernel cmdline management
   configs:
   - configs/kernel-cmdline.j2
   - configs/mkinitcpio-cachyos-preset.j2
@@ -45,12 +47,14 @@ states:
     search.'
 - id: custom_pkgs
   path: states/custom_pkgs.sls
-  purpose: ''
+  purpose: Build and install custom packages from local PKGBUILDs not in official
+    repos or AUR
   data_files:
   - data/custom_pkgs.yaml
 - id: desktop
   path: states/desktop.sls
-  purpose: ''
+  purpose: 'Desktop environment: top-level include for compositor, packages, portal,
+    and user session'
   includes:
   - desktop.hyprland
   - desktop.packages
@@ -60,23 +64,26 @@ states:
   - desktop.vm_win11
 - id: desktop.hyprland
   path: states/desktop/hyprland.sls
-  purpose: ''
+  purpose: 'Hyprland Wayland compositor: plugins, config, and session management'
   configs:
   - configs/hyprpm-update.hook.j2
 - id: desktop.niri
   path: states/desktop/niri.sls
-  purpose: ''
+  purpose: 'Niri scrolling-tiling Wayland compositor: package install and session
+    setup'
 - id: desktop.packages
   path: states/desktop/packages.sls
-  purpose: ''
+  purpose: 'Desktop application packages: browsers, terminals, media, productivity
+    tools'
   data_files:
   - data/desktop.yaml
 - id: desktop.portal
   path: states/desktop/portal.sls
-  purpose: ''
+  purpose: 'XDG Desktop Portal: screen sharing, file chooser, and sandboxing backends'
 - id: desktop.system
   path: states/desktop/system.sls
-  purpose: ''
+  purpose: 'System-wide desktop configuration: fonts, themes, input methods, power
+    management'
   data_files:
   - data/desktop.yaml
   configs:
@@ -84,17 +91,18 @@ states:
   - configs/sshd-hardening.conf
 - id: desktop.user
   path: states/desktop/user.sls
-  purpose: ''
+  purpose: 'User-level desktop configuration: dotfiles, services, and session autostart'
   data_files:
   - data/desktop.yaml
 - id: desktop.vm_win11
   path: states/desktop/vm_win11.sls
-  purpose: ''
+  purpose: Windows 11 QEMU/KVM virtual machine with GPU passthrough and Looking Glass
   configs:
   - configs/win11.xml
 - id: dns
   path: states/dns.sls
-  purpose: ''
+  purpose: 'DNS services: unbound recursive resolver, AdGuard Home filtering, and
+    avahi mDNS'
   feature_gate:
   - dns.unbound
 - id: duckdns
@@ -107,34 +115,36 @@ states:
   - duckdns.container
 - id: espanso
   path: states/espanso.sls
-  purpose: ''
+  purpose: 'Espanso text expander: wayland variant with systemd user service and health
+    check'
 - id: flatpak
   path: states/flatpak.sls
-  purpose: ''
+  purpose: Flatpak sandboxed desktop applications with flathub remote setup
   data_files:
   - data/flatpak.yaml
 - id: floorp
   path: states/floorp.sls
-  purpose: ''
+  purpose: 'Floorp browser: user.js, userChrome.css, extensions, and profile configuration'
   feature_gate:
   - floorp
   data_files:
   - data/floorp.yaml
 - id: fonts
   path: states/fonts.sls
-  purpose: ''
+  purpose: 'Font installation: pacman, AUR, downloaded, and custom PKGBUILD builds'
   data_files:
   - data/fonts.yaml
   - data/versions.yaml
 - id: fstab_column
   path: states/fstab_column.sls
-  purpose: ''
+  purpose: Format /etc/fstab with aligned columns, preserving comments and blank lines
 - id: greetd
   path: states/greetd.sls
-  purpose: ''
+  purpose: greetd display manager with Hyprland compositor and quickshell greeter
 - id: group.ai
   path: states/group/ai.sls
-  purpose: ''
+  purpose: 'AI group: llama_embed, ollama, nanoclaw, opencode, telethon_bridge, video_ai,
+    image_gen'
   feature_gate:
   - image_gen
   - llama_embed
@@ -147,7 +157,7 @@ states:
   - video_ai
 - id: group.core
   path: states/group/core.sls
-  purpose: ''
+  purpose: 'Core group: users, shell, mounts, kernel modules, sysctl, systemd resources'
   includes:
   - bind_mounts
   - fstab_column
@@ -163,21 +173,21 @@ states:
   - zsh
 - id: group.desktop
   path: states/group/desktop.sls
-  purpose: ''
+  purpose: 'Desktop group: audio, compositor, fonts, display manager, and user session'
   includes:
   - audio
   - desktop
   - fonts
 - id: group.network
   path: states/group/network.sls
-  purpose: ''
+  purpose: 'Network group: VPN, firewall, DNS, IPv6 tunnels, and routing'
   feature_gate:
   - network.ipv6
   - network.ipv6_6to4
   - network.ipv6_tunnel
 - id: group.packages
   path: states/group/packages.sls
-  purpose: ''
+  purpose: 'Packages group: system packages, AUR installers, mpv scripts, themes'
   includes:
   - custom_pkgs
   - installers
@@ -187,14 +197,14 @@ states:
   - packages
 - id: group.services
   path: states/group/services.sls
-  purpose: ''
+  purpose: 'Services group: systemd services, user services, and monitoring alerts'
   includes:
   - monitoring_alerts
   - services
   - user_services
 - id: hardware
   path: states/hardware.sls
-  purpose: ''
+  purpose: 'Hardware-specific configuration: udev rules, fan control, WiFi drivers'
   feature_gate:
   - fancontrol
   - network.wifi
@@ -202,7 +212,8 @@ states:
   - configs/udev-custom.rules
 - id: hiddify
   path: states/hiddify.sls
-  purpose: ''
+  purpose: 'Hiddify VPN client: local AppImage wrapper with legacy shadow handler
+    cleanup'
 - id: image_generation
   path: states/image_generation.sls
   purpose: Resolve image provider API keys from gopass (free-tier providers).
@@ -212,31 +223,32 @@ states:
   - configs/image-gen-providers.yaml.j2
 - id: installers
   path: states/installers.sls
-  purpose: ''
+  purpose: 'Fallback installers: tools built from GitHub releases, pip, cargo, go,
+    or raw HTTP'
   data_files:
   - data/installers.yaml
   - data/versions.yaml
 - id: installers_desktop
   path: states/installers_desktop.sls
-  purpose: ''
+  purpose: 'Desktop application installers: data-driven AUR package installation'
   data_files:
   - data/installers_desktop.yaml
 - id: installers_mpv
   path: states/installers_mpv.sls
-  purpose: ''
+  purpose: 'MPV media player: scripts, plugins, and shaders for enhanced playback'
   data_files:
   - data/mpv_scripts.yaml
   - data/versions.yaml
 - id: installers_themes
   path: states/installers_themes.sls
-  purpose: ''
+  purpose: 'Theme and icon installers: GTK, Qt, cursor, and icon themes from git repos'
   data_files:
   - data/installers_themes.yaml
   configs:
   - configs/vicinae/flight-dark.toml
 - id: ipv6
   path: states/ipv6.sls
-  purpose: ''
+  purpose: 'IPv6 diagnostics: connectivity check, firewall rules, and health monitoring'
   data_files:
   - data/ipv6.yaml
 - id: ipv6_6to4
@@ -262,17 +274,17 @@ states:
   - jellyfin.container
 - id: kanata
   path: states/kanata.sls
-  purpose: ''
+  purpose: 'Kanata keyboard remapper: advanced key remapping daemon configuration'
   configs:
   - configs/kanata.kbd
 - id: kernel_modules
   path: states/kernel_modules.sls
-  purpose: ''
+  purpose: Kernel module blacklisting and loading for hardware and virtualization
   configs:
   - configs/modprobe-blacklist.conf.j2
 - id: llama_embed
   path: states/llama_embed.sls
-  purpose: ''
+  purpose: 'llama.cpp embedding server: Qwen3-Embedding-8B via Vulkan in Quadlet container'
   data_files:
   - data/container_images.yaml
   - data/llama_embed.yaml
@@ -281,12 +293,12 @@ states:
   - llama_embed.container
 - id: mkinitcpio
   path: states/mkinitcpio.sls
-  purpose: ''
+  purpose: 'mkinitcpio initramfs configuration: hooks, modules, and compression settings'
   configs:
   - configs/mkinitcpio.conf.j2
 - id: monitoring_alertmanager
   path: states/monitoring_alertmanager.sls
-  purpose: ''
+  purpose: 'Alertmanager: Telegram webhook alerts from Loki log rules'
   feature_gate:
   - monitoring.alertmanager
   - monitoring.loki
@@ -305,7 +317,7 @@ states:
   - tests/test_monitoring_alertmanager.py
 - id: monitoring_alerts
   path: states/monitoring_alerts.sls
-  purpose: ''
+  purpose: 'Monitoring alerts: service watchdog timers and Loki alert rule deployment'
   feature_gate:
   - monitoring.alerts
   - monitoring.loki
@@ -343,12 +355,12 @@ states:
   - configs/promtail.yaml.j2
 - id: mounts
   path: states/mounts.sls
-  purpose: ''
+  purpose: 'Filesystem mounts: external drives, network shares, and special filesystems'
   data_files:
   - data/mounts.yaml
 - id: mpd
   path: states/mpd.sls
-  purpose: ''
+  purpose: 'Music Player Daemon: audio playback server with Last.fm scrobbling'
   secrets:
   - lastfm/password
   - lastfm/username
@@ -356,7 +368,7 @@ states:
   - mpdas.service
 - id: music_analysis
   path: states/music_analysis.sls
-  purpose: ''
+  purpose: 'Music analysis pipeline: BPM/key detection, fingerprinting, and indexing'
   data_files:
   - data/installers.yaml
   - data/versions.yaml
@@ -367,7 +379,7 @@ states:
   - tests/test_music_analysis.py
 - id: nanoclaw
   path: states/nanoclaw.sls
-  purpose: ''
+  purpose: 'NanoClaw AI coding agent: git clone, npm install, Quadlet container deployment'
   secrets:
   - api/nanoclaw-telegram
   - api/nanoclaw-telegram-uid
@@ -401,7 +413,7 @@ states:
   - configs/vpn-split-router.yaml.j2
 - id: nyxt
   path: states/nyxt.sls
-  purpose: ''
+  purpose: 'Nyxt browser: extensible Lisp-powered web browser managed as system package'
 - id: ollama
   path: states/ollama.sls
   purpose: 'Resolve manifest path: "model:tag" → library/model/tag, "ns/model:tag"
@@ -418,10 +430,10 @@ states:
   - tests/test_ollama.py
 - id: opencode
   path: states/opencode.sls
-  purpose: ''
+  purpose: 'OpenCode LLM CLI tool: package install and configuration'
 - id: opencode_telegram
   path: states/opencode_telegram.sls
-  purpose: ''
+  purpose: 'OpenCode Telegram bot: npm package, systemd user service, and secret resolution'
   secrets:
   - api/deepseek
   - api/nanoclaw-telegram-uid
@@ -441,7 +453,8 @@ states:
   - data/packages.yaml
 - id: pacman_db_warmup
   path: states/pacman_db_warmup.sls
-  purpose: ''
+  purpose: 'Pacman database warmup: ensures package databases are up to date before
+    other states'
 - id: proxypilot
   path: states/proxypilot.sls
   purpose: ── Secret resolution ──
@@ -469,17 +482,18 @@ states:
   - data/services.yaml
 - id: steam
   path: states/steam.sls
-  purpose: ''
+  purpose: 'Steam gaming platform: multilib, drivers, gamemode, and controller support'
   configs:
   - configs/gamemode.ini
 - id: sysctl
   path: states/sysctl.sls
-  purpose: ''
+  purpose: 'Kernel sysctl parameters: custom tuning for networking, filesystems, and
+    security'
   configs:
   - configs/sysctl-custom.conf
 - id: system_description
   path: states/system_description.sls
-  purpose: ''
+  purpose: 'System description: /etc/os-release branding and feature-gated state orchestration'
   feature_gate:
   - amnezia
   - dns.adguardhome
@@ -513,7 +527,7 @@ states:
   - configs/os-release.j2
 - id: systemd_resources
   path: states/systemd_resources.sls
-  purpose: ''
+  purpose: 'Systemd resource management: sysusers, tmpfiles, and service account provisioning'
   data_files:
   - data/managed_resources.yaml
   configs:
@@ -521,7 +535,8 @@ states:
   - configs/managed-service-paths.conf.j2
 - id: t5_summarization
   path: states/t5_summarization.sls
-  purpose: ''
+  purpose: 'T5 text summarization server: safetensors to GGUF conversion via Quadlet
+    container'
   data_files:
   - data/container_images.yaml
   - data/service_catalog.yaml
@@ -530,7 +545,7 @@ states:
   - t5_summarization.container
 - id: telethon_bridge
   path: states/telethon_bridge.sls
-  purpose: ''
+  purpose: 'Telethon Bridge: Telegram MTProto relay to HTTP for LLM bot integration'
   secrets:
   - api/nanoclaw-telegram-uid
   - api/telegram-telethon-hash
@@ -549,7 +564,8 @@ states:
   - configs/telethon-bridge.yaml.j2
 - id: tidal
   path: states/tidal.sls
-  purpose: ''
+  purpose: 'TidalCycles live coding environment: Haskell, SuperDirt, and SuperCollider
+    setup'
 - id: transmission
   path: states/transmission.sls
   purpose: 'In-place cutover: remove native systemd unit so Quadlet-generated unit
@@ -561,7 +577,7 @@ states:
   - transmission.container
 - id: user_services
   path: states/user_services.sls
-  purpose: ''
+  purpose: 'User-scoped systemd services: mail sync, backups, and auxiliary daemons'
   feature_gate:
   - mpd
   - user_services.mail
@@ -569,7 +585,7 @@ states:
   - data/user_services.yaml
 - id: users
   path: states/users.sls
-  purpose: ''
+  purpose: 'User account management: PAM sudo, SSH agent auth, and authorized keys'
   feature_gate:
   - sudo_ssh_agent
   configs:
@@ -579,7 +595,7 @@ states:
   - configs/sudoers-ssh-agent-auth.j2
 - id: vaultwarden
   path: states/vaultwarden.sls
-  purpose: ''
+  purpose: 'Vaultwarden Bitwarden server: Quadlet container, backup timers, and bw-sync'
   data_files:
   - data/container_images.yaml
   - data/service_catalog.yaml
@@ -591,7 +607,7 @@ states:
   - vaultwarden.container
 - id: video_ai
   path: states/video_ai.sls
-  purpose: ''
+  purpose: 'Video AI pipeline: includes base, models, runners, and workflow definitions'
   includes:
   - video_ai.base
   - video_ai.models
@@ -599,37 +615,39 @@ states:
   - video_ai.workflows
 - id: video_ai.base
   path: states/video_ai/base.sls
-  purpose: ''
+  purpose: 'Video AI base: Python environment, dependencies, and shared utilities'
   data_files:
   - data/video_ai.yaml
 - id: video_ai.models
   path: states/video_ai/models.sls
-  purpose: ''
+  purpose: 'Video AI models: HuggingFace model downloads and safetensors management'
   data_files:
   - data/video_ai.yaml
 - id: video_ai.runners
   path: states/video_ai/runners.sls
-  purpose: ''
+  purpose: 'Video AI runners: inference server and processing daemon management'
 - id: video_ai.workflows
   path: states/video_ai/workflows.sls
-  purpose: ''
+  purpose: 'Video AI workflows: automated processing pipelines and job scheduling'
   data_files:
   - data/video_ai.yaml
   configs:
   - configs/video-ai/{{
 - id: windows_mount
   path: states/windows_mount.sls
-  purpose: ''
+  purpose: Windows NTFS partition mount with proper permissions and fstab integration
   data_files:
   - data/windows_mount.yaml
 - id: xen
   path: states/xen.sls
-  purpose: ''
+  purpose: 'X11/Xorg VR session: i3 + KDE Plasma X11 for SteamVR with Valve Index
+    on AMD GPU'
   secrets:
   - host/xen-password-hash
 - id: zapret2
   path: states/zapret2.sls
-  purpose: ''
+  purpose: 'Zapret2 DPI bypass: nfqueue-based traffic filter with domain-specific
+    rules'
   data_files:
   - data/zapret2.yaml
   configs:
@@ -637,14 +655,16 @@ states:
   - configs/zapret2.conf.j2
 - id: zen_browser
   path: states/zen_browser.sls
-  purpose: ''
+  purpose: 'Zen Browser: Firefox-based browser with extensions, proxy switching, and
+    VPN integration'
   feature_gate:
   - floorp
   data_files:
   - data/zen_browser.yaml
 - id: zsh
   path: states/zsh.sls
-  purpose: ''
+  purpose: 'Zsh shell environment: prezto framework, plugins, completions, and prompt
+    configuration'
 macros:
 - id: _macros_common
   path: states/_macros_common.jinja
@@ -791,7 +811,8 @@ scripts_py:
 - path: scripts/update-tools.py
   purpose: Update tools defined in data/installers.yaml.
 - path: scripts/vpn_split_router.py
-  purpose: ''
+  purpose: 'DNS-based VPN split routing: observe, learn, and route domains through
+    VPN/proxy.'
 - path: scripts/vpn_split_router_integration.py
   purpose: Integrate RKN domains with vpn-split-router.
 - path: scripts/xray-to-singbox.py
@@ -1017,7 +1038,9 @@ test_files:
 - path: tests/test_host_model.py
 - path: tests/test_hypr_shortcuts_generation.py
 - path: tests/test_index_salt.py
+- path: tests/test_macro_config.py
 - path: tests/test_macro_container.py
+- path: tests/test_macro_desktop.py
 - path: tests/test_macro_idempotency.py
 - path: tests/test_monitoring_alertmanager.py
 - path: tests/test_music_analysis.py

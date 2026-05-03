@@ -1,3 +1,4 @@
+{# Core group: users, shell, mounts, kernel modules, sysctl, systemd resources #}
 # Group: system core — users, shell, mounts, kernel, hardware
 # Usage: just apply group/core
 

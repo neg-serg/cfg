@@ -1,3 +1,4 @@
+{# CachyOS kernel packages, boot configuration, and kernel cmdline management #}
 # CachyOS kernel packages, settings, and boot configuration.
 # Manages kernel cmdline (embedded in UKI) and CachyOS-specific packages.
 #

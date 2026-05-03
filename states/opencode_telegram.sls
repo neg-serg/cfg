@@ -1,3 +1,4 @@
+{# OpenCode Telegram bot: npm package, systemd user service, and secret resolution #}
 {% from '_imports.jinja' import user, home, tg_secret, gopass_secret %}
 {% from '_macros_pkg.jinja' import npm_pkg %}
 {% from '_macros_service.jinja' import ensure_dir, user_service_enable, user_service_file, user_unit_override %}

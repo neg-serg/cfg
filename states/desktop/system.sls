@@ -1,3 +1,4 @@
+{# System-wide desktop configuration: fonts, themes, input methods, power management #}
 # Desktop environment: services, SSH, dconf themes
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}

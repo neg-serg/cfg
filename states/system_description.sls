@@ -1,3 +1,4 @@
+{# System description: /etc/os-release branding and feature-gated state orchestration #}
 {% from '_imports.jinja' import host, user %}
 {% from '_macros_service.jinja' import ensure_dir %}
 # Salt state for CachyOS workstation — top-level orchestrator

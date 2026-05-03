@@ -1,3 +1,4 @@
+{# Theme and icon installers: GTK, Qt, cursor, and icon themes from git repos #}
 # Theme and icon installers: data-driven from data/installers_themes.yaml.
 {% from '_imports.jinja' import home, user %}
 {% from '_macros_install.jinja' import git_clone_deploy %}

@@ -1,3 +1,4 @@
+{# AI group: llama_embed, ollama, nanoclaw, opencode, telethon_bridge, video_ai, image_gen #}
 # Group: AI/ML services — agents, LLM inference, image generation, summarization
 # Usage: just apply group/ai
 {% from '_imports.jinja' import host %}

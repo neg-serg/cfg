@@ -1,3 +1,4 @@
+{# Video AI runners: inference server and processing daemon management #}
 {% from '_imports.jinja' import host, user, home %}
 {% set base_dir = host.mnt_one ~ '/video-ai' %}
 

@@ -1,3 +1,4 @@
+{# Systemd resource management: sysusers, tmpfiles, and service account provisioning #}
 # =============================================================================
 # SystemD managed resources — identity guards and path protections
 # =============================================================================

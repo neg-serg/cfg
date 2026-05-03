@@ -1,3 +1,4 @@
+{# Kernel module blacklisting and loading for hardware and virtualization #}
 # Kernel module loading and blacklisting, migrated from NixOS.
 {% from '_imports.jinja' import host %}
 # Kernel module loading and blacklisting migrated from NixOS

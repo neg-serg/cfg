@@ -1,3 +1,4 @@
+{# T5 text summarization server: safetensors to GGUF conversion via Quadlet container #}
 {% from '_imports.jinja' import host, user %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}

@@ -1,3 +1,4 @@
+{# Video AI base: Python environment, dependencies, and shared utilities #}
 # =============================================================================
 # Video AI base — directory structure and base dependencies
 # =============================================================================

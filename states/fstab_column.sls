@@ -1,3 +1,4 @@
+{# Format /etc/fstab with aligned columns, preserving comments and blank lines #}
 # Format /etc/fstab with aligned columns, preserving comments.
 # Only non‑comment lines are reformatted.
 # Dependencies are set via require_in in mount states.

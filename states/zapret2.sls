@@ -1,3 +1,4 @@
+{# Zapret2 DPI bypass: nfqueue-based traffic filter with domain-specific rules #}
 # =============================================================================
 # Zapret2 DPI bypass — configuration, hostlist, and helper service
 # =============================================================================

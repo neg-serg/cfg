@@ -1,3 +1,4 @@
+{# Video AI pipeline: includes base, models, runners, and workflow definitions #}
 # =============================================================================
 # Video AI — includes base, models, workflows, runners
 # =============================================================================

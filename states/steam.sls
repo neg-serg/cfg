@@ -1,3 +1,4 @@
+{# Steam gaming platform: multilib, drivers, gamemode, and controller support #}
 {% from '_imports.jinja' import host, user, pkg_list %}
 {% from '_macros_service.jinja' import ensure_dir %}
 {% from '_macros_pkg.jinja' import paru_install %}

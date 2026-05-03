@@ -1,3 +1,4 @@
+{# Hardware-specific configuration: udev rules, fan control, WiFi drivers #}
 # Hardware-specific configuration: fan control, WiFi.
 {% from '_imports.jinja' import host %}
 {% from '_macros_service.jinja' import udev_rule, service_with_unit %}

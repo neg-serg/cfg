@@ -1,3 +1,4 @@
+{# X11/Xorg VR session: i3 + KDE Plasma X11 for SteamVR with Valve Index on AMD GPU #}
 # X11/Xorg VR session user (xen)
 # i3 + KDE Plasma X11 sessions for SteamVR with Valve Index on AMD GPU.
 # Two session options via greetd:

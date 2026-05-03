@@ -1,3 +1,4 @@
+{# Hiddify VPN client: local AppImage wrapper with legacy shadow handler cleanup #}
 # Hiddify VPN client — manages local AppImage wrapper and removes legacy shadow handlers.
 {% from '_imports.jinja' import user, home %}
 

@@ -1,3 +1,4 @@
+{# Telethon Bridge: Telegram MTProto relay to HTTP for LLM bot integration #}
 # =============================================================================
 # Telethon Bridge — Telegram MTProto proxy container deployment
 # =============================================================================

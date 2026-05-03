@@ -1,3 +1,4 @@
+{# greetd display manager with Hyprland compositor and quickshell greeter #}
 # greetd display manager: hyprland compositor + quickshell greeter.
 {% from '_imports.jinja' import host, user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}

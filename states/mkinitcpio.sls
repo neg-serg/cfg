@@ -1,3 +1,4 @@
+{# mkinitcpio initramfs configuration: hooks, modules, and compression settings #}
 # mkinitcpio: manage initramfs configuration (compression, hooks)
 # Optimizes boot speed by using fast zstd compression instead of archival-level.
 

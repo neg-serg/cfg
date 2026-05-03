@@ -1,3 +1,4 @@
+{# Kernel sysctl parameters: custom tuning for networking, filesystems, and security #}
 # Sysctl settings migrated from NixOS
 # (modules/system/kernel/sysctl.nix, sysctl-mem-extras.nix, sysctl-writeback.nix,
 #  hosts/telfir/hardware.nix)

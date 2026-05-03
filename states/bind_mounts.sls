@@ -1,3 +1,4 @@
+{# Bind mounts for user directories on external storage devices #}
 # Bind mounts for user directories on external storage
 # Migrated from NixOS fileSystems (modules/system/filesystems.nix)
 #

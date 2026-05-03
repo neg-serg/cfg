@@ -1,3 +1,4 @@
+{# MPV media player: scripts, plugins, and shaders for enhanced playback #}
 # MPV scripts and plugins (split from installers.sls)
 {% from '_imports.jinja' import user, home, retry_attempts, retry_interval, ver_dir %}
 {% from '_macros_service.jinja' import ensure_dir %}

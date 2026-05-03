@@ -1,3 +1,4 @@
+{# Espanso text expander: wayland variant with systemd user service and health check #}
 # Espanso: cross-platform text expander (Wayland variant).
 {% from '_imports.jinja' import host, user %}
 {% from '_macros_pkg.jinja' import paru_install %}

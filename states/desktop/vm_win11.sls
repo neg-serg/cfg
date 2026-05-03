@@ -1,3 +1,4 @@
+{# Windows 11 QEMU/KVM virtual machine with GPU passthrough and Looking Glass #}
 # Windows 11 VM definition — NVMe disk bus (Windows has built-in drivers)
 
 

@@ -1,3 +1,4 @@
+{# Fallback installers: tools built from GitHub releases, pip, cargo, go, or raw HTTP #}
 # Data-driven fallback installs: tools built from GitHub releases, pip, cargo, go, or raw HTTP.
 # Use only when no official/AUR package is suitable.
 {% from '_imports.jinja' import user, home %}

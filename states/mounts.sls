@@ -1,3 +1,4 @@
+{# Filesystem mounts: external drives, network shares, and special filesystems #}
 # Disk mounts (/mnt/zero, /mnt/one)
 
 {% import_yaml 'data/mounts.yaml' as mounts %}

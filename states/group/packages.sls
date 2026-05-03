@@ -1,3 +1,4 @@
+{# Packages group: system packages, AUR installers, mpv scripts, themes #}
 # Group: all package management — pacman, installers, custom builds
 # Usage: just apply group/packages
 

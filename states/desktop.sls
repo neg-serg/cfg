@@ -1,3 +1,4 @@
+{# Desktop environment: top-level include for compositor, packages, portal, and user session #}
 # =============================================================================
 # Desktop environment — top-level include for system, packages, portal, hyprland, user
 # =============================================================================

@@ -1,3 +1,4 @@
+{# Network group: VPN, firewall, DNS, IPv6 tunnels, and routing #}
 # Group: network and DNS
 # Usage: just apply group/network
 

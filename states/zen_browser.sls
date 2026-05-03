@@ -1,3 +1,4 @@
+{# Zen Browser: Firefox-based browser with extensions, proxy switching, and VPN integration #}
 {% from '_imports.jinja' import host, user, home %}
 {% from '_macros_service.jinja' import ensure_dir %}
 {% from '_macros_desktop.jinja' import browser_extensions %}

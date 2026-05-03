@@ -3,11 +3,41 @@ setopt ERR_EXIT NOUNSET PIPE_FAIL
 
 IFS=$'\n\t'
 
+ROUTING_YAML="$HOME/.config/audio/routing.yaml"
+
 typeset -A targets
-targets[an]="0 1"
-targets[aes]="2 3"
-targets[spdif]="4 5"
-targets[phones]="6 7"
+typeset -A labels
+typeset -a route_order
+
+init_config() {
+    local yaml_txt
+    if [[ -f "$ROUTING_YAML" ]] && command -v python3 >/dev/null 2>&1; then
+        yaml_txt="$(python3 -c "
+import yaml
+with open('$ROUTING_YAML') as f:
+    d = yaml.safe_load(f)
+for k, v in d['rme']['routes'].items():
+    print(f'{k}\t{v[\"left\"]} {v[\"right\"]}\t{v[\"label\"]}')
+" 2>/dev/null)"
+    fi
+    if [[ -n "$yaml_txt" ]]; then
+        while IFS=$'\t' read -r key pair label; do
+            targets[$key]="$pair"
+            labels[$key]="$label"
+            route_order+=("$key")
+        done <<< "$yaml_txt"
+        return
+    fi
+    for key_pair_label in "an:0 1:Speakers" "aes:2 3:AES" "spdif:4 5:SPDIF" "phones:6 7:Headphones"; do
+        local key="${key_pair_label%%:*}"
+        local rest="${key_pair_label#*:}"
+        local pair="${rest%:*}"
+        local label="${rest##*:}"
+        targets[$key]="$pair"
+        labels[$key]="$label"
+        route_order+=("$key")
+    done
+}
 
 die() {
     print -u2 -- "pw-route: $*"
@@ -19,29 +49,30 @@ need() {
 }
 
 usage() {
-    cat <<'EOF'
-Usage: pw-route <an|aes|spdif|phones|toggle|current|status>
+    local route_list=""
+    for k in "${route_order[@]}"; do
+        route_list+=$(printf '  %-8s -> AUX%s/AUX%s  (%s)\n' "$k" "${targets[$k]%% *}" "${targets[$k]##* }" "${labels[$k]}")
+    done
+    cat <<EOF
+Usage: pw-route <$(echo "${route_order[@]}" | tr ' ' '|')|toggle|current|status|list>
 
 Route active stereo PipeWire streams on the RME AIO Pro pro-audio sink:
-  an      -> AUX0/AUX1
-  aes     -> AUX2/AUX3
-  spdif   -> AUX4/AUX5
-  phones  -> AUX6/AUX7
-  toggle  -> quick toggle aes <-> an (fallback to aes)
+${route_list}  toggle  -> quick toggle between output pairs
   current -> print active mirror target
   status  -> show current RME playback links
+  list    -> all routes as JSON (for UI consumption)
 EOF
 }
 
 find_rme_sink() {
+    local rme_nick
+    rme_nick="$(python3 -c "import yaml; print(yaml.safe_load(open('$ROUTING_YAML'))['rme']['nick'])" 2>/dev/null || echo "RME AIO Pro")"
     local sink_name
-
-    sink_name="$(pw-cli list-objects Node | awk '
+    sink_name="$(pw-cli list-objects Node | awk -v nick="$rme_nick" '
         /^id/ { node = "" }
         /node.name/ && /alsa_output/ { node = $3; gsub(/"/, "", node) }
-        /node.nick = "RME AIO Pro"/ && node != "" { print node; exit }
+        index($0, "node.nick = \"" nick "\"") && node != "" { print node; exit }
     ')"
-
     [[ -n "$sink_name" ]] || die "RME AIO Pro sink not found"
     print -- "$sink_name"
 }
@@ -49,12 +80,8 @@ find_rme_sink() {
 show_status() {
     local sink_name="$1"
     local link_dump
-
     link_dump="$(pw-link -l)"
-    if [[ -z "$link_dump" ]]; then
-        die "no PipeWire links found"
-    fi
-
+    [[ -n "$link_dump" ]] || die "no PipeWire links found"
     printf '%s\n' "$link_dump" | awk -v sink="$sink_name" '
         $0 ~ sink":playback_AUX" { print; seen=1; next }
         seen && /^  \|<-/ { print; next }
@@ -66,7 +93,6 @@ disconnect_stream_port_links() {
     local stream_port="$1"
     local link_dump
     local -a ports
-
     link_dump="$(pw-link -l)"
     ports=(
         ${(f)$(printf '%s\n' "$link_dump" | awk -v stream="$stream_port" '
@@ -79,7 +105,6 @@ disconnect_stream_port_links() {
             seen { seen=0 }
         ')}
     )
-
     for port in "${ports[@]}"; do
         [[ -n "$port" ]] || continue
         pw-link -d "$stream_port" "$port" 2>/dev/null || true
@@ -92,10 +117,8 @@ route_monitor_pair() {
     local right_aux="$5"
     local left_monitor="$1"
     local right_monitor="$2"
-
     disconnect_stream_port_links "$left_monitor"
     disconnect_stream_port_links "$right_monitor"
-
     pw-link "$left_monitor" "$sink_name:playback_AUX${left_aux}"
     pw-link "$right_monitor" "$sink_name:playback_AUX${right_aux}"
 }
@@ -104,21 +127,17 @@ route_target() {
     local target_name="$1"
     local sink_name="$2"
     local -a pair
-    local left_monitor right_monitor
-
     pair=( ${(s: :)targets[$target_name]} )
-    left_monitor="$sink_name:monitor_AUX0"
-    right_monitor="$sink_name:monitor_AUX1"
-
+    local left_monitor="$sink_name:monitor_AUX0"
+    local right_monitor="$sink_name:monitor_AUX1"
     route_monitor_pair "$left_monitor" "$right_monitor" "$sink_name" "$pair[1]" "$pair[2]"
-    print -- "default stereo mix -> $target_name (AUX${pair[1]}/AUX${pair[2]})"
+    print -- "$target_name -> AUX${pair[1]}/AUX${pair[2]}"
 }
 
 port_has_link_to() {
     local stream_port="$1"
     local target_port="$2"
     local link_dump="$3"
-
     printf '%s\n' "$link_dump" | awk -v stream="$stream_port" '
         $0 == stream { seen=1; next }
         seen && /^  \|-> / {
@@ -133,81 +152,62 @@ port_has_link_to() {
 get_current_target() {
     local sink_name="$1"
     local link_dump
-
     link_dump="$(pw-link -l)"
-
-    if port_has_link_to "$sink_name:monitor_AUX0" "$sink_name:playback_AUX0" "$link_dump" &&
-        port_has_link_to "$sink_name:monitor_AUX1" "$sink_name:playback_AUX1" "$link_dump"; then
-        print -- "an"
-        return
-    fi
-    if port_has_link_to "$sink_name:monitor_AUX0" "$sink_name:playback_AUX2" "$link_dump" &&
-        port_has_link_to "$sink_name:monitor_AUX1" "$sink_name:playback_AUX3" "$link_dump"; then
-        print -- "aes"
-        return
-    fi
-    if port_has_link_to "$sink_name:monitor_AUX0" "$sink_name:playback_AUX4" "$link_dump" &&
-        port_has_link_to "$sink_name:monitor_AUX1" "$sink_name:playback_AUX5" "$link_dump"; then
-        print -- "spdif"
-        return
-    fi
-    if port_has_link_to "$sink_name:monitor_AUX0" "$sink_name:playback_AUX6" "$link_dump" &&
-        port_has_link_to "$sink_name:monitor_AUX1" "$sink_name:playback_AUX7" "$link_dump"; then
-        print -- "phones"
-        return
-    fi
-
+    for target_name in "${route_order[@]}"; do
+        local -a pair=( ${(s: :)targets[$target_name]} )
+        if port_has_link_to "$sink_name:monitor_AUX0" "$sink_name:playback_AUX${pair[1]}" "$link_dump" &&
+            port_has_link_to "$sink_name:monitor_AUX1" "$sink_name:playback_AUX${pair[2]}" "$link_dump"; then
+            print -- "$target_name"
+            return
+        fi
+    done
     print -- "unknown"
 }
 
 toggle_target() {
     local sink_name="$1"
-    local current_target next_target
-
+    local current_target
     current_target="$(get_current_target "$sink_name")"
-
-    case "$current_target" in
-        aes) next_target="an" ;;
-        *) next_target="aes" ;;
-    esac
-
+    if [[ "$current_target" == "$route_order[2]" ]]; then
+        next_target="$route_order[1]"
+    else
+        next_target="$route_order[2]"
+    fi
     route_target "$next_target" "$sink_name"
+}
+
+list_routes() {
+    print -n "["
+    local first=1
+    for k in "${route_order[@]}"; do
+        (( first )) || print -n ","
+        first=0
+        local -a pair=( ${(s: :)targets[$k]} )
+        print -n "{\"key\":\"$k\",\"label\":\"${labels[$k]}\",\"left\":${pair[1]},\"right\":${pair[2]}}"
+    done
+    print "]"
 }
 
 main() {
     local command="${1:-}"
     local sink_name
-
-    case "$command" in
-        an|aes|spdif|phones|toggle|current|status) ;;
-        -h|--help|help)
-            usage
-            exit 0
-            ;;
-        *)
-            usage >&2
-            exit 1
-            ;;
-    esac
-
+    init_config
+    local -a valid_cmds=( toggle current status list -h --help help )
+    valid_cmds+=( "${route_order[@]}" )
+    if [[ -z "${valid_cmds[(r)$command]}" ]]; then
+        usage >&2
+        exit 1
+    fi
     need pw-link
     need pw-cli
-
     sink_name="$(find_rme_sink)"
-
     case "$command" in
-        status)
-            show_status "$sink_name"
-            ;;
-        current)
-            get_current_target "$sink_name"
-            ;;
-        toggle)
-            toggle_target "$sink_name"
-            ;;
-        an|aes|spdif|phones)
-            route_target "$command" "$sink_name"
-            ;;
+        status)    show_status "$sink_name" ;;
+        current)   get_current_target "$sink_name" ;;
+        toggle)    toggle_target "$sink_name" ;;
+        list)      list_routes ;;
+        help|--help|-h) usage ;;
+        *)         route_target "$command" "$sink_name" ;;
     esac
 }
 

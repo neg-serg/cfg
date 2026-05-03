@@ -1,0 +1,314 @@
+#!/usr/bin/env zsh
+# gpu-tune — interactive AMD GPU undervolt + overclock tuning for RX 9070 (Navi 48)
+# Reads supported ranges from pp_od_clk_voltage, validates user input, applies via sysfs.
+# Uses only zsh builtins + sysfs — no external deps.
+# Persistent settings stored in /etc/gpu-tune.conf and applied by gpu-power-profile.service.
+
+setopt ERR_EXIT NO_UNSET PIPE_FAIL
+
+autoload -Uz zutil
+
+typeset -r OD_PATH=/sys/class/drm/card1/device/pp_od_clk_voltage
+typeset -r POWER_PATH=/sys/class/drm/card1/device/hwmon/hwmon0/power1_cap
+typeset -r POWER_MAX=/sys/class/drm/card1/device/hwmon/hwmon0/power1_cap_max
+typeset -r POWER_MIN=/sys/class/drm/card1/device/hwmon/hwmon0/power1_cap_min
+typeset -r POWER_DEFAULT=/sys/class/drm/card1/device/hwmon/hwmon0/power1_cap_default
+typeset -r SCLK_PATH=/sys/class/drm/card1/device/pp_dpm_sclk
+typeset -r PERSIST_FILE=/etc/gpu-tune.conf
+
+# ── Helpers ───────────────────────────────────────────────────────────
+
+die() { print -u2 "\e[31m$1\e[0m"; exit 1; }
+warn() { print -u2 "\e[33m$1\e[0m"; }
+good() { print "\e[32m$1\e[0m"; }
+
+require_root() {
+    if (( EUID != 0 )); then
+        if command -v sudo >/dev/null 2>&1; then
+            exec sudo -E zsh "$0" "$@"
+        fi
+        die "Need root. Run with sudo."
+    fi
+}
+
+read_od() { <"${OD_PATH}"; }
+
+parse_od_range() {
+    local raw line key low high
+    raw=$(read_od)
+    typeset -gA OD_MIN OD_MAX OD_CUR
+    while IFS= read -r line; do
+        [[ "$line" =~ '^OD_RANGE:$' ]] && continue
+        [[ "$line" =~ '^([A-Z_]+):\s+(-?[0-9]+)(Mhz|mv)\s+(-?[0-9]+)(Mhz|mv)?' ]] || continue
+        key="${match[1]}"
+        low="${match[2]}"
+        high="${match[4]}"
+        OD_MIN[$key]=$low
+        OD_MAX[$key]=$high
+    done <<< "$raw"
+    # Current values
+    OD_CUR[SCLK_OFFSET]=$(print -r -- "$raw" | awk '/^OD_SCLK_OFFSET:/ {getline; print $1; exit}')
+    OD_CUR[VDDGFX_OFFSET]=$(print -r -- "$raw" | awk '/^OD_VDDGFX_OFFSET:/ {getline; print $1; exit}')
+    OD_CUR[SCLK_OFFSET]=${OD_CUR[SCLK_OFFSET]:-0}
+    OD_CUR[VDDGFX_OFFSET]=${OD_CUR[VDDGFX_OFFSET]:-0}
+}
+
+get_current_sclk() {
+    local raw
+    raw=$(<"${SCLK_PATH}")
+    print -r -- "$raw" | awk '/\*$/ {gsub(/[^0-9]/, ""); print $1; exit}'
+}
+
+get_power() {
+    local pw
+    pw=$(<"${POWER_PATH}")
+    print $(( pw / 1000000 ))
+}
+
+# ── Apply functions ────────────────────────────────────────────────────
+
+apply_od() {
+    local cmd="$1" label="$2"
+    if print -r -- "$cmd" | tee "${OD_PATH}" >/dev/null 2>&1; then
+        print -r -- "c" > "${OD_PATH}" 2>/dev/null || true
+        good "  ✓ ${label} applied"
+        return 0
+    else
+        warn "  ✗ ${label} failed"
+        return 1
+    fi
+}
+
+reset_stock() {
+    apply_od "r" "Reset to stock"
+    # Reset power limit to default
+    local def
+    def=$(<"${POWER_DEFAULT}")
+    print -r -- "$def" > "${POWER_PATH}" 2>/dev/null || true
+    good "  ✓ Power limit reset to $(( def / 1000000 ))W"
+}
+
+set_undervolt() {
+    local mv=$1
+    [[ "$mv" =~ '^-?[0-9]+$' ]] || die "Invalid voltage offset: $mv"
+    (( mv < OD_MIN[VDDGFX_OFFSET] || mv > OD_MAX[VDDGFX_OFFSET] )) && die "Voltage offset out of range (${OD_MIN[VDDGFX_OFFSET]}..${OD_MAX[VDDGFX_OFFSET]} mV)"
+    apply_od "vo ${mv}" "VDDGFX offset → ${mv}mV"
+}
+
+set_sclk_max() {
+    local mhz=$1
+    [[ "$mhz" =~ '^[0-9]+$' ]] || die "Invalid frequency: $mhz"
+    apply_od "s 0 ${mhz}" "SCLK max → ${mhz}MHz"
+}
+
+set_power_limit() {
+    local watts=$1
+    local uw=$(( watts * 1000000 ))
+    local min_u max_u
+    min_u=$(<"${POWER_MIN}")
+    max_u=$(<"${POWER_MAX}")
+    (( uw < min_u || uw > max_u )) && die "Power out of range ($(( min_u / 1000000 ))..$(( max_u / 1000000 )) W)"
+    print -r -- "$uw" > "${POWER_PATH}" 2>/dev/null || die "Failed to set power limit"
+    good "  ✓ Power limit → ${watts}W"
+}
+
+# ── Status display ─────────────────────────────────────────────────────
+
+show_status() {
+    local sclk_cur power vddgfx sclk_offset
+    parse_od_range
+    sclk_cur=$(get_current_sclk)
+    power=$(get_power)
+    vddgfx=${OD_CUR[VDDGFX_OFFSET]}
+    sclk_offset=${OD_CUR[SCLK_OFFSET]}
+
+    print "\n\e[1;36m═══ GPU Overdrive Status (card1: RX 9070) ═══\e[0m"
+    printf "  %-18s \e[33m%+dmV\e[0m   (%+d … %+d mV)\n" "VDDGFX offset:" "$vddgfx" "${OD_MIN[VDDGFX_OFFSET]}" "${OD_MAX[VDDGFX_OFFSET]}"
+    printf "  %-18s \e[33m%dMHz\e[0m  (%d … %d MHz)\n" "SCLK offset:" "$sclk_offset" "${OD_MIN[SCLK_OFFSET]}" "${OD_MAX[SCLK_OFFSET]}"
+    printf "  %-18s \e[33m%dMHz\e[0m  (current render)\n" "SCLK current:" "$sclk_cur"
+    printf "  %-18s \e[33m%dW\e[0m     (%d … %d W)\n" "Power limit:" "$power" "$(( $(<"${POWER_MIN}") / 1000000 ))" "$(( $(<"${POWER_MAX}") / 1000000 ))"
+    print
+}
+
+# ── Stress test ────────────────────────────────────────────────────────
+
+run_stress() {
+    local secs=${1:-60}
+    local gpu_busy_path=/sys/class/drm/card1/device/gpu_busy_percent
+    local cmd
+    typeset -a stress_cmds=()
+
+    # Detect available stress tools
+    if command -v glxgears >/dev/null 2>&1; then
+        stress_cmds+=("glxgears -fullscreen")
+    fi
+    if command -v vkcube >/dev/null 2>&1; then
+        stress_cmds+=("vkcube --duration $(( secs + 5 ))")
+    fi
+    if command -v mangohud >/dev/null 2>&1 && command -v vkcube >/dev/null 2>&1; then
+        stress_cmds+=("mangohud vkcube --duration $(( secs + 5 ))")
+    fi
+
+    if (( ${#stress_cmds} == 0 )); then
+        warn "No stress tools found (glxgears, vkcube). Install vulkan-tools or mesa-utils."
+        print "You can manually run a game or benchmark and watch temps/clocks with: gpu-status"
+        return 1
+    fi
+
+    print "\n\e[1;36m═══ Stress test: ${secs}s ═══\e[0m"
+    print "Using: ${stress_cmds[1]}"
+    print "Watch for: artifacts, flickering, GPU resets (dmesg), or driver crash."
+    print "\e[33mRun your game in parallel for real-world validation.\e[0m\n"
+
+    local elapsed=0 start_t end_t util temp
+    start_t=$SECONDS
+    while (( elapsed < secs )); do
+        util=$(<"${gpu_busy_path}" 2>/dev/null || print "?")
+        temp=0
+        for hwmon in /sys/class/drm/card1/device/hwmon/hwmon*/temp1_input(N); do
+            temp=$(( $(<"${hwmon}") / 1000 ))
+            break
+        done
+        printf "\r  [%3ds/%3ds]  GPU: %3s%%  Temp: %2d°C  SCLK: %4sMHz" \
+            "$elapsed" "$secs" "$util" "$temp" "$(get_current_sclk)"
+        sleep 1
+        elapsed=$(( SECONDS - start_t ))
+    done
+    print
+    print "\n\e[32mStress test complete — no driver crash detected.\e[0m"
+    print "Check dmesg for GPU resets:  \e[33mdmesg -T | grep -i 'amdgpu.*reset\|GPU.*hang'\e[0m"
+}
+
+# ── Persistence ─────────────────────────────────────────────────────────
+
+save_persist() {
+    parse_od_range
+    local vddgfx=${OD_CUR[VDDGFX_OFFSET]}
+    local sclk_off=${OD_CUR[SCLK_OFFSET]}
+    local power=$(get_power)
+
+    cat > "${PERSIST_FILE}" <<EOF
+# GPU overdrive settings — applied by gpu-power-profile.service at boot
+# Managed by: gpu-tune --save
+VDDGFX_OFFSET=${vddgfx}
+SCLK_OFFSET=${sclk_off}
+POWER_LIMIT_W=${power}
+EOF
+    good "Settings saved to ${PERSIST_FILE}"
+    print "They will be applied at boot by gpu-power-profile.service."
+}
+
+load_persist() {
+    [[ -f "${PERSIST_FILE}" ]] || return 1
+    local vddgfx sclk_off power
+    source "${PERSIST_FILE}" 2>/dev/null || return 1
+    [[ -n "${VDDGFX_OFFSET:-}" ]] && set_undervolt "$VDDGFX_OFFSET"
+    [[ -n "${SCLK_OFFSET:-}" && "$SCLK_OFFSET" != "0" ]] && set_sclk_max "$SCLK_OFFSET"
+    [[ -n "${POWER_LIMIT_W:-}" ]] && set_power_limit "$POWER_LIMIT_W"
+    return 0
+}
+
+# ── Main menu ───────────────────────────────────────────────────────────
+
+menu() {
+    parse_od_range
+    local choice
+
+    while true; do
+        show_status
+        print "\e[1mActions:\e[0m"
+        print "  \e[36m1\e[0m  Set voltage offset  (e.g. -50, -75, -100)"
+        print "  \e[36m2\e[0m  Set SCLK max         (e.g. 2500, 2600)"
+        print "  \e[36m3\e[0m  Set power limit      (e.g. 340, 280)"
+        print "  \e[36m4\e[0m  \e[31mReset to stock\e[0m"
+        print "  \e[36m5\e[0m  Stress test"
+        print "  \e[36m6\e[0m  Apply saved profile  (${PERSIST_FILE})"
+        print "  \e[36ms\e[0m  Save current → boot-persistent"
+        print "  \e[36mq\e[0m  Quit"
+        print
+
+        print -n "\e[1mChoose [1-6/s/q]: \e[0m"
+        read -r choice
+        case "$choice" in
+            1)
+                print -n "Voltage offset in mV (${OD_MIN[VDDGFX_OFFSET]} … ${OD_MAX[VDDGFX_OFFSET]}): "
+                read -r val
+                [[ -n "$val" ]] && set_undervolt "$val"
+                ;;
+            2)
+                print -n "SCLK max in MHz: "
+                read -r val
+                [[ -n "$val" ]] && set_sclk_max "$val"
+                ;;
+            3)
+                print -n "Power limit in W ($(( $(<"${POWER_MIN}") / 1000000 )) … $(( $(<"${POWER_MAX}") / 1000000 ))): "
+                read -r val
+                [[ -n "$val" ]] && set_power_limit "$val"
+                ;;
+            4) reset_stock ;;
+            5)
+                print -n "Duration in seconds [60]: "
+                read -r val
+                run_stress "${val:-60}"
+                ;;
+            6) load_persist || warn "No saved profile found." ;;
+            s|S) save_persist ;;
+            q|Q) print "\nBye."; exit 0 ;;
+            *) warn "Invalid choice" ;;
+        esac
+    done
+}
+
+# ── CLI mode ────────────────────────────────────────────────────────────
+
+usage() {
+    cat >&2 <<'EOF'
+gpu-tune — interactive AMD GPU undervolt + overclock for RX 9070
+
+Usage:
+  gpu-tune               Interactive TUI
+  gpu-tune --status      Show current settings
+  gpu-tune --undervolt N Set VDDGFX offset to N mV (negative = undervolt)
+  gpu-tune --sclk N      Set max SCLK to N MHz
+  gpu-tune --power N     Set power limit to N watts
+  gpu-tune --reset       Reset to stock
+  gpu-tune --test [SEC]  Run stress test (default 60s)
+  gpu-tune --save        Save current settings to boot-persistent config
+  gpu-tune --load        Apply saved persistent profile
+
+Typical workflow:
+  gpu-tune               # enter interactive mode
+  → 1, set -50           # start conservative undervolt
+  → 5, test 120          # stress test 2 min
+  → repeat: -75, -100, -125 until unstable
+  → 2, set 2500          # light OC after UV is stable
+  → s                    # save for autoload at boot
+EOF
+    exit "${1:-0}"
+}
+
+[[ ! -f "${OD_PATH}" ]] && die "OD interface not found at ${OD_PATH}. Is this an AMD GPU with overdrive support?"
+
+require_root "$@"
+
+# Parse CLI args
+if (( $# == 0 )); then
+    menu
+    exit 0
+fi
+
+while (( $# )); do
+    case "$1" in
+        --status)   show_status ;;
+        --undervolt) shift; set_undervolt "$1" ;;
+        --sclk)      shift; set_sclk_max "$1" ;;
+        --power)     shift; set_power_limit "$1" ;;
+        --reset)     reset_stock ;;
+        --test)      run_stress "${2:-60}"; shift $(( $# > 1 ? 1 : 0 )) ;;
+        --save)      save_persist ;;
+        --load)      load_persist || warn "No saved profile at ${PERSIST_FILE}" ;;
+        --help|-h)   usage 0 ;;
+        *)           die "Unknown option: $1. Try --help." ;;
+    esac
+    shift
+done

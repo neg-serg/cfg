@@ -1,12 +1,19 @@
 [Unit]
-Description=Set GPU power profile to 3D_FULL_SCREEN
+Description=GPU power profile + optional overdrive settings
 After=sys-subsystem-drm-devices-card1.device
 Wants=sys-subsystem-drm-devices-card1.device
 
 [Service]
 Type=oneshot
-ExecStart=/bin/sh -c 'echo 1 > /sys/class/drm/card1/device/pp_power_profile_mode'
 RemainAfterExit=yes
+ExecStart=/bin/sh -c '\
+  echo 1 > /sys/class/drm/card1/device/pp_power_profile_mode; \
+  if [ -f /etc/gpu-tune.conf ]; then \
+    set -a; . /etc/gpu-tune.conf; set +a; \
+    [ -n "${VDDGFX_OFFSET:-}" ] && { echo "vo ${VDDGFX_OFFSET}" > /sys/class/drm/card1/device/pp_od_clk_voltage; echo c > /sys/class/drm/card1/device/pp_od_clk_voltage; }; \
+    [ -n "${SCLK_OFFSET:-}" ] && [ "${SCLK_OFFSET}" != "0" ] && { echo "s 0 ${SCLK_OFFSET}" > /sys/class/drm/card1/device/pp_od_clk_voltage; echo c > /sys/class/drm/card1/device/pp_od_clk_voltage; }; \
+    [ -n "${POWER_LIMIT_W:-}" ] && echo "$(( POWER_LIMIT_W * 1000000 ))" > /sys/class/drm/card1/device/hwmon/hwmon0/power1_cap; \
+  fi'
 
 [Install]
 WantedBy=multi-user.target

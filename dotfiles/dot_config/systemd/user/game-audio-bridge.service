@@ -1,0 +1,13 @@
+[Unit]
+Description=Game Audio Bridge (Stereo Null Sink -> RME AIO Pro)
+After=pipewire-pulse.service
+Requires=pipewire-pulse.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=%h/.local/bin/game-audio-bridge
+ExecStop=-/bin/sh -c 'pactl set-default-sink alsa_output.pci-0000_05_00.0.pro-output-0'
+
+[Install]
+WantedBy=default.target

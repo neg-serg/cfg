@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+NULL_SINK="game_stereo"
+RME_OUT="alsa_output.pci-0000_05_00.0.pro-output-0"
+
+if ! pactl list short sinks 2>/dev/null | grep -q "$NULL_SINK"; then
+    pactl load-module module-null-sink \
+        sink_name="$NULL_SINK" \
+        sink_properties="audio.channels=2 audio.position=FL,FR node.nick=Game\\ Output"
+fi
+
+for i in $(seq 1 10); do
+    if pw-link -i 2>/dev/null | grep -q "^${NULL_SINK}:monitor_FL$"; then
+        break
+    fi
+    sleep 0.2
+done
+
+pw-link "${NULL_SINK}:monitor_FL" "${RME_OUT}:playback_AUX0" 2>/dev/null || true
+pw-link "${NULL_SINK}:monitor_FR" "${RME_OUT}:playback_AUX1" 2>/dev/null || true
+
+pactl set-default-sink "$NULL_SINK" 2>/dev/null || true

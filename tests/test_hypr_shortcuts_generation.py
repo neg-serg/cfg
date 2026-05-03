@@ -1,4 +1,3 @@
-import json
 
 import generate_hypr_shortcuts as gen
 

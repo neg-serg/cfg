@@ -1,7 +1,6 @@
 """Tests for dep-graph requisite edge extraction."""
 
 import importlib.util
-import json
 
 from tests import REPO_ROOT_PATH
 

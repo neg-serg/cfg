@@ -10,6 +10,12 @@
 include:
   - pacman_db_warmup
 
+# ── Boot splash BMP (custom, matches host display resolution) ────────
+cachyos_boot_splash:
+  cmd.run:
+    - name: python3 {{ host.project_dir }}/scripts/generate-boot-splash.py --display {{ host.display }} --output /usr/share/systemd/bootctl/splash-custom.bmp
+    - unless: test -f /usr/share/systemd/bootctl/splash-custom.bmp
+
 # ── Kernel cmdline (written before kernel pkgs so UKI embeds it) ─────
 cachyos_kernel_cmdline:
   file.managed:
@@ -17,6 +23,8 @@ cachyos_kernel_cmdline:
     - source: salt://configs/kernel-cmdline.j2
     - template: jinja
     - mode: '0644'
+    - require:
+      - cmd: cachyos_boot_splash
 
 # ── Kernel packages ──────────────────────────────────────────────────
 cachyos_kernels:
@@ -81,6 +89,7 @@ cachyos_mkinitcpio:
     - onchanges:
       - file: cachyos_kernel_cmdline
       - cmd: cachyos_kernels
+      - cmd: cachyos_boot_splash
 {%- for variant in cachyos_variants %}
       - file: {{ variant | replace('-', '_') }}_preset
 {%- endfor %}

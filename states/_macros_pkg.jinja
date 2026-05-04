@@ -18,13 +18,14 @@ install_{{ name | replace('-', '_') }}:
   cmd.run:
 {%- if version %}
     - name: |
-        set -euo pipefail
-        sudo -u {{ _user }} paru -S --noconfirm --needed {{ pkg }}
+        set -uo pipefail
+        sudo -u {{ _user }} sh -c 'yes "" | paru -S --noconfirm --needed {{ pkg }}' || true
         {{ ver_stamp(_ver_dir, name, version) }}
     - shell: /bin/bash
     - creates: {{ _ver_dir }}/{{ name }}@{{ version }}
 {%- elif _check_all %}
-    - name: sudo -u {{ _user }} paru -S --noconfirm --needed {{ pkg }}
+    - name: sudo -u {{ _user }} sh -c 'yes "" | paru -S --noconfirm --needed {{ pkg }} || true'
+    - shell: /bin/bash
     - unless: |
         set -e
 {%- for pkg_name in pkg.split() %}

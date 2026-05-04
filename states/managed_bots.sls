@@ -1,6 +1,5 @@
 {# Managed Telegram Bots: Bot API 9.6 manager bot state #}
 {% from '_imports.jinja' import user, home, tg_secret %}
-{% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir, user_service_enable, user_service_file %}
 {% import_yaml 'data/telegram_managed_bots.yaml' as mbdata %}
 
@@ -8,7 +7,12 @@
 {% set _uid_levra = tg_secret('api/telegram-uid-levra', 'telegram-uid-levra') %}
 {% set _uid_nanoclaw = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
 
-{{ paru_install('managed_bots', pkg='python-telegram-bot') }}
+install_managed_bots_deps:
+  cmd.run:
+    - name: pip install --break-system-packages python-telegram-bot[all] PyYAML
+    - runas: {{ user }}
+    - unless: python3 -c 'import telegram; import yaml' 2>/dev/null
+    - parallel: true
 
 {{ ensure_dir('managed_bots_config_dir', home ~ '/.config/opencode') }}
 

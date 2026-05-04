@@ -2,7 +2,7 @@
 
 Research into which installed programs could benefit from GCC Graphite auto-parallelism (`-ftree-parallelize-loops=N`) after recompilation on a 32-core AMD CachyOS workstation.
 
-**Data file**: `states/data/autoparallel-candidates.yaml` (machine-readable classifications)
+**Data file**: `docs/autoparallel-candidates.yaml` (machine-readable classifications)
 **Date**: 2026-03-12
 **System**: CachyOS, GCC 15.2.1, 32-core AMD, `makepkg.conf`: `-O3 -march=native` with LTO
 

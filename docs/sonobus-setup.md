@@ -21,7 +21,7 @@ Peer-to-peer low-latency audio streaming between devices. Installed from AUR (`s
          │
          │ PipeWire / ALSA
          ▼
-  RME ADI-2 / USB Audio / HDMI
+  RME HDSPe AIO Pro / USB Audio / HDMI
 ```
 
 ## Components
@@ -95,7 +95,7 @@ SonoBus uses PipeWire (via ALSA/JACK compatibility) on this system. Available de
 
 | Device | Role | Notes |
 |---|---|---|
-| RME ADI-2 | Primary I/O | 8 channels, managed by PipeWire |
+| RME HDSPe AIO Pro | Primary I/O | 8 channels, managed by PipeWire |
 | USB Audio | Secondary I/O | Generic USB audio interface |
 | Navi 48 HDMI/DP | Output only | GPU audio over DisplayPort |
 

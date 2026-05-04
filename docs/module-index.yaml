@@ -1128,8 +1128,6 @@ docs:
   purpose: gh-issues-export
 - path: docs/gopass-age-recovery.md
   purpose: gopass age Recovery
-- path: docs/gopass-breakglass-recovery.md
-  purpose: gopass Break-Glass Recovery
 - path: docs/gopass-setup.md
   purpose: gopass Setup Guide
 - path: docs/hdspe-post-install.md
@@ -1148,16 +1146,12 @@ docs:
   purpose: Music Analysis Pipeline
 - path: docs/neovim-ai-setup.md
   purpose: Neovim AI Setup
-- path: docs/neovim-startup-benchmark.md
-  purpose: Neovim Startup Benchmark
 - path: docs/notebooklm-setup.md
   purpose: NotebookLM Setup Guide
 - path: docs/ollama-models.md
   purpose: Ollama Models
 - path: docs/proxypilot-free-fallback.md
   purpose: ProxyPilot Free Model Fallback
-- path: docs/proxypilot-recovery.md
-  purpose: ProxyPilot Recovery
 - path: docs/proxypilot-setup.md
   purpose: ProxyPilot Setup Guide
 - path: docs/pyinfra-migration-research.md

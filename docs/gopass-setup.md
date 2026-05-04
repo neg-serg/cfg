@@ -342,7 +342,7 @@ When initializing the `age` backend:
 - record how to unlock it on a new machine before retiring any legacy GPG access.
 
 For the short transfer/recovery runbook, see `docs/gopass-age-recovery.md`.
-For the break-glass recovery path when the working machine has lost decrypt capability, see `docs/gopass-breakglass-recovery.md`.
+For the break-glass recovery path when the working machine has lost decrypt capability, see the "Break-Glass Recovery" section in `docs/gopass-age-recovery.md`.
 
 ### 8c. Migration cutover guardrails
 
@@ -354,18 +354,6 @@ If you are migrating an existing store from GPG/Yubikey to `age`:
 - keep existing git history unchanged during the main migration and document the residual risk instead of rewriting history inline;
 - use one maintainer/operator as the cutover and rollback owner;
 - retire the legacy path only after 7 consecutive days with no fallback use and no unresolved failures.
-
-For a reverse rehearsal from an active `age` store back to `gpgcli`, use:
-
-```bash
-scripts/gopass-gpg-cutover-rehearsal.sh --gpg-id <GPG-FINGERPRINT>
-```
-
-The script keeps the live store untouched, builds an isolated GPG-backed
-rehearsal store under `/tmp`, copies a representative validation subset by
-default, compares checksums with `gopass sum`, and runs `chezmoi diff` against
-the rehearsal backend. Run it again with `--all-secrets` before any production
-swap.
 
 ---
 

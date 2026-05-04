@@ -100,4 +100,4 @@ Then rotate your Vaultwarden passwords through the web UI.
 
 ## Recovery from git without age identity
 
-You need the YubiKey break-glass procedure — see `docs/gopass-breakglass-recovery.md`.
+You need the YubiKey break-glass procedure — see the "Break-Glass Recovery" section in `docs/gopass-age-recovery.md`.

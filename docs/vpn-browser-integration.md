@@ -283,5 +283,4 @@ For issues or questions:
 
 - VPN Quick Start (docs/vpn-quickstart.md)
 - Hybrid VPN Architecture
-- [Salt States for VPN](../states/README.md)
 - [RKN Domains Fetcher Source Code](../scripts/rkn-domains-fetcher.py)

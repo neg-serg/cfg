@@ -55,7 +55,7 @@ Excluded providers:
 
 1. Add entry to `states/data/free_providers.yaml`
 2. Store API key: `gopass insert api/<name>`
-3. Run the recovery flow in `docs/proxypilot-recovery.md` if the deployed config needs repair
+3. Run the recovery flow in `docs/proxypilot-setup.md` (Recovery section) if the deployed config needs repair
 4. Run `just` to deploy
 
 Only 2 files changed (data file + gopass secret) -- no code modifications needed.
@@ -81,7 +81,7 @@ gopass insert api/openrouter
 gopass insert api/deepseek  # optional
 
 # 3. Repair or seed the deployed ProxyPilot config when needed
-# See docs/proxypilot-recovery.md
+# See docs/proxypilot-setup.md (Recovery section)
 
 # 4. Deploy via Salt
 just
@@ -102,13 +102,13 @@ curl http://127.0.0.1:8317/v1/chat/completions \
 
 - Check gopass key exists with `gopass show -o api/<provider>`
 - Check ProxyPilot logs: `journalctl --user -u proxypilot -f`
-- Re-run the recovery container flow from `docs/proxypilot-recovery.md`
+- Re-run the recovery container flow from `docs/proxypilot-setup.md` (Recovery section)
 
 ### Keys missing after `just`
 
 gopass secret access may depend on a user-session unlock path that is unavailable in Salt's root context. The AWK fallback reads keys from the already-deployed config. If keys are missing:
 
-1. Run the recovery flow from `docs/proxypilot-recovery.md` to rebuild `openai-compatibility`
+1. Run the recovery flow from `docs/proxypilot-setup.md` (Recovery section) to rebuild `openai-compatibility`
 2. Subsequent `just` runs will maintain keys via AWK
 
 ### Model deprecated by provider
@@ -130,5 +130,5 @@ Grafana dashboard at `http://127.0.0.1:3000` -> ProxyPilot dashboard -> "Fallbac
 | `states/data/free_providers.yaml` | Provider definitions (data-driven) |
 | `states/configs/proxypilot.yaml.j2` | ProxyPilot config template (renders providers) |
 | `states/opencode.sls` | Salt state (imports data, resolves keys) |
-| `docs/proxypilot-recovery.md` | Recovery and rebuild flow |
+| `docs/proxypilot-setup.md` | Recovery and rebuild flow (see Recovery section) |
 | `states/configs/grafana-dashboard-proxypilot.json` | Grafana dashboard |

@@ -1,4 +1,4 @@
-{% from '_imports.jinja' import host, user, home, gopass_secret %}
+{% from '_imports.jinja' import gopass_secret %}
 {% import_yaml 'data/ipv6.yaml' as ipv6_config %}
 
 {# ════════════════════════════════════════════════════════════════════

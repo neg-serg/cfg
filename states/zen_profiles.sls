@@ -23,6 +23,7 @@ zen_profile_script:
 zen_profile_create_{{ _prof_path }}:
   cmd.run:
     - name: "zen-browser -CreateProfile '{{ _prof_name }} {{ _zen_dir }}/{{ _prof_path }}'"
+    - onlyif: "command -v zen-browser"
     - runas: {{ user }}
     - creates: {{ _zen_dir }}/{{ _prof_path }}
     - unless: "grep -qF 'Name={{ _prof_name }}' {{ _zen_dir }}/profiles.ini"

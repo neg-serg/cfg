@@ -1,6 +1,3 @@
-{% from '_imports.jinja' import host, user, home %}
-{% import_yaml 'data/ipv6.yaml' as ipv6_config %}
-
 {# ════════════════════════════════════════════════════════════════════
    IPv6 6to4 tunnel — Phase 2a.
    Feature gate: features.network.ipv6_6to4

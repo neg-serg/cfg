@@ -1,4 +1,4 @@
-{% from '_imports.jinja' import user, home, host, proxypilot_key, gopass_secret %}
+{% from '_imports.jinja' import user, home, proxypilot_key, gopass_secret %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
 {% from '_macros_service.jinja' import ensure_dir, user_service_restart, remove_native_unit %}

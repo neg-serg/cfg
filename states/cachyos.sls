@@ -4,7 +4,6 @@
 #
 # Run: sudo salt-call --local -c .salt_runtime state.sls cachyos
 
-{% from '_macros_pkg.jinja' import paru_install %}
 {% from '_imports.jinja' import host %}
 
 include:

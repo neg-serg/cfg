@@ -1,5 +1,5 @@
 {# IPv6 diagnostics: connectivity check, firewall rules, and health monitoring #}
-{% from '_imports.jinja' import host, user, home %}
+{% from '_imports.jinja' import user %}
 {% import_yaml 'data/ipv6.yaml' as ipv6_config %}
 
 # IPv6 diagnostics — deploys check-ipv6.sh script and optional timer.

@@ -1,5 +1,5 @@
 {# Managed Telegram Bots: Bot API 9.6 manager bot state #}
-{% from '_imports.jinja' import user, home, tg_secret, gopass_secret %}
+{% from '_imports.jinja' import user, home, tg_secret %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir, user_service_enable, user_service_file %}
 {% import_yaml 'data/telegram_managed_bots.yaml' as mbdata %}

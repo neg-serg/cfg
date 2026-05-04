@@ -1,5 +1,4 @@
 # Paths managed by Salt states (reactive require/watch chains)
-.config/proxypilot/config.yaml
 .config/mpd/mpd.conf
 .config/nyxt/init.lisp
 .config/systemd/user/mpdas.service
@@ -13,4 +12,3 @@
 # Zen Browser: source files for Salt deployment to ~/.config/zen/<profile>/
 .config/zen-browser/user.js
 .config/zen-browser/userChrome.css
-.config/zen-browser/zen-themes/

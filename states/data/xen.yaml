@@ -1,0 +1,33 @@
+# Xen user KDE theme seed configs — keyed by destination filename
+kde_configs:
+  kdeglobals: |
+    [General]
+    ColorScheme=BreezeDark
+    WidgetStyle=Breeze
+
+    [KDE]
+    LookAndFeelPackage=org.kde.breezedark.desktop
+    widgetStyle=Breeze
+
+    [Icons]
+    Theme=breeze-dark
+  plasmarc: |
+    [Theme]
+    name=breeze-dark
+  kwinrc: |
+    [org.kde.kdecoration2]
+    library=org.kde.breeze
+    theme=Breeze
+  konsolerc: |
+    [Desktop Entry]
+    DefaultProfile=VR.profile
+
+konsole_profiles:
+  VR.profile: |
+    [Appearance]
+    ColorScheme=Breeze
+    Font=Iosevka,12,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+
+    [General]
+    Name=VR
+    Parent=FALLBACK/

@@ -16,7 +16,6 @@ categories:
         summary: "Complete walkthrough for installing and configuring gopass 1.16.x with age backend (age-plugin-yubikey) as the local password store. Covers gopass init, age key generation, YubiKey PIN/PUK/reset setup, git remote configuration, and store mounting."
         audience: ["operator"]
         prerequisites: ["yubikey", "age", "gopass", "age-plugin-yubikey", "pcscd"]
-        related_entities: ["state:gopass", "state:age-plugin-yubikey"]
         related_docs: ["vault-setup", "gopass-age-recovery", "gopass-breakglass-recovery", "yubikey"]
         tags: ["gopass", "age", "yubikey", "password-store", "secrets"]
         key_commands:
@@ -31,7 +30,7 @@ categories:
         summary: "Setup guide for Ansible Vault used as an encrypted secrets store for provisioning automation. Covers vault ID creation, password file management across hosts, editor integration, and playbook encryption conventions."
         audience: ["operator"]
         prerequisites: ["ansible", "ansible-vault", "gpg"]
-        related_entities: ["state:vault"]
+        related_entities: ["state:vaultwarden"]
         related_docs: ["gopass-setup", "vault-recovery"]
         tags: ["ansible-vault", "secrets", "provisioning"]
         key_commands:
@@ -44,7 +43,7 @@ categories:
         summary: "Installation and configuration guide for ProxyPilot, the system's dynamic proxy management service. Covers service installation, proxy provider configuration, SOCKS5 tunnel setup, routing policies, and health-check configuration."
         audience: ["operator"]
         prerequisites: ["podman", "python3", "systemd"]
-        related_entities: ["state:proxypilot", "service:proxypilot"]
+        related_entities: ["state:proxypilot", "service:proxypilot.container"]
         related_docs: ["proxypilot-recovery", "proxypilot-free-fallback", "vpn-policy"]
         tags: ["proxy", "vpn", "routing", "SOCKS5"]
         key_commands:
@@ -57,7 +56,7 @@ categories:
         summary: "Installation and configuration guide for Tailscale mesh VPN on the host. Covers tailscale up with auth key, subnet routing, exit node configuration, ACLs, and integration with the system's proxy stack."
         audience: ["operator"]
         prerequisites: ["tailscale"]
-        related_entities: ["state:tailscale", "service:tailscaled"]
+        related_entities: ["service:tailscaled"]
         related_docs: ["vpn-policy", "vpn-browser-integration"]
         tags: ["tailscale", "vpn", "mesh", "networking"]
         key_commands:
@@ -70,7 +69,7 @@ categories:
         summary: "Setup guide for SonoBus, a high-quality low-latency peer-to-peer audio streaming application for remote music collaboration. Covers JACK/PipeWire configuration, network buffer tuning, and session management."
         audience: ["operator", "user"]
         prerequisites: ["sonobus", "pipewire", "wireplumber"]
-        related_entities: ["state:sonobus", "state:pipewire"]
+        related_entities: ["state:audio"]
         tags: ["audio", "streaming", "music", "jack"]
         key_commands: ["sonobus"]
         key_files: ["~/.config/sonobus/settings.json"]
@@ -80,7 +79,7 @@ categories:
         summary: "Guide for setting up a Windows virtual machine under QEMU/libvirt with GPU passthrough, UEFI boot, VirtIO drivers, and SPICE integration. Covers CPU pinning, hugepages, and audio forwarding."
         audience: ["operator"]
         prerequisites: ["qemu", "libvirt", "virt-manager", "ovmf"]
-        related_entities: ["state:windows-vm", "state:qemu"]
+        related_entities: ["state:desktop.vm_win11"]
         tags: ["windows", "vm", "qemu", "libvirt", "gpu-passthrough"]
         key_commands:
           - "virsh start win11"
@@ -92,7 +91,7 @@ categories:
         summary: "Configuration guide for AI-powered video processing pipeline using local GPU compute. Covers ffmpeg integration, model deployment (whisper, OCR, scene detection), and output workflows."
         audience: ["operator"]
         prerequisites: ["python3", "ffmpeg", "cuda/rocm"]
-        related_entities: ["state:video-ai", "state:ollama"]
+        related_entities: ["state:video_ai", "state:ollama"]
         tags: ["video", "ai", "ml", "gpu", "ffmpeg"]
         key_commands:
           - "python3 -m video_ai transcribe"
@@ -104,7 +103,7 @@ categories:
         summary: "Setup guide for AI-assisted coding in Neovim using local LLM backends (Ollama) for code completion, chat, and inline edits. Covers plugin configuration (CopilotChat, avante, blink.cmp) and ROCm GPU acceleration for starcoder2."
         audience: ["user"]
         prerequisites: ["neovim", "ollama", "python3"]
-        related_entities: ["state:neovim", "state:ollama"]
+        related_entities: ["state:ollama"]
         related_docs: ["ollama-models"]
         tags: ["neovim", "ai", "coding", "copilot", "llm"]
         key_commands: ["nvim"]
@@ -115,7 +114,7 @@ categories:
         summary: "Setup guide for streaming Tidal hi-res audio on Linux using tidal-hifi (Electron wrapper) or a Tidal-connect streamer. Covers login persistence, audio output routing to PipeWire, and quality settings."
         audience: ["user"]
         prerequisites: ["tidal-hifi", "pipewire"]
-        related_entities: ["state:tidal", "service:tidal-hifi"]
+        related_entities: ["state:tidal"]
         tags: ["music", "streaming", "tidal", "hifi"]
         key_commands: ["tidal-hifi"]
         key_files: ["~/.config/tidal-hifi/config.json"]
@@ -125,7 +124,7 @@ categories:
         summary: "Setup and operation guide for the zapret2 DPI circumvention tool. Covers kernel module installation, iptables/nftables rulesets, strategy configuration, and integration with the system's VPN/proxy stack for multi-layered censorship circumvention."
         audience: ["operator"]
         prerequisites: ["zapret2", "xtables-addons", "nftables"]
-        related_entities: ["state:zapret2", "service:zapret2"]
+        related_entities: ["state:zapret2"]
         related_docs: ["xray-vpn-cli", "vpn-policy", "proxypilot-setup"]
         tags: ["dpi", "censorship", "networking", "nftables", "routing"]
         key_commands:
@@ -140,7 +139,7 @@ categories:
         summary: "Full system deployment guide for CachyOS (Arch-based optimized Linux distribution). Covers partitioning (BTRFS + LUKS2), stage-1 bootstrap from archiso, kernel selection, microcode, and initial user/network setup."
         audience: ["operator"]
         prerequisites: ["archiso", "network access"]
-        related_entities: ["state:cachyos-base", "state:kernel"]
+        related_entities: ["state:cachyos"]
         related_docs: ["hdspe-post-install"]
         tags: ["cachyos", "arch", "deployment", "bootstrap"]
         key_commands:
@@ -152,7 +151,7 @@ categories:
         summary: "Post-installation configuration for RME HDSPe AIO audio interface on Linux. Covers alsa-firmware loading, hdspe driver parameters, PipeWire/JACK routing profiles, and persistent mixer settings via hdspmixer/hdspconf."
         audience: ["operator"]
         prerequisites: ["rme-hdspe", "alsa-firmware", "pipewire"]
-        related_entities: ["state:hdspe", "state:pipewire", "state:alsa"]
+        related_entities: ["state:audio"]
         related_docs: ["deploy-cachyos"]
         tags: ["audio", "rme", "hdspe", "alsa", "pro-audio"]
         key_commands:
@@ -172,7 +171,7 @@ categories:
         summary: "Setup guide for a Telethon-based Telegram client bridge used for automated message relay, media organization, and notification aggregation. Covers API credential registration, session file persistence, and event handler configuration."
         audience: ["operator"]
         prerequisites: ["python3", "telethon", "telegram api credentials"]
-        related_entities: ["state:telethon-bridge", "service:telegram-bridge"]
+        related_entities: ["state:telethon_bridge", "service:telethon-bridge.service"]
         related_docs: ["managed-telegram-bots"]
         tags: ["telegram", "bridge", "automation", "python"]
         key_commands:
@@ -187,7 +186,6 @@ categories:
         summary: "Comprehensive YubiKey setup and usage guide covering PIV, GPG, and FIDO2 modes. Documents PIN/PUK/reset procedures, age-plugin-yubikey integration for gopass, GPG subkey provisioning, and SSH via GPG agent."
         audience: ["operator"]
         prerequisites: ["yubikey", "yubikey-manager", "pcscd"]
-        related_entities: ["state:age-plugin-yubikey", "state:yubikey-manager"]
         related_docs:
           - "gopass-setup"
           - "gopass-age-recovery"
@@ -207,7 +205,6 @@ categories:
         summary: "Step-by-step recovery procedure for restoring a gopass password store when the primary YubiKey is available but the store is corrupted or deleted. Covers git clone of remote store, age identity re-registration, gopass init with recovery flag, and store integrity verification."
         audience: ["operator"]
         prerequisites: ["gopass", "age", "age-plugin-yubikey", "yubikey", "pcscd", "git remote access"]
-        related_entities: ["state:gopass", "state:age-plugin-yubikey"]
         related_docs:
           - "gopass-setup"
           - "gopass-breakglass-recovery"
@@ -224,7 +221,6 @@ categories:
         summary: "Emergency breakglass procedure for gopass recovery WITHOUT the primary YubiKey. Covers offline recovery code retrieval, age identity file reconstruction from paper backup, store decryption with breakglass identity, and post-recovery audit trail creation."
         audience: ["operator", "breakglass"]
         prerequisites: ["breakglass codes / paper backup", "alternate git credential", "gopass"]
-        related_entities: ["state:gopass", "state:age"]
         related_docs:
           - "gopass-setup"
           - "gopass-age-recovery"
@@ -242,7 +238,7 @@ categories:
         summary: "Recovery procedure for Ansible Vault when the vault password file or primary vault ID is lost. Covers password file reconstruction from gopass, vault rekeying if needed, and decryption verification against known plaintext references."
         audience: ["operator"]
         prerequisites: ["ansible-vault", "gopass"]
-        related_entities: ["state:vault", "state:gopass"]
+        related_entities: ["state:vaultwarden"]
         related_docs: ["gopass-setup", "vault-setup"]
         tags: ["recovery", "ansible-vault", "secrets"]
         key_commands:
@@ -254,7 +250,7 @@ categories:
         summary: "Recovery runbook for ProxyPilot when the proxy stack is degraded, provider API keys expire, or health checks fail. Covers provider rotation, config rollback, service restart sequence, and fallback to a known-good proxy configuration."
         audience: ["operator"]
         prerequisites: ["proxypilot", "systemd"]
-        related_entities: ["state:proxypilot", "service:proxypilot"]
+        related_entities: ["state:proxypilot", "service:proxypilot.container"]
         related_docs:
           - "proxypilot-setup"
           - "proxypilot-free-fallback"
@@ -300,10 +296,7 @@ categories:
         summary: "Architecture document describing the project's layered secrets management scheme: gopass (age + YubiKey) at the human-facing layer, Ansible Vault at the automation layer, and age-encrypted data files at the Salt layer. Documents the flow of secrets between layers."
         audience: ["operator", "contributor"]
         prerequisites: ["gopass", "age", "ansible-vault", "yubikey"]
-        related_entities:
-          - "state:gopass"
-          - "state:vault"
-          - "state:age-plugin-yubikey"
+        related_entities: ["state:vaultwarden"]
         related_docs:
           - "gopass-setup"
           - "vault-setup"
@@ -315,19 +308,17 @@ categories:
         summary: "Catalog and operations guide for all Telegram bots managed by this system: bot tokens (managed via gopass), webhook URLs, allowed update types, chat scopes, and deployment states. Covers bot creation via BotFather and token rotation."
         audience: ["operator"]
         prerequisites: ["telegram", "gopass"]
-        related_entities: ["state:telegram-bots", "service:telegram-bridge"]
+        related_entities: ["state:managed_bots", "service:telethon-bridge.service"]
         related_docs: ["telethon-bridge-setup"]
         tags: ["telegram", "bots", "automation"]
         key_commands: ["gopass show telegram/bot-tokens/"]
-        key_files: ["states/data/telegram_bots.yaml"]
+        key_files: ["states/data/telegram_managed_bots.yaml"]
 
       vpn-policy:
         title: "VPN Policy"
         summary: "Defines the system's VPN routing policy: which traffic goes through which tunnel (Tailscale, Xray, ProxyPilot SOCKS5, zapret2), split-tunnel vs full-tunnel rules, DNS leak prevention, kill-switch configuration, and application-specific routing overrides."
         audience: ["operator"]
         related_entities:
-          - "state:tailscale"
-          - "state:xray"
           - "state:proxypilot"
           - "state:zapret2"
         related_docs:
@@ -344,14 +335,14 @@ categories:
         title: "Image Generation Roster"
         summary: "Roster of all AI image generation models and backends available in the system: model names, architectures, GPU memory requirements, inference backends (ComfyUI, Automatic1111), API endpoints, and performance benchmarks."
         audience: ["user", "operator"]
-        related_entities: ["state:comfyui", "state:automatic1111", "state:ollama"]
+        related_entities: ["state:ollama"]
         tags: ["ai", "image-generation", "models", "gpu"]
 
       boot-optimization:
         title: "Boot Optimization"
         summary: "Analysis and configuration of system boot time optimization: kernel parameters, systemd service parallelization, initrd size reduction, mkinitcpio hooks trimming, and bootchart measurements."
         audience: ["operator"]
-        related_entities: ["state:kernel", "state:mkinitcpio", "state:systemd"]
+        related_entities: ["state:cachyos", "state:mkinitcpio"]
         tags: ["boot", "performance", "kernel", "systemd", "optimization"]
         key_commands:
           - "systemd-analyze blame"
@@ -365,7 +356,7 @@ categories:
         summary: "Registry of all Ollama-managed LLM models deployed on the system: model names, parameter counts, quantization levels, GPU memory footprint, Modelfiles, API endpoints, and usage policies for code completion, chat, summarization, and embedding."
         audience: ["user", "operator"]
         prerequisites: ["ollama"]
-        related_entities: ["state:ollama", "service:ollama"]
+        related_entities: ["state:ollama", "service:ollama.container"]
         related_docs: ["neovim-ai-setup"]
         tags: ["ollama", "llm", "models", "ai"]
         key_commands:
@@ -419,7 +410,7 @@ categories:
         title: "Hyprland to Niri Parity Dossier"
         summary: "Detailed feature-by-feature comparison between the current Hyprland compositor configuration and a hypothetical niri migration. Covers window management, keybindings, monitor configuration, workspace behavior, IPC, and screenshot/workflow tooling."
         audience: ["operator", "contributor"]
-        related_entities: ["state:hyprland", "state:niri", "state:wayland"]
+        related_entities: ["state:desktop.hyprland", "state:desktop.niri"]
         related_docs: ["hyprland-to-niri-migration-notes"]
         tags: ["hyprland", "niri", "wayland", "compositor", "migration", "research"]
 
@@ -427,7 +418,7 @@ categories:
         title: "Hyprland to Niri Migration Notes"
         summary: "Practical migration notes and blockages encountered when evaluating a switch from Hyprland to the niri scrollable-tiling Wayland compositor. Documents specific configuration incompatibilities, missing features, workarounds, and the decision status."
         audience: ["operator"]
-        related_entities: ["state:hyprland", "state:niri"]
+        related_entities: ["state:desktop.hyprland", "state:desktop.niri"]
         related_docs: ["hyprland-to-niri-parity-dossier"]
         tags: ["hyprland", "niri", "wayland", "migration", "compositor"]
 
@@ -438,9 +429,7 @@ categories:
         prerequisites: ["podman", "quadlet", "systemd"]
         related_entities:
           - "state:ollama"
-          - "state:loki"
-          - "state:promtail"
-          - "state:grafana"
+          - "state:monitoring_loki"
           - "data:service_catalog.yaml"
           - "data:container_images.yaml"
           - "macro:_macros_service.jinja"
@@ -464,10 +453,7 @@ categories:
         summary: "Quick-start reference for using the system's VPN proxy via command line. Covers checking if the SOCKS5 proxy (127.0.0.1:10808) is running, basic usage, per-program proxy configuration (git, wget, python/node), VPN startup via AmneziaVPN/Xray, browser proxy, and troubleshooting."
         audience: ["user", "operator"]
         prerequisites: ["curl", "systemd"]
-        related_entities:
-          - "state:xray"
-          - "state:proxypilot"
-          - "state:tailscale"
+        related_entities: ["state:proxypilot"]
         related_docs:
           - "vpn-policy"
           - "xray-vpn-cli"
@@ -488,7 +474,6 @@ categories:
         summary: "Step-by-step guide for adding a new host to the Salt-managed fleet: SSH key distribution, host certificate generation, Salt minion configuration, pillar data entry, and first highstate. Covers both local (masterless) and remote (ssh-set) deployment."
         audience: ["operator"]
         prerequisites: ["salt", "ssh access", "gopass"]
-        related_entities: ["state:base", "state:ssh"]
         tags: ["operations", "host-management", "salt", "ssh"]
         key_commands:
           - "sudo salt-call --local state.apply base"
@@ -499,7 +484,7 @@ categories:
         summary: "Operational guide for managing the 'ai' Salt state group: which states are included, how they compose (ollama, video-ai, neovim-ai), ordering dependencies, GPU resource allocation, and troubleshooting model loading failures."
         audience: ["operator"]
         prerequisites: ["salt", "ollama"]
-        related_entities: ["state:ollama", "state:video-ai", "state:neovim-ai"]
+        related_entities: ["state:ollama", "state:video_ai"]
         related_docs: ["ollama-models", "neovim-ai-setup"]
         tags: ["ai", "salt", "operations", "gpu"]
         key_commands: ["sudo salt-call --local state.apply ai"]
@@ -508,7 +493,6 @@ categories:
         title: "Audit Report"
         summary: "Security and configuration audit report for the system. Documents findings from automated and manual audits: open ports, exposed services, file permissions, user/group memberships, SUID binaries, PAM configuration, and deviations from the hardened baseline."
         audience: ["operator"]
-        related_entities: ["state:audit"]
         tags: ["security", "audit", "hardening"]
         key_commands:
           - "python3 scripts/audit.py"
@@ -525,7 +509,7 @@ categories:
         title: "Clipboard Issues"
         summary: "Troubleshooting guide for clipboard synchronization problems in the Wayland/Hyprland environment. Covers wl-clipboard vs xclip, clipboard managers (cliphist, wl-paste), copy-paste across security contexts, and known application-specific clipboard bugs."
         audience: ["user"]
-        related_entities: ["state:hyprland", "state:cliphist", "state:wl-clipboard"]
+        related_entities: ["state:desktop.hyprland"]
         tags: ["clipboard", "wayland", "hyprland", "troubleshooting"]
         key_commands:
           - "wl-paste"
@@ -552,7 +536,6 @@ categories:
         summary: "Startup time benchmarks for Neovim under various configurations. Measures cold/warm startup times with and without AI plugins, lazy-loading effectiveness, and optimization recommendations."
         audience: ["user", "contributor"]
         prerequisites: ["neovim", "hyperfine"]
-        related_entities: ["state:neovim"]
         related_docs: ["neovim-ai-setup"]
         tags: ["neovim", "benchmark", "performance", "startup"]
         key_commands: ["hyperfine --warmup 5 'nvim --headless +qa'"]
@@ -562,7 +545,7 @@ categories:
         summary: "Procedure for falling back to free proxy providers when paid ProxyPilot providers are unavailable or rate-limited. Covers free provider roster, configuration swap, health-check bypass, monitoring differences, and restoration to paid providers."
         audience: ["operator"]
         prerequisites: ["proxypilot"]
-        related_entities: ["state:proxypilot", "service:proxypilot"]
+        related_entities: ["state:proxypilot", "service:proxypilot.container"]
         related_docs:
           - "proxypilot-setup"
           - "proxypilot-recovery"
@@ -588,7 +571,6 @@ categories:
         summary: "Guide for configuring browser proxy settings to route traffic through the system's VPN/proxy stack. Covers Firefox/Surfingkeys SOCKS5 configuration, Chromium switch-proxy integration, per-site routing rules, and troubleshooting mixed-content/captive-portal scenarios."
         audience: ["user"]
         prerequisites: ["firefox", "surfingkeys"]
-        related_entities: ["state:firefox", "state:surfingkeys"]
         related_docs:
           - "vpn-quickstart"
           - "vpn-policy"
@@ -602,7 +584,7 @@ categories:
         summary: "Command-line operations guide for the Xray VPN client. Covers service management (systemctl), log tailing, configuration switching, routing table verification, TUN device management, fallback to SOCKS5-only mode, and health checking against test endpoints."
         audience: ["operator"]
         prerequisites: ["xray", "systemd", "jq"]
-        related_entities: ["state:xray", "service:xray"]
+        related_entities: ["service:xray"]
         related_docs:
           - "vpn-policy"
           - "vpn-quickstart"

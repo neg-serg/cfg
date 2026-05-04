@@ -63,36 +63,41 @@ After containerization lands, verify that container failures surface through the
 
 ## Research / evaluation items
 
-- [ ] Audit already-implemented docs and planning artifacts for obsolete references, duplicate examples, and dead guidance; queue any safe removals as a separate cleanup task.
+- [x] Audit already-implemented docs and planning artifacts for obsolete references, duplicate examples, and dead guidance; queue any safe removals as a separate cleanup task.
 
-### Salt minimal rollout UX
+### Salt minimal rollout UX ✅ (core done, expanded mappings)
 
-- [ ] Rework `scripts/salt-apply.sh auto` from the current safe fallback (`system_description`) into an explainable minimal-rollout mode.
-- [ ] Keep the default operator behavior conservative: when impact is unclear, fall back to `system_description` instead of risking a partial rollout that misses dependent states.
-- [ ] Keep manual debugging first-class: `scripts/salt-apply.sh <state>` must continue to work unchanged, even after `auto` becomes smarter.
-- [ ] Add a planning mode for `auto` so it can print `changed files -> selected states -> fallback reason` without executing Salt.
-- [ ] Base `auto` primarily on git-changed files against a configurable base revision, with an explicit override for passing a file list manually during debugging.
-- [ ] Map direct `states/**/*.sls` changes straight to their corresponding Salt state names.
-- [ ] Add and maintain a small explicit impact map for shared inputs such as `states/data/*.yaml`, `_macros_*.jinja`, shared templates, unit files, and helper scripts that are known to affect multiple states.
-- [ ] Prefer a repo-local, easy-to-read mapping file or shell/Python table over a “smart” hidden dependency engine, so the rollout logic stays inspectable and maintainable.
-- [ ] Treat high-risk shared files conservatively at first, for example `_macros_service.jinja`, `_macros_pkg.jinja`, `states/data/services.yaml`, `states/data/service_catalog.yaml`, and similar broad inputs should trigger full `system_description` until a narrower rule is proven safe.
-- [ ] Print the selected rollout scope before execution in `auto` mode so the operator can immediately see whether Salt is doing a narrow apply or a full fallback.
-- [ ] Document the intended CLI shape before implementation stabilizes, including `scripts/salt-apply.sh auto`, `scripts/salt-apply.sh auto --plan`, `scripts/salt-apply.sh auto --base <rev>`, and `scripts/salt-apply.sh auto --files <path1,path2,...>`.
-- [ ] Avoid trying to compute sub-state or state-ID-level minimal rollout inside a single `.sls` file; keep the unit of rollout at the Salt state level unless a real pain point proves finer granularity is worth the complexity.
-- [ ] Add tests for `auto` scope selection rules before enabling any nontrivial narrowing logic; cover direct state edits, shared-input fallback, explain output, and manual override behavior.
+Core auto mode implemented in `scripts/salt-apply.sh` + `scripts/salt_impact.py`:
+git diff → changed files → impact map → state target with fallback to system_description.
 
-### Salt apply planning and explain mode
+- [x] Rework `scripts/salt-apply.sh auto` — git-diff-based, fallback to system_description for shared inputs
+- [x] Keep manual debugging first-class: `scripts/salt-apply.sh <state>` works unchanged
+- [x] Add planning mode: `--plan` prints `changed files → selected states → fallback reason`
+- [x] Base auto on git-changed files with configurable base revision (AUTO_BASE, marker file)
+- [x] Map direct `states/**/*.sls` changes to Salt state names
+- [x] Impact map for shared inputs: all 7 _macros_*.jinja + 8 key data/*.yaml → full system_description
+- [x] Print rollout scope before execution in auto mode
+- [x] Document CLI shape in script header comment
+- [x] Keep unit of rollout at Salt state level (no sub-state granularity)
+- [x] When auto expands to system_description, print exact fallback reason
+- [x] Preserve simple workflows: `<state>` executes directly without prompt
+- [x] Refresh drift baseline after successful apply
+- [ ] Add tests for auto scope selection rules
 
-- [ ] Add an explain-first planning layer for `scripts/salt-apply.sh` so operators can inspect scope and reasoning before execution when desired.
-- [ ] Support a no-execution planning mode that prints the resolved state target, execution mode, and any safety fallback before running Salt.
-- [ ] Keep explain output useful for both `scripts/salt-apply.sh <state>` and `scripts/salt-apply.sh auto`, so the interface stays consistent regardless of how scope was chosen.
-- [ ] Show which inputs were used to compute the plan, for example explicit state argument, git base revision, manual file list, or high-risk shared-file fallback.
-- [ ] Print `changed files -> selected states -> final execution target` in a compact operator-friendly format that is easy to skim in a terminal.
-- [ ] When `auto` expands to full `system_description`, print the exact reason for the fallback instead of a vague message.
-- [ ] Document and stabilize the difference between `--plan` and `--explain` before implementation grows: one should answer “what would run”, the other “why this scope was chosen”, or they should be merged if that split adds no value.
-- [ ] Keep the planning layer read-only: it should not start the daemon, refresh baselines, or touch chezmoi when no execution flag was requested.
-- [ ] Preserve current simple workflows by making planning optional; `scripts/salt-apply.sh <state>` should still execute directly without forcing an interactive confirmation step.
-- [ ] Add tests for explain/plan output so fallback reasoning, selected state lists, and no-execution guarantees stay locked in as the rollout logic evolves.
+### Salt apply planning and explain mode ✅
+
+`--plan` mode already does no-execution inspection, prints selected state + fallback reasoning, is read-only, and `<state>` works directly without prompting.
+
+- [x] Add explain-first planning layer for `scripts/salt-apply.sh`
+- [x] No-execution planning mode: prints resolved state + safety fallback
+- [x] Keep explain output useful for both `<state>` and `auto` modes
+- [x] Show which inputs were used to compute the plan (changed files, fallback reasons)
+- [x] Print `changed files → selected states → final execution target` in compact format
+- [x] When auto expands to system_description, print exact fallback reason
+- [x] `--plan` and `--explain` merged into single `--plan` flag (simpler)
+- [x] Planning layer is read-only: no daemon, no baselines, no chezmoi
+- [x] `<state>` still executes directly without interactive prompt
+- [ ] Add tests for explain/plan output
 
 ### Hybrid drift monitoring
 

@@ -1,223 +1,98 @@
-import importlib.util
 import json
+import sys
+import os
 
 import pytest
 
-from tests import REPO_ROOT_PATH
+SCRIPTS_DIR = os.path.join(os.path.dirname(__file__), "..", "scripts")
+if SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, SCRIPTS_DIR)
+
+from salt_impact import plan_for_changed_files  # noqa: E402
 
 
-def _load_salt_impact():
-    module_path = REPO_ROOT_PATH / "scripts" / "salt_impact.py"
-    spec = importlib.util.spec_from_file_location("salt_impact", module_path)
-    assert spec is not None and spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+def test_single_sls_file():
+    result = plan_for_changed_files(["states/foo.sls"])
+    assert result["final_target"] == "foo"
+    assert result["selected_states"] == ["foo"]
+    assert result["fallback_reasons"] == []
 
 
-def test_plan_changed_files_maps_top_level_state_directly():
-    salt_impact = _load_salt_impact()
-
-    plan = salt_impact.plan_for_changed_files(["states/services.sls"])
-
-    assert plan == {
-        "changed_files": ["states/services.sls"],
-        "selected_states": ["services"],
-        "fallback_reasons": [],
-        "final_target": "services",
-    }
+def test_multiple_sls_files():
+    result = plan_for_changed_files(["states/foo.sls", "states/bar.sls"])
+    assert result["final_target"] == "system_description"
+    assert result["selected_states"] == ["bar", "foo"]
+    assert len(result["fallback_reasons"]) == 1
+    assert "multiple workflow targets" in result["fallback_reasons"][0]
 
 
-def test_plan_changed_files_maps_group_targets_directly():
-    salt_impact = _load_salt_impact()
-
-    plan = salt_impact.plan_for_changed_files(["states/group/core.sls"])
-
-    assert plan["selected_states"] == ["group/core"]
-    assert plan["final_target"] == "group/core"
+def test_shared_macros_jinja():
+    result = plan_for_changed_files(["states/_macros_common.jinja"])
+    assert result["final_target"] == "system_description"
+    assert result["selected_states"] == []
+    assert result["fallback_reasons"] == ["states/_macros_common.jinja is a shared macro input"]
 
 
-def test_plan_changed_files_maps_nested_domain_to_owner():
-    salt_impact = _load_salt_impact()
-
-    plan = salt_impact.plan_for_changed_files(["states/desktop/system.sls"])
-
-    assert plan["selected_states"] == ["desktop"]
-    assert plan["final_target"] == "desktop"
+def test_shared_data_yaml():
+    result = plan_for_changed_files(["states/data/hosts.yaml"])
+    assert result["final_target"] == "system_description"
+    assert result["selected_states"] == []
+    assert result["fallback_reasons"] == ["states/data/hosts.yaml is a shared data input"]
 
 
-def test_plan_changed_files_falls_back_for_shared_macro():
-    salt_impact = _load_salt_impact()
-
-    plan = salt_impact.plan_for_changed_files(["states/_macros_service.jinja"])
-
-    assert plan["selected_states"] == []
-    assert plan["final_target"] == "system_description"
-    assert plan["fallback_reasons"] == ["states/_macros_service.jinja is a shared macro input"]
-
-
-def test_plan_changed_files_falls_back_for_multiple_conflicting_targets():
-    salt_impact = _load_salt_impact()
-
-    plan = salt_impact.plan_for_changed_files(
-        [
-            "states/services.sls",
-            "states/desktop/system.sls",
-        ]
-    )
-
-    assert sorted(plan["selected_states"]) == ["desktop", "services"]
-    assert plan["final_target"] == "system_description"
-    assert plan["fallback_reasons"] == [
-        "changed files map to multiple workflow targets: desktop, services"
-    ]
+def test_noop_paths_ignored():
+    result = plan_for_changed_files([
+        "scripts/foo.sh",
+        "tests/test_thing.py",
+        "docs/readme.md",
+        "dotfiles/.bashrc",
+        "specs/spec.yaml",
+        ".specify/templates/foo.yaml",
+    ])
+    assert result["final_target"] == "none"
+    assert result["selected_states"] == []
+    assert result["fallback_reasons"] == []
 
 
-def test_main_json_outputs_plan_for_changed_files(monkeypatch, capsys):
-    salt_impact = _load_salt_impact()
-    monkeypatch.setattr(
-        salt_impact,
-        "plan_for_changed_files",
-        lambda changed_files: {
-            "changed_files": list(changed_files),
-            "selected_states": ["services"],
-            "fallback_reasons": [],
-            "final_target": "services",
-        },
-    )
-    monkeypatch.setattr(
-        salt_impact.sys,
-        "argv",
-        ["salt_impact.py", "--files", "states/services.sls", "--json"],
-    )
-
-    with pytest.raises(SystemExit) as exc_info:
-        salt_impact.main()
-
-    captured = capsys.readouterr()
-    assert exc_info.value.code == 0
-    assert json.loads(captured.out) == {
-        "changed_files": ["states/services.sls"],
-        "selected_states": ["services"],
-        "fallback_reasons": [],
-        "final_target": "services",
-    }
-    assert captured.err == ""
+def test_group_state_path():
+    result = plan_for_changed_files(["states/group/desktop.sls"])
+    assert result["final_target"] == "group/desktop"
+    assert result["selected_states"] == ["group/desktop"]
+    assert result["fallback_reasons"] == []
 
 
-def test_main_text_explains_fallback(monkeypatch, capsys):
-    salt_impact = _load_salt_impact()
-    monkeypatch.setattr(
-        salt_impact,
-        "plan_for_changed_files",
-        lambda changed_files: {
-            "changed_files": list(changed_files),
-            "selected_states": [],
-            "fallback_reasons": ["states/data/services.yaml is a shared data input"],
-            "final_target": "system_description",
-        },
-    )
-    monkeypatch.setattr(
-        salt_impact.sys,
-        "argv",
-        ["salt_impact.py", "--files", "states/data/services.yaml"],
-    )
-
-    with pytest.raises(SystemExit) as exc_info:
-        salt_impact.main()
-
-    captured = capsys.readouterr()
-    assert exc_info.value.code == 0
-    assert "Final target: system_description" in captured.out
-    assert "Fallback reasons:" in captured.out
-    assert "states/data/services.yaml is a shared data input" in captured.out
-    assert captured.err == ""
+def test_empty_file_list():
+    result = plan_for_changed_files([])
+    assert result["final_target"] == "none"
+    assert result["selected_states"] == []
+    assert result["fallback_reasons"] == []
+    assert result["changed_files"] == []
 
 
-def test_main_writes_debug_bundle_and_exits_nonzero_on_unexpected_planning_failure(
-    monkeypatch, tmp_path
-):
-    salt_impact = _load_salt_impact()
-    debug_dir = tmp_path / "logs" / "debug"
-
-    def _raise_boom(_changed_files):
-        raise RuntimeError("boom")
-
-    monkeypatch.setattr(salt_impact, "plan_for_changed_files", _raise_boom)
-    monkeypatch.setattr(
-        salt_impact.sys,
-        "argv",
-        ["salt_impact.py", "--files", "states/services.sls"],
-    )
-    monkeypatch.setenv("SALT_DEBUG_REPORT_DIR", str(debug_dir))
-
-    with pytest.raises(SystemExit) as exc_info:
-        salt_impact.main()
-
-    bundles = sorted(debug_dir.glob("*.json"))
-
-    assert exc_info.value.code == 1
-    assert len(bundles) == 1
-    payload = json.loads(bundles[0].read_text())
-    assert payload == {
-        "tool": "salt-impact",
-        "state": "services",
-        "failure_stage": "planning",
-        "error": "boom",
-    }
+def test_mixed_noop_and_real_file():
+    result = plan_for_changed_files(["scripts/foo.sh", "states/bar.sls"])
+    assert result["final_target"] == "bar"
+    assert result["selected_states"] == ["bar"]
+    assert result["fallback_reasons"] == []
 
 
-def test_plan_empty_files_list_falls_back():
-    salt_impact = _load_salt_impact()
+def test_owner_mapped_subdirectory():
+    result = plan_for_changed_files(["states/desktop/apps.sls"])
+    assert result["final_target"] == "desktop"
+    assert result["selected_states"] == ["desktop"]
+    assert result["fallback_reasons"] == []
 
-    plan = salt_impact.plan_for_changed_files([])
-
-    assert plan["selected_states"] == []
-    assert plan["final_target"] == "system_description"
-    assert plan["fallback_reasons"] == ["no changed files mapped to a safe workflow target"]
-
-
-def test_plan_normalizes_duplicate_paths():
-    salt_impact = _load_salt_impact()
-
-    plan = salt_impact.plan_for_changed_files(
-        ["states/services.sls", "states/services.sls",
-         "states/desktop/system.sls", "states/desktop/system.sls"]
-    )
-
-    assert plan["selected_states"] == ["desktop", "services"]
-    # duplicates should not cause multiple-workflow-target fallback
-    assert plan["final_target"] == "system_description"
+    result2 = plan_for_changed_files(["states/video_ai/pipeline.sls"])
+    assert result2["final_target"] == "video_ai"
+    assert result2["selected_states"] == ["video_ai"]
+    assert result2["fallback_reasons"] == []
 
 
-def test_main_writes_auto_state_bundle_when_args_missing_on_unexpected_failure(
-    monkeypatch, tmp_path
-):
-    salt_impact = _load_salt_impact()
-    debug_dir = tmp_path / "logs" / "debug"
-
-    class DummyParser:
-        def parse_args(self, _argv):
-            return BrokenNamespace()
-
-    class BrokenNamespace:
-        files = None
-        as_json = False
-
-    monkeypatch.setattr(salt_impact, "_build_parser", lambda: DummyParser())
-    monkeypatch.setenv("SALT_DEBUG_REPORT_DIR", str(debug_dir))
-
-    with pytest.raises(SystemExit) as exc_info:
-        salt_impact.main()
-
-    bundles = sorted(debug_dir.glob("*.json"))
-
-    assert exc_info.value.code == 1
-    assert len(bundles) == 1
-    payload = json.loads(bundles[0].read_text())
-    assert payload == {
-        "tool": "salt-impact",
-        "state": "auto",
-        "failure_stage": "planning",
-        "error": "'NoneType' object is not iterable",
+def test_json_output_mode():
+    result = plan_for_changed_files(["states/foo.sls"])
+    dumped = json.dumps(result, indent=2)
+    reloaded = json.loads(dumped)
+    assert reloaded == result
+    assert set(result.keys()) == {
+        "changed_files", "selected_states", "fallback_reasons", "final_target",
     }

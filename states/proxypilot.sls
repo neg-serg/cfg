@@ -10,7 +10,11 @@
 
 {# ── Secret resolution ── #}
 {% set _proxypilot_cfg = home ~ '/.config/proxypilot/config.yaml' %}
-{% set _pp_raw = salt['cmd.run_stdout']('cat ' ~ _proxypilot_cfg ~ ' 2>/dev/null || true', runas=user, python_shell=True).strip() %}
+{% if salt['file.file_exists'](_proxypilot_cfg) %}
+{% set _pp_raw = salt['file.read'](_proxypilot_cfg).strip() %}
+{% else %}
+{% set _pp_raw = '' %}
+{% endif %}
 {% set _pp = (_pp_raw | load_yaml) if _pp_raw else {} %}
 {% set _existing_mgmt = _pp.get('remote-management', {}).get('secret-key', '') %}
 

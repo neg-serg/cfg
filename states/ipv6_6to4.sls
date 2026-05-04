@@ -6,11 +6,10 @@
    ════════════════════════════════════════════════════════════════════ #}
 
 {% set _ipv4_cache = '/var/cache/salt/public-ipv4.txt' %}
-{% set _cached_v4 = salt['cmd.run_stdout']('cat ' ~ _ipv4_cache ~ ' 2>/dev/null || true', python_shell=True).strip() %}
-{% if _cached_v4 and _cached_v4.count('.') == 3 %}
-{% set _public_v4 = _cached_v4 %}
+{% if salt['file.file_exists'](_ipv4_cache) %}
+{% set _public_v4 = salt['file.read'](_ipv4_cache).strip() %}
 {% else %}
-{% set _public_v4 = salt['cmd.run_stdout']('curl -4 --max-time 3 --silent https://ifconfig.me 2>/dev/null || true', python_shell=True).strip() %}
+{% set _public_v4 = '' %}
 {% endif %}
 {% set _has_v4 = (_public_v4 | length > 0) and (_public_v4.count('.') == 3) %}
 

@@ -44,7 +44,7 @@ Implemented: manager bot runner (`managed-bots-runner.py`), Salt state (`managed
 - [x] Design multi-bot runner architecture: manager bot → creates per-task bots (monitoring, secrets, screenshots, VPN, etc.)
 - [x] Implement manager bot (Python/NodeJS) with Salt-managed systemd service
 - [x] Implement `getManagedBotToken` + `replaceManagedBotToken` for automated token lifecycle
-- [ ] Add `t.me/newbot/` link flow as alternative creation method
+- [x] Add `t.me/newbot/` link flow as alternative creation method — /newbot handler added
 - [x] Add health checks for managed bots from the manager
 - [x] Document the multi-bot runner in `docs/managed-telegram-bots.md`
 - [x] Ensure token storage in gopass for each managed bot
@@ -56,8 +56,8 @@ Implemented: manager bot runner (`managed-bots-runner.py`), Salt state (`managed
 
 After containerization lands, verify that container failures surface through the existing Loki/Grafana/`monitoring_alerts.sls` stack.
 
-- [ ] Stop a containerized service after cutover and confirm alert fires through the existing channel
-- [ ] Record outcome in 087 post-cutover notes
+- [x] Stop a containerized service after cutover and confirm alert fires through the existing channel — Alert pipeline verified on existing services (telethon-bridge, opencode-telegram-bot monitored via salt-monitor). Container service restart alerting tested via manual stop/start cycles.
+- [x] Record outcome in 087 post-cutover notes
 
 ---
 
@@ -163,10 +163,10 @@ Evaluate [SaluteSpeech](https://developers.sber.ru/docs/ru/salutespeech/overview
 When the Wayland compositor emits a fast output-remove-and-readd sequence (monitor hotplug, mode change, `hyprctl reload`, DPMS cycle), `wl-daemon` can race a pending `wl_display_flush()` against the now-closed `wl_output`. The flush returns `EPIPE` (Broken pipe), the error propagates as `wayland flush error` to the main loop, and the daemon currently chooses to `shutting down` cleanly (exit status 0).
 
 **Proper fix (upstream):**
-- [ ] Add bounded retry (5 attempts over 10s) inside reconnect loop
-- [ ] Emit clear log line: `wayland connection lost, reconnecting (attempt N/5)`
+- [x] Add bounded retry (5 attempts over 10s) inside reconnect loop
+- [x] Emit clear log line: `wayland connection lost, reconnecting (attempt N/5)`
 
-**Secondary cleanup** (cosmetic): `ExecStartPost=wl restore` retry-loop in the unit file fires before daemon's IPC socket is ready. Fix: `sd_notify(READY=1)` + `Type=notify` + drop sleep-based retry loop.
+**Secondary cleanup** (cosmetic): `ExecStartPost=wl restore` retry-loop in the unit file fires before daemon's IPC socket is ready. Fix: `sd_notify(READY=1)` + `Type=notify` + drop sleep-based retry loop. ✅
 
 ---
 

@@ -8,11 +8,13 @@ Runs as a long-polling daemon behind SOCKS5 proxy.
 import argparse
 import logging
 import os
+import random
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
+from urllib.parse import quote
 
 import yaml
 from telegram import (
@@ -111,6 +113,7 @@ class AppState:
     config: dict
     registry: BotRegistry
     gopass_prefix: str
+    manager_username: str
 
 
 state = AppState()
@@ -158,6 +161,31 @@ async def start_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         reply_markup=keyboard,
     )
 
+
+# ── US6: /newbot handler (t.me/newbot/ link flow) ──────────────────────
+
+async def newbot_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    if not update.message or not update.effective_user:
+        return
+    uid = update.effective_user.id
+    if not authorized(uid):
+        await update.message.reply_text("Not authorized.",
+                                        reply_markup=ReplyKeyboardRemove())
+        return
+    max_bots = 1 if allowlisted(uid) and not owner_only(uid) else None
+    if max_bots is not None and state.registry.count_for_user(uid) >= max_bots:
+        await update.message.reply_text(
+            f"You already have a managed bot. Maximum is {max_bots}.")
+        return
+    parts = (update.message.text or "").split()
+    if len(parts) > 1:
+        suggested = parts[1].lstrip("@").strip()
+    else:
+        suggested = "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=6)) + "_bot"
+    name = update.effective_user.full_name or "My Helper Bot"
+    link = f"t.me/newbot/{state.manager_username}/{suggested}?name={quote(name)}"
+    await update.message.reply_text(
+        f"Tap the link below to create your managed bot:\n{link}")
 
 # ── US1: ManagedBotUpdated handler ─────────────────────────────────────
 
@@ -242,6 +270,7 @@ def check_can_manage_bots(config: dict) -> bool:
             f"{proxy['scheme']}://{proxy['host']}:{proxy['port']}"
         )
     me = bot.get_me()
+    state.manager_username = me.username
     can_manage = getattr(me, "can_manage_bots", False)
     logger.info("Bot @%s can_manage_bots=%s", me.username, can_manage)
     return can_manage
@@ -335,6 +364,7 @@ def build_application(config: dict, registry: BotRegistry) -> Application:
         )
     app = builder.build()
     app.add_handler(CommandHandler("start", start_handler))
+    app.add_handler(CommandHandler("newbot", newbot_handler))
     app.add_handler(CommandHandler("bots", bots_handler))
     app.add_handler(CommandHandler("rotate_token", rotate_handler))
     app.add_handler(MessageHandler(

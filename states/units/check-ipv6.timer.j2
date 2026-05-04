@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily IPv6 health check
+Requires=check-ipv6.service
+
+[Timer]
+OnCalendar={{ on_calendar }}
+RandomizedDelaySec={{ randomized_delay_sec }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

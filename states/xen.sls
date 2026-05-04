@@ -34,11 +34,11 @@ xen_user:
     - require:
       - group: xen_group
 
-{% set xen_hash = gopass_secret('host/xen-password-hash', "echo '$6$.Lgp.hRSogsdPLMm$uNMG6YZSAPsy7svfTwKtYY/x.UyCeYYMNKQeGcqTGQtphPbddP0yu5DCx2I..ysObFRHxnamOvcesFH15pc0f/'") %}
-xen_password:
-  cmd.run:
-    - name: usermod -p '{{ xen_hash }}' {{ xen_user }}
-    - unless: getent shadow {{ xen_user }} | grep -q '{{ xen_hash }}'
+{% set xen_hash = gopass_secret('host/xen-password-hash') %}
+ensure_xen_user_password:
+  user.present:
+    - name: {{ xen_user }}
+    - password: '{{ xen_hash }}'
     - require:
       - user: xen_user
 

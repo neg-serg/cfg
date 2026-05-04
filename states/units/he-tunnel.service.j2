@@ -1,0 +1,21 @@
+[Unit]
+Description=HE.net IPv6 tunnel (6in4)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c '\
+  ip tunnel add {{ interface_name }} mode sit remote {{ server_ipv4 }} local any ttl {{ ttl }} && \
+  ip link set {{ interface_name }} up && \
+  ip addr add {{ client_ipv6 }} dev {{ interface_name }} && \
+  ip -6 route add default via {{ client_ipv6_prefix }} dev {{ interface_name }} || \
+  ip addr add {{ routed_prefix_base }}1/{{ routed_prefix_len }} dev {{ interface_name }}'
+ExecStop=/bin/sh -c '\
+  ip -6 route del default via {{ client_ipv6_prefix }} dev {{ interface_name }} 2>/dev/null || true; \
+  ip link set {{ interface_name }} down 2>/dev/null || true; \
+  ip tunnel del {{ interface_name }} 2>/dev/null || true'
+
+[Install]
+WantedBy=multi-user.target

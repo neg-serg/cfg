@@ -5,6 +5,8 @@
    Uses anycast relay at 192.88.99.1 (RFC 3068).
    ════════════════════════════════════════════════════════════════════ #}
 
+{% from '_macros_service.jinja' import service_with_unit %}
+
 {% set _ipv4_cache = '/var/cache/salt/public-ipv4.txt' %}
 {% if salt['file.file_exists'](_ipv4_cache) %}
 {% set _public_v4 = salt['file.read'](_ipv4_cache).strip() %}
@@ -30,31 +32,7 @@ cache_public_v4:
     - name: curl -4 --max-time 3 --silent https://ifconfig.me | tee {{ _ipv4_cache }}
     - unless: test -f {{ _ipv4_cache }} && test $(find {{ _ipv4_cache }} -mmin -60 | wc -l) -gt 0
 
-tun6to4_service:
-  file.managed:
-    - name: /etc/systemd/system/tun6to4.service
-    - mode: '0644'
-    - contents: |
-        [Unit]
-        Description=6to4 IPv6 tunnel (RFC 3056)
-        After=network-online.target
-        Wants=network-online.target
-
-        [Service]
-        Type=oneshot
-        RemainAfterExit=yes
-        ExecStart=/bin/sh -c '\
-          ip tunnel add tun6to4 mode sit ttl 64 remote any local {{ _public_v4 }} && \
-          ip link set tun6to4 up && \
-          ip -6 addr add {{ _prefix6 }}::1/16 dev tun6to4 && \
-          ip -6 route add 2000::/3 via ::192.88.99.1 dev tun6to4'
-        ExecStop=/bin/sh -c '\
-          ip -6 route del 2000::/3 via ::192.88.99.1 dev tun6to4 2>/dev/null || true; \
-          ip link set tun6to4 down 2>/dev/null || true; \
-          ip tunnel del tun6to4 2>/dev/null || true'
-
-        [Install]
-        WantedBy=multi-user.target
+{{ service_with_unit('tun6to4', 'salt://states/units/tun6to4.service.j2', enabled=True, running=True, template='jinja', context={'public_v4': _public_v4, 'prefix6': _prefix6}, requires=['cmd: tun6to4_firewall_apply']) }}
 
 tun6to4_firewall:
   file.managed:
@@ -88,29 +66,6 @@ tun6to4_firewall_apply:
     - shell: /bin/bash
     - onchanges:
       - file: tun6to4_firewall
-
-tun6to4_daemon_reload:
-  cmd.run:
-    - name: systemctl daemon-reload
-    - onchanges:
-      - file: tun6to4_service
-
-tun6to4_enable:
-  cmd.run:
-    - name: systemctl enable tun6to4.service
-    - unless: systemctl is-enabled tun6to4.service 2>/dev/null
-    - require:
-      - file: tun6to4_service
-      - cmd: tun6to4_daemon_reload
-
-tun6to4_start:
-  cmd.run:
-    - name: systemctl restart tun6to4.service
-    - onchanges:
-      - file: tun6to4_service
-    - require:
-      - cmd: tun6to4_daemon_reload
-      - cmd: tun6to4_firewall_apply
 {% else %}
 # 6to4 tunnel skip: could not detect public IPv4 address.
 # Ensure outbound IPv4 connectivity to https://ifconfig.me — may be blocked by firewall or proxy.

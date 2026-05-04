@@ -590,7 +590,7 @@ test -e {{ _path }}
 
 {{ name }}_{{ 'enabled' if enabled else 'disabled' }}:
   service.{{ 'enabled' if enabled else 'disabled' }}:
-    - name: {{ name }}
+    - name: {{ name }}.{{ unit_type }}
 {%- if onlyif and enabled %}
     - onlyif: {{ onlyif }}
 {%- endif %}
@@ -606,14 +606,14 @@ test -e {{ _path }}
 
 {{ name }}_reset_failed:
   cmd.run:
-    - name: systemctl reset-failed {{ name }} 2>/dev/null; true
-    - onlyif: systemctl is-failed {{ name }}
+    - name: systemctl reset-failed {{ name }}.{{ unit_type }} 2>/dev/null; true
+    - onlyif: systemctl is-failed {{ name }}.{{ unit_type }}
     - require:
       - service: {{ name }}_enabled
 
 {{ name }}_running:
   service.running:
-    - name: {{ name }}
+    - name: {{ name }}.{{ unit_type }}
     - watch:
       - file: {{ name }}_service
 {%- for w in (watch or []) %}

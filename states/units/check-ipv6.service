@@ -1,0 +1,9 @@
+[Unit]
+Description=IPv6 health check
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/check-ipv6.sh
+StandardOutput=journal

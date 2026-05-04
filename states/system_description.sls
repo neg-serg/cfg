@@ -41,8 +41,7 @@ include:
   - pacman_db_warmup
 
   # ── Core (always included) ──────────────────────────────────────────
-  # User accounts, shell, disk mounts — foundations for everything else
-  - users
+  # Shell, disk mounts — users is included by group/core and individual states
   - zsh
   - mounts
   - bind_mounts

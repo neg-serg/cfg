@@ -48,6 +48,17 @@ NOOP_PREFIXES = (
     "dotfiles/",
     "specs/",
     ".specify/",
+    "AGENTS.md",
+    "TODO.md",
+    ".gitignore",
+    ".chezmoiignore",
+    ".chezmoiremove",
+)
+
+STATE_ASSET_PREFIXES = (
+    "states/configs/",
+    "states/scripts/",
+    "states/units/",
 )
 
 
@@ -92,7 +103,11 @@ def plan_for_changed_files(changed_files: list[str]) -> dict[str, object]:
             fallback_reasons.append(f"{path} is a {SHARED_PATHS[path]}")
             continue
 
-        if path.startswith(NOOP_PREFIXES):
+        if path.startswith(NOOP_PREFIXES) or path in {".gitignore", "AGENTS.md", "TODO.md"}:
+            continue
+
+        if path.startswith(STATE_ASSET_PREFIXES):
+            fallback_reasons.append(f"{path} is a state asset (config/script/unit) — requires system_description for safety")
             continue
 
         target = _group_target(path) or _top_level_state_target(path) or _owner_target(path)

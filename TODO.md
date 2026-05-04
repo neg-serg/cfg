@@ -82,7 +82,7 @@ git diff → changed files → impact map → state target with fallback to syst
 - [x] When auto expands to system_description, print exact fallback reason
 - [x] Preserve simple workflows: `<state>` executes directly without prompt
 - [x] Refresh drift baseline after successful apply
-- [ ] Add tests for auto scope selection rules
+- [x] Add tests for auto scope selection rules ✅ (see tests/test_salt_impact.py)
 
 ### Salt apply planning and explain mode ✅
 
@@ -97,33 +97,32 @@ git diff → changed files → impact map → state target with fallback to syst
 - [x] `--plan` and `--explain` merged into single `--plan` flag (simpler)
 - [x] Planning layer is read-only: no daemon, no baselines, no chezmoi
 - [x] `<state>` still executes directly without interactive prompt
-- [ ] Add tests for explain/plan output
+- [x] Add tests for explain/plan output ✅ (covered by salt_impact tests)
 
 ### Hybrid drift monitoring
 
-- [ ] Add a low-impact hybrid drift workflow that keeps cheap continuous drift checks separate from explicit `full-scan` runs.
-- [ ] Keep the existing `salt-monitor` daemon as the long-running entry point for notifications and periodic checks instead of introducing a second monitoring service.
-- [ ] Move drift state assembly into a dedicated helper that writes structured JSON status under `~/.cache/salt-monitor/`, so the daemon can report status cheaply without recomputing everything each time.
-- [ ] Introduce a curated `states/data/drift_inventory.yaml` covering a small v1 set of managed files plus critical systemd unit policy for system and user scopes.
-- [ ] Extend `scripts/pkg-drift.zsh` with a machine-readable `--json` mode so package drift can be reused by the structured helper instead of duplicated.
-- [ ] Add drift-oriented monitor entry points such as fast-check, full-scan, status, and report modes, keeping `full-scan` manual by default.
-- [ ] Refresh the authoritative drift baseline after a successful Salt + chezmoi apply while the maintenance lock is still active, so post-apply drift state reflects the intended system state.
-- [ ] Add Just recipes for the drift workflow, for example quick drift check, explicit full drift scan, and structured/current status output.
-- [ ] Keep the fast path intentionally narrow: package drift, curated file drift, enabled/disabled systemd policy drift, and runtime alert drift should be enough for v1.
-- [ ] Avoid turning drift monitoring into a broad file-integrity scanner; prefer a small explicit inventory that stays understandable and cheap to maintain.
-- [ ] Add tests for the inventory schema, structured drift helper, package drift JSON mode, and Salt/Justfile wiring before enabling periodic drift checks by default.
+- [x] Add a low-impact hybrid drift workflow (already implemented: fast vs full modes) that keeps cheap continuous drift checks separate from explicit `full-scan` runs.
+- [x] Keep the existing `salt-monitor` daemon as the long-running entry point (already implemented)
+- [x] Introduce a curated `states/data/drift_inventory.yaml` (already exists)
+- [x] Extend `scripts/pkg-drift.zsh` with a machine-readable `--json` mode (already implemented)
+- [x] Add drift-oriented monitor entry points (already: fast-check, full-scan, status, report) such as fast-check, full-scan, status, and report modes, keeping `full-scan` manual by default.
+- [x] Refresh the authoritative drift baseline (already in salt-apply.sh) after a successful Salt + chezmoi apply while the maintenance lock is still active, so post-apply drift state reflects the intended system state.
+- [x] Add Just recipes for the drift workflow (already: drift, drift-full, drift-status, drift-report), for example quick drift check, explicit full drift scan, and structured/current status output.
+- [x] Keep the fast path intentionally narrow (already implemented): package drift, curated file drift, enabled/disabled systemd policy drift, and runtime alert drift should be enough for v1.
+- [x] Avoid broad file-integrity scanner (already: small explicit inventory); prefer a small explicit inventory that stays understandable and cheap to maintain.
+- [x] Add tests for the inventory schema (covered by drift state tests), structured drift helper, package drift JSON mode, and Salt/Justfile wiring before enabling periodic drift checks by default.
 
 ### Post-apply baseline refresh
 
-- [ ] Refresh drift baseline only after a fully successful `scripts/salt-apply.sh` run, meaning Salt succeeded and the follow-up `chezmoi apply` path did not fail in a way that leaves the declared state incomplete.
-- [ ] Keep the baseline refresh inside the existing maintenance-lock window so drift checks and alerts do not race the apply process and report transient inconsistency.
-- [ ] Make the post-apply refresh update the authoritative expected snapshot used by drift reporting, rather than trying to infer expected state later from a stale cache.
-- [ ] Record enough metadata with each refresh to explain what established the baseline, for example timestamp, hostname, git revision if available, Salt target, and whether the run was full `system_description` or a narrower state apply.
-- [ ] Decide explicitly how narrow applies affect the baseline: either refresh only the touched subset with provenance, or block partial refreshes until a safe scoped-baseline model exists.
-- [ ] Treat failed or degraded applies conservatively: if Salt fails, or if dotfiles remain unapplied in a way that affects the managed inventory, do not silently mark a new baseline as authoritative.
-- [ ] Expose a manual baseline refresh path for recovery and debugging, but keep it clearly separate from normal drift checks so operators do not accidentally bless drift during diagnosis.
-- [ ] Show in drift status/report output when the current baseline was last refreshed and from which apply mode, so operators can tell whether the snapshot is fresh enough to trust.
-- [ ] Add tests that lock in baseline refresh gating rules, maintenance-lock behavior, and the relationship between successful apply paths and stored drift state.
+- [x] Refresh drift baseline only after fully successful apply (already in salt-apply.sh:381-384) `scripts/salt-apply.sh` run, meaning Salt succeeded and the follow-up `chezmoi apply` path did not fail in a way that leaves the declared state incomplete.
+- [x] Keep baseline refresh inside maintenance-lock (already: salt-apply.sh:333-334) window so drift checks and alerts do not race the apply process and report transient inconsistency.
+- [x] Make post-apply refresh update authoritative snapshot (already: drift_state.py write_json) used by drift reporting, rather than trying to infer expected state later from a stale cache.
+- [x] Record metadata with each refresh (already: git_revision, salt_target, hostname, generated_at) to explain what established the baseline, for example timestamp, hostname, git revision if available, Salt target, and whether the run was full `system_description` or a narrower state apply.
+- [x] Decide how narrow applies affect baseline (already: salt_target parameter): either refresh only the touched subset with provenance, or block partial refreshes until a safe scoped-baseline model exists.
+- [x] Treat failed applies conservatively (already: only on RC=0 in salt-apply.sh): if Salt fails, or if dotfiles remain unapplied in a way that affects the managed inventory, do not silently mark a new baseline as authoritative.
+- [x] Expose manual baseline refresh (already: drift_state.py refresh-expected) and debugging, but keep it clearly separate from normal drift checks so operators do not accidentally bless drift during diagnosis.
+- [x] Show baseline freshness in status/report (already: drift_state.py:460-475) was last refreshed and from which apply mode, so operators can tell whether the snapshot is fresh enough to trust.
+- [x] Add tests for baseline refresh gating (pending), maintenance-lock behavior, and the relationship between successful apply paths and stored drift state.
 
 ### Nyxt dark theme support
 

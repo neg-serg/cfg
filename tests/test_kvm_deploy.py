@@ -1,9 +1,8 @@
+import json
+import os
 import subprocess
-import sys
-from pathlib import Path
 
 from tests import REPO_ROOT_PATH
-
 
 SCRIPTS = REPO_ROOT_PATH / "scripts"
 
@@ -11,9 +10,11 @@ SCRIPTS = REPO_ROOT_PATH / "scripts"
 def _run_lib_function(func_name, *args):
     """Source the library and call a function with test arguments."""
     lib_path = SCRIPTS / "test-kvm-deploy-lib.sh"
+    safe_args = " ".join(str(a) for a in args)
     cmd = [
         "zsh", "-c",
-        f'source "{lib_path}" 2>/dev/null; {func_name} {" ".join(str(a) for a in args)}; echo "EXIT:$?"'
+        f'source "{lib_path}" 2>/dev/null;'
+        f' {func_name} {safe_args}; echo "EXIT:$?"',
     ]
     result = subprocess.run(
         cmd,
@@ -24,12 +25,10 @@ def _run_lib_function(func_name, *args):
     return result.stdout, result.stderr
 
 
-def test_log_init_creates_log_dir(tmp_path):
-    lib = (SCRIPTS / "test-kvm-deploy-lib.sh").read_text()
-    # Verify library is syntactically valid zsh
+def test_log_init_creates_log_dir():
     result = subprocess.run(
         ["zsh", "-n", str(SCRIPTS / "test-kvm-deploy-lib.sh")],
-        capture_output=True, text=True
+        capture_output=True, text=True,
     )
     assert result.returncode == 0, f"Library syntax error:\n{result.stderr}"
 
@@ -81,9 +80,8 @@ def test_library_resolve_profile_lists_all():
          f'source "{SCRIPTS}/test-kvm-deploy-lib.sh"; '
          f'resolve_profile "all" "{REPO_ROOT_PATH}"'],
         capture_output=True, text=True,
-        env={**dict(__import__("os").environ), "PATH": "/usr/bin:/bin:/usr/local/bin"}
+        env={**os.environ, "PATH": "/usr/bin:/bin:/usr/local/bin"},
     )
-    # Should list all profiles from feature_matrix.yaml
     assert result.returncode == 0
     profiles = [p for p in result.stdout.strip().split("\n") if p]
     assert len(profiles) >= 1
@@ -91,7 +89,6 @@ def test_library_resolve_profile_lists_all():
 
 
 def test_library_generate_report_json():
-    """Verify JSON report generation."""
     lib_path = SCRIPTS / "test-kvm-deploy-lib.sh"
     result = subprocess.run(
         ["zsh", "-c",
@@ -100,10 +97,9 @@ def test_library_generate_report_json():
          'matrix-minimal PASS 142 0 HEALTHY '
          'matrix-services FAIL_SALT 50 3 FAILED'],
         capture_output=True, text=True,
-        env={**dict(__import__("os").environ), "PATH": "/usr/bin:/bin:/usr/local/bin"}
+        env={**os.environ, "PATH": "/usr/bin:/bin:/usr/local/bin"},
     )
     assert result.returncode == 0
-    import json
     report = json.loads(result.stdout)
     assert report["total_profiles"] == 2
     assert report["passed"] == 1

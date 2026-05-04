@@ -4,56 +4,51 @@ Backlog of ideas and improvements. When ready to implement, run `/speckit.specif
 
 ---
 
-## Full HD Video Generation (LTX 2.3 22B)
+## Full HD Video Generation (LTX 2.3 22B) ✅
 
-LTX 2.3 22B distilled FP8 works on 7900 XTX (24GB, `--lowvram`). Tested: 512x320, 9 frames, 6 steps → 310s.
-Goal: Full HD (1920x1080) at maximum quality.
+LTX 2.3 22B distilled FP8 works on 7900 XTX (24GB, `--lowvram`).
+Done: 1080p/720p presets, default model ltx-23-distilled-fp8, CFG 4.0, steps 8, frames 97 (8N+1), VAE from Kijai/LTX2.3_comfy, t2v+i2v workflows deployed.
 
 **gen-video CLI integration:**
-- [ ] Update default model to `ltx-23-distilled-fp8`
-- [ ] Add 1080p (1920x1080) and 720p (1280x720) resolution presets
+- [x] Update default model to `ltx-23-distilled-fp8`
+- [x] Add 1080p (1920x1080) and 720p (1280x720) resolution presets
 
 **Quality parameters:**
-- [ ] Steps: 8 (distilled optimal: 4-8)
-- [ ] Test CFG 3.0-5.0 for best quality
-- [ ] Width/height must be divisible by 32, frames = 8N+1 (9, 17, 25, 33...)
+- [x] Steps: 8 (distilled optimal: 4-8)
+- [x] Test CFG 3.0-5.0 for best quality — default 4.0
+- [x] Width/height must be divisible by 32, frames = 8N+1 (9, 17, 25, 33...)
 
 **Salt state updates:**
-- [ ] LTX23 VAE download state (repo TBD)
-- [ ] Workflow deployment for ltx23-distilled-t2v.json
+- [x] LTX23 VAE download state (repo TBD) — from Kijai/LTX2.3_comfy
+- [x] Workflow deployment for ltx23-distilled-t2v.json
 
 ---
 
-## Browser profiles with persistent sessions
+## Browser profiles with persistent sessions ✅
 
-Multiple Floorp profiles with persistent data (cookies, localStorage, sessions). Goal: login to VK, YouTube and other popular sites via cookie import from other browsers.
+Implemented: `zen-profile` CLI (list/create/switch/cookies), rofi picker (Super+Alt+P), Salt state with Personal+Work templates. See `states/zen_profiles.sls`.
 
-- Named profiles with isolated storage
-- Cookie import/export between profiles and browsers (Chrome, Firefox, Floorp)
-- Profile switching via CLI or Hyprland keybind
-- Salt-managed profile templates with pre-configured settings (extensions, privacy, proxy)
-- Consider: `browser-cookie3` (Python) for cross-browser cookie extraction
+- [x] Named profiles with isolated storage
+- [x] Cookie import/export between profiles and browsers (Chrome, Firefox, Floorp)
+- [x] Profile switching via CLI or Hyprland keybind
+- [x] Salt-managed profile templates with pre-configured settings
 
 ---
 
-## Managed Telegram Bots (Bot API 9.6)
+## Managed Telegram Bots (Bot API 9.6) ✅
 
-Bot API 9.6 (April 3, 2026) introduces Managed Bots — programmatic bot creation without BotFather.
-A bot with `can_manage_bots: true` can create other bots via keyboard button, link, or Mini App,
-and get their tokens via `getManagedBotToken(user_id)`.
+Implemented: manager bot runner (`managed-bots-runner.py`), Salt state (`managed_bots.sls`), /start with request_managed_bot button, /bots listing, /rotate_token, gopass token storage, self-service allowlist. Spec at `specs/001-managed-telegram-bots/`.
 
-**Documentation:** `docs/managed-telegram-bots.md`
-
-- [ ] Enable bot management for the opencode-telegram-bot (or a dedicated manager bot) via @BotFather Mini App
-- [ ] Verify `can_manage_bots: true` in `getMe` response
-- [ ] Design multi-bot runner architecture: manager bot → creates per-task bots (monitoring, secrets, screenshots, VPN, etc.)
-- [ ] Implement manager bot (Python/NodeJS) with Salt-managed systemd service
-- [ ] Implement `getManagedBotToken` + `replaceManagedBotToken` for automated token lifecycle
+- [x] Enable bot management for the opencode-telegram-bot (or a dedicated manager bot) via @BotFather Mini App
+- [x] Verify `can_manage_bots: true` in `getMe` response
+- [x] Design multi-bot runner architecture: manager bot → creates per-task bots (monitoring, secrets, screenshots, VPN, etc.)
+- [x] Implement manager bot (Python/NodeJS) with Salt-managed systemd service
+- [x] Implement `getManagedBotToken` + `replaceManagedBotToken` for automated token lifecycle
 - [ ] Add `t.me/newbot/` link flow as alternative creation method
-- [ ] Add health checks for managed bots from the manager
-- [ ] Document the multi-bot runner in `docs/managed-telegram-bots.md`
-- [ ] Ensure token storage in gopass for each managed bot
-- [ ] Rotate tokens periodically via `replaceManagedBotToken`
+- [x] Add health checks for managed bots from the manager
+- [x] Document the multi-bot runner in `docs/managed-telegram-bots.md`
+- [x] Ensure token storage in gopass for each managed bot
+- [x] Rotate tokens periodically via `replaceManagedBotToken`
 
 ---
 

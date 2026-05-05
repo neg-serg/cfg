@@ -157,10 +157,25 @@ for prof in "${PROFILES[@]}"; do
         -drive "file=${DISK},format=qcow2,if=virtio" \
         -nic "user,model=virtio-net-pci,hostfwd=tcp::${SSH_PORT}-:22" \
         -display none \
-        -serial "file:${VM_DIR}/serial.log" \
-        -pidfile "${VM_DIR}/qemu.pid"
+        -monitor none \
+        -serial "file:/tmp/kvm-deploy-serial-${prof}.log" \
+        -pidfile "${VM_DIR}/qemu.pid" \
+        2>"${VM_DIR}/qemu.stderr"
 
-    QEMU_PID=$(cat "${VM_DIR}/qemu.pid" 2>/dev/null || echo "")
+    sleep 2
+    if [[ -f "${VM_DIR}/qemu.pid" ]]; then
+        QEMU_PID=$(cat "${VM_DIR}/qemu.pid" 2>/dev/null || echo "")
+    else
+        QEMU_PID=""
+    fi
+
+    if [[ -z "$QEMU_PID" ]] || ! kill -0 "$QEMU_PID" 2>/dev/null; then
+        log_error "QEMU failed to start or died immediately"
+        cat "${VM_DIR}/qemu.stderr" 2>/dev/null
+        RESULTS["$prof"]="INFRA_ERROR"
+        if $FAIL_FAST; then exit 2; fi
+        trap_cleanup; trap - EXIT INT TERM; continue
+    fi
     log_info "QEMU PID: $QEMU_PID"
 
     # 3. Wait for SSH

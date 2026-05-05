@@ -287,3 +287,30 @@ check-loki:
     done
     echo "Loki failed to become ready within 120s" >&2
     exit 1
+
+# --- KVM Deployment Testing ---
+kvm-test-minimal:
+    just kvm-cleanup
+    sudo scripts/test-kvm-deploy.sh --profile matrix-minimal
+
+kvm-test-containerized:
+    just kvm-cleanup
+    sudo scripts/test-kvm-deploy.sh --profile matrix-containerized
+
+kvm-deploy PROFILE="matrix-minimal":
+    just kvm-cleanup
+    sudo scripts/test-kvm-deploy.sh --profile {{PROFILE}}
+
+kvm-deploy-all:
+    sudo scripts/test-kvm-deploy.sh --profile all
+
+kvm-deploy-debug PROFILE="matrix-minimal":
+    sudo scripts/test-kvm-deploy.sh --profile {{PROFILE}} --keep-vm
+
+kvm-cleanup:
+    sudo umount -l /mnt 2>/dev/null || true
+    sudo pkill -f "qemu-system" 2>/dev/null || true
+    sudo qemu-nbd --disconnect /dev/nbd0 2>/dev/null || true
+    sudo qemu-nbd --disconnect /dev/nbd1 2>/dev/null || true
+    sudo rm -rf /tmp/kvm-deploy-* /tmp/manual-* 2>/dev/null || true
+    echo "cleaned"

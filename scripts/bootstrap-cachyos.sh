@@ -374,7 +374,7 @@ if [[ -f /mnt/salt/scripts/cachyos-packages.sh ]]; then
     echo "==> [container] Installing python3 for package script..."
     arch-chroot "$TARGET" pacman -Sy --noconfirm --needed python3 python-yaml 2>/dev/null || true
     echo "==> [container] Running full package installation in chroot..."
-    arch-chroot "$TARGET" bash /root/cachyos-packages.sh
+    arch-chroot "$TARGET" bash /root/cachyos-packages.sh || echo "==> WARNING: Some packages failed to install (non-critical for VM testing)"
     rm -f "$TARGET/root/cachyos-packages.sh" "$TARGET/root/packages.yaml"
 else
     echo "==> WARNING: cachyos-packages.sh not found at /mnt/salt/scripts/, skipping full install"

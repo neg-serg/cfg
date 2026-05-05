@@ -309,8 +309,9 @@ kvm-deploy-debug PROFILE="matrix-minimal":
 
 kvm-cleanup:
     sudo umount -l /mnt 2>/dev/null || true
-    sudo pkill -f "qemu-system" 2>/dev/null || true
-    sudo qemu-nbd --disconnect /dev/nbd0 2>/dev/null || true
-    sudo qemu-nbd --disconnect /dev/nbd1 2>/dev/null || true
+    sudo pkill -9 -x qemu-system-x86_64 2>/dev/null || true
+    sudo pkill -9 -x qemu-nbd 2>/dev/null || true
+    sudo timeout 5 qemu-nbd --disconnect /dev/nbd0 2>/dev/null || true
+    sudo timeout 5 qemu-nbd --disconnect /dev/nbd1 2>/dev/null || true
     sudo rm -rf /tmp/kvm-deploy-* /tmp/manual-* 2>/dev/null || true
     echo "cleaned"

@@ -154,8 +154,7 @@ for prof in "${PROFILES[@]}"; do
         -drive "if=pflash,format=raw,readonly=on,file=${OVMF_CODE}" \
         -drive "if=pflash,format=raw,file=${OVMF_VARS}" \
         -drive "file=${DISK},format=qcow2,if=virtio" \
-        -netdev bridge,id=net0,br=virbr0 \
-        -device virtio-net-pci,netdev=net0 \
+        -nic "user,model=e1000,hostfwd=tcp::${SSH_PORT}-:22" \
         -display none \
         -serial stdio \
         -monitor none \

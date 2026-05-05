@@ -190,14 +190,16 @@ for prof in "${PROFILES[@]}"; do
         trap_cleanup; trap - EXIT INT TERM; continue
     fi
 
-    # 4. Ensure Salt is installed in the VM
-    log_phase "Ensuring Salt is installed..."
+    # 4. Ensure prerequisites are installed in the VM
+    log_phase "Installing prerequisites..."
     ssh_exec_quiet "$SSH_PORT" "
-        command -v salt-call >/dev/null 2>&1 || {
-            pacman -Sy --noconfirm --needed salt 2>&1 || true
+        pacman -Sy --noconfirm --needed python3 zsh 2>&1 || true
+        pacman -Sy --noconfirm --needed salt 2>&1 || {
+            pacman -Sy --noconfirm --needed python-pip 2>&1 || true
+            pip install salt 2>&1 || true
         }
     "
-    log_info "Salt ready"
+    log_info "Prerequisites installed"
 
     # 5. Run salt-apply.sh
     salt_rc=0

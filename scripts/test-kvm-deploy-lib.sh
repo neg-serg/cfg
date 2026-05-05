@@ -2,7 +2,7 @@
 # test-kvm-deploy-lib.sh — shared functions for KVM deployment testing
 # Source this file from test-kvm-deploy.sh
 
-set -euo pipefail
+set -uo pipefail
 
 # ---------------------------------------------------------------------------
 # Constants

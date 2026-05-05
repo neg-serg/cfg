@@ -219,6 +219,9 @@ GRAINS
 PermitRootLogin yes
 PasswordAuthentication yes
 SSHD
+    # Create test user 'neg' that Salt states reference
+    chroot "$mnt" useradd -m -G wheel -s /bin/zsh neg 2>/dev/null || true
+    echo "neg:neg" | chroot "$mnt" chpasswd 2>/dev/null || true
     cat > "$mnt/etc/systemd/network/50-eth.network" <<'NETD'
 [Match]
 Name=eth*

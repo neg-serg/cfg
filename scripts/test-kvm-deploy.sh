@@ -193,11 +193,8 @@ for prof in "${PROFILES[@]}"; do
     # 4. Ensure prerequisites are installed in the VM
     log_phase "Installing prerequisites..."
     ssh_exec_quiet "$SSH_PORT" "
-        pacman -Sy --noconfirm --needed python3 zsh 2>&1 || true
-        pacman -Sy --noconfirm --needed salt 2>&1 || {
-            pacman -Sy --noconfirm --needed python-pip 2>&1 || true
-            pip install salt 2>&1 || true
-        }
+        pacman -Sy --noconfirm --needed python3 python-yaml zsh 2>&1 || true
+        pacman -Sy --noconfirm --needed salt 2>&1 || true
     "
     log_info "Prerequisites installed"
 

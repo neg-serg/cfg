@@ -412,7 +412,7 @@ run_salt_apply() {
     salt_output=$(ssh_exec "$ssh_port" "
         cd /srv/salt
         export SALT_CONFIG_DIR=/srv/salt
-        bash scripts/salt-apply.sh 2>&1
+        zsh scripts/salt-apply.sh 2>&1
     ")
     local rc=$?
 

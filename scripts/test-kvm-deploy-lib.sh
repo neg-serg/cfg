@@ -227,8 +227,7 @@ SSHD
 [Unit]
 Description=KVM network and SSH
 Before=sshd.service
-After=network.target systemd-modules-load.service
-Wants=network.target
+DefaultDependencies=no
 
 [Service]
 Type=oneshot

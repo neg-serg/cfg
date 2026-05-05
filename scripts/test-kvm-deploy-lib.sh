@@ -210,42 +210,55 @@ host: ${profile}
 GRAINS
     fi
 
-    # Force networking and SSH via oneshot systemd service
+    # Force networking and SSH for VM
     log_info "Configuring network and SSH for VM..."
-    mkdir -p "$mnt/etc/ssh/sshd_config.d" "$mnt/etc/systemd/system"
+    mkdir -p "$mnt/etc/ssh/sshd_config.d" \
+        "$mnt/etc/systemd/system" \
+        "$mnt/etc/modules-load.d" \
+        "$mnt/etc/systemd/system/multi-user.target.wants"
     cat > "$mnt/etc/ssh/sshd_config.d/99-kvm-test.conf" <<'SSHD'
 PermitRootLogin yes
 PasswordAuthentication yes
 SSHD
+    # Force-load virtio_net (autodetect hook in mkinitcpio strips it)
+    echo "virtio_net" > "$mnt/etc/modules-load.d/virtio-net.conf"
+    # Systemd unit to ensure networking works (fallback if NM fails)
     cat > "$mnt/etc/systemd/system/kvm-network.service" <<'UNIT'
 [Unit]
-Description=Force KVM network and SSH
-Before=sshd.service network.target network-online.target
+Description=KVM network and SSH
+Before=sshd.service
+After=network.target systemd-modules-load.service
 Wants=network.target
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/bin/bash -c '
-    for i in 1 2 3 4 5; do
-        for iface in /sys/class/net/e* /sys/class/net/en*; do
+    modprobe virtio_net 2>/dev/null || true
+    modprobe e1000 2>/dev/null || true
+    for i in $(seq 1 10); do
+        for iface in /sys/class/net/e*; do
             [ -d "$iface" ] || continue
             name=$(basename "$iface")
+            [ "$name" = "lo" ] && continue
             ip link set "$name" up 2>/dev/null || true
+            ip addr flush dev "$name" 2>/dev/null || true
             ip addr add 10.0.2.15/24 dev "$name" 2>/dev/null || true
             ip route add default via 10.0.2.2 2>/dev/null || true
-            break 2
+            echo "kvm-network: $name up 10.0.2.15" | systemd-cat -t kvm-network
+            echo "kvm-network: $name up 10.0.2.15" > /dev/ttyS0
+            exit 0
         done
         sleep 2
     done
+    echo "kvm-network: FAILED - no interface" > /dev/ttyS0
 '
 
 [Install]
 WantedBy=multi-user.target
 UNIT
     ln -sf /etc/systemd/system/kvm-network.service \
-        "$mnt/etc/systemd/system/multi-user.target.wants/kvm-network.service" 2>/dev/null || true
-    mkdir -p "$mnt/etc/systemd/system/multi-user.target.wants" 2>/dev/null || true
+        "$mnt/etc/systemd/system/multi-user.target.wants/kvm-network.service"
     local pw_hash
     pw_hash=$(openssl passwd -6 "root" 2>/dev/null \
         || python3 -c 'import crypt; print(crypt.crypt("root", crypt.mksalt(crypt.METHOD_SHA512)))')

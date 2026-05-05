@@ -17,6 +17,8 @@ fi
 SCRIPT_DIR="${0:A:h}"
 SALT_DIR="${SALT_DIR:-$(dirname "$SCRIPT_DIR")}"
 YAML_FILE="${SALT_DIR}/states/data/packages.yaml"
+# Fallback: when run from /root inside chroot, packages.yaml is copied alongside
+[[ -f "$YAML_FILE" ]] || YAML_FILE="/root/packages.yaml"
 
 if [[ ! -f "$YAML_FILE" ]]; then
 	echo "error: packages.yaml not found at ${YAML_FILE}" >&2

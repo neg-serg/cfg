@@ -369,10 +369,11 @@ chmod 440 /etc/sudoers.d/99-neg-nopasswd
 if [[ -f /mnt/salt/scripts/cachyos-packages.sh ]]; then
     echo "==> [container] Copying package script into target..."
     cp /mnt/salt/scripts/cachyos-packages.sh "$TARGET/root/cachyos-packages.sh"
+    cp /mnt/salt/states/data/packages.yaml "$TARGET/root/packages.yaml" 2>/dev/null || true
     chmod +x "$TARGET/root/cachyos-packages.sh"
     echo "==> [container] Running full package installation in chroot..."
-    SALT_DIR=/mnt/salt arch-chroot "$TARGET" zsh /root/cachyos-packages.sh
-    rm -f "$TARGET/root/cachyos-packages.sh"
+    arch-chroot "$TARGET" zsh /root/cachyos-packages.sh
+    rm -f "$TARGET/root/cachyos-packages.sh" "$TARGET/root/packages.yaml"
 else
     echo "==> WARNING: cachyos-packages.sh not found at /mnt/salt/scripts/, skipping full install"
 fi

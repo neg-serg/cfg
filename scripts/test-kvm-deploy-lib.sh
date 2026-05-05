@@ -214,9 +214,9 @@ GRAINS
     log_info "Configuring network and SSH for VM..."
     mkdir -p "$mnt/etc/ssh/sshd_config.d" \
         "$mnt/etc/systemd/system" \
+        "$mnt/etc/systemd/system/basic.target.wants" \
         "$mnt/etc/modules-load.d" \
-        "$mnt/usr/local/bin" \
-        "$mnt/usr/lib/systemd/system/basic.target.wants"
+        "$mnt/usr/local/bin"
     cat > "$mnt/etc/ssh/sshd_config.d/99-kvm-test.conf" <<'SSHD'
 PermitRootLogin yes
 PasswordAuthentication yes
@@ -256,7 +256,7 @@ done
 SCRIPT
     chmod +x "$mnt/usr/local/bin/kvm-network.sh"
     ln -sf /etc/systemd/system/kvm-network.service \
-        "$mnt/usr/lib/systemd/system/basic.target.wants/kvm-network.service"
+        "$mnt/etc/systemd/system/basic.target.wants/kvm-network.service"
     local pw_hash
     pw_hash=$(openssl passwd -6 "root" 2>/dev/null \
         || python3 -c 'import crypt; print(crypt.crypt("root", crypt.mksalt(crypt.METHOD_SHA512)))')

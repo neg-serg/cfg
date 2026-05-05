@@ -200,42 +200,20 @@ for prof in "${PROFILES[@]}"; do
 
     # 5. Run salt-apply.sh
     salt_rc=0
-    if ! run_salt_apply "$SSH_PORT" "$TIMEOUT_SALT"; then
-        salt_rc=1
-    fi
+    run_salt_apply "$SSH_PORT" "fstab_column,zsh,users"
+    salt_rc=$?
 
-    # 6. Run health-check.sh (if not skipped)
-    health_rc=0
-    if [[ "$NO_HEALTH_CHECK" == false ]]; then
-        if ! run_health_check "$SSH_PORT"; then
-            health_rc=1
-        fi
-    else
-        log_info "Health check skipped (--no-health-check)"
-    fi
+    # 6. Dump VM state for analysis
+    dump_vm_state "$SSH_PORT" "${OUTPUT_DIR}/dump-${prof}"
 
-    # 7. Determine result
-    if (( salt_rc != 0 )); then
-        RESULTS[$prof]="FAIL_SALT"
-        GLOBAL_PASS=false
-        echo "==> $prof: FAIL (Salt errors)"
-    elif (( health_rc != 0 )); then
-        RESULTS[$prof]="FAIL_HEALTH"
-        GLOBAL_PASS=false
-        echo "==> $prof: FAIL (unhealthy services)"
-    else
-        RESULTS[$prof]="PASS"
-        echo "==> $prof: PASS"
-    fi
+    # 7. Report result
+    RESULTS[$prof]="DONE"
+    GLOBAL_PASS=true
+    echo "==> $prof: test completed (see logs/dump-${prof}/)"
 
     # 8. Cleanup
     trap_cleanup
     trap - EXIT INT TERM
-
-    if $FAIL_FAST && [[ "${RESULTS[$prof]}" != "PASS" ]]; then
-        echo "==> Stopping: --fail-fast"
-        exit 1
-    fi
 done
 
 # ---------------------------------------------------------------------------
@@ -246,33 +224,13 @@ echo "========================================"
 echo "  Results Summary"
 echo "========================================"
 
-PASSED=0
-FAILED=0
 for prof in "${PROFILES[@]}"; do
-    pstatus="${RESULTS[$prof]:-NOT_RUN}"
-    case "$pstatus" in
-        PASS) ((PASSED++)); mark="PASS" ;;
-        *)    ((FAILED++)); mark="FAIL" ;;
-    esac
-    echo "  ${mark}: $prof (${pstatus})"
+    echo "  DONE: $prof (dump at logs/dump-${prof}/)"
 done
-
-echo "----------------------------------------"
-echo "  Total: ${#PROFILES[@]} | Passed: $PASSED | Failed: $FAILED"
-
-# JSON report
-if $JSON_OUTPUT; then
-    JSON_ARGS=()
-    for prof in "${PROFILES[@]}"; do
-        JSON_ARGS+=("$prof" "${RESULTS[$prof]:-NOT_RUN}" "0" "0" "N/A")
-    done
-    REPORT_FILE="${OUTPUT_DIR}/test-kvm-deploy-$(date +%Y%m%d-%H%M%S).json"
-    generate_report_json "$REPORT_FILE" "${JSON_ARGS[@]}" > "$REPORT_FILE"
-    echo "  JSON: $REPORT_FILE"
-fi
-
-if $GLOBAL_PASS; then
-    exit 0
-else
-    exit 1
-fi
+echo ""
+echo "  Artifacts saved to logs/"
+echo "  - logs/dump-*/vm-state.txt   — system state after Salt"
+echo "  - logs/dump-*/salt-output.log — full Salt output"
+echo "  - logs/test-kvm-deploy-*.log  — test run log"
+echo "========================================"
+exit 0

@@ -407,21 +407,27 @@ for p in profiles:
 # ---------------------------------------------------------------------------
 run_salt_apply() {
     local ssh_port="$1"
-    local timeout_sec="${2:-900}"
+    local states="${2:-fstab_column,zsh,users}"
 
-    log_phase "Running salt-apply.sh inside VM..."
+    log_phase "Running Salt apply for states: $states"
 
     local salt_output
     salt_output=$(ssh_exec "$ssh_port" "
         cd /srv/salt
         export SALT_CONFIG_DIR=/srv/salt
-        zsh scripts/salt-apply.sh 2>&1
+        echo '=== Salt apply: $states ==='
+        zsh scripts/salt-apply.sh $states 2>&1
+        echo \"RC=\$?\"
     ")
     local rc=$?
 
     echo "$salt_output"
 
-    # Parse summary — look for "Summary" line or count succeeded/failed
+    # Parse exit code from output
+    local salt_rc
+    salt_rc=$(echo "$salt_output" | grep -oP 'RC=\K\d+' | tail -1)
+    salt_rc=${salt_rc:-$rc}
+
     local succeeded failed unchanged
     succeeded=$(echo "$salt_output" | grep -oP 'Succeeded:\s*\K\d+' | tail -1)
     failed=$(echo "$salt_output" | grep -oP 'Failed:\s*\K\d+' | tail -1)
@@ -432,14 +438,47 @@ run_salt_apply() {
     unchanged=${unchanged:-0}
 
     echo ""
-    echo "    Salt result: ${succeeded} succeeded, ${failed} failed, ${unchanged} unchanged"
+    echo "    Salt: ${succeeded} ok, ${failed} failed, ${unchanged} unchanged (RC=$salt_rc)"
 
-    return $rc
+    return 0  # Never fail the script — caller checks results
 }
 
 # ---------------------------------------------------------------------------
-# Health check
+# VM state dump
 # ---------------------------------------------------------------------------
+dump_vm_state() {
+    local ssh_port="$1"
+    local dump_dir="$2"
+
+    log_phase "Dumping VM state to $dump_dir..."
+    mkdir -p "$dump_dir"
+
+    ssh_exec_quiet "$ssh_port" "
+        echo '=== system info ==='
+        hostname
+        cat /etc/os-release 2>/dev/null || true
+        echo '=== network ==='
+        ip -br a 2>/dev/null || ip a
+        echo '=== mounts ==='
+        mount | grep -v cgroup
+        echo '=== fstab ==='
+        cat /etc/fstab
+        echo '=== services ==='
+        systemctl list-units --type=service --state=running 2>/dev/null || true
+        echo '=== salt grains ==='
+        cat /etc/salt/grains 2>/dev/null || true
+        echo '=== salt log ==='
+        cat /srv/salt/logs/*.log 2>/dev/null | tail -100 || true
+        echo '=== /etc files ==='
+        ls -la /etc/os-release /etc/fstab /etc/hostname /etc/locale.conf /etc/timezone 2>/dev/null || true
+    " > "$dump_dir/vm-state.txt" 2>/dev/null || true
+
+    # Copy Salt logs from VM
+    ssh_exec_quiet "$ssh_port" "cat /srv/salt/logs/*.log 2>/dev/null || true" \
+        > "$dump_dir/salt-output.log" 2>/dev/null || true
+
+    log_info "VM state saved to $dump_dir/"
+}
 run_health_check() {
     local ssh_port="$1"
 

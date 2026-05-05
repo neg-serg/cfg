@@ -324,18 +324,7 @@ kvm-bootstrap TARGET="/mnt/one/cachyos-root":
     sudo sed -i 's/autodetect //' {{TARGET}}/etc/mkinitcpio.conf
     sudo systemd-nspawn -D {{TARGET}} mkinitcpio -P
     sudo systemd-nspawn -D {{TARGET}} depmod -a $(ls {{TARGET}}/lib/modules/ | head -1)
-    sudo tee {{TARGET}}/etc/rc.local << 'RCLOCAL'
-#!/bin/bash
-modprobe e1000 2>/dev/null || modprobe virtio_net 2>/dev/null
-for i in $(seq 1 20); do
-    for iface in /sys/class/net/e*; do
-        [ -d "$iface" ] || continue
-        name=$(basename "$iface"); [ "$name" = "lo" ] && continue
-        ip link set "$name" up; ip addr add 10.0.2.15/24 dev "$name"
-        ip route add default via 10.0.2.2 2>/dev/null; exit 0
-    done; sleep 1
-done
-RCLOCAL
+    sudo cp scripts/kvm-network-rc-local.sh {{TARGET}}/etc/rc.local
     sudo chmod +x {{TARGET}}/etc/rc.local
     echo "Rootfs ready for VM testing."
 

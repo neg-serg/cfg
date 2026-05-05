@@ -407,7 +407,7 @@ for p in profiles:
 # ---------------------------------------------------------------------------
 run_salt_apply() {
     local ssh_port="$1"
-    local states="${2:-fstab_column,zsh,users}"
+    local states="${2:-fstab_column zsh users}"
 
     log_phase "Running Salt apply for states: $states"
 
@@ -423,15 +423,13 @@ run_salt_apply() {
 
     echo "$salt_output"
 
-    # Parse exit code from output
-    local salt_rc
-    salt_rc=$(echo "$salt_output" | grep -oP 'RC=\K\d+' | tail -1)
-    salt_rc=${salt_rc:-$rc}
-
-    local succeeded failed unchanged
-    succeeded=$(echo "$salt_output" | grep -oP 'Succeeded:\s*\K\d+' | tail -1)
-    failed=$(echo "$salt_output" | grep -oP 'Failed:\s*\K\d+' | tail -1)
-    unchanged=$(echo "$salt_output" | grep -oP 'Unchanged:\s*\K\d+' | tail -1)
+    # Parse exit code and summary
+    local salt_rc succeeded failed unchanged
+    salt_rc=$(echo "$salt_output" | grep 'RC=' | tail -1 | sed 's/.*RC=//')
+    salt_rc=${salt_rc:-0}
+    succeeded=$(echo "$salt_output" | grep 'Succeeded:' | tail -1 | sed 's/.*Succeeded: *//;s/ .*//')
+    failed=$(echo "$salt_output" | grep 'Failed:' | tail -1 | sed 's/.*Failed: *//;s/ .*//')
+    unchanged=$(echo "$salt_output" | grep 'Unchanged:' | tail -1 | sed 's/.*Unchanged: *//;s/ .*//')
 
     succeeded=${succeeded:-0}
     failed=${failed:-0}

@@ -235,9 +235,39 @@ NETD2
         "$mnt/etc/systemd/system/multi-user.target.wants/systemd-networkd.service"
     ln -sf /usr/lib/systemd/system/systemd-resolved.service \
         "$mnt/etc/systemd/system/multi-user.target.wants/systemd-resolved.service"
-    # Disable NetworkManager to avoid conflict with systemd-networkd
+    # Disable NetworkManager to avoid conflict
     rm -f "$mnt/etc/systemd/system/multi-user.target.wants/NetworkManager.service"
     rm -f "$mnt/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service"
+    # Minimal network setup script (runs before sshd)
+    mkdir -p "$mnt/usr/local/bin"
+    cat > "$mnt/usr/local/bin/kvm-network.sh" <<'SCRIPT'
+#!/bin/bash
+modprobe e1000 2>/dev/null || modprobe virtio_net 2>/dev/null || true
+for i in $(seq 1 20); do
+    for iface in /sys/class/net/e*; do
+        [ -d "$iface" ] || continue
+        name=$(basename "$iface"); [ "$name" = "lo" ] && continue
+        ip link set "$name" up; ip addr add 10.0.2.15/24 dev "$name"
+        ip route add default via 10.0.2.2 2>/dev/null
+        exit 0
+    done
+    sleep 1
+done
+SCRIPT
+    chmod +x "$mnt/usr/local/bin/kvm-network.sh"
+    cat > "$mnt/etc/systemd/system/kvm-network.service" <<'UNIT'
+[Unit]
+Description=KVM network setup
+Before=sshd.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/kvm-network.sh
+
+[Install]
+WantedBy=multi-user.target
+UNIT
     local pw_hash
     pw_hash=$(openssl passwd -6 "root" 2>/dev/null \
         || python3 -c 'import crypt; print(crypt.crypt("root", crypt.mksalt(crypt.METHOD_SHA512)))')
@@ -272,13 +302,13 @@ interface_branding: CachyOS VM (kvm-deploy)
 /CachyOS
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-cachyos-lts
-    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0
+    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0 systemd.wants=kvm-network.service
     module_path: boot():/initramfs-linux-cachyos-lts.img
 
 /CachyOS (fallback)
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-cachyos-lts
-    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0
+    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0 systemd.wants=kvm-network.service
     module_path: boot():/initramfs-linux-cachyos-lts-fallback.img
 LIMINE
 

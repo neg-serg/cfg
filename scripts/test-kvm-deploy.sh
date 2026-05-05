@@ -200,7 +200,7 @@ for prof in "${PROFILES[@]}"; do
 
     # 5. Run salt-apply.sh
     salt_rc=0
-    run_salt_apply "$SSH_PORT" "pacman_db_warmup,fstab_column,zsh,users"
+    run_salt_apply "$SSH_PORT" "fstab_column zsh users"
     salt_rc=$?
 
     # 6. Dump VM state for analysis

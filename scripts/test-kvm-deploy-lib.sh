@@ -215,7 +215,6 @@ GRAINS
     mkdir -p "$mnt/etc/ssh/sshd_config.d" \
         "$mnt/etc/systemd/system" \
         "$mnt/etc/modules-load.d" \
-        "$mnt/etc/systemd/system/sysinit.target.wants" \
         "$mnt/usr/local/bin"
     cat > "$mnt/etc/ssh/sshd_config.d/99-kvm-test.conf" <<'SSHD'
 PermitRootLogin yes
@@ -294,13 +293,13 @@ interface_branding: CachyOS VM (kvm-deploy)
 /CachyOS
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-cachyos-lts
-    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0
+    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0 ip=10.0.2.15::10.0.2.2:255.255.255.0::enp0s2:off
     module_path: boot():/initramfs-linux-cachyos-lts.img
 
 /CachyOS (fallback)
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-cachyos-lts
-    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0
+    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0 ip=10.0.2.15::10.0.2.2:255.255.255.0::enp0s2:off
     module_path: boot():/initramfs-linux-cachyos-lts-fallback.img
 LIMINE
 

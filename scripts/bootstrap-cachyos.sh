@@ -437,7 +437,7 @@ for check in "${checks[@]}"; do
 done
 
 if $ok; then
-    TARGET_DIR="$(dirname "$TARGET")"
+    TARGET_DIR="$(/usr/bin/dirname "$TARGET")"
     REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
     # Copy salt repo alongside rootfs (needed after NVMe is reformatted)

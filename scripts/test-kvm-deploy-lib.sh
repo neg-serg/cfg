@@ -234,9 +234,13 @@ Wants=network.target
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/bin/bash -c '
-    modprobe virtio_net 2>/dev/null || true
-    modprobe e1000 2>/dev/null || true
-    for i in $(seq 1 10); do
+    echo "kvm-network: starting" > /dev/console
+    lsmod > /tmp/lsmod-before.txt 2>&1
+    modprobe virtio_net 2>/tmp/modprobe-err.txt || true
+    modprobe e1000 2>>/tmp/modprobe-err.txt || true
+    lsmod > /tmp/lsmod-after.txt 2>&1
+    ip link > /tmp/ip-link.txt 2>&1
+    for i in $(seq 1 15); do
         for iface in /sys/class/net/e*; do
             [ -d "$iface" ] || continue
             name=$(basename "$iface")
@@ -245,13 +249,13 @@ ExecStart=/usr/bin/bash -c '
             ip addr flush dev "$name" 2>/dev/null || true
             ip addr add 10.0.2.15/24 dev "$name" 2>/dev/null || true
             ip route add default via 10.0.2.2 2>/dev/null || true
-            echo "kvm-network: $name up 10.0.2.15" | systemd-cat -t kvm-network
-            echo "kvm-network: $name up 10.0.2.15" > /dev/ttyS0
+            echo "kvm-network: $name up 10.0.2.15" > /dev/console
             exit 0
         done
         sleep 2
     done
-    echo "kvm-network: FAILED - no interface" > /dev/ttyS0
+    echo "kvm-network: FAILED - no interface" > /dev/console
+    ip link > /tmp/ip-link-fail.txt 2>&1
 '
 
 [Install]

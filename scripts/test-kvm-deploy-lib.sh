@@ -214,7 +214,7 @@ GRAINS
     log_info "Configuring network and SSH for VM..."
     mkdir -p "$mnt/etc/ssh/sshd_config.d" \
         "$mnt/etc/systemd/system" \
-        "$mnt/etc/systemd/system/basic.target.wants" \
+        "$mnt/etc/systemd/system/multi-user.target.wants" \
         "$mnt/etc/modules-load.d" \
         "$mnt/usr/local/bin"
     cat > "$mnt/etc/ssh/sshd_config.d/99-kvm-test.conf" <<'SSHD'
@@ -227,6 +227,7 @@ SSHD
     cat > "$mnt/etc/systemd/system/kvm-network.service" <<'UNIT'
 [Unit]
 Description=KVM network setup
+Before=sshd.service
 
 [Service]
 Type=oneshot
@@ -234,7 +235,7 @@ RemainAfterExit=yes
 ExecStart=/usr/local/bin/kvm-network.sh
 
 [Install]
-WantedBy=basic.target
+WantedBy=multi-user.target
 UNIT
     cat > "$mnt/usr/local/bin/kvm-network.sh" <<'SCRIPT'
 #!/usr/bin/bash
@@ -251,12 +252,10 @@ for i in $(seq 1 10); do
     done
     sleep 1
 done
-    sleep 1
-done
 SCRIPT
     chmod +x "$mnt/usr/local/bin/kvm-network.sh"
     ln -sf /etc/systemd/system/kvm-network.service \
-        "$mnt/etc/systemd/system/basic.target.wants/kvm-network.service"
+        "$mnt/etc/systemd/system/multi-user.target.wants/kvm-network.service"
     local pw_hash
     pw_hash=$(openssl passwd -6 "root" 2>/dev/null \
         || python3 -c 'import crypt; print(crypt.crypt("root", crypt.mksalt(crypt.METHOD_SHA512)))')

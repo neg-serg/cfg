@@ -24,6 +24,7 @@ pacman:
   noto-fonts-emoji: noto-fonts-emoji
   noto-fonts-extra: noto-fonts-extra
   liberation-fonts: ttf-liberation
+  terminus-font: terminus-font
   ibm-plex: ttf-ibm-plex
   inter-font: inter-font
   material-symbols: ttf-material-symbols-variable

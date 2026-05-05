@@ -372,7 +372,7 @@ if [[ -f /mnt/packages/cachyos-packages.sh ]]; then
     chmod +x "$TARGET/root/cachyos-packages.sh"
 
     echo "==> [container] Running full package installation in chroot..."
-    arch-chroot "$TARGET" bash /root/cachyos-packages.sh
+    arch-chroot "$TARGET" zsh /root/cachyos-packages.sh
 
     rm -f "$TARGET/root/cachyos-packages.sh"
 else

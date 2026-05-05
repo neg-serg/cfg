@@ -256,6 +256,13 @@ SCRIPT
     chmod +x "$mnt/usr/local/bin/kvm-network.sh"
     ln -sf /etc/systemd/system/kvm-network.service \
         "$mnt/etc/systemd/system/multi-user.target.wants/kvm-network.service"
+    # Regenerate module dependencies (mkinitcpio may use host kernel version)
+    local kver
+    kver=$(ls "$mnt/lib/modules/" 2>/dev/null | head -1)
+    if [[ -n "$kver" ]]; then
+        log_info "Running depmod for kernel $kver..."
+        depmod -b "$mnt" -a "$kver" 2>/dev/null || true
+    fi
     local pw_hash
     pw_hash=$(openssl passwd -6 "root" 2>/dev/null \
         || python3 -c 'import crypt; print(crypt.crypt("root", crypt.mksalt(crypt.METHOD_SHA512)))')
@@ -290,13 +297,13 @@ interface_branding: CachyOS VM (kvm-deploy)
 /CachyOS
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-cachyos-lts
-    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0
+    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw loglevel=7 console=ttyS0,115200 console=tty0
     module_path: boot():/initramfs-linux-cachyos-lts.img
 
 /CachyOS (fallback)
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-cachyos-lts
-    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0
+    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw loglevel=7 console=ttyS0,115200 console=tty0
     module_path: boot():/initramfs-linux-cachyos-lts-fallback.img
 LIMINE
 

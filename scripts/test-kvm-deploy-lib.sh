@@ -238,7 +238,8 @@ WantedBy=sysinit.target
 UNIT
     cat > "$mnt/usr/local/bin/kvm-network.sh" <<'SCRIPT'
 #!/usr/bin/bash
-echo "kvm-network: starting" > /dev/console
+{
+echo "kvm-network: starting" > /dev/kmsg
 modprobe virtio_net 2>/tmp/modprobe.log || true
 modprobe e1000 2>>/tmp/modprobe.log || true
 for i in $(seq 1 15); do
@@ -249,12 +250,12 @@ for i in $(seq 1 15); do
         ip link set "$name" up 2>/dev/null || true
         ip addr add 10.0.2.15/24 dev "$name" 2>/dev/null || true
         ip route add default via 10.0.2.2 2>/dev/null || true
-        echo "kvm-network: $name up 10.0.2.15" > /dev/console
+        echo "kvm-network: $name up 10.0.2.15" > /dev/kmsg
         exit 0
     done
     sleep 2
 done
-echo "kvm-network: FAILED" > /dev/console
+echo "kvm-network: FAILED" > /dev/kmsg
 SCRIPT
     chmod +x "$mnt/usr/local/bin/kvm-network.sh"
     ln -sf /etc/systemd/system/kvm-network.service \

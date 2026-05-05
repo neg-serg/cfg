@@ -215,7 +215,8 @@ GRAINS
     mkdir -p "$mnt/etc/ssh/sshd_config.d" \
         "$mnt/etc/systemd/system" \
         "$mnt/etc/modules-load.d" \
-        "$mnt/etc/systemd/system/multi-user.target.wants"
+        "$mnt/etc/systemd/system/sysinit.target.wants" \
+        "$mnt/usr/local/bin"
     cat > "$mnt/etc/ssh/sshd_config.d/99-kvm-test.conf" <<'SSHD'
 PermitRootLogin yes
 PasswordAuthentication yes
@@ -230,29 +231,32 @@ Description=KVM network setup
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/bin/bash -c '
-    echo "kvm-network: starting" > /dev/console
-    modprobe virtio_net 2>/tmp/modprobe.log || true
-    modprobe e1000 2>>/tmp/modprobe.log || true
-    for i in $(seq 1 15); do
-        for iface in /sys/class/net/e*; do
-            [ -d "$iface" ] || continue
-            name=$(basename "$iface")
-            [ "$name" = "lo" ] && continue
-            ip link set "$name" up 2>/dev/null || true
-            ip addr add 10.0.2.15/24 dev "$name" 2>/dev/null || true
-            ip route add default via 10.0.2.2 2>/dev/null || true
-            echo "kvm-network: $name up 10.0.2.15" > /dev/console
-            exit 0
-        done
-        sleep 2
-    done
-    echo "kvm-network: FAILED" > /dev/console
-'
+ExecStart=/usr/local/bin/kvm-network.sh
 
 [Install]
 WantedBy=sysinit.target
 UNIT
+    cat > "$mnt/usr/local/bin/kvm-network.sh" <<'SCRIPT'
+#!/usr/bin/bash
+echo "kvm-network: starting" > /dev/console
+modprobe virtio_net 2>/tmp/modprobe.log || true
+modprobe e1000 2>>/tmp/modprobe.log || true
+for i in $(seq 1 15); do
+    for iface in /sys/class/net/e*; do
+        [ -d "$iface" ] || continue
+        name=$(basename "$iface")
+        [ "$name" = "lo" ] && continue
+        ip link set "$name" up 2>/dev/null || true
+        ip addr add 10.0.2.15/24 dev "$name" 2>/dev/null || true
+        ip route add default via 10.0.2.2 2>/dev/null || true
+        echo "kvm-network: $name up 10.0.2.15" > /dev/console
+        exit 0
+    done
+    sleep 2
+done
+echo "kvm-network: FAILED" > /dev/console
+SCRIPT
+    chmod +x "$mnt/usr/local/bin/kvm-network.sh"
     ln -sf /etc/systemd/system/kvm-network.service \
         "$mnt/etc/systemd/system/sysinit.target.wants/kvm-network.service"
     local pw_hash

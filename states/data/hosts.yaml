@@ -75,7 +75,6 @@ defaults:
     opencode: false
     nanoclaw: false
     telethon_bridge: false
-    opencode_telegram: false
     managed_bots: false
     video_ai: true
     xen_vr: false
@@ -112,7 +111,6 @@ hosts:
         ipv6: true
       floorp: false
       opencode: true
-      opencode_telegram: true
       telethon_bridge: true
       managed_bots: true
       music_analysis: true

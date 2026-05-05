@@ -151,9 +151,6 @@ include:
 {% if host.features.get('telethon_bridge', false) %}
   - telethon_bridge
 {% endif %}
-{% if host.features.get('opencode_telegram', false) %}
-  - opencode_telegram
-{% endif %}
 {% if host.features.get('managed_bots', false) %}
   - managed_bots
 {% endif %}

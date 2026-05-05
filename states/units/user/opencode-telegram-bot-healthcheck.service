@@ -1,7 +1,0 @@
-[Unit]
-Description=OpenCode Telegram Bot healthcheck
-
-[Service]
-Type=oneshot
-ExecStart=%h/src/cfg/scripts/check-opencode-telegram-bot.sh
-WorkingDirectory=%h/src/cfg

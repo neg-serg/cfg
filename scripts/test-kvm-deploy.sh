@@ -146,6 +146,7 @@ for prof in "${PROFILES[@]}"; do
     . "${VM_DIR}/.vm-info"
     set +a
 
+    set +e  # background QEMU invocation may trigger set -e in some zsh versions
     qemu-system-x86_64 \
         -machine "q35,accel=${KVM_ACCEL}" \
         -cpu host \
@@ -155,10 +156,9 @@ for prof in "${PROFILES[@]}"; do
         -drive "if=pflash,format=raw,file=${OVMF_VARS}" \
         -drive "file=${DISK},format=qcow2,if=virtio" \
         -nic "user,model=e1000,hostfwd=tcp::${SSH_PORT}-:22" \
-        -display none \
-        -serial stdio \
-        -monitor none \
+        -nographic \
         </dev/null > "${VM_DIR}/qemu.console" 2>&1 &
+    set -e
 
     QEMU_PID=$!
     echo "$QEMU_PID" > "${VM_DIR}/qemu.pid"

@@ -528,7 +528,9 @@ class TelethonBridge:
         try:
             response, resp_tokens = await self.ai.chat(messages, model=model)
         except AIError as e:
-            await event.reply(str(e))
+            log.error("AI request failed for user %d: %s", sender_id, e)
+            if sender_id == self._owner_id:
+                await event.reply("AI service temporarily unavailable.")
             return
 
         # Store AI response
@@ -732,7 +734,7 @@ class TelethonBridge:
         try:
             response, resp_tokens = await self.ai.chat(messages)
         except AIError as e:
-            await event.reply(str(e))
+            log.error("AI request failed for group %d: %s", chat_id, e)
             return
 
         self.db.add_message(chat_id, "assistant", response, resp_tokens)

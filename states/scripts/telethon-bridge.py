@@ -690,9 +690,11 @@ class TelethonBridge:
         triggered = False
 
         if self._group_trigger == "mention_or_reply":
-            triggered = event.message.mentioned or (
-                event.message.reply_to and event.message.reply_to.reply_to_msg_id
-            )
+            if event.message.reply_to and not event.message.mentioned:
+                reply_msg = await event.get_reply_message()
+                triggered = reply_msg and reply_msg.sender_id == me.id
+            else:
+                triggered = event.message.mentioned
         elif self._group_trigger == "reply_only":
             if event.message.reply_to:
                 reply_msg = await event.get_reply_message()

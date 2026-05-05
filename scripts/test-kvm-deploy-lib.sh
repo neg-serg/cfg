@@ -217,19 +217,30 @@ GRAINS
 PermitRootLogin yes
 PasswordAuthentication yes
 SSHD
-    # Enable systemd-networkd for DHCP on virtio NIC
-    log_info "Enabling networkd with DHCP..."
+    # Enable systemd-networkd with static IP (QEMU SLIRP defaults)
+    log_info "Enabling networkd with static IP..."
     mkdir -p "$mnt/etc/systemd/network"
     cat > "$mnt/etc/systemd/network/50-virtio.network" <<'NETD'
 [Match]
 Name=en*
 [Network]
-DHCP=yes
+Address=10.0.2.15/24
+Gateway=10.0.2.2
+DNS=10.0.2.3
 NETD
+    # Also match eth* for e1000 fallback
+    cat > "$mnt/etc/systemd/network/50-eth.network" <<'NETD2'
+[Match]
+Name=eth*
+[Network]
+Address=10.0.2.15/24
+Gateway=10.0.2.2
+DNS=10.0.2.3
+NETD2
     ln -sf /usr/lib/systemd/system/systemd-networkd.service \
         "$mnt/etc/systemd/system/multi-user.target.wants/systemd-networkd.service" 2>/dev/null || true
-    ln -sf /usr/lib/systemd/system/systemd-networkd-wait-online.service \
-        "$mnt/etc/systemd/system/network-online.target.wants/systemd-networkd-wait-online.service" 2>/dev/null || true
+    # Disable NetworkManager to avoid conflicts
+    rm -f "$mnt/etc/systemd/system/multi-user.target.wants/NetworkManager.service" 2>/dev/null || true
     local pw_hash
     pw_hash=$(openssl passwd -6 "root" 2>/dev/null \
         || python3 -c 'import crypt; print(crypt.crypt("root", crypt.mksalt(crypt.METHOD_SHA512)))')

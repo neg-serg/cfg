@@ -217,6 +217,19 @@ GRAINS
 PermitRootLogin yes
 PasswordAuthentication yes
 SSHD
+    # Enable systemd-networkd for DHCP on virtio NIC
+    log_info "Enabling networkd with DHCP..."
+    mkdir -p "$mnt/etc/systemd/network"
+    cat > "$mnt/etc/systemd/network/50-virtio.network" <<'NETD'
+[Match]
+Name=en*
+[Network]
+DHCP=yes
+NETD
+    ln -sf /usr/lib/systemd/system/systemd-networkd.service \
+        "$mnt/etc/systemd/system/multi-user.target.wants/systemd-networkd.service" 2>/dev/null || true
+    ln -sf /usr/lib/systemd/system/systemd-networkd-wait-online.service \
+        "$mnt/etc/systemd/system/network-online.target.wants/systemd-networkd-wait-online.service" 2>/dev/null || true
     local pw_hash
     pw_hash=$(openssl passwd -6 "root" 2>/dev/null \
         || python3 -c 'import crypt; print(crypt.crypt("root", crypt.mksalt(crypt.METHOD_SHA512)))')

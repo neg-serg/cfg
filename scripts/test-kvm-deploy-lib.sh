@@ -227,30 +227,30 @@ SSHD
     cat > "$mnt/etc/systemd/system/kvm-network.service" <<'UNIT'
 [Unit]
 Description=KVM network setup
-Before=network-pre.target
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/local/bin/kvm-network.sh
-Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin
 
 [Install]
 WantedBy=basic.target
 UNIT
     cat > "$mnt/usr/local/bin/kvm-network.sh" <<'SCRIPT'
 #!/usr/bin/bash
-modprobe virtio_net 2>/dev/null || modprobe e1000 2>/dev/null || true
-for i in $(seq 1 20); do
+/usr/bin/modprobe e1000 2>/dev/null || /usr/bin/modprobe virtio_net 2>/dev/null || true
+for i in $(seq 1 10); do
     for iface in /sys/class/net/e*; do
         [ -d "$iface" ] || continue
         name=$(basename "$iface")
         [ "$name" = "lo" ] && continue
-        ip link set "$name" up 2>/dev/null || true
-        ip addr add 10.0.2.15/24 dev "$name" 2>/dev/null || true
-        ip route add default via 10.0.2.2 2>/dev/null || true
+        /usr/bin/ip link set "$name" up 2>/dev/null || true
+        /usr/bin/ip addr add 10.0.2.15/24 dev "$name" 2>/dev/null || true
+        /usr/bin/ip route add default via 10.0.2.2 2>/dev/null || true
         exit 0
     done
+    sleep 1
+done
     sleep 1
 done
 SCRIPT
@@ -291,13 +291,13 @@ interface_branding: CachyOS VM (kvm-deploy)
 /CachyOS
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-cachyos-lts
-    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0 ip=10.0.2.15::10.0.2.2:255.255.255.0::enp0s2:off
+    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0
     module_path: boot():/initramfs-linux-cachyos-lts.img
 
 /CachyOS (fallback)
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-cachyos-lts
-    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0 ip=10.0.2.15::10.0.2.2:255.255.255.0::enp0s2:off
+    kernel_cmdline: root=UUID=${root_uuid} rootflags=subvol=@ rw console=ttyS0,115200 console=tty0
     module_path: boot():/initramfs-linux-cachyos-lts-fallback.img
 LIMINE
 

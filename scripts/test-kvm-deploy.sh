@@ -155,11 +155,8 @@ for prof in "${PROFILES[@]}"; do
         -drive "if=pflash,format=raw,file=${OVMF_VARS}" \
         -drive "file=${DISK},format=qcow2,if=virtio" \
         -nic "user,model=virtio-net-pci,hostfwd=tcp::${SSH_PORT}-:22" \
-        -display none \
-        -monitor none \
-        -serial "file:/tmp/kvm-deploy-serial-${prof}.log" \
-        -pidfile "${VM_DIR}/qemu.pid" \
-        > "${VM_DIR}/qemu.stdout" 2>"${VM_DIR}/qemu.stderr" &
+        -nographic \
+        > "${VM_DIR}/qemu.console" 2>&1 &
 
     QEMU_PID=$!
     echo "$QEMU_PID" > "${VM_DIR}/qemu.pid"

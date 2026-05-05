@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# vm-smoke.sh — run CachyOS VM smoke test inside a Podman container
+# vm-smoke.sh — run CachyOS VM deployment test inside a Podman container
 
 set -euo pipefail
 
 ROOTFS=${1:-${ROOTFS:-/mnt/one/cachyos-root}}
+PROFILE=${2:-${KVM_DEPLOY_PROFILE:-matrix-minimal}}
 PODMAN_IMAGE=${PODMAN_IMAGE:-archlinux:latest}
 LOG_DIR=${LOG_DIR:-logs}
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
@@ -29,7 +30,7 @@ mkdir -p "$LOG_DIR"
 echo "==> Pulling Podman image: $PODMAN_IMAGE"
 podman pull "$PODMAN_IMAGE" >/dev/null
 
-echo "==> Starting VM smoke test (log: $LOG_FILE)"
+echo "==> Starting VM deployment test (profile: $PROFILE, log: $LOG_FILE)"
 
 run_smoke() {
 	podman run --rm --privileged \
@@ -37,18 +38,23 @@ run_smoke() {
 		-v "$ROOTFS":/mnt/rootfs:ro \
 		-w /srv/salt \
 		-e ROOTFS=/mnt/rootfs \
+		-e KVM_DEPLOY_PROFILE="$PROFILE" \
 		"$PODMAN_IMAGE" /bin/bash -lc '
             set -euo pipefail
             pacman -Sy --noconfirm --needed \
                 qemu-base qemu-system-x86 edk2-ovmf btrfs-progs rsync parted dosfstools util-linux
-            scripts/test-cachyos-vm.sh "${ROOTFS:-/mnt/rootfs}"
+            scripts/test-kvm-deploy.sh \
+                --rootfs "${ROOTFS:-/mnt/rootfs}" \
+                --profile "${KVM_DEPLOY_PROFILE:-matrix-minimal}" \
+                --salt-repo /srv/salt \
+                --output-dir /srv/salt/logs
         '
 }
 
 if run_smoke |& tee "$LOG_FILE"; then
-	echo "==> VM smoke test completed successfully"
+	echo "==> VM deployment test passed"
 else
 	status=$?
-	echo "==> VM smoke test failed (see $LOG_FILE)" >&2
+	echo "==> VM deployment test failed (see $LOG_FILE)" >&2
 	exit $status
 fi

@@ -297,6 +297,37 @@ if [ -f "$USER_SERVICES_FILE" ]; then
 	done < <(sed -n '/^enable_now_timers:/,/^[^ ]/p' "$USER_SERVICES_FILE" | grep -v 'features:' | grep -oP '^\s+- \{name:\s*\K[^,}]+' 2>/dev/null || true)
 fi
 
+# ── OpenCode services (managed by opencode_telegram.sls, not user_services.yaml) ─
+if systemctl --user cat opencode-serve.service &>/dev/null; then
+	check_user_service "opencode-serve.service"
+fi
+if systemctl --user cat opencode-telegram-bot.service &>/dev/null; then
+	check_user_service "opencode-telegram-bot.service"
+	# Deep health check: bot has TCP connection to SOCKS5 proxy
+	for i in "${!results[@]}"; do
+		entry="${results[$i]}"
+		entry_name="${entry%%	*}"
+		if [ "$entry_name" = "opencode-telegram-bot.service" ]; then
+			status=$(echo "$entry" | cut -f6)
+			health="-"
+			if [ "$status" = "healthy" ]; then
+				PID=$(systemctl --user show -p MainPID --value opencode-telegram-bot.service 2>/dev/null || true)
+				if [ -n "$PID" ] && [ "$PID" != "0" ]; then
+					if ss -tnp 2>/dev/null | awk -v pid="$PID" '$0 ~ "pid=" pid && /127\.0\.0\.1:10808/ { found=1; exit } END { exit !found }'; then
+						health="ok"
+					else
+						health="no-proxy"
+						status="unhealthy"
+						unhealthy=$((unhealthy + 1))
+					fi
+				fi
+			fi
+			results[i]=$(echo "$entry" | awk -F'\t' -v h="$health" -v s="$status" 'BEGIN{OFS="\t"} {$5=h; $6=s; print}')
+			break
+		fi
+	done
+fi
+
 # ── HTTP healthchecks ────────────────────────────────────────────────────
 declare -A HEALTHCHECKS=(
 	[ollama]="11434:/api/tags"

@@ -1,4 +1,4 @@
-{# OpenCode Telegram bot: npm package, systemd user service, and secret resolution #}
+{# OpenCode Telegram bot: npm package, systemd user service, healthcheck timer, and secret resolution #}
 {% from '_imports.jinja' import user, home, tg_secret, gopass_secret %}
 {% from '_macros_pkg.jinja' import npm_pkg %}
 {% from '_macros_service.jinja' import ensure_dir, user_service_enable, user_service_file, user_unit_override %}
@@ -111,4 +111,30 @@ opencode_deepseek_env:
         'cmd: opencode_telegram_bot_service_daemon_reload',
     ] + (['file: opencode_telegram_bot_env'] if _has_otb_token else [])
       + (['file: opencode_deepseek_env', 'file: opencode_serve_env', 'cmd: opencode_serve_env_daemon_reload'] if _has_deepseek_key else []),
+) }}
+
+# ── Healthcheck: periodic watchdog that detects and recovers silent bot failures ──
+opencode_telegram_bot_healthcheck_script:
+  file.managed:
+    - name: {{ home }}/.local/bin/check-opencode-telegram-bot
+    - source: salt://scripts/check-opencode-telegram-bot.sh
+    - user: {{ user }}
+    - group: {{ user }}
+    - mode: '0755'
+    - require:
+      - cmd: install_opencode_telegram
+
+{{ user_service_file('opencode_telegram_bot_healthcheck_service', 'opencode-telegram-bot-healthcheck.service') }}
+{{ user_service_file('opencode_telegram_bot_healthcheck_timer', 'opencode-telegram-bot-healthcheck.timer') }}
+
+{{ user_service_enable('opencode_telegram_bot_healthcheck_enabled',
+    services=['opencode-telegram-bot-healthcheck.service'],
+    start_now=['opencode-telegram-bot-healthcheck.timer'],
+    requires=[
+        'file: opencode_telegram_bot_healthcheck_script',
+        'file: opencode_telegram_bot_healthcheck_service',
+        'cmd: opencode_telegram_bot_healthcheck_service_daemon_reload',
+        'file: opencode_telegram_bot_healthcheck_timer',
+        'cmd: opencode_telegram_bot_healthcheck_timer_daemon_reload',
+    ],
 ) }}

@@ -147,7 +147,6 @@ for prof in "${PROFILES[@]}"; do
     set +a
 
     qemu-system-x86_64 \
-        -daemonize \
         -machine "q35,accel=${KVM_ACCEL}" \
         -cpu host \
         -smp 4 \
@@ -160,18 +159,16 @@ for prof in "${PROFILES[@]}"; do
         -monitor none \
         -serial "file:/tmp/kvm-deploy-serial-${prof}.log" \
         -pidfile "${VM_DIR}/qemu.pid" \
-        2>"${VM_DIR}/qemu.stderr"
+        > "${VM_DIR}/qemu.stdout" 2>"${VM_DIR}/qemu.stderr" &
 
-    sleep 2
-    if [[ -f "${VM_DIR}/qemu.pid" ]]; then
-        QEMU_PID=$(cat "${VM_DIR}/qemu.pid" 2>/dev/null || echo "")
-    else
-        QEMU_PID=""
-    fi
+    QEMU_PID=$!
+    echo "$QEMU_PID" > "${VM_DIR}/qemu.pid"
 
-    if [[ -z "$QEMU_PID" ]] || ! kill -0 "$QEMU_PID" 2>/dev/null; then
-        log_error "QEMU failed to start or died immediately"
+    sleep 3
+    if ! kill -0 "$QEMU_PID" 2>/dev/null; then
+        log_error "QEMU died immediately after start"
         cat "${VM_DIR}/qemu.stderr" 2>/dev/null
+        cat "${VM_DIR}/qemu.stdout" 2>/dev/null
         RESULTS["$prof"]="INFRA_ERROR"
         if $FAIL_FAST; then exit 2; fi
         trap_cleanup; trap - EXIT INT TERM; continue

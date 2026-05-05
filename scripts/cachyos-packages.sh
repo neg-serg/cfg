@@ -1,11 +1,11 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 # Install all user packages on CachyOS after bootstrap
 # Run as root after first boot (or from arch-chroot)
 #
 # Usage:
 #   sudo ./scripts/cachyos-packages.sh
 #
-# Requires: paru (installed by bootstrap)
+# Requires: python3, python-yaml (must be pre-installed)
 
 set -euo pipefail
 
@@ -14,7 +14,7 @@ if [[ $EUID -ne 0 ]]; then
 	exit 1
 fi
 
-SCRIPT_DIR="${0:A:h}"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SALT_DIR="${SALT_DIR:-$(dirname "$SCRIPT_DIR")}"
 YAML_FILE="${SALT_DIR}/states/data/packages.yaml"
 # Fallback: when run from /root inside chroot, packages.yaml is copied alongside

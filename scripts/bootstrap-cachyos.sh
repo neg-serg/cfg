@@ -371,8 +371,10 @@ if [[ -f /mnt/salt/scripts/cachyos-packages.sh ]]; then
     cp /mnt/salt/scripts/cachyos-packages.sh "$TARGET/root/cachyos-packages.sh"
     cp /mnt/salt/states/data/packages.yaml "$TARGET/root/packages.yaml" 2>/dev/null || true
     chmod +x "$TARGET/root/cachyos-packages.sh"
+    echo "==> [container] Installing python3 for package script..."
+    arch-chroot "$TARGET" pacman -Sy --noconfirm --needed python3 python-yaml 2>/dev/null || true
     echo "==> [container] Running full package installation in chroot..."
-    arch-chroot "$TARGET" zsh /root/cachyos-packages.sh
+    arch-chroot "$TARGET" bash /root/cachyos-packages.sh
     rm -f "$TARGET/root/cachyos-packages.sh" "$TARGET/root/packages.yaml"
 else
     echo "==> WARNING: cachyos-packages.sh not found at /mnt/salt/scripts/, skipping full install"

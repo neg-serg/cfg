@@ -210,37 +210,42 @@ host: ${profile}
 GRAINS
     fi
 
-    # Enable SSH root login with password for test access
-    log_info "Configuring SSH for root access..."
-    mkdir -p "$mnt/etc/ssh/sshd_config.d"
+    # Force networking and SSH via oneshot systemd service
+    log_info "Configuring network and SSH for VM..."
+    mkdir -p "$mnt/etc/ssh/sshd_config.d" "$mnt/etc/systemd/system"
     cat > "$mnt/etc/ssh/sshd_config.d/99-kvm-test.conf" <<'SSHD'
 PermitRootLogin yes
 PasswordAuthentication yes
 SSHD
-    # Enable systemd-networkd with static IP (QEMU SLIRP defaults)
-    log_info "Enabling networkd with static IP..."
-    mkdir -p "$mnt/etc/systemd/network"
-    cat > "$mnt/etc/systemd/network/50-virtio.network" <<'NETD'
-[Match]
-Name=en*
-[Network]
-Address=10.0.2.15/24
-Gateway=10.0.2.2
-DNS=10.0.2.3
-NETD
-    # Also match eth* for e1000 fallback
-    cat > "$mnt/etc/systemd/network/50-eth.network" <<'NETD2'
-[Match]
-Name=eth*
-[Network]
-Address=10.0.2.15/24
-Gateway=10.0.2.2
-DNS=10.0.2.3
-NETD2
-    ln -sf /usr/lib/systemd/system/systemd-networkd.service \
-        "$mnt/etc/systemd/system/multi-user.target.wants/systemd-networkd.service" 2>/dev/null || true
-    # Disable NetworkManager to avoid conflicts
-    rm -f "$mnt/etc/systemd/system/multi-user.target.wants/NetworkManager.service" 2>/dev/null || true
+    cat > "$mnt/etc/systemd/system/kvm-network.service" <<'UNIT'
+[Unit]
+Description=Force KVM network and SSH
+Before=sshd.service network.target network-online.target
+Wants=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/bash -c '
+    for i in 1 2 3 4 5; do
+        for iface in /sys/class/net/e* /sys/class/net/en*; do
+            [ -d "$iface" ] || continue
+            name=$(basename "$iface")
+            ip link set "$name" up 2>/dev/null || true
+            ip addr add 10.0.2.15/24 dev "$name" 2>/dev/null || true
+            ip route add default via 10.0.2.2 2>/dev/null || true
+            break 2
+        done
+        sleep 2
+    done
+'
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+    ln -sf /etc/systemd/system/kvm-network.service \
+        "$mnt/etc/systemd/system/multi-user.target.wants/kvm-network.service" 2>/dev/null || true
+    mkdir -p "$mnt/etc/systemd/system/multi-user.target.wants" 2>/dev/null || true
     local pw_hash
     pw_hash=$(openssl passwd -6 "root" 2>/dev/null \
         || python3 -c 'import crypt; print(crypt.crypt("root", crypt.mksalt(crypt.METHOD_SHA512)))')

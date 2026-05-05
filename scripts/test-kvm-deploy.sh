@@ -155,7 +155,9 @@ for prof in "${PROFILES[@]}"; do
         -drive "if=pflash,format=raw,file=${OVMF_VARS}" \
         -drive "file=${DISK},format=qcow2,if=virtio" \
         -nic "user,model=virtio-net-pci,hostfwd=tcp::${SSH_PORT}-:22" \
-        -nographic \
+        -display none \
+        -serial stdio \
+        -monitor none \
         </dev/null > "${VM_DIR}/qemu.console" 2>&1 &
 
     QEMU_PID=$!

@@ -8,12 +8,31 @@ set -euo pipefail
 # Constants
 # ---------------------------------------------------------------------------
 readonly QEMU_BIN="${QEMU_BIN:-qemu-system-x86_64}"
-readonly OVMF_CODE="${OVMF_CODE:-/usr/share/edk2/ovmf/OVMF_CODE.fd}"
-readonly OVMF_VARS_TEMPLATE="${OVMF_VARS_TEMPLATE:-/usr/share/edk2/ovmf/OVMF_VARS.fd}"
+readonly OVMF_CODE="${OVMF_CODE:-$(find /usr/share/edk2 -name 'OVMF_CODE.*.fd' \! -name '*secboot*' 2>/dev/null | head -1)}"
+readonly OVMF_VARS_TEMPLATE="${OVMF_VARS_TEMPLATE:-$(find /usr/share/edk2 -name 'OVMF_VARS.*.fd' \! -name '*secboot*' 2>/dev/null | head -1)}"
 readonly QEMU_IMG="${QEMU_IMG:-qemu-img}"
 readonly QEMU_NBD="${QEMU_NBD:-qemu-nbd}"
-readonly SSH_CMD="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -o LogLevel=ERROR"
-readonly RSYNC_ARGS="-aH --info=progress2"
+readonly -a RSYNC_ARGS=(-aH --info=progress2)
+SSH_CMD=(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+    -o ConnectTimeout=5 -o LogLevel=ERROR -o BatchMode=yes)
+
+_ssh_wrapper() {
+    local port="$1" host="$2"
+    shift 2
+    "${SSH_CMD[@]}" -p "$port" "${host}@localhost" "$@"
+}
+
+_ssh_with_pass() {
+    local port="$1" host="$2"
+    shift 2
+    if command -v sshpass >/dev/null 2>&1; then
+        sshpass -p root "${SSH_CMD[@]}" -p "$port" "${host}@localhost" "$@"
+    else
+        SSH_ASKPASS_REQUIRE=never SSH_PASSWORD=root \
+            "${SSH_CMD[@]}" -o PreferredAuthentications=password \
+            -p "$port" "${host}@localhost" "$@" </dev/null
+    fi
+}
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -68,15 +87,20 @@ check_kvm() {
 }
 
 check_prereqs() {
-    local missing=()
-    for cmd in qemu-system-x86_64 qemu-img qemu-nbd btrfs parted rsync; do
+    local missing=() missing_pkgs=()
+    for cmd in qemu-system-x86_64 qemu-img qemu-nbd parted rsync; do
         command -v "$cmd" >/dev/null 2>&1 || missing+=("$cmd")
     done
+    command -v btrfs >/dev/null 2>&1 || { missing+=("btrfs"); missing_pkgs+=("btrfs-progs"); }
     if [[ ! -f "$OVMF_CODE" ]]; then
-        missing+=("edk2-ovmf (OVMF_CODE.fd)")
+        missing+=("OVMF_CODE.fd")
+        missing_pkgs+=("edk2-ovmf")
     fi
     if (( ${#missing[@]} > 0 )); then
         echo "error: missing prerequisites: ${missing[*]}" >&2
+        if (( ${#missing_pkgs[@]} > 0 )); then
+            echo "  install: pacman -S ${missing_pkgs[*]}" >&2
+        fi
         exit 2
     fi
 }
@@ -166,13 +190,13 @@ build_vm_image() {
 
     # Copy rootfs
     log_info "Copying rootfs from $rootfs..."
-    rsync $RSYNC_ARGS --exclude='/boot/*' "$rootfs/" "$mnt/"
+    rsync "${RSYNC_ARGS[@]}" --exclude='/boot/*' "$rootfs/" "$mnt/"
 
     # Copy salt repo
     if [[ -n "$salt_repo" && -d "$salt_repo" ]]; then
         log_info "Copying Salt repo from $salt_repo..."
         mkdir -p "$mnt/srv/salt"
-        rsync $RSYNC_ARGS --exclude='.git' --exclude='logs/' --exclude='__pycache__/' \
+        rsync "${RSYNC_ARGS[@]}" --exclude='.git' --exclude='logs/' --exclude='__pycache__/' \
             --exclude='*.pyc' --exclude='.venv/' --exclude='node_modules/' \
             "$salt_repo/" "$mnt/srv/salt/"
     fi
@@ -186,9 +210,21 @@ host: ${profile}
 GRAINS
     fi
 
+    # Enable SSH root login with password for test access
+    log_info "Configuring SSH for root access..."
+    mkdir -p "$mnt/etc/ssh/sshd_config.d"
+    cat > "$mnt/etc/ssh/sshd_config.d/99-kvm-test.conf" <<'SSHD'
+PermitRootLogin yes
+PasswordAuthentication yes
+SSHD
+    local pw_hash
+    pw_hash=$(openssl passwd -6 "root" 2>/dev/null \
+        || python3 -c 'import crypt; print(crypt.crypt("root", crypt.mksalt(crypt.METHOD_SHA512)))')
+    sed -i "s|^root:[^:]*:|root:${pw_hash}:|" "$mnt/etc/shadow"
+
     # Mount ESP
     mount "$efipart" "$mnt/boot"
-    rsync $RSYNC_ARGS "$rootfs/boot/" "$mnt/boot/"
+    rsync "${RSYNC_ARGS[@]}" "$rootfs/boot/" "$mnt/boot/"
 
     # Generate fstab
     log_info "Generating fstab..."
@@ -262,13 +298,12 @@ wait_for_ssh() {
 
     log_phase "Waiting for SSH on port $port..."
     while (( elapsed < timeout_sec )); do
-        if $SSH_CMD -p "$port" root@localhost "echo ok" >/dev/null 2>&1; then
+        if _ssh_with_pass "$port" root "echo ok" >/dev/null 2>&1; then
             echo "    SSH ready after ${elapsed}s"
             return 0
         fi
         sleep "$interval"
         ((elapsed += interval))
-        # Exponential backoff capped at max_interval
         interval=$(( interval * 2 < max_interval ? interval * 2 : max_interval ))
     done
     echo "error: SSH timeout after ${timeout_sec}s" >&2
@@ -278,13 +313,13 @@ wait_for_ssh() {
 ssh_exec() {
     local port="$1"
     shift
-    $SSH_CMD -p "$port" root@localhost "$@"
+    _ssh_with_pass "$port" root "$@"
 }
 
 ssh_exec_quiet() {
     local port="$1"
     shift
-    $SSH_CMD -p "$port" root@localhost "$@" 2>/dev/null || true
+    _ssh_with_pass "$port" root "$@" 2>/dev/null || true
 }
 
 # ---------------------------------------------------------------------------
@@ -385,6 +420,18 @@ run_health_check() {
 # ---------------------------------------------------------------------------
 # Cleanup
 # ---------------------------------------------------------------------------
+kill_port_owner() {
+    local port="$1"
+    local pid
+    pid=$(ss -tlnp "sport = :${port}" 2>/dev/null | grep -oP 'pid=\K\d+' | head -1)
+    if [[ -n "$pid" ]]; then
+        log_info "Port ${port} in use by pid ${pid}, killing..."
+        kill "$pid" 2>/dev/null || true
+        sleep 1
+        kill -9 "$pid" 2>/dev/null || true
+    fi
+}
+
 cleanup_vm() {
     local vm_dir="$1"
     local qemu_pid="$2"

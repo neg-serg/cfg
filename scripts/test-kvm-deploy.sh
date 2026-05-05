@@ -138,6 +138,9 @@ for prof in "${PROFILES[@]}"; do
     # 2. Boot VM
     log_phase "Booting VM (accel=$KVM_ACCEL)..."
 
+    # Kill anything using our SSH port
+    kill_port_owner "$SSH_PORT"
+
     # Source vm-info via dot to avoid subshell
     set -a
     . "${VM_DIR}/.vm-info"
@@ -153,8 +156,8 @@ for prof in "${PROFILES[@]}"; do
         -drive "if=pflash,format=raw,file=${OVMF_VARS}" \
         -drive "file=${DISK},format=qcow2,if=virtio" \
         -nic "user,model=virtio-net-pci,hostfwd=tcp::${SSH_PORT}-:22" \
-        -nographic \
-        -serial "mon:stdio" \
+        -display none \
+        -serial "file:${VM_DIR}/serial.log" \
         -pidfile "${VM_DIR}/qemu.pid"
 
     QEMU_PID=$(cat "${VM_DIR}/qemu.pid" 2>/dev/null || echo "")
@@ -228,12 +231,12 @@ echo "========================================"
 PASSED=0
 FAILED=0
 for prof in "${PROFILES[@]}"; do
-    status="${RESULTS[$prof]:-NOT_RUN}"
-    case "$status" in
+    pstatus="${RESULTS[$prof]:-NOT_RUN}"
+    case "$pstatus" in
         PASS) ((PASSED++)); mark="PASS" ;;
         *)    ((FAILED++)); mark="FAIL" ;;
     esac
-    echo "  ${mark}: $prof (${status})"
+    echo "  ${mark}: $prof (${pstatus})"
 done
 
 echo "----------------------------------------"

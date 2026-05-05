@@ -14,7 +14,7 @@ readonly QEMU_IMG="${QEMU_IMG:-qemu-img}"
 readonly QEMU_NBD="${QEMU_NBD:-qemu-nbd}"
 readonly -a RSYNC_ARGS=(-aH --info=progress2)
 SSH_CMD=(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
-    -o ConnectTimeout=5 -o LogLevel=ERROR -o BatchMode=yes)
+    -o ConnectTimeout=5 -o LogLevel=ERROR)
 
 _ssh_wrapper() {
     local port="$1" host="$2"

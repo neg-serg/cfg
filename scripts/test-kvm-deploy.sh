@@ -129,7 +129,7 @@ for prof in "${PROFILES[@]}"; do
 
     # 1. Build VM image (writes grains for this profile inside)
     if ! build_vm_image "$ROOTFS" "$VM_DIR" "$SALT_REPO" "$prof"; then
-        RESULTS["$prof"]="INFRA_ERROR"
+        RESULTS[$prof]="INFRA_ERROR"
         if $FAIL_FAST; then exit 2; fi
         trap - EXIT INT TERM
         continue
@@ -165,7 +165,7 @@ for prof in "${PROFILES[@]}"; do
     if ! kill -0 "$QEMU_PID" 2>/dev/null; then
         log_error "QEMU died immediately after start"
         cat "${VM_DIR}/qemu.console" 2>/dev/null
-        RESULTS["$prof"]="INFRA_ERROR"
+        RESULTS[$prof]="INFRA_ERROR"
         if $FAIL_FAST; then exit 2; fi
         trap_cleanup; trap - EXIT INT TERM; continue
     fi
@@ -176,7 +176,7 @@ for prof in "${PROFILES[@]}"; do
         log_error "QEMU died immediately after start"
         cat "${VM_DIR}/qemu.stderr" 2>/dev/null
         cat "${VM_DIR}/qemu.stdout" 2>/dev/null
-        RESULTS["$prof"]="INFRA_ERROR"
+        RESULTS[$prof]="INFRA_ERROR"
         if $FAIL_FAST; then exit 2; fi
         trap_cleanup; trap - EXIT INT TERM; continue
     fi
@@ -185,7 +185,7 @@ for prof in "${PROFILES[@]}"; do
     # 3. Wait for SSH
     if ! wait_for_ssh "$SSH_PORT" "$TIMEOUT_BOOT"; then
         log_error "SSH timeout — VM may have failed to boot"
-        RESULTS["$prof"]="TIMEOUT_BOOT"
+        RESULTS[$prof]="TIMEOUT_BOOT"
         if $FAIL_FAST; then exit 2; fi
         trap_cleanup; trap - EXIT INT TERM; continue
     fi
@@ -216,15 +216,15 @@ for prof in "${PROFILES[@]}"; do
 
     # 7. Determine result
     if (( salt_rc != 0 )); then
-        RESULTS["$prof"]="FAIL_SALT"
+        RESULTS[$prof]="FAIL_SALT"
         GLOBAL_PASS=false
         echo "==> $prof: FAIL (Salt errors)"
     elif (( health_rc != 0 )); then
-        RESULTS["$prof"]="FAIL_HEALTH"
+        RESULTS[$prof]="FAIL_HEALTH"
         GLOBAL_PASS=false
         echo "==> $prof: FAIL (unhealthy services)"
     else
-        RESULTS["$prof"]="PASS"
+        RESULTS[$prof]="PASS"
         echo "==> $prof: PASS"
     fi
 

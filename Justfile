@@ -315,3 +315,31 @@ kvm-cleanup:
     sudo timeout 5 qemu-nbd --disconnect /dev/nbd1 2>/dev/null || true
     sudo rm -rf /tmp/kvm-deploy-* /tmp/manual-* 2>/dev/null || true
     echo "cleaned"
+
+# Full pipeline: bootstrap CachyOS rootfs, then test deployment
+kvm-bootstrap TARGET="/mnt/one/cachyos-root":
+    sudo scripts/bootstrap-cachyos.sh {{TARGET}}
+    echo "Rootfs bootstrapped. Fixing initramfs for VM networking..."
+    sudo sed -i 's/^MODULES=()/MODULES=(virtio_net e1000)/' {{TARGET}}/etc/mkinitcpio.conf
+    sudo sed -i 's/autodetect //' {{TARGET}}/etc/mkinitcpio.conf
+    sudo systemd-nspawn -D {{TARGET}} mkinitcpio -P
+    sudo systemd-nspawn -D {{TARGET}} depmod -a $(ls {{TARGET}}/lib/modules/ | head -1)
+    sudo tee {{TARGET}}/etc/rc.local << 'RCLOCAL'
+#!/bin/bash
+modprobe e1000 2>/dev/null || modprobe virtio_net 2>/dev/null
+for i in $(seq 1 20); do
+    for iface in /sys/class/net/e*; do
+        [ -d "$iface" ] || continue
+        name=$(basename "$iface"); [ "$name" = "lo" ] && continue
+        ip link set "$name" up; ip addr add 10.0.2.15/24 dev "$name"
+        ip route add default via 10.0.2.2 2>/dev/null; exit 0
+    done; sleep 1
+done
+RCLOCAL
+    sudo chmod +x {{TARGET}}/etc/rc.local
+    echo "Rootfs ready for VM testing."
+
+# Full CI pipeline: bootstrap + deploy + test
+kvm-ci:
+    just kvm-bootstrap
+    just kvm-test-minimal

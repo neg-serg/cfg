@@ -15,7 +15,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 SCRIPT_DIR="${0:A:h}"
-SALT_DIR="$(dirname "$SCRIPT_DIR")"
+SALT_DIR="${SALT_DIR:-$(dirname "$SCRIPT_DIR")}"
 YAML_FILE="${SALT_DIR}/states/data/packages.yaml"
 
 if [[ ! -f "$YAML_FILE" ]]; then

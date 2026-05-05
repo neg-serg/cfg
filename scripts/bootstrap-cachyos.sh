@@ -366,17 +366,15 @@ chmod 440 /etc/sudoers.d/99-neg-nopasswd
 '
 
 # --- Full package installation (separate chroot pass) ---
-if [[ -f /mnt/packages/cachyos-packages.sh ]]; then
+if [[ -f /mnt/salt/scripts/cachyos-packages.sh ]]; then
     echo "==> [container] Copying package script into target..."
-    cp /mnt/packages/cachyos-packages.sh "$TARGET/root/cachyos-packages.sh"
+    cp /mnt/salt/scripts/cachyos-packages.sh "$TARGET/root/cachyos-packages.sh"
     chmod +x "$TARGET/root/cachyos-packages.sh"
-
     echo "==> [container] Running full package installation in chroot..."
-    arch-chroot "$TARGET" zsh /root/cachyos-packages.sh
-
+    SALT_DIR=/mnt/salt arch-chroot "$TARGET" zsh /root/cachyos-packages.sh
     rm -f "$TARGET/root/cachyos-packages.sh"
 else
-    echo "==> WARNING: cachyos-packages.sh not found at /mnt/packages/, skipping full install"
+    echo "==> WARNING: cachyos-packages.sh not found at /mnt/salt/scripts/, skipping full install"
 fi
 
 echo "==> [container] Bootstrap complete."
@@ -404,7 +402,7 @@ podman run --rm -it \
     --security-opt=no-new-privileges \
     --name cachyos-bootstrap \
     -v "$TARGET:/mnt/target" \
-    -v "$SCRIPT_DIR:/mnt/packages:ro" \
+    -v "$(dirname "$SCRIPT_DIR"):/mnt/salt:ro" \
     "$ARCH_IMAGE" \
     bash -c "$INNER_SCRIPT"
 

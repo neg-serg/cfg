@@ -227,35 +227,35 @@ SSHD
     cat > "$mnt/etc/systemd/system/kvm-network.service" <<'UNIT'
 [Unit]
 Description=KVM network setup
+DefaultDependencies=no
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/local/bin/kvm-network.sh
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin
 
 [Install]
 WantedBy=sysinit.target
 UNIT
     cat > "$mnt/usr/local/bin/kvm-network.sh" <<'SCRIPT'
 #!/usr/bin/bash
-{
 echo "kvm-network: starting" > /dev/kmsg
-modprobe virtio_net 2>/tmp/modprobe.log || true
-modprobe e1000 2>>/tmp/modprobe.log || true
-for i in $(seq 1 15); do
+/usr/bin/modprobe virtio_net 2>/tmp/modprobe.log || /usr/bin/modprobe e1000 2>>/tmp/modprobe.log || true
+for i in $(seq 1 20); do
     for iface in /sys/class/net/e*; do
         [ -d "$iface" ] || continue
         name=$(basename "$iface")
         [ "$name" = "lo" ] && continue
-        ip link set "$name" up 2>/dev/null || true
-        ip addr add 10.0.2.15/24 dev "$name" 2>/dev/null || true
-        ip route add default via 10.0.2.2 2>/dev/null || true
+        /usr/bin/ip link set "$name" up 2>/dev/null || true
+        /usr/bin/ip addr add 10.0.2.15/24 dev "$name" 2>/dev/null || true
+        /usr/bin/ip route add default via 10.0.2.2 2>/dev/null || true
         echo "kvm-network: $name up 10.0.2.15" > /dev/kmsg
         exit 0
     done
-    sleep 2
+    sleep 1
 done
-echo "kvm-network: FAILED" > /dev/kmsg
+echo "kvm-network: FAILED - no iface" > /dev/kmsg
 SCRIPT
     chmod +x "$mnt/usr/local/bin/kvm-network.sh"
     ln -sf /etc/systemd/system/kvm-network.service \

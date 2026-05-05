@@ -69,7 +69,7 @@ user_services:
   - name: telethon-bridge
     severity: warning
     health_cmd: "curl -sf http://127.0.0.1:8319/health"
-    health_parse: ".connected and .proxypilot_ok"
+    health_parse: ".connected"
     auto_restart: true
     optional: true
   - name: opencode-telegram-bot

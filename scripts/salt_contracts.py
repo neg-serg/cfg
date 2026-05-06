@@ -930,6 +930,53 @@ def check_data_imports_exist(repo_root: Path = REPO_ROOT) -> list[str]:
     return errors
 
 
+# --- SLS feature gate validation against registry ---
+
+
+_SLS_FEATURE_GATE_RE = re.compile(r"\bhost\.features\.([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*)")
+
+
+def check_sls_feature_gates_against_registry(repo_root: Path = REPO_ROOT) -> list[str]:
+    registry = _load_feature_registry(repo_root)
+    registry_features = _collect_feature_names(registry)
+    if not registry_features:
+        return []
+
+    # Groups are namespace-only, not features themselves
+    registry_groups = {
+        name for name, config in registry.get("features", {}).items()
+        if isinstance(config, dict) and "features" in config
+    }
+
+    errors = []
+    states_dir = repo_root / "states"
+
+    for sls_path in sorted(states_dir.rglob("*.sls")):
+        try:
+            src = sls_path.read_text()
+        except (OSError, IOError):
+            continue
+
+        rel = sls_path.relative_to(repo_root)
+        gates_in_file = set()
+        for match in _SLS_FEATURE_GATE_RE.finditer(src):
+            gate = match.group(1)
+            if gate.endswith(".get") or gate == "get":
+                continue
+            if gate in registry_groups:
+                continue
+            gates_in_file.add(gate)
+
+        for gate in sorted(gates_in_file):
+            if gate not in registry_features:
+                errors.append(
+                    f"{rel} references host.features.{gate}"
+                    f" but '{gate}' is not declared in feature_registry.yaml"
+                )
+
+    return errors
+
+
 # --- Aggregate ---
 
 
@@ -989,6 +1036,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_feature_defaults_sync(repo_root))
     errors.extend(check_services_feature_gates(repo_root))
     errors.extend(check_data_imports_exist(repo_root))
+    errors.extend(check_sls_feature_gates_against_registry(repo_root))
     return errors
 
 

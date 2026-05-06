@@ -72,11 +72,6 @@ user_services:
     health_parse: ".connected"
     auto_restart: true
     optional: true
-  - name: opencode-telegram-bot
-    severity: warning
-    health_cmd: "pgrep -f opencode-telegram"
-    optional: true
-    keepalive: true
   - name: managed-bots
     severity: warning
     health_cmd: "pgrep -f managed-bots-runner"

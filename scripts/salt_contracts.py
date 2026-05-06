@@ -703,6 +703,85 @@ def _collect_data_consumers(repo_root: Path = REPO_ROOT) -> dict[str, set[str]]:
     return usage
 
 
+# --- Monitored services cross-reference ---
+
+
+def check_monitored_services_references(repo_root: Path = REPO_ROOT) -> list[str]:
+    monitored = load_yaml_file(repo_root / "states" / "data" / "monitored_services.yaml")
+    if not isinstance(monitored, dict):
+        return []
+
+    known = set(KNOWN_NATIVE_SERVICES)
+    known.update(_collect_catalog_service_targets(repo_root))
+    known.update(_collect_service_domains_from_services_yaml(repo_root))
+    known.update(_collect_known_units(repo_root))
+
+    states_dir = repo_root / "states"
+    for sls_path in states_dir.glob("*.sls"):
+        known.add(sls_path.stem)
+        known.add(sls_path.stem.replace("_", "-"))
+
+    errors = []
+
+    for scope in ("system_services", "user_services", "user_timers"):
+        entries = monitored.get(scope, [])
+        if not isinstance(entries, list):
+            continue
+        for entry in entries:
+            if not isinstance(entry, dict):
+                continue
+            name = entry.get("name", "")
+            if not isinstance(name, str) or not name:
+                continue
+            is_optional = entry.get("optional", False)
+            normalized = name.replace("-", "_")
+            base = name.rsplit(".", 1)[0] if "." in name else name
+            if not is_optional and name not in known and normalized not in known:
+                errors.append(
+                    f"monitored_services.yaml {scope}.{name}: unknown service"
+                )
+
+    return errors
+
+
+# --- Drift inventory cross-reference ---
+
+
+def check_drift_inventory_units(repo_root: Path = REPO_ROOT) -> list[str]:
+    drift = load_yaml_file(repo_root / "states" / "data" / "drift_inventory.yaml")
+    if not isinstance(drift, dict):
+        return []
+
+    known = set(KNOWN_NATIVE_SERVICES)
+    known.update(_collect_catalog_service_targets(repo_root))
+    known.update(_collect_service_domains_from_services_yaml(repo_root))
+    known.update(_collect_known_units(repo_root))
+    known.update({
+        "salt-monitor.service",
+        "salt-monitor-watchdog.timer",
+    })
+
+    errors = []
+
+    for scope in ("system_units", "user_units"):
+        entries = drift.get(scope, [])
+        if not isinstance(entries, list):
+            continue
+        for entry in entries:
+            if not isinstance(entry, dict):
+                continue
+            name = entry.get("name", "")
+            if not isinstance(name, str) or not name:
+                continue
+            base = name.rsplit(".", 1)[0] if "." in name else name
+            if name not in known and base not in known:
+                errors.append(
+                    f"drift_inventory.yaml {scope}.{name}: unknown unit"
+                )
+
+    return errors
+
+
 def check_data_file_liveness(repo_root: Path = REPO_ROOT) -> list[str]:
     data_dir = repo_root / "states" / "data"
     if not data_dir.is_dir():
@@ -780,6 +859,8 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_catalog_packages_in_packages_yaml(repo_root))
     errors.extend(check_services_config_templates(repo_root))
     errors.extend(check_data_file_liveness(repo_root))
+    errors.extend(check_monitored_services_references(repo_root))
+    errors.extend(check_drift_inventory_units(repo_root))
     return errors
 
 

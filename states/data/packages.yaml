@@ -176,7 +176,10 @@ system:
   - cups
   - cups-pk-helper
   - gdm
+  - loki
+  - promtail
   - rsync
+  - samba
   - slirp4netns
   - system-config-printer
   - zram-generator
@@ -607,4 +610,6 @@ aur:
   - xdg-ninja
   - youtube-tui
   - bazecor
+  - llama.cpp-vulkan
+  - python-telethon
   - zen-browser-bin

@@ -1,9 +1,9 @@
 version: 1
-generated: '2026-05-03T10:50:15'
+generated: '2026-05-07T00:42:28'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
-  purpose: 'AdGuard Home DNS filter: Quadlet container deployment'
+  purpose: ── Cleanup legacy binary ──
   data_files:
   - data/container_images.yaml
   - data/service_catalog.yaml
@@ -148,10 +148,10 @@ states:
   feature_gate:
   - image_gen
   - llama_embed
+  - managed_bots
   - nanoclaw
   - ollama
   - opencode
-  - opencode_telegram
   - t5_summarization
   - telethon_bridge
   - video_ai
@@ -160,6 +160,7 @@ states:
   purpose: 'Core group: users, shell, mounts, kernel modules, sysctl, systemd resources'
   includes:
   - bind_mounts
+  - cachyos
   - fstab_column
   - hardware
   - kernel_modules
@@ -178,13 +179,17 @@ states:
   - audio
   - desktop
   - fonts
+  - greetd
 - id: group.network
   path: states/group/network.sls
   purpose: 'Network group: VPN, firewall, DNS, IPv6 tunnels, and routing'
   feature_gate:
+  - amnezia
+  - network.hiddify
   - network.ipv6
   - network.ipv6_6to4
   - network.ipv6_tunnel
+  - network.zapret2
 - id: group.packages
   path: states/group/packages.sls
   purpose: 'Packages group: system packages, AUR installers, mpv scripts, themes'
@@ -253,12 +258,10 @@ states:
   - data/ipv6.yaml
 - id: ipv6_6to4
   path: states/ipv6_6to4.sls
-  purpose: IPv6 6to4 tunnel deployment
-  data_files:
-  - data/ipv6.yaml
+  purpose: ════════════════════════════════════════════════════════════════════
 - id: ipv6_tunnel
   path: states/ipv6_tunnel.sls
-  purpose: IPv6 HE tunnel deployment
+  purpose: ════════════════════════════════════════════════════════════════════
   secrets:
   - api/he-tunnel
   data_files:
@@ -291,17 +294,9 @@ states:
   - data/service_catalog.yaml
   services:
   - llama_embed.container
-- id: mkinitcpio
-  path: states/mkinitcpio.sls
-  purpose: 'mkinitcpio initramfs configuration: hooks, modules, and compression settings'
-  configs:
-  - configs/mkinitcpio.conf.j2
 - id: managed_bots
   path: states/managed_bots.sls
-  purpose: 'Managed Telegram Bots: Bot API integration with systemd supervision and
-    config-driven lifecycle'
-  feature_gate:
-  - managed_bots
+  purpose: 'Managed Telegram Bots: Bot API 9.6 manager bot state'
   secrets:
   - api/nanoclaw-telegram-uid
   - api/opencode-telegram-bot
@@ -310,8 +305,11 @@ states:
   - data/telegram_managed_bots.yaml
   services:
   - managed-bots.service
+- id: mkinitcpio
+  path: states/mkinitcpio.sls
+  purpose: 'mkinitcpio initramfs configuration: hooks, modules, and compression settings'
   configs:
-  - configs/managed-bots.yaml.j2
+  - configs/mkinitcpio.conf.j2
 - id: monitoring_alertmanager
   path: states/monitoring_alertmanager.sls
   purpose: 'Alertmanager: Telegram webhook alerts from Loki log rules'
@@ -350,7 +348,7 @@ states:
   - configs/loki-alert-rules.yaml.j2
 - id: monitoring_loki
   path: states/monitoring_loki.sls
-  purpose: 'Loki log aggregation, Promtail, Grafana deployment'
+  purpose: '── Loki: log aggregation ──'
   feature_gate:
   - monitoring.grafana
   - monitoring.loki
@@ -409,10 +407,26 @@ states:
   - tests/test_nanoclaw.py
 - id: network
   path: states/network.sls
+  purpose: ''
+- id: network.vm_bridge
+  path: states/network/vm_bridge.sls
+  purpose: ''
+  feature_gate:
+  - network.vm_bridge
+  configs:
+  - configs/br0.network
+- id: network.vpn_hybrid
+  path: states/network/vpn_hybrid.sls
+  purpose: ''
+  feature_gate:
+  - network.vpn_hybrid
+  configs:
+  - configs/sing-box-hybrid-config.json.j2
+- id: network.vpn_split_router
+  path: states/network/vpn_split_router.sls
   purpose: '--- AmneziaVPN config import script (shared by vpn_split_router and vpn_hybrid)
     ---'
   feature_gate:
-  - network.vm_bridge
   - network.vpn_hybrid
   - network.vpn_split_router
   data_files:
@@ -424,9 +438,9 @@ states:
   - vpn-split-router.service
   - vpn-split-router.timer
   configs:
-  - configs/br0.network
-  - configs/sing-box-hybrid-config.json.j2
   - configs/vpn-split-router.yaml.j2
+  tests:
+  - tests/test_vpn_split_router.py
 - id: nyxt
   path: states/nyxt.sls
   purpose: 'Nyxt browser: extensible Lisp-powered web browser managed as system package'
@@ -447,20 +461,6 @@ states:
 - id: opencode
   path: states/opencode.sls
   purpose: 'OpenCode LLM CLI tool: package install and configuration'
-- id: opencode_telegram
-  path: states/opencode_telegram.sls
-  purpose: 'OpenCode Telegram bot: npm package, systemd user service, and secret resolution'
-  secrets:
-  - api/deepseek
-  - api/nanoclaw-telegram-uid
-  - api/opencode-telegram-bot
-  - api/telegram-uid-levra
-  services:
-  - '@grinev/opencode-telegram-bot (npm)'
-  - opencode-serve.service
-  - opencode-telegram-bot.service
-  configs:
-  - configs/opencode-telegram-bot.env.j2
 - id: packages
   path: states/packages.sls
   purpose: '- pacman -Qq checks ALL packages — fails if ANY is missing, triggering
@@ -473,7 +473,7 @@ states:
     other states'
 - id: proxypilot
   path: states/proxypilot.sls
-  purpose: 'ProxyPilot LLM proxy: Quadlet container with secret resolution and provider config'
+  purpose: ── Secret resolution ──
   secrets:
   - api/proxypilot-management
   data_files:
@@ -486,7 +486,7 @@ states:
   - configs/proxypilot.yaml.j2
 - id: services
   path: states/services.sls
-  purpose: Renders one service section from services.yaml data.
+  purpose: ── Complex services ──
   feature_gate:
   - dns.*
   - monitoring.netdata
@@ -529,7 +529,6 @@ states:
   - network.zapret2
   - ollama
   - opencode
-  - opencode_telegram
   - proxypilot
   - services.bitcoind
   - services.duckdns
@@ -540,7 +539,6 @@ states:
   - tidal
   - video_ai
   - xen_vr
-  - zen_profile
   configs:
   - configs/os-release.j2
 - id: systemd_resources
@@ -650,7 +648,7 @@ states:
   data_files:
   - data/video_ai.yaml
   configs:
-  - configs/video-ai/*.json
+  - configs/video-ai/{{
 - id: windows_mount
   path: states/windows_mount.sls
   purpose: Windows NTFS partition mount with proper permissions and fstab integration
@@ -658,8 +656,21 @@ states:
   - data/windows_mount.yaml
 - id: xen
   path: states/xen.sls
-  purpose: 'X11/Xorg VR session: i3 + KDE Plasma X11 for SteamVR with Valve Index
-    on AMD GPU'
+  purpose: Xen VR session — thin include hub. Sub-states split across xen/ directory.
+  includes:
+  - users
+  - xen.kde_theme
+  - xen.sessions
+  - xen.user
+- id: xen.kde_theme
+  path: states/xen/kde_theme.sls
+  purpose: Xen KDE Breeze Dark theme seed configs — data-driven from states/data/xen.yaml
+- id: xen.sessions
+  path: states/xen/sessions.sls
+  purpose: 'Xen X11 session configs: .xinitrc, i3 config, greetd .desktop entries'
+- id: xen.user
+  path: states/xen/user.sls
+  purpose: 'Xen user account: creation, groups, Steam library access, TTY'
   secrets:
   - host/xen-password-hash
 - id: zapret2
@@ -681,11 +692,9 @@ states:
   - data/zen_browser.yaml
 - id: zen_profiles
   path: states/zen_profiles.sls
-  purpose: 'Zen Browser profiles: profile creation, configuration, and feature-gated
-    management'
-  feature_gate:
-  - zen_profile
+  purpose: 'Zen Browser Profiles: multi-profile management with isolated storage'
   data_files:
+  - data/hosts.yaml
   - data/zen_profiles.yaml
 - id: zsh
   path: states/zsh.sls
@@ -737,6 +746,10 @@ macros:
   - npm_build_workflow
   - github_release_to
   - install_catalog
+- id: _macros_ipv6_tunnel
+  path: states/_macros_ipv6_tunnel.jinja
+  provides:
+  - ipv6_tunnel
 - id: _macros_pkg
   path: states/_macros_pkg.jinja
   provides:
@@ -771,6 +784,7 @@ macros:
   - user_service_disable
   - user_linger
   - service_with_unit
+  - render_service
 scripts_py:
 - path: scripts/_rkn_utils.py
   purpose: Shared RKN domain loading utilities for VPN/routing scripts.
@@ -782,6 +796,8 @@ scripts_py:
   purpose: Compute file entry with optional cache reuse (mtime+size match → skip SHA-256).
 - path: scripts/format-fstab.py
   purpose: Format /etc/fstab with aligned columns, preserving comments and blank lines.
+- path: scripts/generate-boot-splash.py
+  purpose: Generate a minimal dark boot splash BMP for systemd-boot UKI embedding.
 - path: scripts/generate_hypr_shortcuts.py
   purpose: Generate Hyprland shortcut search data and wlr-which-key config.
 - path: scripts/host_model.py
@@ -869,6 +885,8 @@ scripts_sh:
   purpose: Print Grafana API token from gopass for QML sysmon popup usage.
 - path: scripts/health-check.sh
   purpose: health-check.sh — check health of all Salt-managed services
+- path: scripts/kvm-network-rc-local.sh
+  purpose: kvm-network-rc-local.sh — boot-time network setup for KVM test VMs
 - path: scripts/lint-all.sh
   purpose: ''
 - path: scripts/manual-tun-routes.sh
@@ -899,12 +917,16 @@ scripts_sh:
   purpose: Boot CachyOS rootfs in a QEMU VM to verify networking and services.
 - path: scripts/test-hybrid-routing.sh
   purpose: ''
+- path: scripts/test-kvm-deploy-lib.sh
+  purpose: test-kvm-deploy-lib.sh — shared functions for KVM deployment testing
+- path: scripts/test-kvm-deploy.sh
+  purpose: test-kvm-deploy.sh — KVM/QEMU Salt deployment test runner
 - path: scripts/test-singbox-vpn.sh
   purpose: Test sing-box VPN connection with safe fallback
 - path: scripts/test-vpn-connection.sh
   purpose: Test VPN connection using imported AmneziaVPN config
 - path: scripts/vm-smoke.sh
-  purpose: vm-smoke.sh — run CachyOS VM smoke test inside a Podman container
+  purpose: vm-smoke.sh — run CachyOS VM deployment test inside a Podman container
 - path: scripts/vpn-browser-quickstart.sh
   purpose: Quick start script for VPN browser integration
 - path: scripts/zapret2-rollout.sh
@@ -944,10 +966,9 @@ data_files:
 - path: states/data/drift_inventory.yaml
   consumers: null
 - path: states/data/feature_matrix.yaml
-  consumers:
-  - host_config.jinja
-  - render-matrix.py
-  - host_model.py
+  consumers: null
+- path: states/data/feature_registry.yaml
+  consumers: null
 - path: states/data/flatpak.yaml
   consumers:
   - flatpak.sls
@@ -962,7 +983,6 @@ data_files:
   - proxypilot.sls
 - path: states/data/hosts.yaml
   consumers:
-  - host_config.jinja
   - zen_profiles.sls
 - path: states/data/image_providers.yaml
   consumers:
@@ -980,11 +1000,9 @@ data_files:
 - path: states/data/ipv6.yaml
   consumers:
   - ipv6.sls
-  - ipv6_6to4.sls
   - ipv6_tunnel.sls
 - path: states/data/kernel_params.yaml
-  consumers:
-  - cachyos.sls
+  consumers: null
 - path: states/data/llama_embed.yaml
   consumers:
   - llama_embed.sls
@@ -1006,8 +1024,6 @@ data_files:
 - path: states/data/packages.yaml
   consumers:
   - packages.sls
-- path: states/data/rkn_domains_fetcher.yaml
-  consumers: null
 - path: states/data/service_catalog.yaml
   consumers:
   - adguardhome.sls
@@ -1052,10 +1068,12 @@ data_files:
   - video_ai/workflows.sls
 - path: states/data/vpn_split_router.yaml
   consumers:
-  - network.sls
+  - network/vpn_split_router.sls
 - path: states/data/windows_mount.yaml
   consumers:
   - windows_mount.sls
+- path: states/data/xen.yaml
+  consumers: null
 - path: states/data/zapret2.yaml
   consumers:
   - zapret2.sls
@@ -1076,6 +1094,7 @@ test_files:
 - path: tests/test_host_model.py
 - path: tests/test_hypr_shortcuts_generation.py
 - path: tests/test_index_salt.py
+- path: tests/test_kvm_deploy.py
 - path: tests/test_macro_config.py
 - path: tests/test_macro_container.py
 - path: tests/test_macro_desktop.py
@@ -1174,6 +1193,8 @@ docs:
   purpose: Tailscale VPN Setup
 - path: docs/telethon-bridge-setup.md
   purpose: Telethon Bridge Setup
+- path: docs/testing-kvm-deploy.md
+  purpose: KVM Deployment Testing
 - path: docs/tidal-setup.md
   purpose: TidalCycles Live Coding Setup
 - path: docs/vault-recovery.md

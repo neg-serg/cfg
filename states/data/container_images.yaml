@@ -127,14 +127,6 @@ opencode_serve:
   approved_at: null
   note: "Local image — build: podman build -t localhost/opencode-serve ."
 
-opencode_telegram_bot:
-  registry: localhost
-  image: opencode-telegram-bot
-  variant: null
-  digest: null
-  approved_at: null
-  note: "Local image — build: podman build -t localhost/opencode-telegram-bot ."
-
 vaultwarden:
   registry: docker.io
   image: vaultwarden/server

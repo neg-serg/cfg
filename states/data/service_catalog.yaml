@@ -325,18 +325,6 @@ opencode_serve:                # OpenCode HTTP API server
       mode: rw
   env_file: null
 
-opencode_telegram_bot:         # OpenCode Telegram bot
-  unit: opencode-telegram-bot
-  scope: user
-  health_cmd: "pgrep -f opencode-telegram"
-  container_image: opencode_telegram_bot
-  gpu: none
-  bind_mounts:
-    - host: ~/.config/opencode-telegram-bot
-      container: /config
-      mode: rw
-  env_file: null
-
 # ─── Password management ────────────────────────────────────────────
 vaultwarden:
   port: 8222

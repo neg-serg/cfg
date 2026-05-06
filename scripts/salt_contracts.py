@@ -782,6 +782,55 @@ def check_drift_inventory_units(repo_root: Path = REPO_ROOT) -> list[str]:
     return errors
 
 
+# --- Feature defaults sync ---
+
+
+def check_feature_defaults_sync(repo_root: Path = REPO_ROOT) -> list[str]:
+    registry = _load_feature_registry(repo_root)
+    hosts_data = load_yaml_file(repo_root / "states" / "data" / "hosts.yaml")
+
+    reg_features = _collect_registry_defaults(registry)
+    if not reg_features:
+        return []
+
+    hosts_defaults_full = {}
+    defaults_features = hosts_data.get("defaults", {}).get("features", {})
+    _flatten_defaults(defaults_features, "", hosts_defaults_full)
+
+    errors = []
+    for feature, reg_default in sorted(reg_features.items()):
+        hosts_default = hosts_defaults_full.get(feature)
+        if hosts_default is None:
+            continue
+        if hosts_default != reg_default:
+            errors.append(
+                f"Feature '{feature}' default mismatch:"
+                f" hosts.yaml={hosts_default}, registry={reg_default}"
+            )
+
+    return errors
+
+
+def _collect_registry_defaults(registry, prefix=""):
+    result = {}
+    for name, config in registry.get("features", {}).items():
+        full = f"{prefix}.{name}" if prefix else name
+        if isinstance(config, dict) and "features" in config:
+            result.update(_collect_registry_defaults(config, full))
+        elif isinstance(config, dict) and "default" in config:
+            result[full] = config["default"]
+    return result
+
+
+def _flatten_defaults(features, prefix, result):
+    for key, value in features.items():
+        full = f"{prefix}.{key}" if prefix else key
+        if isinstance(value, dict) and any(isinstance(v, bool) for v in value.values()):
+            _flatten_defaults(value, full, result)
+        elif isinstance(value, bool):
+            result[full] = value
+
+
 def check_data_file_liveness(repo_root: Path = REPO_ROOT) -> list[str]:
     data_dir = repo_root / "states" / "data"
     if not data_dir.is_dir():
@@ -861,6 +910,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_data_file_liveness(repo_root))
     errors.extend(check_monitored_services_references(repo_root))
     errors.extend(check_drift_inventory_units(repo_root))
+    errors.extend(check_feature_defaults_sync(repo_root))
     return errors
 
 

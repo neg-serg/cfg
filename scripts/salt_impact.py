@@ -64,6 +64,7 @@ STATE_ASSET_PREFIXES = (
 
 J2_IMPORT_YAML_RE = re.compile(r"\{%-?\s*import_yaml\s+['\"]([^'\"]+)['\"]\s+as\s+\w+")
 CONFIG_TO_STATE: dict[str, list[str]] = {}
+UNIT_TO_STATE: dict[str, list[str]] = {}
 
 _DATA_TO_STATE_CACHE: dict[str, dict[str, list[str]]] | None = None
 
@@ -139,11 +140,27 @@ def _resolve_config_to_state(config_path: str, repo_root: str) -> str | None:
     return CONFIG_TO_STATE.get(config_path, [None])[0] if CONFIG_TO_STATE.get(config_path) else None
 
 
+def _resolve_unit_to_state(unit_path: str, repo_root: str) -> str | None:
+    global UNIT_TO_STATE
+    if not UNIT_TO_STATE:
+        _build_config_state_map(repo_root)
+    if unit_path in UNIT_TO_STATE:
+        return UNIT_TO_STATE[unit_path][0]
+    unit_basename = os.path.basename(unit_path)
+    for full_path, states in UNIT_TO_STATE.items():
+        if os.path.basename(full_path) == unit_basename:
+            return states[0]
+    return None
+
+
 def _build_config_state_map(repo_root: str) -> None:
-    global CONFIG_TO_STATE
+    global CONFIG_TO_STATE, UNIT_TO_STATE
     configs_dir = os.path.join(repo_root, "states", "configs")
     states_dir = os.path.join(repo_root, "states")
     CONFIG_TO_STATE = {}
+    UNIT_TO_STATE = {}
+
+    UNIT_REF_RE = re.compile(r"salt://(units/[^\s'\"}]+)")
 
     for sls_path in Path(states_dir).rglob("*.sls"):
         try:
@@ -151,10 +168,15 @@ def _build_config_state_map(repo_root: str) -> None:
         except Exception:
             continue
         config_refs = set()
+        unit_refs = set()
         for match in re.finditer(r"salt://(configs/[^\s'\"]+)", src):
             config_refs.add("states/" + match.group(1))
-        if not config_refs:
+        for match in UNIT_REF_RE.finditer(src):
+            unit_refs.add("states/" + match.group(1))
+
+        if not config_refs and not unit_refs:
             continue
+
         rel = sls_path.relative_to(repo_root)
         record = salt_source_model.StateFileRecord(
             relpath=str(rel),
@@ -169,6 +191,10 @@ def _build_config_state_map(repo_root: str) -> None:
                 if cref not in CONFIG_TO_STATE:
                     CONFIG_TO_STATE[cref] = []
                 CONFIG_TO_STATE[cref].append(state_target)
+            for uref in unit_refs:
+                if uref not in UNIT_TO_STATE:
+                    UNIT_TO_STATE[uref] = []
+                UNIT_TO_STATE[uref].append(state_target)
 
 
 def _normalize_changed_files(changed_files: list[str]) -> list[str]:
@@ -221,6 +247,11 @@ def plan_for_changed_files(changed_files: list[str], repo_root: str | None = Non
             target = None
             if path.startswith(CONFIGS_PREFIX):
                 target = _resolve_config_to_state(path, repo_root or os.getcwd())
+                if target:
+                    selected_states.append(target)
+                    continue
+            if path.startswith("states/units/"):
+                target = _resolve_unit_to_state(path, repo_root or os.getcwd())
                 if target:
                     selected_states.append(target)
                     continue

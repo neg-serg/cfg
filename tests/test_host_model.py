@@ -432,3 +432,66 @@ def test_build_lint_host_enables_all_registry_features():
     assert not still_false, (
         f"lint host has {len(still_false)} features still False: {still_false}"
     )
+
+
+def test_telfir_host_contract():
+    """Validate the telfir host config against known expected values.
+    This serves as a contract: both host_config.jinja and host_model.py
+    must produce these values for telfir."""
+    data = host_model.load_hosts_yaml()
+    host = host_model.build_host("telfir", data)
+
+    # Top-level fields from defaults
+    assert host["user"] == "neg"
+    assert host["home"] == "/home/neg"
+    assert host["uid"] == 1000
+    assert host["mnt_zero"] == "/mnt/zero"
+    assert host["mnt_one"] == "/mnt/one"
+    assert host["cpu_vendor"] == "amd"
+    assert host["kvm_module"] == "kvm_amd"
+    assert host["timezone"] == "Europe/Moscow"
+    assert host["locale"] == "en_US.UTF-8"
+
+    # Telfir-specific overrides
+    assert host["display"] == "3840x2160@240"
+    assert host["primary_output"] == "DP-2"
+    assert host["greetd_scale"] == 2
+    assert host["hostname"] == "telfir"
+    assert "ec_sys" in host["extra_modules"]
+
+    # Derived fields
+    assert host["runtime_dir"] == "/run/user/1000"
+    assert host["pkg_list"] == "/var/cache/salt/pacman_installed.txt"
+    assert host["project_dir"] == "/home/neg/src/cfg"
+
+    # Feature flags (telfir overrides)
+    feats = host["features"]
+    assert feats["fancontrol"] is True
+    assert feats["monitoring"]["loki"] is True
+    assert feats["monitoring"]["promtail"] is True
+    assert feats["monitoring"]["grafana"] is False  # overridden
+    assert feats["monitoring"]["alertmanager"] is True
+    assert feats["services"]["transmission"] is True
+    assert feats["user_services"]["mail"] is False  # overridden
+    assert feats["user_services"]["vdirsyncer"] is False  # overridden
+    assert feats["network"]["tailscale"] is False  # overridden
+    assert feats["network"]["zapret2"] is False  # overridden
+    assert feats["network"]["ipv6"] is True
+    assert feats["floorp"] is False
+    assert feats["opencode"] is True
+    assert feats["telethon_bridge"] is True
+    assert feats["managed_bots"] is True
+    assert feats["music_analysis"] is True
+    assert feats["tidal"] is True
+    assert feats["nanoclaw"] is True
+
+    # Defaults that should be preserved (not overridden by telfir)
+    assert feats["steam"] is True
+    assert feats["mpd"] is True
+    assert feats["ollama"] is True
+    assert feats["llama_embed"] is True
+    assert feats["kanata"] is True
+    assert feats["flatpak"] is True
+    assert feats["video_ai"] is True
+    assert feats["xen_vr"] is False
+    assert feats["sudo_ssh_agent"] is False

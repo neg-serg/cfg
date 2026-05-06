@@ -325,6 +325,20 @@ maintenance_lock_remove() {
 }
 
 # ── Main ───────────────────────────────────────────────────────────────────────
+# Pre-flight: validate data contracts before applying states
+# Set SALT_SKIP_CONTRACTS=1 to bypass (e.g., bootstrap scenarios)
+if [[ -z "${SALT_SKIP_CONTRACTS:-}" ]]; then
+	CONTRACT_OUTPUT=$(python3 "${SCRIPT_DIR}/salt_contracts.py" 2>&1)
+	CONTRACT_RC=$?
+	if [[ $CONTRACT_RC -ne 0 ]]; then
+		echo "=== Data contract violations detected ==="
+		echo "$CONTRACT_OUTPUT"
+		echo ""
+		echo "  Set SALT_SKIP_CONTRACTS=1 to bypass and apply anyway."
+		echo "  Run 'python3 scripts/salt_contracts.py' for details."
+		exit 1
+	fi
+fi
 bootstrap_salt
 get_sudo
 repair_runtime_permissions

@@ -409,3 +409,26 @@ def test_host_config_jinja_has_merge_logic():
     assert "defaults" in content, "host_config.jinja must handle defaults"
     assert "aliases" in content, "host_config.jinja must handle aliases"
     assert "grains" in content or "hostname" in content, "host_config.jinja must resolve hostname"
+
+
+def test_build_lint_host_enables_all_registry_features():
+    reg = host_model.load_feature_registry()
+    host = host_model.build_lint_host()
+
+    registry_features = host_model._collect_registry_features(reg)
+
+    def find_false(features, prefix=""):
+        falses = []
+        for k, v in features.items():
+            full = f"{prefix}.{k}" if prefix else k
+            if isinstance(v, dict):
+                falses.extend(find_false(v, full))
+            elif v is False:
+                if full in registry_features:
+                    falses.append(full)
+        return falses
+
+    still_false = find_false(host.get("features", {}))
+    assert not still_false, (
+        f"lint host has {len(still_false)} features still False: {still_false}"
+    )

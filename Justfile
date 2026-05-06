@@ -138,6 +138,11 @@ validate JOBS="":
 contracts:
     python3 scripts/salt_contracts.py
 
+# Run full data validation pipeline (contracts + schema tests + cross-refs)
+check:
+    python3 scripts/salt_contracts.py --verbose
+    python3 -m pytest tests/test_data_crossrefs.py tests/test_yaml_schemas.py tests/test_host_model.py -q
+
 # Run data contract checks with verbose summary
 contracts-verbose:
     python3 scripts/salt_contracts.py --verbose

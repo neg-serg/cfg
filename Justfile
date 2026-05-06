@@ -162,15 +162,8 @@ impact:
         echo "No uncommitted changes"
         exit 0
     fi
-    python3 scripts/salt_impact.py --files ${changed} --json | python3 -c "
-import json, sys
-plan = json.load(sys.stdin)
-print(f'Target: {plan[\"final_target\"]}')
-if plan['selected_states']:
-    print(f'States: {\", \".join(plan[\"selected_states\"])}')
-for r in plan['fallback_reasons']:
-    print(f'  {r}')
-"
+    python3 scripts/salt_impact.py --files ${changed} --json > /tmp/_impact.json
+    python3 scripts/salt_impact.py --files ${changed} | tail -n +2
 
 # Check one explicit state file render without a full repository pass
 validate-one STATE:

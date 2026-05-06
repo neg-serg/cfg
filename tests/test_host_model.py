@@ -282,3 +282,39 @@ def test_merge_none_override():
     override = {"k": None}
     result = host_model.recursive_merge(base, override)
     assert result["k"] is None
+
+
+# --- check_features_against_registry ---
+
+
+def test_check_features_against_registry_passes():
+    errors = host_model.check_features_against_registry()
+    assert errors == 0
+
+
+def test_registry_feature_names_are_well_formed():
+    features = host_model._collect_registry_features(host_model.load_feature_registry())
+    assert "monitoring.loki" in features
+    assert "monitoring.sysstat" in features
+    assert "dns.unbound" in features
+    assert "steam" in features
+    assert "ollama" in features
+    assert "amnezia" in features
+    # Groups should NOT appear as feature names
+    assert "monitoring" not in features
+    assert "dns" not in features
+    assert "services" not in features
+    assert "network" not in features
+    assert "user_services" not in features
+
+
+def test_registry_features_match_hosts_defaults():
+    registry_features = host_model._collect_registry_features(host_model.load_feature_registry())
+    hosts_data = host_model.load_hosts_yaml()
+    hosts_features = host_model._collect_hosts_features(
+        hosts_data.get("defaults", {}).get("features", {})
+    )
+    missing = registry_features - hosts_features
+    extra = hosts_features - registry_features
+    assert not missing, f"registry features not in hosts.yaml defaults: {missing}"
+    assert not extra, f"hosts.yaml defaults features not in registry: {extra}"

@@ -961,6 +961,11 @@ def main():
     total_errors += host_errors
     print(f"Host config: {host_errors} errors")
 
+    # 4b. Feature registry validation
+    feature_errors = host_model.check_features_against_registry()
+    total_errors += feature_errors
+    print(f"Feature registry: {feature_errors} errors")
+
     # 5. YAML config validation
     if yaml_configs:
         yaml_errors = check_yaml_configs(yaml_configs)

@@ -398,15 +398,38 @@ def generate_data_md(summaries):
 
 def collect_data_usage():
     usage = {}
+    CONFIG_REF_RE = re.compile(r"salt://(configs/[^\s'\"}]+)")
+
     for path in glob.glob(os.path.join(STATES_DIR, "**", "*.sls"), recursive=True):
         with open(path) as f:
             content = f.read()
+
         for match in IMPORT_YAML_RE.finditer(content):
             rel = match.group(1)
             if not rel.startswith("data/"):
                 continue
             full = os.path.join(STATES_DIR, rel)
             usage.setdefault(full, set()).add(os.path.relpath(path, STATES_DIR))
+
+        for config_match in CONFIG_REF_RE.finditer(content):
+            config_rel = config_match.group(1)
+            config_path = os.path.join(STATES_DIR, config_rel)
+            if not config_path.endswith(".j2"):
+                continue
+            if not os.path.isfile(config_path):
+                continue
+            try:
+                with open(config_path) as cf:
+                    config_src = cf.read()
+            except (OSError, IOError):
+                continue
+            for j2_match in IMPORT_YAML_RE.finditer(config_src):
+                j2_rel = j2_match.group(1)
+                if not j2_rel.startswith("data/"):
+                    continue
+                full = os.path.join(STATES_DIR, j2_rel)
+                usage.setdefault(full, set()).add(os.path.relpath(path, STATES_DIR))
+
     return {k: sorted(v) for k, v in usage.items()}
 
 
@@ -482,6 +505,25 @@ def _scan_state_source(relpath):
     secrets = sorted(set(_SECRET_RE.findall(src)))
     configs = sorted(set(_CONFIG_RE.findall(src)))
     data_files = sorted(set(o for o in _DATA_IMPORT_RE.findall(src) if o.startswith("data/")))
+
+    # Also scan referenced config .j2 templates for data imports
+    for config_rel in configs:
+        config_path = os.path.join(STATES_DIR, config_rel)
+        if not config_path.endswith(".j2"):
+            continue
+        if not os.path.isfile(config_path):
+            continue
+        try:
+            with open(config_path) as cf:
+                config_src = cf.read()
+        except (OSError, IOError):
+            continue
+        for j2_match in _DATA_IMPORT_RE.finditer(config_src):
+            j2_rel = j2_match.group(1)
+            if j2_rel.startswith("data/"):
+                data_files.append(j2_rel)
+
+    data_files = sorted(set(data_files))
 
     for m in _SERVICE_FILE_RE.finditer(src):
         services.append(m.group(1))

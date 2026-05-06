@@ -16,6 +16,7 @@ import yaml
 
 HOSTS_YAML_PATH = os.path.join("states", "data", "hosts.yaml")
 FEATURE_MATRIX_PATH = os.path.join("states", "data", "feature_matrix.yaml")
+FEATURE_REGISTRY_PATH = os.path.join("states", "data", "feature_registry.yaml")
 
 GRAINS_HOSTNAME_SENTINEL = "{{ grains['host'] }}"
 
@@ -225,6 +226,72 @@ def check_host_config():
                 print(
                     f"\033[31mHost config: '{hostname}':"
                     f" {field} must be int, got {type(merged.get(field)).__name__}\033[0m"
+                )
+                errors += 1
+
+    return errors
+
+
+def load_feature_registry():
+    try:
+        with open(FEATURE_REGISTRY_PATH) as fh:
+            return yaml.safe_load(fh.read()) or {}
+    except FileNotFoundError:
+        return {}
+    except yaml.YAMLError:
+        return {}
+
+
+def _collect_registry_features(registry, prefix=""):
+    features = set()
+    for name, config in registry.get("features", {}).items():
+        full = f"{prefix}.{name}" if prefix else name
+        if isinstance(config, dict) and "features" in config:
+            features.update(_collect_registry_features(config, full))
+        elif isinstance(config, dict) and "default" in config:
+            features.add(full)
+    return features
+
+
+def _collect_hosts_features(features, prefix=""):
+    names = set()
+    for key, value in features.items():
+        full = f"{prefix}.{key}" if prefix else key
+        if isinstance(value, dict) and any(isinstance(v, bool) for v in value.values()):
+            names.update(_collect_hosts_features(value, full))
+        elif isinstance(value, bool):
+            names.add(full)
+    return names
+
+
+def check_features_against_registry():
+    registry = load_feature_registry()
+    hosts_data = load_hosts_yaml()
+    errors = 0
+
+    registry_features = _collect_registry_features(registry)
+    if not registry_features:
+        return 0
+
+    defaults_features = hosts_data.get("defaults", {}).get("features", {})
+    hosts_features = _collect_hosts_features(defaults_features)
+    for feature in hosts_features:
+        if feature not in registry_features:
+            print(
+                f"\033[31mHost config defaults:"
+                f" feature '{feature}' not declared in feature_registry.yaml\033[0m"
+            )
+            errors += 1
+
+    for hostname, config in hosts_data.get("hosts", {}).items():
+        if not isinstance(config, dict):
+            continue
+        host_features = _collect_hosts_features(config.get("features", {}))
+        for feature in host_features:
+            if feature not in registry_features:
+                print(
+                    f"\033[31mHost config: '{hostname}':"
+                    f" feature '{feature}' not in feature_registry.yaml\033[0m"
                 )
                 errors += 1
 

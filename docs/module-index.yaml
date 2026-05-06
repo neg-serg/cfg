@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-07T00:42:28'
+generated: '2026-05-07T00:49:02'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -38,6 +38,9 @@ states:
 - id: cachyos
   path: states/cachyos.sls
   purpose: CachyOS kernel packages, boot configuration, and kernel cmdline management
+  data_files:
+  - data/hosts.yaml
+  - data/kernel_params.yaml
   configs:
   - configs/kernel-cmdline.j2
   - configs/mkinitcpio-cachyos-preset.j2
@@ -983,6 +986,7 @@ data_files:
   - proxypilot.sls
 - path: states/data/hosts.yaml
   consumers:
+  - cachyos.sls
   - zen_profiles.sls
 - path: states/data/image_providers.yaml
   consumers:
@@ -1002,7 +1006,8 @@ data_files:
   - ipv6.sls
   - ipv6_tunnel.sls
 - path: states/data/kernel_params.yaml
-  consumers: null
+  consumers:
+  - cachyos.sls
 - path: states/data/llama_embed.yaml
   consumers:
   - llama_embed.sls

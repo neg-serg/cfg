@@ -161,6 +161,7 @@ def _build_config_state_map(repo_root: str) -> None:
     UNIT_TO_STATE = {}
 
     UNIT_REF_RE = re.compile(r"salt://(units/[^\s'\"}]+)")
+    USER_SERVICE_FILE_RE = re.compile(r"user_service_file\s*\(\s*'[^']+'\s*,\s*'([^']+)'")
 
     for sls_path in Path(states_dir).rglob("*.sls"):
         try:
@@ -173,6 +174,8 @@ def _build_config_state_map(repo_root: str) -> None:
             config_refs.add("states/" + match.group(1))
         for match in UNIT_REF_RE.finditer(src):
             unit_refs.add("states/" + match.group(1))
+        for match in USER_SERVICE_FILE_RE.finditer(src):
+            unit_refs.add("states/units/user/" + match.group(1))
 
         if not config_refs and not unit_refs:
             continue

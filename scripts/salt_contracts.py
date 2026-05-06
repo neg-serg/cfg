@@ -854,6 +854,39 @@ def check_data_file_liveness(repo_root: Path = REPO_ROOT) -> list[str]:
     return errors
 
 
+# --- Services.yaml feature gate validation ---
+
+
+def check_services_feature_gates(repo_root: Path = REPO_ROOT) -> list[str]:
+    services = load_yaml_file(repo_root / "states" / "data" / "services.yaml")
+    hosts_data = load_yaml_file(repo_root / "states" / "data" / "hosts.yaml")
+    errors = []
+
+    if not isinstance(services, dict) or not isinstance(hosts_data, dict):
+        return []
+
+    hosts_features = _collect_nested_feature_names(
+        hosts_data.get("defaults", {}).get("features", {})
+    )
+
+    if not hosts_features:
+        return []
+
+    for section, feature_ns in [("complex", "services"), ("network", "network"), ("dns", "dns")]:
+        entries = services.get(section, {})
+        if not isinstance(entries, dict):
+            continue
+        for name in entries:
+            gate = f"{feature_ns}.{name}"
+            if gate not in hosts_features:
+                errors.append(
+                    f"services.yaml {section}.{name} is gated by '{gate}'"
+                    f" but that feature is not declared in hosts.yaml defaults"
+                )
+
+    return errors
+
+
 # --- Aggregate ---
 
 
@@ -911,6 +944,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_monitored_services_references(repo_root))
     errors.extend(check_drift_inventory_units(repo_root))
     errors.extend(check_feature_defaults_sync(repo_root))
+    errors.extend(check_services_feature_gates(repo_root))
     return errors
 
 

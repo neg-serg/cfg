@@ -311,9 +311,21 @@ def plan_for_changed_files(changed_files: list[str], repo_root: str | None = Non
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--files", nargs="+", required=True)
+    parser.add_argument("--files", nargs="+")
     parser.add_argument("--json", action="store_true", dest="as_json")
+    parser.add_argument("--graph", action="store_true", help="Print full data→state dependency graph as JSON")
     return parser
+
+
+def _print_graph(repo_root: str | None = None) -> None:
+    _build_config_state_map(repo_root or os.getcwd())
+    data_graph = _build_data_state_graph(repo_root)
+    graph = {
+        "data_to_states": {k: sorted(v) for k, v in data_graph.items()},
+        "config_to_states": {k: sorted(v) for k, v in CONFIG_TO_STATE.items()},
+        "unit_to_states": {k: sorted(v) for k, v in UNIT_TO_STATE.items()},
+    }
+    print(json.dumps(graph, indent=2))
 
 
 def _print_text(plan: dict[str, object]) -> None:
@@ -373,6 +385,12 @@ def main() -> None:
     args = None
     try:
         args = _build_parser().parse_args(sys.argv[1:])
+        if args.graph:
+            _print_graph()
+            raise SystemExit(0)
+        if not args.files:
+            print("Error: --files required (or use --graph)")
+            raise SystemExit(1)
         plan = plan_for_changed_files(args.files)
         if args.as_json:
             print(json.dumps(plan, indent=2))

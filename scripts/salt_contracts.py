@@ -887,6 +887,49 @@ def check_services_feature_gates(repo_root: Path = REPO_ROOT) -> list[str]:
     return errors
 
 
+# --- Data import existence (reverse liveness) ---
+
+
+def check_data_imports_exist(repo_root: Path = REPO_ROOT) -> list[str]:
+    states_dir = repo_root / "states"
+    errors = []
+
+    if not states_dir.is_dir():
+        return []
+
+    for sls_path in sorted(states_dir.rglob("*.sls")):
+        try:
+            src = sls_path.read_text()
+        except (OSError, IOError):
+            continue
+
+        for match in DATA_IMPORT_RE.finditer(src):
+            data_rel = match.group(1)
+            full_path = states_dir / data_rel
+            if not full_path.is_file():
+                errors.append(
+                    f"{sls_path.relative_to(repo_root)} imports"
+                    f" '{data_rel}' but file does not exist"
+                )
+
+    for jinja_path in sorted(states_dir.rglob("*.jinja")):
+        try:
+            src = jinja_path.read_text()
+        except (OSError, IOError):
+            continue
+
+        for match in DATA_IMPORT_RE.finditer(src):
+            data_rel = match.group(1)
+            full_path = states_dir / data_rel
+            if not full_path.is_file():
+                errors.append(
+                    f"{jinja_path.relative_to(repo_root)} imports"
+                    f" '{data_rel}' but file does not exist"
+                )
+
+    return errors
+
+
 # --- Aggregate ---
 
 
@@ -945,6 +988,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_drift_inventory_units(repo_root))
     errors.extend(check_feature_defaults_sync(repo_root))
     errors.extend(check_services_feature_gates(repo_root))
+    errors.extend(check_data_imports_exist(repo_root))
     return errors
 
 

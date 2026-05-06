@@ -364,3 +364,48 @@ def test_host_config_validation_passes_for_all_matrix_hosts():
 def test_feature_registry_validation_passes():
     errors = host_model.check_features_against_registry()
     assert errors == 0
+
+
+# --- host_config.jinja ↔ host_model.py contract ---
+
+
+def test_host_config_jinja_imports_valid_yaml():
+    import re
+    import yaml
+
+    host_config_path = host_model.HOSTS_YAML_PATH.replace("data/", "").replace(".yaml", "")
+    # host_config.jinja is at states/host_config.jinja
+    jinja_path = "states/host_config.jinja"
+    try:
+        with open(jinja_path) as f:
+            content = f.read()
+    except FileNotFoundError:
+        pytest.skip("host_config.jinja not found")
+
+    import_yaml_re = re.compile(r"import_yaml\s+['\"]([^'\"]+)['\"]")
+    refs = import_yaml_re.findall(content)
+
+    for ref in refs:
+        path = f"states/{ref}"
+        try:
+            with open(path) as f:
+                yaml.safe_load(f)
+        except FileNotFoundError:
+            pytest.fail(f"host_config.jinja imports '{ref}' but file not found at {path}")
+        except yaml.YAMLError as e:
+            pytest.fail(f"host_config.jinja imports '{ref}' but YAML is invalid: {e}")
+
+
+def test_host_config_jinja_has_merge_logic():
+    try:
+        with open("states/host_config.jinja") as f:
+            content = f.read()
+    except FileNotFoundError:
+        pytest.skip("host_config.jinja not found")
+
+    # Verify core structural elements exist
+    assert "import_yaml" in content, "host_config.jinja must import YAML data"
+    assert "hosts_data" in content, "host_config.jinja must reference hosts_data"
+    assert "defaults" in content, "host_config.jinja must handle defaults"
+    assert "aliases" in content, "host_config.jinja must handle aliases"
+    assert "grains" in content or "hostname" in content, "host_config.jinja must resolve hostname"

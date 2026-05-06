@@ -65,6 +65,7 @@ STATE_ASSET_PREFIXES = (
 J2_IMPORT_YAML_RE = re.compile(r"\{%-?\s*import_yaml\s+['\"]([^'\"]+)['\"]\s+as\s+\w+")
 CONFIG_TO_STATE: dict[str, list[str]] = {}
 UNIT_TO_STATE: dict[str, list[str]] = {}
+SCRIPT_TO_STATE: dict[str, list[str]] = {}
 
 _DATA_TO_STATE_CACHE: dict[str, dict[str, list[str]]] | None = None
 
@@ -153,12 +154,26 @@ def _resolve_unit_to_state(unit_path: str, repo_root: str) -> str | None:
     return None
 
 
+def _resolve_script_to_state(script_path: str, repo_root: str) -> str | None:
+    global SCRIPT_TO_STATE
+    if not SCRIPT_TO_STATE:
+        _build_config_state_map(repo_root)
+    if script_path in SCRIPT_TO_STATE:
+        return SCRIPT_TO_STATE[script_path][0]
+    script_basename = os.path.basename(script_path)
+    for full_path, states in SCRIPT_TO_STATE.items():
+        if os.path.basename(full_path) == script_basename:
+            return states[0]
+    return None
+
+
 def _build_config_state_map(repo_root: str) -> None:
-    global CONFIG_TO_STATE, UNIT_TO_STATE
+    global CONFIG_TO_STATE, UNIT_TO_STATE, SCRIPT_TO_STATE
     configs_dir = os.path.join(repo_root, "states", "configs")
     states_dir = os.path.join(repo_root, "states")
     CONFIG_TO_STATE = {}
     UNIT_TO_STATE = {}
+    SCRIPT_TO_STATE = {}
 
     UNIT_REF_RE = re.compile(r"salt://(units/[^\s'\"}]+)")
     USER_SERVICE_FILE_RE = re.compile(r"user_service_file\s*\(\s*'[^']+'\s*,\s*'([^']+)'")
@@ -170,14 +185,17 @@ def _build_config_state_map(repo_root: str) -> None:
             continue
         config_refs = set()
         unit_refs = set()
+        script_refs = set()
         for match in re.finditer(r"salt://(configs/[^\s'\"]+)", src):
             config_refs.add("states/" + match.group(1))
+        for match in re.finditer(r"salt://(scripts/[^\s'\"]+)", src):
+            script_refs.add("states/" + match.group(1))
         for match in UNIT_REF_RE.finditer(src):
             unit_refs.add("states/" + match.group(1))
         for match in USER_SERVICE_FILE_RE.finditer(src):
             unit_refs.add("states/units/user/" + match.group(1))
 
-        if not config_refs and not unit_refs:
+        if not config_refs and not unit_refs and not script_refs:
             continue
 
         rel = sls_path.relative_to(repo_root)
@@ -198,6 +216,10 @@ def _build_config_state_map(repo_root: str) -> None:
                 if uref not in UNIT_TO_STATE:
                     UNIT_TO_STATE[uref] = []
                 UNIT_TO_STATE[uref].append(state_target)
+            for sref in script_refs:
+                if sref not in SCRIPT_TO_STATE:
+                    SCRIPT_TO_STATE[sref] = []
+                SCRIPT_TO_STATE[sref].append(state_target)
 
 
 def _normalize_changed_files(changed_files: list[str]) -> list[str]:
@@ -255,6 +277,11 @@ def plan_for_changed_files(changed_files: list[str], repo_root: str | None = Non
                     continue
             if path.startswith("states/units/"):
                 target = _resolve_unit_to_state(path, repo_root or os.getcwd())
+                if target:
+                    selected_states.append(target)
+                    continue
+            if path.startswith("states/scripts/"):
+                target = _resolve_script_to_state(path, repo_root or os.getcwd())
                 if target:
                     selected_states.append(target)
                     continue
@@ -327,6 +354,7 @@ def _print_graph(repo_root: str | None = None) -> None:
         "data_to_states": {k: sorted(v) for k, v in data_graph.items()},
         "config_to_states": {k: sorted(v) for k, v in CONFIG_TO_STATE.items()},
         "unit_to_states": {k: sorted(v) for k, v in UNIT_TO_STATE.items()},
+        "script_to_states": {k: sorted(v) for k, v in SCRIPT_TO_STATE.items()},
     }
     print(json.dumps(graph, indent=2))
 

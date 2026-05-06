@@ -495,3 +495,28 @@ def test_telfir_host_contract():
     assert feats["video_ai"] is True
     assert feats["xen_vr"] is False
     assert feats["sudo_ssh_agent"] is False
+
+
+def test_feature_registry_is_jinja_importable():
+    """Verify feature_registry.yaml can be loaded by Jinja import_yaml."""
+    import yaml
+
+    with open("states/data/feature_registry.yaml") as f:
+        data = yaml.safe_load(f)
+
+    assert isinstance(data, dict), "registry must be a YAML mapping"
+    assert "version" in data, "registry must have version"
+    assert "features" in data, "registry must have features key"
+    assert isinstance(data["features"], dict), "features must be a mapping"
+
+    # Verify all features have 'default' (required for Jinja consumption)
+    def check_defaults(features, path=""):
+        for name, config in features.items():
+            full = f"{path}.{name}" if path else name
+            if isinstance(config, dict) and "features" in config:
+                check_defaults(config["features"], full)
+            elif isinstance(config, dict):
+                assert "default" in config, f"'{full}' missing default"
+                assert isinstance(config["default"], bool), f"'{full}' default must be bool"
+
+    check_defaults(data["features"])

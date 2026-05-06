@@ -6,13 +6,17 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
+from collections import defaultdict
+from pathlib import Path
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 if SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, SCRIPTS_DIR)
 
 import salt_debug_report  # noqa: E402
+import salt_source_model  # noqa: E402
 
 TOP_LEVEL_PREFIX = "states/"
 GROUP_PREFIX = "states/group/"
@@ -21,6 +25,9 @@ OWNER_MAPPINGS = {
     "states/video_ai/": "video_ai",
     "states/group/": "system_description",
 }
+DATA_PREFIX = "states/data/"
+CONFIGS_PREFIX = "states/configs/"
+MACRO_PREFIX = "states/_macros_"
 SHARED_PATHS = {
     "states/_macros_common.jinja": "shared macro input",
     "states/_macros_config.jinja": "shared macro input",
@@ -34,12 +41,6 @@ SHARED_PATHS = {
     "states/_macros_zsh.jinja": "shared macro input",
     "states/_imports.jinja": "shared imports",
     "states/data/hosts.yaml": "shared data input",
-    "states/data/packages.yaml": "shared data input",
-    "states/data/services.yaml": "shared data input",
-    "states/data/service_catalog.yaml": "shared data input",
-    "states/data/versions.yaml": "shared data input",
-    "states/data/container_images.yaml": "shared data input",
-    "states/data/feature_matrix.yaml": "shared data input",
 }
 NOOP_PREFIXES = (
     "scripts/",
@@ -60,6 +61,114 @@ STATE_ASSET_PREFIXES = (
     "states/scripts/",
     "states/units/",
 )
+
+J2_IMPORT_YAML_RE = re.compile(r"\{%-?\s*import_yaml\s+['\"]([^'\"]+)['\"]\s+as\s+\w+")
+CONFIG_TO_STATE: dict[str, list[str]] = {}
+
+_DATA_TO_STATE_CACHE: dict[str, dict[str, list[str]]] | None = None
+
+
+def _build_data_state_graph(repo_root: str | None = None) -> dict[str, list[str]]:
+    global _DATA_TO_STATE_CACHE
+
+    if _DATA_TO_STATE_CACHE is not None:
+        return _DATA_TO_STATE_CACHE
+
+    states_dir = repo_root or os.getcwd()
+    data_dir = os.path.join(states_dir, "states", "data")
+    configs_dir = os.path.join(states_dir, "states", "configs")
+
+    data_to_states: dict[str, list[str]] = defaultdict(list)
+
+    records = salt_source_model.discover_state_files(os.path.join(states_dir, "states"))
+    for record in records:
+        record = salt_source_model.enrich_source_metadata(record)
+        state_target = _state_target_from_record(record)
+        if not state_target:
+            continue
+        for yaml_ref in record.imported_yaml:
+            data_basename = os.path.basename(yaml_ref)
+            data_path = os.path.join("states", "data", data_basename)
+            if data_path.endswith(".yaml") or data_path.endswith(".yml"):
+                data_to_states[data_basename].append(state_target)
+
+    if os.path.isdir(configs_dir):
+        for config_path in Path(configs_dir).rglob("*.j2"):
+            try:
+                src = config_path.read_text()
+            except Exception:
+                continue
+            yaml_refs = J2_IMPORT_YAML_RE.findall(src)
+            if not yaml_refs:
+                continue
+            rel_config = os.path.relpath(config_path, states_dir)
+            for yaml_ref in yaml_refs:
+                data_basename = os.path.basename(yaml_ref)
+                if data_basename.endswith((".yaml", ".yml")):
+                    config_state = _resolve_config_to_state(
+                        os.path.join("states", "configs", os.path.basename(rel_config)), states_dir
+                    )
+                    if config_state:
+                        data_to_states[data_basename].append(config_state)
+
+    data_to_states = {
+        k: sorted(set(v)) for k, v in data_to_states.items() if v
+    }
+
+    _DATA_TO_STATE_CACHE = data_to_states
+    return data_to_states
+
+
+def _state_target_from_record(record) -> str | None:
+    relpath = record.relpath
+    if not relpath.startswith("states/") or not relpath.endswith(".sls"):
+        return None
+    name = relpath.removeprefix("states/").removesuffix(".sls")
+    if name.startswith("group/"):
+        subname = name.removeprefix("group/")
+        return f"group_{subname}" if "/" not in subname else None
+    if "/" in name:
+        return None
+    return name
+
+
+def _resolve_config_to_state(config_path: str, repo_root: str) -> str | None:
+    global CONFIG_TO_STATE
+    if not CONFIG_TO_STATE:
+        _build_config_state_map(repo_root)
+    return CONFIG_TO_STATE.get(config_path, [None])[0] if CONFIG_TO_STATE.get(config_path) else None
+
+
+def _build_config_state_map(repo_root: str) -> None:
+    global CONFIG_TO_STATE
+    configs_dir = os.path.join(repo_root, "states", "configs")
+    states_dir = os.path.join(repo_root, "states")
+    CONFIG_TO_STATE = {}
+
+    for sls_path in Path(states_dir).rglob("*.sls"):
+        try:
+            src = sls_path.read_text()
+        except Exception:
+            continue
+        config_refs = set()
+        for match in re.finditer(r"salt://(configs/[^\s'\"]+)", src):
+            config_refs.add("states/" + match.group(1))
+        if not config_refs:
+            continue
+        rel = sls_path.relative_to(repo_root)
+        record = salt_source_model.StateFileRecord(
+            relpath=str(rel),
+            state_name="",
+            top_level_entrypoint=False,
+            workflow_apply_target=False,
+            source_text=src,
+        )
+        state_target = _state_target_from_record(record)
+        if state_target:
+            for cref in config_refs:
+                if cref not in CONFIG_TO_STATE:
+                    CONFIG_TO_STATE[cref] = []
+                CONFIG_TO_STATE[cref].append(state_target)
 
 
 def _normalize_changed_files(changed_files: list[str]) -> list[str]:
@@ -93,10 +202,12 @@ def _owner_target(path: str) -> str | None:
     return None
 
 
-def plan_for_changed_files(changed_files: list[str]) -> dict[str, object]:
+def plan_for_changed_files(changed_files: list[str], repo_root: str | None = None) -> dict[str, object]:
     normalized = _normalize_changed_files(changed_files)
     selected_states: list[str] = []
     fallback_reasons: list[str] = []
+    data_graph = _build_data_state_graph(repo_root)
+    MAX_DATA_CONSUMERS = 5
 
     for path in normalized:
         if path in SHARED_PATHS:
@@ -107,8 +218,34 @@ def plan_for_changed_files(changed_files: list[str]) -> dict[str, object]:
             continue
 
         if path.startswith(STATE_ASSET_PREFIXES):
+            target = None
+            if path.startswith(CONFIGS_PREFIX):
+                target = _resolve_config_to_state(path, repo_root or os.getcwd())
+                if target:
+                    selected_states.append(target)
+                    continue
             fallback_reasons.append(f"{path} is a state asset (config/script/unit) — requires system_description for safety")
             continue
+
+        if path.startswith(MACRO_PREFIX):
+            fallback_reasons.append(f"{path} is a shared macro — requires system_description for safety")
+            continue
+
+        if path.startswith(DATA_PREFIX):
+            data_basename = os.path.basename(path)
+            consumers = data_graph.get(data_basename, [])
+            if consumers and len(consumers) <= MAX_DATA_CONSUMERS:
+                selected_states.extend(consumers)
+                continue
+            elif consumers:
+                fallback_reasons.append(
+                    f"{path} has {len(consumers)} consumers ({MAX_DATA_CONSUMERS}+)"
+                    " — requires system_description for safety"
+                )
+                continue
+            else:
+                fallback_reasons.append(f"{path} is a data file with no known SLS consumers")
+                continue
 
         target = _group_target(path) or _top_level_state_target(path) or _owner_target(path)
         if target is not None:

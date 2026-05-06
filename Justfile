@@ -146,6 +146,10 @@ contracts-verbose:
 health-data:
     python3 scripts/salt_contracts.py --summary
 
+# Print data→state dependency graph (JSON)
+graph:
+    python3 scripts/salt_impact.py --graph
+
 # Check one explicit state file render without a full repository pass
 validate-one STATE:
     scripts/salt-validate.sh -- {{STATE}}

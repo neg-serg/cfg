@@ -318,3 +318,49 @@ def test_registry_features_match_hosts_defaults():
     extra = hosts_features - registry_features
     assert not missing, f"registry features not in hosts.yaml defaults: {missing}"
     assert not extra, f"hosts.yaml defaults features not in registry: {extra}"
+
+
+# --- Derived field validation for all feature matrix scenarios ---
+
+
+def test_all_feature_matrix_hosts_have_valid_derived_fields():
+    matrix = host_model.load_feature_matrix()
+    assert len(matrix) > 0
+
+    for entry in matrix:
+        name = entry.get("name", "?")
+        overrides = entry.get("overrides", {})
+
+        host = host_model.build_host(name, host_model.load_hosts_yaml())
+
+        assert isinstance(host.get("home"), str) and host["home"], (
+            f"matrix '{name}': missing home"
+        )
+        assert host["home"] == f"/home/{host['user']}", (
+            f"matrix '{name}': home mismatch: {host['home']}"
+        )
+        assert isinstance(host.get("runtime_dir"), str) and host["runtime_dir"], (
+            f"matrix '{name}': missing runtime_dir"
+        )
+        assert host["runtime_dir"] == f"/run/user/{host['uid']}", (
+            f"matrix '{name}': runtime_dir mismatch"
+        )
+        assert host.get("pkg_list") == "/var/cache/salt/pacman_installed.txt", (
+            f"matrix '{name}': pkg_list mismatch"
+        )
+        assert host.get("project_dir") == host["home"] + "/src/cfg", (
+            f"matrix '{name}': project_dir mismatch"
+        )
+        assert isinstance(host.get("features"), dict), (
+            f"matrix '{name}': missing features dict"
+        )
+
+
+def test_host_config_validation_passes_for_all_matrix_hosts():
+    errors = host_model.check_host_config()
+    assert errors == 0
+
+
+def test_feature_registry_validation_passes():
+    errors = host_model.check_features_against_registry()
+    assert errors == 0

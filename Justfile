@@ -134,6 +134,14 @@ lint-sysctl:
 validate JOBS="":
     scripts/salt-validate.sh {{JOBS}}
 
+# Run data contract checks (cross-file consistency validation)
+contracts:
+    python3 scripts/salt_contracts.py
+
+# Run data contract checks with verbose summary
+contracts-verbose:
+    python3 scripts/salt_contracts.py --verbose
+
 # Check one explicit state file render without a full repository pass
 validate-one STATE:
     scripts/salt-validate.sh -- {{STATE}}

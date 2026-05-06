@@ -7,7 +7,6 @@
 #     home: stable service-owned root path
 #     shell: login shell policy (default /usr/sbin/nologin)
 #     gecos: optional description string
-#     phase: migration phase label
 #
 # managed_service_paths:
 #   <id>:
@@ -19,7 +18,6 @@
 #     group: owner group (supports __CURRENT_USER__)
 #     age: tmpfiles age field (default "-")
 #     argument: tmpfiles argument field (default "-")
-#     phase: migration phase label
 #
 # Tokens:
 #   __CURRENT_USER__ → current workstation user resolved from host config
@@ -31,7 +29,6 @@ managed_service_identities:
     home: /var/lib/greetd
     shell: /usr/sbin/nologin
     gecos: Salt managed greetd service account
-    phase: phase1
 
   loki:
     user: loki
@@ -39,7 +36,6 @@ managed_service_identities:
     home: /var/lib/loki
     shell: /usr/sbin/nologin
     gecos: Salt managed Loki service account
-    phase: phase1
 
 managed_service_paths:
   loki_root:
@@ -51,7 +47,7 @@ managed_service_paths:
     group: loki
     age: "-"
     argument: "-"
-    phase: phase1
+
 
   loki_chunks:
     service: loki
@@ -62,7 +58,7 @@ managed_service_paths:
     group: loki
     age: "-"
     argument: "-"
-    phase: phase1
+
 
   loki_rules:
     service: loki
@@ -73,7 +69,7 @@ managed_service_paths:
     group: loki
     age: "-"
     argument: "-"
-    phase: phase1
+
 
   loki_rules_temp:
     service: loki
@@ -84,7 +80,7 @@ managed_service_paths:
     group: loki
     age: "-"
     argument: "-"
-    phase: phase1
+
 
   greetd_root:
     service: greetd
@@ -95,7 +91,7 @@ managed_service_paths:
     group: greetd
     age: "-"
     argument: "-"
-    phase: phase1
+
 
   mpd_fifo:
     service: mpd
@@ -106,4 +102,4 @@ managed_service_paths:
     group: __CURRENT_USER__
     age: "-"
     argument: "-"
-    phase: phase1
+

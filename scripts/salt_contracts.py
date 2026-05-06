@@ -870,8 +870,26 @@ def print_contract_errors(errors: list[str]) -> int:
     return len(errors)
 
 
+def print_contract_summary(errors: list[str]) -> int:
+    total = len(errors)
+    if errors:
+        for error in errors:
+            print(f"\033[31mContract: {error}\033[0m")
+        print(f"\n\033[31m{total} contract violation(s) found\033[0m")
+    else:
+        print("\033[32mAll data contracts pass — 0 violations\033[0m")
+    return total
+
+
 def main() -> int:
-    return print_contract_errors(check_service_inventory_contracts())
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--verbose", "-v", action="store_true", help="Show summary even when clean")
+    args = parser.parse_args()
+    errors = check_service_inventory_contracts()
+    if args.verbose:
+        return print_contract_summary(errors)
+    return print_contract_errors(errors)
 
 
 if __name__ == "__main__":

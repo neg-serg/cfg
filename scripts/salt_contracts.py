@@ -881,11 +881,51 @@ def print_contract_summary(errors: list[str]) -> int:
     return total
 
 
+def print_data_health_summary(repo_root: Path = REPO_ROOT) -> int:
+    data_dir = repo_root / "states" / "data"
+    consumers = _collect_data_consumers(repo_root)
+    registry = _load_feature_registry(repo_root)
+
+    data_files = sorted(data_dir.glob("*.yaml"))
+    total_data = len(data_files)
+    consumed = sum(1 for f in data_files if f.name in consumers or f.name in _CORE_DATA_FILES)
+    orphaned = total_data - consumed
+
+    packages_data = load_yaml_file(repo_root / "states" / "data" / "packages.yaml")
+    total_packages = 0
+    if isinstance(packages_data, dict):
+        total_packages = sum(len(v) for v in packages_data.values() if isinstance(v, list))
+
+    total_features = len(_collect_feature_names(registry))
+
+    catalog = load_yaml_file(repo_root / "states" / "data" / "service_catalog.yaml")
+    total_services = len([k for k, v in catalog.items() if isinstance(v, dict)]) if isinstance(catalog, dict) else 0
+
+    errors = check_service_inventory_contracts(repo_root)
+
+    print("=== Data Health Summary ===")
+    print(f"Data files:       {total_data:>4}  ({consumed} consumed, {orphaned} orphaned)")
+    print(f"Packages:         {total_packages:>4}  (across packages.yaml)")
+    print(f"Feature flags:    {total_features:>4}  (in feature_registry.yaml)")
+    print(f"Catalog services: {total_services:>4}  (in service_catalog.yaml)")
+    print(f"Contract errors:  {len(errors):>4}")
+    if errors:
+        for error in errors:
+            print(f"  \033[31m- {error}\033[0m")
+    else:
+        print("  \033[32mAll checks pass\033[0m")
+
+    return min(len(errors), 1)
+
+
 def main() -> int:
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--verbose", "-v", action="store_true", help="Show summary even when clean")
+    parser.add_argument("--summary", "-s", action="store_true", help="Show data health overview")
     args = parser.parse_args()
+    if args.summary:
+        return print_data_health_summary()
     errors = check_service_inventory_contracts()
     if args.verbose:
         return print_contract_summary(errors)

@@ -142,6 +142,10 @@ contracts:
 contracts-verbose:
     python3 scripts/salt_contracts.py --verbose
 
+# Data health overview (files, features, packages, services, contract status)
+health-data:
+    python3 scripts/salt_contracts.py --summary
+
 # Check one explicit state file render without a full repository pass
 validate-one STATE:
     scripts/salt-validate.sh -- {{STATE}}

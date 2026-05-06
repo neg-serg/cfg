@@ -110,3 +110,37 @@ def test_hosts_aliases_are_strings(hosts):
     for alias, target in hosts.get("aliases", {}).items():
         assert isinstance(alias, str) and alias
         assert isinstance(target, str) and target, f"alias {alias}: expected string target"
+
+
+# ── feature_registry.yaml ─────────────────────────────────────────────────
+
+
+@pytest.fixture(scope="module")
+def feature_registry():
+    return _load("feature_registry.yaml")
+
+
+def test_feature_registry_has_version_and_features(feature_registry):
+    assert isinstance(feature_registry, dict)
+    assert "version" in feature_registry
+    assert "features" in feature_registry
+    assert isinstance(feature_registry["features"], dict)
+
+
+def test_feature_registry_all_entries_have_default(feature_registry):
+    for name, config in feature_registry["features"].items():
+        assert isinstance(config, dict), f"feature_registry '{name}' must be dict"
+        if "features" in config:
+            assert "description" in config, f"group '{name}' missing description"
+            assert isinstance(config["features"], dict), f"group '{name}' features must be dict"
+            for sub_name, sub_config in config["features"].items():
+                assert isinstance(sub_config, dict), f"feature '{name}.{sub_name}' must be dict"
+                assert "default" in sub_config, f"feature '{name}.{sub_name}' missing default"
+                assert isinstance(sub_config["default"], bool), (
+                    f"feature '{name}.{sub_name}' default must be bool"
+                )
+                assert "description" in sub_config, f"feature '{name}.{sub_name}' missing description"
+        else:
+            assert "default" in config, f"feature '{name}' missing default"
+            assert isinstance(config["default"], bool), f"feature '{name}' default must be bool"
+            assert "description" in config, f"feature '{name}' missing description"

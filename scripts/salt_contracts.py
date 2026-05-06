@@ -11,9 +11,9 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = REPO_ROOT / "states" / "data"
 UNITS_DIR = REPO_ROOT / "states" / "units"
+CONFIGS_DIR = REPO_ROOT / "states" / "configs"
 UNIT_SUFFIXES = (".service", ".timer", ".socket", ".path", ".container")
 TEMPLATED_UNIT_SUFFIXES = tuple(f"{suffix}.j2" for suffix in UNIT_SUFFIXES)
-USER_SERVICE_ALLOWED_FEATURES = {"mail", "vdirsyncer", "mpd"}
 KNOWN_NATIVE_USER_UNITS = {
     "gpg-agent.socket",
     "ssh-agent.socket",
@@ -43,15 +43,33 @@ KNOWN_NATIVE_SERVICES = {
 
 
 def load_yaml_file(path: Path):
-    with path.open() as fh:
-        return yaml.safe_load(fh.read()) or {}
+    try:
+        with path.open() as fh:
+            return yaml.safe_load(fh.read()) or {}
+    except FileNotFoundError:
+        return {}
 
 
-def _has_invalid_user_service_features(features) -> bool:
+def _load_feature_registry(repo_root: Path = REPO_ROOT):
+    return load_yaml_file(repo_root / "states" / "data" / "feature_registry.yaml")
+
+
+def _collect_allowed_user_service_features(repo_root: Path = REPO_ROOT) -> set[str]:
+    FALLBACK_FEATURES = {"mail", "vdirsyncer", "mpd"}
+    registry = _load_feature_registry(repo_root)
+    user_services = registry.get("features", {}).get("user_services", {}).get("features", {})
+    if isinstance(user_services, dict) and user_services:
+        return {f for f, c in user_services.items() if isinstance(c, dict)}
+    return FALLBACK_FEATURES
+
+
+def _has_invalid_user_service_features(features, allowed: set[str] | None = None) -> bool:
+    if allowed is None:
+        allowed = _collect_allowed_user_service_features()
     if not isinstance(features, list):
         return True
     return any(
-        not isinstance(feature, str) or feature not in USER_SERVICE_ALLOWED_FEATURES
+        not isinstance(feature, str) or feature not in allowed
         for feature in features
     )
 
@@ -383,6 +401,7 @@ def check_user_services_schema(repo_root: Path = REPO_ROOT) -> list[str]:
     errors = []
     seen_ids = set()
     known_enable_targets = _collect_user_service_enable_targets(user_services)
+    allowed_features = _collect_allowed_user_service_features(repo_root)
 
     for entry in _user_service_group_entries(user_services, "unit_files", errors):
         if not isinstance(entry, dict):
@@ -403,7 +422,7 @@ def check_user_services_schema(repo_root: Path = REPO_ROOT) -> list[str]:
 
         if "features" in entry:
             features = entry.get("features")
-            if _has_invalid_user_service_features(features):
+            if _has_invalid_user_service_features(features, allowed_features):
                 errors.append(f"unit_files entry has invalid features: {entry!r}")
 
     for group_name in ("enable_services", "enable_now_timers"):
@@ -417,16 +436,207 @@ def check_user_services_schema(repo_root: Path = REPO_ROOT) -> list[str]:
                 errors.append(f"{group_name} entry missing valid name: {entry!r}")
             elif (
                 "features" not in entry
-                or not _has_invalid_user_service_features(entry.get("features"))
+                or not _has_invalid_user_service_features(entry.get("features"), allowed_features)
             ) and not _is_known_service_target(name, known_enable_targets):
                 errors.append(f"{group_name} entry references unknown user unit '{name}'")
 
             if "features" in entry:
                 features = entry.get("features")
-                if _has_invalid_user_service_features(features):
+                if _has_invalid_user_service_features(features, allowed_features):
                     errors.append(f"{group_name} entry has invalid features: {entry!r}")
 
     return errors
+
+
+# --- Feature registry contracts ---
+
+
+def _collect_feature_names(registry: dict, prefix: str = "") -> set[str]:
+    features = set()
+    for name, config in registry.get("features", {}).items():
+        full_name = f"{prefix}{name}"
+        if isinstance(config, dict) and "features" in config:
+            features.update(_collect_feature_names(config, f"{full_name}."))
+        else:
+            features.add(full_name)
+    return features
+
+
+def _collect_hosts_features(hosts_data: dict) -> set[str]:
+    defaults = hosts_data.get("defaults", {}).get("features", {})
+    if not isinstance(defaults, dict):
+        return set()
+    return _collect_feature_names({"features": defaults})
+
+
+def _collect_nested_feature_names(features: dict, prefix: str = "") -> set[str]:
+    names = set()
+    for key, value in features.items():
+        full_name = f"{prefix}.{key}" if prefix else key
+        if isinstance(value, dict) and any(
+            isinstance(v, bool) for v in value.values()
+        ):
+            names.update(_collect_nested_feature_names(value, full_name))
+        elif isinstance(value, bool):
+            names.add(full_name)
+    return names
+
+
+def check_features_against_registry(repo_root: Path = REPO_ROOT) -> list[str]:
+    registry = _load_feature_registry(repo_root)
+    hosts_data = load_yaml_file(repo_root / "states" / "data" / "hosts.yaml")
+    errors = []
+
+    registry_features = _collect_feature_names(registry)
+    if not registry_features:
+        return []
+
+    hosts_features = _collect_nested_feature_names(
+        hosts_data.get("defaults", {}).get("features", {})
+    )
+
+    for feature in hosts_features:
+        if feature not in registry_features:
+            errors.append(
+                f"hosts.yaml feature '{feature}' not declared in feature_registry.yaml"
+            )
+
+    for hostname, config in hosts_data.get("hosts", {}).items():
+        if not isinstance(config, dict):
+            continue
+        host_features = _collect_nested_feature_names(config.get("features", {}))
+        for feature in host_features:
+            if feature not in registry_features:
+                errors.append(
+                    f"hosts.yaml host '{hostname}' feature '{feature}' not in feature_registry"
+                )
+
+    return errors
+
+
+def check_feature_matrix_against_registry(repo_root: Path = REPO_ROOT) -> list[str]:
+    registry = _load_feature_registry(repo_root)
+    feature_matrix = load_yaml_file(repo_root / "states" / "data" / "feature_matrix.yaml")
+    errors = []
+
+    registry_features = _collect_feature_names(registry)
+    if not registry_features:
+        return []
+
+    if not isinstance(feature_matrix, list):
+        if feature_matrix == {}:
+            return []
+        return ["feature_matrix.yaml must be a list"]
+
+    for entry in feature_matrix:
+        if not isinstance(entry, dict):
+            continue
+        name = entry.get("name", "<unknown>")
+        overrides = entry.get("overrides", {}).get("features", {})
+        matrix_features = _collect_nested_feature_names(overrides)
+        for feature in matrix_features:
+            if feature not in registry_features:
+                errors.append(
+                    f"feature_matrix.yaml '{name}' references unknown feature '{feature}'"
+                )
+
+    return errors
+
+
+# --- Catalog packages cross-reference ---
+
+
+def check_catalog_packages_in_packages_yaml(repo_root: Path = REPO_ROOT) -> list[str]:
+    catalog = load_yaml_file(repo_root / "states" / "data" / "service_catalog.yaml")
+    errors = []
+
+    all_packages = set()
+
+    # Collect from packages.yaml (all categories including aur)
+    packages_data = load_yaml_file(repo_root / "states" / "data" / "packages.yaml")
+    if isinstance(packages_data, dict):
+        for category, pkgs in packages_data.items():
+            if not isinstance(pkgs, list):
+                continue
+            for entry in pkgs:
+                name = str(entry).split("#")[0].strip()
+                if name:
+                    all_packages.add(name)
+
+    if not all_packages:
+        return []
+
+    # Collect from installers.yaml (pip, cargo, go, curl_bin, etc.)
+    installers = load_yaml_file(repo_root / "states" / "data" / "installers.yaml")
+    if isinstance(installers, dict):
+        for macro_type, tools in installers.items():
+            if not isinstance(tools, dict):
+                continue
+            for name in tools:
+                all_packages.add(name)
+
+    # Collect from custom_pkgs.yaml (custom PKGBUILDs)
+    custom_pkgs = load_yaml_file(repo_root / "states" / "data" / "custom_pkgs.yaml")
+    if isinstance(custom_pkgs, dict):
+        pkgbuild = custom_pkgs.get("pkgbuild", {})
+        if isinstance(pkgbuild, dict):
+            for name in pkgbuild:
+                all_packages.add(name)
+
+    for service_name, config in catalog.items():
+        if not isinstance(config, dict):
+            continue
+        packages = config.get("packages")
+        if not isinstance(packages, str) or not packages.strip():
+            continue
+        for pkg in packages.split():
+            if pkg not in all_packages:
+                errors.append(
+                    f"Service catalog '{service_name}' references package '{pkg}'"
+                    " not found in packages.yaml, installers.yaml, or custom_pkgs.yaml"
+                )
+
+    return errors
+
+
+# --- Config template references ---
+
+
+def check_services_config_templates(repo_root: Path = REPO_ROOT) -> list[str]:
+    services = load_yaml_file(repo_root / "states" / "data" / "services.yaml")
+    if not isinstance(services, dict) or not services:
+        return []
+    errors = []
+
+    for section in ("simple", "complex", "network", "dns"):
+        entries = services.get(section, {})
+        if not isinstance(entries, dict):
+            continue
+        for name, config in entries.items():
+            if not isinstance(config, dict):
+                continue
+            templates = config.get("config_templates", [])
+            if not isinstance(templates, list):
+                continue
+            for tmpl in templates:
+                if not isinstance(tmpl, dict):
+                    continue
+                source = tmpl.get("source", "")
+                if not isinstance(source, str) or not source:
+                    continue
+                if source.startswith("salt://"):
+                    rel_path = source.removeprefix("salt://")
+                    config_path = repo_root / "states" / rel_path
+                    if not config_path.is_file():
+                        errors.append(
+                            f"services.yaml {section}.{name} config_template source"
+                            f" '{source}' not found at '{rel_path}'"
+                        )
+
+    return errors
+
+
+# --- Aggregate ---
 
 
 def check_services_yaml_service_references(repo_root: Path = REPO_ROOT) -> list[str]:
@@ -475,6 +685,10 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_managed_resources_identities_schema(repo_root))
     errors.extend(check_user_services_schema(repo_root))
     errors.extend(check_user_service_unit_files(repo_root))
+    errors.extend(check_features_against_registry(repo_root))
+    errors.extend(check_feature_matrix_against_registry(repo_root))
+    errors.extend(check_catalog_packages_in_packages_yaml(repo_root))
+    errors.extend(check_services_config_templates(repo_root))
     return errors
 
 

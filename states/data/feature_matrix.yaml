@@ -92,3 +92,69 @@
         alertmanager: true
       ollama: true
       llama_embed: true
+
+- name: matrix-all-features
+  description: All features enabled simultaneously (maximum coverage for lint/render matrix)
+  overrides:
+    hostname: matrix-all-features
+    display: 3840x2160@240
+    primary_output: DP-2
+    floorp_profile: c85pjaxk.default-default
+    zen_profile: qnkh60k3.Default (release)
+    migrate_floorp_profile_to_zen: true
+    features:
+      monitoring:
+        sysstat: true
+        vnstat: true
+        netdata: true
+        loki: true
+        promtail: true
+        grafana: true
+        alertmanager: true
+        alerts: true
+      dns:
+        unbound: true
+        adguardhome: true
+        avahi: true
+      services:
+        samba: true
+        jellyfin: true
+        bitcoind: true
+        duckdns: true
+        transmission: true
+      network:
+        vm_bridge: true
+        xray: true
+        singbox: true
+        tailscale: true
+        zapret2: true
+        wifi: true
+        vpn_split_router: true
+        vpn_hybrid: true
+        ipv6: true
+        ipv6_6to4: true
+        ipv6_tunnel: true
+      user_services:
+        mail: true
+        vdirsyncer: true
+      fancontrol: true
+      amnezia: true
+      outline: true
+      steam: true
+      mpd: true
+      ollama: true
+      llama_embed: true
+      t5_summarization: true
+      floorp: true
+      espanso: true
+      kanata: true
+      flatpak: true
+      sudo_ssh_agent: true
+      opencode: true
+      nanoclaw: true
+      telethon_bridge: true
+      managed_bots: true
+      video_ai: true
+      xen_vr: true
+      music_analysis: true
+      tidal: true

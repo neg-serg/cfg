@@ -353,3 +353,180 @@ def test_vpn_split_router_seed_domains_are_unique():
 
     seed_domains = data["seed_domains"]
     assert len(seed_domains) == len(set(seed_domains))
+
+
+# --- Feature registry contracts ---
+
+
+def test_feature_registry_schema_is_valid():
+    registry = load_yaml("feature_registry.yaml")
+
+    assert isinstance(registry, dict)
+    assert "version" in registry
+    assert "features" in registry
+    assert isinstance(registry["features"], dict)
+
+    for name, config in registry["features"].items():
+        assert isinstance(config, dict), f"feature_registry '{name}' must be dict"
+        if "features" in config:
+            assert "description" in config, f"group '{name}' missing description"
+            assert isinstance(config["features"], dict), f"group '{name}' features must be dict"
+            for sub_name, sub_config in config["features"].items():
+                assert isinstance(sub_config, dict), f"feature '{name}.{sub_name}' must be dict"
+                assert "default" in sub_config, f"feature '{name}.{sub_name}' missing default"
+                assert isinstance(sub_config["default"], bool), (
+                    f"feature '{name}.{sub_name}' default must be bool"
+                )
+        else:
+            assert "default" in config, f"feature '{name}' missing default"
+            assert isinstance(config["default"], bool), f"feature '{name}' default must be bool"
+
+
+def test_feature_registry_features_match_hosts_yaml():
+    registry = load_yaml("feature_registry.yaml")
+    hosts = load_yaml("hosts.yaml")
+
+    registry_features = set()
+    for name, config in registry["features"].items():
+        if isinstance(config, dict) and "features" in config:
+            for sub_name in config["features"]:
+                registry_features.add(f"{name}.{sub_name}")
+        elif isinstance(config, dict):
+            registry_features.add(name)
+
+    hosts_features = load_yaml("hosts.yaml").get("defaults", {}).get("features", {})
+
+    def _collect_names(d, prefix=""):
+        names = set()
+        for k, v in d.items():
+            full = f"{prefix}.{k}" if prefix else k
+            if isinstance(v, dict) and any(isinstance(x, bool) for x in v.values()):
+                names.update(_collect_names(v, full))
+            elif isinstance(v, bool):
+                names.add(full)
+        return names
+
+    hosts_feature_set = _collect_names(hosts_features)
+
+    missing_from_registry = hosts_feature_set - registry_features
+    assert not missing_from_registry, (
+        f"hosts.yaml features not in feature_registry: {missing_from_registry}"
+    )
+
+    missing_from_hosts = registry_features - hosts_feature_set
+    assert not missing_from_hosts, (
+        f"feature_registry features not in hosts.yaml: {missing_from_hosts}"
+    )
+
+
+def test_feature_matrix_entries_are_valid():
+    matrix = load_yaml("feature_matrix.yaml")
+    registry = load_yaml("feature_registry.yaml")
+
+    assert isinstance(matrix, list)
+
+    registry_features = set()
+    for name, config in registry["features"].items():
+        if isinstance(config, dict) and "features" in config:
+            for sub_name in config["features"]:
+                registry_features.add(f"{name}.{sub_name}")
+        elif isinstance(config, dict):
+            registry_features.add(name)
+
+    names_seen = set()
+
+    def _collect_names(d, prefix=""):
+        names = set()
+        for k, v in d.items():
+            full = f"{prefix}.{k}" if prefix else k
+            if isinstance(v, dict) and any(isinstance(x, bool) for x in v.values()):
+                names.update(_collect_names(v, full))
+            elif isinstance(v, bool):
+                names.add(full)
+        return names
+
+    for entry in matrix:
+        assert "name" in entry, "feature_matrix entry missing name"
+        assert "description" in entry, f"entry '{entry.get('name', '?')}' missing description"
+        assert entry["name"] not in names_seen, f"duplicate name: {entry['name']}"
+        names_seen.add(entry["name"])
+
+        overrides = entry.get("overrides", {}).get("features", {})
+        matrix_features = _collect_names(overrides)
+        unknown = matrix_features - registry_features
+        assert not unknown, (
+            f"feature_matrix '{entry['name']}' unknown features: {unknown}"
+        )
+
+
+def test_feature_matrix_has_all_features_scenario():
+    matrix = load_yaml("feature_matrix.yaml")
+
+    names = [entry["name"] for entry in matrix if isinstance(entry, dict)]
+    assert "matrix-all-features" in names, (
+        "feature_matrix.yaml missing 'matrix-all-features' scenario"
+    )
+
+
+def test_user_service_features_from_registry():
+    registry = load_yaml("feature_registry.yaml")
+    user_services = load_yaml("user_services.yaml")
+
+    user_features = registry.get("features", {}).get("user_services", {}).get("features", {})
+    allowed = {f for f, c in user_features.items() if isinstance(c, dict)}
+
+    for entry in user_services.get("unit_files", []):
+        if not isinstance(entry, dict):
+            continue
+        features = entry.get("features")
+        if not isinstance(features, list):
+            continue
+        for f in features:
+            assert isinstance(f, str), f"unit_files feature must be string, got {type(f).__name__}"
+            assert f in allowed, f"unit_files feature '{f}' not in user_services registry"
+
+    for group in ("enable_services", "enable_now_timers"):
+        for entry in user_services.get(group, []):
+            if not isinstance(entry, dict):
+                continue
+            features = entry.get("features")
+            if not isinstance(features, list):
+                continue
+            for f in features:
+                assert isinstance(f, str), f"{group} feature must be string, got {type(f).__name__}"
+                assert f in allowed, f"{group} feature '{f}' not in user_services registry"
+
+
+# --- Config template references ---
+
+
+def test_services_config_templates_exist():
+    services = load_yaml("services.yaml")
+    import os
+
+    configs_dir = os.path.join(os.path.dirname(DATA_DIR), "configs")
+    missing = []
+
+    for section in ("simple", "complex", "network", "dns"):
+        entries = services.get(section, {})
+        if not isinstance(entries, dict):
+            continue
+        for name, config in entries.items():
+            if not isinstance(config, dict):
+                continue
+            templates = config.get("config_templates", [])
+            if not isinstance(templates, list):
+                continue
+            for tmpl in templates:
+                if not isinstance(tmpl, dict):
+                    continue
+                source = tmpl.get("source", "")
+                if not isinstance(source, str) or not source:
+                    continue
+                if source.startswith("salt://"):
+                    rel = source.removeprefix("salt://")
+                    full_path = os.path.join(os.path.dirname(DATA_DIR), rel)
+                    if not os.path.isfile(full_path):
+                        missing.append(f"{section}.{name}: {source}")
+
+    assert not missing, f"services.yaml config templates not found: {missing}"

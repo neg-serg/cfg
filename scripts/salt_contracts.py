@@ -636,6 +636,96 @@ def check_services_config_templates(repo_root: Path = REPO_ROOT) -> list[str]:
     return errors
 
 
+# --- Data file liveness ---
+
+_CORE_DATA_FILES = {
+    "drift_inventory.yaml",
+    "docs_sources.yaml",
+    "feature_matrix.yaml",
+    "feature_registry.yaml",
+    "hosts.yaml",
+}
+
+DATA_IMPORT_RE = re.compile(r"\{%-?\s*import_yaml\s+['\"](data/[^'\"]+)['\"]\s+as\s+\w+")
+CP_FILE_DATA_RE = re.compile(r"salt\.cp\.get_file_str\s*\(\s*['\"]salt://(data/[^'\"]+)['\"]")
+
+J2_DATA_IMPORT_RE = re.compile(r"\{%-?\s*import_yaml\s+['\"]([^'\"]+)['\"]\s+as\s+\w+")
+
+
+def _collect_data_consumers(repo_root: Path = REPO_ROOT) -> dict[str, set[str]]:
+    usage: dict[str, set[str]] = {}
+    states_dir = repo_root / "states"
+
+    for sls_path in states_dir.rglob("*.sls"):
+        try:
+            src = sls_path.read_text()
+        except (OSError, IOError):
+            continue
+        for match in DATA_IMPORT_RE.finditer(src):
+            data_rel = match.group(1)
+            data_basename = data_rel.split("/")[-1]
+            usage.setdefault(data_basename, set()).add(
+                str(sls_path.relative_to(repo_root))
+            )
+        for match in CP_FILE_DATA_RE.finditer(src):
+            data_rel = match.group(1)
+            data_basename = data_rel.split("/")[-1]
+            usage.setdefault(data_basename, set()).add(
+                str(sls_path.relative_to(repo_root))
+            )
+
+    for config_path in (states_dir / "configs").rglob("*.j2"):
+        try:
+            src = config_path.read_text()
+        except (OSError, IOError):
+            continue
+        for match in J2_DATA_IMPORT_RE.finditer(src):
+            data_rel = match.group(1)
+            if data_rel.startswith("data/"):
+                data_basename = data_rel.split("/")[-1]
+                usage.setdefault(data_basename, set()).add(
+                    f"configs/{config_path.relative_to(states_dir / 'configs')}"
+                )
+
+    for jinja_path in states_dir.glob("*.jinja"):
+        try:
+            src = jinja_path.read_text()
+        except (OSError, IOError):
+            continue
+        for match in J2_DATA_IMPORT_RE.finditer(src):
+            data_rel = match.group(1)
+            if data_rel.startswith("data/"):
+                data_basename = data_rel.split("/")[-1]
+                usage.setdefault(data_basename, set()).add(
+                    str(jinja_path.relative_to(repo_root))
+                )
+
+    return usage
+
+
+def check_data_file_liveness(repo_root: Path = REPO_ROOT) -> list[str]:
+    data_dir = repo_root / "states" / "data"
+    if not data_dir.is_dir():
+        return []
+
+    consumers = _collect_data_consumers(repo_root)
+    if not consumers:
+        return []
+
+    errors = []
+
+    for data_path in sorted(data_dir.glob("*.yaml")):
+        basename = data_path.name
+        if basename in _CORE_DATA_FILES:
+            continue
+        if basename not in consumers:
+            errors.append(
+                f"Data file 'states/data/{basename}' has no SLS or config consumers"
+            )
+
+    return errors
+
+
 # --- Aggregate ---
 
 
@@ -689,6 +779,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_feature_matrix_against_registry(repo_root))
     errors.extend(check_catalog_packages_in_packages_yaml(repo_root))
     errors.extend(check_services_config_templates(repo_root))
+    errors.extend(check_data_file_liveness(repo_root))
     return errors
 
 

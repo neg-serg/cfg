@@ -530,3 +530,15 @@ def test_services_config_templates_exist():
                         missing.append(f"{section}.{name}: {source}")
 
     assert not missing, f"services.yaml config templates not found: {missing}"
+
+
+# --- Data file liveness ---
+
+
+def test_data_file_liveness_contracts_pass():
+    from pathlib import Path
+
+    salt_contracts = _load_salt_contracts()
+
+    errors = salt_contracts.check_data_file_liveness(Path(REPO_ROOT_STR))
+    assert errors == []

@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-07T03:24:23'
+generated: '2026-05-07T07:58:59'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -512,7 +512,7 @@ states:
   - configs/sysctl-custom.conf
 - id: system_description
   path: states/system_description.sls
-  purpose: 'System description: /etc/os-release branding and feature-gated state orchestration'
+  purpose: 'System description: /etc/os-release branding and feature-gated state orchestration.'
   feature_gate:
   - amnezia
   - dns.adguardhome
@@ -838,6 +838,9 @@ scripts_py:
   purpose: Download content using wget2 (faster, handles large files better)
 - path: scripts/salt-daemon.py
   purpose: salt-daemon.py — pre-loaded Salt Caller daemon for faster state.apply
+- path: scripts/salt_audit.py
+  purpose: Runtime data audit — tracks which states/data/*.yaml files are consumed
+    during salt-apply.
 - path: scripts/salt_compat.py
   purpose: Python 3.13+ compatibility shims for Salt (PEP 594 module removals).
 - path: scripts/salt_contracts.py
@@ -1118,6 +1121,7 @@ test_files:
 - path: tests/test_proxypilot_recover.py
 - path: tests/test_pw_route.py
 - path: tests/test_render_idempotent.py
+- path: tests/test_salt_audit.py
 - path: tests/test_salt_compat.py
 - path: tests/test_salt_contracts.py
 - path: tests/test_salt_daemon_output.py

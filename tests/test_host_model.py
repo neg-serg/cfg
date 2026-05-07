@@ -284,6 +284,89 @@ def test_merge_none_override():
     assert result["k"] is None
 
 
+def test_merge_none_in_nested_dict():
+    """None value in nested override replaces base nested value."""
+    base = {"a": {"b": "val"}}
+    override = {"a": {"b": None}}
+    result = host_model.recursive_merge(base, override)
+    assert result["a"]["b"] is None
+
+
+def test_merge_false_overrides_true():
+    """Boolean False is a value and should override True."""
+    base = {"enabled": True}
+    override = {"enabled": False}
+    result = host_model.recursive_merge(base, override)
+    assert result["enabled"] is False
+
+
+def test_merge_true_overrides_false():
+    """Boolean True overrides False."""
+    base = {"enabled": False}
+    override = {"enabled": True}
+    result = host_model.recursive_merge(base, override)
+    assert result["enabled"] is True
+
+
+def test_merge_empty_string_override():
+    """Empty string override replaces base string."""
+    base = {"name": "hello"}
+    override = {"name": ""}
+    result = host_model.recursive_merge(base, override)
+    assert result["name"] == ""
+
+
+def test_merge_new_key_introduced():
+    """Override can introduce keys not present in base."""
+    base = {"a": 1}
+    override = {"b": 2}
+    result = host_model.recursive_merge(base, override)
+    assert result == {"a": 1, "b": 2}
+
+
+def test_merge_new_nested_key():
+    """Override can introduce nested keys not in base."""
+    base = {"features": {"steam": True}}
+    override = {"features": {"new_feat": False}}
+    result = host_model.recursive_merge(base, override)
+    assert result["features"]["steam"] is True
+    assert result["features"]["new_feat"] is False
+
+
+def test_merge_zero_override():
+    """Zero value overrides non-zero."""
+    base = {"count": 5}
+    override = {"count": 0}
+    result = host_model.recursive_merge(base, override)
+    assert result["count"] == 0
+
+
+def test_merge_deep_nesting_new_path():
+    """Deep nesting where intermediate keys exist only in override."""
+    base = {"a": {"x": 1}}
+    override = {"a": {"y": {"z": 2}}}
+    result = host_model.recursive_merge(base, override)
+    assert result["a"]["x"] == 1
+    assert result["a"]["y"]["z"] == 2
+
+
+def test_merge_base_not_mutated_after_nested_merge():
+    """Verify base dict is never mutated by nested merges."""
+    base = {"a": {"b": {"c": 1}}}
+    override = {"a": {"b": {"d": 2}}}
+    result = host_model.recursive_merge(base, override)
+    assert base["a"]["b"] == {"c": 1}  # unchanged
+    assert result["a"]["b"] == {"c": 1, "d": 2}
+
+
+def test_merge_list_within_dict():
+    """Lists within nested dicts are replaced, not merged."""
+    base = {"a": {"items": [1, 2, 3]}}
+    override = {"a": {"items": [4, 5]}}
+    result = host_model.recursive_merge(base, override)
+    assert result["a"]["items"] == [4, 5]
+
+
 # --- check_features_against_registry ---
 
 

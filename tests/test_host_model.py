@@ -517,6 +517,34 @@ def test_build_lint_host_enables_all_registry_features():
     )
 
 
+def test_lint_host_has_all_registry_feature_keys():
+    """lint host must have every feature key from the registry, even if False."""
+    reg = host_model.load_feature_registry()
+    host = host_model.build_lint_host()
+    host_features = host.get("features", {})
+
+    registry_features = host_model._collect_registry_features(reg)
+
+    missing_from_host = set()
+    for full_name in sorted(registry_features):
+        parts = full_name.split(".")
+        obj = host_features
+        found = True
+        for part in parts:
+            if isinstance(obj, dict) and part in obj:
+                obj = obj[part]
+            else:
+                found = False
+                break
+        if not found:
+            missing_from_host.add(full_name)
+
+    assert not missing_from_host, (
+        f"lint host missing {len(missing_from_host)} registry feature keys:"
+        f" {missing_from_host}"
+    )
+
+
 def test_telfir_host_contract():
     """Validate the telfir host config against known expected values.
     This serves as a contract: both host_config.jinja and host_model.py

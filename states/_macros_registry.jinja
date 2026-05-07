@@ -1,0 +1,53 @@
+{#
+    Feature registry loader — makes feature_registry.yaml available at Salt runtime.
+    
+    Usage in any .sls file:
+      {% from '_macros_registry.jinja' import registry, feature_enabled, feature_default %}
+      
+      {% if feature_enabled(host, 'monitoring.loki') %}
+        ...loki-specific states...
+      {% endif %}
+      
+      Default value access:
+      {{ feature_default('monitoring.loki') }}  → false
+      {{ feature_default('steam') }}             → true
+#}
+{% import_yaml 'data/feature_registry.yaml' as _reg %}
+
+{% set registry = _reg %}
+
+
+{% macro feature_default(name) %}
+  {% set parts = name.split('.') %}
+  {% set obj = registry.features %}
+  {% for part in parts %}
+    {% if obj is mapping and part in obj %}
+      {% set obj = obj[part] %}
+      {% if obj is mapping and 'features' in obj %}
+        {% set obj = obj['features'] %}
+      {% endif %}
+    {% else %}
+      {{ none }} {#- not found #}
+    {% endif %}
+  {% endfor %}
+  {% if obj is mapping and 'default' in obj %}
+    {{ obj['default'] }}
+  {% else %}
+    {{ none }}
+  {% endif %}
+{% endmacro %}
+
+
+{% macro feature_enabled(host, name) %}
+  {% set parts = name.split('.') %}
+  {% set obj = host.features %}
+  {% set found = true %}
+  {% for part in parts %}
+    {% if obj is mapping and part in obj %}
+      {% set obj = obj[part] %}
+    {% else %}
+      {% set found = false %}
+    {% endif %}
+  {% endfor %}
+  {{ found and obj is boolean and obj }}
+{% endmacro %}

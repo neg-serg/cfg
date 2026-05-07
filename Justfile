@@ -151,6 +151,30 @@ contracts-verbose:
 health-data:
     python3 scripts/salt_contracts.py --summary
 
+# Data statistics (file sizes, last modified, consumer counts)
+stats:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "=== Data files ==="
+    for f in states/data/*.yaml; do
+        size=$(stat -c%s "$f" 2>/dev/null || stat -f%z "$f" 2>/dev/null)
+        printf "  %-35s %6d bytes\n" "$(basename "$f")" "$size"
+    done
+    echo ""
+    echo "=== SLS files ==="
+    sls_count=$(find states -name '*.sls' | wc -l)
+    jinja_count=$(find states -name '*.jinja' -not -name '_macros_*' | wc -l)
+    macro_count=$(find states -name '_macros_*.jinja' | wc -l)
+    echo "  .sls files:        $sls_count"
+    echo "  macro .jinja files: $macro_count"
+    echo "  other .jinja files: $jinja_count"
+    echo ""
+    echo "=== Tests ==="
+    test_count=$(find tests -name 'test_*.py' | wc -l)
+    echo "  test files: $test_count"
+    echo ""
+    python3 scripts/salt_contracts.py --summary
+
 # Print data→state dependency graph (JSON)
 graph:
     python3 scripts/salt_impact.py --graph

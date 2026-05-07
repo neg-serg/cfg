@@ -1161,6 +1161,78 @@ def check_macro_files_syntax(repo_root: Path = REPO_ROOT) -> list[str]:
     return errors
 
 
+# --- Service catalog scope validation ---
+
+
+def check_service_catalog_scopes(repo_root: Path = REPO_ROOT) -> list[str]:
+    catalog = load_yaml_file(repo_root / "states" / "data" / "service_catalog.yaml")
+    valid_scopes = {"system", "user"}
+    errors = []
+
+    for service_name, config in catalog.items():
+        if not isinstance(config, dict):
+            continue
+        scope = config.get("scope")
+        if isinstance(scope, str) and scope not in valid_scopes:
+            errors.append(
+                f"Service catalog '{service_name}' has invalid scope '{scope}'"
+                f" (must be one of {valid_scopes})"
+            )
+        elif not isinstance(scope, str):
+            errors.append(
+                f"Service catalog '{service_name}' missing or invalid scope field"
+            )
+
+    return errors
+
+
+# --- Feature matrix uniqueness ---
+
+
+def check_feature_matrix_unique_names(repo_root: Path = REPO_ROOT) -> list[str]:
+    matrix = load_yaml_file(repo_root / "states" / "data" / "feature_matrix.yaml")
+    if not isinstance(matrix, list):
+        return []
+
+    errors = []
+    seen = set()
+    for entry in matrix:
+        if not isinstance(entry, dict):
+            continue
+        name = entry.get("name", "")
+        if not isinstance(name, str) or not name:
+            errors.append("feature_matrix.yaml entry missing valid name")
+        elif name in seen:
+            errors.append(f"feature_matrix.yaml duplicate scenario name '{name}'")
+        else:
+            seen.add(name)
+
+    return errors
+
+
+# --- Data file YAML syntax ---
+
+
+def check_data_file_yaml_syntax(repo_root: Path = REPO_ROOT) -> list[str]:
+    data_dir = repo_root / "states" / "data"
+    errors = []
+
+    for yaml_path in sorted(data_dir.glob("*.yaml")):
+        try:
+            with yaml_path.open() as fh:
+                yaml.safe_load(fh.read())
+        except yaml.YAMLError as e:
+            errors.append(
+                f"Data file '{yaml_path.relative_to(repo_root)}' YAML error: {e}"
+            )
+        except (OSError, IOError):
+            errors.append(
+                f"Data file '{yaml_path.relative_to(repo_root)}' cannot be read"
+            )
+
+    return errors
+
+
 # --- Aggregate ---
 
 
@@ -1226,6 +1298,9 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_sls_config_refs_exist(repo_root))
     errors.extend(check_sls_includes_exist(repo_root))
     errors.extend(check_macro_files_syntax(repo_root))
+    errors.extend(check_service_catalog_scopes(repo_root))
+    errors.extend(check_feature_matrix_unique_names(repo_root))
+    errors.extend(check_data_file_yaml_syntax(repo_root))
     return errors
 
 

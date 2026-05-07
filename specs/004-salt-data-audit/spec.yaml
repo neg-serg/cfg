@@ -1,0 +1,151 @@
+name: spec-template
+version: 1.0
+description: "Runtime data consumption audit log for Salt states"
+
+document:
+  metadata:
+    feature_name: "Salt Data Audit Log"
+    feature_branch: "004-salt-data-audit"
+    created: "2026-05-07"
+    status: "Draft"
+    input_description: "Runtime audit log — track which data YAML entries are consumed during salt-apply"
+
+  sections:
+    - name: User Stories
+      required: true
+      items:
+        - title: "Operator sees which data files were used during a salt-apply run"
+          priority: P1
+          description: |
+            After running `salt-apply.sh`, the operator can see a report listing every 
+            `states/data/*.yaml` entry that was actually read (imported) during state 
+            execution. The report distinguishes between:
+            - Data files loaded via `import_yaml` in SLS files
+            - Data files loaded via `import_yaml` in J2 config templates
+            - Data files loaded via `salt.cp.get_file_str` calls at runtime
+            - Data files loaded via Jinja macros (`_macros_*.jinja`)
+            This enables precise impact analysis: "I changed X.yaml, which states will re-run?"
+          why_priority: "Core feature — without this, data consumption is invisible at runtime"
+          independent_test: "Run `salt-apply.sh --audit system_description` and verify the audit log lists ollama.yaml, packages.yaml, service_catalog.yaml as consumed"
+          acceptance_scenarios:
+            - given: "A Salt state that imports ollama.yaml via import_yaml"
+              when: "salt-apply.sh runs with --audit flag"
+              then: "The audit log records 'ollama.yaml: imported by ollama.sls (import_yaml)'"
+            - given: "cachyos.sls which uses kernel-cmdline.j2 that imports kernel_params.yaml"
+              when: "salt-apply.sh runs with --audit"
+              then: "The audit log records 'kernel_params.yaml: imported by configs/kernel-cmdline.j2 → cachyos.sls'"
+
+        - title: "Operator can identify unused data files after a salt-apply run"
+          priority: P2
+          description: |
+            The audit log is diffed against the full data file inventory (39 files in 
+            states/data/) to identify data files that were NOT accessed during the run. 
+            This reveals:
+            - Truly unused data files (candidates for removal)
+            - Feature-gated data files not applicable to the current host
+            - Data files only consumed by disabled features
+          why_priority: "Enables ongoing data hygiene — identifies dead data in production context"
+          independent_test: "Run `salt-apply.sh --audit system_description` on telfir host with floorp disabled, verify the audit diff shows floorp.yaml as unused"
+          acceptance_scenarios:
+            - given: "A host where floorp feature is disabled"
+              when: "salt-apply.sh runs with --audit"
+              then: "The unused-files report lists floorp.yaml as not consumed"
+            - given: "A state that imports service_catalog.yaml"
+              when: "salt-apply.sh runs with --audit"
+              then: "The unused-files report does NOT list service_catalog.yaml"
+
+        - title: "Operator can audit a dry-run (test=True) without making changes"
+          priority: P3
+          description: |
+            The audit log is generated even during dry-run mode (salt-apply.sh --test). 
+            Since Salt evaluates all templates during test mode, the audit accurately 
+            reflects which data files would be consumed in a real apply.
+          why_priority: "Safe pre-flight check — verify data coverage without applying changes"
+          independent_test: "Run `salt-apply.sh --test --audit` and verify the audit log is generated with no state changes"
+          acceptance_scenarios:
+            - given: "salt-apply.sh --test --audit system_description"
+              when: "The dry-run completes"
+              then: "Audit log exists at logs/audit-<timestamp>.yaml and no states were actually applied"
+
+    - name: Edge Cases
+      required: true
+      items:
+        - scenario: "Data file imported by multiple states"
+          description: "A single data file (e.g. versions.yaml) is imported by 7 different SLS files. The audit log records all 7 consumers so the operator can see the full blast radius."
+        - scenario: "Data file loaded via salt.cp.get_file_str (not import_yaml)"
+          description: "xen/kde_theme.sls loads xen.yaml via salt.cp.get_file_str('salt://data/xen.yaml') | load_yaml. The audit tracer intercepts this pattern and records it alongside import_yaml imports."
+        - scenario: "Data file in a Jinja conditional block that evaluates to false"
+          description: "A state has `{% if host.features.floorp %}{% import_yaml 'data/floorp.yaml' ... %}{% endif %}`. If floorp is false on this host, the import is never evaluated. The audit correctly shows floorp.yaml as NOT consumed."
+        - scenario: "Macro file import chain"
+          description: "host_config.jinja imports hosts.yaml, which is then imported by _macros_common.jinja, which is imported by _imports.jinja. The audit traces the full chain: 'hosts.yaml: _macros_common.jinja → _imports.jinja → <calling state>'."
+        - scenario: "Audit log persistence across multiple apply runs"
+          description: "Each salt-apply run appends to the audit log rather than overwriting, enabling trend analysis (e.g. 'which data files became unused after disabling the floorp feature?')."
+        - scenario: "Corrupted YAML file"
+          description: "If a data file has YAML syntax errors, Salt fails to parse it and the state fails. The audit records the attempt and the error, distinguishing 'import attempted but failed' from 'import never attempted'."
+
+    - name: Functional Requirements
+      required: true
+      items:
+        - id: FR-001
+          description: "The system intercepts all Salt data file reads (import_yaml, salt.cp.get_file_str for data/*.yaml paths) and records the source file, target data file, and calling context (SLS file or macro chain)"
+          must: true
+        - id: FR-002
+          description: "The audit output is written to logs/audit-<timestamp>.yaml in a structured format with keys: consumed (list of data files with their consumers), unused (list of data files not accessed), timestamp, salt_target, hostname"
+          must: true
+        - id: FR-003
+          description: "The audit tracer handles all three data access patterns: {% import_yaml 'data/X.yaml' %}, salt.cp.get_file_str('salt://data/X.yaml'), and {% import_yaml 'data/X.yaml' %} inside .j2 config templates"
+          must: true
+        - id: FR-004
+          description: "A `salt-apply.sh --audit` flag enables audit mode. Without the flag, no audit overhead is incurred (zero-cost when disabled)"
+          must: true
+        - id: FR-005
+          description: "The audit log is generated even during test mode (--test --audit), using Salt's template evaluation pass without applying states"
+          must: true
+        - id: FR-006
+          description: "The audit tracer reports the full import chain when tracing through macros: if A.jinja imports B.yaml and is called from C.sls, the audit records 'B.yaml: A.jinja → C.sls'"
+          must: false
+          clarification_needed: false
+        - id: FR-007
+          description: "A post-run diff command (`salt-apply.sh --audit-diff`) compares the audit log against the full data file inventory and reports unused files with reasons (feature-gated, truly orphaned)"
+          must: false
+        - id: FR-008
+          description: "The audit system gracefully handles YAML parse errors: records the file as 'import attempted, parse failed' rather than crashing"
+          must: true
+        - id: FR-009
+          description: "Audit data files are excluded from the audit itself (audit output files are not treated as Salt data files)"
+          must: true
+        - id: FR-010
+          description: "The audit log format is machine-readable (YAML) and can be consumed by salt_contracts.py for automated unused-data detection"
+          must: false
+
+    - name: Key Entities
+      required: true
+      items:
+        - name: "AuditRecord"
+          description: "A single data file consumption record: data_file (path relative to states/data/), consumer (SLS or macro that imported it), access_method (import_yaml / cp.get_file_str / j2_template), timestamp, salt_target"
+          relationships: "Aggregated into AuditLog"
+        - name: "AuditLog"
+          description: "The complete audit output for one salt-apply run: list of AuditRecords, list of unused data files, metadata (hostname, salt_target, timestamp, test_mode flag)"
+          relationships: "Written to logs/audit-<timestamp>.yaml, consumed by salt_contracts.py"
+        - name: "UnusedDataReport"
+          description: "Diff between the full data inventory (39 files in states/data/) and the AuditLog's consumed_list. Each unused file annotated with reason: feature_gated, truly_orphaned, import_error"
+          relationships: "Generated by --audit-diff post-run command, consumed by operator for data hygiene"
+
+    - name: Success Criteria
+      required: true
+      items:
+        - id: SC-001
+          metric: "Every data file import during salt-apply is captured in the audit log with 100% accuracy (no missed imports, no false positives)"
+          type: quality
+        - id: SC-002
+          metric: "Audit overhead when enabled adds less than 5% to total salt-apply runtime"
+          type: performance
+        - id: SC-003
+          metric: "Audit overhead when disabled (no --audit flag) adds zero measurable overhead"
+          type: performance
+        - id: SC-004
+          metric: "Operator can identify unused data files within 10 seconds of salt-apply completing (via --audit-diff)"
+          type: satisfaction
+        - id: SC-005
+          metric: "Audit log is valid YAML and parseable by salt_contracts.py without manual intervention"
+          type: quality

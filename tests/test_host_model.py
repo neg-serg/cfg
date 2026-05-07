@@ -525,7 +525,6 @@ def test_feature_registry_is_jinja_importable():
 def test_registry_macro_file_exists_and_valid():
     """_macros_registry.jinja must be parseable and importable."""
     import yaml
-    import yaml
 
     try:
         with open("states/_macros_registry.jinja") as f:
@@ -533,8 +532,9 @@ def test_registry_macro_file_exists_and_valid():
     except FileNotFoundError:
         pytest.skip("_macros_registry.jinja not found")
 
-    assert "import_yaml" in content, "must import feature_registry.yaml"
-    assert "feature_registry.yaml" in content, "must reference feature_registry.yaml"
+    assert "import_yaml 'data/feature_registry.yaml'" in content, (
+        "must import feature_registry.yaml"
+    )
     assert "feature_default" in content, "must define feature_default macro"
     assert "feature_enabled" in content, "must define feature_enabled macro"
 

@@ -2,14 +2,14 @@
 # Routes Loki alert rules to Telegram via local webhook bridge
 route:
   receiver: telegram
-  group_by: ['alertname']
+  group_by: ['alertname', 'severity']
   group_wait: 10s
   group_interval: 1m
-  repeat_interval: 15m
+  repeat_interval: 1h
 
 receivers:
   - name: telegram
     webhook_configs:
       - url: http://127.0.0.1:9094/alert
-        send_resolved: true
+        send_resolved: false
         max_alerts: 20

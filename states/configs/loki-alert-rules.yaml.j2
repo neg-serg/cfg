@@ -10,7 +10,7 @@ groups:
           sum by (unit) (
             count_over_time({job="systemd-journal"} |= "level=error" [1m])
           ) > 10
-        for: 0m
+        for: 5m
         labels:
           severity: warning
           source: loki
@@ -24,7 +24,7 @@ groups:
           sum by (source_ip) (
             count_over_time({unit="sshd.service"} |~ "Failed password|Invalid user" [5m])
           ) > 5
-        for: 0m
+        for: 5m
         labels:
           severity: critical
           source: loki
@@ -32,7 +32,7 @@ groups:
           summary: "SSH brute force from {{ '{{' }} $labels.source_ip {{ '}}' }}"
           description: "{{ '{{' }} $value {{ '}}' }} failed attempts in 5 minutes"
 
-      # OOM killer: immediate alert
+      # OOM killer: triggered on any OOM kill (one-time event, no grace period)
       - alert: OOMKiller
         expr: |
           count_over_time({job="systemd-journal"} |= "Out of memory: Killed process" [1m]) > 0

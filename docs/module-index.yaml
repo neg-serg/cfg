@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-07T00:49:02'
+generated: '2026-05-07T03:24:23'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -761,6 +761,11 @@ macros:
   - pkgbuild_install
   - npm_pkg
   - flatpak_install
+- id: _macros_registry
+  path: states/_macros_registry.jinja
+  provides:
+  - feature_default
+  - feature_enabled
 - id: _macros_service
   path: states/_macros_service.jinja
   provides:

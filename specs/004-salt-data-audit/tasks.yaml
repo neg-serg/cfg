@@ -1,0 +1,185 @@
+name: tasks
+version: 1.0
+description: "Implementation tasks for Salt data audit log (004-salt-data-audit)"
+
+document:
+  metadata:
+    feature_name: "Salt Data Audit Log"
+    input_refs: "spec.yaml, plan.yaml, data-model.yaml, research.yaml, contracts/audit-output.yaml"
+    prerequisites: "plan.yaml, spec.yaml"
+
+  conventions:
+    task_format: "[P?] [Story] Description with exact file paths"
+    parallel_marker: "[P] = different files, no dependencies"
+    story_marker: "[US1], [US2], [US3] = which user story"
+
+  phases:
+    - name: Setup
+      order: 1
+      description: "Project initialization — audit script skeleton"
+      purpose: "Create script file and wire into build system"
+      tasks:
+        - id: T001
+          description: "Create scripts/salt_audit.py skeleton with docstring, imports, and main() stub"
+          parallel: false
+        - id: T002
+          description: "Add 'just audit' and 'just audit-diff' commands to Justfile"
+          parallel: true
+
+    - name: Foundational
+      order: 2
+      description: "Core audit engine — data→state graph integration and audit report generation"
+      purpose: "CRITICAL: No user story work until this phase completes"
+      tasks:
+        - id: T003
+          description: "Implement _build_expected_consumption() in scripts/salt_audit.py — reuses salt_impact._build_data_state_graph() to compute which data files the target state expects to consume"
+          parallel: false
+        - id: T004
+          description: "Implement _collect_data_inventory() in scripts/salt_audit.py — lists all .yaml files in states/data/ (39 files)"
+          parallel: false
+        - id: T005
+          description: "Implement generate_audit_report() in scripts/salt_audit.py — produces AuditReport dict with consumed_list, unused_list, metadata per contracts/audit-output.yaml schema"
+          parallel: false
+        - id: T006
+          description: "Implement write_audit_log() in scripts/salt_audit.py — writes AuditReport YAML to logs/audit-<timestamp>.yaml"
+          parallel: false
+      checkpoint: "Foundation ready — audit engine can compute and write reports"
+
+    - name: User Story 1
+      order: 3
+      story_number: 1
+      title: "Operator sees which data files were used during a salt-apply run"
+      priority: P1
+      goal: "After salt-apply.sh, a YAML audit report lists every consumed data file with its consumers"
+      independent_test: "Run salt-apply.sh --audit system_description and verify audit log lists ollama.yaml, packages.yaml, service_catalog.yaml"
+      implementation_tasks:
+        - id: T007
+          description: "[US1] Add --audit flag parsing to scripts/salt-apply.sh (flag sets SALT_AUDIT=1 env var)"
+          parallel: false
+          story: US1
+        - id: T008
+          description: "[US1] Implement run_audit() in scripts/salt_audit.py — runs salt-call state.apply test=True, parses output to extract evaluated state names, maps states to data files via impact graph"
+          parallel: false
+          story: US1
+        - id: T009
+          description: "[US1] Wire audit into scripts/salt-apply.sh post-apply hook: if SALT_AUDIT=1, call python3 scripts/salt_audit.py after salt-apply completes"
+          parallel: false
+          story: US1
+        - id: T010
+          description: "[US1] Handle all 3 data access patterns in scripts/salt_audit.py: import_yaml in SLS, import_yaml in J2 configs, salt.cp.get_file_str"
+          parallel: false
+          story: US1
+          depends_on: [T008]
+      checkpoint: "US1 complete — audit report generated after every audited apply"
+
+    - name: User Story 2
+      order: 4
+      story_number: 2
+      title: "Operator can identify unused data files after a salt-apply run"
+      priority: P2
+      goal: "Audit diff shows which data files were NOT consumed, with reasons (feature-gated, truly orphaned)"
+      independent_test: "Run salt-apply.sh --audit on telfir (floorp disabled) and verify floorp.yaml appears in unused list"
+      implementation_tasks:
+        - id: T011
+          description: "[US2] Implement compute_unused_diff() in scripts/salt_audit.py — diffs consumed_list against full data inventory, annotates each unused file with reason (feature_gated vs truly_orphaned)"
+          parallel: false
+          story: US2
+        - id: T012
+          description: "[US2] Implement _resolve_feature_gating() in scripts/salt_audit.py — for each unused data file, checks whether the feature that gates it is disabled on the current host"
+          parallel: false
+          story: US2
+        - id: T013
+          description: "[US2] Add --audit-diff flag to scripts/salt-apply.sh — calls salt_audit.py --diff mode after apply"
+          parallel: true
+          story: US2
+        - id: T014
+          description: "[US2] Add --diff mode to scripts/salt_audit.py main() — loads audit log and prints unused files with reasons"
+          parallel: false
+          story: US2
+          depends_on: [T011, T012]
+      checkpoint: "US2 complete — audit diff identifies feature-gated vs truly orphaned data files"
+
+    - name: User Story 3
+      order: 5
+      story_number: 3
+      title: "Operator can audit a dry-run without making changes"
+      priority: P3
+      goal: "Audit works in test mode (--test --audit) with zero state changes"
+      independent_test: "Run salt-apply.sh --test --audit and verify audit log exists with no applied states"
+      implementation_tasks:
+        - id: T015
+          description: "[US3] Ensure run_audit() in scripts/salt_audit.py handles --test mode — runs salt-call with test=True and respects dry-run output format"
+          parallel: false
+          story: US3
+        - id: T016
+          description: "[US3] Add test_mode flag to AuditReport in scripts/salt_audit.py — records whether audit was from a dry-run"
+          parallel: false
+          story: US3
+        - id: T017
+          description: "[US3] Validate --test --audit integration in scripts/salt-apply.sh — ensures --test flag is passed through to audit subprocess"
+          parallel: false
+          story: US3
+      checkpoint: "US3 complete — dry-run audit without state changes"
+
+    - name: Polish
+      order: 99
+      description: "Tests, edge cases, and cross-cutting improvements"
+      purpose: "Ensure robustness and integration with existing contract system"
+      tasks:
+        - id: T018
+          description: "[P] Create tests/test_salt_audit.py — test audit report schema validity, consumed_list correctness, unused diff logic, test mode flag"
+          parallel: true
+        - id: T019
+          description: "[P] Handle edge case in scripts/salt_audit.py: corrupted YAML files — catch YAMLError and record as 'import_error' rather than crashing"
+          parallel: true
+        - id: T020
+          description: "[P] Handle edge case in scripts/salt_audit.py: audit output self-exclusion — ensure logs/audit-*.yaml files are never counted as data files"
+          parallel: true
+        - id: T021
+          description: "Update scripts/salt_contracts.py — add check that validates audit log format against contracts/audit-output.yaml schema"
+          parallel: false
+        - id: T022
+          description: "Run full test suite + contracts, verify 0 regressions"
+          parallel: false
+
+  dependencies:
+    phase_dependencies:
+      - phase: "Setup"
+        depends_on: []
+      - phase: "Foundational"
+        depends_on: ["Setup"]
+        blocks: ["all user stories"]
+      - phase: "User Story 1"
+        depends_on: ["Foundational"]
+      - phase: "User Story 2"
+        depends_on: ["Foundational"]
+      - phase: "User Story 3"
+        depends_on: ["Foundational"]
+      - phase: "Polish"
+        depends_on: ["US1", "US2", "US3"]
+    story_dependencies:
+      - story: "US1 (P1)"
+        depends_on: ["Foundational"]
+        independent: true
+      - story: "US2 (P2)"
+        depends_on: ["Foundational"]
+        independent: true
+      - story: "US3 (P3)"
+        depends_on: ["Foundational"]
+        independent: true
+    within_story_order:
+      - "Core implementation before integration"
+      - "Flag parsing before wire-in"
+
+  strategy:
+    mvp_first:
+      - "Complete Phase 1: Setup (T001-T002)"
+      - "Complete Phase 2: Foundational (T003-T006)"
+      - "Complete US1: Basic audit report (T007-T010)"
+      - "STOP and VALIDATE: run salt-apply.sh --audit, verify audit log"
+    incremental_delivery:
+      - "Setup + Foundational => Audit engine ready"
+      - "Add US1 => Basic --audit works => MVP"
+      - "Add US2 => --audit-diff identifies unused files"
+      - "Add US3 => Dry-run support"
+      - "Polish => Tests + edge cases + contract integration"

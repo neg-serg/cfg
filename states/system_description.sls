@@ -1,4 +1,15 @@
-{# System description: /etc/os-release branding and feature-gated state orchestration #}
+{# System description: /etc/os-release branding and feature-gated state orchestration.
+   
+   Feature gating uses host.features.* directly. For registry-driven gating
+   (future), states can import:
+     {% from '_macros_registry.jinja' import feature_enabled, feature_default %}
+     {% if feature_enabled(host, 'ollama') %}
+       include: [ollama]
+     {% endif %}
+   
+   Registry source: states/data/feature_registry.yaml (50 features, defaults+descriptions).
+   Contract checks: python3 scripts/salt_contracts.py (21 automated validations).
+#}
 {% from '_imports.jinja' import host, user %}
 {% from '_macros_service.jinja' import ensure_dir %}
 # Salt state for CachyOS workstation — top-level orchestrator

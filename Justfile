@@ -175,6 +175,22 @@ stats:
     echo ""
     python3 scripts/salt_contracts.py --summary
 
+# Run Salt with data audit (track which data files are consumed)
+audit TARGET="system_description":
+    scripts/salt-apply.sh --audit {{TARGET}}
+
+# Show unused data files from the latest audit log
+audit-diff LOG="":
+    #!/usr/bin/env bash
+    if [ -z "{{LOG}}" ]; then
+        LOG=$(ls -t logs/audit-*.yaml 2>/dev/null | head -1)
+    fi
+    if [ -z "$LOG" ]; then
+        echo "No audit log found. Run: just audit"
+        exit 1
+    fi
+    python3 scripts/salt_audit.py --diff "$LOG"
+
 # Print data→state dependency graph (JSON)
 graph:
     python3 scripts/salt_impact.py --graph

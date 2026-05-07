@@ -47,11 +47,13 @@ STATE="system_description"
 TEST_MODE=false
 PLAN_MODE=false
 PLAN_FILES=()
+AUDIT_MODE=false
 
 for arg in "$@"; do
 	case "$arg" in
 	--plan) PLAN_MODE=true ;;
 	--test | --dry-run) TEST_MODE=true ;;
+	--audit) AUDIT_MODE=true ;;
 	-*)
 		echo "Unknown flag: $arg" >&2
 		exit 1
@@ -395,6 +397,11 @@ if [[ $RC -eq 0 ]]; then
 		--project-dir "${PROJECT_DIR}" \
 		--cache-dir "${HOME}/.cache/salt-monitor" \
 		--salt-target "${STATE}"
+	if $AUDIT_MODE; then
+		TEST_FLAG=""
+		$TEST_MODE && TEST_FLAG="--test"
+		python3 "${SCRIPT_DIR}/salt_audit.py" --target "${STATE}" $TEST_FLAG
+	fi
 else
 	echo "--- ${STATE}: some states failed (see log above) ---"
 	exit $RC

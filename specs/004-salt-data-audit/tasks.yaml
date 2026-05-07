@@ -22,6 +22,7 @@ document:
         - id: T001
           description: "Create scripts/salt_audit.py skeleton with docstring, imports, and main() stub"
           parallel: false
+          completed: true
         - id: T002
           description: "Add 'just audit' and 'just audit-diff' commands to Justfile"
           parallel: true

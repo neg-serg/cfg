@@ -60,7 +60,17 @@ def load_feature_matrix():
 
 
 def recursive_merge(base, override):
-    """Recursive dict merge mimicking slsutil.merge(strategy='recurse')."""
+    """Recursive dict merge mimicking Salt slsutil.merge(strategy='recurse').
+    
+    Merge contract (must match host_config.jinja behavior):
+    * Dicts merge recursively (override keys added, existing overridden)
+    * Non-dict scalars replace base values entirely (including None, False, 0, "")
+    * Empty dict in override is a no-op (does not clobber base dict)
+    * Lists are replaced wholesale (not concatenated)
+    * Base dict is never mutated (returns new dict)
+    * New keys can be introduced at any nesting level
+    
+    Test coverage: tests/test_host_model.py."""
     result = base.copy()
     for k, v in override.items():
         if k in result and isinstance(result[k], dict) and isinstance(v, dict):

@@ -1,14 +1,27 @@
 {#
     Per-host configuration map.
-
+    
     Usage in any .sls file:
       {% from 'host_config.jinja' import host %}
       {% if host.is_laptop %}
         ...laptop-specific states...
       {% endif %}
-
+    
     Data lives in states/data/hosts.yaml — defaults + host overrides + aliases.
     Add a new machine by editing that YAML file; values fall back to defaults.
+    
+    ── Merge contract (must match host_model.py recursive_merge) ──────────
+    * Dicts merge recursively (override keys added, existing keys overridden)
+    * Non-dict scalars (str, int, bool, None) replace base values entirely
+    * None, False, 0, "" are valid override values (not skipped)
+    * Empty dict in override is a no-op (does not clobber base dict)
+    * Lists are replaced wholesale (not concatenated)
+    * Base dict must never be mutated by merge (pure function)
+    * New keys can be introduced at any nesting level
+    
+    Test coverage: tests/test_host_model.py (50 tests, merge section)
+    Python implementation: scripts/host_model.py recursive_merge()
+    Jinja implementation: salt['slsutil.merge'](..., strategy='recurse')
 #}
 
 {% import_yaml 'data/hosts.yaml' as hosts_data %}

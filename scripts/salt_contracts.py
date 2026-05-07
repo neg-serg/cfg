@@ -251,6 +251,32 @@ def check_service_catalog_container_images(repo_root: Path = REPO_ROOT) -> list[
     return errors
 
 
+def check_container_images_liveness(repo_root: Path = REPO_ROOT) -> list[str]:
+    catalog = load_yaml_file(repo_root / "states" / "data" / "service_catalog.yaml")
+    images = load_yaml_file(repo_root / "states" / "data" / "container_images.yaml")
+    errors = []
+
+    if not isinstance(images, dict):
+        return []
+
+    referenced_images = set()
+    for service_name, config in catalog.items():
+        if not isinstance(config, dict):
+            continue
+        image_key = config.get("container_image")
+        if isinstance(image_key, str) and image_key:
+            referenced_images.add(image_key)
+
+    for image_name in images:
+        if image_name not in referenced_images:
+            errors.append(
+                f"Container image '{image_name}' is not referenced by any service in"
+                " service_catalog.yaml"
+            )
+
+    return errors
+
+
 def check_service_catalog_packages(repo_root: Path = REPO_ROOT) -> list[str]:
     catalog = load_yaml_file(repo_root / "states" / "data" / "service_catalog.yaml")
     errors = []
@@ -1019,6 +1045,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors = []
     errors.extend(check_service_catalog_packages(repo_root))
     errors.extend(check_service_catalog_container_images(repo_root))
+    errors.extend(check_container_images_liveness(repo_root))
     errors.extend(check_service_catalog_units(repo_root))
     errors.extend(check_services_yaml_service_references(repo_root))
     errors.extend(check_managed_resource_services(repo_root))

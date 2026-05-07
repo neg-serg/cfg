@@ -1125,6 +1125,42 @@ def check_sls_includes_exist(repo_root: Path = REPO_ROOT) -> list[str]:
     return errors
 
 
+# --- Macro file syntax validation ---
+
+
+def check_macro_files_syntax(repo_root: Path = REPO_ROOT) -> list[str]:
+    states_dir = repo_root / "states"
+    errors = []
+
+    for macro_path in sorted(states_dir.glob("_macros_*.jinja")):
+        try:
+            src = macro_path.read_text()
+        except (OSError, IOError):
+            errors.append(f"Cannot read {macro_path.relative_to(repo_root)}")
+            continue
+
+        if "{%" not in src and "{{" not in src:
+            continue
+
+        open_blocks = src.count("{%") + src.count("{{") + src.count("{#")
+        close_blocks = src.count("%}") + src.count("}}") + src.count("#}")
+        if open_blocks != close_blocks:
+            errors.append(
+                f"{macro_path.relative_to(repo_root)} has unbalanced Jinja"
+                f" delimiters ({open_blocks} open vs {close_blocks} close)"
+            )
+
+        macros_open = len(re.findall(r"{%-?\s*macro\s+\w+", src))
+        macros_close = len(re.findall(r"{%-?\s*endmacro\s*-?%}", src))
+        if macros_open != macros_close:
+            errors.append(
+                f"{macro_path.relative_to(repo_root)} has {macros_open} macro(s)"
+                f" but {macros_close} endmacro(s)"
+            )
+
+    return errors
+
+
 # --- Aggregate ---
 
 
@@ -1189,6 +1225,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_registry_gates_resolve_to_states(repo_root))
     errors.extend(check_sls_config_refs_exist(repo_root))
     errors.extend(check_sls_includes_exist(repo_root))
+    errors.extend(check_macro_files_syntax(repo_root))
     return errors
 
 

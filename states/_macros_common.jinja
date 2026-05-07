@@ -16,6 +16,7 @@
 {%- set healthcheck_timeout = 30 -%}
 {%- set sudo_timeout_minutes = -1 -%}
 {%- set ollama_pull_timeout = 14400 -%}
+{%- set registry = _hc.registry if _hc.registry is defined else {} -%}
 
 {#- Shell snippet: download a URL to cache_path with optional sha256 verification.
     Outputs bash lines for use inside cmd.run name: blocks.

@@ -1,7 +1,7 @@
 {#- Thin proxy: re-exports constants from _macros_common.jinja for .sls states.
     Jinja2 {% from %} imports do NOT re-export — only {% set %} creates module exports.
     Usage: {% from '_imports.jinja' import host, user, home %}
-    With pkg_list: {% from '_imports.jinja' import host, user, home, pkg_list %}
+    With registry: {% from '_imports.jinja' import host, registry %}
 -#}
 {%- import '_macros_common.jinja' as _mc -%}
 {%- set host = _mc.host -%}
@@ -19,3 +19,4 @@
 {%- set gopass_secret = _mc.gopass_secret -%}
 {%- set proxypilot_key = _mc.proxypilot_key -%}
 {%- set tg_secret = _mc.tg_secret -%}
+{%- set registry = _mc.registry -%}

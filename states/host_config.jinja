@@ -29,6 +29,7 @@
 {% set hosts = hosts_data.get('hosts', {}) %}
 {% set aliases = hosts_data.get('aliases', {}) %}
 {% import_yaml 'data/feature_matrix.yaml' as feature_matrix %}
+{% import_yaml 'data/feature_registry.yaml' as registry %}
 
 {# Inject feature-matrix scenarios as synthetic hosts (lint/render only). #}
 {% for scenario in feature_matrix or [] %}

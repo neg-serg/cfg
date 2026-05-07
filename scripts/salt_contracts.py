@@ -1003,6 +1003,42 @@ def check_sls_feature_gates_against_registry(repo_root: Path = REPO_ROOT) -> lis
     return errors
 
 
+# --- Registry gates → SLS existence ---
+
+
+def check_registry_gates_resolve_to_states(repo_root: Path = REPO_ROOT) -> list[str]:
+    registry = _load_feature_registry(repo_root)
+    errors = []
+
+    states_dir = repo_root / "states"
+    existing_sls = {
+        p.stem for p in states_dir.glob("*.sls")
+        if not p.name.startswith("_") and not p.name.startswith("group.")
+    }
+    for p in (states_dir / "group").glob("*.sls"):
+        if p.is_file():
+            existing_sls.add(f"group.{p.stem}")
+
+    def check_gates(features):
+        for name, config in features.items():
+            if isinstance(config, dict) and "features" in config:
+                check_gates(config["features"])
+            elif isinstance(config, dict):
+                gates = config.get("gates", [])
+                if not isinstance(gates, list):
+                    continue
+                for gate in gates:
+                    if gate not in existing_sls:
+                        errors.append(
+                            f"feature_registry.yaml '{name}' gates '{gate}'"
+                            f" but '{gate}.sls' does not exist in states/"
+                        )
+
+    check_gates(registry.get("features", {}))
+
+    return errors
+
+
 # --- Aggregate ---
 
 
@@ -1064,6 +1100,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_services_feature_gates(repo_root))
     errors.extend(check_data_imports_exist(repo_root))
     errors.extend(check_sls_feature_gates_against_registry(repo_root))
+    errors.extend(check_registry_gates_resolve_to_states(repo_root))
     return errors
 
 

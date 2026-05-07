@@ -1,0 +1,59 @@
+name: research
+version: 1.0
+description: "Phase 0 research — how to detect Salt data file consumption at runtime without monkey-patching"
+
+decisions:
+  - topic: "Detection approach for Salt data file imports"
+    decision: "Pre-compute expected dependencies via salt_impact.py graph, then validate against Salt test-mode output"
+    rationale: |
+      Monkey-patching Salt's YAML loader is fragile across versions and breaks the 
+      "Minimal Change" principle. The salt_impact.py data→state graph already knows 
+      which data files each state imports. By running salt-call with test=True, Salt 
+      evaluates all templates and tells us which states would execute. Mapping 
+      evaluated states back to data dependencies gives us the audit report.
+    alternatives:
+      - "Monkey-patch yaml.safe_load in Salt's import pipeline — rejected: fragile, version-dependent, violates Minimal Change"
+      - "Parse Salt's debug log for import_yaml calls — rejected: Salt doesn't log import_yaml at any verbosity level"
+      - "Use Salt event system / returner — rejected: too complex, needs external service, violates Minimal Change"
+      - "Static analysis only (no runtime data) — rejected: doesn't capture feature-gated conditional imports"
+
+  - topic: "How to determine which states actually executed"
+    decision: "Parse salt-call summary output and map state names to their data dependencies"
+    rationale: |
+      Salt's test=True output shows "Succeeded: N (changed=M)" and each state's result.
+      By matching the state names against salt_impact.py's state→data mappings, 
+      we can determine which data files were consumed. States that were skipped 
+      (due to unless/onlyif/feature gates) won't appear as executed, and their 
+      data files won't count as consumed.
+    alternatives:
+      - "Parse Salt's JSON output — rejected: Salt's JSON output in masterless mode is complex to parse cleanly"
+      - "Use Salt's state.show_highstate — rejected: shows what would run, but doesn't account for conditional guards"
+
+  - topic: "Tracking data imports through J2 config templates"
+    decision: "Use existing salt_impact.py J2 config→state resolution (already implemented)"
+    rationale: |
+      salt_impact.py already traces J2 config template imports back to their owning 
+      states. The audit reuses this infrastructure to attribute data file consumption 
+      through config templates. For example, kernel_params.yaml → kernel-cmdline.j2 → cachyos.sls.
+    alternatives:
+      - "Parse J2 templates separately — rejected: duplicates existing salt_impact.py logic"
+
+  - topic: "Audit file format"
+    decision: "YAML with consumed list, unused list, metadata (timestamp, hostname, salt_target)"
+    rationale: |
+      YAML is the project's standard data format. Machine-readable, human-readable, 
+      and parseable by salt_contracts.py for automated checks (contract integration).
+      Follows the pattern of other project data files.
+    alternatives:
+      - "JSON — rejected: project convention is YAML for data files"
+      - "SQLite — rejected: overkill for ~39 data files, violates Minimal Change"
+
+  - topic: "Integration with salt-apply.sh"
+    decision: "Add --audit flag that sets env var, salt_audit.py runs post-apply"
+    rationale: |
+      Following the existing auto-mode pattern in salt-apply.sh. The --audit flag 
+      triggers audit report generation after the salt-apply completes (success or 
+      failure). Dry-run mode (--test) also works — audit runs on template evaluation 
+      only, no state changes.
+    alternatives:
+      - "Separate just command — partially: just audit will also be added as a convenience"

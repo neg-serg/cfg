@@ -1,0 +1,53 @@
+name: quickstart
+version: 1.0
+description: "Quickstart guide for Salt data audit log"
+
+usage:
+  basic:
+    command: "just audit"
+    description: "Run auto mode with audit enabled — applies minimal changes and generates audit report"
+    output: "logs/audit-<timestamp>.yaml"
+
+  specific_state:
+    command: "scripts/salt-apply.sh --audit system_description"
+    description: "Apply system_description with audit — generates report in logs/"
+
+  dry_run:
+    command: "scripts/salt-apply.sh --audit --test system_description"
+    description: "Dry-run audit — no state changes, just template evaluation"
+
+  post_run_diff:
+    command: "python3 scripts/salt_audit.py --diff logs/audit-*.yaml"
+    description: "Compare audit report against full data inventory, show unused files"
+
+  contract_integration:
+    command: "python3 scripts/salt_contracts.py"
+    description: "Existing contract checks now include audit data (future FR-010)"
+
+verification:
+  - "Check that all expected data files appear in consumed list"
+  - "Check that feature-gated data files (e.g. floorp.yaml when floorp=false) appear in unused list"
+  - "Run with --test to verify no false positives from state guards"
+
+example_output: |
+  # logs/audit-20260507-143022.yaml
+  version: 1
+  timestamp: "2026-05-07T14:30:22"
+  hostname: telfir
+  salt_target: system_description
+  test_mode: false
+  duration_seconds: 12.4
+  consumed:
+    - data_file: packages.yaml
+      consumers: [packages]
+      access_method: import_yaml
+      eval_count: 1
+    - data_file: kernel_params.yaml
+      consumers: [cachyos]
+      access_method: j2_template
+      eval_count: 1
+  unused:
+    - floorp.yaml
+    - zen_browser.yaml
+  total_data_files: 39
+  consumed_count: 37

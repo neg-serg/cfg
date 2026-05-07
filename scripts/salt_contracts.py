@@ -1039,6 +1039,36 @@ def check_registry_gates_resolve_to_states(repo_root: Path = REPO_ROOT) -> list[
     return errors
 
 
+# --- SLS config references existence ---
+
+
+_SLS_CONFIG_REF_RE = re.compile(r"salt://(configs/[^\s'\"}]+)")
+
+
+def check_sls_config_refs_exist(repo_root: Path = REPO_ROOT) -> list[str]:
+    states_dir = repo_root / "states"
+    errors = []
+
+    for sls_path in sorted(states_dir.rglob("*.sls")):
+        try:
+            src = sls_path.read_text()
+        except (OSError, IOError):
+            continue
+
+        for match in _SLS_CONFIG_REF_RE.finditer(src):
+            config_rel = match.group(1)
+            if "{{" in config_rel or "{%" in config_rel:
+                continue
+            full_path = states_dir / config_rel
+            if not full_path.is_file():
+                errors.append(
+                    f"{sls_path.relative_to(repo_root)} references"
+                    f" 'salt://{config_rel}' but file does not exist"
+                )
+
+    return errors
+
+
 # --- Aggregate ---
 
 
@@ -1101,6 +1131,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_data_imports_exist(repo_root))
     errors.extend(check_sls_feature_gates_against_registry(repo_root))
     errors.extend(check_registry_gates_resolve_to_states(repo_root))
+    errors.extend(check_sls_config_refs_exist(repo_root))
     return errors
 
 

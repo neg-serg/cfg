@@ -1039,10 +1039,10 @@ def check_registry_gates_resolve_to_states(repo_root: Path = REPO_ROOT) -> list[
     return errors
 
 
-# --- SLS config references existence ---
+# --- SLS asset references existence ---
 
 
-_SLS_CONFIG_REF_RE = re.compile(r"salt://(configs/[^\s'\"}]+)")
+_SLS_ASSET_REF_RE = re.compile(r"salt://((?:configs|scripts|units)/[^\s'\"}]+)")
 
 
 def check_sls_config_refs_exist(repo_root: Path = REPO_ROOT) -> list[str]:
@@ -1055,15 +1055,18 @@ def check_sls_config_refs_exist(repo_root: Path = REPO_ROOT) -> list[str]:
         except (OSError, IOError):
             continue
 
-        for match in _SLS_CONFIG_REF_RE.finditer(src):
-            config_rel = match.group(1)
-            if "{{" in config_rel or "{%" in config_rel:
+        for match in _SLS_ASSET_REF_RE.finditer(src):
+            asset_rel = match.group(1)
+            if "{{" in asset_rel or "{%" in asset_rel:
                 continue
-            full_path = states_dir / config_rel
-            if not full_path.is_file():
+            # Check states/ dir first (primary file_root), then repo root
+            full_path = states_dir / asset_rel
+            root_path = repo_root / asset_rel
+            if not full_path.is_file() and not root_path.is_file():
                 errors.append(
                     f"{sls_path.relative_to(repo_root)} references"
-                    f" 'salt://{config_rel}' but file does not exist"
+                    f" 'salt://{asset_rel}' but file exists in neither"
+                    f" states/ nor repo root"
                 )
 
     return errors

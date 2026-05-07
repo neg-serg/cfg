@@ -923,6 +923,8 @@ def check_data_imports_exist(repo_root: Path = REPO_ROOT) -> list[str]:
     if not states_dir.is_dir():
         return []
 
+    CP_FILE_DATA_RE = re.compile(r"salt\.cp\.get_file_str\s*\(\s*['\"]salt://(data/[^'\"]+)['\"]")
+
     for sls_path in sorted(states_dir.rglob("*.sls")):
         try:
             src = sls_path.read_text()
@@ -934,7 +936,16 @@ def check_data_imports_exist(repo_root: Path = REPO_ROOT) -> list[str]:
             full_path = states_dir / data_rel
             if not full_path.is_file():
                 errors.append(
-                    f"{sls_path.relative_to(repo_root)} imports"
+                    f"{sls_path.relative_to(repo_root)} import_yaml"
+                    f" '{data_rel}' but file does not exist"
+                )
+
+        for match in CP_FILE_DATA_RE.finditer(src):
+            data_rel = match.group(1)
+            full_path = states_dir / data_rel
+            if not full_path.is_file():
+                errors.append(
+                    f"{sls_path.relative_to(repo_root)} cp.get_file_str"
                     f" '{data_rel}' but file does not exist"
                 )
 
@@ -1072,6 +1083,48 @@ def check_sls_config_refs_exist(repo_root: Path = REPO_ROOT) -> list[str]:
     return errors
 
 
+# --- SLS include statement validation ---
+
+
+_SLS_INCLUDE_RE = re.compile(r"^\s*-\s+(\S+)\s*$", re.MULTILINE)
+
+
+def check_sls_includes_exist(repo_root: Path = REPO_ROOT) -> list[str]:
+    states_dir = repo_root / "states"
+    errors = []
+    existing = {p.stem for p in states_dir.glob("*.sls")}
+    existing.update(
+        str(p.relative_to(states_dir)).replace("/", ".").removesuffix(".sls")
+        for p in states_dir.rglob("*.sls")
+        if "/" in str(p.relative_to(states_dir))
+    )
+
+    for sls_path in sorted(states_dir.rglob("*.sls")):
+        try:
+            src = sls_path.read_text()
+        except (OSError, IOError):
+            continue
+
+        in_include = False
+        for line in src.splitlines():
+            stripped = line.strip()
+            if stripped == "include:":
+                in_include = True
+                continue
+            if in_include and stripped.startswith("- "):
+                name = stripped[2:].strip()
+                if name not in existing:
+                    errors.append(
+                        f"{sls_path.relative_to(repo_root)} includes"
+                        f" '{name}' but '{name}.sls' not found"
+                    )
+                continue
+            if in_include and not stripped.startswith("-") and stripped:
+                in_include = False
+
+    return errors
+
+
 # --- Aggregate ---
 
 
@@ -1135,6 +1188,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_sls_feature_gates_against_registry(repo_root))
     errors.extend(check_registry_gates_resolve_to_states(repo_root))
     errors.extend(check_sls_config_refs_exist(repo_root))
+    errors.extend(check_sls_includes_exist(repo_root))
     return errors
 
 

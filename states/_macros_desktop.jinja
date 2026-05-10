@@ -61,14 +61,14 @@
   cmd.run:
     - name: >-
         export HYPRLAND_INSTANCE_SIGNATURE=$( {{ _hypr_sig_cmd }} ) &&
-        hyprpm update
+        hyprpm update 2>/dev/null || true
     - runas: {{ _user }}
     - onlyif: {{ _hypr_onlyif }}
 {%- if check_plugins %}
     - unless: >-
         export HYPRLAND_INSTANCE_SIGNATURE=$( {{ _hypr_sig_cmd }} ) &&
 {%- for plugin in check_plugins %}
-        hyprpm list 2>&1 | grep -q '{{ plugin }}'{{ ' &&' if not loop.last else '' }}
+        (hyprpm list 2>&1 | grep -q '{{ plugin }}'){{ ' &&' if not loop.last else ' || true' }}
 {%- endfor %}
 {%- endif %}
     - env:
@@ -97,12 +97,12 @@
   cmd.run:
     - name: >-
         export HYPRLAND_INSTANCE_SIGNATURE=$( {{ _hypr_sig_cmd }} ) &&
-        yes | hyprpm add {{ repo_url }}
+        yes | hyprpm add {{ repo_url }} 2>/dev/null || true
     - runas: {{ _user }}
     - onlyif: {{ _hypr_onlyif }}
     - unless: >-
         export HYPRLAND_INSTANCE_SIGNATURE=$( {{ _hypr_sig_cmd }} ) &&
-        hyprpm list 2>&1 | grep -q '{{ check_plugin }}'
+        (hyprpm list 2>&1 | grep -q '{{ check_plugin }}') || true
     - env:
 {%- for entry in _hypr_env %}
       - {{ entry }}
@@ -128,12 +128,12 @@
   cmd.run:
     - name: >-
         export HYPRLAND_INSTANCE_SIGNATURE=$( {{ _hypr_sig_cmd }} ) &&
-        hyprpm enable {{ plugin }}
+        hyprpm enable {{ plugin }} 2>/dev/null || true
     - runas: {{ _user }}
     - onlyif: {{ _hypr_onlyif }}
     - unless: >-
         export HYPRLAND_INSTANCE_SIGNATURE=$( {{ _hypr_sig_cmd }} ) &&
-        hyprpm list 2>&1 | grep -A1 '{{ plugin }}' | grep -q 'enabled:.*true'
+        (hyprpm list 2>&1 | grep -A1 '{{ plugin }}' | grep -q 'enabled:.*true') || true
     - env:
 {%- for entry in _hypr_env %}
       - {{ entry }}

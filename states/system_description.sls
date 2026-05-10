@@ -34,6 +34,19 @@ system_locale:
     - name: /etc/locale.conf
     - contents: 'LANG={{ host.locale }}'
 
+system_locale_gen:
+  file.replace:
+    - name: /etc/locale.gen
+    - pattern: '^#\s*(en_US\.UTF-8 UTF-8)'
+    - repl: '\1'
+    - show_changes: false
+
+system_locale_generate:
+  cmd.run:
+    - name: locale-gen
+    - onchanges:
+      - file: system_locale_gen
+
 system_keymap:
   cmd.run:
     - name: localectl set-x11-keymap ru,us

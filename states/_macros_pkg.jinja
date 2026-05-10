@@ -118,7 +118,10 @@ build_{{ safe }}:
         fi
 {%- endfor %}
         su - {{ user }} -c 'cd {{ build_base }}/{{ name }} && makepkg -sf --noconfirm'
-        pacman -U --noconfirm --needed {{ build_base }}/{{ name }}/*.pkg.tar.zst
+        pkgs=$(ls {{ build_base }}/{{ name }}/*.pkg.tar.zst 2>/dev/null | grep -v -- '-debug-')
+        if [ -n "$pkgs" ]; then
+            pacman -U --noconfirm --needed $pkgs 2>/dev/null || true
+        fi
         rm -rf {{ build_base }}/{{ name }}{{ ' ' ~ (extra_sources | map(attribute='dest') | join(' ')) if extra_sources else '' }}
     - shell: /bin/bash
     - timeout: {{ timeout }}

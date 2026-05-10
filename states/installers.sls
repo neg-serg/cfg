@@ -43,7 +43,12 @@
 # AUR package installs (migrated from manual downloads)
 # ===========================================================================
 {{ paru_install('tdl', 'tdl-bin') }}
-# Modern TUI man page viewer (replaces man-db with mandoc)
+# Modern TUI man page viewer (requires man-db; remove mandoc if present)
+uninstall_mandoc_for_qman:
+  pkg.removed:
+    - name: mandoc
+    - onlyif: pacman -Q mandoc &>/dev/null
+
 {{ paru_install('qman', 'qman') }}
 
 # One-time cleanup: remove old manually-installed binary
@@ -72,7 +77,20 @@ nyxt_system_cleanup:
 
 # tailray: migrated to PKGBUILD (build/pkgbuilds/tailray/)
 
-{{ http_file('qmk_udev_rules', 'https://raw.githubusercontent.com/qmk/qmk_firmware/master/util/udev/50-qmk.rules', '/etc/udev/rules.d/50-qmk.rules', mode='0644', user=None, parallel=False) }}
+qmk_udev_rules:
+  cmd.run:
+    - name: |
+        set -eo pipefail
+        url='https://raw.githubusercontent.com/qmk/qmk_firmware/refs/heads/master/util/udev/50-qmk.rules'
+        if ! curl -fsI "$url" >/dev/null 2>&1; then
+          exit 0
+        fi
+        cache='/var/cache/salt/downloads/qmk_udev_rules'
+        mkdir -p "$(dirname "$cache")"
+        curl -fsSL "$url" -o "$cache"
+        install -m 0644 -D "$cache" '/etc/udev/rules.d/50-qmk.rules'
+    - shell: /bin/bash
+    - creates: /etc/udev/rules.d/50-qmk.rules
 
 qmk_udev_rules_reload:
   cmd.run:

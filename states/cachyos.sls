@@ -70,6 +70,7 @@ cachyos_ananicy:
   service.running:
     - name: ananicy-cpp
     - enable: true
+    - onlyif: systemctl list-unit-files ananicy-cpp.service &>/dev/null
     - require:
       - cmd: cachyos_settings
 
@@ -77,6 +78,7 @@ cachyos_wireless_regdomain:
   service.running:
     - name: cachyos-iw-set-regdomain.path
     - enable: true
+    - onlyif: systemctl list-unit-files cachyos-iw-set-regdomain.path &>/dev/null
     - require:
       - cmd: cachyos_settings
 

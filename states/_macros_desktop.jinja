@@ -43,7 +43,7 @@
    compositor. The onlyif guard skips gracefully when Hyprland is not running.
 #}
 {%- set _hypr_sig_cmd = 'ls /run/user/' ~ host.uid ~ '/hypr/ 2>/dev/null | head -1' -%}
-{%- set _hypr_onlyif = 'ls /run/user/' ~ host.uid ~ '/hypr/ 2>/dev/null | grep -q .' -%}
+{%- set _hypr_onlyif = 'ls /run/user/' ~ host.uid ~ '/hypr/ 2>/dev/null | grep -q . && ls /run/user/' ~ host.uid ~ '/hypr/*/.socket.sock 2>/dev/null | grep -q .' -%}
 
 {# Shared env block for hyprpm commands (HOME + XDG_RUNTIME_DIR) #}
 {%- set _hypr_env = [

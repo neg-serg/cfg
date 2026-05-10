@@ -12,16 +12,12 @@ conflicts=('swww' 'swww-vulkan')
 provides=('swww')
 source=(
     "${pkgname}-${pkgver}.tar.gz::${url}/archive/main.tar.gz"
-    '0001-fix-double-free-in-output-destroy.patch'
 )
 # Update hash after pushing to main: curl -sL ${url}/archive/main.tar.gz | sha256sum
-sha256sums=('SKIP' 'SKIP')
+sha256sums=('SKIP')
 
 prepare() {
     cd "${pkgname}-main"
-    # Local fix: double-free in Output::destroy on shutdown during transition.
-    # TODO: upstream to github.com/neg-serg/wl and drop this patch.
-    patch -Np1 -i "${srcdir}/0001-fix-double-free-in-output-destroy.patch"
 }
 
 build() {

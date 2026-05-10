@@ -117,7 +117,7 @@ build_{{ safe }}:
             pacman -Rdd --noconfirm {{ conflict }}
         fi
 {%- endfor %}
-        su - {{ user }} -c 'cd {{ build_base }}/{{ name }} && makepkg -sf --noconfirm'
+        su - {{ user }} -c 'cd {{ build_base }}/{{ name }} && rm -rf src pkg && makepkg -sf --noconfirm'
         pkgs=$(ls {{ build_base }}/{{ name }}/*.pkg.tar.zst 2>/dev/null | grep -v -- '-debug-')
         if [ -n "$pkgs" ]; then
             pacman -U --noconfirm --needed $pkgs 2>/dev/null || true

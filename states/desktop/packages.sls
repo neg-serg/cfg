@@ -7,7 +7,7 @@
 {{ paru_install('hyprland_desktop', desktop.hyprland_packages | join(' ')) }}
 {{ paru_install('screenshot_tools', desktop.screenshot_packages | join(' ')) }}
 {{ paru_install('rsync', 'rsync') }} # rsync: file synchronization (used by Salt, backups, dotfile deploys)
-{{ paru_install('localsend', 'localsend') }} # localsend: LAN file sharing (AirDrop alternative, AUR)
+{{ paru_install('localsend', 'localsend-bin') }} # localsend: LAN file sharing (AirDrop alternative, AUR)
 {{ paru_install('chromium', 'chromium') }} # chromium: secondary browser for sites that break on Firefox/Gecko
 {{ paru_install('google_chrome', 'google-chrome') }} # google-chrome: Google Chrome stable (AUR), for testing and Google-specific integrations
 {{ paru_install('zen_browser', 'zen-browser-bin') }} # zen-browser: performance-focused Firefox fork with compact UI (AUR)
@@ -31,6 +31,7 @@ swayimg_local_checkout_build:
         meson install -C "$src/build-salt"
         su - {{ user }} -c 'git -C "{{ home }}/src/1st-level/swayimg" describe --tags --long --always' > /usr/local/share/.swayimg-build-version
     - shell: /bin/bash
-    - unless: test -f /usr/local/bin/swayimg && test -f /usr/local/share/.swayimg-build-version && test "$(cat /usr/local/share/.swayimg-build-version)" = "$(su - {{ user }} -c 'git -C {{ home }}/src/1st-level/swayimg describe --tags --long --always')"
+    - onlyif: test -d "{{ home }}/src/1st-level/swayimg"
+    - unless: test -f /usr/local/bin/swayimg && test -f /usr/local/share/.swayimg-build-version && test "$(cat /usr/local/share/.swayimg-build-version)" = "$(su - {{ user }} -c 'git -C {{ home }}/src/1st-level/swayimg describe --tags --long --always' 2>/dev/null)"
     - require:
       - file: swayimg_local_link_absent

@@ -100,7 +100,6 @@ dev:
 
   - ruby
   - jupyterlab
-  - rustup
   - subversion
   - uv
   - vale
@@ -540,8 +539,7 @@ aur:
   - instagram-cli
   - iosevka-neg-fonts
   - jdupes
-  - localsend
-  - looking-glass
+  - localsend-bin
   - lazytail-bin
   - lutgen-bin
   - massren
@@ -598,7 +596,6 @@ aur:
   - tmmpr
   - ttfautohint
   - unflac
-  - vicinae
 
   - watchtower-bin
   - witr-bin

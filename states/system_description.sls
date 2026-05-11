@@ -81,10 +81,10 @@ include:
   # CachyOS: kernel packages, settings, sched-ext, kernel cmdline
   - cachyos
 
-  # Desktop: audio stack, DE config, login manager, fonts
+  # Desktop: audio stack, fonts first so DE config sees them, login manager
   - audio
-  - desktop
   - fonts
+  - desktop
   - greetd
 
   # Shared systemd-managed service identities and paths

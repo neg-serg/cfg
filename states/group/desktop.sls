@@ -4,6 +4,6 @@
 
 include:
   - audio
-  - desktop
   - fonts
+  - desktop
   - greetd

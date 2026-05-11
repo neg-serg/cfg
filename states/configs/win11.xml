@@ -61,18 +61,18 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2' cache='writeback' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/win11.qcow2'/>
+      <source file='/mnt/one/vms/win11.qcow2'/>
       <target dev='nvme0n1' bus='nvme'/>
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw'/>
-      <source file='/home/neg/torrent/data/Microsoft Windows 11 [10.0.26200.8037], Version 25H2 (Updated March 2026) - Оригинальные образы от Microsoft MSDN [En]/en-us_windows_11_consumer_editions_version_25h2_updated_march_2026_x64_dvd_a1cf6c36.iso'/>
+      <source file='/mnt/one/archive/windows11_25h2_en/en-us_windows_11_consumer_editions_version_25h2_updated_march_2026_x64_dvd_a1cf6c36.iso'/>
       <target dev='sda' bus='sata'/>
       <readonly/>
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw'/>
-      <source file='/var/lib/libvirt/images/virtio-win.iso'/>
+      <source file='/mnt/one/vms/virtio-win.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
     </disk>

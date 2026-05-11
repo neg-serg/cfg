@@ -170,10 +170,13 @@ bootstrap_salt() {
 	repair_stale_venv_entrypoints "$VENV_DIR/bin/salt-call"
 
 	# Python 3.14 sitecustomize: auto-apply salt_compat patches on any venv import
-	local site_pkgs
+	local site_pkgs sitecustomize_file
 	site_pkgs=$("$VENV_DIR/bin/python3" -c "import site; print(site.getsitepackages()[0])" 2>/dev/null) || return 0
 	[[ -d "$site_pkgs" ]] || return 0
-	cat > "$site_pkgs/sitecustomize.py" <<'PYEOF'
+	sitecustomize_file="$site_pkgs/sitecustomize.py"
+	# Write only if missing or root-owned (previous manual sudo fix)
+	if [[ ! -f "$sitecustomize_file" ]] || [[ ! -w "$sitecustomize_file" ]]; then
+		"${SUDO_CMD[@]}" tee "$sitecustomize_file" > /dev/null <<'PYEOF'
 import os, sys
 _this_dir = os.path.dirname(__file__)
 # site-packages → python3.14 → lib → .venv → cfg (repo root)
@@ -187,6 +190,7 @@ if os.path.isdir(_scripts_dir):
     except ImportError:
         pass
 PYEOF
+	fi
 }
 
 # ── Runtime config: generate .salt_runtime/minion ─────────────────────────────

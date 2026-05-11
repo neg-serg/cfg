@@ -65,3 +65,26 @@ rfkill_socket_masked:
     - name: systemd-rfkill.socket
 
 {% endif %}
+
+# RME HDSPe AIO Pro: build and install snd-hdspe DKMS module
+{% if 'snd_hdspe' in host.extra_modules %}
+rme_hdspe_dkms_add:
+  cmd.run:
+    - name: dkms add /home/{{ host.user }}/src/1st-level/snd-hdspe 2>/dev/null || true
+    - unless: test -d /var/lib/dkms/alsa-hdspe
+    - onlyif: test -d /home/{{ host.user }}/src/1st-level/snd-hdspe
+
+rme_hdspe_dkms_build:
+  cmd.run:
+    - name: dkms build alsa-hdspe/0.0
+    - unless: test -f /var/lib/dkms/alsa-hdspe/0.0/$(uname -r)/*/module/snd-hdspe.ko* 2>/dev/null
+    - require:
+      - cmd: rme_hdspe_dkms_add
+
+rme_hdspe_dkms_install:
+  cmd.run:
+    - name: dkms install alsa-hdspe/0.0
+    - unless: test -f /usr/lib/modules/$(uname -r)/updates/dkms/snd-hdspe.ko* 2>/dev/null
+    - require:
+      - cmd: rme_hdspe_dkms_build
+{% endif %}

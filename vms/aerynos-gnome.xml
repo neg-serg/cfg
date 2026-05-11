@@ -52,7 +52,7 @@
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw'/>
-      <source file='/home/neg/dw/AerynOS-2026.05.2-GNOME-live-x86_64.iso'/>
+      <source file='/var/lib/libvirt/images/AerynOS-GNOME-live-x86_64.iso'/>
       <backingStore/>
       <target dev='sda' bus='sata'/>
       <readonly/>
@@ -175,23 +175,17 @@
         <profile name='default-v1'/>
       </backend>
     </tpm>
-    <graphics type='vnc' port='5900' autoport='no' listen='127.0.0.1'>
+    <graphics type='vnc' port='5901' autoport='no' listen='127.0.0.1'>
       <listen type='address' address='127.0.0.1'/>
-    </graphics>
-    <graphics type='egl-headless'>
-      <gl rendernode='/dev/dri/renderD129'/>
     </graphics>
     <audio id='1' type='none'/>
     <video>
-      <model type='virtio' heads='1' primary='yes'>
-        <acceleration accel3d='yes'/>
-      </model>
+      <model type='virtio' heads='1' primary='yes'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
     </video>
     <watchdog model='i6300esb' action='reset'>
       <address type='pci' domain='0x0000' bus='0x10' slot='0x01' function='0x0'/>
     </watchdog>
-    <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
       <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </memballoon>

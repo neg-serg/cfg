@@ -19,11 +19,15 @@ from urllib.parse import quote
 import yaml
 from telegram import (
     Bot,
-    KeyboardButtonRequestManagedBot,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
     Update,
 )
+try:
+    from telegram import KeyboardButtonRequestManagedBot  # Bot API 9.6
+    _managed_bot_supported = True
+except ImportError:
+    _managed_bot_supported = False
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -145,6 +149,12 @@ async def start_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if max_bots is not None and state.registry.count_for_user(uid) >= max_bots:
         await update.message.reply_text(
             f"You already have a managed bot. Maximum is {max_bots}.")
+        return
+    if not _managed_bot_supported:
+        await update.message.reply_text(
+            "Managed bot creation is not yet supported — "
+            "python-telegram-bot library update pending.",
+            reply_markup=ReplyKeyboardRemove())
         return
     button = KeyboardButtonRequestManagedBot(
         request_id=0,
@@ -269,7 +279,8 @@ def check_can_manage_bots(config: dict) -> bool:
         os.environ["HTTPS_PROXY"] = (
             f"{proxy['scheme']}://{proxy['host']}:{proxy['port']}"
         )
-    me = bot.get_me()
+    import asyncio
+    me = asyncio.run(bot.get_me())
     state.manager_username = me.username
     can_manage = getattr(me, "can_manage_bots", False)
     logger.info("Bot @%s can_manage_bots=%s", me.username, can_manage)

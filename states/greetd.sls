@@ -6,6 +6,7 @@
 # greetd display manager: hyprland compositor + quickshell greeter
 
 include:
+  - pacman_db_warmup
   - systemd_resources
 
 {{ paru_install('greetd', 'greetd') }}

@@ -522,6 +522,7 @@ aur:
   - v2raya-bin
   - v2rayn-bin
   - v2ray
+  - vicinae-bin
   - fsel-bin
   - epr-git
   - freeze-bin
@@ -539,6 +540,7 @@ aur:
   - instagram-cli
   - iosevka-neg-fonts
   - jdupes
+  - looking-glass
   - localsend-bin
   - lazytail-bin
   - lutgen-bin

@@ -22,6 +22,7 @@ managed_bots_config:
     - source: salt://states/configs/managed-bots.yaml.j2
     - template: jinja
     - mode: '0640'
+    - user: {{ user }}
     - context:
         telegram_token: {{ _telegram_token | tojson }}
         owner_uids: [{{ _uid_levra }}, {{ _uid_nanoclaw }}]

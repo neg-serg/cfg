@@ -168,6 +168,25 @@ bootstrap_salt() {
 
 	repair_stale_venv_entrypoints "$VENV_DIR/bin/pytest"
 	repair_stale_venv_entrypoints "$VENV_DIR/bin/salt-call"
+
+	# Python 3.14 sitecustomize: auto-apply salt_compat patches on any venv import
+	local site_pkgs
+	site_pkgs=$("$VENV_DIR/bin/python3" -c "import site; print(site.getsitepackages()[0])" 2>/dev/null) || return 0
+	[[ -d "$site_pkgs" ]] || return 0
+	cat > "$site_pkgs/sitecustomize.py" <<'PYEOF'
+import os, sys
+_this_dir = os.path.dirname(__file__)
+# site-packages → python3.14 → lib → .venv → cfg (repo root)
+_repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(_this_dir))))
+_scripts_dir = os.path.join(_repo_root, "scripts")
+if os.path.isdir(_scripts_dir):
+    sys.path.insert(0, _scripts_dir)
+    try:
+        import salt_compat
+        salt_compat.patch()
+    except ImportError:
+        pass
+PYEOF
 }
 
 # ── Runtime config: generate .salt_runtime/minion ─────────────────────────────

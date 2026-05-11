@@ -76,6 +76,12 @@ if [ "$count" -ge 3 ]; then
     fallback_to_agreety "crash guard triggered after $count rapid attempts"
 fi
 
+export HOME={{ home }}
+# shellcheck source=/dev/null
+[ -f /etc/profile ] && . /etc/profile
+# shellcheck source=/dev/null
+[ -f "$HOME/.config/environment.d/10-user.conf" ] && . "$HOME/.config/environment.d/10-user.conf"
+
 export QT_QPA_PLATFORM=wayland
 {% if greetd_scale > 1 %}
 export QT_SCALE_FACTOR={{ greetd_scale }}

@@ -33,6 +33,9 @@ blacklist p8022
 blacklist can
 blacklist atm
 
+# In-kernel RME HDSPM driver (conflicts with DKMS snd-hdspe for AIO Pro)
+blacklist snd_hdspm
+
 # ALSA loopback (conflicts with PipeWire RME routing — snd_aloop
 # creates pro-output nodes that race with USB audio at startup)
 blacklist snd_aloop

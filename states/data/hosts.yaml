@@ -93,7 +93,7 @@ hosts:
     hostname: telfir
     extra_modules:
       - ec_sys  # raw EC register access for hwmon sensors
-      - snd_hdspm  # RME HDSPe AIO audio interface (needs driver_override via udev)
+      - snd_hdspe  # RME HDSPe AIO Pro audio interface (DKMS, needs driver_override via udev)
     features:
       fancontrol: true
       monitoring:

@@ -321,7 +321,13 @@ def plan_for_changed_files(changed_files: list[str], repo_root: str | None = Non
     elif fallback_reasons:
         final_target = "system_description"
     elif len(selected_states) == 1:
-        final_target = selected_states[0]
+        if selected_states[0] in {"packages", "installers", "fonts", "custom_pkgs"}:
+            fallback_reasons.append(
+                f"'{selected_states[0]}' requires prerequisites (pacman_db_warmup, etc.) — promoting to system_description"
+            )
+            final_target = "system_description"
+        else:
+            final_target = selected_states[0]
     elif len(selected_states) > 1:
         fallback_reasons.append(
             f"changed files map to multiple workflow targets: {', '.join(selected_states)}"

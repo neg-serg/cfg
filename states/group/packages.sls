@@ -3,6 +3,7 @@
 # Usage: just apply group/packages
 
 include:
+  - pacman_db_warmup
   - packages
   - installers
   - installers_mpv

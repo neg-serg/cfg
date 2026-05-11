@@ -1,6 +1,9 @@
 # =============================================================================
 # System services — data-driven service management (network, DNS, monitoring)
 # =============================================================================
+include:
+  - pacman_db_warmup
+
 {% from '_imports.jinja' import host, user, home %}
 {% from '_macros_service.jinja' import ensure_dir, ensure_running, render_service, service_stopped, service_with_healthcheck, service_with_unit, unit_override %}
 {% from '_macros_pkg.jinja' import paru_install, simple_service %}

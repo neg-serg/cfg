@@ -1,5 +1,8 @@
 {# System-wide desktop configuration: fonts, themes, input methods, power management #}
 # Desktop environment: services, SSH, dconf themes
+include:
+  - pacman_db_warmup
+
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir, service_stopped, service_with_unit %}

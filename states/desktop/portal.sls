@@ -1,4 +1,7 @@
 {# XDG Desktop Portal: screen sharing, file chooser, and sandboxing backends #}
+include:
+  - pacman_db_warmup
+
 {% from '_imports.jinja' import home, user %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir %}

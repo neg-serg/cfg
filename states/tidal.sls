@@ -1,4 +1,7 @@
 {# TidalCycles live coding environment: Haskell, SuperDirt, and SuperCollider setup #}
+include:
+  - pacman_db_warmup
+
 {% from '_imports.jinja' import user, home, retry_attempts, retry_interval %}
 {% from '_macros_pkg.jinja' import paru_install %}
 # TidalCycles live coding: SuperCollider + SuperDirt + GHCi/Tidal

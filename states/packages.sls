@@ -4,6 +4,9 @@
 #
 # Run: sudo salt-call --local state.apply packages
 
+include:
+  - pacman_db_warmup
+
 {% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/packages.yaml' as pkgs %}
 

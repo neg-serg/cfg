@@ -1,5 +1,8 @@
 {# Desktop application installers: data-driven AUR package installation #}
 # Desktop application installers: data-driven AUR packages.
+include:
+  - pacman_db_warmup
+
 {% from '_imports.jinja' import user, pkg_list, retry_attempts, retry_interval %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/installers_desktop.yaml' as apps %}

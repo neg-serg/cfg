@@ -7,3 +7,4 @@ include:
   - fonts
   - desktop
   - greetd
+  - pacman_db_warmup

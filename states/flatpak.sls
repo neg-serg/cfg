@@ -1,5 +1,8 @@
 {# Flatpak sandboxed desktop applications with flathub remote setup #}
 # Flatpak: sandboxed desktop apps + flathub remote.
+include:
+  - pacman_db_warmup
+
 {% from '_imports.jinja' import user, retry_attempts, retry_interval %}
 {% from '_macros_pkg.jinja' import paru_install, flatpak_install %}
 # Flatpak: install runtime + flathub remote + user-level apps

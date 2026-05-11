@@ -1,5 +1,8 @@
 {# Espanso text expander: wayland variant with systemd user service and health check #}
 # Espanso: cross-platform text expander (Wayland variant).
+include:
+  - pacman_db_warmup
+
 {% from '_imports.jinja' import host, user %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import user_service_with_unit %}

@@ -6,3 +6,4 @@ include:
   - services
   - monitoring_alerts
   - user_services
+  - pacman_db_warmup

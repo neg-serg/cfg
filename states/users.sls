@@ -1,5 +1,8 @@
 {# User account management: PAM sudo, SSH agent auth, and authorized keys #}
 # User accounts, groups, sudo, and user lingering
+include:
+  - pacman_db_warmup
+
 {% from '_imports.jinja' import host, user, home, sudo_timeout_minutes %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import user_linger %}

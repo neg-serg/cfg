@@ -1,6 +1,9 @@
 {# PipeWire audio stack: ensures all runtime components (ALSA, JACK, Pulse) are installed #}
 # PipeWire audio stack — ensures all runtime components are installed
 # On Arch/CachyOS, pipewire is a bare daemon; audio modules are separate packages
+include:
+  - pacman_db_warmup
+
 {% from '_macros_pkg.jinja' import paru_install %}
 
 {% for pkg in ['pipewire-audio', 'wireplumber', 'pipewire-pulse', 'pipewire-alsa', 'pipewire-jack', 'alsa-utils', 'playerctl'] %}

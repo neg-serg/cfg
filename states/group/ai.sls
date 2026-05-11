@@ -32,3 +32,4 @@ include:
   - t5_summarization
 {% endif %}
   - code_rag
+  - pacman_db_warmup

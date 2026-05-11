@@ -2,6 +2,9 @@
    Installs from local source at ~/src/1st-level/@rag/code-rag. Requires llama_embed for embeddings.
    MCP server configured in .mcp.json (not managed here — no systemd service).
 #}
+include:
+  - pacman_db_warmup
+
 {% from '_imports.jinja' import home %}
 {% from '_macros_install.jinja' import pip_pkg %}
 {% from '_macros_pkg.jinja' import paru_install %}

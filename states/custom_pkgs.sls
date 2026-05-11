@@ -1,6 +1,9 @@
 {# Build and install custom packages from local PKGBUILDs not in official repos or AUR #}
 # Salt state to build and install custom packages from local PKGBUILDs
 # These packages are not in official repos or AUR and require local builds
+include:
+  - pacman_db_warmup
+
 {% from '_imports.jinja' import user %}
 {% from '_macros_pkg.jinja' import pkgbuild_install %}
 {% import_yaml 'data/custom_pkgs.yaml' as custom %}

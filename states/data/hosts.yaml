@@ -107,6 +107,7 @@ hosts:
         mail: false
         vdirsyncer: false
       network:
+        vm_bridge: true
         tailscale: false
         zapret2: false
         ipv6: true

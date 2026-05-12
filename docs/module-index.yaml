@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-12T19:16:40'
+generated: '2026-05-12T19:29:51'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -894,8 +894,6 @@ macros:
   - user_service_disable
   - user_linger
 scripts_py:
-- path: scripts/_rkn_utils.py
-  purpose: Shared RKN domain loading utilities for VPN/routing scripts.
 - path: scripts/cleanup-logs.py
   purpose: Delete Salt log files older than the given number of days.
 - path: scripts/dep-graph.py
@@ -962,10 +960,6 @@ scripts_py:
 - path: scripts/vpn_split_router.py
   purpose: 'DNS-based VPN split routing: observe, learn, and route domains through
     VPN/proxy.'
-- path: scripts/vpn_split_router_integration.py
-  purpose: Integrate RKN domains with vpn-split-router.
-- path: scripts/xray-to-singbox.py
-  purpose: Convert Xray configuration to sing-box configuration.
 scripts_sh:
 - path: scripts/amnezia-import-tun-config.sh
   purpose: 'Source: ~/.config/AmneziaVPN.ORG/AmneziaVPN.conf'
@@ -1012,14 +1006,10 @@ scripts_sh:
   purpose: ''
 - path: scripts/test-browser-vpn.sh
   purpose: Test browser VPN integration
-- path: scripts/test-hybrid-routing.sh
-  purpose: ''
 - path: scripts/test-kvm-deploy-lib.sh
   purpose: test-kvm-deploy-lib.sh — shared functions for KVM deployment testing
 - path: scripts/test-kvm-deploy.sh
   purpose: test-kvm-deploy.sh — KVM/QEMU Salt deployment test runner
-- path: scripts/test-vpn-connection.sh
-  purpose: Test VPN connection using imported AmneziaVPN config
 - path: scripts/vm-smoke.sh
   purpose: vm-smoke.sh — run CachyOS VM deployment test inside a Podman container
 - path: scripts/zapret2-rollout.sh

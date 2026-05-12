@@ -34,7 +34,7 @@ def test_manual_start_skips_enable_and_healthcheck():
 
 
 def test_user_scope_uses_env_block():
-    assert "_env_block()" in _SOURCE
+    assert "env_block()" in _SOURCE
 
 
 def test_imports_from_macros_service():

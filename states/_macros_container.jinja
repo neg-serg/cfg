@@ -1,19 +1,9 @@
 {# Container-service supervisor macros: container_service, _tilde_expand, _cs_fail #}
 
 {% from '_macros_common.jinja' import user as _user, home as _home, host, retry_attempts as _retry_attempts, retry_interval as _retry_interval %}
-{% from '_macros_service.jinja' import service_with_healthcheck %}
+{% from '_macros_service.jinja' import service_with_healthcheck, env_block %}
 
-{# Shared env block for systemctl --user commands (mirrors _macros_service.jinja).
-   Cannot import _env_block directly — Jinja forbids underscore-prefixed names. #}
-{%- set _systemctl_env = [
-  'XDG_RUNTIME_DIR: ' ~ host.runtime_dir,
-  'DBUS_SESSION_BUS_ADDRESS: unix:path=' ~ host.runtime_dir ~ '/bus',
-] -%}
-{%- macro _env_block() -%}
-{%- for entry in _systemctl_env %}
-      - {{ entry }}
-{%- endfor %}
-{%- endmacro -%}
+{# env_block imported from _macros_service.jinja — was previously duplicated here due to Jinja underscore-prefix restriction #}
 
 {# Tilde-expand a bind-mount host path against the caller's home directory.
    Used by container_service() to render absolute host paths in Quadlet Volume= lines.
@@ -150,7 +140,7 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
 {%- if user_scope %}
     - runas: {{ _user }}
     - env:
-{{ _env_block() }}
+{{ env_block() }}
 {%- endif %}
 {%- if requires %}
     - require:
@@ -172,7 +162,7 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
 {%- if user_scope %}
     - runas: {{ _user }}
     - env:
-{{ _env_block() }}
+{{ env_block() }}
 {%- endif %}
     - onchanges:
       - file: {{ name }}_container
@@ -186,7 +176,7 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
 {%- if user_scope %}
     - runas: {{ _user }}
     - env:
-{{ _env_block() }}
+{{ env_block() }}
 {%- endif %}
     - unless: systemctl {% if user_scope %}--user {% endif %}is-enabled {{ _quadlet_name }}.service >/dev/null 2>&1
     - require:
@@ -204,7 +194,7 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
 {%- if user_scope %}
     - runas: {{ _user }}
     - env:
-{{ _env_block() }}
+{{ env_block() }}
 {%- endif %}
     - require:
       - cmd: {{ name }}_enabled
@@ -215,7 +205,7 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
     - name: systemctl --user is-active {{ _quadlet_name }}.service >/dev/null 2>&1 || systemctl --user start {{ _quadlet_name }}.service
     - runas: {{ _user }}
     - env:
-{{ _env_block() }}
+{{ env_block() }}
     - unless: systemctl --user is-active {{ _quadlet_name }}.service >/dev/null 2>&1
 {%- else %}
   service.running:

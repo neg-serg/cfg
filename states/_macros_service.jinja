@@ -1,4 +1,4 @@
-{# Service-related macros: render_service, remove_native_unit, remove_native_package, _env_block, ensure_dir, udev_rule, ensure_running, service_stopped, service_with_healthcheck, unit_override, service_with_unit, user_service_file, user_unit_override, user_service_enable, user_service_restart, user_linger, managed_sysusers_line, managed_tmpfiles_line, managed_identity_guard, managed_path_guard #}
+{# Service-related macros: render_service, remove_native_unit, remove_native_package, env_block, ensure_dir, udev_rule, ensure_running, service_stopped, service_with_healthcheck, unit_override, service_with_unit, user_service_file, user_unit_override, user_service_enable, user_service_restart, user_linger, managed_sysusers_line, managed_tmpfiles_line, managed_identity_guard, managed_path_guard #}
 
 {% from '_macros_common.jinja' import user as _user, home as _home, healthcheck_timeout as _healthcheck_timeout, host, retry_attempts as _retry_attempts, retry_interval as _retry_interval %}
 {% from '_macros_pkg.jinja' import paru_install, simple_service %}
@@ -11,7 +11,7 @@
 
 {# Render the _systemctl_env list as YAML env entries.
    Replaces the 14 identical for-loops scattered across user-service macros. #}
-{%- macro _env_block() -%}
+{%- macro env_block() -%}
 {%- for entry in _systemctl_env %}
       - {{ entry }}
 {%- endfor %}
@@ -47,7 +47,7 @@
     - onlyif: systemctl --user show-environment >/dev/null 2>&1
     - runas: {{ _user }}
     - env:
-{{ _env_block() }}
+{{ env_block() }}
 {%- else %}
     - onlyif: test -e /run/systemd/system || test -e /etc/systemd/system
 {%- endif %}
@@ -276,7 +276,7 @@ test -e {{ _path }}
 {%- if user_scope %}
     - runas: {{ user }}
     - env:
-{{ _env_block() }}
+{{ env_block() }}
 {%- endif %}
     - unless: {{ check_cmd }}
 {%- if requires %}
@@ -344,7 +344,7 @@ test -e {{ _path }}
     - onlyif: systemctl --user show-environment >/dev/null 2>&1
     - runas: {{ user }}
     - env:
-{{ _env_block() }}
+{{ env_block() }}
     - onchanges:
       - file: {{ name }}
 {%- endmacro -%}
@@ -382,7 +382,7 @@ test -e {{ _path }}
     - onlyif: systemctl --user show-environment >/dev/null 2>&1
     - runas: {{ user }}
     - env:
-{{ _env_block() }}
+{{ env_block() }}
     - onchanges:
       - file: {{ name }}
 {%- endmacro -%}
@@ -420,7 +420,7 @@ test -e {{ _path }}
     - shell: /bin/bash
     - runas: {{ user }}
     - env:
-{{ _env_block() }}
+{{ env_block() }}
 {%- if all_units %}
     - unless: |
         set -e
@@ -475,7 +475,7 @@ test -e {{ _path }}
     - name: systemctl --user restart {{ service }}
     - runas: {{ user }}
     - env:
-{{ _env_block() }}
+{{ env_block() }}
 {%- if onlyif %}
     - onlyif: {{ onlyif }}
 {%- endif %}
@@ -502,7 +502,7 @@ test -e {{ _path }}
     - name: systemctl --user disable --now {{ units | join(' ') }} 2>/dev/null || true
     - runas: {{ user }}
     - env:
-{{ _env_block() }}
+{{ env_block() }}
     - onlyif: |
         export XDG_RUNTIME_DIR={{ host.runtime_dir }}
         export DBUS_SESSION_BUS_ADDRESS=unix:path={{ host.runtime_dir }}/bus

@@ -100,6 +100,7 @@ adguardhome:                   # DNS-level ad blocker (containerized)
   unit: adguardhome
   scope: system
   packages: null               # installed via container_service image pull
+  containerized: true
   container_image: adguardhome
   gpu: none
   bind_mounts:
@@ -171,6 +172,7 @@ jellyfin:                      # Media server (containerized)
   unit: jellyfin
   scope: system
   packages: null               # installed via container_service image pull
+  containerized: true
   container_image: jellyfin
   gpu: render_group            # VA-API hardware transcoding
   bind_mounts:
@@ -188,6 +190,7 @@ transmission:                  # BitTorrent client (containerized)
   unit: transmission
   scope: system
   packages: null               # installed via container_service image pull
+  containerized: true
   container_image: transmission
   gpu: none
   bind_mounts:
@@ -206,6 +209,7 @@ duckdns:                       # Dynamic DNS updater (containerized)
   unit: duckdns-update
   scope: system
   packages: null               # installed via container_service image pull
+  containerized: true
   container_image: duckdns
   gpu: none
   bind_mounts:
@@ -220,6 +224,7 @@ alertmanager:                  # Alert notification routing for Loki
   unit: alertmanager
   scope: system
   packages: null               # installed via container_service image pull
+  containerized: true
   container_image: alertmanager
   gpu: none
   bind_mounts:
@@ -245,6 +250,7 @@ bitcoind:                      # Bitcoin Core node (containerized)
   scope: system
   packages: null               # installed via container_service image pull
   manual_start: true
+  containerized: true
   container_image: bitcoind
   gpu: none
   bind_mounts:
@@ -260,6 +266,7 @@ proxypilot:                    # LLM proxy (containerized)
   unit: proxypilot
   scope: user
   packages: null               # installed via container_service image pull
+  containerized: true
   container_image: proxypilot
   gpu: none
   bind_mounts:
@@ -278,6 +285,7 @@ nanoclaw:                      # AI Telegram agent (containerized)
   scope: user
   manual_start: true
   packages: null               # installed via container_service image pull
+  containerized: true
   container_image: nanoclaw
   gpu: none
   bind_mounts:
@@ -303,6 +311,7 @@ telethon_bridge:               # Telegram bridge (python-telethon)
   scope: user
   packages: python-telethon
   health_cmd: "systemctl --user is-active --quiet telethon-bridge.service"
+  containerized: true
   container_image: telethon_bridge
   gpu: none
   bind_mounts:
@@ -318,6 +327,7 @@ vaultwarden:
   unit: vaultwarden
   scope: system
   packages: null
+  containerized: true
   container_image: vaultwarden
   gpu: none
   bind_mounts:

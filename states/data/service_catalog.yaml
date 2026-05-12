@@ -103,9 +103,12 @@ adguardhome:                   # DNS-level ad blocker (containerized)
   container_image: adguardhome
   gpu: none
   bind_mounts:
-    - host: /var/lib/adguardhome-container
+    - host: /var/lib/adguardhome-container/conf
+      container: /opt/adguardhome/conf
+      mode: rw                 # AdGuardHome YAML config
+    - host: /var/lib/adguardhome-container/work
       container: /opt/adguardhome/work
-      mode: rw                 # AdGuardHome work dir + config
+      mode: rw                 # AdGuardHome dynamic data (sessions, stats, filters)
   env_file: null
 
 ollama:                        # Local LLM inference server

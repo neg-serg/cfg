@@ -22,12 +22,13 @@ adguardhome_legacy_cleanup:
 {{ remove_native_unit('adguardhome') }}
 
 {# ── Work directory for container bind-mount ── #}
-{{ ensure_dir('adguardhome_work_dir', '/var/lib/adguardhome-container', mode='0755', user='root') }}
+{{ ensure_dir('adguardhome_work_dir', '/var/lib/adguardhome-container/work', mode='0755', user='root') }}
+{{ ensure_dir('adguardhome_conf_dir', '/var/lib/adguardhome-container/conf', mode='0755', user='root') }}
 
 {# ── Initial config seed (replace: False — AdGuardHome rewrites it) ── #}
 adguardhome_initial_config:
   file.managed:
-    - name: /var/lib/adguardhome-container/AdGuardHome.yaml
+    - name: /var/lib/adguardhome-container/conf/AdGuardHome.yaml
     - source: salt://configs/adguardhome-initial.yaml
     - user: root
     - group: root
@@ -36,6 +37,7 @@ adguardhome_initial_config:
     - makedirs: True
     - require:
       - file: adguardhome_work_dir
+      - file: adguardhome_conf_dir
 
 {# ── systemd-resolved integration (host-level, stays outside container) ── #}
 adguardhome_resolved_conf:

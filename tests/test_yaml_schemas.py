@@ -144,3 +144,69 @@ def test_feature_registry_all_entries_have_default(feature_registry):
             assert "default" in config, f"feature '{name}' missing default"
             assert isinstance(config["default"], bool), f"feature '{name}' default must be bool"
             assert "description" in config, f"feature '{name}' missing description"
+
+
+# ── container_images.yaml ──────────────────────────────────────────────
+
+
+@pytest.fixture(scope="module")
+def container_images():
+    return _load("container_images.yaml")
+
+
+def test_container_images_all_have_registry_and_image(container_images):
+    for name, cfg in container_images.items():
+        assert isinstance(cfg, dict), f"{name}: expected dict"
+        assert "registry" in cfg, f"{name}: missing registry"
+        assert "image" in cfg, f"{name}: missing image"
+        assert isinstance(cfg["registry"], str) and cfg["registry"], f"{name}: registry must be non-empty string"
+        assert isinstance(cfg["image"], str) and cfg["image"], f"{name}: image must be non-empty string"
+
+
+def test_container_images_remote_have_digest(container_images):
+    for name, cfg in container_images.items():
+        if cfg.get("registry") != "localhost":
+            digest = cfg.get("digest")
+            assert digest is not None, f"{name}: remote image must have a digest"
+            assert isinstance(digest, str), f"{name}: digest must be string"
+            assert digest.startswith("sha256:"), f"{name}: digest must start with sha256:"
+            assert len(digest) == 71, f"{name}: digest must be sha256:<64 hex> (got {len(digest)} chars)"
+
+
+def test_container_images_localhost_digest_is_null(container_images):
+    for name, cfg in container_images.items():
+        if cfg.get("registry") == "localhost":
+            assert cfg.get("digest") is None, f"{name}: localhost image must have null digest"
+
+
+# ── services.yaml ──────────────────────────────────────────────────────
+
+
+@pytest.fixture(scope="module")
+def services_data():
+    return _load("services.yaml")
+
+
+def test_services_has_expected_sections(services_data):
+    for section in ("simple", "complex", "network", "dns"):
+        assert section in services_data, f"services.yaml missing section: {section}"
+
+
+def test_services_simple_entries(services_data):
+    for name, cfg in services_data.get("simple", {}).items():
+        assert isinstance(cfg, dict), f"simple.{name}: expected dict"
+        assert "packages" in cfg, f"simple.{name}: missing packages"
+        assert "service" in cfg, f"simple.{name}: missing service"
+
+
+def test_services_complex_entries_have_valid_keys(services_data):
+    known = {
+        "packages", "package_manager", "service", "unit", "unit_override",
+        "ensure_running", "manual_start", "scripts", "config_templates",
+        "dirs", "logrotate", "healthcheck", "has_escape_hatch",
+        "cleanup", "setup_commands",
+    }
+    for name, cfg in services_data.get("complex", {}).items():
+        assert isinstance(cfg, dict), f"complex.{name}: expected dict"
+        for key in cfg:
+            assert key in known, f"complex.{name}: unknown key '{key}'"

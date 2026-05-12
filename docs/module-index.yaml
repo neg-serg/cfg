@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-12T17:50:23'
+generated: '2026-05-12T19:16:40'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -932,8 +932,6 @@ scripts_py:
   purpose: Recover ProxyPilot free-provider config from gopass-backed provider data.
 - path: scripts/render-matrix.py
   purpose: Render Salt states for each feature-matrix host scenario.
-- path: scripts/rkn-domains-autocorrect.py
-  purpose: Check if we can reach the internet
 - path: scripts/rkn-domains-fetcher.py
   purpose: Download content using wget2 (faster, handles large files better)
 - path: scripts/salt-daemon.py
@@ -957,8 +955,6 @@ scripts_py:
   purpose: Show which states a Salt SLS would apply, without executing anything.
 - path: scripts/salt_source_model.py
   purpose: Shared discovery helpers for Salt source analysis.
-- path: scripts/singbox-with-rkn-domains.py
-  purpose: Generate sing-box config with RKN domains integration.
 - path: scripts/state-profiler.py
   purpose: Parse salt-apply logs and print the slowest states with include context.
 - path: scripts/update-tools.py
@@ -981,19 +977,13 @@ scripts_sh:
   purpose: Install all user packages on CachyOS after bootstrap
 - path: scripts/check-ipv6.sh
   purpose: IPv6 diagnostics script
-- path: scripts/check-opencode.sh
-  purpose: OpenCode health check script
 - path: scripts/check-vpn-status.sh
   purpose: VPN Status Check Script
-- path: scripts/deploy-cachyos-ext4.sh
-  purpose: Deploy CachyOS rootfs to ext4 partition with existing ESP.
 - path: scripts/drift-notify.sh
   purpose: drift-notify.sh — run full drift check via drift_state.py and notify on
     drift
 - path: scripts/enable-vpn-hybrid.sh
   purpose: Enable hybrid VPN (Xray + sing-box TUN) via Salt states
-- path: scripts/get-grafana-token.sh
-  purpose: Print Grafana API token from gopass for QML sysmon popup usage.
 - path: scripts/health-check.sh
   purpose: health-check.sh — check health of all Salt-managed services
 - path: scripts/kvm-network-rc-local.sh
@@ -1004,8 +994,6 @@ scripts_sh:
   purpose: Manual TUN interface setup for sing-box when auto_route fails
 - path: scripts/migrate-floorp-to-zen-profile.sh
   purpose: ''
-- path: scripts/migrate-transmission-downloads.sh
-  purpose: 'One-time migration: move Transmission downloads to ~/torrent/data'
 - path: scripts/pkg-drift.zsh
   purpose: pkg-drift.zsh — Compare declared packages against actual system state
 - path: scripts/pkg-snapshot.zsh
@@ -1024,22 +1012,16 @@ scripts_sh:
   purpose: ''
 - path: scripts/test-browser-vpn.sh
   purpose: Test browser VPN integration
-- path: scripts/test-cachyos-vm.sh
-  purpose: Boot CachyOS rootfs in a QEMU VM to verify networking and services.
 - path: scripts/test-hybrid-routing.sh
   purpose: ''
 - path: scripts/test-kvm-deploy-lib.sh
   purpose: test-kvm-deploy-lib.sh — shared functions for KVM deployment testing
 - path: scripts/test-kvm-deploy.sh
   purpose: test-kvm-deploy.sh — KVM/QEMU Salt deployment test runner
-- path: scripts/test-singbox-vpn.sh
-  purpose: Test sing-box VPN connection with safe fallback
 - path: scripts/test-vpn-connection.sh
   purpose: Test VPN connection using imported AmneziaVPN config
 - path: scripts/vm-smoke.sh
   purpose: vm-smoke.sh — run CachyOS VM deployment test inside a Podman container
-- path: scripts/vpn-browser-quickstart.sh
-  purpose: Quick start script for VPN browser integration
 - path: scripts/zapret2-rollout.sh
   purpose: ''
 - path: scripts/zen-vpn.sh

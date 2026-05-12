@@ -305,6 +305,7 @@ def test_collect_known_services_includes_root_level_units():
 
 
 def _assert_vpn_split_router_schema(data):
+    """Validate VPN split router config schema. Data is the split_router_config dict."""
     settings = data["settings"]
     for setting in (
         "probe_timeout_seconds",
@@ -331,9 +332,9 @@ def _assert_vpn_split_router_schema(data):
 
 
 def test_vpn_split_router_schema_is_valid():
-    data = load_yaml("vpn_split_router.yaml")
+    data = load_yaml("vpn.yaml")
 
-    _assert_vpn_split_router_schema(data)
+    _assert_vpn_split_router_schema(data["split_router_config"])
 
 
 @pytest.mark.parametrize(
@@ -349,17 +350,17 @@ def test_vpn_split_router_schema_is_valid():
     ],
 )
 def test_vpn_split_router_schema_rejects_boolean_settings(setting):
-    data = load_yaml("vpn_split_router.yaml")
-    data["settings"][setting] = True
+    data = load_yaml("vpn.yaml")
+    data["split_router_config"]["settings"][setting] = True
 
     with pytest.raises(AssertionError):
-        _assert_vpn_split_router_schema(data)
+        _assert_vpn_split_router_schema(data["split_router_config"])
 
 
 def test_vpn_split_router_seed_domains_are_unique():
-    data = load_yaml("vpn_split_router.yaml")
+    data = load_yaml("vpn.yaml")
 
-    seed_domains = data["seed_domains"]
+    seed_domains = data["split_router_config"]["seed_domains"]
     assert len(seed_domains) == len(set(seed_domains))
 
 

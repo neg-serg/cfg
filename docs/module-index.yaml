@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-12T13:54:43'
+generated: '2026-05-12T13:57:09'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -511,7 +511,6 @@ states:
   - network.vpn_split_router
   data_files:
   - data/vpn.yaml
-  - data/vpn_split_router.yaml
   services:
   - amnezia-import-tun.service
   - vpn-policy-rollback.service
@@ -1203,9 +1202,6 @@ data_files:
   consumers:
   - ipv6_6to4.sls
   - network/vpn_hybrid.sls
-  - network/vpn_split_router.sls
-- path: states/data/vpn_split_router.yaml
-  consumers:
   - network/vpn_split_router.sls
 - path: states/data/windows_mount.yaml
   consumers:

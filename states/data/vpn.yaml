@@ -10,6 +10,21 @@ split_router:
   service_path: /etc/systemd/system/sing-box-tun-react.path
   amnezia_import: /usr/local/bin/amnezia-import-tun-config
 
+# VPN split router probe config (was vpn_split_router.yaml)
+split_router_config:
+  settings:
+    probe_timeout_seconds: 3.0
+    probe_interval_seconds: 900
+    seed_vpn_failure_threshold: 1
+    observed_vpn_failure_threshold: 2
+    direct_ttl_seconds: 21600
+    vpn_ttl_seconds: 21600
+    observed_stale_after_seconds: 604800
+  seed_domains:
+    - claude.ai
+    - chatgpt.com
+    - openrouter.ai
+
 ipv6_6to4:
   cache_path: /var/cache/salt/public-ipv4.txt
   public_ip_url: https://ifconfig.me

@@ -4,7 +4,6 @@
 {% set net = host.features.network %}
 
 {% if net.vpn_split_router %}
-{% import_yaml 'data/vpn_split_router.yaml' as router %}
 
 {{ ensure_dir('vpn_split_router_config_dir', home ~ '/.config/vpn-split-router', mode='0755') }}
 {{ ensure_dir('vpn_split_router_state_dir', home ~ '/.local/state/vpn-split-router', mode='0755') }}
@@ -26,7 +25,7 @@ vpn_split_router_config:
     - group: {{ user }}
     - mode: '0644'
     - context:
-        router: {{ router | tojson }}
+        router_config: {{ vpn.split_router_config | tojson }}
 
 {{ user_service_file('vpn_split_router_service', 'vpn-split-router.service') }}
 {{ user_service_file('vpn_split_router_timer', 'vpn-split-router.timer') }}

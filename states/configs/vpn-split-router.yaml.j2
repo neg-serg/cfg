@@ -1,15 +1,15 @@
 settings:
-  probe_timeout_seconds: {{ router.settings.probe_timeout_seconds }}
-  probe_interval_seconds: {{ router.settings.probe_interval_seconds }}
-  seed_vpn_failure_threshold: {{ router.settings.seed_vpn_failure_threshold }}
-  observed_vpn_failure_threshold: {{ router.settings.observed_vpn_failure_threshold }}
-  direct_ttl_seconds: {{ router.settings.direct_ttl_seconds }}
-  vpn_ttl_seconds: {{ router.settings.vpn_ttl_seconds }}
-  observed_stale_after_seconds: {{ router.settings.observed_stale_after_seconds }}
+  probe_timeout_seconds: {{ router_config.settings.probe_timeout_seconds }}
+  probe_interval_seconds: {{ router_config.settings.probe_interval_seconds }}
+  seed_vpn_failure_threshold: {{ router_config.settings.seed_vpn_failure_threshold }}
+  observed_vpn_failure_threshold: {{ router_config.settings.observed_vpn_failure_threshold }}
+  direct_ttl_seconds: {{ router_config.settings.direct_ttl_seconds }}
+  vpn_ttl_seconds: {{ router_config.settings.vpn_ttl_seconds }}
+  observed_stale_after_seconds: {{ router_config.settings.observed_stale_after_seconds }}
 
-{% if router.seed_domains %}
+{% if router_config.seed_domains %}
 seed_domains:
-{% for domain in router.seed_domains %}
+{% for domain in router_config.seed_domains %}
   - {{ domain }}
 {% endfor %}
 {% else %}

@@ -133,7 +133,6 @@ llama_embed:                   # llama.cpp embedding server (Vulkan)
   health_path: /health
   unit: llama_embed
   scope: system
-  packages: llama.cpp-vulkan
   timeout: 90
   manual_start: true
   containerized: true
@@ -152,7 +151,6 @@ t5_summarization:              # llama.cpp T5 summarization server (Vulkan)
   health_path: /health
   unit: t5_summarization
   scope: system
-  packages: llama.cpp-vulkan
   timeout: 90
   manual_start: true
   containerized: true

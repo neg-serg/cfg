@@ -2,7 +2,10 @@
 {% from '_imports.jinja' import host %}
 {% set dns = host.features.dns %}
 
-# DNS-over-TLS via systemd-resolved drop-in
+{# DNS-over-TLS via systemd-resolved drop-in.
+   Skipped when AdGuard Home is enabled — AdGuard Home chains to unbound,
+   which already forwards upstream via DoT. #}
+{% if not dns.adguardhome %}
 dns_over_tls_dropin_dir:
   file.directory:
     - name: /etc/systemd/resolved.conf.d
@@ -27,6 +30,7 @@ dns_over_tls_restart:
     - enable: True
     - watch:
       - file: dns_over_tls_config
+{% endif %}
 
 # Reusable restart target for external configs (e.g. tailscale DNS stub)
 # that drop files into unbound.conf.d/ and need unbound to pick them up.

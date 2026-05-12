@@ -12,6 +12,14 @@
 apply STATE="auto":
     scripts/salt-apply.sh {{STATE}}
 
+# Apply a state skipping contract validation (--force)
+apply-force STATE="auto":
+    scripts/salt-apply.sh {{STATE}} --force
+
+# Short alias for apply-force
+force STATE="auto":
+    just apply-force {{STATE}}
+
 apply-plan *FILES:
     ./scripts/salt-apply.sh auto --plan {{FILES}}
 

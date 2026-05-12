@@ -14,6 +14,8 @@
 #   scripts/salt-apply.sh auto                   # minimal-rollout mode (git diff)
 #   scripts/salt-apply.sh auto --plan            # show impact plan, no exec
 #   scripts/salt-apply.sh auto --plan file1.sls  # plan with explicit files
+#   scripts/salt-apply.sh --force                # skip contract validation
+#   scripts/salt-apply.sh hardware --force       # apply with force
 #
 # Auto mode:
 #   git diff against last-applied-commit marker (stored in .salt_runtime/)
@@ -26,6 +28,7 @@
 # Gating:
 #   Maintenance lock is always held during apply (suppresses salt-monitor
 #   alerts). Drift baseline is refreshed only on RC=0 + chezmoi success.
+#   Contract validation runs before every apply; use --force to skip it.
 #
 # Environment:
 #   SALT_DAEMON_SOCK  Unix socket path (default: /tmp/salt-daemon.sock)
@@ -48,12 +51,14 @@ TEST_MODE=false
 PLAN_MODE=false
 PLAN_FILES=()
 AUDIT_MODE=false
+FORCE_MODE=false
 
 for arg in "$@"; do
 	case "$arg" in
 	--plan) PLAN_MODE=true ;;
 	--test | --dry-run) TEST_MODE=true ;;
 	--audit) AUDIT_MODE=true ;;
+	--force | -f) FORCE_MODE=true ;;
 	-*)
 		echo "Unknown flag: $arg" >&2
 		exit 1
@@ -351,8 +356,8 @@ maintenance_lock_remove() {
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 # Pre-flight: validate data contracts before applying states
-# Set SALT_SKIP_CONTRACTS=1 to bypass (e.g., bootstrap scenarios)
-if [[ -z "${SALT_SKIP_CONTRACTS:-}" ]]; then
+# Set SALT_SKIP_CONTRACTS=1 or use --force to bypass (e.g., bootstrap scenarios)
+if [[ -z "${SALT_SKIP_CONTRACTS:-}" && "$FORCE_MODE" != true ]]; then
 	CONTRACT_OUTPUT=$(python3 "${SCRIPT_DIR}/salt_contracts.py" 2>&1)
 	CONTRACT_RC=$?
 	if [[ $CONTRACT_RC -ne 0 ]]; then

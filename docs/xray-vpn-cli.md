@@ -196,23 +196,6 @@ export ALL_PROXY=socks5://127.0.0.1:10808
 curl https://google.com
 ```
 
-### 3. TUN routing (sing‑box)
-
-To use the imported config with `sing-box-tun.service`, you must convert it to sing‑box format.
-
-```bash
-scripts/xray-to-singbox.py ~/.config/sing-box-tun/config.json ~/.config/sing-box-tun/config-singbox.json
-```
-
-**Note:** The converter is experimental and may produce invalid sing‑box configs due to API changes.
-Check the result with:
-
-```bash
-sing-box check -c ~/.config/sing-box-tun/config-singbox.json
-```
-
-If the check passes, enable the TUN service:
-
 ## Zero-config router workflow
 
 When `features.network.vpn_split_router` is enabled, use the helper to reconcile routing state and inspect decisions:
@@ -295,7 +278,6 @@ scripts/start-hybrid-vpn.sh ~/.config/sing-box-tun/config.json ~/.config/sing-bo
 
 - Original Xray config: `~/.config/sing-box-tun/config.json`
 - Hybrid sing-box config: `~/.config/sing-box-tun/config-singbox-hybrid-final.json`
-- Converter script: `scripts/xray-to-singbox.py` (updated with correct TUN address syntax)
 
 **TUN Configuration for sing-box 1.13+:**
 
@@ -322,7 +304,7 @@ The hybrid scheme provides:
 - Split routing: private IPs go direct, external traffic goes through VPN
 - DNS via local resolver (223.5.5.5) with fallback to TLS (1.1.1.1)
 
-Test with `scripts/test-hybrid-routing.sh`.
+Test with `scripts/check-vpn-status.sh`.
 
 ## Relation to AmneziaVPN
 

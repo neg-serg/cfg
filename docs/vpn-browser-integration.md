@@ -89,29 +89,25 @@ systemctl --user start rkn-domains-fetcher.service
 
 ### Integration with VPN Split Router
 
-The system integrates with `vpn-split-router` to dynamically detect blocked domains:
+The vpn-split-router systemd service handles domain routing automatically:
 
 ```bash
-# Check integration status
-python3 /home/neg/src/cfg/scripts/vpn_split_router_integration.py
+# Check routing status
+systemctl --user status vpn-split-router.service
 
-# Start VPN split router daemon
-python3 /home/neg/src/cfg/scripts/vpn_split_router.py --daemon
+# Manual recheck
+~/.local/bin/vpn-split-router recheck
 ```
 
 ## Advanced Configuration
 
-### Custom sing-box Config with RKN Domains
+### RKN Domain Updates
 
-Generate a sing-box config that includes RKN domains:
+RKN domains are updated automatically via systemd timer. For manual updates:
 
 ```bash
-# Generate config with RKN domains
-python3 /home/neg/src/cfg/scripts/singbox-with-rkn-domains.py --max-domains 1000
-
-# Apply the config
-cp ~/.config/sing-box-tun/config-with-rkn.json ~/.config/sing-box-tun/config.json
-sudo pkill sing-box && sudo /home/neg/src/cfg/scripts/manual-tun-routes.sh start
+# Force fetch and integrate RKN domains
+systemctl --user start rkn-domains-fetcher.service
 ```
 
 ### Manual TUN Routing
@@ -205,13 +201,13 @@ integration:
    ```
 
 4. **VPN connection slow**
-   ```bash
-   # Test connection speed
-   /home/neg/src/cfg/scripts/test-vpn-connection.sh
-   
-   # Check Xray logs
-   tail -f ~/.config/xray/access.log
-   ```
+    ```bash
+    # Check VPN status
+    /home/neg/src/cfg/scripts/check-vpn-status.sh
+    
+    # Check Xray logs
+    tail -f ~/.config/xray/access.log
+    ```
 
 ### Logs and Monitoring
 

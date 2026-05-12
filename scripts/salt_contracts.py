@@ -665,8 +665,6 @@ def check_services_config_templates(repo_root: Path = REPO_ROOT) -> list[str]:
 # --- Data file liveness ---
 
 _CORE_DATA_FILES = {
-    "drift_inventory.yaml",
-    "docs_sources.yaml",
     "feature_matrix.yaml",
     "feature_registry.yaml",
     "hosts.yaml",
@@ -774,7 +772,7 @@ def check_monitored_services_references(repo_root: Path = REPO_ROOT) -> list[str
 
 
 def check_drift_inventory_units(repo_root: Path = REPO_ROOT) -> list[str]:
-    drift = load_yaml_file(repo_root / "states" / "data" / "drift_inventory.yaml")
+    drift = load_yaml_file(repo_root / "scripts" / "drift_inventory.yaml")
     if not isinstance(drift, dict):
         return []
 

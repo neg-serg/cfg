@@ -26,8 +26,6 @@ sys.path.insert(0, str(SCRIPTS_DIR))
 import salt_impact  # noqa: E402
 
 EXCLUDED_DATA_FILES = {
-    "docs_sources.yaml",
-    "drift_inventory.yaml",
     "feature_matrix.yaml",
     "feature_registry.yaml",
     "hosts.yaml",

@@ -44,7 +44,7 @@ def resolve_path(raw: str, host: dict) -> str:
 
 
 def load_inventory(project_dir: Path) -> dict:
-    with open(project_dir / "states" / "data" / "drift_inventory.yaml") as fh:
+    with open(project_dir / "scripts" / "drift_inventory.yaml") as fh:
         return yaml.safe_load(fh.read()) or {}
 
 

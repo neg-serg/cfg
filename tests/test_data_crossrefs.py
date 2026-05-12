@@ -14,6 +14,14 @@ import yaml
 from tests import REPO_ROOT_STR
 
 DATA_DIR = os.path.join(REPO_ROOT_STR, "states", "data")
+SCRIPTS_DIR = os.path.join(REPO_ROOT_STR, "scripts")
+
+
+def _load_scripts_yaml(filename):
+    """Load a YAML file from scripts/, returning parsed content."""
+    path = os.path.join(SCRIPTS_DIR, filename)
+    with open(path) as fh:
+        return yaml.safe_load(fh.read())
 
 
 def _load_salt_contracts():
@@ -248,7 +256,7 @@ def _assert_drift_inventory_schema(inventory):
 
 
 def test_drift_inventory_schema_is_valid():
-    inventory = load_yaml("drift_inventory.yaml")
+    inventory = _load_scripts_yaml("drift_inventory.yaml")
 
     _assert_drift_inventory_schema(inventory)
 
@@ -274,7 +282,7 @@ def test_drift_inventory_schema_rejects_non_boolean_flags():
 
 
 def test_drift_inventory_paths_and_units_resolve_to_known_targets():
-    inventory = load_yaml("drift_inventory.yaml")
+    inventory = _load_scripts_yaml("drift_inventory.yaml")
     known = _collect_known_services()
 
     for entry in inventory["files"]:

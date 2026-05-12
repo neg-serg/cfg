@@ -1,12 +1,9 @@
 version: 1
-generated: '2026-05-12T13:36:34'
+generated: '2026-05-12T13:54:43'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
   purpose: ── Cleanup legacy binary ──
-  data_files:
-  - data/container_images.yaml
-  - data/service_catalog.yaml
   services:
   - adguardhome.container
   configs:
@@ -23,6 +20,8 @@ states:
   path: states/audio.sls
   purpose: 'PipeWire audio stack: ensures all runtime components (ALSA, JACK, Pulse)
     are installed'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/audio.yaml
 - id: bind_mounts
@@ -33,14 +32,13 @@ states:
 - id: bitcoind
   path: states/bitcoind.sls
   purpose: Data directory for blockchain state
-  data_files:
-  - data/container_images.yaml
-  - data/service_catalog.yaml
   services:
   - bitcoind.container
 - id: cachyos
   path: states/cachyos.sls
   purpose: CachyOS kernel packages, boot configuration, and kernel cmdline management
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/cachyos.yaml
   - data/hosts.yaml
@@ -52,12 +50,16 @@ states:
   path: states/code_rag.sls
   purpose: 'code-rag: hybrid text+code RAG with AST-aware chunking and LanceDB vector
     search.'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/code_rag.yaml
 - id: custom_pkgs
   path: states/custom_pkgs.sls
   purpose: Build and install custom packages from local PKGBUILDs not in official
     repos or AUR
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/custom_pkgs.yaml
 - id: desktop
@@ -82,23 +84,31 @@ states:
   path: states/desktop/niri.sls
   purpose: 'Niri scrolling-tiling Wayland compositor: package install and session
     setup'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/desktop.yaml
 - id: desktop.packages
   path: states/desktop/packages.sls
   purpose: 'Desktop application packages: browsers, terminals, media, productivity
     tools'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/desktop.yaml
 - id: desktop.portal
   path: states/desktop/portal.sls
   purpose: 'XDG Desktop Portal: screen sharing, file chooser, and sandboxing backends'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/desktop.yaml
 - id: desktop.system
   path: states/desktop/system.sls
   purpose: 'System-wide desktop configuration: fonts, themes, input methods, power
     management'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/desktop.yaml
   configs:
@@ -128,20 +138,21 @@ states:
 - id: duckdns
   path: states/duckdns.sls
   purpose: 'In-place cutover: remove native timer + service + script'
-  data_files:
-  - data/container_images.yaml
-  - data/service_catalog.yaml
   services:
   - duckdns.container
 - id: espanso
   path: states/espanso.sls
   purpose: 'Espanso text expander: wayland variant with systemd user service and health
     check'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/espanso.yaml
 - id: flatpak
   path: states/flatpak.sls
   purpose: Flatpak sandboxed desktop applications with flathub remote setup
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/flatpak.yaml
 - id: floorp
@@ -154,6 +165,8 @@ states:
 - id: fonts
   path: states/fonts.sls
   purpose: 'Font installation: pacman, AUR, downloaded, and custom PKGBUILD builds'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/fonts.yaml
   - data/versions.yaml
@@ -163,6 +176,9 @@ states:
 - id: greetd
   path: states/greetd.sls
   purpose: greetd display manager with Hyprland compositor and quickshell greeter
+  includes:
+  - pacman_db_warmup
+  - systemd_resources
   data_files:
   - data/greetd.yaml
 - id: group.ai
@@ -176,6 +192,18 @@ states:
   - nanoclaw
   - ollama
   - opencode
+  - t5_summarization
+  - telethon_bridge
+  - video_ai
+  includes:
+  - code_rag
+  - image_generation
+  - llama_embed
+  - managed_bots
+  - nanoclaw
+  - ollama
+  - opencode
+  - pacman_db_warmup
   - t5_summarization
   - telethon_bridge
   - video_ai
@@ -215,6 +243,14 @@ states:
   - network.ipv6_6to4
   - network.ipv6_tunnel
   - network.zapret2
+  includes:
+  - amnezia
+  - dns
+  - ipv6
+  - ipv6_6to4
+  - ipv6_tunnel
+  - network
+  - zapret2
 - id: group.packages
   path: states/group/packages.sls
   purpose: 'Packages group: system packages, AUR installers, mpv scripts, themes'
@@ -261,12 +297,16 @@ states:
   path: states/installers.sls
   purpose: 'Fallback installers: tools built from GitHub releases, pip, cargo, go,
     or raw HTTP'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/installers.yaml
   - data/versions.yaml
 - id: installers_desktop
   path: states/installers_desktop.sls
   purpose: 'Desktop application installers: data-driven AUR package installation'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/installers_desktop.yaml
 - id: installers_mpv
@@ -303,14 +343,13 @@ states:
   path: states/jellyfin.sls
   purpose: 'In-place cutover: remove native systemd unit file so Quadlet-generated
     unit is not shadowed.'
-  data_files:
-  - data/container_images.yaml
-  - data/service_catalog.yaml
   services:
   - jellyfin.container
 - id: kanata
   path: states/kanata.sls
   purpose: 'Kanata keyboard remapper: advanced key remapping daemon configuration'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/kanata.yaml
   configs:
@@ -326,9 +365,7 @@ states:
   path: states/llama_embed.sls
   purpose: 'llama.cpp embedding server: Qwen3-Embedding-8B via Vulkan in Quadlet container'
   data_files:
-  - data/container_images.yaml
   - data/llama_embed.yaml
-  - data/service_catalog.yaml
   services:
   - llama_embed.container
 - id: managed_bots
@@ -356,9 +393,6 @@ states:
   secrets:
   - api/nanoclaw-telegram
   - api/nanoclaw-telegram-uid
-  data_files:
-  - data/container_images.yaml
-  - data/service_catalog.yaml
   services:
   - alertmanager-webhook.service
   - alertmanager.container
@@ -390,9 +424,6 @@ states:
   - monitoring.grafana
   - monitoring.loki
   - monitoring.promtail
-  data_files:
-  - data/container_images.yaml
-  - data/service_catalog.yaml
   services:
   - grafana.container
   - loki.container
@@ -415,14 +446,17 @@ states:
   secrets:
   - lastfm/password
   - lastfm/username
+  includes:
+  - bind_mounts
   data_files:
   - data/mpd.yaml
-  - data/service_catalog.yaml
   services:
   - mpdas.service
 - id: music_analysis
   path: states/music_analysis.sls
   purpose: 'Music analysis pipeline: BPM/key detection, fingerprinting, and indexing'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/installers.yaml
   - data/versions.yaml
@@ -438,9 +472,7 @@ states:
   - api/nanoclaw-telegram
   - api/nanoclaw-telegram-uid
   data_files:
-  - data/container_images.yaml
   - data/nanoclaw.yaml
-  - data/service_catalog.yaml
   - data/versions.yaml
   services:
   - nanoclaw.container
@@ -449,6 +481,10 @@ states:
 - id: network
   path: states/network.sls
   purpose: ''
+  includes:
+  - network.vm_bridge
+  - network.vpn_hybrid
+  - network.vpn_split_router
 - id: network.vm_bridge
   path: states/network/vm_bridge.sls
   purpose: ''
@@ -496,9 +532,7 @@ states:
   feature_gate:
   - network.zapret2
   data_files:
-  - data/container_images.yaml
   - data/ollama.yaml
-  - data/service_catalog.yaml
   services:
   - ollama.container
   tests:
@@ -506,10 +540,14 @@ states:
 - id: opencode
   path: states/opencode.sls
   purpose: 'OpenCode LLM CLI tool: package install and configuration'
+  includes:
+  - proxypilot
 - id: packages
   path: states/packages.sls
   purpose: '- pacman -Qq checks ALL packages — fails if ANY is missing, triggering
     install'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/packages.yaml
 - id: pacman_db_warmup
@@ -522,9 +560,7 @@ states:
   secrets:
   - api/proxypilot-management
   data_files:
-  - data/container_images.yaml
   - data/free_providers.yaml
-  - data/service_catalog.yaml
   services:
   - proxypilot.container
   configs:
@@ -544,6 +580,8 @@ states:
 - id: steam
   path: states/steam.sls
   purpose: 'Steam gaming platform: multilib, drivers, gamemode, and controller support'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/steam.yaml
   configs:
@@ -603,8 +641,6 @@ states:
   purpose: 'T5 text summarization server: safetensors to GGUF conversion via Quadlet
     container'
   data_files:
-  - data/container_images.yaml
-  - data/service_catalog.yaml
   - data/t5_summarization.yaml
   services:
   - t5_summarization.container
@@ -617,9 +653,9 @@ states:
   - api/telegram-telethon-id
   - api/telegram-uid-guest2
   - api/telegram-uid-levra
+  includes:
+  - pacman_db_warmup
   data_files:
-  - data/container_images.yaml
-  - data/service_catalog.yaml
   - data/telethon_bridge.yaml
   - data/versions.yaml
   services:
@@ -632,15 +668,14 @@ states:
   path: states/tidal.sls
   purpose: 'TidalCycles live coding environment: Haskell, SuperDirt, and SuperCollider
     setup'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/tidal.yaml
 - id: transmission
   path: states/transmission.sls
   purpose: 'In-place cutover: remove native systemd unit so Quadlet-generated unit
     is not shadowed.'
-  data_files:
-  - data/container_images.yaml
-  - data/service_catalog.yaml
   services:
   - transmission.container
 - id: user_services
@@ -649,6 +684,8 @@ states:
   feature_gate:
   - mpd
   - user_services.mail
+  includes:
+  - users
   data_files:
   - data/user_services.yaml
 - id: users
@@ -656,6 +693,8 @@ states:
   purpose: 'User account management: PAM sudo, SSH agent auth, and authorized keys'
   feature_gate:
   - sudo_ssh_agent
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/users.yaml
   configs:
@@ -666,9 +705,8 @@ states:
 - id: vaultwarden
   path: states/vaultwarden.sls
   purpose: 'Vaultwarden Bitwarden server: Quadlet container, backup timers, and bw-sync'
-  data_files:
-  - data/container_images.yaml
-  - data/service_catalog.yaml
+  includes:
+  - pacman_db_warmup
   services:
   - bw-sync.service
   - bw-sync.timer
@@ -1018,21 +1056,7 @@ data_files:
   consumers:
   - code_rag.sls
 - path: states/data/container_images.yaml
-  consumers:
-  - adguardhome.sls
-  - bitcoind.sls
-  - duckdns.sls
-  - jellyfin.sls
-  - llama_embed.sls
-  - monitoring_alertmanager.sls
-  - monitoring_loki.sls
-  - nanoclaw.sls
-  - ollama.sls
-  - proxypilot.sls
-  - t5_summarization.sls
-  - telethon_bridge.sls
-  - transmission.sls
-  - vaultwarden.sls
+  consumers: null
 - path: states/data/custom_pkgs.yaml
   consumers:
   - custom_pkgs.sls
@@ -1045,10 +1069,6 @@ data_files:
   - desktop/system.sls
   - desktop/user.sls
   - desktop/vm_win11.sls
-- path: states/data/docs_sources.yaml
-  consumers: null
-- path: states/data/drift_inventory.yaml
-  consumers: null
 - path: states/data/espanso.yaml
   consumers:
   - espanso.sls
@@ -1136,22 +1156,7 @@ data_files:
   consumers:
   - packages.sls
 - path: states/data/service_catalog.yaml
-  consumers:
-  - adguardhome.sls
-  - bitcoind.sls
-  - duckdns.sls
-  - jellyfin.sls
-  - llama_embed.sls
-  - monitoring_alertmanager.sls
-  - monitoring_loki.sls
-  - mpd.sls
-  - nanoclaw.sls
-  - ollama.sls
-  - proxypilot.sls
-  - t5_summarization.sls
-  - telethon_bridge.sls
-  - transmission.sls
-  - vaultwarden.sls
+  consumers: null
 - path: states/data/services.yaml
   consumers:
   - services.sls

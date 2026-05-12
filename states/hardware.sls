@@ -64,9 +64,9 @@ rfkill_socket_masked:
 {% if 'snd_hdspe' in host.extra_modules %}
 rme_hdspe_dkms_add:
   cmd.run:
-    - name: dkms add {{ hw.hdspe.source }} 2>/dev/null || true
+    - name: dkms add {{ host.home }}/{{ hw.hdspe.subdir }} 2>/dev/null || true
     - unless: test -d /var/lib/dkms/{{ hw.hdspe.dkms_name }}
-    - onlyif: test -d {{ hw.hdspe.source }}
+    - onlyif: test -d {{ host.home }}/{{ hw.hdspe.subdir }}
 
 rme_hdspe_dkms_build:
   cmd.run:

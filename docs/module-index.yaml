@@ -1,6 +1,5 @@
----
 version: 1
-generated: '2026-05-07T07:58:59'
+generated: '2026-05-12T13:36:34'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -18,11 +17,14 @@ states:
   purpose: 'Amnezia VPN: builds AmneziaWG kernel module and Amnezia VPN desktop client
     from source.'
   data_files:
+  - data/amnezia.yaml
   - data/versions.yaml
 - id: audio
   path: states/audio.sls
   purpose: 'PipeWire audio stack: ensures all runtime components (ALSA, JACK, Pulse)
     are installed'
+  data_files:
+  - data/audio.yaml
 - id: bind_mounts
   path: states/bind_mounts.sls
   purpose: Bind mounts for user directories on external storage devices
@@ -40,6 +42,7 @@ states:
   path: states/cachyos.sls
   purpose: CachyOS kernel packages, boot configuration, and kernel cmdline management
   data_files:
+  - data/cachyos.yaml
   - data/hosts.yaml
   - data/kernel_params.yaml
   configs:
@@ -49,6 +52,8 @@ states:
   path: states/code_rag.sls
   purpose: 'code-rag: hybrid text+code RAG with AST-aware chunking and LanceDB vector
     search.'
+  data_files:
+  - data/code_rag.yaml
 - id: custom_pkgs
   path: states/custom_pkgs.sls
   purpose: Build and install custom packages from local PKGBUILDs not in official
@@ -69,12 +74,16 @@ states:
 - id: desktop.hyprland
   path: states/desktop/hyprland.sls
   purpose: 'Hyprland Wayland compositor: plugins, config, and session management'
+  data_files:
+  - data/desktop.yaml
   configs:
   - configs/hyprpm-update.hook.j2
 - id: desktop.niri
   path: states/desktop/niri.sls
   purpose: 'Niri scrolling-tiling Wayland compositor: package install and session
     setup'
+  data_files:
+  - data/desktop.yaml
 - id: desktop.packages
   path: states/desktop/packages.sls
   purpose: 'Desktop application packages: browsers, terminals, media, productivity
@@ -84,6 +93,8 @@ states:
 - id: desktop.portal
   path: states/desktop/portal.sls
   purpose: 'XDG Desktop Portal: screen sharing, file chooser, and sandboxing backends'
+  data_files:
+  - data/desktop.yaml
 - id: desktop.system
   path: states/desktop/system.sls
   purpose: 'System-wide desktop configuration: fonts, themes, input methods, power
@@ -101,14 +112,19 @@ states:
 - id: desktop.vm_win11
   path: states/desktop/vm_win11.sls
   purpose: Windows 11 QEMU/KVM virtual machine with GPU passthrough and Looking Glass
+  data_files:
+  - data/desktop.yaml
   configs:
   - configs/win11.xml
 - id: dns
   path: states/dns.sls
-  purpose: 'DNS services: unbound recursive resolver, AdGuard Home filtering, and
-    avahi mDNS'
+  purpose: 'DNS services: unbound recursive resolver, AdGuard Home filtering, avahi
+    mDNS, DoT'
   feature_gate:
+  - dns.adguardhome
   - dns.unbound
+  configs:
+  - configs/resolved-dns-over-tls.conf
 - id: duckdns
   path: states/duckdns.sls
   purpose: 'In-place cutover: remove native timer + service + script'
@@ -121,6 +137,8 @@ states:
   path: states/espanso.sls
   purpose: 'Espanso text expander: wayland variant with systemd user service and health
     check'
+  data_files:
+  - data/espanso.yaml
 - id: flatpak
   path: states/flatpak.sls
   purpose: Flatpak sandboxed desktop applications with flathub remote setup
@@ -145,6 +163,8 @@ states:
 - id: greetd
   path: states/greetd.sls
   purpose: greetd display manager with Hyprland compositor and quickshell greeter
+  data_files:
+  - data/greetd.yaml
 - id: group.ai
   path: states/group/ai.sls
   purpose: 'AI group: llama_embed, ollama, nanoclaw, opencode, telethon_bridge, video_ai,
@@ -184,6 +204,7 @@ states:
   - desktop
   - fonts
   - greetd
+  - pacman_db_warmup
 - id: group.network
   path: states/group/network.sls
   purpose: 'Network group: VPN, firewall, DNS, IPv6 tunnels, and routing'
@@ -204,11 +225,13 @@ states:
   - installers_mpv
   - installers_themes
   - packages
+  - pacman_db_warmup
 - id: group.services
   path: states/group/services.sls
   purpose: 'Services group: systemd services, user services, and monitoring alerts'
   includes:
   - monitoring_alerts
+  - pacman_db_warmup
   - services
   - user_services
 - id: hardware
@@ -217,12 +240,16 @@ states:
   feature_gate:
   - fancontrol
   - network.wifi
+  data_files:
+  - data/hardware.yaml
   configs:
   - configs/udev-custom.rules
 - id: hiddify
   path: states/hiddify.sls
   purpose: 'Hiddify VPN client: local AppImage wrapper with legacy shadow handler
     cleanup'
+  data_files:
+  - data/hiddify.yaml
 - id: image_generation
   path: states/image_generation.sls
   purpose: Resolve image provider API keys from gopass (free-tier providers).
@@ -263,6 +290,8 @@ states:
 - id: ipv6_6to4
   path: states/ipv6_6to4.sls
   purpose: ════════════════════════════════════════════════════════════════════
+  data_files:
+  - data/vpn.yaml
 - id: ipv6_tunnel
   path: states/ipv6_tunnel.sls
   purpose: ════════════════════════════════════════════════════════════════════
@@ -282,11 +311,15 @@ states:
 - id: kanata
   path: states/kanata.sls
   purpose: 'Kanata keyboard remapper: advanced key remapping daemon configuration'
+  data_files:
+  - data/kanata.yaml
   configs:
   - configs/kanata.kbd
 - id: kernel_modules
   path: states/kernel_modules.sls
   purpose: Kernel module blacklisting and loading for hardware and virtualization
+  data_files:
+  - data/kernel_params.yaml
   configs:
   - configs/modprobe-blacklist.conf.j2
 - id: llama_embed
@@ -382,6 +415,9 @@ states:
   secrets:
   - lastfm/password
   - lastfm/username
+  data_files:
+  - data/mpd.yaml
+  - data/service_catalog.yaml
   services:
   - mpdas.service
 - id: music_analysis
@@ -403,6 +439,7 @@ states:
   - api/nanoclaw-telegram-uid
   data_files:
   - data/container_images.yaml
+  - data/nanoclaw.yaml
   - data/service_catalog.yaml
   - data/versions.yaml
   services:
@@ -417,6 +454,8 @@ states:
   purpose: ''
   feature_gate:
   - network.vm_bridge
+  data_files:
+  - data/network.yaml
   configs:
   - configs/br0.network
 - id: network.vpn_hybrid
@@ -424,16 +463,18 @@ states:
   purpose: ''
   feature_gate:
   - network.vpn_hybrid
+  data_files:
+  - data/vpn.yaml
   configs:
   - configs/sing-box-hybrid-config.json.j2
 - id: network.vpn_split_router
   path: states/network/vpn_split_router.sls
-  purpose: '--- AmneziaVPN config import script (shared by vpn_split_router and vpn_hybrid)
-    ---'
+  purpose: ''
   feature_gate:
   - network.vpn_hybrid
   - network.vpn_split_router
   data_files:
+  - data/vpn.yaml
   - data/vpn_split_router.yaml
   services:
   - amnezia-import-tun.service
@@ -503,6 +544,8 @@ states:
 - id: steam
   path: states/steam.sls
   purpose: 'Steam gaming platform: multilib, drivers, gamemode, and controller support'
+  data_files:
+  - data/steam.yaml
   configs:
   - configs/gamemode.ini
 - id: sysctl
@@ -543,6 +586,8 @@ states:
   - tidal
   - video_ai
   - xen_vr
+  data_files:
+  - data/system.yaml
   configs:
   - configs/os-release.j2
 - id: systemd_resources
@@ -575,6 +620,7 @@ states:
   data_files:
   - data/container_images.yaml
   - data/service_catalog.yaml
+  - data/telethon_bridge.yaml
   - data/versions.yaml
   services:
   - telethon-bridge-react.path
@@ -586,6 +632,8 @@ states:
   path: states/tidal.sls
   purpose: 'TidalCycles live coding environment: Haskell, SuperDirt, and SuperCollider
     setup'
+  data_files:
+  - data/tidal.yaml
 - id: transmission
   path: states/transmission.sls
   purpose: 'In-place cutover: remove native systemd unit so Quadlet-generated unit
@@ -608,6 +656,8 @@ states:
   purpose: 'User account management: PAM sudo, SSH agent auth, and authorized keys'
   feature_gate:
   - sudo_ssh_agent
+  data_files:
+  - data/users.yaml
   configs:
   - configs/pam-sudo.j2
   - configs/sudo-authorized-keys.j2
@@ -646,6 +696,8 @@ states:
 - id: video_ai.runners
   path: states/video_ai/runners.sls
   purpose: 'Video AI runners: inference server and processing daemon management'
+  data_files:
+  - data/video_ai.yaml
 - id: video_ai.workflows
   path: states/video_ai/workflows.sls
   purpose: 'Video AI workflows: automated processing pipelines and job scheduling'
@@ -669,14 +721,20 @@ states:
 - id: xen.kde_theme
   path: states/xen/kde_theme.sls
   purpose: Xen KDE Breeze Dark theme seed configs — data-driven from states/data/xen.yaml
+  data_files:
+  - data/xen.yaml
 - id: xen.sessions
   path: states/xen/sessions.sls
   purpose: 'Xen X11 session configs: .xinitrc, i3 config, greetd .desktop entries'
+  data_files:
+  - data/xen.yaml
 - id: xen.user
   path: states/xen/user.sls
   purpose: 'Xen user account: creation, groups, Steam library access, TTY'
   secrets:
   - host/xen-password-hash
+  data_files:
+  - data/xen.yaml
 - id: zapret2
   path: states/zapret2.sls
   purpose: 'Zapret2 DPI bypass: nfqueue-based traffic filter with domain-specific
@@ -702,8 +760,7 @@ states:
   - data/zen_profiles.yaml
 - id: zsh
   path: states/zsh.sls
-  purpose: 'Zsh shell environment: prezto framework, plugins, completions, and prompt
-    configuration'
+  purpose: 'Zsh shell environment: path setup, plugins, completions, and prompt configuration'
 macros:
 - id: _macros_common
   path: states/_macros_common.jinja
@@ -720,7 +777,6 @@ macros:
 - id: _macros_container
   path: states/_macros_container.jinja
   provides:
-  - _env_block
   - _tilde_expand
   - _cs_fail
   - container_service
@@ -770,7 +826,7 @@ macros:
 - id: _macros_service
   path: states/_macros_service.jinja
   provides:
-  - _env_block
+  - env_block
   - remove_native_unit
   - remove_native_package
   - managed_resource_value
@@ -946,9 +1002,21 @@ scripts_sh:
 - path: scripts/zen-vpn.sh
   purpose: Launch zen-browser with VPN SOCKS5 proxy
 data_files:
+- path: states/data/amnezia.yaml
+  consumers:
+  - amnezia.sls
+- path: states/data/audio.yaml
+  consumers:
+  - audio.sls
 - path: states/data/bind_mounts.yaml
   consumers:
   - bind_mounts.sls
+- path: states/data/cachyos.yaml
+  consumers:
+  - cachyos.sls
+- path: states/data/code_rag.yaml
+  consumers:
+  - code_rag.sls
 - path: states/data/container_images.yaml
   consumers:
   - adguardhome.sls
@@ -970,13 +1038,20 @@ data_files:
   - custom_pkgs.sls
 - path: states/data/desktop.yaml
   consumers:
+  - desktop/hyprland.sls
+  - desktop/niri.sls
   - desktop/packages.sls
+  - desktop/portal.sls
   - desktop/system.sls
   - desktop/user.sls
+  - desktop/vm_win11.sls
 - path: states/data/docs_sources.yaml
   consumers: null
 - path: states/data/drift_inventory.yaml
   consumers: null
+- path: states/data/espanso.yaml
+  consumers:
+  - espanso.sls
 - path: states/data/feature_matrix.yaml
   consumers: null
 - path: states/data/feature_registry.yaml
@@ -993,6 +1068,15 @@ data_files:
 - path: states/data/free_providers.yaml
   consumers:
   - proxypilot.sls
+- path: states/data/greetd.yaml
+  consumers:
+  - greetd.sls
+- path: states/data/hardware.yaml
+  consumers:
+  - hardware.sls
+- path: states/data/hiddify.yaml
+  consumers:
+  - hiddify.sls
 - path: states/data/hosts.yaml
   consumers:
   - cachyos.sls
@@ -1014,9 +1098,13 @@ data_files:
   consumers:
   - ipv6.sls
   - ipv6_tunnel.sls
+- path: states/data/kanata.yaml
+  consumers:
+  - kanata.sls
 - path: states/data/kernel_params.yaml
   consumers:
   - cachyos.sls
+  - kernel_modules.sls
 - path: states/data/llama_embed.yaml
   consumers:
   - llama_embed.sls
@@ -1029,9 +1117,18 @@ data_files:
 - path: states/data/mounts.yaml
   consumers:
   - mounts.sls
+- path: states/data/mpd.yaml
+  consumers:
+  - mpd.sls
 - path: states/data/mpv_scripts.yaml
   consumers:
   - installers_mpv.sls
+- path: states/data/nanoclaw.yaml
+  consumers:
+  - nanoclaw.sls
+- path: states/data/network.yaml
+  consumers:
+  - network/vm_bridge.sls
 - path: states/data/ollama.yaml
   consumers:
   - ollama.sls
@@ -1047,6 +1144,7 @@ data_files:
   - llama_embed.sls
   - monitoring_alertmanager.sls
   - monitoring_loki.sls
+  - mpd.sls
   - nanoclaw.sls
   - ollama.sls
   - proxypilot.sls
@@ -1057,15 +1155,30 @@ data_files:
 - path: states/data/services.yaml
   consumers:
   - services.sls
+- path: states/data/steam.yaml
+  consumers:
+  - steam.sls
+- path: states/data/system.yaml
+  consumers:
+  - system_description.sls
 - path: states/data/t5_summarization.yaml
   consumers:
   - t5_summarization.sls
 - path: states/data/telegram_managed_bots.yaml
   consumers:
   - managed_bots.sls
+- path: states/data/telethon_bridge.yaml
+  consumers:
+  - telethon_bridge.sls
+- path: states/data/tidal.yaml
+  consumers:
+  - tidal.sls
 - path: states/data/user_services.yaml
   consumers:
   - user_services.sls
+- path: states/data/users.yaml
+  consumers:
+  - users.sls
 - path: states/data/versions.yaml
   consumers:
   - amnezia.sls
@@ -1079,7 +1192,13 @@ data_files:
   consumers:
   - video_ai/base.sls
   - video_ai/models.sls
+  - video_ai/runners.sls
   - video_ai/workflows.sls
+- path: states/data/vpn.yaml
+  consumers:
+  - ipv6_6to4.sls
+  - network/vpn_hybrid.sls
+  - network/vpn_split_router.sls
 - path: states/data/vpn_split_router.yaml
   consumers:
   - network/vpn_split_router.sls
@@ -1087,7 +1206,10 @@ data_files:
   consumers:
   - windows_mount.sls
 - path: states/data/xen.yaml
-  consumers: null
+  consumers:
+  - xen/kde_theme.sls
+  - xen/sessions.sls
+  - xen/user.sls
 - path: states/data/zapret2.yaml
   consumers:
   - zapret2.sls

@@ -119,14 +119,6 @@ telethon_bridge:
   approved_at: null
   note: "Local image — build: podman build -t localhost/telethon-bridge ."
 
-opencode_serve:
-  registry: localhost
-  image: opencode-serve
-  variant: null
-  digest: null
-  approved_at: null
-  note: "Local image — build: podman build -t localhost/opencode-serve ."
-
 vaultwarden:
   registry: docker.io
   image: vaultwarden/server

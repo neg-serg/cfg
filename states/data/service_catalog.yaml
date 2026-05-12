@@ -311,19 +311,6 @@ telethon_bridge:               # Telegram bridge (python-telethon)
       mode: rw
   env_file: null
 
-opencode_serve:                # OpenCode HTTP API server
-  port: 4096
-  health_path: /
-  unit: opencode-serve
-  scope: user
-  container_image: opencode_serve
-  gpu: none
-  bind_mounts:
-    - host: ~/.config/opencode
-      container: /config
-      mode: rw
-  env_file: null
-
 # ─── Password management ────────────────────────────────────────────
 vaultwarden:
   port: 8222

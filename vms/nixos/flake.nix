@@ -4,14 +4,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-    determinate.url = "github:DeterminateSystems/determinate";
-    determinate.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = { self, nixpkgs, disko, determinate }: {
+  outputs = { self, nixpkgs, disko }: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        determinate.nixosModules.default
         disko.nixosModules.disko
         ./disk-config.nix
         ({ pkgs, ... }: {
@@ -42,6 +39,24 @@
 
           # QEMU guest
           services.qemuGuest.enable = true;
+
+          # Determinate Nix configuration
+          nix.settings = {
+            experimental-features = [ "nix-command" "flakes" ];
+            substituters = [
+              "https://install.determinate.systems"
+              "https://cache.nixos.org"
+            ];
+            trusted-public-keys = [
+              "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+              "install.determinate.systems:2/bvnFWPrR6uxEXpB7XqOSykYemH8e8WoMWvoLLXpF4="
+            ];
+            max-jobs = "auto";
+            cores = 0;
+            connect-timeout = 5;
+            http-connections = 0;
+            accept-flake-config = true;
+          };
 
           users.users.root.hashedPassword = "!";
         })

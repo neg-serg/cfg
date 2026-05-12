@@ -6,5 +6,5 @@ PRESETS=('default')
 ALL_kver="/boot/vmlinuz-{{ variant }}"
 
 default_image="/boot/initramfs-{{ variant }}.img"
-default_uki="/boot/EFI/Linux/arch-{{ variant }}.efi"
+default_uki="/efi/EFI/Linux/arch-{{ variant }}.efi"
 default_options="--splash /usr/share/systemd/bootctl/splash-custom.bmp"

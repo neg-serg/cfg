@@ -99,7 +99,7 @@ cachyos_mkinitcpio:
 cachyos_default_boot:
   cmd.run:
     - name: bootctl set-default arch-linux-cachyos.efi
-    - onlyif: test -f /boot/EFI/Linux/arch-linux-cachyos.efi
+    - onlyif: test -f /efi/EFI/Linux/arch-linux-cachyos.efi
     - unless: bootctl status 2>/dev/null | grep -qi 'default.*arch-linux-cachyos.efi'
     - require:
       - cmd: cachyos_mkinitcpio

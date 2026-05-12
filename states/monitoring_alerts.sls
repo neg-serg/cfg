@@ -1,6 +1,7 @@
 {# Monitoring alerts: service watchdog timers and Loki alert rule deployment #}
 {% from '_imports.jinja' import host, user, home, tg_secret %}
-{% from '_macros_service.jinja' import ensure_dir, user_service_enable, user_service_file %}
+{% from '_macros_service.jinja' import ensure_dir %}
+{% from '_macros_service_user.jinja' import user_service_enable, user_service_file %}
 {% import_yaml 'data/monitored_services.yaml' as monitored %}
 {% if host.features.monitoring.alerts %}
 

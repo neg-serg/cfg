@@ -4,7 +4,7 @@ include:
 
 {% from '_imports.jinja' import host, user %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import user_service_with_unit %}
+{% from '_macros_service_user.jinja' import user_service_with_unit %}
 {% import_yaml 'data/espanso.yaml' as espanso %}
 
 {{ paru_install('espanso', espanso.package) }}

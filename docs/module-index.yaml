@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-12T13:57:09'
+generated: '2026-05-12T14:18:58'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -878,6 +878,11 @@ macros:
   - service_stopped
   - service_with_healthcheck
   - unit_override
+  - service_with_unit
+  - render_service
+- id: _macros_service_user
+  path: states/_macros_service_user.jinja
+  provides:
   - user_service_file
   - user_unit_override
   - user_service_enable
@@ -885,8 +890,6 @@ macros:
   - user_service_restart
   - user_service_disable
   - user_linger
-  - service_with_unit
-  - render_service
 scripts_py:
 - path: scripts/_rkn_utils.py
   purpose: Shared RKN domain loading utilities for VPN/routing scripts.

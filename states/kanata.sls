@@ -4,7 +4,8 @@ include:
 
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir, udev_rule, user_service_with_unit %}
+{% from '_macros_service.jinja' import ensure_dir, udev_rule %}
+{% from '_macros_service_user.jinja' import user_service_with_unit %}
 {% import_yaml 'data/kanata.yaml' as kanata %}
 
 {{ paru_install('kanata', kanata.package) }}

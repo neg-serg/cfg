@@ -1,7 +1,7 @@
 {# Music Player Daemon: audio playback server with Last.fm scrobbling #}
 {% from '_imports.jinja' import host, user, home, pkg_list, gopass_secret %}
 {% from '_macros_install.jinja' import cargo_pkg %}
-{% from '_macros_service.jinja' import user_service_enable, user_service_file %}
+{% from '_macros_service_user.jinja' import user_service_enable, user_service_file %}
 {% import_yaml 'data/mpd.yaml' as mpd %}
 include:
   - bind_mounts

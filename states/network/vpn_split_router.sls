@@ -1,5 +1,6 @@
 {% from '_imports.jinja' import host, home, user %}
-{% from '_macros_service.jinja' import ensure_dir, user_service_enable, user_service_file %}
+{% from '_macros_service.jinja' import ensure_dir %}
+{% from '_macros_service_user.jinja' import user_service_enable, user_service_file %}
 {% import_yaml 'data/vpn.yaml' as vpn %}
 {% set net = host.features.network %}
 

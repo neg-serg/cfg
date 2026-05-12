@@ -1,7 +1,8 @@
 {# Telethon Bridge: Telegram MTProto relay to HTTP for LLM bot integration #}
 {% from '_imports.jinja' import user, home, proxypilot_key, tg_secret %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir, user_service_file, user_service_enable %}
+{% from '_macros_service.jinja' import ensure_dir %}
+{% from '_macros_service_user.jinja' import user_service_file, user_service_enable %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/telethon_bridge.yaml' as tb %}
 {% set _tb_config_dir = home ~ '/.config/telethon-bridge' %}

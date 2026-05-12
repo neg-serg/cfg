@@ -4,7 +4,7 @@ include:
   - pacman_db_warmup
 
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import user_service_file, user_service_enable %}
+{% from '_macros_service_user.jinja' import user_service_file, user_service_enable %}
 {% from '_macros_install.jinja' import curl_extract_tar %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/installers.yaml' as tools %}

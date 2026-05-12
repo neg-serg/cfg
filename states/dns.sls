@@ -1,12 +1,32 @@
-{# DNS services: unbound recursive resolver, AdGuard Home filtering, and avahi mDNS #}
-# DNS services: unbound, AdGuard Home, avahi.
-# Migrated to data-driven definitions in services.yaml.
+{# DNS services: unbound recursive resolver, AdGuard Home filtering, avahi mDNS, DoT #}
 {% from '_imports.jinja' import host %}
 {% set dns = host.features.dns %}
 
-# DNS services migrated to data-driven definitions in services.yaml.
-# The orchestrator loop in services.sls handles unbound, adguardhome, and avahi
-# gated by features.dns.* flags.
+# DNS-over-TLS via systemd-resolved drop-in
+dns_over_tls_dropin_dir:
+  file.directory:
+    - name: /etc/systemd/resolved.conf.d
+    - user: root
+    - group: root
+    - mode: '0755'
+    - makedirs: True
+
+dns_over_tls_config:
+  file.managed:
+    - name: /etc/systemd/resolved.conf.d/dns-over-tls.conf
+    - source: salt://configs/resolved-dns-over-tls.conf
+    - user: root
+    - group: root
+    - mode: '0644'
+    - require:
+      - file: dns_over_tls_dropin_dir
+
+dns_over_tls_restart:
+  service.running:
+    - name: systemd-resolved
+    - enable: True
+    - watch:
+      - file: dns_over_tls_config
 
 # Reusable restart target for external configs (e.g. tailscale DNS stub)
 # that drop files into unbound.conf.d/ and need unbound to pick them up.

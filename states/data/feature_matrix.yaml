@@ -14,7 +14,7 @@
         alertmanager: true
 
 - name: matrix-services
-  description: Home-server services (DNS + Samba/Jellyfin/DuckDNS/Transmission)
+  description: Home-server services (DNS + Samba/Jellyfin/DuckDNS/Transmission/Bitcoin/Vaultwarden)
   overrides:
     hostname: matrix-services
     features:
@@ -26,6 +26,8 @@
         jellyfin: true
         duckdns: true
         transmission: true
+        bitcoind: true
+      vaultwarden: true
 
 - name: matrix-laptop-wifi
   description: Laptop profile with WiFi and no heavy services
@@ -69,6 +71,9 @@
       kanata: false
       flatpak: false
       opencode: false
+      image_gen: false
+      proxypilot: false
+      video_ai: false
 
 - name: matrix-ipv6-tunnel
   description: IPv6 diagnostics + 6to4 + HE.net tunnel enabled
@@ -81,7 +86,7 @@
         ipv6_tunnel: true
 
 - name: matrix-containerized
-  description: All US1/US2 containerized services enabled (exercises the Quadlet/container_service render path)
+  description: All containerized services enabled (exercises Quadlet/container_service render path)
   overrides:
     hostname: matrix-containerized
     features:
@@ -90,8 +95,20 @@
         promtail: true
         grafana: true
         alertmanager: true
+      dns:
+        adguardhome: true
+      services:
+        jellyfin: true
+        transmission: true
+        bitcoind: true
+        duckdns: true
       ollama: true
       llama_embed: true
+      t5_summarization: true
+      nanoclaw: true
+      telethon_bridge: true
+      proxypilot: true
+      vaultwarden: true
 
 - name: matrix-all-features
   description: All features enabled simultaneously (maximum coverage for lint/render matrix)
@@ -128,6 +145,7 @@
         singbox: true
         tailscale: true
         zapret2: true
+        hiddify: true
         wifi: true
         vpn_split_router: true
         vpn_hybrid: true
@@ -155,6 +173,10 @@
       telethon_bridge: true
       managed_bots: true
       video_ai: true
+      image_gen: true
+      proxypilot: true
+      vaultwarden: true
+      nyxt: true
       xen_vr: true
       music_analysis: true
       tidal: true

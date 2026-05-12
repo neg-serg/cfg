@@ -1,11 +1,6 @@
-<domain xmlns:ns0="http://libosinfo.org/xmlns/libvirt/domain/1.0" type="kvm" id="5">
+<domain type="kvm" id="29">
   <name>nixos</name>
   <uuid>294b7429-2e00-45cf-9aee-d34d93df26f9</uuid>
-  <metadata>
-    <ns0:libosinfo>
-      <ns0:os id="http://nixos.org/nixos/rolling" />
-    </ns0:libosinfo>
-  </metadata>
   <memory unit="KiB">8388608</memory>
   <currentMemory unit="KiB">8388608</currentMemory>
   <vcpu placement="static">4</vcpu>
@@ -20,7 +15,7 @@
     </firmware>
     <loader readonly="yes" type="pflash" format="raw">/usr/share/edk2/x64/OVMF_CODE.4m.fd</loader>
     <nvram template="/usr/share/edk2/x64/OVMF_VARS.4m.fd" templateFormat="raw" format="raw">/var/lib/libvirt/qemu/nvram/nixos_VARS.fd</nvram>
-    <boot dev="cdrom" />
+    <boot dev="hd" />
   </os>
   <features>
     <acpi />
@@ -88,8 +83,8 @@
     </controller>
     <interface type="network">
       <mac address="52:54:00:bb:90:4d" />
-      <source network="default" portid="97fbe355-c822-48a4-aba1-90a03564ef96" bridge="virbr0" />
-      <target dev="vnet4" />
+      <source network="default" portid="b15aae38-edea-4787-8d77-b8d9b10f65b7" bridge="virbr0" />
+      <target dev="vnet25" />
       <model type="virtio" />
       <alias name="net0" />
       <address type="pci" domain="0x0000" bus="0x01" slot="0x00" function="0x0" />
@@ -106,15 +101,11 @@
       <target type="serial" port="0" />
       <alias name="serial0" />
     </console>
-    <input type="tablet" bus="usb">
-      <alias name="input0" />
-      <address type="usb" bus="0" port="1" />
-    </input>
     <input type="mouse" bus="ps2">
-      <alias name="input1" />
+      <alias name="input0" />
     </input>
     <input type="keyboard" bus="ps2">
-      <alias name="input2" />
+      <alias name="input1" />
     </input>
     <graphics type="vnc" port="5902" autoport="no" listen="127.0.0.1">
       <listen type="address" address="127.0.0.1" />
@@ -132,11 +123,6 @@
       <alias name="balloon0" />
       <address type="pci" domain="0x0000" bus="0x04" slot="0x00" function="0x0" />
     </memballoon>
-    <rng model="virtio">
-      <backend model="random">/dev/urandom</backend>
-      <alias name="rng0" />
-      <address type="pci" domain="0x0000" bus="0x05" slot="0x00" function="0x0" />
-    </rng>
   </devices>
   <seclabel type="dynamic" model="dac" relabel="yes">
     <label>+961:+961</label>

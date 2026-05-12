@@ -1,9 +1,7 @@
 {# T5 text summarization server: safetensors to GGUF conversion via Quadlet container #}
 {% from '_imports.jinja' import host, user %}
-{% import_yaml 'data/service_catalog.yaml' as catalog %}
-{% import_yaml 'data/container_images.yaml' as image_registry %}
 {% from '_macros_service.jinja' import ensure_dir, remove_native_unit, remove_native_package %}
-{% from '_macros_container.jinja' import container_service %}
+{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 {% from '_macros_install.jinja' import huggingface_file %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/t5_summarization.yaml' as t5 %}

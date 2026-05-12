@@ -3,7 +3,6 @@
 {% from '_macros_install.jinja' import cargo_pkg %}
 {% from '_macros_service.jinja' import user_service_enable, user_service_file %}
 {% import_yaml 'data/mpd.yaml' as mpd %}
-{% import_yaml 'data/service_catalog.yaml' as catalog %}
 include:
   - bind_mounts
 

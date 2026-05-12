@@ -1,8 +1,6 @@
 {% from '_imports.jinja' import host, retry_attempts, retry_interval, ollama_pull_timeout %}
-{% import_yaml 'data/service_catalog.yaml' as catalog %}
-{% import_yaml 'data/container_images.yaml' as image_registry %}
 {% from '_macros_service.jinja' import ensure_dir, remove_native_unit %}
-{% from '_macros_container.jinja' import container_service %}
+{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 {% import_yaml 'data/ollama.yaml' as ollama %}
 # Ollama LLM server — pure Quadlet (Podman container).
 # Service is NOT enabled at boot (manual_start) — VRAM is shared with desktop GPU.

@@ -4,11 +4,9 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import user, home %}
-{% import_yaml 'data/service_catalog.yaml' as catalog %}
-{% import_yaml 'data/container_images.yaml' as image_registry %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir, user_service_file, user_service_enable %}
-{% from '_macros_container.jinja' import container_service %}
+{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 
 # AUR package for Bitwarden CLI
 {{ paru_install('bitwarden_cli', 'bitwarden-cli') }}

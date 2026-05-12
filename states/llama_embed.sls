@@ -2,10 +2,8 @@
 # llama.cpp embedding server: Qwen3-Embedding-8B via Vulkan.
 # Pure Quadlet (Podman container). Service is NOT enabled at boot (manual_start).
 {% from '_imports.jinja' import host, user %}
-{% import_yaml 'data/service_catalog.yaml' as catalog %}
-{% import_yaml 'data/container_images.yaml' as image_registry %}
 {% from '_macros_service.jinja' import ensure_dir, remove_native_unit, remove_native_package %}
-{% from '_macros_container.jinja' import container_service %}
+{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 {% from '_macros_install.jinja' import http_file %}
 {% import_yaml 'data/llama_embed.yaml' as embed %}
 # llama.cpp embedding server: Qwen3-Embedding-8B via Vulkan.

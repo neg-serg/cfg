@@ -4,6 +4,7 @@ naming conventions, unused imports, require resolution, dangling includes."""
 
 import collections
 import glob
+import json
 import os
 import re
 import shutil
@@ -27,14 +28,59 @@ import yaml  # noqa: E402
 
 
 class SaltTagExtension(jinja2.ext.Extension):
+    """Mock Salt-specific Jinja2 tags so templates render in the test environment.
+
+    Handles {% import_yaml %}, {% load_yaml %}, {% import_json %}, {% load_json %},
+    and {% import_text %} by loading the referenced file and binding the result
+    as a template variable. This allows macro files to export YAML-imported
+    variables via {% from 'file' import var %}.
+    """
     tags = {"import_yaml", "load_yaml", "import_json", "load_json", "import_text"}
 
     def parse(self, parser):
         tag = next(parser.stream)
-        # Consume everything until block_end and return empty output
+
+        # Parse: {% tag 'path' as varname %}  or  {% tag 'path' %} (no 'as')
+        path_token = next(parser.stream)
+        as_target = None
+
+        if parser.stream.current.test("name") and parser.stream.current.value == "as":
+            next(parser.stream)  # consume 'as'
+            name_token = next(parser.stream)
+            as_target = name_token.value
+
+        # Consume remaining tokens until block_end
         while parser.stream.current.test("block_end") is False:
             next(parser.stream)
-        return jinja2.nodes.Output([], lineno=tag.lineno)
+
+        lineno = tag.lineno
+
+        call_node = self.call_method(
+            "_load_salt_file",
+            args=[
+                jinja2.nodes.Const(path_token.value),
+                jinja2.nodes.Const(tag.value),
+            ],
+            lineno=lineno,
+        )
+
+        if as_target:
+            target = jinja2.nodes.Name(as_target, "store", lineno=lineno)
+            return [jinja2.nodes.Assign(target, call_node, lineno=lineno)]
+        return [jinja2.nodes.Output([call_node], lineno=lineno)]
+
+    def _load_salt_file(self, path, tag, caller=None):
+        full_path = os.path.join("states", path)
+        tag_base = tag.split("_")[-1]  # yaml, json, or text
+        try:
+            with open(full_path) as fh:
+                if tag_base in ("yaml", "text"):
+                    data = yaml.safe_load(fh.read())
+                    return data if data is not None else {}
+                else:  # json
+                    return json.loads(fh.read())
+        except (FileNotFoundError, yaml.YAMLError, json.JSONDecodeError):
+            return {}
 
 
 def check_jinja_syntax(files):
@@ -55,17 +101,40 @@ def _resolve_import_yaml(source, states_dir="states"):
     """Pre-scan template source for {% import_yaml %} and load the referenced files.
 
     Returns a dict of {var_name: loaded_data} to inject into the render context.
+    Also scans imported macro files (via {% from %}) for their own import_yaml directives,
+    since Jinja2's {% from 'file' import var %} can export those variables.
     """
     yaml_vars = {}
-    for match in re.finditer(r"\{%-?\s*import_yaml\s+['\"]([^'\"]+)['\"]\s+as\s+(\w+)", source):
+    _scan_import_yaml(yaml_vars, source, states_dir)
+    # Recursively scan macro files imported via {% from %}
+    for match in re.finditer(
+        r"\{%-?\s*from\s+['\"]([^'\"]+)['\"]\s+import\b",
+        source,
+    ):
+        macro_path = os.path.join(states_dir, match.group(1))
+        if os.path.isfile(macro_path):
+            try:
+                with open(macro_path) as fh:
+                    macro_source = fh.read()
+            except OSError:
+                continue
+            _scan_import_yaml(yaml_vars, macro_source, states_dir)
+    return yaml_vars
+
+
+def _scan_import_yaml(yaml_vars, source, states_dir):
+    """Scan source for {% import_yaml %} and add loaded data to yaml_vars."""
+    for match in re.finditer(
+        r"\{%-?\s*import_yaml\s+['\"]([^'\"]+)['\"]\s+as\s+(\w+)",
+        source,
+    ):
         rel_path, var_name = match.group(1), match.group(2)
-        yaml_path = f"{states_dir}/{rel_path}"
+        yaml_path = os.path.join(states_dir, rel_path)
         try:
             with open(yaml_path) as fh:
                 yaml_vars[var_name] = yaml.safe_load(fh.read())
         except (FileNotFoundError, yaml.YAMLError):
             pass
-    return yaml_vars
 
 
 class _MockSalt:

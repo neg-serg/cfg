@@ -2,10 +2,8 @@
 # DuckDNS dynamic DNS updater — Quadlet container deployment
 # =============================================================================
 {% from '_imports.jinja' import user %}
-{% import_yaml 'data/service_catalog.yaml' as catalog %}
-{% import_yaml 'data/container_images.yaml' as image_registry %}
 {% from '_macros_service.jinja' import ensure_dir %}
-{% from '_macros_container.jinja' import container_service %}
+{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 
 # DuckDNS dynamic DNS updater — pure Quadlet (Podman container).
 # Replaces native zsh script + systemd timer/service pair.

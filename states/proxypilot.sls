@@ -1,8 +1,6 @@
 {% from '_imports.jinja' import user, home, proxypilot_key, gopass_secret %}
-{% import_yaml 'data/service_catalog.yaml' as catalog %}
-{% import_yaml 'data/container_images.yaml' as image_registry %}
 {% from '_macros_service.jinja' import ensure_dir, user_service_restart, remove_native_unit %}
-{% from '_macros_container.jinja' import container_service %}
+{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 {% import_yaml 'data/free_providers.yaml' as free_providers_data %}
 
 # ProxyPilot LLM proxy — pure Quadlet (Podman container).

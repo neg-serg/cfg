@@ -2,6 +2,9 @@
 # =============================================================================
 # Desktop environment — top-level include for system, packages, portal, hyprland, user
 # =============================================================================
+# desktop.niri is an alternative scrolling-tiling compositor — not wired in yet
+# (see docs/hyprland-to-niri-migration-notes.md). Include it here with a feature
+# gate when the migration is ready.
 include:
   - desktop.system
   - desktop.packages

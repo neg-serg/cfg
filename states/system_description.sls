@@ -90,6 +90,9 @@ include:
 {% if host.features.services.get('duckdns', false) %}
   - duckdns
 {% endif %}
+{% if host.features.get('vaultwarden', false) %}
+  - vaultwarden
+{% endif %}
 {% if host.features.dns.get('adguardhome', false) %}
   - adguardhome
 {% endif %}
@@ -109,7 +112,9 @@ include:
 {% if host.features.floorp and host.floorp_profile %}
   - floorp
 {% endif %}
+{% if host.features.get('nyxt', false) %}
   - nyxt
+{% endif %}
 {% if host.features.network.get('hiddify', false) %}
   - hiddify
 {% endif %}

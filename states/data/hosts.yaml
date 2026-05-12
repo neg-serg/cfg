@@ -76,7 +76,11 @@ defaults:
     nanoclaw: false
     telethon_bridge: false
     managed_bots: false
+    image_gen: true
+    proxypilot: true
     video_ai: true
+    vaultwarden: false
+    nyxt: false
     xen_vr: false
 
     music_analysis: false

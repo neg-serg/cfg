@@ -216,6 +216,14 @@ features:
     default: true
     description: "Video AI processing pipeline"
     gates: [video_ai, system_description, group.ai]
+  image_gen:
+    default: true
+    description: "AI image generation (free-tier providers)"
+    gates: [image_generation, system_description, group.ai]
+  proxypilot:
+    default: true
+    description: "ProxyPilot dynamic proxy management"
+    gates: [proxypilot, system_description]
   xen_vr:
     default: false
     description: "X11/Xorg VR session for SteamVR"
@@ -228,3 +236,11 @@ features:
     default: false
     description: "TidalCycles live coding environment"
     gates: [tidal, system_description]
+  vaultwarden:
+    default: false
+    description: "Vaultwarden Bitwarden server"
+    gates: [vaultwarden, system_description]
+  nyxt:
+    default: false
+    description: "Nyxt Lisp-powered web browser"
+    gates: [nyxt, system_description]

@@ -2,9 +2,7 @@
 apps:
   - com.github.qarmin.czkawka                   # duplicate/similar file finder
   - com.github.tmewett.BrogueCE                 # Brogue Community Edition roguelike
-  - com.google.AndroidStudio                    # Android IDE
   - com.google.Chrome                           # Google Chrome browser
-  - com.obsproject.Studio                       # OBS streaming/recording studio
   - com.shatteredpixel.shatteredpixeldungeon    # Shattered Pixel Dungeon roguelike
   - com.vysp3r.ProtonPlus                       # Proton/Wine version manager
   - io.github.dimtpap.coppwr                    # PipeWire graph inspector
@@ -17,6 +15,5 @@ apps:
   - net.sapples.LiveCaptions                    # real-time speech captioning
   - net.veloren.airshipper                      # Veloren game launcher
   - org.gimp.GIMP                               # image editor
-  - org.libreoffice.LibreOffice                 # office suite
   - org.zdoom.UZDoom                            # UZDoom (successor of GZDoom, rebased)
   - tk.deat.Jazz2Resurrection                   # Jazz Jackrabbit 2 reimplementation

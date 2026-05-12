@@ -1,23 +1,21 @@
 {# Hardware-specific configuration: udev rules, fan control, WiFi drivers #}
-# Hardware-specific configuration: fan control, WiFi.
 {% from '_imports.jinja' import host %}
 {% from '_macros_service.jinja' import udev_rule, service_with_unit %}
+{% import_yaml 'data/hardware.yaml' as hw %}
 
-# --- Custom udev rules: I/O schedulers, audio devices, SATA ALPM ---
-{{ udev_rule('custom_udev_rules', '/etc/udev/rules.d/99-custom.rules', source='salt://configs/udev-custom.rules') }}
+{{ udev_rule('custom_udev_rules', hw.udev_rules_path, source='salt://configs/udev-custom.rules') }}
 
-# --- Fan control: auto-generate /etc/fancontrol from detected hwmon ---
 {% if host.features.fancontrol %}
 
 fancontrol_setup_script:
   file.managed:
-    - name: /usr/local/bin/fancontrol-setup
+    - name: {{ hw.fancontrol_setup }}
     - source: salt://scripts/fancontrol-setup.sh
     - mode: '0755'
 
 fancontrol_reapply_script:
   file.managed:
-    - name: /etc/systemd/system-sleep/99-fancontrol-reapply
+    - name: {{ hw.fancontrol_reapply }}
     - makedirs: True
     - mode: '0755'
     - source: salt://scripts/fancontrol-reapply.sh.j2
@@ -29,19 +27,17 @@ fancontrol_reapply_script:
 
 {{ service_with_unit('fancontrol', 'salt://units/fancontrol.service', requires=['cmd: fancontrol-setup_daemon_reload', 'file: fancontrol_setup_script']) }}
 
-# Load nct6775 when the current kernel exposes it; some kernels omit the
-# module entirely, and that should not block the whole rollout.
 nct6775_module:
   cmd.run:
     - name: |
         set -euo pipefail
-        if lsmod | awk '{print $1}' | grep -Fxq nct6775; then
-          echo "changed=no comment='nct6775 already loaded'"
-        elif modinfo nct6775 >/dev/null 2>&1; then
-          modprobe nct6775
-          echo "changed=yes comment='loaded nct6775'"
+        if lsmod | awk '{print $1}' | grep -Fxq {{ hw.nct6775_module }}; then
+          echo "changed=no comment='{{ hw.nct6775_module }} already loaded'"
+        elif modinfo {{ hw.nct6775_module }} >/dev/null 2>&1; then
+          modprobe {{ hw.nct6775_module }}
+          echo "changed=yes comment='loaded {{ hw.nct6775_module }}'"
         else
-          echo "changed=no comment='nct6775 unavailable on this kernel; skipping'"
+          echo "changed=no comment='{{ hw.nct6775_module }} unavailable on this kernel; skipping'"
         fi
     - shell: /bin/bash
     - onlyif: command -v lsmod >/dev/null 2>&1 && command -v modinfo >/dev/null 2>&1 && command -v modprobe >/dev/null 2>&1
@@ -53,7 +49,6 @@ nct6775_module:
 {{ service_with_unit('gpu-power-profile', 'salt://units/gpu-power-profile.service', enabled=True) }}
 {% endif %}
 
-# --- Mask rfkill on hosts without WiFi (avoids 5s+ timeout at boot) ---
 {% if not host.features.network.wifi %}
 
 rfkill_service_masked:
@@ -66,24 +61,23 @@ rfkill_socket_masked:
 
 {% endif %}
 
-# RME HDSPe AIO Pro: build and install snd-hdspe DKMS module
 {% if 'snd_hdspe' in host.extra_modules %}
 rme_hdspe_dkms_add:
   cmd.run:
-    - name: dkms add /home/{{ host.user }}/src/1st-level/snd-hdspe 2>/dev/null || true
-    - unless: test -d /var/lib/dkms/alsa-hdspe
-    - onlyif: test -d /home/{{ host.user }}/src/1st-level/snd-hdspe
+    - name: dkms add {{ hw.hdspe.source }} 2>/dev/null || true
+    - unless: test -d /var/lib/dkms/{{ hw.hdspe.dkms_name }}
+    - onlyif: test -d {{ hw.hdspe.source }}
 
 rme_hdspe_dkms_build:
   cmd.run:
-    - name: dkms build alsa-hdspe/0.0
-    - unless: test -f /var/lib/dkms/alsa-hdspe/0.0/$(uname -r)/*/module/snd-hdspe.ko* 2>/dev/null
+    - name: dkms build {{ hw.hdspe.dkms_name }}/{{ hw.hdspe.dkms_version }}
+    - unless: test -f /var/lib/dkms/{{ hw.hdspe.dkms_name }}/{{ hw.hdspe.dkms_version }}/$(uname -r)/*/module/snd-hdspe.ko* 2>/dev/null
     - require:
       - cmd: rme_hdspe_dkms_add
 
 rme_hdspe_dkms_install:
   cmd.run:
-    - name: dkms install alsa-hdspe/0.0
+    - name: dkms install {{ hw.hdspe.dkms_name }}/{{ hw.hdspe.dkms_version }}
     - unless: test -f /usr/lib/modules/$(uname -r)/updates/dkms/snd-hdspe.ko* 2>/dev/null
     - require:
       - cmd: rme_hdspe_dkms_build

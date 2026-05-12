@@ -1,5 +1,6 @@
 {% from '_imports.jinja' import host, home, user %}
 {% from '_macros_service.jinja' import ensure_dir, user_service_enable, user_service_file %}
+{% import_yaml 'data/vpn.yaml' as vpn %}
 {% set net = host.features.network %}
 
 {% if net.vpn_split_router %}
@@ -46,13 +47,13 @@ vpn_split_router_config:
 
 sing_box_tun_react_service_unit:
   file.managed:
-    - name: /etc/systemd/system/sing-box-tun-react.service
+    - name: {{ vpn.split_router.service_unit }}
     - source: salt://units/sing-box-tun-react.service
     - mode: '0644'
 
 sing_box_tun_react_path_unit:
   file.managed:
-    - name: /etc/systemd/system/sing-box-tun-react.path
+    - name: {{ vpn.split_router.service_path }}
     - source: salt://units/sing-box-tun-react.path
     - template: jinja
     - mode: '0644'
@@ -78,11 +79,10 @@ sing_box_tun_react_path_running:
 
 {% endif %}
 
-{# --- AmneziaVPN config import script (shared by vpn_split_router and vpn_hybrid) --- #}
 {% if net.vpn_split_router or net.vpn_hybrid %}
 amnezia_import_tun_script:
   file.managed:
-    - name: /usr/local/bin/amnezia-import-tun-config
+    - name: {{ vpn.split_router.amnezia_import }}
     - source: salt://scripts/amnezia-import-tun-config.sh
     - mode: '0755'
     - user: root
@@ -91,7 +91,7 @@ amnezia_import_tun_script:
 amnezia_import_tun_user_script:
   file.symlink:
     - name: {{ home }}/.local/bin/amnezia-import-tun-config
-    - target: /usr/local/bin/amnezia-import-tun-config
+    - target: {{ vpn.split_router.amnezia_import }}
     - user: {{ user }}
     - group: {{ user }}
     - makedirs: True

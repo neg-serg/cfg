@@ -1,0 +1,11 @@
+# Hardware-specific configuration: udev rules, fan control, DKMS modules.
+# Consumed by hardware.sls.
+udev_rules_path: /etc/udev/rules.d/99-custom.rules
+fancontrol_setup: /usr/local/bin/fancontrol-setup
+fancontrol_reapply: /etc/systemd/system-sleep/99-fancontrol-reapply
+nct6775_module: nct6775
+
+hdspe:
+  source: /home/{{ host.user }}/src/1st-level/snd-hdspe
+  dkms_version: "0.0"
+  dkms_name: alsa-hdspe

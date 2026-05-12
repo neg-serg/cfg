@@ -1,4 +1,8 @@
 # Theme and icon pack definitions (consumed by installers_themes.sls)
+alkano:
+  repo: https://github.com/neg-serg/Alkano-aio.git
+  dest: /usr/share/icons/Alkano-aio
+
 git_clone_deploy:
   matugen-themes:                                  # matugen color themes
     repo: https://github.com/InioX/matugen-themes.git

@@ -1,16 +1,12 @@
 {# Windows 11 QEMU/KVM virtual machine with GPU passthrough and Looking Glass #}
-# Windows 11 VM definition — NVMe disk bus (Windows has built-in drivers)
+{% import_yaml 'data/desktop.yaml' as desktop %}
 
-
-# Deploy the libvirt XML template
 win11_xml:
   file.managed:
     - name: /var/cache/salt/win11.xml
     - source: salt://configs/win11.xml
     - mode: '0644'
 
-# Define (or redefine) the VM from the XML.
-# virsh define is idempotent — updates an existing domain with the same name.
 win11_defined:
   cmd.run:
     - name: virsh -c qemu:///system define /var/cache/salt/win11.xml

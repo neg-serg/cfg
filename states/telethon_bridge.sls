@@ -1,13 +1,11 @@
 {# Telethon Bridge: Telegram MTProto relay to HTTP for LLM bot integration #}
-# =============================================================================
-# Telethon Bridge — Telegram MTProto proxy container deployment
-# =============================================================================
 {% from '_imports.jinja' import user, home, proxypilot_key, tg_secret %}
 {% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/container_images.yaml' as image_registry %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir, user_service_file, user_service_enable %}
 {% import_yaml 'data/versions.yaml' as ver %}
+{% import_yaml 'data/telethon_bridge.yaml' as tb %}
 {% set _tb_config_dir = home ~ '/.config/telethon-bridge' %}
 {% set _tb_state_dir = home ~ '/.local/state/telethon-bridge' %}
 {% set _proxy_key = proxypilot_key() %}
@@ -20,20 +18,16 @@
 {% set _telegram_uid_levra = tg_secret('api/telegram-uid-levra', 'telegram-uid-levra') %}
 {% set _telegram_uid_guest2 = tg_secret('api/telegram-uid-guest2', 'telegram-uid-guest2') %}
 
-# ── Warm pacman DB cache for package macros ───────────────────────────
 include:
   - pacman_db_warmup
 
-# ── Install python-telethon + proxy dependency from AUR ──────────────
-{{ paru_install('python_telethon', 'python-telethon python-python-socks', check='__ALL__', version=ver.telethon) }}
+{{ paru_install('python_telethon', tb.packages | join(' '), check='__ALL__', version=ver.telethon) }}
 
-# ── Directories ──────────────────────────────────────────────────────
 {{ ensure_dir('telethon_bridge_config_dir', _tb_config_dir) }}
 {{ ensure_dir('telethon_bridge_credentials_dir', _tb_creds, mode='0700') }}
 {{ ensure_dir('telethon_bridge_state_dir', _tb_state_dir, mode='0700') }}
 {{ ensure_dir('telethon_bridge_media_dir', _tb_state_dir ~ '/media') }}
 
-# ── Deploy config (secrets injected at apply time) ────────────────────
 telethon_bridge_config:
   file.managed:
     - name: {{ _tb_config_dir }}/config.yaml
@@ -54,7 +48,6 @@ telethon_bridge_config:
       - file: telethon_bridge_config_dir
       - file: telethon_bridge_state_dir
 
-# ── Deploy bridge script ─────────────────────────────────────────────
 telethon_bridge_script:
   file.managed:
     - name: {{ home }}/.local/bin/telethon-bridge
@@ -63,7 +56,6 @@ telethon_bridge_script:
     - group: {{ user }}
     - mode: '0755'
 
-# ── Deploy init script ──────────────────────────────────────────────
 telethon_bridge_init_script:
   file.managed:
     - name: {{ home }}/.local/bin/telethon-bridge-init
@@ -98,7 +90,6 @@ telethon_bridge_react_helper:
     ],
 ) }}
 
-# ── Containerized Telethon Bridge (localhost image) ──────────────────
 {{ user_service_file('telethon_bridge_service', 'telethon-bridge.service') }}
 
 {{ user_service_enable('telethon_bridge_enabled',

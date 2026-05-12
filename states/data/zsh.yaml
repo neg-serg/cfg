@@ -1,0 +1,8 @@
+# Zsh system-wide configuration.
+# Consumed by zsh.sls.
+zshenv: |
+  # System-wide Zsh environment (zsh reads /etc/zsh/ on Arch)
+  export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+
+zshrc: |
+  # System-wide zshrc (ZDOTDIR set in /etc/zsh/zshenv)

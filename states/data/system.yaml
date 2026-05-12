@@ -1,0 +1,4 @@
+# System locale, keymap, and hostname configuration.
+# Consumed by system_description.sls.
+locale_pattern: '^#\s*(en_US\.UTF-8 UTF-8)'
+x11_keymap: ru,us

@@ -5,11 +5,8 @@ include:
 {% from '_imports.jinja' import home, user %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir %}
+{% import_yaml 'data/desktop.yaml' as desktop %}
 
-# --- XDG Desktop Portal backend selection ---
-# Uses xdg-desktop-portal-termfilechooser + yazi for file dialogs.
-
-# Portal configuration — selects which backend handles each interface
 {{ ensure_dir('portal_conf_dir', home ~ '/.config/xdg-desktop-portal', mode='0755') }}
 
 portal_config:
@@ -26,13 +23,11 @@ portal_config:
     - require:
       - file: portal_conf_dir
 
-# termfilechooser backend (yazi-based file chooser)
-{{ paru_install('xdg_termfilechooser', 'xdg-desktop-portal-termfilechooser-hunkyburrito-git') }}
+{{ paru_install('xdg_termfilechooser', desktop.portal_package) }}
 
-# Restart portal after config changes so the new backend takes effect
 portal_restart:
   cmd.run:
-    - name: systemctl --user restart xdg-desktop-portal.service
+    - name: systemctl --user restart {{ desktop.portal_service }}
     - runas: {{ user }}
     - onchanges:
       - file: portal_config

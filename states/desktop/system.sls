@@ -1,5 +1,4 @@
 {# System-wide desktop configuration: fonts, themes, input methods, power management #}
-# Desktop environment: services, SSH, dconf themes
 include:
   - pacman_db_warmup
 
@@ -8,7 +7,6 @@ include:
 {% from '_macros_service.jinja' import ensure_dir, service_stopped, service_with_unit %}
 {% import_yaml 'data/desktop.yaml' as desktop %}
 
-# --- Pacman hook: regenerate installed-package cache after every transaction ---
 {{ ensure_dir('pacman_hooks_dir', '/etc/pacman.d/hooks', mode='0755', user='root') }}
 
 pacman_salt_pkglist_hook:
@@ -21,12 +19,11 @@ pacman_salt_pkglist_hook:
 
 {{ ensure_dir('pacman_salt_cache_dir', '/var/cache/salt', mode='0755', user='root') }}
 
-# --- Faillock: raise threshold to avoid lockouts on typos ---
 faillock_config:
   file.replace:
     - name: /etc/security/faillock.conf
     - pattern: '^#?\s*deny\s*=\s*\d+'
-    - repl: 'deny = 10'
+    - repl: 'deny = {{ desktop.faillock_deny }}'
 
 etckeeper_init:
   cmd.run:
@@ -42,7 +39,6 @@ desktop_services_enabled:
 {% endfor %}
     - enable: True
 
-# --- SSH hardening: keys only, no passwords, no root login ---
 sshd_hardening:
   file.managed:
     - name: /etc/ssh/sshd_config.d/10-hardening.conf
@@ -65,10 +61,9 @@ sshd_restart:
     - watch:
       - file: sshd_hardening
 
-# libvirtd: socket-activated only. The service must be DISABLED so systemd doesn't
-# start the full daemon at boot (1.2s on critical path). The socket starts it
-# on-demand when a client connects; autostart VMs still trigger activation.
-{{ paru_install('libvirt', 'libvirt') }}
+{% for name, pkg in desktop.system_packages.items() %}
+{{ paru_install(name, pkg) }}
+{% endfor %}
 
 libvirtd_service_disabled:
   service.disabled:
@@ -83,17 +78,10 @@ libvirtd_socket_enabled:
       - cmd: install_libvirt
       - service: libvirtd_service_disabled
 
-# swtpm: software TPM emulator — libvirt uses it automatically for VMs with TPM
-# devices (required for Windows 11). No daemon needed; libvirt spawns swtpm per-VM.
-{{ paru_install('swtpm', 'swtpm') }}
-
-# Looking Glass: shared memory for IVSHMEM frame relay from Windows VM.
-# The tmpfiles.d entry creates /dev/shm/looking-glass owned by the user on boot.
 looking_glass_shm:
   file.managed:
     - name: /etc/tmpfiles.d/10-looking-glass.conf
     - contents: |
-        # Type Path               Mode UID  GID Age Argument
         f /dev/shm/looking-glass 0660 {{ user }} kvm -
     - mode: '0644'
 
@@ -103,23 +91,14 @@ looking_glass_shm_create:
     - onchanges:
       - file: looking_glass_shm
 
-# pcscd is socket-activated: scdaemon connects on demand for Yubikey smart card operations.
-{{ paru_install('pcsclite', 'pcsclite') }}
-
 pcscd_socket_enabled:
   service.enabled:
     - name: pcscd.socket
     - require:
       - cmd: install_pcsclite
 
-# Disable tuned: its throughput-performance profile conflicts with custom
-# I/O tuning (sets read_ahead_kb=8192 on NVMe, may override sysctl values).
-# All tuning is managed manually via sysctl.sls, kernel_params_limine.sls, hardware.sls.
 {{ service_stopped('tuned_stopped', 'tuned', onlyif='systemctl list-unit-files tuned.service 2>/dev/null | grep -q tuned') }}
 
-# Persist the amd-pstate-epp balanced policy without forcing the CPU governor
-# into full performance mode. This keeps the system responsive for low-QD I/O
-# while avoiding the more aggressive always-performance setting.
 cpu_balanced_epp_script:
   file.managed:
     - name: /usr/local/bin/cpu-balanced-epp

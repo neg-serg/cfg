@@ -1,15 +1,6 @@
 {# Hiddify VPN client: local AppImage wrapper with legacy shadow handler cleanup #}
-# Hiddify VPN client — manages local AppImage wrapper and removes legacy shadow handlers.
 {% from '_imports.jinja' import user, home %}
-
-# Keep only hiddify-next managed outside this repo and remove the legacy
-# official AppImage layer that used to shadow its desktop handlers. Keep the
-# local wrapper scripts because they patch unsupported loopback tproxy entries
-# out of imported configs before launching Hiddify Next.
-
-{% set hiddify_gui = '/usr/lib/hiddify/hiddify' %}
-{% set hiddify_cli = '/usr/lib/hiddify/HiddifyCli' %}
-{% set hiddify_caps = 'cap_net_admin,cap_net_bind_service,cap_net_raw=ep' %}
+{% import_yaml 'data/hiddify.yaml' as hiddify %}
 
 hiddify_legacy_cleanup:
   file.absent:
@@ -23,13 +14,9 @@ hiddify_next_default_handlers:
   cmd.run:
     - name: |
         set -euo pipefail
-        xdg-mime default hiddify.desktop x-scheme-handler/hiddify
-        xdg-mime default hiddify.desktop x-scheme-handler/sing-box
-        xdg-mime default hiddify.desktop x-scheme-handler/v2ray
-        xdg-mime default hiddify.desktop x-scheme-handler/v2rayn
-        xdg-mime default hiddify.desktop x-scheme-handler/v2rayng
-        xdg-mime default hiddify.desktop x-scheme-handler/clash
-        xdg-mime default hiddify.desktop x-scheme-handler/clashmeta
+{% for scheme in hiddify.xdg_schemes %}
+        xdg-mime default hiddify.desktop x-scheme-handler/{{ scheme }}
+{% endfor %}
     - runas: {{ user }}
     - shell: /bin/bash
     - onlyif: test -f /usr/share/applications/hiddify.desktop -o -f {{ home }}/.local/share/applications/hiddify.desktop
@@ -41,14 +28,14 @@ hiddify_next_default_handlers:
 
 hiddify_gui_capabilities:
   cmd.run:
-    - name: setcap {{ hiddify_caps }} {{ hiddify_gui }}
+    - name: setcap {{ hiddify.caps }} {{ hiddify.gui }}
     - runas: root
-    - onlyif: test -x {{ hiddify_gui }}
-    - unless: getcap {{ hiddify_gui }} 2>/dev/null | grep -q 'cap_net_bind_service.*cap_net_admin.*cap_net_raw'
+    - onlyif: test -x {{ hiddify.gui }}
+    - unless: getcap {{ hiddify.gui }} 2>/dev/null | grep -q 'cap_net_bind_service.*cap_net_admin.*cap_net_raw'
 
 hiddify_core_cli_capabilities:
   cmd.run:
-    - name: setcap {{ hiddify_caps }} {{ hiddify_cli }}
+    - name: setcap {{ hiddify.caps }} {{ hiddify.cli }}
     - runas: root
-    - onlyif: test -x {{ hiddify_cli }}
-    - unless: getcap {{ hiddify_cli }} 2>/dev/null | grep -q 'cap_net_bind_service.*cap_net_admin.*cap_net_raw'
+    - onlyif: test -x {{ hiddify.cli }}
+    - unless: getcap {{ hiddify.cli }} 2>/dev/null | grep -q 'cap_net_bind_service.*cap_net_admin.*cap_net_raw'

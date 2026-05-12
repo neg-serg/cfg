@@ -1,11 +1,11 @@
 {# Xen X11 session configs: .xinitrc, i3 config, greetd .desktop entries #}
 
 {% from '_macros_service.jinja' import ensure_dir %}
+{% import_yaml 'data/xen.yaml' as xen %}
 
-{% set xen_user = 'xen' %}
-{% set xen_home = '/home/' ~ xen_user %}
+{% set xen_user = xen.user.name %}
+{% set xen_home = xen.user.home %}
 
-# ── .xinitrc: start i3 on startx ───────────────────────────────────
 xen_xinitrc:
   file.managed:
     - name: {{ xen_home }}/.xinitrc
@@ -25,7 +25,6 @@ xen_xinitrc:
     - require:
       - user: xen_user
 
-# ── Minimal i3 config (auto-launch Steam) ──────────────────────────
 {{ ensure_dir('xen_i3_config_dir', xen_home ~ '/.config/i3', user=xen_user) }}
 
 xen_i3_config:
@@ -48,7 +47,6 @@ xen_i3_config:
     - require:
       - file: xen_i3_config_dir
 
-# ── Session .desktop files for greetd ──────────────────────────────
 xen_vr_session_desktop:
   file.managed:
     - name: /usr/share/xsessions/xen-vr.desktop
@@ -63,7 +61,6 @@ xen_vr_session_desktop:
         Type=XSession
         DesktopNames=i3
 
-# plasma-workspace only ships wayland session; add X11 variant for xen
 xen_plasma_x11_session_desktop:
   file.managed:
     - name: /usr/share/xsessions/plasma-x11.desktop

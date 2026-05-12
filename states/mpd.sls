@@ -1,10 +1,9 @@
 {# Music Player Daemon: audio playback server with Last.fm scrobbling #}
-# MPD (Music Player Daemon) — native deployment with systemd user service and PipeWire output.
 {% from '_imports.jinja' import host, user, home, pkg_list, gopass_secret %}
 {% from '_macros_install.jinja' import cargo_pkg %}
 {% from '_macros_service.jinja' import user_service_enable, user_service_file %}
-# MPD Native Deployment
-# Salt state for setting up MPD with systemd user service and pipewire output
+{% import_yaml 'data/mpd.yaml' as mpd %}
+{% import_yaml 'data/service_catalog.yaml' as catalog %}
 include:
   - bind_mounts
 
@@ -26,7 +25,6 @@ include:
 {%-   do companion_reqs.append('cmd: mpdas_service_file_daemon_reload') -%}
 {%- endif -%}
 
-# --- MPD directories ---
 mpd_directories:
   file.directory:
     - names:
@@ -36,10 +34,8 @@ mpd_directories:
     - group: {{ user }}
     - makedirs: True
 
-# wiremix needs custom clang args for bindgen
-{{ cargo_pkg('wiremix', env='BINDGEN_EXTRA_CLANG_ARGS="-I/usr/lib/clang/$(ls /usr/lib/clang/ | sort -V | tail -1)/include"') }}
+{{ cargo_pkg('wiremix', env=mpd.wiremix_env) }}
 
-# --- Deploy mpd.conf ---
 mpd_config:
   file.managed:
     - name: {{ home }}/.config/mpd/mpd.conf
@@ -49,10 +45,8 @@ mpd_config:
     - mode: '0644'
     - makedirs: True
 
-# --- Enable native MPD systemd user service ---
 {{ user_service_enable('mpd_enabled', start_now=['mpd.service'], check='active', onlyif='grep -qxF mpd ' ~ pkg_list, requires=['file: mpd_config', 'file: mpd_directories', 'cmd: music_mount', 'cmd: managed_service_paths_ensure']) }}
 
-# --- Deploy mpdas config via gopass (graceful fallback to empty values) ---
 {%- set lastfm_user = gopass_secret('lastfm/username') | trim %}
 {%- set lastfm_pass = gopass_secret('lastfm/password') | trim %}
 mpdas_config:
@@ -63,13 +57,12 @@ mpdas_config:
     - mode: '0600'
     - replace: False
     - contents: |
-        host = localhost
-        port = 6600
-        service = lastfm
+        host = {{ mpd.mpdas_config.host }}
+        port = {{ mpd.mpdas_config.port }}
+        service = {{ mpd.mpdas_config.service }}
         username = {{ lastfm_user }}
         password = {{ lastfm_pass }}
 
-# --- Deploy mpdas systemd user service ---
 {{ user_service_file('mpdas_service_file', 'mpdas.service', source='salt://dotfiles/dot_config/systemd/user/mpdas.service') }}
 
 {% if companion_units %}

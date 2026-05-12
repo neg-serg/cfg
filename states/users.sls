@@ -1,11 +1,11 @@
 {# User account management: PAM sudo, SSH agent auth, and authorized keys #}
-# User accounts, groups, sudo, and user lingering
 include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import host, user, home, sudo_timeout_minutes %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import user_linger %}
+{% import_yaml 'data/users.yaml' as users %}
 {% set uid = host.uid %}
 
 user_root:
@@ -26,14 +26,11 @@ plugdev_group:
     - name: plugdev
     - system: True
 
-# realtime-privileges: creates `realtime` group + rtprio/memlock limits,
-# required by pipewire loopback nodes on pro-audio profile devices (HDSPe AIO Pro)
 {{ paru_install('realtime-privileges', 'realtime-privileges') }}
 
-# user.present groups broken on Python 3.14 (crypt module removed)
 neg_groups:
   cmd.run:
-    - name: usermod -aG wheel,libvirt,kvm,plugdev,realtime {{ user }}
+    - name: usermod -aG {{ users.groups | join(',') }} {{ user }}
     - unless: id -nG {{ user }} | grep -qw realtime
     - require:
       - group: plugdev_group
@@ -41,7 +38,7 @@ neg_groups:
 
 sudo_timeout:
   file.managed:
-    - name: /etc/sudoers.d/timeout
+    - name: {{ users.sudoers_timeout }}
     - contents: |
         Defaults timestamp_timeout={{ sudo_timeout_minutes }}
         Defaults !tty_tickets
@@ -64,8 +61,6 @@ sudo_nopasswd:
     - mode: '0440'
     - check_cmd: /usr/sbin/visudo -c -f
 
-# SSH agent authentication for sudo (Yubikey-backed)
-# Toggle: host.features.sudo_ssh_agent (hosts.yaml)
 {% if host.features.sudo_ssh_agent %}
 {{ paru_install('pam_ssh_agent_auth', 'pam_ssh_agent_auth') }}
 
@@ -96,7 +91,6 @@ sudo_ssh_agent_authorized_keys:
     - group: root
     - mode: '0644'
 {% else %}
-# Restore default PAM sudo config (no ssh-agent auth)
 sudo_pam_config:
   file.managed:
     - name: /etc/pam.d/sudo
@@ -114,5 +108,4 @@ sudo_ssh_agent_env_keep:
     - name: /etc/sudoers.d/ssh-agent-auth
 {% endif %}
 
-# ── Lingering (user services survive logout) ──────────────────────────
 {{ user_linger('user_lingering') }}

@@ -1,0 +1,10 @@
+# User account groups and sudo configuration.
+# Consumed by users.sls.
+groups:
+  - wheel
+  - libvirt
+  - kvm
+  - plugdev
+  - realtime
+
+sudoers_timeout: /etc/sudoers.d/timeout

@@ -1,30 +1,20 @@
 {# Video AI base: Python environment, dependencies, and shared utilities #}
-# =============================================================================
-# Video AI base — directory structure and base dependencies
-# =============================================================================
 {% from '_imports.jinja' import host, user, retry_attempts, retry_interval %}
 {% from '_macros_service.jinja' import ensure_dir %}
 {% import_yaml 'data/video_ai.yaml' as video_ai %}
 {% set base_dir = host.mnt_one ~ '/video-ai' %}
-{% set comfyui_dir = base_dir ~ '/comfyui' %}
-{% set models_dir = base_dir ~ '/models' %}
-{% set workflows_dir = base_dir ~ '/workflows' %}
-{% set output_dir = base_dir ~ '/output' %}
-{% set images_dir = base_dir ~ '/images' %}
+{% set comfyui_dir = base_dir ~ '/' ~ video_ai.subdirs.comfyui %}
+{% set models_dir = base_dir ~ '/' ~ video_ai.subdirs.models %}
+{% set workflows_dir = base_dir ~ '/' ~ video_ai.subdirs.workflows %}
+{% set output_dir = base_dir ~ '/' ~ video_ai.subdirs.output %}
+{% set images_dir = base_dir ~ '/' ~ video_ai.subdirs.images %}
 
-# Video AI: ComfyUI + model management for local video generation (7900 XTX)
-
-# ── Directory structure ──────────────────────────────────────────────
 {{ ensure_dir('video_ai_base_dir', base_dir, require=['mount: mount_one']) }}
 {{ ensure_dir('video_ai_models_dir', models_dir, require=['file: video_ai_base_dir']) }}
 {{ ensure_dir('video_ai_workflows_dir', workflows_dir, require=['file: video_ai_base_dir']) }}
 {{ ensure_dir('video_ai_output_dir', output_dir, require=['file: video_ai_base_dir']) }}
 {{ ensure_dir('video_ai_images_dir', images_dir, require=['file: video_ai_base_dir']) }}
 
-# NOTE: ffmpeg is a system dep (already installed), ROCm is pulled by PyTorch
-# wheels inside the venv (video-ai-setup.sh). No explicit paru_install needed.
-
-# ── ComfyUI installation (bootstrap script) ──────────────────────────
 video_ai_comfyui_chown:
   cmd.run:
     - name: chown -R {{ user }}:{{ user }} {{ comfyui_dir }}
@@ -48,7 +38,6 @@ video_ai_comfyui_setup:
       - file: video_ai_base_dir
       - cmd: video_ai_comfyui_chown
 
-# ── ComfyUI custom nodes ─────────────────────────────────────────────
 {% for node in video_ai.get('comfyui_nodes', []) %}
 video_ai_node_{{ node.dir | lower | replace('-', '_') }}:
   cmd.run:

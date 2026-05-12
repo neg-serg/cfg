@@ -1,9 +1,8 @@
 {# greetd display manager with Hyprland compositor and quickshell greeter #}
-# greetd display manager: hyprland compositor + quickshell greeter.
 {% from '_imports.jinja' import host, user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir %}
-# greetd display manager: hyprland compositor + quickshell greeter
+{% import_yaml 'data/greetd.yaml' as greetd %}
 
 include:
   - pacman_db_warmup
@@ -11,17 +10,17 @@ include:
 
 {{ paru_install('greetd', 'greetd') }}
 
-{{ ensure_dir('greetd_config_dir', '/etc/greetd', mode='0755', user='root') }}
+{{ ensure_dir('greetd_config_dir', greetd.config_dir, mode='0755', user='root') }}
 
 greetd_main_config:
   file.managed:
-    - name: /etc/greetd/config.toml
+    - name: {{ greetd.main_config }}
     - contents: |
         [terminal]
         vt = {{ host.greetd_vt }}
 
         [default_session]
-        command = "/etc/greetd/greeter-wrapper"
+        command = "{{ greetd.greeter_wrapper }}"
         user = "{{ user }}"
     - user: root
     - group: root
@@ -31,7 +30,7 @@ greetd_main_config:
 
 greetd_hyprland_config:
   file.managed:
-    - name: /etc/greetd/hyprland-greeter.conf
+    - name: {{ greetd.hyprland_config }}
     - source: salt://scripts/hyprland-greeter.conf.j2
     - template: jinja
     - context:
@@ -48,7 +47,7 @@ greetd_hyprland_config:
 
 greetd_greeter_wrapper:
   file.managed:
-    - name: /etc/greetd/greeter-wrapper
+    - name: {{ greetd.greeter_wrapper }}
     - source: salt://scripts/greetd-greeter-wrapper.sh.j2
     - template: jinja
     - context:
@@ -67,7 +66,7 @@ greetd_greeter_wrapper:
 
 greetd_session_wrapper:
   file.managed:
-    - name: /etc/greetd/session-wrapper
+    - name: {{ greetd.session_wrapper }}
     - source: salt://scripts/greetd-session-wrapper.sh
     - user: root
     - group: root
@@ -95,28 +94,25 @@ greetd_wallpaper:
 greetd_cleanup_stale:
   file.absent:
     - names:
-      - /etc/greetd/config.toml.pacnew
-      - /etc/greetd/config.toml.bak
-      - /etc/greetd/regreet.toml
-      - /etc/greetd/hyprland-greeter-config.conf
-      - /etc/greetd/kitty.conf
+{% for path in greetd.cleanup_paths %}
+      - {{ path }}
+{% endfor %}
 
 greetd_remove_broken_sessions:
   file.absent:
     - names:
-      - /usr/share/wayland-sessions/gnome.desktop
-      - /usr/share/wayland-sessions/hyprland-uwsm.desktop
+{% for path in greetd.broken_sessions %}
+      - {{ path }}
+{% endfor %}
 
 greetd_enabled:
   service.enabled:
-    - name: greetd
+    - name: {{ greetd.service }}
     - require:
       - file: greetd_main_config
       - cmd: managed_service_accounts_ensure
       - cmd: managed_service_paths_ensure
 
-# Emergency TTY: Ctrl+Alt+F2 always drops to a text login,
-# even if the graphical greeter is frozen or broken.
 greetd_emergency_tty:
   service.enabled:
-    - name: getty@tty2
+    - name: {{ greetd.emergency_tty }}

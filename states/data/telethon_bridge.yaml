@@ -1,0 +1,5 @@
+# Telethon Bridge package dependencies.
+# Consumed by telethon_bridge.sls.
+packages:
+  - python-telethon
+  - python-python-socks

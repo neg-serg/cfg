@@ -1,15 +1,12 @@
 {# Amnezia VPN: builds AmneziaWG kernel module and Amnezia VPN desktop client from source. #}
-# Amnezia VPN — builds and deploys AmneziaWG + Amnezia VPN client from source.
-# All 3 components build in parallel for faster deployment.
-# Run: sudo salt-call --local state.apply amnezia
 {% from '_imports.jinja' import host, user, home, retry_attempts, retry_interval %}
 {% from '_macros_service.jinja' import ensure_dir %}
 {% import_yaml 'data/versions.yaml' as ver %}
+{% import_yaml 'data/amnezia.yaml' as amnezia %}
 {% set cache = host.mnt_one ~ '/pkg/cache/amnezia' %}
-# All 3 components build in parallel for faster deployment
+
 {{ ensure_dir('amnezia_cache_dir', cache, require=['mount: mount_one']) }}
 
-# Build all Amnezia components in parallel
 {% set _amnezia_ver = ver.get('amnezia_vpn', '') %}
 {% set _amnezia_ver_marker = '/var/cache/salt/versions/amnezia_vpn@' ~ _amnezia_ver if _amnezia_ver else '' %}
 amnezia_build:
@@ -44,16 +41,11 @@ amnezia_version_stamp:
       - cmd: amnezia_build
 {% endif %}
 
-{% for state_id, src, dest in [
-  ('amneziawg_go_bin', 'amneziawg-go-bin', 'amneziawg-go'),
-  ('amneziawg_tools_bin', 'awg-bin', 'awg'),
-  ('amnezia_vpn_bin', 'AmneziaVPN-bin', 'AmneziaVPN'),
-  ('amnezia_service_bin', 'AmneziaVPN-service-bin', 'AmneziaVPN-service'),
-] %}
+{% for state_id, cfg in amnezia.bins.items() %}
 {{ state_id }}:
   file.managed:
-    - name: /usr/local/bin/{{ dest }}
-    - source: {{ cache }}/{{ src }}
+    - name: /usr/local/bin/{{ cfg.dest }}
+    - source: {{ cache }}/{{ cfg.src }}
     - mode: '0755'
     - user: root
     - group: root
@@ -61,12 +53,11 @@ amnezia_version_stamp:
       - cmd: amnezia_build
 {% endfor %}
 
-# Verification (only runs when the binary actually changed)
 {% for state_id, cmd, bin_state, binary_path in [
-  ('amneziawg_go', '/usr/local/bin/amneziawg-go --version', 'amneziawg_go_bin', '/usr/local/bin/amneziawg-go'),
-  ('awg', '/usr/local/bin/awg --version', 'amneziawg_tools_bin', '/usr/local/bin/awg'),
-  ('amnezia_vpn', 'ldd /usr/local/bin/AmneziaVPN', 'amnezia_vpn_bin', '/usr/local/bin/AmneziaVPN'),
-  ('amnezia_service', 'ldd /usr/local/bin/AmneziaVPN-service', 'amnezia_service_bin', '/usr/local/bin/AmneziaVPN-service'),
+  ('amneziawg_go', amnezia.verification.amneziawg_go, 'amneziawg_go_bin', '/usr/local/bin/amneziawg-go'),
+  ('awg', amnezia.verification.awg, 'amneziawg_tools_bin', '/usr/local/bin/awg'),
+  ('amnezia_vpn', amnezia.verification.amnezia_vpn, 'amnezia_vpn_bin', '/usr/local/bin/AmneziaVPN'),
+  ('amnezia_service', amnezia.verification.amnezia_service, 'amnezia_service_bin', '/usr/local/bin/AmneziaVPN-service'),
 ] %}
 {{ state_id }}_verify:
   cmd.run:
@@ -76,10 +67,9 @@ amnezia_version_stamp:
       - file: {{ bin_state }}
 {% endfor %}
 
-# Systemd service for AmneziaVPN (runs as root for VPN tunnel management)
 amnezia_systemd_unit:
   file.managed:
-    - name: /usr/lib/systemd/system/AmneziaVPN-source.service
+    - name: {{ amnezia.systemd_unit }}
     - contents: |
         [Unit]
         Description=AmneziaVPN Service (source build)
@@ -107,7 +97,7 @@ amnezia_service_enabled:
 
 amnezia_desktop_entry:
   file.managed:
-    - name: {{ home }}/.local/share/applications/amnezia-vpn.desktop
+    - name: {{ home }}/.local/share/applications/{{ amnezia.desktop_entry }}
     - contents: |
         [Desktop Entry]
         Type=Application

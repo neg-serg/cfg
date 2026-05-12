@@ -1,11 +1,6 @@
 {# Kernel module blacklisting and loading for hardware and virtualization #}
-# Kernel module loading and blacklisting, migrated from NixOS.
 {% from '_imports.jinja' import host %}
-# Kernel module loading and blacklisting migrated from NixOS
-# (modules/system/kernel/params.nix, hosts/telfir/hardware.nix)
-#
-# modules-load.d: loaded at boot by systemd-modules-load.service
-# modprobe.d: prevents module autoloading (security hardening)
+{% import_yaml 'data/kernel_params.yaml' as kernel_params %}
 
 kernel_modules_load:
   file.managed:
@@ -32,8 +27,6 @@ kernel_modules_blacklist:
     - context:
         cpu_vendor: {{ host.cpu_vendor }}
 
-# Load modules now (no reboot needed); ignore missing-device errors
-# (systemd-modules-load handles boot-time loading and is equally forgiving)
 {% set modules_to_load = [host.kvm_module, 'tcp_bbr', 'ntsync', 'ntfs3'] + host.extra_modules %}
 {% for mod in modules_to_load %}
 load_{{ mod | replace('-', '_') }}:

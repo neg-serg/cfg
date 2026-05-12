@@ -2,26 +2,21 @@
 {% from '_imports.jinja' import host, user, pkg_list %}
 {% from '_macros_service.jinja' import ensure_dir %}
 {% from '_macros_pkg.jinja' import paru_install %}
-
 {% from '_macros_config.jinja' import config_file_edit %}
+{% import_yaml 'data/steam.yaml' as steam %}
 
 include:
   - pacman_db_warmup
 
-# Steam + gaming tools (native pacman install)
-# Requires multilib repo for lib32 dependencies.
-# Inline cmd.run (not paru_install macro): --ask 4 resolves CachyOS
-# lib32-mesa-git vs multilib lib32-mesa conflict; macro doesn't support extra args.
-
 {{ config_file_edit('multilib_repo',
-    cmd="printf '\\n[multilib]\\nInclude = /etc/pacman.d/mirrorlist\\n' >> /etc/pacman.conf && pacman -Sy",
-    check_pattern='^\\[multilib\\]',
-    check_file='/etc/pacman.conf',
+    cmd=steam.multilib_repo.cmd,
+    check_pattern=steam.multilib_repo.check_pattern,
+    check_file=steam.multilib_repo.check_file,
     retry=True) }}
 
 vulkan_radeon_pkg:
   cmd.run:
-    - name: pacman -S --noconfirm --needed --ask 4 vulkan-radeon lib32-vulkan-radeon
+    - name: pacman -S --noconfirm --needed --ask 4 {{ steam.vulkan_packages | join(' ') }}
     - unless: grep -qxF 'vulkan-radeon' {{ pkg_list }}
     - require:
       - cmd: pacman_db_warmup
@@ -29,14 +24,14 @@ vulkan_radeon_pkg:
 
 steam_pkg:
   cmd.run:
-    - name: pacman -S --noconfirm --needed --ask 4 steam gamescope mangohud goverlay gamemode protontricks
+    - name: pacman -S --noconfirm --needed --ask 4 {{ steam.steam_packages | join(' ') }}
     - unless: grep -qxF 'steam' {{ pkg_list }}
     - require:
       - cmd: vulkan_radeon_pkg
 
 steam_lib32_audio:
   cmd.run:
-    - name: pacman -S --noconfirm --needed --ask 4 lib32-pipewire lib32-pipewire-jack lib32-alsa-plugins lib32-libpulse
+    - name: pacman -S --noconfirm --needed --ask 4 {{ steam.lib32_audio_packages | join(' ') }}
     - unless: pacman -Qi lib32-pipewire-jack >/dev/null 2>&1
     - require:
       - cmd: steam_pkg
@@ -46,7 +41,7 @@ steam_lib32_audio:
 
 gamemode_config:
   file.managed:
-    - name: /etc/gamemode.ini
+    - name: {{ steam.gamemode_config }}
     - source: salt://configs/gamemode.ini
     - mode: '0644'
     - require:
@@ -54,7 +49,7 @@ gamemode_config:
 
 gamemode_start_script:
   file.managed:
-    - name: /usr/local/bin/gamemode-start.sh
+    - name: {{ steam.gamemode_start_script }}
     - source: salt://scripts/gamemode-start.sh
     - mode: '0755'
     - require:
@@ -62,7 +57,7 @@ gamemode_start_script:
 
 gamemode_end_script:
   file.managed:
-    - name: /usr/local/bin/gamemode-end.sh
+    - name: {{ steam.gamemode_end_script }}
     - source: salt://scripts/gamemode-end.sh
     - mode: '0755'
     - require:

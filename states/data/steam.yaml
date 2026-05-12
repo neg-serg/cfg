@@ -1,0 +1,30 @@
+# Steam gaming platform configuration.
+# Consumed by steam.sls.
+multilib_repo:
+  cmd: printf '\n[multilib]\nInclude = /etc/pacman.d/mirrorlist\n' >> /etc/pacman.conf && pacman -Sy
+  check_pattern: '^\[multilib\]'
+  check_file: /etc/pacman.conf
+
+vulkan_packages:
+  - vulkan-radeon
+  - lib32-vulkan-radeon
+
+steam_packages:
+  - steam
+  - gamescope
+  - mangohud
+  - goverlay
+  - gamemode
+  - protontricks
+
+lib32_audio_packages:
+  - lib32-pipewire
+  - lib32-pipewire-jack
+  - lib32-alsa-plugins
+  - lib32-libpulse
+
+gamemode_config: /etc/gamemode.ini
+gamemode_start_script: /usr/local/bin/gamemode-start.sh
+gamemode_end_script: /usr/local/bin/gamemode-end.sh
+
+compatdata_pattern: ~/.steam/root/steamapps/compatdata/*/pfx

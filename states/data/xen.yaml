@@ -1,4 +1,18 @@
 # Xen user KDE theme seed configs — keyed by destination filename
+user:
+  name: xen
+  uid: 1100
+  gid: 1100
+  home: /home/xen
+  shell: /usr/bin/zsh
+  groups:
+    - video
+    - render
+    - input
+    - plugdev
+    - uucp
+  tty: getty@tty3
+
 kde_configs:
   kdeglobals: |
     [General]

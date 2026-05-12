@@ -1,0 +1,6 @@
+# code-rag and docs-rag local source paths.
+# Consumed by code_rag.sls.
+rag_shared: ~/src/1st-level/@rag/rag-shared
+code_rag: ~/src/1st-level/@rag/code-rag
+docs_rag: ~/src/1st-level/@rag/docs-rag
+mandoc: mandoc

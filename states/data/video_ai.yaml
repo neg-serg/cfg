@@ -17,6 +17,20 @@
 #   downloaded and deleted. Wait for ComfyUI-GGUF to fix multi-component loading.
 # ─────────────────────────────────────────────────────────────────────
 
+# Video AI base subdirectory names (consumed by video_ai/base.sls)
+subdirs:
+  comfyui: comfyui
+  models: models
+  workflows: workflows
+  output: output
+  images: images
+
+# Runner script names (consumed by video_ai/runners.sls)
+runners:
+  generate: generate.sh
+  generate_image: generate-image.sh
+  gen_video: gen-video
+
 # ComfyUI custom nodes required by video models
 comfyui_nodes:
   - repo: https://github.com/Lightricks/ComfyUI-LTXVideo  # LTX-Video nodes (covers 2B + 2.3)

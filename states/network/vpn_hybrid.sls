@@ -1,5 +1,6 @@
 {% from '_imports.jinja' import host, home, user %}
 {% from '_macros_service.jinja' import ensure_dir %}
+{% import_yaml 'data/vpn.yaml' as vpn %}
 {% set net = host.features.network %}
 
 {% if net.vpn_hybrid %}
@@ -20,7 +21,7 @@ sing_box_tun_hybrid_config:
 
 sing_box_tun_hybrid_service_unit:
   file.managed:
-    - name: /etc/systemd/system/sing-box-tun-hybrid.service
+    - name: {{ vpn.hybrid.service_unit }}
     - source: salt://units/sing-box-tun-hybrid.service
     - template: jinja
     - mode: '0644'
@@ -36,7 +37,7 @@ sing_box_tun_hybrid_daemon_reload:
 
 xray_hybrid_config:
   file.managed:
-    - name: /etc/xray/config.json
+    - name: {{ vpn.xray_config }}
     - source: {{ home }}/.config/sing-box-tun/config.json
     - user: root
     - group: root

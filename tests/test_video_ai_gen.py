@@ -37,4 +37,4 @@ def test_generate_sh_default_steps_is_8():
 def test_runners_sls_deploys_gen_video():
     src = (REPO_ROOT_PATH / "states" / "video_ai" / "runners.sls").read_text()
     assert "gen-video" in src or "gen_video" in src
-    assert ".local/bin/gen-video" in src
+    assert "video_ai.runners.gen_video" in src

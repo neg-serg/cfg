@@ -5,22 +5,16 @@ include:
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir %}
+{% import_yaml 'data/desktop.yaml' as desktop %}
 
-# --- Niri compositor installation ---
-# spec skeleton: niri-pkg pkg.installed with refresh: true
-# project convention: paru_install macro for AUR packages
-{{ paru_install('niri-pkg', 'niri') }}
+{% set niri_pkgs = desktop.niri_packages %}
+{% for pkg in niri_pkgs %}
+{% set safe_id = pkg | replace('xdg-desktop-portal-', '') | replace('-', '_') %}
+{{ paru_install('niri_' ~ safe_id, pkg) }}
+{% endfor %}
 
-# spec skeleton: niri-xwayland-satellite pkg.installed with refresh: true
-{{ paru_install('niri-xwayland-satellite', 'xwayland-satellite') }}
-
-# spec skeleton: niri-portals pkg.installed with refresh: true
-{{ paru_install('niri-portals', 'xdg-desktop-portal-gnome xdg-desktop-portal-gtk') }}
-
-# --- Niri config directory ---
 {{ ensure_dir('niri_config_dir', home ~ '/.config/niri', mode='0700', user=user) }}
 
-# --- Niri config file ---
 niri_config_file:
   file.managed:
     - name: {{ home }}/.config/niri/config.kdl
@@ -32,10 +26,6 @@ niri_config_file:
     - require:
       - file: niri_config_dir
 
-# --- Niri session entry for greetd ---
-# Uses absolute path so it works regardless of session-wrapper's PATH.
-# Overrides the package-provided niri.desktop (which uses Exec=niri-session
-# without full path).
 niri_session_entry:
   file.managed:
     - name: /usr/share/wayland-sessions/niri.desktop

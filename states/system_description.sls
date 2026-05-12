@@ -1,21 +1,8 @@
-{# System description: /etc/os-release branding and feature-gated state orchestration.
-   
-   Feature gating uses host.features.* directly. For registry-driven gating
-   (future), states can import:
-     {% from '_macros_registry.jinja' import feature_enabled, feature_default %}
-     {% if feature_enabled(host, 'ollama') %}
-       include: [ollama]
-     {% endif %}
-   
-   Registry source: states/data/feature_registry.yaml (50 features, defaults+descriptions).
-   Contract checks: python3 scripts/salt_contracts.py (21 automated validations).
-#}
+{# System description: /etc/os-release branding and feature-gated state orchestration. #}
 {% from '_imports.jinja' import host, user %}
 {% from '_macros_service.jinja' import ensure_dir %}
-# Salt state for CachyOS workstation — top-level orchestrator
-# Packages managed via packages.sls (data/packages.yaml) + domain-specific states
+{% import_yaml 'data/system.yaml' as system %}
 
-# ── Distro identity (was os_release.sls) ──────────────────────────────
 system_os_release:
   file.managed:
     - name: /etc/os-release
@@ -37,7 +24,7 @@ system_locale:
 system_locale_gen:
   file.replace:
     - name: /etc/locale.gen
-    - pattern: '^#\s*(en_US\.UTF-8 UTF-8)'
+    - pattern: {{ system.locale_pattern }}
     - repl: '\1'
     - show_changes: false
 
@@ -49,7 +36,7 @@ system_locale_generate:
 
 system_keymap:
   cmd.run:
-    - name: localectl set-x11-keymap ru,us
+    - name: localectl set-x11-keymap {{ system.x11_keymap }}
     - unless: grep -q 'ru' /etc/X11/xorg.conf.d/00-keyboard.conf 2>/dev/null
 
 system_hostname:
@@ -63,46 +50,29 @@ system_hostname:
 
 include:
   - pacman_db_warmup
-
-  # ── Core (always included) ──────────────────────────────────────────
-  # Shell, disk mounts — users is included by group/core and individual states
   - zsh
   - mounts
   - bind_mounts
   - windows_mount
   - fstab_column
-
-  # Kernel tuning, hardware, sysctl
   - kernel_modules
   - mkinitcpio
   - sysctl
   - hardware
-
-  # CachyOS: kernel packages, settings, sched-ext, kernel cmdline
   - cachyos
-
-  # Desktop: audio stack, fonts first so DE config sees them, login manager
   - audio
   - fonts
   - desktop
   - greetd
-
-  # Shared systemd-managed service identities and paths
   - systemd_resources
-
-  # Network: DNS
   - dns
   - network
-
-  # Packages: base system, CLI tools, desktop apps, themes, custom PKGBUILDs
   - packages
   - installers
   - installers_mpv
   - installers_desktop
   - installers_themes
   - custom_pkgs
-
-  # Services, monitoring, user units
   - services
   - monitoring_alerts
   - user_services
@@ -127,7 +97,6 @@ include:
   - proxypilot
 {% endif %}
 
-  # ── Feature-gated (skipped entirely when disabled) ──────────────────
 {% if host.features.amnezia %}
   - amnezia
 {% endif %}

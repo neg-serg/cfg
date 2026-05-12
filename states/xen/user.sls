@@ -2,12 +2,12 @@
 
 {% from '_imports.jinja' import user, home, gopass_secret %}
 {% from '_macros_service.jinja' import ensure_dir %}
+{% import_yaml 'data/xen.yaml' as xen %}
 
-{% set xen_user = 'xen' %}
-{% set xen_uid = 1100 %}
-{% set xen_home = '/home/' ~ xen_user %}
+{% set xen_user = xen.user.name %}
+{% set xen_uid = xen.user.uid %}
+{% set xen_home = xen.user.home %}
 
-# ── User account ────────────────────────────────────────────────────
 xen_group:
   group.present:
     - name: {{ xen_user }}
@@ -16,7 +16,7 @@ xen_group:
 xen_user:
   user.present:
     - name: {{ xen_user }}
-    - shell: /usr/bin/zsh
+    - shell: {{ xen.user.shell }}
     - uid: {{ xen_uid }}
     - gid: {{ xen_uid }}
     - home: {{ xen_home }}
@@ -33,17 +33,14 @@ ensure_xen_user_password:
     - require:
       - user: xen_user
 
-# video+render: GPU access; input: VR controllers; uucp: Valve Index USB
 xen_groups:
   cmd.run:
-    - name: usermod -aG video,render,input,plugdev,uucp {{ xen_user }}
+    - name: usermod -aG {{ xen.user.groups | join(',') }} {{ xen_user }}
     - unless: id -nG {{ xen_user }} | grep -qw uucp
     - require:
       - user: xen_user
       - group: plugdev_group
 
-# ── Shared Steam library access ────────────────────────────────────
-# Add both users to a shared 'steam' group so xen can read neg's Steam files
 xen_steam_group:
   group.present:
     - name: steam
@@ -53,7 +50,6 @@ xen_steam_group:
     - require:
       - user: xen_user
 
-# Symlink neg's Steam library into xen's home
 {{ ensure_dir('xen_local_share', xen_home ~ '/.local/share', user=xen_user) }}
 
 xen_steam_symlink:
@@ -67,7 +63,6 @@ xen_steam_symlink:
       - file: xen_local_share
       - user: xen_user
 
-# Set group-readable permissions on neg's Steam directory
 xen_steam_acl:
   cmd.run:
     - name: |
@@ -79,7 +74,6 @@ xen_steam_acl:
       - group: xen_steam_group
     - onlyif: test -d {{ home }}/.local/share/Steam
 
-# ── TTY3 for xen login (emergency fallback) ───────────────────────
 xen_getty_tty3:
   service.enabled:
-    - name: getty@tty3
+    - name: {{ xen.user.tty }}

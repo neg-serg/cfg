@@ -1,0 +1,9 @@
+# Kanata keyboard remapper configuration.
+# Consumed by kanata.sls.
+package: kanata-bin
+uinput_conf: /etc/modules-load.d/uinput.conf
+uinput_rule: KERNEL=="uinput", MODE="0660", GROUP="uinput", OPTIONS+="static_node=uinput"
+uinput_rule_path: /etc/udev/rules.d/99-uinput.rules
+groups:
+  - input
+  - uinput

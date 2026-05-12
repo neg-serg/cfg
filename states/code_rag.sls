@@ -1,27 +1,21 @@
-{# code-rag: hybrid text+code RAG with AST-aware chunking and LanceDB vector search.
-   Installs from local source at ~/src/1st-level/@rag/code-rag. Requires llama_embed for embeddings.
-   MCP server configured in .mcp.json (not managed here — no systemd service).
-#}
+{# code-rag: hybrid text+code RAG with AST-aware chunking and LanceDB vector search. #}
 include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import home %}
 {% from '_macros_install.jinja' import pip_pkg %}
 {% from '_macros_pkg.jinja' import paru_install %}
+{% import_yaml 'data/code_rag.yaml' as code_rag %}
 
-{% set _rag_shared = home ~ '/src/1st-level/@rag/rag-shared' %}
-{{ pip_pkg('code_rag', pkg=home ~ '/src/1st-level/@rag/code-rag', bin='code-rag-index', preinstall=_rag_shared) }}
+{% set _rag_shared = home ~ code_rag.rag_shared | replace('~/', '/') %}
+{{ pip_pkg('code_rag', pkg=home ~ code_rag.code_rag | replace('~/', '/'), bin='code-rag-index', preinstall=_rag_shared) }}
 
-{# docs-rag: external documentation ingestion (web, manpages, local) into shared LanceDB.
-   Provides docs-import, docs-manpages, docs-remove, docs-list CLI commands.
-   Requires mandoc for man page → markdown rendering.
-#}
 replace_mandb_with_mandoc:
   cmd.run:
-    - name: pacman -S --noconfirm --needed mandoc
-    - unless: pacman -Qi mandoc
+    - name: pacman -S --noconfirm --needed {{ code_rag.mandoc }}
+    - unless: pacman -Qi {{ code_rag.mandoc }}
     - require:
       - cmd: pacman_db_warmup
 
-{{ paru_install('mandoc', 'mandoc') }}
-{{ pip_pkg('docs_rag', pkg=home ~ '/src/1st-level/@rag/docs-rag', bin='docs-import', preinstall=_rag_shared) }}
+{{ paru_install('mandoc', code_rag.mandoc) }}
+{{ pip_pkg('docs_rag', pkg=home ~ code_rag.docs_rag | replace('~/', '/'), bin='docs-import', preinstall=_rag_shared) }}

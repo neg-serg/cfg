@@ -2,10 +2,8 @@
 {% from '_imports.jinja' import user %}
 {% from '_macros_desktop.jinja' import hyprpm_add, hyprpm_enable, hyprpm_update %}
 {% from '_macros_service.jinja' import ensure_dir %}
+{% import_yaml 'data/desktop.yaml' as desktop %}
 
-# wl: installed via custom_pkgs (PKGBUILD → /usr/bin/)
-
-# --- Pacman hook: rebuild hyprpm headers after hyprland package upgrade ---
 {{ ensure_dir('pacman_hooks_dir_hyprpm', '/etc/pacman.d/hooks', mode='0755', user='root') }}
 
 hyprpm_update_pacman_hook:
@@ -17,11 +15,6 @@ hyprpm_update_pacman_hook:
     - require:
       - file: pacman_hooks_dir_hyprpm
 
-# --- Hyprland plugins via hyprpm ---
-# hyprpm needs HYPRLAND_INSTANCE_SIGNATURE (detect from socket dir) and
-# headers must match the running Hyprland version (hyprpm update rebuilds them).
-# hyprpm writes state to /var/cache/hyprpm/<user>/; ensure user ownership so
-# hyprpm doesn't need sudo (which fails without a TTY in Salt context).
 {% set hyprpm_cache = '/var/cache/hyprpm/' ~ user %}
 
 hyprpm_cache_dir:
@@ -34,17 +27,10 @@ hyprpm_cache_dir:
       - user
       - group
 
-# Pre-create repo cache dirs so hyprpm doesn't call sudo mkdir (which fails
-# without a TTY in Salt context).
-{%- set _hyprpm_repos = {
-  'hyprland_plugins': 'hyprland-plugins',
-  'hyprglass':        'HyprGlass',
-  'darkwindow':       'Hypr-DarkWindow',
-} %}
-{% for id_suffix, dir_name in _hyprpm_repos.items() %}
-hyprpm_repo_cache_{{ id_suffix }}:
+{% for plugin in desktop.hyprland_plugins %}
+hyprpm_repo_cache_{{ plugin.id }}:
   file.directory:
-    - name: {{ hyprpm_cache }}/{{ dir_name }}
+    - name: {{ hyprpm_cache }}/{{ plugin.dir }}
     - user: {{ user }}
     - group: {{ user }}
     - require:
@@ -52,32 +38,20 @@ hyprpm_repo_cache_{{ id_suffix }}:
 {% endfor %}
 
 {{ hyprpm_update('hyprpm_headers_update',
-    check_plugins=['xtra-dispatchers', 'HyprGlass', 'Hypr-DarkWindow'],
+    check_plugins=desktop.hyprland_check_plugins,
     require=['cmd: install_hyprland_desktop', 'file: hyprpm_cache_dir']) }}
 
-{{ hyprpm_add('hyprpm_add_hyprland_plugins',
-    'https://github.com/hyprwm/hyprland-plugins',
-    'Repository hyprland-plugins',
-    require=['cmd: install_hyprland_desktop', 'cmd: hyprpm_headers_update', 'file: hyprpm_repo_cache_hyprland_plugins']) }}
+{% for plugin in desktop.hyprland_plugins %}
+{{ hyprpm_add('hyprpm_add_' ~ plugin.id,
+    plugin.repo,
+    'Repository ' ~ plugin.dir,
+    require=['cmd: install_hyprland_desktop', 'cmd: hyprpm_headers_update', 'file: hyprpm_repo_cache_' ~ plugin.id]) }}
+{% endfor %}
 
-{{ hyprpm_enable('hyprpm_enable_xtra_dispatchers',
-    'xtra-dispatchers',
-    require=['cmd: hyprpm_add_hyprland_plugins']) }}
-
-{{ hyprpm_add('hyprpm_add_hyprglass',
-    'https://github.com/hyprnux/hyprglass',
-    'Repository HyprGlass',
-    require=['cmd: install_hyprland_desktop', 'cmd: hyprpm_headers_update', 'file: hyprpm_repo_cache_hyprglass']) }}
-
-{{ hyprpm_enable('hyprpm_enable_hyprglass',
-    'hyprglass',
-    require=['cmd: hyprpm_add_hyprglass']) }}
-
-{{ hyprpm_add('hyprpm_add_darkwindow',
-    'https://github.com/micha4w/Hypr-DarkWindow',
-    'Repository Hypr-DarkWindow',
-    require=['cmd: install_hyprland_desktop', 'cmd: hyprpm_headers_update', 'file: hyprpm_repo_cache_darkwindow']) }}
-
-{{ hyprpm_enable('hyprpm_enable_darkwindow',
-    'Hypr-DarkWindow',
-    require=['cmd: hyprpm_add_darkwindow']) }}
+{% for plugin in desktop.hyprland_plugins %}
+{% for ep in plugin.enable %}
+{{ hyprpm_enable('hyprpm_enable_' ~ ep.name | lower | replace('-', '_'),
+    ep.name,
+    require=['cmd: hyprpm_add_' ~ plugin.id]) }}
+{% endfor %}
+{% endfor %}

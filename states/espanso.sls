@@ -1,23 +1,18 @@
 {# Espanso text expander: wayland variant with systemd user service and health check #}
-# Espanso: cross-platform text expander (Wayland variant).
 include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import host, user %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import user_service_with_unit %}
-# Espanso: cross-platform text expander (Wayland variant)
+{% import_yaml 'data/espanso.yaml' as espanso %}
 
-# --- Install espanso-wayland from AUR ---
-{{ paru_install('espanso', 'espanso-wayland') }}
+{{ paru_install('espanso', espanso.package) }}
 
-# --- Systemd user service ---
-# Config files managed by chezmoi (dotfiles/dot_config/espanso/)
-{{ user_service_with_unit('espanso', 'espanso.service',
-     start_now=['espanso.service'],
+{{ user_service_with_unit('espanso', espanso.service,
+     start_now=[espanso.service],
      requires=['cmd: install_espanso']) }}
 
-# --- Health check: restart espanso if it's not running ---
 espanso_healthcheck:
   cmd.run:
     - name: espanso restart

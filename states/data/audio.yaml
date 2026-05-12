@@ -1,0 +1,13 @@
+# PipeWire audio stack packages and configuration.
+# Consumed by audio.sls.
+packages:
+  - pipewire-audio
+  - wireplumber
+  - pipewire-pulse
+  - pipewire-alsa
+  - pipewire-jack
+  - alsa-utils
+  - playerctl
+
+droidcam_modules_conf: /etc/modules-load.d/droidcam.conf
+snd_aloop_pattern: '^snd-aloop\n?'

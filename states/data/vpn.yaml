@@ -1,0 +1,15 @@
+# VPN hybrid configuration paths.
+# Consumed by network/vpn_hybrid.sls, ipv6_6to4.sls, network/vpn_split_router.sls.
+hybrid:
+  service_unit: /etc/systemd/system/sing-box-tun-hybrid.service
+
+xray_config: /etc/xray/config.json
+
+split_router:
+  service_unit: /etc/systemd/system/sing-box-tun-react.service
+  service_path: /etc/systemd/system/sing-box-tun-react.path
+  amnezia_import: /usr/local/bin/amnezia-import-tun-config
+
+ipv6_6to4:
+  cache_path: /var/cache/salt/public-ipv4.txt
+  public_ip_url: https://ifconfig.me

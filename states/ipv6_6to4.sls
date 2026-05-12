@@ -6,8 +6,9 @@
    ════════════════════════════════════════════════════════════════════ #}
 
 {% from '_macros_ipv6_tunnel.jinja' import ipv6_tunnel with context %}
+{% import_yaml 'data/vpn.yaml' as vpn %}
 
-{% set _ipv4_cache = '/var/cache/salt/public-ipv4.txt' %}
+{% set _ipv4_cache = vpn.ipv6_6to4.cache_path %}
 {% if salt['file.file_exists'](_ipv4_cache) %}
 {% set _public_v4 = salt['file.read'](_ipv4_cache).strip() %}
 {% else %}
@@ -15,7 +16,6 @@
 {% endif %}
 {% set _has_v4 = (_public_v4 | length > 0) and (_public_v4.count('.') == 3) %}
 
-{# --- Compute 6to4 prefix --- #}
 {% if _has_v4 %}
 {% set _octets = _public_v4.split('.') %}
 {% set _hex1 = '%02x' | format(_octets[0] | int) %}
@@ -37,7 +37,7 @@ table inet 6to4-tunnel {
 
 cache_public_v4:
   cmd.run:
-    - name: curl -4 --max-time 3 --silent https://ifconfig.me | tee {{ _ipv4_cache }}
+    - name: curl -4 --max-time 3 --silent {{ vpn.ipv6_6to4.public_ip_url }} | tee {{ _ipv4_cache }}
     - unless: test -f {{ _ipv4_cache }} && test $(find {{ _ipv4_cache }} -mmin -60 | wc -l) -gt 0
 
 {{ ipv6_tunnel(
@@ -51,5 +51,5 @@ cache_public_v4:
    ) }}
 {% else %}
 # 6to4 tunnel skip: could not detect public IPv4 address.
-# Ensure outbound IPv4 connectivity to https://ifconfig.me — may be blocked by firewall or proxy.
+# Ensure outbound IPv4 connectivity to {{ vpn.ipv6_6to4.public_ip_url }} — may be blocked by firewall or proxy.
 {% endif %}

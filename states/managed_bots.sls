@@ -9,7 +9,7 @@
 
 install_managed_bots_deps:
   cmd.run:
-    - name: pip install --break-system-packages python-telegram-bot[all] PyYAML
+    - name: pip install --break-system-packages {{ mbdata.pip_deps | join(' ') }}
     - runas: {{ user }}
     - unless: python3 -c 'import telegram; import yaml' 2>/dev/null
     - parallel: true

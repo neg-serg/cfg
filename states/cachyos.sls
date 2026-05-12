@@ -1,60 +1,49 @@
 {# CachyOS kernel packages, boot configuration, and kernel cmdline management #}
-# CachyOS kernel packages, settings, and boot configuration.
-# Manages kernel cmdline (embedded in UKI) and CachyOS-specific packages.
-#
-# Run: sudo salt-call --local -c .salt_runtime state.sls cachyos
-
 {% from '_imports.jinja' import host %}
+{% import_yaml 'data/cachyos.yaml' as cachyos %}
 
 include:
   - pacman_db_warmup
 
-# ── Boot splash BMP (custom, matches host display resolution) ────────
 cachyos_boot_splash:
   cmd.run:
-    - name: python3 {{ host.project_dir }}/scripts/generate-boot-splash.py --display {{ host.display }} --output /usr/share/systemd/bootctl/splash-custom.bmp
-    - unless: test -f /usr/share/systemd/bootctl/splash-custom.bmp
+    - name: python3 {{ host.project_dir }}/scripts/generate-boot-splash.py --display {{ host.display }} --output {{ cachyos.boot_splash.output }}
+    - unless: test -f {{ cachyos.boot_splash.output }}
 
-# ── Kernel cmdline (written before kernel pkgs so UKI embeds it) ─────
 cachyos_kernel_cmdline:
   file.managed:
-    - name: /etc/kernel/cmdline
+    - name: {{ cachyos.kernel_cmdline_path }}
     - source: salt://configs/kernel-cmdline.j2
     - template: jinja
     - mode: '0644'
     - require:
       - cmd: cachyos_boot_splash
 
-# ── Kernel packages ──────────────────────────────────────────────────
 cachyos_kernels:
   cmd.run:
-    - name: sudo -u {{ host.user }} paru -S --noconfirm --needed linux-cachyos linux-cachyos-headers linux-cachyos-eevdf linux-cachyos-eevdf-headers linux-cachyos-hardened linux-cachyos-hardened-headers linux-cachyos-lts linux-cachyos-lts-headers
+    - name: sudo -u {{ host.user }} paru -S --noconfirm --needed {{ cachyos.kernel_packages | join(' ') }}
     - unless: grep -qxF 'linux-cachyos' {{ host.pkg_list }}
     - require:
       - cmd: pacman_db_warmup
       - file: cachyos_kernel_cmdline
 
-# ── CachyOS settings ─────────────────────────────────────────────────
 cachyos_settings:
   cmd.run:
-    - name: sudo -u {{ host.user }} paru -S --noconfirm --needed cachyos-settings
-    - unless: grep -qxF 'cachyos-settings' {{ host.pkg_list }}
+    - name: sudo -u {{ host.user }} paru -S --noconfirm --needed {{ cachyos.settings_package }}
+    - unless: grep -qxF '{{ cachyos.settings_package }}' {{ host.pkg_list }}
     - require:
       - cmd: pacman_db_warmup
       - cmd: cachyos_kernels
 
-# ── sched-ext userspace (BPF schedulers + scx_loader) ────────────────
 cachyos_scx:
   cmd.run:
-    - name: sudo -u {{ host.user }} paru -S --noconfirm --needed scx-scheds scx-tools
-    - unless: grep -qxF 'scx-scheds' {{ host.pkg_list }}
+    - name: sudo -u {{ host.user }} paru -S --noconfirm --needed {{ cachyos.scx_packages | join(' ') }}
+    - unless: grep -qxF '{{ cachyos.scx_packages[0] }}' {{ host.pkg_list }}
     - require:
       - cmd: pacman_db_warmup
       - cmd: cachyos_settings
 
-# ── CachyOS mkinitcpio presets (enable UKI generation) ───────────────
-{% set cachyos_variants = ['linux-cachyos', 'linux-cachyos-eevdf', 'linux-cachyos-hardened', 'linux-cachyos-lts'] %}
-{% for variant in cachyos_variants %}
+{% for variant in cachyos.kernel_variants %}
 {{ variant | replace('-', '_') }}_preset:
   file.managed:
     - name: /etc/mkinitcpio.d/{{ variant }}.preset
@@ -65,24 +54,16 @@ cachyos_scx:
     - mode: '0644'
 {% endfor %}
 
-# ── CachyOS services ─────────────────────────────────────────────────
-cachyos_ananicy:
+{% for svc in cachyos.services %}
+{{ svc | replace('-', '_') | replace('.', '_') }}:
   service.running:
-    - name: ananicy-cpp
+    - name: {{ svc }}
     - enable: true
-    - onlyif: systemctl list-unit-files ananicy-cpp.service &>/dev/null
+    - onlyif: systemctl list-unit-files {{ svc }} &>/dev/null
     - require:
       - cmd: cachyos_settings
+{% endfor %}
 
-cachyos_wireless_regdomain:
-  service.running:
-    - name: cachyos-iw-set-regdomain.path
-    - enable: true
-    - onlyif: systemctl list-unit-files cachyos-iw-set-regdomain.path &>/dev/null
-    - require:
-      - cmd: cachyos_settings
-
-# ── Rebuild all UKIs ─────────────────────────────────────────────────
 cachyos_mkinitcpio:
   cmd.run:
     - name: mkinitcpio -P
@@ -91,15 +72,14 @@ cachyos_mkinitcpio:
       - file: cachyos_kernel_cmdline
       - cmd: cachyos_kernels
       - cmd: cachyos_boot_splash
-{%- for variant in cachyos_variants %}
+{%- for variant in cachyos.kernel_variants %}
       - file: {{ variant | replace('-', '_') }}_preset
 {%- endfor %}
 
-# ── Default boot entry → linux-cachyos ───────────────────────────────
 cachyos_default_boot:
   cmd.run:
-    - name: bootctl set-default arch-linux-cachyos.efi
-    - onlyif: test -f /efi/EFI/Linux/arch-linux-cachyos.efi
-    - unless: bootctl status 2>/dev/null | grep -qi 'default.*arch-linux-cachyos.efi'
+    - name: bootctl set-default {{ cachyos.boot_entry }}
+    - onlyif: test -f /efi/EFI/Linux/{{ cachyos.boot_entry }}
+    - unless: bootctl status 2>/dev/null | grep -qi 'default.*{{ cachyos.boot_entry | replace('.', '\.') }}'
     - require:
       - cmd: cachyos_mkinitcpio

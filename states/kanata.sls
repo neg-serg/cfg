@@ -1,25 +1,22 @@
 {# Kanata keyboard remapper: advanced key remapping daemon configuration #}
-# Kanata: software keyboard remapper (uinput-based).
 include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir, udev_rule, user_service_with_unit %}
-# Kanata: software keyboard remapper (uinput-based)
-# --- Install kanata from AUR ---
-{{ paru_install('kanata', 'kanata-bin') }}
+{% import_yaml 'data/kanata.yaml' as kanata %}
 
-# One-time cleanup: remove old manually-installed binary
+{{ paru_install('kanata', kanata.package) }}
+
 kanata_legacy_cleanup:
   file.absent:
     - name: {{ home }}/.local/bin/kanata
     - onlyif: test -f {{ home }}/.local/bin/kanata
 
-# --- uinput kernel module (required for virtual keyboard device) ---
 kanata_uinput_module:
   file.managed:
-    - name: /etc/modules-load.d/uinput.conf
+    - name: {{ kanata.uinput_conf }}
     - contents: uinput
     - mode: '0644'
 
@@ -30,10 +27,8 @@ kanata_load_uinput:
     - require:
       - file: kanata_uinput_module
 
-# --- udev rule: allow uinput group to access /dev/uinput ---
-{{ udev_rule('kanata_udev_rule', '/etc/udev/rules.d/99-uinput.rules', contents='KERNEL=="uinput", MODE="0660", GROUP="uinput", OPTIONS+="static_node=uinput"') }}
+{{ udev_rule('kanata_udev_rule', kanata.uinput_rule_path, contents=kanata.uinput_rule) }}
 
-# --- Groups: uinput + input ---
 uinput_group:
   group.present:
     - name: uinput
@@ -41,12 +36,11 @@ uinput_group:
 
 kanata_user_groups:
   cmd.run:
-    - name: usermod -aG input,uinput {{ user }}
+    - name: usermod -aG {{ kanata.groups | join(',') }} {{ user }}
     - onlyif: id -u {{ user }} >/dev/null 2>&1 && command -v usermod >/dev/null 2>&1 && id -nG {{ user }} | grep -qw input && ! id -nG {{ user }} | grep -qw uinput
     - require:
       - group: uinput_group
 
-# --- Config ---
 {{ ensure_dir('kanata_config_dir', home ~ '/.config/kanata') }}
 kanata_config:
   file.managed:
@@ -59,5 +53,4 @@ kanata_config:
     - require:
       - file: kanata_config_dir
 
-# --- Systemd user service ---
 {{ user_service_with_unit('kanata', 'kanata.service', requires=['cmd: install_kanata', 'file: kanata_config', 'cmd: kanata_user_groups', 'kmod: kanata_load_uinput']) }}

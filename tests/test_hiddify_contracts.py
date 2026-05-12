@@ -16,10 +16,11 @@ def test_hiddify_state_removes_legacy_appimage_and_prefers_hiddify_next():
     assert "Hiddify.AppImage" in source
     assert "hiddify-official.desktop" in source
     assert "hiddify.desktop" in source
-    assert "/usr/lib/hiddify/hiddify" in source
-    assert "xdg-mime default hiddify.desktop x-scheme-handler/hiddify" in source
-    assert "/usr/lib/hiddify/HiddifyCli" in source
-    assert "cap_net_admin,cap_net_bind_service,cap_net_raw=ep" in source
+    assert "hiddify.gui" in source
+    assert "hiddify.xdg_schemes" in source
+    assert "x-scheme-handler/" in source
+    assert "hiddify.cli" in source
+    assert "hiddify.caps" in source
     assert "setcap" in source
     assert "getcap" in source
 

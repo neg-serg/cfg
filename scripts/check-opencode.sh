@@ -21,29 +21,22 @@ echo "  OpenCode Health Check"
 echo "═══════════════════════════════════════════"
 echo ""
 
-# ── 1. opencode-serve service ────────────────────────────────────
-echo "1. OpenCode Serve Service"
-echo "-------------------------"
+# ── 1. Proxypilot container (openCode proxy backend) ─────────────
+echo "1. Proxypilot Proxy (OpenCode backend)"
+echo "---------------------------------------"
 
-if systemctl --user is-active opencode-serve.service &>/dev/null; then
-    pass "opencode-serve.service is running"
+PROXY_PORT=8317
+if ss -tlnp 2>/dev/null | grep -q ":${PROXY_PORT}"; then
+    pass "Proxypilot port ${PROXY_PORT} listening"
 else
-    SVC_STATE=$(systemctl --user is-active opencode-serve.service 2>/dev/null || echo "inactive")
-    if [[ "$SVC_STATE" == "failed" ]]; then
-        fail "opencode-serve.service FAILED"
-        journalctl --user -u opencode-serve --no-pager -n 5 2>/dev/null
-        ((ISSUES++))
-    elif [[ "$SVC_STATE" == "inactive" ]]; then
-        warn "opencode-serve.service not running (not enabled or stopped)"
-        ((ISSUES++))
-    fi
+    warn "Proxypilot not listening on :${PROXY_PORT}"
+    ((ISSUES++))
 fi
 
-# ── Check port ───────────────────────────────────────────────────
-if ss -tlnp 2>/dev/null | grep -q ":4096"; then
-    pass "Port 4096 listening"
-else
-    warn "Port 4096 not listening"
+if curl -sf --max-time 3 "http://127.0.0.1:${PROXY_PORT}/v1/models" -H "Authorization: Bearer dummy" &>/dev/null; then
+    pass "Proxypilot responding on :${PROXY_PORT}"
+elif ss -tlnp 2>/dev/null | grep -q ":${PROXY_PORT}"; then
+    warn "Proxypilot port open but not responding"
     ((ISSUES++))
 fi
 
@@ -64,14 +57,6 @@ if [[ -f "$ENV_FILE" ]]; then
     fi
 else
     fail "env file missing: $ENV_FILE"
-    ((ISSUES++))
-fi
-
-SYSTEMD_OVERRIDE="${HOME}/.config/systemd/user/opencode-serve.service.d/override.conf"
-if [[ -f "$SYSTEMD_OVERRIDE" ]]; then
-    pass "systemd override exists"
-else
-    warn "systemd override missing — DEEPSEEK_API_KEY may not be loaded"
     ((ISSUES++))
 fi
 
@@ -105,24 +90,8 @@ fi
 
 echo ""
 
-# ── 4. Proxypilot proxy ──────────────────────────────────────────
-echo "4. Proxypilot Proxy"
-echo "-------------------"
-
-if curl -sf --max-time 3 http://127.0.0.1:8317/v1/models -H "Authorization: Bearer dummy" &>/dev/null; then
-    pass "Proxypilot responding on :8317"
-elif ss -tlnp 2>/dev/null | grep -q ":8317"; then
-    warn "Proxypilot port open but not responding"
-    ((ISSUES++))
-else
-    warn "Proxypilot not listening on :8317"
-    ((ISSUES++))
-fi
-
-echo ""
-
-# ── 5. opencode CLI connectivity ─────────────────────────────────
-echo "5. OpenCode CLI Check"
+# ── 4. opencode CLI connectivity ─────────────────────────────────
+echo "4. OpenCode CLI Check"
 echo "---------------------"
 
 if command -v opencode &>/dev/null; then
@@ -134,8 +103,8 @@ fi
 
 echo ""
 
-# ── 6. Audio subsystem ───────────────────────────────────────────
-echo "6. Audio Subsystem"
+# ── 5. Audio subsystem ───────────────────────────────────────────
+echo "5. Audio Subsystem"
 echo "------------------"
 
 for svc in pipewire wireplumber pipewire-pulse; do
@@ -166,8 +135,8 @@ fi
 
 echo ""
 
-# ── 7. Steam/Wine audio ──────────────────────────────────────────
-echo "7. Steam / Wine Audio"
+# ── 6. Steam/Wine audio ──────────────────────────────────────────
+echo "6. Steam / Wine Audio"
 echo "---------------------"
 
 if command -v wine &>/dev/null; then

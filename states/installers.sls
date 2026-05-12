@@ -52,10 +52,18 @@ qmk_udev_rules:
         url='https://raw.githubusercontent.com/qmk/qmk_firmware/refs/heads/master/util/udev/50-qmk.rules'
         cache='/var/cache/salt/downloads/qmk_udev_rules'
         mkdir -p "$(dirname "$cache")"
-        curl -fsSL "$url" -o "$cache"
+        if ! curl -fsL "$url" -o "$cache"; then
+          if [ -f /etc/udev/rules.d/50-qmk.rules ]; then
+            exit 0
+          fi
+          # File unavailable and never installed — non-fatal
+          touch /var/cache/salt/downloads/qmk_udev_rules_missing
+          exit 0
+        fi
         install -m 0644 -D "$cache" '/etc/udev/rules.d/50-qmk.rules'
+        rm -f /var/cache/salt/downloads/qmk_udev_rules_missing
     - shell: /bin/bash
-    - creates: /etc/udev/rules.d/50-qmk.rules
+    - unless: test -f /etc/udev/rules.d/50-qmk.rules -o -f /var/cache/salt/downloads/qmk_udev_rules_missing
 
 qmk_udev_rules_reload:
   cmd.run:

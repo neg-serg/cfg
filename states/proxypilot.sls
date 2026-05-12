@@ -23,6 +23,9 @@
 {% set _mgmt_fallback = "echo '" ~ _existing_mgmt_clean ~ "'" %}
 {% set _mgmt_raw = gopass_secret('api/proxypilot-management', _mgmt_fallback) %}
 {% set _proxypilot_mgmt_key = _mgmt_raw if _mgmt_raw else _existing_mgmt_clean %}
+{% if _existing_mgmt.startswith('$2') %}
+{% set _proxypilot_mgmt_key = _existing_mgmt %}
+{% endif %}
 
 {% set _free_providers = [] %}
 {% for p in free_providers_data.get('providers', []) %}

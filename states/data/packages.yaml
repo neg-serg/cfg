@@ -93,7 +93,6 @@ dev:
   - python-pipx
   - python-pyperclip
   - python-textual
-  - python-mcp
   - python-poetry
   - python-orjson
   - python-numpy

@@ -31,7 +31,6 @@ loki:                          # Log aggregation (Grafana Loki)
   timeout: 30
   unit: loki
   scope: system
-  packages: loki
   containerized: true
   container_image: loki
   cutover_mode: in_place
@@ -51,7 +50,6 @@ promtail:                      # Log shipper for Loki
   health_path: /ready
   unit: promtail
   scope: system
-  packages: promtail
   containerized: true
   container_image: promtail
   cutover_mode: in_place

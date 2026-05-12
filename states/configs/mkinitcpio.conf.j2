@@ -1,7 +1,7 @@
 # /etc/mkinitcpio.conf — managed by Salt (states/mkinitcpio.sls)
 # See mkinitcpio(8) for details.
 
-MODULES=()
+MODULES=(vfat)
 BINARIES=()
 FILES=()
 HOOKS=(base systemd autodetect microcode modconf kms keyboard keymap sd-vconsole block lvm2 filesystems fsck)

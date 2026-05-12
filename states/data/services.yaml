@@ -151,6 +151,9 @@ dns:
         creates: /var/lib/unbound/root.key
       - name: unbound-control-setup
         creates: /etc/unbound/unbound_server.pem
+      - name: chown -R unbound:unbound /etc/unbound/unbound_*.pem /etc/unbound/unbound_*.key
+        onlyif: |
+          stat -c '%U' /etc/unbound/unbound_server.pem 2>/dev/null | grep -qv 'unbound'
     unit_override:
       name: unbound_restart_override
       service: unbound.service

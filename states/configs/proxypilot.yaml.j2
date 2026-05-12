@@ -2,45 +2,34 @@
 # Docs: https://github.com/Finesssee/ProxyPilot
 host: "127.0.0.1"
 port: 8317
-
 auth-dir: "~/.cli-proxy-api"
-
 # ── Authentication ──────────────────────────────────────────────────
 
 # Local API key — clients use this to auth to the proxy
 api-keys:
   - "{{ api_key }}"
-
 # ── Management API ──────────────────────────────────────────────────
-
 remote-management:
   allow-remote: false
   secret-key: "{{ mgmt_key }}"
   disable-control-panel: false
-
 # ── Routing & failover ──────────────────────────────────────────────
-
 routing:
   strategy: "round-robin"
-
 request-retry: 3
 max-retry-credentials: 3
 max-retry-interval: 10
-
 quota-exceeded:
   switch-project: true
   switch-preview-model: true
-
 # ── Streaming ───────────────────────────────────────────────────────
 
 # Keepalive for long-running requests (coding agent sessions)
 streaming:
   keepalive-seconds: 15
   bootstrap-retries: 1
-
 # Prevent idle timeouts on non-streaming requests
 nonstream-keepalive-interval: 30
-
 # ── Caching ─────────────────────────────────────────────────────────
 
 # Response cache — dedup identical requests during dev iterations
@@ -50,22 +39,17 @@ response-cache:
   ttl-seconds: 180
   exclude-models:
     - "*-thinking"
-
 # Prompt cache — track repeated system prompts, estimate token savings
 prompt-cache:
   enabled: true
   max-size: 200
   ttl-seconds: 1800
-
 # ── Statistics & logging ────────────────────────────────────────────
-
 usage-statistics-enabled: true
-
 debug: false
 logging-to-file: false
 logs-max-total-size-mb: 100
 error-logs-max-files: 10
-
 # ── Model aliases ───────────────────────────────────────────────────
 # alias = what the client sends, name = upstream model ID.
 # Claude: native OAuth (--claude-login).
@@ -82,18 +66,16 @@ openai-compatibility:
       - api-key: "{{ p.api_key }}"
     models:
 {%- for m in p.models %}
-      - name: "{{ m.name }}"        # local model ID (client receives this)
-        alias: "{{ m.alias }}"      # what the client sends in its request
+      - name: "{{ m.name }}" # local model ID (client receives this)
+        alias: "{{ m.alias }}" # what the client sends in its request
 {%- endfor %}
 {%- endfor %}
-{% endif %}
-
+{%- endif %}
 # ── Payload rules ───────────────────────────────────────────────────
-
 payload:
   default:
-    # OpenCode sends reasoning.effort=minimal for title generation.
-    # Proxy backend supports only low|medium|high, so normalize it.
+# OpenCode sends reasoning.effort=minimal for title generation.
+# Proxy backend supports only low|medium|high, so normalize it.
     - models:
         - name: "gpt-5*"
           protocol: "openai"

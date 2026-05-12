@@ -3,7 +3,6 @@
 import importlib.util
 import os
 
-import pytest
 import yaml
 
 from tests import REPO_ROOT_PATH

@@ -11,7 +11,6 @@ Output: logs/audit-<timestamp>.yaml with consumed/unused lists.
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import re
 import subprocess
@@ -324,7 +323,7 @@ def main() -> int:
 
 
 def _print_report_header(report: dict) -> None:
-    print(f"=== Salt Data Audit ===")
+    print("=== Salt Data Audit ===")
     print(f"Target: {report.get('salt_target')}  "
           f"Host: {report.get('hostname')}  "
           f"Test: {report.get('test_mode')}  "

@@ -759,7 +759,6 @@ def check_monitored_services_references(repo_root: Path = REPO_ROOT) -> list[str
                 continue
             is_optional = entry.get("optional", False)
             normalized = name.replace("-", "_")
-            base = name.rsplit(".", 1)[0] if "." in name else name
             if not is_optional and name not in known and normalized not in known:
                 errors.append(
                     f"monitored_services.yaml {scope}.{name}: unknown service"

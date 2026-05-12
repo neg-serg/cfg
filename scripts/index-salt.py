@@ -559,7 +559,6 @@ def _find_tests_for_data(data_basename):
 
 def generate_module_index(state_results, macros, summaries, usage):
     """Generate docs/module-index.yaml — LLM-oriented project map."""
-    info_map = {rel: info for rel, info in summaries}
 
     index = {
         "version": 1,

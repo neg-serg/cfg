@@ -171,6 +171,10 @@ def _make_render_env():
     env.globals["salt"] = _MockSalt()
     # Macros in _macros_pkg/_macros_service access these directly (not via import)
     env.globals["host"] = host
+    # Salt-specific filters
+    def _yaml_dquote(value):
+        return '"' + str(value).replace("\\", "\\\\").replace('"', '\\"') + '"'
+    env.filters["yaml_dquote"] = _yaml_dquote
     return env
 
 

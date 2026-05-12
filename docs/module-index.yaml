@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-12T16:46:51'
+generated: '2026-05-12T17:09:11'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -50,6 +50,8 @@ states:
   path: states/code_rag.sls
   purpose: 'code-rag: hybrid text+code RAG with AST-aware chunking and LanceDB vector
     search.'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/code_rag.yaml
 - id: custom_pkgs
@@ -163,6 +165,8 @@ states:
 - id: fonts
   path: states/fonts.sls
   purpose: 'Font installation: pacman, AUR, downloaded, and custom PKGBUILD builds'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/fonts.yaml
   - data/versions.yaml
@@ -242,6 +246,7 @@ states:
   includes:
   - amnezia
   - dns
+  - hiddify
   - ipv6
   - ipv6_6to4
   - ipv6_tunnel
@@ -293,6 +298,8 @@ states:
   path: states/installers.sls
   purpose: 'Fallback installers: tools built from GitHub releases, pip, cargo, go,
     or raw HTTP'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/installers.yaml
   - data/versions.yaml
@@ -440,6 +447,8 @@ states:
   secrets:
   - lastfm/password
   - lastfm/username
+  includes:
+  - bind_mounts
   data_files:
   - data/mpd.yaml
   services:
@@ -447,6 +456,8 @@ states:
 - id: music_analysis
   path: states/music_analysis.sls
   purpose: 'Music analysis pipeline: BPM/key detection, fingerprinting, and indexing'
+  includes:
+  - pacman_db_warmup
   data_files:
   - data/installers.yaml
   - data/versions.yaml

@@ -535,11 +535,10 @@ install_{{ name | replace('-', '_') }}:
    dispatch to the appropriate macro. Consolidates the repeated for-loop +
    version-resolution pattern from installers.sls / installers_desktop.sls.
    macro_type: 'curl_bin' | 'curl_extract_tar' | 'curl_extract_zip'.
-   Extra kwargs are forwarded to the underlying macro.
    Usage: {{ install_catalog(tools.curl_bin, ver, 'curl_bin') }}
-          {{ install_catalog(apps.curl_extract_zip, ver, 'curl_extract_zip', user=user, home=home) }}
+          {{ install_catalog(apps.curl_extract_zip, ver, 'curl_extract_zip') }}
 #}
-{%- macro install_catalog(catalog, ver_dict, macro_type, exclude=None, **kwargs) -%}
+{%- macro install_catalog(catalog, ver_dict, macro_type, exclude=None) -%}
 {% for name, raw in catalog.items() %}
 {% if not exclude or name not in exclude %}
 {% set _v = ver_dict.get(name | replace('-', '_'), '') %}
@@ -551,11 +550,11 @@ install_{{ name | replace('-', '_') }}:
 {% set _hash = None %}
 {% endif %}
 {% if macro_type == 'curl_bin' %}
-{{ curl_bin(name, _url, version=_v if _v else None, hash=_hash, **kwargs) }}
+{{ curl_bin(name, _url, version=_v if _v else None, hash=_hash) }}
 {% elif macro_type == 'curl_extract_tar' %}
-{{ curl_extract_tar(name, _url, binary_pattern=raw.binary_pattern if raw is mapping and raw.binary_pattern is defined else name, bin=raw.get('bin') if raw is mapping else None, version=_v if _v else None, hash=_hash, **kwargs) }}
+{{ curl_extract_tar(name, _url, binary_pattern=raw.binary_pattern if raw is mapping and raw.binary_pattern is defined else name, bin=raw.get('bin') if raw is mapping else None, version=_v if _v else None, hash=_hash) }}
 {% elif macro_type == 'curl_extract_zip' %}
-{{ curl_extract_zip(name, _url, binary_path=raw.get('binary_path') if raw is mapping else None, binaries=raw.get('binaries') if raw is mapping else None, chmod=raw.get('chmod', False) if raw is mapping else False, dest=raw.get('dest') if raw is mapping else None, symlink=raw.get('symlink') if raw is mapping else None, version=_v if _v else None, hash=_hash, **kwargs) }}
+{{ curl_extract_zip(name, _url, binary_path=raw.get('binary_path') if raw is mapping else None, binaries=raw.get('binaries') if raw is mapping else None, chmod=raw.get('chmod', False) if raw is mapping else False, dest=raw.get('dest') if raw is mapping else None, symlink=raw.get('symlink') if raw is mapping else None, version=_v if _v else None, hash=_hash) }}
 {% endif %}
 {% endif %}
 {% endfor %}

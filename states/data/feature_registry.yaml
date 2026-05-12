@@ -105,8 +105,12 @@ features:
         gates: [network]
       zapret2:
         default: false
-        description: "Zapret2 DPI bypass"
+        description: "DPI bypass (zapret2 nfqueue)"
         gates: [zapret2, system_description]
+      hiddify:
+        default: false
+        description: "Hiddify VPN client"
+        gates: [hiddify, system_description]
       wifi:
         default: false
         description: "WiFi driver support"

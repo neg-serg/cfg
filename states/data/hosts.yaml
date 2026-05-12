@@ -51,6 +51,7 @@ defaults:
       singbox: false
       tailscale: false
       zapret2: false
+      hiddify: false
       wifi: false
       vpn_split_router: false
       vpn_hybrid: false

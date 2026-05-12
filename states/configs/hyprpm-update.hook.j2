@@ -7,5 +7,5 @@ Target = hyprland
 
 [Action]
 When = PostTransaction
-Exec = /usr/bin/sudo -u {{ user }} env HOME={{ home }} XDG_RUNTIME_DIR=/run/user/{{ host.uid }} hyprpm update
+Exec = /usr/bin/sudo -u {{ user }} env HOME={{ home }} XDG_RUNTIME_DIR=/run/user/{{ host.uid }} /bin/sh -c 'hyprpm update && hyprpm reload'
 Description = Rebuild hyprpm plugin headers for new Hyprland version

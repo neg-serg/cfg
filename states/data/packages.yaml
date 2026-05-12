@@ -88,7 +88,7 @@ dev:
   - patchelf
   - neovim
   - neovim-remote
-  - nodejs-lts-jod
+  - nodejs
   - npm
   - python-pipx
   - python-pyperclip
@@ -126,7 +126,7 @@ audio:
   - pipewire
   - gst-plugin-pipewire
   - pavucontrol
-  - sonobus
+
 
 media:
   - ffmpeg
@@ -175,8 +175,6 @@ system:
   - cups
   - cups-pk-helper
   - gdm
-  - loki
-  - promtail
   - rsync
   - samba
   - slirp4netns
@@ -231,7 +229,6 @@ other:
   - dnsmasq
   - doggo
   - dos2unix
-  - duf
   - dust
   - edk2-ovmf
   - efibootmgr
@@ -416,7 +413,6 @@ other:
   - tcpdump
   - tealdeer
   - telegram-desktop
-  - python-telegram-bot
   - tesseract
   - tesseract-data-eng
   - tesseract-data-rus

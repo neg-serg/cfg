@@ -16,12 +16,13 @@
 {% set _pp_raw = '' %}
 {% endif %}
 {% set _pp = (_pp_raw | load_yaml) if _pp_raw else {} %}
-{% set _existing_mgmt = _pp.get('remote-management', {}).get('secret-key', '') %}
+{% set _existing_mgmt = _pp.get('remote-management', {}).get('secret-key', '') | string %}
+{% set _existing_mgmt_clean = _existing_mgmt | replace('"', '') | replace("'", '') %}
 
 {% set _proxypilot_api_key = proxypilot_key() %}
-{% set _mgmt_fallback = "echo '" ~ (_existing_mgmt if _existing_mgmt else '') ~ "'" %}
+{% set _mgmt_fallback = "echo '" ~ _existing_mgmt_clean ~ "'" %}
 {% set _mgmt_raw = gopass_secret('api/proxypilot-management', _mgmt_fallback) %}
-{% set _proxypilot_mgmt_key = _mgmt_raw if _mgmt_raw else _existing_mgmt %}
+{% set _proxypilot_mgmt_key = _mgmt_raw if _mgmt_raw else _existing_mgmt_clean %}
 
 {% set _free_providers = [] %}
 {% for p in free_providers_data.get('providers', []) %}
@@ -52,8 +53,8 @@ proxypilot_config:
     - context:
         user: {{ user }}
         home: {{ home }}
-        api_key: {{ _proxypilot_api_key | tojson }}
-        mgmt_key: {{ _proxypilot_mgmt_key | tojson }}
+        api_key: {{ _proxypilot_api_key }}
+        mgmt_key: {{ _proxypilot_mgmt_key }}
         free_providers: {{ _free_providers | tojson }}
     - require:
       - file: proxypilot_config_dir

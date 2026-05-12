@@ -41,12 +41,12 @@ pkgbuild:
 
   # neg-serg fork with --style plain; must replace stock duf if present
   duf:
-    replace_check: "pacman -Qi duf 2>/dev/null | rg -q neg-serg"
+    replace_check: "pacman -Qi duf 2>/dev/null | grep -q neg-serg"
 
   # Wayland wallpaper daemon with Vulkan backend; replaces stock swww
   wl:
     timeout: 900
-    replace_check: "pacman -Qi wl 2>/dev/null | rg -q neg-serg"
+    replace_check: "pacman -Qi wl 2>/dev/null | grep -q neg-serg"
     conflicts:
       - swww-vulkan
       - swww

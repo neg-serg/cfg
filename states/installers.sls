@@ -50,9 +50,6 @@ qmk_udev_rules:
     - name: |
         set -eo pipefail
         url='https://raw.githubusercontent.com/qmk/qmk_firmware/refs/heads/master/util/udev/50-qmk.rules'
-        if ! curl -fsI "$url" >/dev/null 2>&1; then
-          exit 0
-        fi
         cache='/var/cache/salt/downloads/qmk_udev_rules'
         mkdir -p "$(dirname "$cache")"
         curl -fsSL "$url" -o "$cache"

@@ -24,12 +24,12 @@ def _host() -> dict[str, Any]:
             return {"user": "root", "home": "/root", "runtime_dir": "/run/user/1000", "pkg_list": "/var/cache/salt/pacman_installed.txt", "systemd_unit_dir": "/etc/systemd/system/", "systemd_user_unit_dir": "/root/.config/systemd/user/"}
 
 
-def _sysctl_env() -> list[str]:
+def _sysctl_env() -> dict[str, str]:
     h = _host()
-    return [
-        f"XDG_RUNTIME_DIR: {h['runtime_dir']}",
-        f"DBUS_SESSION_BUS_ADDRESS: unix:path={h['runtime_dir']}/bus",
-    ]
+    return {
+        "XDG_RUNTIME_DIR": h["runtime_dir"],
+        "DBUS_SESSION_BUS_ADDRESS": f"unix:path={h['runtime_dir']}/bus",
+    }
 
 
 def _user_service_file_dict(name: str, filename: str, source: str | None = None,
@@ -60,7 +60,7 @@ def _user_service_file_dict(name: str, filename: str, source: str | None = None,
                 {"name": "systemctl --user daemon-reload"},
                 {"onlyif": "systemctl --user show-environment >/dev/null 2>&1"},
                 {"runas": u},
-                {"env": [e for e in _sysctl_env()]},
+                {"env": _sysctl_env()},
                 {"onchanges": [{"file": name}]},
             ]
         },
@@ -105,7 +105,7 @@ def user_unit_override(name: str, service: str, source: str | None = None,
                 {"name": "systemctl --user daemon-reload"},
                 {"onlyif": "systemctl --user show-environment >/dev/null 2>&1"},
                 {"runas": u},
-                {"env": [e for e in _sysctl_env()]},
+                {"env": _sysctl_env()},
                 {"onchanges": [{"file": name}]},
             ]
         },
@@ -163,7 +163,7 @@ def _user_service_enable_dict(name: str, services: list[str] | None = None,
     args: list[dict[str, Any]] = [
         {"name": shell_cmd},
         {"shell": "/bin/bash"}, {"runas": u},
-        {"env": [e for e in _sysctl_env()]},
+        {"env": _sysctl_env()},
     ]
     if unless_cmd:
         args.append({"unless": unless_cmd})
@@ -217,7 +217,7 @@ def user_service_restart(name: str, service: str, onlyif: str | None = None,
     args: list[dict[str, Any]] = [
         {"name": f"systemctl --user restart {service}"},
         {"runas": u},
-        {"env": [e for e in _sysctl_env()]},
+        {"env": _sysctl_env()},
     ]
     if onlyif:
         args.append({"onlyif": onlyif})
@@ -248,7 +248,7 @@ def user_service_disable(name: str, units: list[str],
             "cmd.run": [
                 {"name": f"systemctl --user disable --now {' '.join(units)} 2>/dev/null || true"},
                 {"runas": u},
-                {"env": [e for e in _sysctl_env()]},
+                {"env": _sysctl_env()},
                 {"onlyif": "\n".join(unless_parts)},
             ]
         }

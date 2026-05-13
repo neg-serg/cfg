@@ -23,17 +23,22 @@ def _host() -> dict[str, Any]:
             return {"user": "root", "home": "/root", "runtime_dir": "/run/user/1000", "pkg_list": "/var/cache/salt/pacman_installed.txt", "systemd_unit_dir": "/etc/systemd/system/", "systemd_user_unit_dir": "/root/.config/systemd/user/"}
 
 
-def _sysctl_env() -> list[str]:
+def _sysctl_env() -> dict[str, str]:
     h = _host()
-    return [
-        f"XDG_RUNTIME_DIR: {h['runtime_dir']}",
-        f"DBUS_SESSION_BUS_ADDRESS: unix:path={h['runtime_dir']}/bus",
-    ]
+    return {
+        "XDG_RUNTIME_DIR": h["runtime_dir"],
+        "DBUS_SESSION_BUS_ADDRESS": f"unix:path={h['runtime_dir']}/bus",
+    }
+
+
+def _sysctl_env_list() -> list[str]:
+    env = _sysctl_env()
+    return [f"{k}={v}" for k, v in env.items()]
 
 
 def _render_env_block() -> str:
     env = _sysctl_env()
-    return "".join(f"      - {e}\n" for e in env)
+    return "".join(f"      - {k}: {v}\n" for k, v in env.items())
 
 
 DEFAULT_RETRY = {"attempts": 3, "interval": 10}
@@ -206,7 +211,7 @@ def remove_native_unit(name: str, unit_path: str | None = None,
             {"runas": _host().get("user", "root")}
         )
         daemon_reload[f"{name}_native_unit_daemon_reload"]["cmd.run"].append(
-            {"env": [e for e in _sysctl_env()]}
+            {"env": _sysctl_env()}
         )
 
     return {

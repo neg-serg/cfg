@@ -79,10 +79,10 @@ def hyprpm_update(name: str, check_plugins: list[str] | None = None,
     )
     onlyif = f"ss -xl 2>/dev/null | grep -q /run/user/{h['uid']}/hypr/"
 
-    env_entries = [
-        f"HOME: {h['home']}",
-        f"XDG_RUNTIME_DIR: {h['runtime_dir']}",
-    ]
+    env_entries = {
+        "HOME": h["home"],
+        "XDG_RUNTIME_DIR": h["runtime_dir"],
+    }
 
     cmd = (
         f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
@@ -122,10 +122,10 @@ def hyprpm_add(name: str, repo_url: str, check_plugin: str,
     )
     onlyif = f"ss -xl 2>/dev/null | grep -q /run/user/{h['uid']}/hypr/"
 
-    env_entries = [
-        f"HOME: {h['home']}",
-        f"XDG_RUNTIME_DIR: {h['runtime_dir']}",
-    ]
+    env_entries = {
+        "HOME": h["home"],
+        "XDG_RUNTIME_DIR": h["runtime_dir"],
+    }
 
     cmd = (
         f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
@@ -158,10 +158,10 @@ def hyprpm_enable(name: str, plugin: str,
     )
     onlyif = f"ss -xl 2>/dev/null | grep -q /run/user/{h['uid']}/hypr/"
 
-    env_entries = [
-        f"HOME: {h['home']}",
-        f"XDG_RUNTIME_DIR: {h['runtime_dir']}",
-    ]
+    env_entries = {
+        "HOME": h["home"],
+        "XDG_RUNTIME_DIR": h["runtime_dir"],
+    }
 
     cmd = (
         f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "

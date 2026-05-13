@@ -1,562 +1,562 @@
 schema_version: 1
 base:
-- base
-- base-devel
-- limine
-- linux
-- linux-headers
-- linux-firmware
-- amd-ucode
+- base  # Minimal package set to define a basic Arch Linux installation
+- base-devel  # Basic tools to build Arch Linux packages
+- limine  # An advanced, portable, multiprotocol bootloader
+- linux  # The Linux kernel and modules
+- linux-headers  # Headers and scripts for building modules for the Linux kernel
+- linux-firmware  # Firmware files for Linux - Default set
+- amd-ucode  # Microcode update image for AMD CPUs
 desktop:
-- broot
-- chromium
-- epiphany
-- firefox
-- gimp
-- gnome-backgrounds
-- gnome-calculator
-- gnome-calendar
-- gnome-characters
-- gnome-clocks
-- gnome-color-manager
-- gnome-connections
-- gnome-console
-- cosmic-greeter
-- dunst
-- grim
-- hypridle
-- hyprland
-- hyprlock
-- hyprpicker
-- hyprpolkitagent
-- eza
-- matugen
-- rmpc
-- rofi
-- loupe
-- satty
-- slurp
-- swayimg
-- television
-- wl-clipboard
-- wlr-randr
-- xdg-desktop-portal-hyprland
-- yazi
-- ark
-- gnome-contacts
-- gnome-control-center
-- gnome-disk-utility
-- gnome-font-viewer
-- gnome-keyring
-- gnome-logs
-- gnome-maps
-- gnome-menus
-- gnome-music
-- gnome-remote-desktop
-- gnome-session
-- gnome-settings-daemon
-- gnome-shell
-- gnome-software
-- gnome-system-monitor
-- gnome-text-editor
-- gnome-tour
-- gnome-tweaks
-- gnome-user-docs
-- gnome-user-share
-- gnome-weather
-- nautilus
-- simple-scan
-- sushi
-- swayosd
-- wofi
-- xdg-user-dirs-gtk
-- xdg-utils
-- yelp
+- broot  # Fuzzy Search + tree + cd
+- chromium  # A web browser built for speed, simplicity, and security
+- epiphany  # A GNOME web browser based on the WebKit rendering engine
+- firefox  # Fast, Private & Safe Web Browser
+- gimp  # GNU Image Manipulation Program
+- gnome-backgrounds  # Background images and data for GNOME
+- gnome-calculator  # GNOME Scientific calculator
+- gnome-calendar  # Simple and beautiful calendar application designed to perfectly fit the GNOME...
+- gnome-characters  # A character map application
+- gnome-clocks  # Clocks applications for GNOME
+- gnome-color-manager  # GNOME Color Profile Tools
+- gnome-connections  # Remote desktop client for the GNOME desktop environment
+- gnome-console  # A simple user-friendly terminal emulator for the GNOME desktop
+- cosmic-greeter  # COSMIC greeter for greetd
+- dunst  # Customizable and lightweight notification-daemon
+- grim  # Screenshot utility for Wayland
+- hypridle  # hyprland’s idle daemon
+- hyprland  # a highly customizable dynamic tiling Wayland compositor
+- hyprlock  # hyprland’s GPU-accelerated screen locking utility
+- hyprpicker  # A wlroots-compatible Wayland color picker that does not suck
+- hyprpolkitagent  # Simple polkit authentication agent for Hyprland, written in QT/QML
+- eza  # A modern replacement for ls (community fork of exa)
+- matugen  # A material you color generation tool
+- rmpc  # A beautiful and configurable TUI client for MPD
+- rofi  # A window switcher, application launcher and dmenu replacement
+- loupe  # A simple image viewer for GNOME
+- satty  # Modern screenshot annotation tool, inspired by Swappy and Flameshot
+- slurp  # Select a region in a Wayland compositor
+- swayimg  # A lightweight image viewer for Wayland display servers
+- television  # A general purpose fuzzy finder for your terminal
+- wl-clipboard  # Command-line copy/paste utilities for Wayland
+- wlr-randr  # Utility to manage outputs of a Wayland compositor
+- xdg-desktop-portal-hyprland  # xdg-desktop-portal backend for hyprland
+- yazi  # Blazing fast terminal file manager written in Rust, based on async I/O
+- ark  # Archiving Tool
+- gnome-contacts  # Contacts Manager for GNOME
+- gnome-control-center  # GNOME's main interface to configure various aspects of the desktop
+- gnome-disk-utility  # Disk Management Utility for GNOME
+- gnome-font-viewer  # A font viewer utility for GNOME
+- gnome-keyring  # Stores passwords and encryption keys
+- gnome-logs  # A log viewer for the systemd journal
+- gnome-maps  # Find places around the world
+- gnome-menus  # GNOME menu specifications
+- gnome-music  # Music player and management application
+- gnome-remote-desktop  # GNOME Remote Desktop server
+- gnome-session  # The GNOME Session Handler
+- gnome-settings-daemon  # GNOME Settings Daemon
+- gnome-shell  # Next generation desktop shell
+- gnome-software  # Allows you to find and install new apps
+- gnome-system-monitor  # View current processes and monitor system state
+- gnome-text-editor  # A simple text editor for the GNOME desktop
+- gnome-tour  # Guided tour and greeter for GNOME
+- gnome-tweaks  # Graphical interface for advanced GNOME 3 settings (Tweak Tool)
+- gnome-user-docs  # User documentation for GNOME
+- gnome-user-share  # Easy to use user-level file sharing for GNOME
+- gnome-weather  # Access current weather conditions and forecasts
+- nautilus  # Default file manager for GNOME
+- simple-scan  # Simple scanning utility
+- sushi  # A quick previewer for Nautilus
+- swayosd  # A GTK based on screen display for keyboard shortcuts like caps-lock and volume
+- wofi  # launcher for wlroots-based wayland compositors
+- xdg-user-dirs-gtk  # Creates user dirs and asks to relocalize them
+- xdg-utils  # Command line tools that assist applications with a variety of desktop integra...
+- yelp  # Get help with GNOME
 dev:
-- clang
-- cmake
-- gdb
-- meson
-- ninja
-- fennel
-- git
-- lua-language-server
-- lua53
-- patchelf
-- neovim
-- neovim-remote
-- nodejs
-- npm
-- python-pipx
-- python-pyperclip
-- python-textual
-- python-poetry
-- python-orjson
-- python-numpy
-- ruby
-- jupyterlab
-- subversion
-- uv
-- vale
+- clang  # C language family frontend for LLVM
+- cmake  # A cross-platform open-source make system
+- gdb  # The GNU Debugger
+- meson  # High productivity build system
+- ninja  # Small build system with a focus on speed
+- fennel  # A Lua Lisp language
+- git  # the fast distributed version control system
+- lua-language-server  # Lua Language Server coded by Lua
+- lua53  # Powerful lightweight programming language designed for extending applications
+- patchelf  # Small utility to modify the dynamic linker and RPATH of ELF executables
+- neovim  # Fork of Vim aiming to improve user experience, plugins, and GUIs
+- neovim-remote  # Support --remote and friends for Neovim
+- nodejs  # Evented I/O for V8 javascript ("Current" release)
+- npm  # JavaScript package manager
+- python-pipx  # Install and Run Python Applications in Isolated Environments
+- python-pyperclip  # A cross-platform clipboard module for Python
+- python-textual  # Modern Text User Interface framework
+- python-poetry  # Python dependency management and packaging made easy
+- python-orjson  # Fast, correct Python JSON library supporting dataclasses and datetimes
+- python-numpy  # Scientific tools for Python
+- ruby  # An object-oriented language for quick and easy programming
+- jupyterlab  # JupyterLab computational environment
+- subversion  # A Modern Concurrent Version Control System
+- uv  # An extremely fast Python package installer and resolver written in Rust
+- vale  # A markup-aware linter for prose built with speed and extensibility in mind
 network:
-- cloudflare-speed-cli
-- curl
-- firewalld
-- ufw
-- networkmanager
-- networkmanager-qt
-- bluez
-- nmap
-- openssh
-- tailscale
-- proton-vpn-cli
-- zapret2
-- wget
-- nethogs
-- network-manager-applet
+- cloudflare-speed-cli  # CLI for internet speed test via Cloudflare
+- curl  # command line tool and library for transferring data with URLs
+- firewalld  # Firewall daemon with D-Bus interface
+- ufw  # Uncomplicated and easy to use CLI tool for managing a netfilter firewall
+- networkmanager  # Network connection manager and user applications
+- networkmanager-qt  # Qt wrapper for NetworkManager API
+- bluez  # Daemons for the bluetooth protocol stack
+- nmap  # Utility for network discovery and security auditing
+- openssh  # SSH protocol implementation for remote login, command execution and file tran...
+- tailscale  # A mesh VPN that makes it easy to connect your devices, wherever they are.
+- proton-vpn-cli  # Official ProtonVPN CLI Linux app
+- zapret2  # Anti-DPI software
+- wget  # Network utility to retrieve files from the web
+- nethogs  # A net top tool which displays traffic used per process instead of per IP or i...
+- network-manager-applet  # Applet for managing network connections
 audio:
-- pipewire
-- gst-plugin-pipewire
-- pavucontrol
+- pipewire  # Low-latency audio/video router and processor
+- gst-plugin-pipewire  # Multimedia graph framework - pipewire plugin
+- pavucontrol  # PulseAudio Volume Control
 media:
-- ffmpeg
-- ffmpegthumbnailer
-- gst-libav
-- gst-plugins-bad
-- gst-plugins-ugly
-- imagemagick
-- mpv
-- grilo-plugins
-- rygel
-- showtime
-- ytsurf
+- ffmpeg  # Complete solution to record, convert and stream audio and video
+- ffmpegthumbnailer  # Lightweight video thumbnailer that can be used by file managers
+- gst-libav  # Multimedia graph framework - libav plugin
+- gst-plugins-bad  # Multimedia graph framework - bad plugins
+- gst-plugins-ugly  # Multimedia graph framework - ugly plugins
+- imagemagick  # An image viewing/manipulation program
+- mpv  # a free, open source, and cross-platform media player
+- grilo-plugins  # A collection of plugins for the Grilo framework
+- rygel  # UPnP AV MediaServer and MediaRenderer
+- showtime  # Video player for GNOME
+- ytsurf  # YouTube in your terminal. Clean and distraction-free.
 fonts:
-- noto-fonts-cjk
-- ttf-jetbrains-mono-nerd
+- noto-fonts-cjk  # Google Noto CJK fonts
+- ttf-jetbrains-mono-nerd  # Patched font JetBrains Mono from nerd fonts library
 gaming:
-- lutris
-- wine
-- xorg-server
-- xorg-xinit
-- xf86-video-amdgpu
-- xf86-video-ati
-- nethack
-- proton-ge-custom-bin
+- lutris  # Open Gaming Platform
+- wine  # A compatibility layer for running Windows programs
+- xorg-server  # Xorg X server
+- xorg-xinit  # X.Org initialisation program
+- xf86-video-amdgpu  # X.org amdgpu video driver
+- xf86-video-ati  # X.org ati video driver
+- nethack  # A single player dungeon exploration game
+- proton-ge-custom-bin  # A fancy custom distribution of Valves Proton with various patches
 system:
-- bottom
-- btop
-- xorg-server
-- xorg-xinit
-- xf86-video-amdgpu
-- htop
-- lsof
-- lvm2
-- parted
-- strace
-- stress-ng
-- rmlint
-- sysstat
-- pacman-contrib
-- rebuild-detector
-- cups
-- cups-pk-helper
-- gdm
-- rsync
-- samba
-- slirp4netns
-- system-config-printer
-- zram-generator
+- bottom  # A graphical process/system monitor
+- btop  # A monitor of system resources, bpytop ported to C++
+- xorg-server  # Xorg X server
+- xorg-xinit  # X.Org initialisation program
+- xf86-video-amdgpu  # X.org amdgpu video driver
+- htop  # Interactive process viewer
+- lsof  # Lists open files for running Unix processes
+- lvm2  # Logical Volume Manager 2 utilities
+- parted  # A program for creating, destroying, resizing, checking and copying partitions
+- strace  # A diagnostic, debugging and instructional userspace tracer
+- stress-ng  # Software to stress test a computer system in various selectable ways
+- rmlint  # remove duplicates and other lint (without-gui)
+- sysstat  # a collection of performance monitoring tools (iostat,isag,mpstat,pidstat,sadf...
+- pacman-contrib  # Contributed scripts and tools for pacman systems
+- rebuild-detector  # Detects which packages need to be rebuilt
+- cups  # OpenPrinting CUPS - daemon package
+- cups-pk-helper  # A helper that makes system-config-printer use PolicyKit
+- gdm  # Display manager and login screen
+- rsync  # A fast and versatile file copying tool for remote and local files
+- samba  # SMB Fileserver and AD Domain server
+- slirp4netns  # User-mode networking for unprivileged network namespaces
+- system-config-printer  # A CUPS printer configuration tool and status applet
+- zram-generator  # Systemd unit generator for zram devices
 other:
-- abduco
-- age
-- android-tools
-- aria2
-- asciinema
-- atop
-- avahi
-- bandwhich
-- bat
-- beets
-- blender
-- lib32-vulkan-radeon
-- bluez-utils
-- borg
-- bpftrace
-- bucklespring
-- carla
-- cava
-- ccid
-- yubikey-manager
-- cdparanoia
-- chafa
-- chezmoi
-- choose
-- chromaprint
-- cliphist
-- convmv
-- corectrl
-- dosbox
-- cowsay
-- cpufetch
-- cpupower
-- ctop
-- curlie
-- dash
-- ddrescue
-- dhcpcd
-- diff-so-fancy
-- difftastic
-- direnv
-- distrobox
-- dive
-- dkms
-- dnsmasq
-- doggo
-- dos2unix
-- dust
-- edk2-ovmf
-- efibootmgr
-- elfutils
-- enca
-- entr
-- erdtree
-- etckeeper
-- expect
-- fastfetch
-- fclones
-- fd
-- figlet
-- fio
-- fortune-mod
-- fping
-- freerdp
-- fwupd
-- fzf
-- genact
-- geoip
-- geoip-database
-- gist
-- git-crypt
-- git-delta
-- git-filter-repo
-- github-cli
-- gitleaks
-- gitlogue
-- git-lfs
-- ghostty
-- ghostty-shell-integration
-- glow
-- goaccess
-- goimapnotify
-- gopass
-- go-yq
-- gptfdisk
-- grafana
-- graphviz
-- grex
-- gvfs
-- gvfs-mtp
-- gvfs-smb
-- gvfs-afc
-- gvfs-dnssd
-- gvfs-goa
-- gvfs-gphoto2
-- gvfs-nfs
-- gvfs-onedrive
-- gvfs-wsdd
-- hashcat
-- helix
-- helvum
-- hexyl
-- himalaya
-- htmlq
-- httpie
-- hunspell-ru
-- hwinfo
-- hyperfine
-- id3v2
-- iftop
-- inotify-tools
-- ioping
-- iotop-c
-- iperf3
-- isync
-- iwd
-- jc
-- jpegoptim
-- jq
-- jujutsu
-- just
-- kexec-tools
-- kitty
-- kmon
-- kvantum
-- kvantum-qt5
-- lbzip2
-- less
-- libnotify
-- liquidctl
-- lldb
-- lm_sensors
-- lnav
-- lolcat
-- lowdown
-- lshw
-- lsp-plugins
-- man-pages
-- mediainfo
-- media-player-info
-- memtester
-- miller
-- minicom
-- moreutils
-- mpc
-- mpd
-- python-mutagen
-- mtr
-- multipath-tools
-- ncdu
-- neomutt
-- nerdctl
-- nicotine+
-- nm-connection-editor
-- nss-mdns
-- nuspell
-- nvtop
-- ollama
-- ollama-vulkan
-- onefetch
-- openbsd-netcat
-- openocd
-- openrgb
-- optipng
-- ouch
-- pandoc-cli
-- parallel
-- pastel
-- pbzip2
-- pcmanfm
-- pcsc-tools
-- perf
-- perl-image-exiftool
-- pgcli
-- picard
-- pigz
-- plocate
-- pngquant
-- podman
-- powertop
-- pre-commit
-- python-faker
-- python-internetarchive
-- prettyping
-- progress
-- pv
-- pwgen
-- qemu-desktop
-- qpwgraph
-- qrencode
-- qt5ct
-- qt5-wayland
-- qt6ct
-- rawtherapee
-- rclone
-- recoll
-- reptyr
-- resvg
-- ripgrep
-- rlwrap
-- ruff
-- sad
-- sbctl
-- schedtool
-- scour
-- shellcheck
-- shfmt
-- smartmontools
-- sops
-- socat
-- sonic-visualiser
-- sox
-- sshfs
-- sshpass
-- streamlink
-- s-tui
-- sudo
-- swappy
-- systemd-resolvconf
-- tabiew
-- taplo-cli
-- tcpdump
-- tealdeer
-- telegram-desktop
-- tesseract
-- tesseract-data-eng
-- tesseract-data-rus
-- testdisk
-- texlive-basic
-- tig
-- tmux
-- toilet
-- traceroute
-- transmission-cli
-- tree
-- tree-sitter-cli
-- ttyd
-- tumbler
-- turbostat
-- udiskie
-- ugrep
-- unarchiver
-- unbound
-- unzip
-- cpio
-- upower
-- urlscan
-- urlwatch
-- valgrind
-- vdirsyncer
-- virt-manager
-- virt-viewer
-- viu
-- vnstat
-- w3m
-- waypipe
-- wayvnc
-- wev
-- wf-recorder
-- which
-- whois
-- wireshark-cli
-- wtype
-- xfsprogs
-- xh
-- yamllint
-- ydotool
-- yt-dlp
-- zathura
-- zathura-pdf-poppler
-- zbar
-- zellij
-- zk
-- zmap
-- zoxide
-- zsh
-- handlr-regex
-- i3status
-- i3-wm
-- inxi
-- kate
-- libpulse
-- malcontent
-- nano
-- orca
-- papers
-- pass
-- plasma-desktop
-- plasma-workspace
-- polkit-kde-agent
-- breeze
-- breeze-icons
-- konsole
+- abduco  # Tool for session {at,de}tach support which allows a process to run independen...
+- age  # A simple, modern and secure file encryption tool
+- android-tools  # Android platform tools
+- aria2  # Download utility that supports HTTP(S), FTP, BitTorrent, and Metalink
+- asciinema  # Record and share terminal sessions
+- atop  # A system and process level monitor
+- avahi  # Service Discovery for Linux using mDNS/DNS-SD (compatible with Bonjour)
+- bandwhich  # Terminal bandwidth utilization tool
+- bat  # Cat clone with syntax highlighting and git integration
+- beets  # Flexible music library manager and tagger
+- blender  # A fully integrated 3D graphics creation suite
+- lib32-vulkan-radeon  # Open-source Vulkan driver for AMD GPUs - 32-bit
+- bluez-utils  # Development and debugging utilities for the bluetooth protocol stack
+- borg  # Deduplicating backup program with compression and authenticated encryption
+- bpftrace  # High-level tracing language for Linux eBPF
+- bucklespring  # Nostalgia bucklespring keyboard sound, sampled from IBM's Model-M
+- carla  # Audio Plugin Host
+- cava  # Console-based Audio Visualizer with support for multiple backends
+- ccid  # A generic USB Chip/Smart Card Interface Devices driver
+- yubikey-manager  # Python library and command line tool for configuring a YubiKey
+- cdparanoia  # Compact Disc Digital Audio extraction tool
+- chafa  # Image-to-text converter supporting a wide range of symbols and palettes, tran...
+- chezmoi  # Manage your dotfiles across multiple machines
+- choose  # A human-friendly and fast alternative to cut and (sometimes) awk
+- chromaprint  # Library for extracting fingerprints from any audio source
+- cliphist  # wayland clipboard manager
+- convmv  # Tool for converting encodings on filesystems
+- corectrl  # Core control application
+- dosbox  # Emulator with builtin DOS for running DOS Games
+- cowsay  # Configurable talking cow (and a bit more)
+- cpufetch  # Simple yet fancy CPU architecture fetching tool
+- cpupower  # Linux kernel tool to examine and tune power saving related features of your p...
+- ctop  # Top-like interface for container metrics
+- curlie  # The power of curl, the ease of use of httpie.
+- dash  # POSIX compliant shell that aims to be as small as possible
+- ddrescue  # GNU data recovery tool
+- dhcpcd  # DHCP/ IPv4LL/ IPv6RA/ DHCPv6 client
+- diff-so-fancy  # Good-looking diffs with diff-highlight and more
+- difftastic  # An experimental diff tool that compares files based on their syntax
+- direnv  # A shell extension that manages your environment
+- distrobox  # Use any linux distribution inside your terminal.
+- dive  # A tool for exploring layers in a docker image
+- dkms  # Dynamic Kernel Modules System
+- dnsmasq  # Lightweight, easy to configure DNS forwarder and DHCP server
+- doggo  # Command-line DNS Client for Humans
+- dos2unix  # Text file format converter
+- dust  # A more intuitive version of du in rust
+- edk2-ovmf  # Firmware for Virtual Machines (x86_64, i686 on x86_64)
+- efibootmgr  # Linux user-space application to modify the EFI Boot Manager
+- elfutils  # Handle ELF object files and DWARF debugging information (utilities)
+- enca  # Charset analyser and converter
+- entr  # Run arbitrary commands when files change
+- erdtree  # A multi-threaded filesystem and disk-usage analysis tool
+- etckeeper  # Collection of tools to let /etc be stored in a git, hg or bzr repository
+- expect  # A tool for automating interactive applications
+- fastfetch  # A feature-rich and performance oriented neofetch like system information tool
+- fclones  # Efficient Duplicate File Finder
+- fd  # Simple, fast and user-friendly alternative to find
+- figlet  # A program for making large letters out of ordinary text
+- fio  # Scriptable I/O tool for storage benchmarks and drive testing
+- fortune-mod  # The Fortune Cookie Program from BSD games
+- fping  # Utility to ping multiple hosts at once
+- freerdp  # Free implementation of the Remote Desktop Protocol (RDP)
+- fwupd  # Simple daemon to allow session software to update firmware
+- fzf  # Command-line fuzzy finder
+- genact  # A nonsense activity generator
+- geoip  # Non-DNS IP-to-country resolver C library & utils
+- geoip-database  # GeoIP legacy country database (based on GeoLite2 data created by MaxMind)
+- gist  # Potentially the best command line gister
+- git-crypt  # Transparent file encryption in Git
+- git-delta  # Syntax-highlighting pager for git and diff output
+- git-filter-repo  # Quickly rewrite git repository history (filter-branch replacement)
+- github-cli  # The GitHub CLI
+- gitleaks  # Audit Git repos for secrets and keys
+- gitlogue  # A cinematic Git commit replay tool for the terminal
+- git-lfs  # Git extension for versioning large files
+- ghostty  # Fast, native, feature-rich terminal emulator pushing modern features
+- ghostty-shell-integration  # Shell integration scripts for ghostty
+- glow  # Command-line markdown renderer
+- goaccess  # An open source real-time web log analyzer and interactive viewer
+- goimapnotify  # Execute scripts on IMAP mailbox changes (new/deleted/updated messages) using ...
+- gopass  # The slightly more awesome standard unix password manager for teams.
+- go-yq  # Portable command-line YAML processor
+- gptfdisk  # A text-mode partitioning tool that works on GUID Partition Table (GPT) disks
+- grafana  # Gorgeous metric viz, dashboards & editors for Graphite, InfluxDB & OpenTSDB
+- graphviz  # Graph visualization software
+- grex  # A command-line tool for generating regular expressions from user-provided inp...
+- gvfs  # Virtual filesystem implementation for GIO
+- gvfs-mtp  # Virtual filesystem implementation for GIO - MTP backend (Android, media player)
+- gvfs-smb  # Virtual filesystem implementation for GIO - SMB/CIFS backend (Windows file sh...
+- gvfs-afc  # Virtual filesystem implementation for GIO - AFC backend (Apple mobile devices)
+- gvfs-dnssd  # Virtual filesystem implementation for GIO - DNS-SD and WebDAV backend (macOS ...
+- gvfs-goa  # Virtual filesystem implementation for GIO - Gnome Online Accounts backend (e....
+- gvfs-gphoto2  # Virtual filesystem implementation for GIO - gphoto2 backend (PTP camera, MTP ...
+- gvfs-nfs  # Virtual filesystem implementation for GIO - NFS backend
+- gvfs-onedrive  # Virtual filesystem implementation for GIO - Microsoft OneDrive backend
+- gvfs-wsdd  # Virtual filesystem implementation for GIO - Web Services Dynamic Discovery ba...
+- hashcat  # Multithreaded advanced password recovery utility
+- helix  # A post-modern modal text editor
+- helvum  # GTK patchbay for PipeWire
+- hexyl  # Colored command-line hex viewer
+- himalaya  # A CLI email client
+- htmlq  # Like jq, but for HTML
+- httpie  # human-friendly CLI HTTP client for the API era
+- hunspell-ru  # Russian dictionary for Hunspell
+- hwinfo  # Hardware detection tool from openSUSE
+- hyperfine  # A command-line benchmarking tool
+- id3v2  # Utility to edit id3v2 tags
+- iftop  # Display bandwidth usage on an interface
+- inotify-tools  # inotify-tools is a C library and a set of command-line programs for Linux pro...
+- ioping  # Simple disk I/0 latency measuring tool
+- iotop-c  # A top utility for IO
+- iperf3  # TCP, UDP, and SCTP network bandwidth measurement tool
+- isync  # IMAP and MailDir mailbox synchronizer
+- iwd  # Internet Wireless Daemon
+- jc  # Converts the output of popular command-line tools and file-types to JSON
+- jpegoptim  # Jpeg optimisation utility
+- jq  # Command-line JSON processor
+- jujutsu  # Git-compatible VCS that is both simple and powerful
+- just  # A handy way to save and run project-specific commands
+- kexec-tools  # Load another kernel from the currently executing Linux kernel
+- kitty  # A modern, hackable, featureful, OpenGL-based terminal emulator
+- kmon  # Linux kernel manager and activity monitor
+- kvantum  # SVG-based theme engine for Qt6 (including config tool and extra themes)
+- kvantum-qt5  # SVG-based theme engine for Qt5
+- lbzip2  # A parallel, SMP-based, bzip2-compatible compression utility
+- less  # A terminal based program for viewing text files
+- libnotify  # Library for sending desktop notifications
+- liquidctl  # Cross-platform CLI and Python drivers for AIO liquid coolers and other devices
+- lldb  # Next generation, high-performance debugger
+- lm_sensors  # Collection of user space tools for general SMBus access and hardware monitoring
+- lnav  # A curses-based tool for viewing and analyzing log files
+- lolcat  # Okay, no unicorns. But rainbows!!
+- lowdown  # A simple Markdown translator
+- lshw  # A small tool to provide detailed information on the hardware configuration of...
+- lsp-plugins  # Collection of open-source plugins
+- man-pages  # Linux man pages
+- mediainfo  # Supplies technical and tag information about media files (CLI interface)
+- media-player-info  # Data files describing media player capabilities, mostly of mass-storage devices
+- memtester  # A userspace utility for testing the memory subsystem for faults
+- miller  # Name-indexed data processing tool
+- minicom  # A serial communication program
+- moreutils  # A growing collection of the unix tools that nobody thought to write thirty ye...
+- mpc  # Minimalist command line interface to MPD
+- mpd  # Flexible, powerful, server-side application for playing music
+- python-mutagen  # An audio metadata tag reader and writer (python library)
+- mtr  # Combines the functionality of traceroute and ping into one tool (CLI version)
+- multipath-tools  # Multipath tools for Linux (including kpartx)
+- ncdu  # Disk usage analyzer with an ncurses interface
+- neomutt  # A version of mutt with added features
+- nerdctl  # Docker-compatible CLI for containerd
+- nicotine+  # Soulseek music-sharing client, written in python
+- nm-connection-editor  # NetworkManager GUI connection editor and widgets
+- nss-mdns  # glibc plugin providing host name resolution via mDNS
+- nuspell  # Fast and safe spellchecking C++ library
+- nvtop  # GPUs process monitoring for AMD, Intel and NVIDIA
+- ollama  # Create, run and share large language models (LLMs)
+- ollama-vulkan  # Create, run and share large language models (LLMs) with Vulkan
+- onefetch  # Git repository summary on your terminal
+- openbsd-netcat  # TCP/IP swiss army knife. OpenBSD variant.
+- openocd  # Debugging, in-system programming and boundary-scan testing for embedded targe...
+- openrgb  # Open source RGB lighting control that doesn't depend on manufacturer software
+- optipng  # Compresses PNG files to a smaller size, without losing any information.
+- ouch  # A command line utility for easily compressing and decompressing files and dir...
+- pandoc-cli  # Conversion between documentation formats
+- parallel  # A shell tool for executing jobs in parallel
+- pastel  # A command-line tool to generate, analyze, convert and manipulate colors
+- pbzip2  # Parallel implementation of the bzip2 block-sorting file compressor
+- pcmanfm  # Extremely fast and lightweight file manager
+- pcsc-tools  # PC/SC Architecture smartcard tools
+- perf  # Linux kernel performance auditing tool
+- perl-image-exiftool  # Read and write EXIF information
+- pgcli  # A command line interface for PostgreSQL with auto-completion and syntax highl...
+- picard  # Official MusicBrainz tagger
+- pigz  # Parallel implementation of the gzip file compressor
+- plocate  # Alternative to locate, faster and compatible with mlocate's database.
+- pngquant  # Command-line utility to quantize PNGs down to 8-bit paletted PNGs
+- podman  # Tool and library for running OCI-based containers in pods
+- powertop  # A tool to diagnose issues with power consumption and power management
+- pre-commit  # A framework for managing and maintaining multi-language pre-commit hooks
+- python-faker  # Faker generates fake data for you.
+- python-internetarchive  # A Python and Command-Line Interface to Archive.org
+- prettyping  # A ping wrapper making the output prettier, more colorful, more compact, and e...
+- progress  # Shows running coreutils basic commands and displays stats
+- pv  # A terminal-based tool for monitoring the progress of data through a pipeline
+- pwgen  # Password generator for creating easily memorable passwords
+- qemu-desktop  # A QEMU setup for desktop environments
+- qpwgraph  # PipeWire Graph Qt GUI Interface
+- qrencode  # C library for encoding data in a QR Code symbol.
+- qt5ct  # Qt5 Configuration Utility
+- qt5-wayland  # Provides APIs for Wayland
+- qt6ct  # Qt 6 Configuration Utility
+- rawtherapee  # A powerful cross-platform raw image processing program
+- rclone  # rsync for cloud storage
+- recoll  # Full text search tool based on Xapian backend
+- reptyr  # Utility for taking an existing running program and attaching it to a new term...
+- resvg  # SVG rendering library and CLI
+- ripgrep  # A search tool that combines the usability of ag with the raw speed of grep
+- rlwrap  # Adds readline-style editing and history to programs
+- ruff  # An extremely fast Python linter, written in Rust
+- sad  # Space Age seD
+- sbctl  # Secure Boot key manager
+- schedtool  # Query or alter a process' scheduling policy
+- scour  # An SVG scrubber
+- shellcheck  # Shell script analysis tool
+- shfmt  # Format shell programs
+- smartmontools  # Control and monitor S.M.A.R.T. enabled ATA and SCSI Hard Drives
+- sops  # Editor of encrypted files that supports YAML, JSON, ENV, INI and BINARY formats
+- socat  # Multipurpose relay
+- sonic-visualiser  # A viewer and analyser of music audio files.
+- sox  # The Swiss Army knife of sound processing tools
+- sshfs  # FUSE client based on the SSH File Transfer Protocol
+- sshpass  # Fool ssh into accepting an interactive password non-interactively
+- streamlink  # CLI program that launches streams from various streaming services in a custom...
+- s-tui  # Terminal UI stress test and monitoring tool
+- sudo  # Give certain users the ability to run some commands as root
+- swappy  # A Wayland native snapshot editing tool
+- systemd-resolvconf  # systemd resolvconf replacement (for use with systemd-resolved)
+- tabiew  # A lightweight TUI to view and query CSV files
+- taplo-cli  # TOML toolkit written in Rust
+- tcpdump  # Powerful command-line packet analyzer
+- tealdeer  # A fast tldr client in Rust
+- telegram-desktop  # Official Telegram Desktop client
+- tesseract  # An OCR program
+- tesseract-data-eng  # Tesseract OCR data (eng)
+- tesseract-data-rus  # Tesseract OCR data (rus)
+- testdisk  # Checks and undeletes partitions + PhotoRec, signature based recovery tool
+- texlive-basic  # TeX Live - Essential programs and files
+- tig  # Text-mode interface for Git.
+- tmux  # Terminal multiplexer
+- toilet  # Free replacement for the FIGlet utility
+- traceroute  # Tracks the route taken by packets over an IP network
+- transmission-cli  # Fast, easy, and free BitTorrent client (CLI tools, daemon and web client)
+- tree  # A directory listing program displaying a depth indented list of files
+- tree-sitter-cli  # CLI tool for developing, testing, and using Tree-sitter parsers
+- ttyd  # Share your terminal over the web
+- tumbler  # Thumbnail service implementing the thumbnail management D-Bus specification
+- turbostat  # Report processor frequency and idle statistics
+- udiskie  # Removable disk automounter using udisks
+- ugrep  # ultra fast grep with interactive TUI, fuzzy search, boolean queries, hexdumps...
+- unarchiver  # unar and lsar: Objective-C tools for uncompressing archive files
+- unbound  # Validating, recursive, and caching DNS resolver
+- unzip  # For extracting and viewing files in .zip archives
+- cpio  # A tool to copy files into or out of a cpio or tar archive
+- upower  # Abstraction for enumerating power devices, listening to device events and que...
+- urlscan  # Mutt and terminal url selector
+- urlwatch  # Tool for monitoring webpages for updates
+- valgrind  # Tool to help find memory-management problems in programs
+- vdirsyncer  # Synchronize CalDAV and CardDAV
+- virt-manager  # Desktop user interface for managing virtual machines
+- virt-viewer  # A lightweight interface for interacting with the graphical display of virtual...
+- viu  # Simple terminal image viewer
+- vnstat  # A console-based network traffic monitor
+- w3m  # Text-based Web browser as well as pager
+- waypipe  # A proxy for Wayland protocol applications; like ssh -X
+- wayvnc  # VNC server for wlroots-based Wayland compositors
+- wev  # A tool for debugging wayland events on a Wayland window, analagous to the X11...
+- wf-recorder  # Screen recorder for wlroots-based compositors such as sway
+- which  # A utility to show the full path of commands
+- whois  # Intelligent WHOIS client
+- wireshark-cli  # Network traffic and protocol analyzer/sniffer - CLI tools and data files
+- wtype  # xdotool type for wayland
+- xfsprogs  # XFS filesystem utilities
+- xh  # Friendly and fast tool for sending HTTP requests
+- yamllint  # Linter for YAML files
+- ydotool  # Generic command-line automation tool (no X!)
+- yt-dlp  # A youtube-dl fork with additional features and fixes
+- zathura  # Minimalistic document viewer
+- zathura-pdf-poppler  # Adds pdf support to zathura by using the poppler engine
+- zbar  # Application and library for reading bar codes from various sources
+- zellij  # A terminal multiplexer
+- zk  # A command-line tool helping you to maintain a Zettelkasten or personal wiki
+- zmap  # Fast network scanner designed for Internet-wide network surveys
+- zoxide  # A smarter cd command for your terminal
+- zsh  # A very advanced and programmable command interpreter (shell) for UNIX
+- handlr-regex  # Powerful alternative to xdg-utils written in Rust
+- i3status  # Generates status bar to use with i3bar, dzen2 or xmobar
+- i3-wm  # Improved dynamic tiling window manager
+- inxi  # Full featured CLI system information tool
+- kate  # Advanced text editor
+- libpulse  # A featureful, general-purpose sound server (client library)
+- malcontent  # Parental control support for applications
+- nano  # Pico editor clone with enhancements
+- orca  # Screen reader for individuals who are blind or visually impaired
+- papers  # Document viewer for PDF and other document formats aimed at the GNOME desktop
+- pass  # Stores, retrieves, generates, and synchronizes passwords securely
+- plasma-desktop  # KDE Plasma Desktop
+- plasma-workspace  # KDE Plasma Workspace
+- polkit-kde-agent  # Daemon providing a polkit authentication UI for KDE
+- breeze  # Artwork, styles and assets for the Breeze visual style for the Plasma Desktop
+- breeze-icons  # Breeze icon theme
+- konsole  # KDE terminal emulator
 - proxypilot
 - proxypilot-debug
-- qt6-wayland
-- snapshot
+- qt6-wayland  # Provides APIs for Wayland
+- snapshot  # Take pictures and videos
 - ssh-to-age
 - ssh-to-age-debug
 - taoup
-- tecla
-- uwsm
-- vim
-- wiremix
+- tecla  # Keyboard layout viewer
+- uwsm  # A standalone Wayland session manager
+- vim  # Vi Improved, a highly configurable, improved version of the vi text editor
+- wiremix  # A simple TUI audio mixer for PipeWire
 aur:
-- amdgpu-vulkan-switcher-git
-- act-bin
-- optiscaler-universal
-- advancecomp
-- babashka-bin
-- carapace-bin
-- aliae-bin
+- amdgpu-vulkan-switcher-git  # Select needed vulkan implementation with vk_radv, vk_amdvlk or vk_pro prefix
+- act-bin  # Run your GitHub Actions locally
+- optiscaler-universal  # Intelligent OptiScaler configuration tool for Linux gaming - automatically op...
+- advancecomp  # Recompression utilities for .zip .png .mng and .gz files using the 7-zip algo...
+- babashka-bin  # A Clojure babashka for the grey areas of Bash.
+- carapace-bin  # A multi-shell completion binary
+- aliae-bin  # Cross shell and platform alias management
 - albumdetails
-- claude-code
-- cmake-language-server
-- dcfldd
-- ddccontrol
-- dool
-- dualsensectl
-- eilmeldung-bin
-- flclashx-bin
-- v2raya-bin
-- v2rayn-bin
-- v2ray
-- vicinae-bin
-- fsel-bin
-- epr-git
-- freeze-bin
-- ghgrab-bin
-- gmap-bin
-- git-extras
-- google-chrome
-- gowall-bin
-- hishtory-bin
-- hxd
-- hw-probe
-- hyprscratch
-- instagram-cli
+- claude-code  # An agentic coding tool that lives in your terminal
+- cmake-language-server  # Python based cmake language server
+- dcfldd  # DCFL (DoD Computer Forensics Lab) dd replacement with hashing
+- ddccontrol  # DDCcontrol is a software used to control monitor parameters, like brightness,...
+- dool  # A versatile resource statistics tool
+- dualsensectl  # Tool for controlling Sony PlayStation 5 DualSense controller on Linux
+- eilmeldung-bin  # a TUI RSS reader based on the news-flash library
+- flclashx-bin  # Fork of FlClash | A multi-platform proxy client based on ClashMeta, simple an...
+- v2raya-bin  # A web GUI client of Project V which supports VMess, VLESS, SS, SSR, Trojan, T...
+- v2rayn-bin  # A GUI client for Windows and Linux, support Xray core and others
+- v2ray  # A platform for building proxies to bypass network restrictions
+- vicinae-bin  # Raycast like FOSS app on Linux
+- fsel-bin  # Fast TUI app launcher and fuzzy finder for GNU/Linux and *BSD (prebuilt binary)
+- epr-git  # CLI Epub Reader
+- freeze-bin  # Generate images of code and terminal output.
+- ghgrab-bin  # A simple, pretty terminal tool that lets you search and download files from G...
+- gmap-bin  # Git repository analysis tool for churn and heatmap visualization
+- git-extras  # GIT utilities -- repo summary, commit counting, repl, changelog population an...
+- google-chrome  # The popular web browser by Google (Stable Channel)
+- gowall-bin  # A tool to convert a Wallpaper's color scheme - palette
+- hishtory-bin  # Your shell history: synced, queryable, and in context
+- hxd  # A better hexdump
+- hw-probe  # Probe for hardware, check its operability and upload result to https://linux-...
+- hyprscratch  # Improved scratchpad functiontality for Hyprland
+- instagram-cli  # Instagram's terminal UI app - The ultimate weapon against brainrot
 - iosevka-neg-fonts
-- jdupes
-- localsend-bin
-- lazytail-bin
-- lutgen-bin
-- massren
-- mpdris2-git
-- mcat-bin
-- mpdas
+- jdupes  # A program for identifying duplicate files residing within specified directories
+- localsend-bin  # An open source cross-platform alternative to AirDrop
+- lazytail-bin  # A fast, universal terminal-based log viewer with live filtering and follow mode
+- lutgen-bin  # A blazingly fast interpolated LUT utility for arbitrary and popular color pal...
+- massren  # Easily rename multiple files using your text editor
+- mpdris2-git  # MPRIS2 support for MPD -- git version
+- mcat-bin  # Terminal image, video, and Markdown viewer
+- mpdas  # An AudioScrobbler client for MPD written in C++.
 - neg-pretty-printer
-- neo-matrix
-- newsraft
-- no-more-secrets
-- oh-my-posh
-- otter-launcher
-- oports-git
-- oyo
-- par
-- patool
-- paru
+- neo-matrix  # Simulates the digital rain from "The Matrix"
+- newsraft  # Feed reader with text-based user interface
+- no-more-secrets  # A command line tool that recreates the famous data decryption effect seen in ...
+- oh-my-posh  # A prompt theme engine for any shell.
+- otter-launcher  # A rust-based cli/tui launcher built for keyboard-centric users, featuring vi ...
+- oports-git  # A wrapper around 'ss -tunlp' to display cleaner output
+- oyo  # A diff viewer that works two ways: step through changes or review a classic s...
+- par  # Paragraph reformatter
+- patool  # portable command line archive file manager
+- paru  # Feature packed AUR helper
 - paru-debug
-- pipemixer-git
-- pup-bin
-- python-ascii_magic
-- python-rapidgzip
-- quickshell
-- reddix-bin
-- repeater-bin
-- regex-tui
-- raysession
-- resterm-bin
+- pipemixer-git  # TUI volume control app for pipewire
+- pup-bin  # Parsing HTML at the command line
+- python-ascii_magic  # Converts pictures into ASCII art
+- python-rapidgzip  # A parallelized gzip decoder with seek capability
+- quickshell  # Flexible toolkit for making desktop shells with QtQuick
+- reddix-bin  # Reddit, refined for the terminal.
+- repeater-bin  # Spaced repetition, in your terminal
+- regex-tui  # A simple TUI to visualize regular expressions right in your terminal.
+- raysession  # Session manager for audio programs using the Non Session Manager (NSM) API
+- resterm-bin  # Terminal REST client for .http/.rest files with HTTP, GraphQL and gRPC support
 - richcolors
-- rofi-file-browser-extended-git
+- rofi-file-browser-extended-git  # Use rofi to quickly open files
 - rofi-file-browser-extended-git-debug
-- rustmission
-- scc
-- songfetch
-- simutil-bin
-- sing-box-bin
-- strace-tui-bin
-- systemd-manager-tui
-- tanin-git
-- tessen
-- tmmpr
-- ttfautohint
-- unflac
-- watchtower-bin
-- witr-bin
-- wget2
-- wlogout
-- wlr-which-key
-- xdg-ninja
-- youtube-tui
-- bazecor
-- python-telethon
-- zen-browser-bin
+- rustmission  # Performant TUI for Transmission capable of managing hundreds of torrents.
+- scc  # Sloc, Cloc and Code: a very fast accurate code counter with complexity calcul...
+- songfetch  # A Linux CLI tool that displays current song info (ASCII art requires python-a...
+- simutil-bin  # Cross platform utility TUI app for launching iOS simulators / Android emulato...
+- sing-box-bin  # The universal proxy platform (binary version)
+- strace-tui-bin  # A terminal user interface (TUI) for visualizing and exploring strace output -...
+- systemd-manager-tui  # A TUI for managing systemd services
+- tanin-git  # A TUI ambient sound generator written in Rust
+- tessen  # An interactive menu to autotype and copy password-store and gopass data
+- tmmpr  # Terminal mind mapper
+- ttfautohint  # Provides automated hinting process for web fonts
+- unflac  # A command line tool for fast frame accurate audio image + cue sheet splitting.
+- watchtower-bin  # A clean, minimal, terminal-based global intelligence dashboard.
+- witr-bin  # A Linux CLI tool that explains the causal chain behind running processes
+- wget2  # Updated version of the popular wget URL retrieval tool
+- wlogout  # Logout menu for wayland
+- wlr-which-key  # Keymap manager for wlroots-based compositors
+- xdg-ninja  # A shell script which checks your $HOME for unwanted files and directories
+- youtube-tui  # An aesthetically pleasing YouTube TUI written in Rust
+- bazecor  # Graphical configurator for Dygma keyboards
+- python-telethon  # Full-featured Telegram client library for Python 3
+- zen-browser-bin  # Performance oriented Firefox-based web browser

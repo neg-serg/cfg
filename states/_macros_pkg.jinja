@@ -1,0 +1,151 @@
+{# Package manager macros: paru_install (via paru, covers both official repos and AUR),
+   simple_service, pkgbuild_install, npm_pkg #}
+
+{% from '_macros_common.jinja' import user as _user, home as _home, retry_attempts as _retry_attempts, retry_interval as _retry_interval, host, ver_stamp %}
+
+{# Install packages via paru (covers both official repos and AUR).
+   check defaults to first package. requires is an optional list of requisites.
+   version: when set, uses version stamp for idempotency (useful for pinned packages).
+   Usage: {{ paru_install('unbound', 'unbound') }}
+          {{ paru_install('jellyfin', 'jellyfin-server jellyfin-web') }}
+          {{ paru_install('kanata', 'kanata-bin') }}
+          {{ paru_install('python_telethon', 'python-telethon', version='1.2.0') }}
+#}
+{%- macro paru_install(name, pkg, check=None, requires=None, version='') -%}
+{%- set _ver_dir = _home ~ '/.cache/salt-versions' -%}
+{%- set _check_all = check == '__ALL__' or (check is none and ' ' in pkg) -%}
+install_{{ name | replace('-', '_') }}:
+  cmd.run:
+{%- if version %}
+    - name: |
+        set -uo pipefail
+        sudo -u {{ _user }} sh -c 'yes "" | paru -S --noconfirm --needed {{ pkg }}' || true
+        {{ ver_stamp(_ver_dir, name, version) }}
+    - shell: /bin/bash
+    - creates: {{ _ver_dir }}/{{ name }}@{{ version }}
+{%- elif _check_all %}
+    - name: sudo -u {{ _user }} sh -c 'yes "" | paru -S --noconfirm --needed {{ pkg }} || true'
+    - shell: /bin/bash
+    - unless: |
+        set -e
+{%- for pkg_name in pkg.split() %}
+        grep -qxF '{{ pkg_name }}' {{ host.pkg_list }} || exit 1
+{%- endfor %}
+{%- else %}
+    - name: sudo -u {{ _user }} paru -S --noconfirm --needed {{ pkg }}
+    - unless: grep -qxF '{{ check or pkg }}' {{ host.pkg_list }}
+{%- endif %}
+    - require:
+      - cmd: pacman_db_warmup
+{%- if requires %}
+{%- for req in requires %}
+      - {{ req }}
+{%- endfor %}
+{%- endif %}
+{%- endmacro -%}
+
+{# Install packages via paru + enable the corresponding systemd service.
+   Shorthand for: paru_install() + service.enabled with require on install.
+   service: systemd service name (defaults to name).
+   check: idempotency check override (passed to paru_install).
+   requires: optional extra requisites for service.enabled beyond the install (e.g. config files).
+   Usage: {{ simple_service('unbound', 'unbound') }}
+           {{ simple_service('avahi', 'avahi nss-mdns', service='avahi-daemon', requires=['file: avahi_config']) }}
+          {{ simple_service('grafana', 'grafana', service='grafana-server', requires=['file: grafana_config']) }}
+#}
+{%- macro simple_service(name, pkgs, service=None, check=None, requires=None) -%}
+{{ paru_install(name, pkgs, check=check) }}
+
+{{ name }}_enabled:
+  service.enabled:
+    - name: {{ service or name }}
+    - require:
+      - cmd: install_{{ name | replace('-', '_') }}
+{%- if requires %}
+{%- for req in requires %}
+      - {{ req }}
+{%- endfor %}
+{%- endif %}
+{%- endmacro -%}
+
+{# Build and install a package from a local PKGBUILD via file.recurse + makepkg + pacman -U.
+   source: salt:// path to PKGBUILD directory. check: package name for idempotency guard (default: name).
+   replace_check: shell command that returns 0 if the correct variant is installed; when provided,
+     removes the existing package if the check fails (e.g., replacing stock duf with a fork).
+   conflicts: list of old package names to remove before building (e.g., predecessor packages renamed
+     from a different name — unlike replace_check which handles same-name different-packager).
+   extra_sources: list of {source, dest} dicts for additional file.recurse states (e.g., local source trees).
+   Usage: {{ pkgbuild_install('raise', 'salt://build/pkgbuilds/raise', user=_user) }}
+          {{ pkgbuild_install('iosevka-neg-fonts', 'salt://build/pkgbuilds/iosevka-neg-fonts', user=_user, timeout=7200) }}
+          {{ pkgbuild_install('duf', 'salt://build/pkgbuilds/duf', user=_user, replace_check='pacman -Qi duf 2>/dev/null | grep -q neg-serg') }}
+          {{ pkgbuild_install('wl', 'salt://build/pkgbuilds/wl', user=_user, conflicts=['swww-vulkan']) }}
+#}
+{%- macro pkgbuild_install(name, source, user=_user, build_base='/tmp/pkgbuild', timeout=600, check=None, replace_check=None, conflicts=None, extra_sources=None) -%}
+{%- set safe = name | replace('-', '_') -%}
+{%- set _pkg_guard = 'grep -qxF "' ~ (check or name) ~ '" ' ~ host.pkg_list ~ (' && ' ~ replace_check if replace_check else '') -%}
+{{ safe }}_pkgbuild:
+  file.recurse:
+    - name: {{ build_base }}/{{ name }}
+    - source: {{ source }}
+    - makedirs: True
+    - user: {{ user }}
+    - group: {{ user }}
+    - unless: {{ _pkg_guard }}
+{%- for src in (extra_sources or []) %}
+
+{{ safe }}_source_{{ loop.index }}:
+  file.recurse:
+    - name: {{ src.dest }}
+    - source: {{ src.source }}
+    - makedirs: True
+    - user: {{ user }}
+    - group: {{ user }}
+    - unless: {{ _pkg_guard }}
+{%- endfor %}
+
+build_{{ safe }}:
+  cmd.run:
+    - name: |
+        set -eo pipefail
+{%- if replace_check %}
+        if pacman -Q {{ name }} &>/dev/null && ! {{ replace_check }}; then
+            pacman -Rdd --noconfirm {{ name }}
+        fi
+{%- endif %}
+{%- for conflict in (conflicts or []) %}
+        if pacman -Q {{ conflict }} &>/dev/null; then
+            pacman -Rdd --noconfirm {{ conflict }}
+        fi
+{%- endfor %}
+        su - {{ user }} -c 'cd {{ build_base }}/{{ name }} && rm -rf src pkg && makepkg -sf --noconfirm'
+        pkgs=$(ls {{ build_base }}/{{ name }}/*.pkg.tar.zst 2>/dev/null | grep -v -- '-debug-')
+        if [ -n "$pkgs" ]; then
+            pacman -U --noconfirm --needed $pkgs 2>/dev/null || true
+        fi
+        rm -rf {{ build_base }}/{{ name }}{{ ' ' ~ (extra_sources | map(attribute='dest') | join(' ')) if extra_sources else '' }}
+    - shell: /bin/bash
+    - timeout: {{ timeout }}
+    - unless: {{ _pkg_guard }}
+    - require:
+      - file: {{ safe }}_pkgbuild
+{%- for src in (extra_sources or []) %}
+      - file: {{ safe }}_source_{{ loop.index }}
+{%- endfor %}
+      - cmd: pacman_db_warmup
+{%- endmacro -%}
+
+{# Install a Flatpak app from Flathub (user-level).
+   Usage: {{ flatpak_install('md.obsidian.Obsidian') }}
+#}
+{%- macro flatpak_install(app_id, user=_user) -%}
+{%- set safe = app_id | replace('.', '_') | replace('-', '_') -%}
+install_flatpak_{{ safe }}:
+  cmd.run:
+    - name: sudo -u {{ user }} flatpak install -y --user flathub {{ app_id }}
+    - unless: sudo -u {{ user }} flatpak list --user --app --columns=application | grep -qxF '{{ app_id }}'
+    - retry:
+        attempts: {{ _retry_attempts }}
+        interval: {{ _retry_interval }}
+    - require:
+      - cmd: flatpak_flathub_remote
+{%- endmacro -%}

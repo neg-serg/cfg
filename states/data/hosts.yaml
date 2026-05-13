@@ -1,4 +1,3 @@
-schema_version: 1
 defaults:
   user: neg
   home: ''
@@ -20,7 +19,7 @@ defaults:
   floorp_profile: ''
   zen_profile: ''
   migrate_floorp_profile_to_zen: false
-  hostname: '{{ grains[''host''] }}'
+  hostname: "{{ grains['host'] }}"
   extra_kargs: []
   extra_modules: []
   features:

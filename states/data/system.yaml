@@ -1,3 +1,2 @@
-schema_version: 1
 locale_pattern: ^#\s*(en_US\.UTF-8 UTF-8)
 x11_keymap: ru,us

@@ -1,4 +1,3 @@
-schema_version: 1
 packages:
 - supercollider
 - sc3-plugins

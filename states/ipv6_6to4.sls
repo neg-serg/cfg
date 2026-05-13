@@ -5,6 +5,7 @@
    Uses anycast relay at 192.88.99.1 (RFC 3068).
    ════════════════════════════════════════════════════════════════════ #}
 
+{% from '_macros_ipv6_tunnel.jinja' import ipv6_tunnel with context %}
 {% import_yaml 'data/vpn.yaml' as vpn %}
 
 {% set _ipv4_cache = vpn.ipv6_6to4.cache_path %}
@@ -39,7 +40,7 @@ cache_public_v4:
     - name: curl -4 --max-time 3 --silent {{ vpn.ipv6_6to4.public_ip_url }} | tee {{ _ipv4_cache }}
     - unless: test -f {{ _ipv4_cache }} && test $(find {{ _ipv4_cache }} -mmin -60 | wc -l) -gt 0
 
-{{ salt['service.ipv6_tunnel'](
+{{ ipv6_tunnel(
      name='tun6to4',
      interface='tun6to4',
      service_name='tun6to4',

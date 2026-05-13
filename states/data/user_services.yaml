@@ -1,4 +1,3 @@
-schema_version: 1
 unit_files:
 - id: mbsync_gmail_service
   filename: mbsync-gmail.service

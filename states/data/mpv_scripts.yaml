@@ -1,4 +1,3 @@
-schema_version: 1
 raw:
   thumbfast.lua: https://raw.githubusercontent.com/po5/thumbfast/master/thumbfast.lua
   sponsorblock.lua: https://raw.githubusercontent.com/po5/mpv_sponsorblock/master/sponsorblock.lua

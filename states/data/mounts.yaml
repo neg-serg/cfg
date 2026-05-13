@@ -1,4 +1,3 @@
-schema_version: 1
 disks:
   zero:
     device: /dev/mapper/argon-zero

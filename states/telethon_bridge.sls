@@ -1,31 +1,31 @@
 {# Telethon Bridge: Telegram MTProto relay to HTTP for LLM bot integration #}
 {% from '_imports.jinja' import user, home, proxypilot_key, tg_secret %}
-
-
-
+{% from '_macros_pkg.jinja' import paru_install %}
+{% from '_macros_service.jinja' import ensure_dir %}
+{% from '_macros_service_user.jinja' import user_service_file, user_service_enable, user_service_with_unit %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/telethon_bridge.yaml' as tb %}
 {% set _tb_config_dir = home ~ '/.config/telethon-bridge' %}
 {% set _tb_state_dir = home ~ '/.local/state/telethon-bridge' %}
-{% set _proxy_key = salt['secrets.proxypilot_key']() %}
+{% set _proxy_key = proxypilot_key() %}
 {% set _tb_creds = _tb_config_dir ~ '/credentials' %}
-{% set _api_id_raw = salt['secrets.tg_secret']('api/telegram-telethon-id', 'api-id', cred_base=_tb_creds) %}
+{% set _api_id_raw = tg_secret('api/telegram-telethon-id', 'api-id', cred_base=_tb_creds) %}
 {% set _api_id = _api_id_raw if (_api_id_raw | length > 0) else '1' %}
-{% set _api_hash_raw = salt['secrets.tg_secret']('api/telegram-telethon-hash', 'api-hash', cred_base=_tb_creds) %}
+{% set _api_hash_raw = tg_secret('api/telegram-telethon-hash', 'api-hash', cred_base=_tb_creds) %}
 {% set _api_hash = _api_hash_raw if (_api_hash_raw | length > 0) else 'b6b154c370b1b2a2e8f7e0a1c1a0b0a0' %}
-{% set _telegram_uid = salt['secrets.tg_secret']('api/nanoclaw-telegram-uid', 'telegram-uid') %}
-{% set _telegram_uid_levra = salt['secrets.tg_secret']('api/telegram-uid-levra', 'telegram-uid-levra') %}
-{% set _telegram_uid_guest2 = salt['secrets.tg_secret']('api/telegram-uid-guest2', 'telegram-uid-guest2') %}
+{% set _telegram_uid = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
+{% set _telegram_uid_levra = tg_secret('api/telegram-uid-levra', 'telegram-uid-levra') %}
+{% set _telegram_uid_guest2 = tg_secret('api/telegram-uid-guest2', 'telegram-uid-guest2') %}
 
 include:
   - pacman_db_warmup
 
-{{ salt['pkg.paru_install']('python_telethon', tb.packages | join(' '), check='__ALL__', version=ver.telethon) }}
+{{ paru_install('python_telethon', tb.packages | join(' '), check='__ALL__', version=ver.telethon) }}
 
-{{ salt['service.ensure_dir']('telethon_bridge_config_dir', _tb_config_dir) }}
-{{ salt['service.ensure_dir']('telethon_bridge_credentials_dir', _tb_creds, mode='0700') }}
-{{ salt['service.ensure_dir']('telethon_bridge_state_dir', _tb_state_dir, mode='0700') }}
-{{ salt['service.ensure_dir']('telethon_bridge_media_dir', _tb_state_dir ~ '/media') }}
+{{ ensure_dir('telethon_bridge_config_dir', _tb_config_dir) }}
+{{ ensure_dir('telethon_bridge_credentials_dir', _tb_creds, mode='0700') }}
+{{ ensure_dir('telethon_bridge_state_dir', _tb_state_dir, mode='0700') }}
+{{ ensure_dir('telethon_bridge_media_dir', _tb_state_dir ~ '/media') }}
 
 telethon_bridge_config:
   file.managed:
@@ -74,10 +74,10 @@ telethon_bridge_react_helper:
     - mode: '0755'
 
 # Multi-unit pattern: react service + path → enable via start_now='telethon-bridge-react.path'
-{{ salt['user_service.user_service_file']('telethon_bridge_react_service', 'telethon-bridge-react.service') }}
-{{ salt['user_service.user_service_file']('telethon_bridge_react_path', 'telethon-bridge-react.path') }}
+{{ user_service_file('telethon_bridge_react_service', 'telethon-bridge-react.service') }}
+{{ user_service_file('telethon_bridge_react_path', 'telethon-bridge-react.path') }}
 
-{{ salt['user_service.user_service_enable'](
+{{ user_service_enable(
     'telethon_bridge_react_enabled',
     start_now=['telethon-bridge-react.path'],
     check='active',
@@ -90,7 +90,7 @@ telethon_bridge_react_helper:
     ],
 ) }}
 
-{{ salt['user_service.user_service_with_unit']('telethon_bridge',
+{{ user_service_with_unit('telethon_bridge',
     'telethon-bridge.service',
     start_now=['telethon-bridge.service'],
     requires=['cmd: install_python_telethon', 'file: telethon_bridge_config']) }}

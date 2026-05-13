@@ -1,4 +1,3 @@
-schema_version: 1
 mail:
   device: /mnt/zero/mail
   target_suffix: .local/mail

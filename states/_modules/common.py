@@ -5,9 +5,6 @@ variable declarations.  Loads hosts.yaml, resolves derived paths, and
 returns a dict that templates can access via salt['common.get_host']()
 or via Jinja globals injected by data_loader.
 
-Returns a SimpleNamespace for dot-notation access in Jinja templates
-(e.g. {{ host.user }} instead of {{ host['user'] }}).
-
 Salt runtime context: importable from Salt with __salt__, __opts__, etc.
 Offline context: importable by lint-jinja.py mock and pytest directly.
 """
@@ -96,7 +93,6 @@ def get_constants() -> dict[str, Any]:
         "retry_interval": RETRY_INTERVAL,
         "healthcheck_timeout": HEALTHCHECK_TIMEOUT,
         "ollama_pull_timeout": OLLAMA_PULL_TIMEOUT,
-        "sudo_timeout_minutes": -1,
         "ver_dir": f"{home}/.cache/salt-versions",
         "sys_ver_dir": "/var/cache/salt/versions",
         "download_cache": "/var/cache/salt/downloads",

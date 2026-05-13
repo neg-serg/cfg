@@ -1,8 +1,8 @@
 # =============================================================================
 # Image generation — ComfyUI deployment with multiple AI providers
 # =============================================================================
-{% from '_imports.jinja' import user, home %}
-
+{% from '_imports.jinja' import user, home, gopass_secret %}
+{% from '_macros_service.jinja' import ensure_dir %}
 {% import_yaml 'data/image_providers.yaml' as image_providers_data %}
 {% set _image_gen_cfg = home ~ '/.config/image-gen/providers.yaml' %}
 
@@ -14,7 +14,7 @@
 {% for p in image_providers_data.get('providers', []) %}
   {% if p.gopass_key is defined %}
     {% set _awk_fallback = "awk '/name: \"" ~ p.name ~ "\"/{f=1} f && /api_key:/{gsub(/.*api_key:[[:space:]]*\"?/,\"\"); gsub(/\"[[:space:]]*$/,\"\"); print; exit}' " ~ _image_gen_cfg ~ " 2>/dev/null || true" %}
-    {% set _key = salt['secrets.get'](p.gopass_key, _awk_fallback) %}
+    {% set _key = gopass_secret(p.gopass_key, _awk_fallback) %}
   {% else %}
     {% set _key = p.get('dummy_key', '') %}
   {% endif %}
@@ -27,7 +27,7 @@
   {% endif %}
 {% endfor %}
 
-{{ salt['service.ensure_dir']('image_gen_config_dir', home ~ '/.config/image-gen') }}
+{{ ensure_dir('image_gen_config_dir', home ~ '/.config/image-gen') }}
 image_gen_providers_config:
   file.managed:
     - name: {{ _image_gen_cfg }}

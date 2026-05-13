@@ -1,4 +1,3 @@
-schema_version: 1
 managed_service_identities:
   greetd:
     user: greetd

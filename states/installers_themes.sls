@@ -1,10 +1,10 @@
 {# Theme and icon installers: GTK, Qt, cursor, and icon themes from git repos #}
 {% from '_imports.jinja' import home, user %}
-
+{% from '_macros_install.jinja' import git_clone_deploy %}
 {% import_yaml 'data/installers_themes.yaml' as themes %}
 
 {% for name, cfg in themes.git_clone_deploy.items() %}
-{{ salt['installer.git_clone_deploy'](name, cfg.repo, cfg.dest, cfg.get('items'), creates=(home ~ cfg.creates) if cfg.get('creates') else None, user=user, home=home) }}
+{{ git_clone_deploy(name, cfg.repo, cfg.dest, cfg.get('items'), creates=(home ~ cfg.creates) if cfg.get('creates') else None, user=user, home=home) }}
 
 {% endfor %}
 

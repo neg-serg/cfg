@@ -9,7 +9,6 @@ firefox_extension.
 from __future__ import annotations
 
 from typing import Any
-from _yaml_out import yaml_output
 
 
 def _host() -> dict[str, Any]:
@@ -58,17 +57,6 @@ def _download_cached_shell(url: str, cache_path: str, hash_val: str = "") -> str
     return "\n".join(lines)
 
 
-def download_cached(url: str, cache_path: str, hash_val: str = "") -> str:
-    """Public wrapper for _download_cached_shell — used by delegation macros."""
-    return _download_cached_shell(url, cache_path, hash_val)
-
-
-def ver_stamp(vd: str, name: str, version: str, target: str = "") -> str:
-    """Public wrapper for _ver_stamp_shell — used by delegation macros."""
-    return _ver_stamp_shell(vd, name, version, target)
-
-
-@yaml_output
 def go_pkg(name: str, pkg: str | None = None, bin: str | None = None,
            user: str | None = None, home: str | None = None) -> dict[str, Any]:
     h = _host()
@@ -85,7 +73,6 @@ def go_pkg(name: str, pkg: str | None = None, bin: str | None = None,
     }
 
 
-@yaml_output
 def curl_bin(name: str, url: str, version: str | None = None,
              hash_val: str | None = None, user: str | None = None,
              home: str | None = None) -> dict[str, Any]:
@@ -127,7 +114,6 @@ def curl_bin(name: str, url: str, version: str | None = None,
     }
 
 
-@yaml_output
 def cargo_pkg(name: str, pkg: str | None = None, bin: str | None = None,
               git: str | None = None, env: str | None = None,
               onlyif: list[str] | None = None,
@@ -156,7 +142,6 @@ def cargo_pkg(name: str, pkg: str | None = None, bin: str | None = None,
     return {f"install_{safe}": {"cmd.run": args}}
 
 
-@yaml_output
 def pip_pkg(name: str, pkg: str | None = None, bin: str | None = None,
             env: str | None = None, preinstall: str | None = None,
             user: str | None = None, home: str | None = None) -> dict[str, Any]:
@@ -193,7 +178,6 @@ def pip_pkg(name: str, pkg: str | None = None, bin: str | None = None,
     }
 
 
-@yaml_output
 def http_file(name: str, url: str, dest: str, mode: str = "0644",
               user: str | None = None, creates: str | None = None,
               require: list[str] | None = None, parallel: bool = True,
@@ -235,7 +219,6 @@ def http_file(name: str, url: str, dest: str, mode: str = "0644",
     return {name: {"cmd.run": args}}
 
 
-@yaml_output
 def git_clone_deploy(name: str, repo: str, dest: str,
                      items: list[str] | None = None,
                      creates: str | None = None, user: str | None = None,
@@ -275,7 +258,6 @@ def git_clone_deploy(name: str, repo: str, dest: str,
     }
 
 
-@yaml_output
 def git_clone_build(name: str, repo_url: str, build_cmds: str,
                     binary_src: str, binary_dest: str | None = None,
                     comment: str | None = None,
@@ -308,7 +290,6 @@ def git_clone_build(name: str, repo_url: str, build_cmds: str,
     }
 
 
-@yaml_output
 def curl_extract_tar(name: str, url: str, binary_pattern: str | None = None,
                      archive_ext: str = "tar.gz", fetch_tag: bool = False,
                      strip_v: bool = False, binaries: list[str] | None = None,
@@ -422,7 +403,6 @@ def curl_extract_tar(name: str, url: str, binary_pattern: str | None = None,
     }
 
 
-@yaml_output
 def curl_extract_zip(name: str, url: str, binary_path: str | None = None,
                      binaries: list[str] | None = None, bin: str | None = None,
                      chmod: bool = False, dest: str | None = None,
@@ -484,7 +464,6 @@ def curl_extract_zip(name: str, url: str, binary_path: str | None = None,
     }
 
 
-@yaml_output
 def download_font_zip(name: str, url: str, subdir: str,
                       hash_val: str | None = None, version: str | None = None,
                       user: str | None = None, home: str | None = None) -> dict[str, Any]:
@@ -547,7 +526,6 @@ def download_font_zip(name: str, url: str, subdir: str,
     return ret
 
 
-@yaml_output
 def github_release_to(state_id: str, name: str, repo: str, asset: str,
                       dest: str, format_type: str = "file", tag: str | None = None,
                       hash_val: str | None = None, version: str | None = None,
@@ -602,7 +580,6 @@ def github_release_to(state_id: str, name: str, repo: str, asset: str,
     return {state_id: {"cmd.run": args}}
 
 
-@yaml_output
 def npm_build_workflow(name: str, dir_path: str, version: str | None = None,
                        install_creates: str | None = None,
                        build_creates: str | None = None,

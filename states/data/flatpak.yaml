@@ -1,4 +1,3 @@
-schema_version: 1
 apps:
 - com.github.qarmin.czkawka
 - com.github.tmewett.BrogueCE

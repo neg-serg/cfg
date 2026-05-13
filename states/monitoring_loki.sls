@@ -2,13 +2,9 @@
 # All three services run exclusively as containers; native packages stay
 # installed for /etc/ directory structure and provisioning files.
 {% from '_imports.jinja' import host %}
+{% from '_macros_service.jinja' import ensure_dir, remove_native_unit, remove_native_package %}
+{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 
-
-
-
-{% import_yaml 'data/service_catalog.yaml' as catalog %}
-
-{% import_yaml 'data/container_images.yaml' as image_registry %}
 {% set mon = host.features.monitoring %}
 
 {# ── Loki: log aggregation ── #}
@@ -26,13 +22,13 @@ loki_config:
 
 
 
-{{ salt['service.ensure_dir']('loki_container_state_dir', '/var/lib/loki-container', user='loki') }}
+{{ ensure_dir('loki_container_state_dir', '/var/lib/loki-container', user='loki') }}
 
 # In-place cutover: remove native systemd unit so Quadlet-generated unit is not shadowed.
-{{ salt['service.remove_native_unit']('loki') }}
-{{ salt['service.remove_native_package']('loki', ['loki']) }}
+{{ remove_native_unit('loki') }}
+{{ remove_native_package('loki', ['loki']) }}
 
-{{ salt['container.deploy']('loki', catalog.loki, image_registry,
+{{ container_service('loki', catalog.loki, image_registry,
     quadlet_unit_name='loki-container',
     requires=['file: loki_config', 'file: loki_container_state_dir', 'cmd: loki_native_unit_daemon_reload']) }}
 
@@ -53,13 +49,13 @@ promtail_config:
 
 
 
-{{ salt['service.ensure_dir']('promtail_cache_dir', '/var/cache/promtail', user='promtail') }}
+{{ ensure_dir('promtail_cache_dir', '/var/cache/promtail', user='promtail') }}
 
 # In-place cutover: remove native systemd unit and package so Quadlet-generated unit is not shadowed.
-{{ salt['service.remove_native_unit']('promtail') }}
-{{ salt['service.remove_native_package']('promtail', ['promtail']) }}
+{{ remove_native_unit('promtail') }}
+{{ remove_native_package('promtail', ['promtail']) }}
 
-{{ salt['container.deploy']('promtail', catalog.promtail, image_registry,
+{{ container_service('promtail', catalog.promtail, image_registry,
     quadlet_unit_name='promtail-container',
     requires=['file: promtail_config', 'cmd: promtail_native_unit_daemon_reload']) }}
 {% endif %}
@@ -106,14 +102,14 @@ grafana_proxypilot_dashboard:
 
 
 
-{{ salt['service.ensure_dir']('grafana_container_state_dir', '/var/lib/grafana-container', user='grafana', mode='0755') }}
+{{ ensure_dir('grafana_container_state_dir', '/var/lib/grafana-container', user='grafana', mode='0755') }}
 
 # In-place cutover: remove native systemd unit and package so Quadlet-generated unit is not shadowed.
-{{ salt['service.remove_native_unit']('grafana') }}
-{{ salt['service.remove_native_package']('grafana', ['grafana']) }}
+{{ remove_native_unit('grafana') }}
+{{ remove_native_package('grafana', ['grafana']) }}
 
 {% set _grafana_watch = ['file: grafana_config', 'file: grafana_dashboards_provider', 'file: grafana_proxypilot_dashboard'] + (['file: grafana_loki_datasource'] if mon.loki else []) %}
-{{ salt['container.deploy']('grafana', catalog.grafana, image_registry,
+{{ container_service('grafana', catalog.grafana, image_registry,
     quadlet_unit_name='grafana-container',
     requires=['file: grafana_config', 'file: grafana_dashboards_provider', 'file: grafana_proxypilot_dashboard', 'file: grafana_container_state_dir', 'cmd: grafana_native_unit_daemon_reload'],
     watch=_grafana_watch) }}

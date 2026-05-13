@@ -1,12 +1,12 @@
 {# Xen KDE Breeze Dark theme seed configs — data-driven from states/data/xen.yaml #}
 
-
+{% from '_macros_service.jinja' import ensure_dir %}
 {% import_yaml 'data/xen.yaml' as xen %}
 
 {% set xen_user = xen.user.name %}
 {% set xen_home = xen.user.home %}
 
-{{ salt['service.ensure_dir']('xen_kde_config_dir', xen_home ~ '/.config', user=xen_user) }}
+{{ ensure_dir('xen_kde_config_dir', xen_home ~ '/.config', user=xen_user) }}
 
 {% for filename, config in xen.kde_configs.items() %}
 xen_kde_{{ filename }}:
@@ -23,7 +23,7 @@ xen_kde_{{ filename }}:
       - file: xen_kde_config_dir
 {% endfor %}
 
-{{ salt['service.ensure_dir']('xen_konsole_dir', xen_home ~ '/.local/share/konsole', user=xen_user) }}
+{{ ensure_dir('xen_konsole_dir', xen_home ~ '/.local/share/konsole', user=xen_user) }}
 
 {% for filename, profile in xen.konsole_profiles.items() %}
 xen_konsole_{{ filename | replace('.', '_') }}:

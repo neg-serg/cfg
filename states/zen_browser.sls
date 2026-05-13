@@ -1,7 +1,7 @@
 {# Zen Browser: Firefox-based browser with extensions, proxy switching, and VPN integration #}
 {% from '_imports.jinja' import host, user, home %}
-
-
+{% from '_macros_service.jinja' import ensure_dir %}
+{% from '_macros_desktop.jinja' import browser_extensions %}
 # Zen Browser: user.js + userChrome.css + extensions for the primary managed browser path
 {% if host.zen_profile %}
 {% import_yaml 'data/zen_browser.yaml' as zen %}
@@ -44,7 +44,7 @@ zen_true_black_theme_json:
     - group: {{ user }}
     - makedirs: True
 
-{{ salt['service.ensure_dir']('zen_migration_dir', zen_migration_dir) }}
+{{ ensure_dir('zen_migration_dir', zen_migration_dir) }}
 
 {% if host.get('migrate_floorp_profile_to_zen', false) and host.features.floorp and host.floorp_profile %}
 zen_floorp_profile_import:
@@ -62,7 +62,7 @@ zen_floorp_profile_import:
       - file: floorp_user_js
 {% endif %}
 
-{{ salt['desktop.browser_extensions']('zen', zen_profile, zen.extensions, 'zen_user_js') }}
+{{ browser_extensions('zen', zen_profile, zen.extensions, 'zen_user_js') }}
 
 zen_set_proxy_script:
   file.managed:

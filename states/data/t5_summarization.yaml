@@ -1,4 +1,3 @@
-schema_version: 1
 hf_repo: UrukHan/t5-russian-summarization
 hf_file: model.safetensors
 gguf_file: t5-russian-summarization-Q5_K_M.gguf

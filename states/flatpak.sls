@@ -4,11 +4,11 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import user, retry_attempts, retry_interval %}
-
+{% from '_macros_pkg.jinja' import paru_install, flatpak_install %}
 # Flatpak: install runtime + flathub remote + user-level apps
 {% import_yaml 'data/flatpak.yaml' as flatpak %}
 
-{{ salt['pkg.paru_install']('flatpak', 'flatpak') }}
+{{ paru_install('flatpak', 'flatpak') }}
 
 flatpak_flathub_remote:
   cmd.run:
@@ -21,5 +21,5 @@ flatpak_flathub_remote:
         interval: {{ retry_interval }}
 
 {% for app_id in flatpak.apps %}
-{{ salt['pkg.flatpak_install'](app_id) }}
+{{ flatpak_install(app_id) }}
 {% endfor %}

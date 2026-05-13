@@ -1,4 +1,3 @@
-schema_version: 1
 alkano:
   repo: https://github.com/neg-serg/Alkano-aio.git
   dest: /usr/share/icons/Alkano-aio

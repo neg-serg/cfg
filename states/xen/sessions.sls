@@ -1,6 +1,6 @@
 {# Xen X11 session configs: .xinitrc, i3 config, greetd .desktop entries #}
 
-
+{% from '_macros_service.jinja' import ensure_dir %}
 {% import_yaml 'data/xen.yaml' as xen %}
 
 {% set xen_user = xen.user.name %}
@@ -25,7 +25,7 @@ xen_xinitrc:
     - require:
       - user: xen_user
 
-{{ salt['service.ensure_dir']('xen_i3_config_dir', xen_home ~ '/.config/i3', user=xen_user) }}
+{{ ensure_dir('xen_i3_config_dir', xen_home ~ '/.config/i3', user=xen_user) }}
 
 xen_i3_config:
   file.managed:

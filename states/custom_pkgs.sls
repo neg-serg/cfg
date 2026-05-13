@@ -5,7 +5,7 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import user %}
-
+{% from '_macros_pkg.jinja' import pkgbuild_install %}
 {% import_yaml 'data/custom_pkgs.yaml' as custom %}
 
 # --- Protect forked packages from pacman -Syu overwrite ---
@@ -28,7 +28,7 @@ pacman_ignore_forks:
 
 {% for name, opts in custom.pkgbuild.items() %}
 {% set opts = opts or {} %}
-{{ salt['pkg.pkgbuild_install'](name, 'salt://build/pkgbuilds/' ~ name, user=user,
+{{ pkgbuild_install(name, 'salt://build/pkgbuilds/' ~ name, user=user,
      timeout=opts.get('timeout', 600),
      replace_check=opts.get('replace_check'),
      conflicts=opts.get('conflicts'),

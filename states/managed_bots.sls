@@ -1,12 +1,12 @@
 {# Managed Telegram Bots: Bot API 9.6 manager bot state #}
-{% from '_imports.jinja' import user, home %}
-
-
+{% from '_imports.jinja' import user, home, tg_secret %}
+{% from '_macros_service.jinja' import ensure_dir %}
+{% from '_macros_service_user.jinja' import user_service_enable, user_service_file %}
 {% import_yaml 'data/telegram_managed_bots.yaml' as mbdata %}
 
-{% set _telegram_token = salt['secrets.tg_secret']('api/opencode-telegram-bot', 'telegram-token', cred_base=home ~ '/.config/opencode-telegram-bot/credentials') %}
-{% set _uid_levra = salt['secrets.tg_secret']('api/telegram-uid-levra', 'telegram-uid-levra') %}
-{% set _uid_nanoclaw = salt['secrets.tg_secret']('api/nanoclaw-telegram-uid', 'telegram-uid') %}
+{% set _telegram_token = tg_secret('api/opencode-telegram-bot', 'telegram-token', cred_base=home ~ '/.config/opencode-telegram-bot/credentials') %}
+{% set _uid_levra = tg_secret('api/telegram-uid-levra', 'telegram-uid-levra') %}
+{% set _uid_nanoclaw = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
 
 install_managed_bots_deps:
   cmd.run:
@@ -15,7 +15,7 @@ install_managed_bots_deps:
     - unless: python3 -c 'import telegram; import yaml' 2>/dev/null
     - parallel: true
 
-{{ salt['service.ensure_dir']('managed_bots_config_dir', home ~ '/.config/opencode') }}
+{{ ensure_dir('managed_bots_config_dir', home ~ '/.config/opencode') }}
 
 managed_bots_config:
   file.managed:
@@ -37,8 +37,8 @@ managed_bots_script:
     - user: {{ user }}
     - group: {{ user }}
 
-{{ salt['user_service.user_service_file']('managed_bots', 'managed-bots.service') }}
+{{ user_service_file('managed_bots', 'managed-bots.service') }}
 
-{{ salt['user_service.user_service_enable']('managed_bots_enabled',
+{{ user_service_enable('managed_bots_enabled',
     start_now=['managed-bots.service'],
     requires=['file: managed_bots_script']) }}

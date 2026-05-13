@@ -1,4 +1,3 @@
-schema_version: 1
 gui: /usr/lib/hiddify/hiddify
 cli: /usr/lib/hiddify/HiddifyCli
 caps: cap_net_admin,cap_net_bind_service,cap_net_raw=ep

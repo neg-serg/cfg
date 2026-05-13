@@ -1,4 +1,3 @@
-schema_version: 1
 providers:
 - name: together-ai
   base_url: https://api.together.xyz/v1

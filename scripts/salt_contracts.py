@@ -875,7 +875,7 @@ def check_data_file_liveness(repo_root: Path = REPO_ROOT) -> list[str]:
 
     for data_path in sorted(data_dir.glob("*.yaml")):
         basename = data_path.name
-        if basename in _CORE_DATA_FILES:
+        if basename in _CORE_DATA_FILES or basename == ".metadata.yaml":
             continue
         if basename not in consumers:
             errors.append(
@@ -1242,27 +1242,47 @@ EXPECTED_DATA_SCHEMA_VERSION = 1
 
 
 def check_data_schema_versions(repo_root: Path = REPO_ROOT) -> list[str]:
-    """Validate all states/data/*.yaml files have the expected schema_version."""
+    """Validate all states/data/*.yaml files have the expected schema_version.
+
+    Reads versions from states/data/.metadata.yaml (separate from data files
+    to avoid breaking template iteration loops).
+    """
     data_dir = repo_root / "states" / "data"
     warnings = []
 
+    meta_path = data_dir / ".metadata.yaml"
+    if not meta_path.is_file():
+        warnings.append("Missing .metadata.yaml in states/data/")
+        return warnings
+
+    meta = load_yaml_file(meta_path)
+    versions = meta.get("schema_versions", {}) if isinstance(meta, dict) else {}
+
     for yaml_path in sorted(data_dir.glob("*.yaml")):
-        rel = yaml_path.relative_to(repo_root)
-        data = load_yaml_file(yaml_path)
-
-        if not isinstance(data, dict):
+        if yaml_path.name == ".metadata.yaml":
             continue
+        rel = yaml_path.relative_to(repo_root)
+        expected = EXPECTED_DATA_SCHEMA_VERSION
+        actual = versions.get(yaml_path.name)
 
-        version = data.get("schema_version")
-        if version is None:
+        if actual is None:
+            # Check if file is a dict (lists don't need schema_version)
+            data = load_yaml_file(yaml_path)
+            if isinstance(data, dict):
+                warnings.append(
+                    f"Data file '{rel}': not listed in .metadata.yaml"
+                )
+        elif actual != expected:
             warnings.append(
-                f"Data file '{rel}': missing schema_version "
-                f"(expected {EXPECTED_DATA_SCHEMA_VERSION})"
+                f"Data file '{rel}': schema_version {actual} != "
+                f"expected {expected}"
             )
-        elif version != EXPECTED_DATA_SCHEMA_VERSION:
+
+    # Warn about metadata entries with no corresponding file
+    for fname in versions:
+        if not (data_dir / fname).is_file():
             warnings.append(
-                f"Data file '{rel}': schema_version {version} != "
-                f"expected {EXPECTED_DATA_SCHEMA_VERSION}"
+                f"'.metadata.yaml' lists '{fname}' but file does not exist"
             )
 
     return warnings

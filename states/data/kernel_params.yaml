@@ -1,4 +1,3 @@
-schema_version: 1
 common:
 - mitigations=off
 - numa_balancing=disable

@@ -6,7 +6,6 @@ Replaces _macros_config.jinja config_file_edit().
 from __future__ import annotations
 
 from typing import Any
-from _yaml_out import yaml_output
 
 
 def _const() -> dict[str, Any]:
@@ -17,7 +16,6 @@ def _const() -> dict[str, Any]:
         return {"retry_attempts": 3, "retry_interval": 10}
 
 
-@yaml_output
 def config_file_edit(name: str, cmd: str, unless: str | None = None,
                      check_pattern: str | None = None,
                      check_file: str | None = None,

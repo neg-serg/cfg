@@ -1,4 +1,3 @@
-schema_version: 1
 loki:
   port: 3100
   health_path: /ready

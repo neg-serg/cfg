@@ -1,9 +1,9 @@
 {# Hardware-specific configuration: udev rules, fan control, WiFi drivers #}
 {% from '_imports.jinja' import host %}
-
+{% from '_macros_service.jinja' import udev_rule, service_with_unit %}
 {% import_yaml 'data/hardware.yaml' as hw %}
 
-{{ salt['service.udev_rule']('custom_udev_rules', hw.udev_rules_path, source='salt://configs/udev-custom.rules') }}
+{{ udev_rule('custom_udev_rules', hw.udev_rules_path, source='salt://configs/udev-custom.rules') }}
 
 {% if host.features.fancontrol %}
 
@@ -23,9 +23,9 @@ fancontrol_reapply_script:
     - context:
         cpu_vendor: {{ host.cpu_vendor }}
 
-{{ salt['service.service_with_unit']('fancontrol-setup', 'salt://units/fancontrol-setup.service.j2', template='jinja', context={'gpu_enable': host.cpu_vendor == 'amd'}, enabled=None) }}
+{{ service_with_unit('fancontrol-setup', 'salt://units/fancontrol-setup.service.j2', template='jinja', context={'gpu_enable': host.cpu_vendor == 'amd'}, enabled=None) }}
 
-{{ salt['service.service_with_unit']('fancontrol', 'salt://units/fancontrol.service', requires=['cmd: fancontrol-setup_daemon_reload', 'file: fancontrol_setup_script']) }}
+{{ service_with_unit('fancontrol', 'salt://units/fancontrol.service', requires=['cmd: fancontrol-setup_daemon_reload', 'file: fancontrol_setup_script']) }}
 
 nct6775_module:
   cmd.run:
@@ -37,7 +37,7 @@ nct6775_module:
 {% endif %}
 
 {% if host.cpu_vendor == 'amd' %}
-{{ salt['service.service_with_unit']('gpu-power-profile', 'salt://units/gpu-power-profile.service', enabled=True) }}
+{{ service_with_unit('gpu-power-profile', 'salt://units/gpu-power-profile.service', enabled=True) }}
 {% endif %}
 
 {% if not host.features.network.wifi %}

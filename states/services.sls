@@ -5,7 +5,8 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import host, user, home %}
-
+{% from '_macros_service.jinja' import ensure_dir, ensure_running, render_service, service_stopped, service_with_healthcheck, service_with_unit, unit_override %}
+{% from '_macros_pkg.jinja' import paru_install, simple_service %}
 {% import_yaml 'data/services.yaml' as services %}
 
 {% set svc = host.features.services %}
@@ -19,7 +20,7 @@ include:
 
 {% for name, opts in services.simple.items() %}
 {% if svc.get(name, False) %}
-{{ salt['pkg.simple_service'](name, opts.packages, service=opts.service) }}
+{{ simple_service(name, opts.packages, service=opts.service) }}
 {% endif %}
 {% endfor %}
 
@@ -39,17 +40,17 @@ include:
 
 {# ── Complex services ── #}
 {% for name, opts in services.get('complex', {}).items() %}
-{{ salt['service.render_service_yaml'](name, opts, svc.get(name, False), 'complex', known_vars=known_vars) }}
+{{ render_service(name, opts, svc.get(name, False), 'complex', known_vars=known_vars) }}
 {% endfor %}
 
 {# ── Network services ── #}
 {% for name, opts in services.get('network', {}).items() %}
-{{ salt['service.render_service_yaml'](name, opts, net.get(name, False), 'network', known_vars=known_vars) }}
+{{ render_service(name, opts, net.get(name, False), 'network', known_vars=known_vars) }}
 {% endfor %}
 
 {# ── DNS services ── #}
 {% for name, opts in services.get('dns', {}).items() %}
-{{ salt['service.render_service_yaml'](name, opts, dns.get(name, False), 'dns', known_vars=known_vars) }}
+{{ render_service(name, opts, dns.get(name, False), 'dns', known_vars=known_vars) }}
 {% endfor %}
 
 # ===================================================================
@@ -57,13 +58,13 @@ include:
 # ===================================================================
 
 {% if mon.sysstat %}
-{{ salt['pkg.simple_service']('sysstat', 'sysstat') }}
+{{ simple_service('sysstat', 'sysstat') }}
 {% endif %}
 
 {% if mon.vnstat %}
-{{ salt['pkg.simple_service']('vnstat', 'vnstat') }}
+{{ simple_service('vnstat', 'vnstat') }}
 {% endif %}
 
 {% if mon.netdata %}
-{{ salt['service.unit_override']('netdata_override', 'netdata.service', 'salt://units/netdata-override.conf') }}
+{{ unit_override('netdata_override', 'netdata.service', 'salt://units/netdata-override.conf') }}
 {% endif %}

@@ -1,4 +1,3 @@
-schema_version: 1
 hybrid:
   service_unit: /etc/systemd/system/sing-box-tun-hybrid.service
 xray_config: /etc/xray/config.json

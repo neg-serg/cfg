@@ -7,7 +7,7 @@
 include:
   - pacman_db_warmup
 
-
+{% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/packages.yaml' as pkgs %}
 
 # ===================================================================
@@ -18,7 +18,7 @@ include:
 {%- set pkg_list = pkgs.get(category, []) -%}
 {%- if pkg_list %}
 {#- pacman -Qq checks ALL packages — fails if ANY is missing, triggering install #}
-{{ salt['pkg.paru_install']('pkg_' ~ category, pkg_list | join(' '), check='__ALL__') }}
+{{ paru_install('pkg_' ~ category, pkg_list | join(' '), check='__ALL__') }}
 {% endif %}
 {%- endfor %}
 
@@ -27,5 +27,5 @@ include:
 # ===================================================================
 
 {% for pkg in pkgs.get('aur', []) %}
-{{ salt['pkg.paru_install']('pkg_aur_' ~ pkg, pkg) }}
+{{ paru_install('pkg_aur_' ~ pkg, pkg) }}
 {% endfor %}

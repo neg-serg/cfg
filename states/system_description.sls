@@ -1,6 +1,6 @@
 {# System description: /etc/os-release branding and feature-gated state orchestration. #}
 {% from '_imports.jinja' import host, user %}
-
+{% from '_macros_service.jinja' import ensure_dir %}
 {% import_yaml 'data/system.yaml' as system %}
 
 system_os_release:
@@ -44,9 +44,9 @@ system_hostname:
     - name: /etc/hostname
     - contents: {{ host.hostname }}
 
-{{ salt['service.ensure_dir']('user_version_cache_dir', host.home ~ '/.cache/salt-versions', mode='0755') }}
-{{ salt['service.ensure_dir']('system_version_cache_dir', '/var/cache/salt/versions', mode='0755', user='root') }}
-{{ salt['service.ensure_dir']('download_cache_dir', '/var/cache/salt/downloads', mode='0755') }}
+{{ ensure_dir('user_version_cache_dir', host.home ~ '/.cache/salt-versions', mode='0755') }}
+{{ ensure_dir('system_version_cache_dir', '/var/cache/salt/versions', mode='0755', user='root') }}
+{{ ensure_dir('download_cache_dir', '/var/cache/salt/downloads', mode='0755') }}
 
 include:
   - pacman_db_warmup

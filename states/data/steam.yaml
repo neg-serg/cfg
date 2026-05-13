@@ -1,4 +1,3 @@
-schema_version: 1
 multilib_repo:
   cmd: printf '\n[multilib]\nInclude = /etc/pacman.d/mirrorlist\n' >> /etc/pacman.conf
     && pacman -Sy

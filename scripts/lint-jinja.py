@@ -161,7 +161,7 @@ class _MockSalt:
             "secrets.get": ("_modules.secrets", "gopass_secret"),
             "secrets.proxypilot_key": ("_modules.secrets", "proxypilot_key"),
             "secrets.tg_secret": ("_modules.secrets", "tg_secret"),
-            "config.config_file_edit": ("_modules.config", "config_file_edit"),
+            "config.config_file_edit": ("_modules.cfg", "config_file_edit"),
             "pkg.paru_install": ("_modules.pkg", "paru_install"),
             "pkg.simple_service": ("_modules.pkg", "simple_service"),
             "pkg.pkgbuild_install": ("_modules.pkg", "pkgbuild_install"),

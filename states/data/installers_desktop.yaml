@@ -1,4 +1,3 @@
-schema_version: 1
 paru_install:
   antigravity_tools: antigravity-tools-bin
   bottles: bottles

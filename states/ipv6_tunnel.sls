@@ -1,4 +1,5 @@
-
+{% from '_imports.jinja' import gopass_secret %}
+{% from '_macros_ipv6_tunnel.jinja' import ipv6_tunnel with context %}
 {% import_yaml 'data/ipv6.yaml' as ipv6_config %}
 
 {# ════════════════════════════════════════════════════════════════════
@@ -7,7 +8,7 @@
    Requires: gopass api/he-tunnel with server_ipv4, client_ipv6, routed_prefix.
    ════════════════════════════════════════════════════════════════════ #}
 
-{% set _he_secret = salt['secrets.get']('api/he-tunnel') %}
+{% set _he_secret = gopass_secret('api/he-tunnel') %}
 {% set _has_he = _he_secret | length > 0 %}
 
 {% if _has_he %}
@@ -53,7 +54,7 @@ table inet ipv6-tunnel {
 {%- set _firewall_rules = '' -%}
 {%- endif %}
 
-{{ salt['service.ipv6_tunnel'](
+{{ ipv6_tunnel(
      name='he_tunnel',
      interface=_tun.interface_name,
      service_name='he-tunnel',

@@ -1,4 +1,3 @@
-schema_version: 1
 windows:
   device: /dev/disk/by-uuid/86286AAE286A9CC5
   mount_point: /mnt/windows

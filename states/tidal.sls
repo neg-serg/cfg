@@ -3,11 +3,11 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import user, home, retry_attempts, retry_interval %}
-
+{% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/tidal.yaml' as tidal %}
 
 {% for pkg in tidal.packages %}
-{{ salt['pkg.paru_install'](pkg, pkg) }}
+{{ paru_install(pkg, pkg) }}
 {% endfor %}
 
 superdirt_quark_install:

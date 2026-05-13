@@ -6,7 +6,6 @@ Replaces _macros_desktop.jinja: browser_extensions, hyprpm_update/add/enable, dc
 from __future__ import annotations
 
 from typing import Any
-from _yaml_out import yaml_output
 
 
 def _host() -> dict[str, Any]:
@@ -25,7 +24,6 @@ def _const() -> dict[str, Any]:
         return {"retry_attempts": 3, "retry_interval": 10}
 
 
-@yaml_output
 def dconf_settings(name: str, settings: dict[str, str],
                    user: str | None = None,
                    require: list[str] | None = None) -> dict[str, Any]:
@@ -58,7 +56,6 @@ def dconf_settings(name: str, settings: dict[str, str],
     return {name: {"cmd.run": args}}
 
 
-@yaml_output
 def hyprpm_update(name: str, check_plugins: list[str] | None = None,
                   require: list[str] | None = None,
                   timeout: int = 300) -> dict[str, Any]:
@@ -101,7 +98,6 @@ def hyprpm_update(name: str, check_plugins: list[str] | None = None,
     return {name: {"cmd.run": args}}
 
 
-@yaml_output
 def hyprpm_add(name: str, repo_url: str, check_plugin: str,
                require: list[str] | None = None,
                timeout: int = 300) -> dict[str, Any]:
@@ -138,7 +134,6 @@ def hyprpm_add(name: str, repo_url: str, check_plugin: str,
     return {name: {"cmd.run": args}}
 
 
-@yaml_output
 def hyprpm_enable(name: str, plugin: str,
                   require: list[str] | None = None) -> dict[str, Any]:
     h = _host()

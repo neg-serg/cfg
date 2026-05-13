@@ -1,13 +1,13 @@
 {% from '_imports.jinja' import host, home, user %}
-
-
+{% from '_macros_service.jinja' import ensure_dir %}
+{% from '_macros_service_user.jinja' import user_service_enable, user_service_file %}
 {% import_yaml 'data/vpn.yaml' as vpn %}
 {% set net = host.features.network %}
 
 {% if net.vpn_split_router %}
 
-{{ salt['service.ensure_dir']('vpn_split_router_config_dir', home ~ '/.config/vpn-split-router', mode='0755') }}
-{{ salt['service.ensure_dir']('vpn_split_router_state_dir', home ~ '/.local/state/vpn-split-router', mode='0755') }}
+{{ ensure_dir('vpn_split_router_config_dir', home ~ '/.config/vpn-split-router', mode='0755') }}
+{{ ensure_dir('vpn_split_router_state_dir', home ~ '/.local/state/vpn-split-router', mode='0755') }}
 
 vpn_split_router_script:
   file.managed:
@@ -28,12 +28,12 @@ vpn_split_router_config:
     - context:
         router_config: {{ vpn.split_router_config | tojson }}
 
-{{ salt['user_service.user_service_file']('vpn_split_router_service', 'vpn-split-router.service') }}
-{{ salt['user_service.user_service_file']('vpn_split_router_timer', 'vpn-split-router.timer') }}
-{{ salt['user_service.user_service_file']('vpn_policy_rollback_service', 'vpn-policy-rollback.service') }}
-{{ salt['user_service.user_service_file']('vpn_policy_rollback_timer', 'vpn-policy-rollback.timer') }}
+{{ user_service_file('vpn_split_router_service', 'vpn-split-router.service') }}
+{{ user_service_file('vpn_split_router_timer', 'vpn-split-router.timer') }}
+{{ user_service_file('vpn_policy_rollback_service', 'vpn-policy-rollback.service') }}
+{{ user_service_file('vpn_policy_rollback_timer', 'vpn-policy-rollback.timer') }}
 
-{{ salt['user_service.user_service_enable']('vpn_split_router_enabled',
+{{ user_service_enable('vpn_split_router_enabled',
     start_now=['vpn-split-router.timer'],
     requires=[
         'file: vpn_split_router_script',
@@ -98,5 +98,5 @@ amnezia_import_tun_user_script:
     - require:
       - file: amnezia_import_tun_script
 
-{{ salt['user_service.user_service_file']('amnezia_import_tun_user_service', 'amnezia-import-tun.service') }}
+{{ user_service_file('amnezia_import_tun_user_service', 'amnezia-import-tun.service') }}
 {% endif %}

@@ -1,4 +1,3 @@
-schema_version: 1
 ollama:
   registry: docker.io
   image: ollama/ollama

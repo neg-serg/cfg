@@ -1,7 +1,7 @@
 {# Video AI models: HuggingFace model downloads and safetensors management #}
 {% from '_imports.jinja' import host, user %}
-
-
+{% from '_macros_install.jinja' import huggingface_file %}
+{% from '_macros_service.jinja' import ensure_dir %}
 {% import_yaml 'data/video_ai.yaml' as video_ai %}
 {% set base_dir = host.mnt_one ~ '/video-ai' %}
 {% set comfyui_dir = base_dir ~ '/comfyui' %}
@@ -10,10 +10,10 @@
 # ── Model downloads ──────────────────────────────────────────────────
 {% for model in video_ai.get('models', []) %}
 {% if model.enabled %}
-{{ salt['service.ensure_dir']('video_ai_model_dir_' ~ model.id | replace('-', '_'), models_dir ~ '/' ~ model.id, require=['file: video_ai_models_dir']) }}
+{{ ensure_dir('video_ai_model_dir_' ~ model.id | replace('-', '_'), models_dir ~ '/' ~ model.id, require=['file: video_ai_models_dir']) }}
 
 {% for file in model.files %}
-{{ salt['installer.huggingface_file'](
+{{ huggingface_file(
     'video_ai_download_' ~ model.id | replace('-', '_') ~ '_' ~ loop.index,
     model.repo,
     file,
@@ -40,7 +40,7 @@ video_ai_symlink_{{ model.id | replace('-', '_') }}:
 
 # ── Shared text encoders ────────────────────────────────────────────
 {% for te in video_ai.get('text_encoders', []) %}
-{{ salt['installer.huggingface_file'](
+{{ huggingface_file(
     'video_ai_text_encoder_' ~ te.id | replace('-', '_'),
     te.repo,
     te.file,
@@ -52,7 +52,7 @@ video_ai_symlink_{{ model.id | replace('-', '_') }}:
 
 # ── Shared VAE models ──────────────────────────────────────────────
 {% for vae in video_ai.get('vaes', []) %}
-{{ salt['installer.huggingface_file'](
+{{ huggingface_file(
     'video_ai_vae_' ~ vae.id | replace('-', '_'),
     vae.repo,
     vae.file,
@@ -65,7 +65,7 @@ video_ai_symlink_{{ model.id | replace('-', '_') }}:
 # ── Image model downloads ──────────────────────────────────────────
 {% for model in video_ai.get('image_models', []) %}
 {% if model.enabled %}
-{{ salt['installer.huggingface_file'](
+{{ huggingface_file(
     'video_ai_image_download_' ~ model.id | replace('-', '_'),
     model.repo,
     model.file,

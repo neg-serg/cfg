@@ -1,7 +1,7 @@
 {# Music Player Daemon: audio playback server with Last.fm scrobbling #}
-{% from '_imports.jinja' import host, user, home, pkg_list %}
-
-
+{% from '_imports.jinja' import host, user, home, pkg_list, gopass_secret %}
+{% from '_macros_install.jinja' import cargo_pkg %}
+{% from '_macros_service_user.jinja' import user_service_enable, user_service_file %}
 {% import_yaml 'data/mpd.yaml' as mpd %}
 include:
   - bind_mounts
@@ -33,7 +33,7 @@ mpd_directories:
     - group: {{ user }}
     - makedirs: True
 
-{{ salt['installer.cargo_pkg']('wiremix', env=mpd.wiremix_env) }}
+{{ cargo_pkg('wiremix', env=mpd.wiremix_env) }}
 
 mpd_config:
   file.managed:
@@ -44,10 +44,10 @@ mpd_config:
     - mode: '0644'
     - makedirs: True
 
-{{ salt['user_service.user_service_enable']('mpd_enabled', start_now=['mpd.service'], check='active', onlyif='grep -qxF mpd ' ~ pkg_list, requires=['file: mpd_config', 'file: mpd_directories', 'cmd: music_mount', 'cmd: managed_service_paths_ensure']) }}
+{{ user_service_enable('mpd_enabled', start_now=['mpd.service'], check='active', onlyif='grep -qxF mpd ' ~ pkg_list, requires=['file: mpd_config', 'file: mpd_directories', 'cmd: music_mount', 'cmd: managed_service_paths_ensure']) }}
 
-{%- set lastfm_user = salt['secrets.get']('lastfm/username') | trim %}
-{%- set lastfm_pass = salt['secrets.get']('lastfm/password') | trim %}
+{%- set lastfm_user = gopass_secret('lastfm/username') | trim %}
+{%- set lastfm_pass = gopass_secret('lastfm/password') | trim %}
 mpdas_config:
   file.managed:
     - name: {{ home }}/.config/mpdasrc
@@ -62,8 +62,8 @@ mpdas_config:
         username = {{ lastfm_user }}
         password = {{ lastfm_pass }}
 
-{{ salt['user_service.user_service_file']('mpdas_service_file', 'mpdas.service', source='salt://dotfiles/dot_config/systemd/user/mpdas.service') }}
+{{ user_service_file('mpdas_service_file', 'mpdas.service', source='salt://dotfiles/dot_config/systemd/user/mpdas.service') }}
 
 {% if companion_units %}
-{{ salt['user_service.user_service_enable']('mpd_companion_services', start_now=companion_units, check='active', requires=companion_reqs) }}
+{{ user_service_enable('mpd_companion_services', start_now=companion_units, check='active', requires=companion_reqs) }}
 {% endif %}

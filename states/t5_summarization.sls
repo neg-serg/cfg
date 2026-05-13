@@ -1,14 +1,10 @@
 {# T5 text summarization server: safetensors to GGUF conversion via Quadlet container #}
 {% from '_imports.jinja' import host, user %}
-
-
-
-
+{% from '_macros_service.jinja' import ensure_dir, remove_native_unit, remove_native_package %}
+{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
+{% from '_macros_install.jinja' import huggingface_file %}
+{% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/t5_summarization.yaml' as t5 %}
-
-{% import_yaml 'data/service_catalog.yaml' as catalog %}
-
-{% import_yaml 'data/container_images.yaml' as image_registry %}
 # llama.cpp T5 summarization server: UrukHan/t5-russian-summarization via Vulkan.
 # Downloads safetensors from HuggingFace, converts to GGUF, serves via llama-server.
 # Pure Quadlet (Podman container). Service is NOT enabled at boot (manual_start) — VRAM is shared with desktop GPU.
@@ -18,16 +14,16 @@
 {% set gguf_path = models_dir ~ '/' ~ t5.gguf_file %}
 {% set port = catalog.t5_summarization.port %}
 
-{{ salt['service.ensure_dir']('t5_summarization_models_dir', models_dir, require=['mount: mount_one']) }}
-{{ salt['service.ensure_dir']('t5_summarization_hf_dir', hf_path, require=['mount: mount_one']) }}
+{{ ensure_dir('t5_summarization_models_dir', models_dir, require=['mount: mount_one']) }}
+{{ ensure_dir('t5_summarization_hf_dir', hf_path, require=['mount: mount_one']) }}
 
 # python-transformers is needed for convert_hf_to_gguf.py (runs on host during build)
-{{ salt['pkg.paru_install']('python_transformers', 'python-transformers') }}
+{{ paru_install('python_transformers', 'python-transformers') }}
 
 # Download model + tokenizer files from HuggingFace (unconditional — feeds container via bind-mount)
-{{ salt['installer.huggingface_file']('t5_summarization_model', t5.hf_repo, hf_file, hf_path ~ '/' ~ hf_file, user=user, require=['file: t5_summarization_hf_dir'], parallel=False, version=hf_file, cache=False) }}
+{{ huggingface_file('t5_summarization_model', t5.hf_repo, hf_file, hf_path ~ '/' ~ hf_file, user=user, require=['file: t5_summarization_hf_dir'], parallel=False, version=hf_file, cache=False) }}
 {% for fname in t5.tokenizer_files %}
-{{ salt['installer.huggingface_file']('t5_summarization_' ~ fname | replace('.', '_'), t5.hf_repo, fname, hf_path ~ '/' ~ fname, user=user, require=['file: t5_summarization_hf_dir'], parallel=False, cache=False) }}
+{{ huggingface_file('t5_summarization_' ~ fname | replace('.', '_'), t5.hf_repo, fname, hf_path ~ '/' ~ fname, user=user, require=['file: t5_summarization_hf_dir'], parallel=False, cache=False) }}
 {% endfor %}
 
 # Convert safetensors → GGUF (requires convert_hf_to_gguf.py from llama.cpp)
@@ -49,10 +45,10 @@ t5_summarization_convert:
       - cmd: install_python_transformers
 
 # In-place cutover: remove the native systemd unit file
-{{ salt['service.remove_native_unit']('t5_summarization') }}
+{{ remove_native_unit('t5_summarization') }}
 
 # Remove native package (idempotent — no-op if already removed)
-{{ salt['service.remove_native_package']('t5_summarization', ['llama.cpp-vulkan']) }}
+{{ remove_native_package('t5_summarization', ['llama.cpp-vulkan']) }}
 
-{{ salt['container.deploy']('t5_summarization', catalog.t5_summarization, image_registry,
+{{ container_service('t5_summarization', catalog.t5_summarization, image_registry,
     requires=['file: t5_summarization_hf_dir', 'cmd: t5_summarization_convert', 'cmd: t5_summarization_native_unit_daemon_reload']) }}

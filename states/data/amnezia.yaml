@@ -1,4 +1,3 @@
-schema_version: 1
 bins:
   amneziawg_go_bin:
     src: amneziawg-go-bin

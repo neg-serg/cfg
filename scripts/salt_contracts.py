@@ -272,6 +272,8 @@ def check_container_images_liveness(repo_root: Path = REPO_ROOT) -> list[str]:
             referenced_images.add(image_key)
 
     for image_name in images:
+        if image_name == "schema_version":
+            continue
         if image_name not in referenced_images:
             errors.append(
                 f"Container image '{image_name}' is not referenced by any service in"

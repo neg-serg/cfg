@@ -1,5 +1,6 @@
 {# CachyOS kernel packages, boot configuration, and kernel cmdline management #}
 {% from '_imports.jinja' import host %}
+{% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/cachyos.yaml' as cachyos %}
 
 include:
@@ -19,34 +20,16 @@ cachyos_kernel_cmdline:
     - require:
       - cmd: cachyos_boot_splash
 
-cachyos_kernels:
-  cmd.run:
-    - name: sudo -u {{ host.user }} paru -S --noconfirm --needed {{ cachyos.kernel_packages | join(' ') }}
-    - unless: grep -qxF 'linux-cachyos' {{ host.pkg_list }}
-    - require:
-      - cmd: pacman_db_warmup
-      - file: cachyos_kernel_cmdline
+{{ paru_install('cachyos_kernels', cachyos.kernel_packages | join(' '), requires=['file: cachyos_kernel_cmdline']) }}
 
-cachyos_settings:
-  cmd.run:
-    - name: sudo -u {{ host.user }} paru -S --noconfirm --needed {{ cachyos.settings_package }}
-    - unless: grep -qxF '{{ cachyos.settings_package }}' {{ host.pkg_list }}
-    - require:
-      - cmd: pacman_db_warmup
-      - cmd: cachyos_kernels
+{{ paru_install('cachyos_settings', cachyos.settings_package, requires=['cmd: install_cachyos_kernels']) }}
 
-cachyos_scx:
-  cmd.run:
-    - name: sudo -u {{ host.user }} paru -S --noconfirm --needed {{ cachyos.scx_packages | join(' ') }}
-    - unless: grep -qxF '{{ cachyos.scx_packages[0] }}' {{ host.pkg_list }}
-    - require:
-      - cmd: pacman_db_warmup
-      - cmd: cachyos_settings
+{{ paru_install('cachyos_scx', cachyos.scx_packages | join(' '), requires=['cmd: install_cachyos_settings']) }}
 
 {% for variant in cachyos.kernel_variants %}
 {{ variant | replace('-', '_') }}_preset:
   file.managed:
-    - name: /etc/mkinitcpio.d/{{ variant }}.preset
+    - name: {{ host.mkinitcpio_dir }}{{ variant }}.preset
     - source: salt://configs/mkinitcpio-cachyos-preset.j2
     - template: jinja
     - context:
@@ -61,7 +44,7 @@ cachyos_scx:
     - enable: true
     - onlyif: systemctl list-unit-files {{ svc }} &>/dev/null
     - require:
-      - cmd: cachyos_settings
+      - cmd: install_cachyos_settings
 {% endfor %}
 
 cachyos_mkinitcpio:
@@ -70,7 +53,7 @@ cachyos_mkinitcpio:
     - onlyif: command -v mkinitcpio >/dev/null 2>&1
     - onchanges:
       - file: cachyos_kernel_cmdline
-      - cmd: cachyos_kernels
+      - cmd: install_cachyos_kernels
       - cmd: cachyos_boot_splash
 {%- for variant in cachyos.kernel_variants %}
       - file: {{ variant | replace('-', '_') }}_preset
@@ -79,7 +62,7 @@ cachyos_mkinitcpio:
 cachyos_default_boot:
   cmd.run:
     - name: bootctl set-default {{ cachyos.boot_entry }}
-    - onlyif: test -f /efi/EFI/Linux/{{ cachyos.boot_entry }}
+    - onlyif: test -f {{ cachyos.boot_efi_dir }}/{{ cachyos.boot_entry }}
     - unless: bootctl status 2>/dev/null | grep -qi 'default.*{{ cachyos.boot_entry | replace('.', '\.') }}'
     - require:
       - cmd: cachyos_mkinitcpio

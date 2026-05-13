@@ -20,6 +20,7 @@ services:
 - ananicy-cpp
 - cachyos-iw-set-regdomain.path
 boot_entry: arch-linux-cachyos.efi
+boot_efi_dir: /efi/EFI/Linux
 boot_splash:
   output: /usr/share/systemd/bootctl/splash-custom.bmp
 kernel_cmdline_path: /etc/kernel/cmdline

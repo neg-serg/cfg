@@ -17,6 +17,13 @@ import subprocess
 import sys
 import tempfile
 
+_ERR = '{_ERR}'
+_WARN = '{_WARN}'
+_OK = '{_OK}'
+_RESET = '{_RESET}'
+
+
+
 QML_DIR = os.path.join("dotfiles", "dot_config", "quickshell")
 QT_QML = "/usr/lib/qt6/qml"
 

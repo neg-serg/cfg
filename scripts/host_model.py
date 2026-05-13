@@ -14,6 +14,11 @@ import re
 
 import yaml
 
+_ERR = '{_ERR}'
+_RESET = '{_RESET}'
+
+
+
 HOSTS_YAML_PATH = os.path.join("states", "data", "hosts.yaml")
 FEATURE_MATRIX_PATH = os.path.join("states", "data", "feature_matrix.yaml")
 FEATURE_REGISTRY_PATH = os.path.join("states", "data", "feature_registry.yaml")

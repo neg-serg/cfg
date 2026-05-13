@@ -99,6 +99,11 @@ def check_jinja_syntax(files):
     return errors
 
 
+_ERR = "\033[31m"
+_WARN = "\033[33m"
+_RESET = "\033[0m"
+
+
 def _strip_schema(data):
     """Remove schema_version from loaded YAML dicts (metadata, not data)."""
     if isinstance(data, dict):
@@ -1135,6 +1140,31 @@ def check_systemd_units():
 
 
 def main():
+    try:
+        from lib.pretty import pretty
+    except ImportError:
+        pretty = None
+
+    def _log(category: str, count: int, kind: str = "errors"):
+        msg = f"{category}: {count} {kind}"
+        if pretty:
+            if count:
+                pretty.fail(msg)
+            else:
+                pretty.ok(msg)
+        else:
+            print(f"  {'✗' if count else '✓'} {msg}")
+
+    def _warn(category: str, count: int):
+        msg = f"{category}: {count} warnings"
+        if pretty:
+            if count:
+                pretty.warn(msg)
+            else:
+                pretty.ok(msg)
+        else:
+            print(f"  {'⚠' if count else '✓'} {msg}")
+
     sls_files = sorted(glob.glob("states/**/*.sls", recursive=True))
     jinja_files = sorted(glob.glob("states/*.jinja"))
     yaml_configs = sorted(
@@ -1144,59 +1174,62 @@ def main():
     )
     all_jinja = sls_files + jinja_files
 
+    if pretty:
+        pretty.section("Salt State Lint")
+
     total_errors = 0
     total_warnings = 0
 
     # 1. Jinja2 syntax
     jinja_errors = check_jinja_syntax(all_jinja)
     total_errors += jinja_errors
-    print(f"Jinja2 syntax: {len(all_jinja)} files, {jinja_errors} errors")
+    _log("Jinja2 syntax", jinja_errors)
 
     # 2. Duplicate state IDs (also collects rendered docs for later checks)
     dupe_errors, rendered, all_ids, rendered_docs = check_duplicate_state_ids(sls_files)
     total_errors += dupe_errors
-    print(f"State IDs: {rendered} files rendered, {dupe_errors} duplicates")
+    _log("State IDs", dupe_errors)
 
     # 3. State ID naming conventions
     naming_errors = check_state_id_naming(sls_files, all_ids)
     total_errors += naming_errors
-    print(f"State ID naming: {naming_errors} violations")
+    _log("State ID naming", naming_errors)
 
     # 4. Host config validation
     host_errors = host_model.check_host_config()
     total_errors += host_errors
-    print(f"Host config: {host_errors} errors")
+    _log("Host config", host_errors)
 
     # 4b. Feature registry validation
     feature_errors = host_model.check_features_against_registry()
     total_errors += feature_errors
-    print(f"Feature registry: {feature_errors} errors")
+    _log("Feature registry", feature_errors)
 
     # 5. YAML config validation
     if yaml_configs:
         yaml_errors = check_yaml_configs(yaml_configs)
         total_errors += yaml_errors
-        print(f"YAML configs: {len(yaml_configs)} files, {yaml_errors} errors")
+        _log("YAML configs", yaml_errors)
 
     # 6. Unused imports (warning, not error)
     import_warnings = check_unused_imports(sls_files)
     total_warnings += import_warnings
-    print(f"Unused imports: {import_warnings} warnings")
+    _warn("Unused imports", import_warnings)
 
     # 7. Require/watch/onchanges resolution
     require_errors = check_require_resolve(rendered_docs, all_ids)
     total_errors += require_errors
-    print(f"Require resolve: {require_errors} errors")
+    _log("Require resolve", require_errors)
 
     # 8. Dangling includes
     include_errors = check_dangling_includes(sls_files)
     total_errors += include_errors
-    print(f"Dangling includes: {include_errors} errors")
+    _log("Dangling includes", include_errors)
 
     # 9. Data file integrity (required keys, version references)
     data_errors = check_data_integrity()
     total_errors += data_errors
-    print(f"Data integrity: {data_errors} errors")
+    _log("Data integrity", data_errors)
 
     # 10. Parse inline suppressions for idempotency and network checks
     suppressions = _parse_suppressions(sls_files)
@@ -1204,40 +1237,51 @@ def main():
     # 11. Network resilience (retry + parallel on network commands)
     network_warnings = check_network_resilience(rendered_docs)
     total_warnings += network_warnings
-    print(f"Network resilience: {network_warnings} warnings")
+    _warn("Network resilience", network_warnings)
 
     # 12. Idempotency guards (cmd.run/cmd.script without creates/unless/onlyif/onchanges)
     idempotency_warnings = check_idempotency_guards(rendered_docs, suppressions)
     total_warnings += idempotency_warnings
-    print(f"Idempotency guards: {idempotency_warnings} warnings")
+    _warn("Idempotency guards", idempotency_warnings)
 
     # 13. Stale suppressions (suppression comment with no matching violation)
     stale_warnings = check_stale_suppressions(sls_files, rendered_docs, suppressions)
     total_warnings += stale_warnings
-    print(f"Stale suppressions: {stale_warnings} warnings")
+    _warn("Stale suppressions", stale_warnings)
 
     # 14. Bash syntax without shell: /bin/bash
     shell_warnings = check_cmd_shell(rendered_docs)
     total_warnings += shell_warnings
-    print(f"Cmd shell: {shell_warnings} warnings")
+    _warn("Cmd shell", shell_warnings)
 
     # 15. Salt URI references (salt:// paths point to existing files)
     data_yamls = sorted(glob.glob("states/data/*.yaml"))
     uri_errors = check_salt_uri_refs(sls_files, jinja_files, data_yamls)
     total_errors += uri_errors
-    print(f"Salt URI refs: {uri_errors} errors")
+    _log("Salt URI refs", uri_errors)
 
     # 16. Systemd unit file validation
     unit_errors, units_checked = check_systemd_units()
     total_errors += unit_errors
-    print(f"Systemd units: {units_checked} files, {unit_errors} errors")
+    _log("Systemd units", unit_errors)
 
     # 17. Explicit service inventory contracts
     contract_errors = salt_contracts.print_contract_errors(
         salt_contracts.check_service_inventory_contracts()
     )
     total_errors += contract_errors
-    print(f"Service inventory contracts: {contract_errors} errors")
+    _log("Service inventory contracts", contract_errors)
+
+    if pretty:
+        pretty.rule()
+        if total_errors:
+            pretty.summary_line(0, total_errors, "Lint")
+        else:
+            pretty.ok(f"Lint: {total_warnings} warnings, 0 errors")
+        print()
+    else:
+        print(f"\n{'─' * 50}")
+        print(f"Total: {total_errors} errors, {total_warnings} warnings")
 
     sys.exit(1 if total_errors else 0)
 

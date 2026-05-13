@@ -13,6 +13,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+_ERR = '{_ERR}'
+_WARN = '{_WARN}'
+_OK = '{_OK}'
+_RESET = '{_RESET}'
+
+
+
 SYSCTL_CONF = Path("states/configs/sysctl-custom.conf")
 SYSCTL_ETC_DIR = Path("/etc/sysctl.d")
 

@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/lib/pretty.sh"
+
+
 # Hybrid VPN setup: Xray handles XHTTP transport, sing-box handles TUN interface
 # Xray runs the AmneziaVPN config with XHTTP+REALITY
 # sing-box creates TUN interface and routes traffic through Xray SOCKS5 proxy

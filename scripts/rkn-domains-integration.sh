@@ -5,6 +5,7 @@ set -euo pipefail
 # Provides manual fallback and integration with existing systems
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/lib/pretty.sh"
 
 # Configuration
 CONFIG_DIR="${HOME}/.config/rkn-domains-fetcher"
@@ -16,18 +17,11 @@ CONFIG_FILE="${CONFIG_DIR}/config.yaml"
 VPN_SPLIT_ROUTER_CONFIG="${HOME}/.config/vpn-split-router/config.yaml"
 SINGBOX_CONFIG="${HOME}/.config/sing-box-tun/config-no-auto-route.json"
 
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-# Logging
-log_info() { echo -e "${BLUE}[INFO]${NC} $*"; }
-log_success() { echo -e "${GREEN}[SUCCESS]${NC} $*"; }
-log_warning() { echo -e "${YELLOW}[WARNING]${NC} $*"; }
-log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
+# Logging (delegates to pretty.sh)
+log_info() { pretty::info "$*"; }
+log_success() { pretty::ok "$*"; }
+log_warning() { pretty::warn "$*"; }
+log_error() { pretty::fail "$*"; }
 
 # Ensure directories exist
 ensure_directories() {

@@ -1,18 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 set -euo pipefail
 
 # IPv6 diagnostics script
 # Usage: ./check-ipv6.sh [--json]
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-NC='\033[0m'
-
-pass()  { echo -e "  ${GREEN}PASS${NC}  $1"; }
-warn()  { echo -e "  ${YELLOW}WARN${NC}  $1"; }
-fail()  { echo -e "  ${RED}FAIL${NC}  $1"; }
-info()  { echo -e "  INFO  $1"; }
+SCRIPT_DIR="${0:A:h}"
+source "${SCRIPT_DIR}/lib/pretty.sh"
 
 declare -A RESULTS
 RESULTS[global_addr]=0

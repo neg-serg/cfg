@@ -198,26 +198,37 @@ def cmd_check(markdown=False):
         pinned_clean = str(pinned)
         results.append((key, f"npm:{pkg}", pinned_clean, latest, latest))
 
+    try:
+        from lib.pretty import pretty as _p
+    except ImportError:
+        _p = None
+
     if markdown:
         outdated = [(k, r, p, lc, tag) for k, r, p, lc, tag in results if lc not in ("?", p)]
         if not outdated:
             print("All pinned versions are up to date.")
             return 0
-        print("| Tool | Pinned | Latest | Source |")
-        print("|------|--------|--------|--------|")
-        for key, repo, pinned, _, tag in outdated:
-            print(f"| {key} | {pinned} | {tag} | {repo} |")
+        if _p:
+            rows = [[k, p, tag, r] for k, r, p, _, tag in outdated]
+            _p.table(["Tool", "Pinned", "Latest", "Source"], rows, aligns=["<", "<", "<", "<"])
+        else:
+            print("| Tool | Pinned | Latest | Source |")
+            print("|------|--------|--------|--------|")
+            for key, repo, pinned, _, tag in outdated:
+                print(f"| {key} | {pinned} | {tag} | {repo} |")
         return 1
 
-    print("Checking pinned versions against latest releases...\n")
+    if _p:
+        _p.section("Checking pinned versions")
+
     for key, repo, pinned_clean, latest_clean, latest in results:
         if latest_clean == "?":
-            status = "\033[33m?\033[0m"
+            badge = _p.status_badge("SKIP") if _p else "\033[33m?\033[0m"
         elif latest_clean == pinned_clean:
-            status = "\033[32m=\033[0m"
+            badge = _p.status_badge("OK") if _p else "\033[32m=\033[0m"
         else:
-            status = "\033[31m!\033[0m"
-        print(f"  {status} {key:20s} pinned: {pinned_clean:12s} latest: {latest:12s} ({repo})")
+            badge = _p.status_badge("WARN") if _p else "\033[31m!\033[0m"
+        print(f"  {badge} {key:20s} pinned: {pinned_clean:12s} latest: {latest:12s} ({repo})")
     return 0
 
 
@@ -254,7 +265,11 @@ def update_with_salt(name, info):
     )
 
     if result.returncode != 0:
-        print("  \033[31mFAILED\033[0m")
+        try:
+            from lib.pretty import pretty as _p2
+            _p2.fail(f"Failed to update {name}")
+        except ImportError:
+            print(f"  \033[31mFAILED\033[0m")
         stderr = result.stderr.strip()
         if stderr:
             for line in stderr.split("\n")[:5]:
@@ -262,9 +277,13 @@ def update_with_salt(name, info):
         return False
 
     if gp and os.path.exists(gp):
-        print("  \033[32mOK\033[0m")
+        try:
+            from lib.pretty import pretty as _p2
+            _p2.ok(f"Updated {name}")
+        except ImportError:
+            print(f"  \033[32mOK\033[0m")
     else:
-        print("  \033[33mDone (no guard file)\033[0m")
+        print(f"  \033[33mDone (no guard file)\033[0m")
     return True
 
 

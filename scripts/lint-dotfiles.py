@@ -7,6 +7,13 @@ import re
 import subprocess
 import sys
 
+_ERR = '{_ERR}'
+_WARN = '{_WARN}'
+_OK = '{_OK}'
+_RESET = '{_RESET}'
+
+
+
 DOTFILES_BIN = os.path.join("dotfiles", "dot_local", "bin")
 DOTFILES_ROOT = "dotfiles"
 

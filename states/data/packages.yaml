@@ -154,6 +154,7 @@ system:
 - parted
 - strace
 - stress-ng
+- rmlint
 - sysstat
 - pacman-contrib
 - rebuild-detector

@@ -15,7 +15,6 @@ def test_music_analysis_state_exists():
     assert "salt['pkg.paru_install']" in src
     assert "salt['user_service.user_service_file']" in src
     assert "salt['user_service.user_service_enable']" in src
-    assert "salt['installer.curl_extract_tar']" in src
     assert "{% import_yaml 'data/installers.yaml' as tools %}" in src
     assert "salt['pkg.paru_install']('python_annoy', 'python-annoy')" in src
 

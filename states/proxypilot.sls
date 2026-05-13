@@ -1,5 +1,5 @@
 {% from '_imports.jinja' import user, home, proxypilot_key, gopass_secret %}
-{% from '_macros_service.jinja' import ensure_dir, remove_native_unit %}
+
 {% from '_macros_service_user.jinja' import user_service_restart %}
 {% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 {% import_yaml 'data/free_providers.yaml' as free_providers_data %}
@@ -42,7 +42,7 @@
 {% endfor %}
 
 {# ── Config directory + config file ── #}
-{{ ensure_dir('proxypilot_config_dir', home ~ '/.config/proxypilot') }}
+{{ salt['service.ensure_dir']('proxypilot_config_dir', home ~ '/.config/proxypilot') }}
 
 proxypilot_config:
   file.managed:
@@ -62,7 +62,7 @@ proxypilot_config:
       - file: proxypilot_config_dir
 
 {# ── In-place cutover: remove native user unit ── #}
-{{ remove_native_unit('proxypilot', scope='user') }}
+{{ salt['service.remove_native_unit']('proxypilot', scope='user') }}
 
 {# ── Container deployment ── #}
 {{ container_service('proxypilot', catalog.proxypilot, image_registry,

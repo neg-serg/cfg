@@ -1,7 +1,7 @@
 {# Telethon Bridge: Telegram MTProto relay to HTTP for LLM bot integration #}
 {% from '_imports.jinja' import user, home, proxypilot_key, tg_secret %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% from '_macros_service_user.jinja' import user_service_file, user_service_enable, user_service_with_unit %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/telethon_bridge.yaml' as tb %}
@@ -22,10 +22,10 @@ include:
 
 {{ paru_install('python_telethon', tb.packages | join(' '), check='__ALL__', version=ver.telethon) }}
 
-{{ ensure_dir('telethon_bridge_config_dir', _tb_config_dir) }}
-{{ ensure_dir('telethon_bridge_credentials_dir', _tb_creds, mode='0700') }}
-{{ ensure_dir('telethon_bridge_state_dir', _tb_state_dir, mode='0700') }}
-{{ ensure_dir('telethon_bridge_media_dir', _tb_state_dir ~ '/media') }}
+{{ salt['service.ensure_dir']('telethon_bridge_config_dir', _tb_config_dir) }}
+{{ salt['service.ensure_dir']('telethon_bridge_credentials_dir', _tb_creds, mode='0700') }}
+{{ salt['service.ensure_dir']('telethon_bridge_state_dir', _tb_state_dir, mode='0700') }}
+{{ salt['service.ensure_dir']('telethon_bridge_media_dir', _tb_state_dir ~ '/media') }}
 
 telethon_bridge_config:
   file.managed:

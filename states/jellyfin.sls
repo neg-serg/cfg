@@ -1,17 +1,17 @@
 # Jellyfin media server — pure Quadlet (Podman container).
 {% from '_imports.jinja' import host %}
-{% from '_macros_service.jinja' import ensure_dir, remove_native_unit %}
+
 {% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 
 # Jellyfin media server — pure Quadlet (Podman container).
 # Replaces native pacman packages (jellyfin-server, jellyfin-web).
 
 {# In-place cutover: remove native systemd unit file so Quadlet-generated unit is not shadowed. #}
-{{ remove_native_unit('jellyfin') }}
+{{ salt['service.remove_native_unit']('jellyfin') }}
 
 {# Config + cache directories on host — container bind-mounts need them to exist #}
-{{ ensure_dir('jellyfin_config_dir', '/etc/jellyfin', mode='0755') }}
-{{ ensure_dir('jellyfin_cache_dir', '/var/cache/jellyfin', mode='0755') }}
+{{ salt['service.ensure_dir']('jellyfin_config_dir', '/etc/jellyfin', mode='0755') }}
+{{ salt['service.ensure_dir']('jellyfin_cache_dir', '/var/cache/jellyfin', mode='0755') }}
 
 {{ container_service('jellyfin', catalog.jellyfin, image_registry,
     quadlet_unit_name='jellyfin-container',

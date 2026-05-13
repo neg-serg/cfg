@@ -7,13 +7,13 @@
 # bind mounts (kernel reports the underlying block device, not bind source).
 
 {% from '_imports.jinja' import home %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% import_yaml 'data/bind_mounts.yaml' as mounts %}
 
 {% for name, m in mounts.items() %}
 {% set target = home ~ '/' ~ m.target_suffix %}
 {% set disk_name = m.device.split('/')[2] %}
-{{ ensure_dir(name ~ '_mount_point', target) }}
+{{ salt['service.ensure_dir'](name ~ '_mount_point', target) }}
 
 {{ name }}_mount_fstab:
   mount.fstab_present:

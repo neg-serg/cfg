@@ -4,7 +4,7 @@ include:
 
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% import_yaml 'data/desktop.yaml' as desktop %}
 
 {% set niri_pkgs = desktop.niri_packages %}
@@ -13,7 +13,7 @@ include:
 {{ paru_install('niri_' ~ safe_id, pkg) }}
 {% endfor %}
 
-{{ ensure_dir('niri_config_dir', home ~ '/.config/niri', mode='0700', user=user) }}
+{{ salt['service.ensure_dir']('niri_config_dir', home ~ '/.config/niri', mode='0700', user=user) }}
 
 niri_config_file:
   file.managed:

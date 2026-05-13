@@ -1,11 +1,11 @@
 {% from '_imports.jinja' import host, home, user %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% import_yaml 'data/vpn.yaml' as vpn %}
 {% set net = host.features.network %}
 
 {% if net.vpn_hybrid %}
 
-{{ ensure_dir('sing_box_tun_hybrid_config_dir', home ~ '/.config/sing-box-tun', mode='0755') }}
+{{ salt['service.ensure_dir']('sing_box_tun_hybrid_config_dir', home ~ '/.config/sing-box-tun', mode='0755') }}
 
 sing_box_tun_hybrid_config:
   file.managed:

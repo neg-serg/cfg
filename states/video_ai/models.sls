@@ -1,7 +1,7 @@
 {# Video AI models: HuggingFace model downloads and safetensors management #}
 {% from '_imports.jinja' import host, user %}
 {% from '_macros_install.jinja' import huggingface_file %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% import_yaml 'data/video_ai.yaml' as video_ai %}
 {% set base_dir = host.mnt_one ~ '/video-ai' %}
 {% set comfyui_dir = base_dir ~ '/comfyui' %}
@@ -10,7 +10,7 @@
 # ── Model downloads ──────────────────────────────────────────────────
 {% for model in video_ai.get('models', []) %}
 {% if model.enabled %}
-{{ ensure_dir('video_ai_model_dir_' ~ model.id | replace('-', '_'), models_dir ~ '/' ~ model.id, require=['file: video_ai_models_dir']) }}
+{{ salt['service.ensure_dir']('video_ai_model_dir_' ~ model.id | replace('-', '_'), models_dir ~ '/' ~ model.id, require=['file: video_ai_models_dir']) }}
 
 {% for file in model.files %}
 {{ huggingface_file(

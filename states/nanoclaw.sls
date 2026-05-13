@@ -1,6 +1,6 @@
 {# NanoClaw AI coding agent: git clone, npm install, Quadlet container deployment #}
 {% from '_imports.jinja' import user, home, retry_attempts, retry_interval, proxypilot_key, tg_secret %}
-{% from '_macros_service.jinja' import ensure_dir, remove_native_unit %}
+
 {% from '_macros_service_user.jinja' import user_service_restart %}
 {% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 {% from '_macros_install.jinja' import npm_build_workflow %}
@@ -25,10 +25,10 @@ nanoclaw_clone:
 
 {{ npm_build_workflow('nanoclaw', dir=_nanoclaw_dir, version=ver.nanoclaw, require=['cmd: nanoclaw_clone']) }}
 
-{{ ensure_dir('nanoclaw_config_dir', _nanoclaw_config) }}
-{{ ensure_dir('nanoclaw_store_dir', _nanoclaw_dir ~ '/store') }}
-{{ ensure_dir('nanoclaw_data_dir', _nanoclaw_dir ~ '/data') }}
-{{ ensure_dir('nanoclaw_groups_dir', _nanoclaw_dir ~ '/groups') }}
+{{ salt['service.ensure_dir']('nanoclaw_config_dir', _nanoclaw_config) }}
+{{ salt['service.ensure_dir']('nanoclaw_store_dir', _nanoclaw_dir ~ '/store') }}
+{{ salt['service.ensure_dir']('nanoclaw_data_dir', _nanoclaw_dir ~ '/data') }}
+{{ salt['service.ensure_dir']('nanoclaw_groups_dir', _nanoclaw_dir ~ '/groups') }}
 
 nanoclaw_env:
   file.managed:
@@ -84,7 +84,7 @@ nanoclaw_mount_allowlist:
     - require:
       - file: nanoclaw_config_dir
 
-{{ remove_native_unit('nanoclaw', scope='user') }}
+{{ salt['service.remove_native_unit']('nanoclaw', scope='user') }}
 
 {{ container_service('nanoclaw', catalog.nanoclaw, image_registry,
     quadlet_unit_name='nanoclaw-container',

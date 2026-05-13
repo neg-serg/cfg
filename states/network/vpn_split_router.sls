@@ -1,13 +1,13 @@
 {% from '_imports.jinja' import host, home, user %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% from '_macros_service_user.jinja' import user_service_enable, user_service_file %}
 {% import_yaml 'data/vpn.yaml' as vpn %}
 {% set net = host.features.network %}
 
 {% if net.vpn_split_router %}
 
-{{ ensure_dir('vpn_split_router_config_dir', home ~ '/.config/vpn-split-router', mode='0755') }}
-{{ ensure_dir('vpn_split_router_state_dir', home ~ '/.local/state/vpn-split-router', mode='0755') }}
+{{ salt['service.ensure_dir']('vpn_split_router_config_dir', home ~ '/.config/vpn-split-router', mode='0755') }}
+{{ salt['service.ensure_dir']('vpn_split_router_state_dir', home ~ '/.local/state/vpn-split-router', mode='0755') }}
 
 vpn_split_router_script:
   file.managed:

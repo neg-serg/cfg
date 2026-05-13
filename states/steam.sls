@@ -1,6 +1,6 @@
 {# Steam gaming platform: multilib, drivers, gamemode, and controller support #}
 {% from '_imports.jinja' import host, user %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_config.jinja' import config_file_edit %}
 {% import_yaml 'data/steam.yaml' as steam %}
@@ -22,7 +22,7 @@ include:
 {{ paru_install(id, pkgs | join(' '), requires=['cmd: multilib_repo']) }}
 {% endfor %}
 
-{{ ensure_dir('steam_library_dir', host.mnt_zero ~ '/steam/steamapps', require=['mount: mount_zero']) }}
+{{ salt['service.ensure_dir']('steam_library_dir', host.mnt_zero ~ '/steam/steamapps', require=['mount: mount_zero']) }}
 {{ paru_install('p7zip', '7zip') }}
 
 gamemode_config:

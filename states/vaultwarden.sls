@@ -5,7 +5,7 @@ include:
 
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% from '_macros_service_user.jinja' import user_service_file, user_service_enable %}
 {% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 
@@ -41,7 +41,7 @@ vault_full_backup_script:
       - file: bw_sync_script_dir
 
 # Host data directory for Vaultwarden SQLite
-{{ ensure_dir('vaultwarden_data_dir', '/var/lib/vaultwarden', mode='0700') }}
+{{ salt['service.ensure_dir']('vaultwarden_data_dir', '/var/lib/vaultwarden', mode='0700') }}
 
 # Podman Quadlet container
 {{ container_service('vaultwarden', catalog.vaultwarden, image_registry,

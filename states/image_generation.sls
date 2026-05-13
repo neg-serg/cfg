@@ -2,7 +2,7 @@
 # Image generation — ComfyUI deployment with multiple AI providers
 # =============================================================================
 {% from '_imports.jinja' import user, home, gopass_secret %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% import_yaml 'data/image_providers.yaml' as image_providers_data %}
 {% set _image_gen_cfg = home ~ '/.config/image-gen/providers.yaml' %}
 
@@ -27,7 +27,7 @@
   {% endif %}
 {% endfor %}
 
-{{ ensure_dir('image_gen_config_dir', home ~ '/.config/image-gen') }}
+{{ salt['service.ensure_dir']('image_gen_config_dir', home ~ '/.config/image-gen') }}
 image_gen_providers_config:
   file.managed:
     - name: {{ _image_gen_cfg }}

@@ -1,6 +1,6 @@
 {# T5 text summarization server: safetensors to GGUF conversion via Quadlet container #}
 {% from '_imports.jinja' import host, user %}
-{% from '_macros_service.jinja' import ensure_dir, remove_native_unit, remove_native_package %}
+
 {% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 {% from '_macros_install.jinja' import huggingface_file %}
 {% from '_macros_pkg.jinja' import paru_install %}
@@ -14,8 +14,8 @@
 {% set gguf_path = models_dir ~ '/' ~ t5.gguf_file %}
 {% set port = catalog.t5_summarization.port %}
 
-{{ ensure_dir('t5_summarization_models_dir', models_dir, require=['mount: mount_one']) }}
-{{ ensure_dir('t5_summarization_hf_dir', hf_path, require=['mount: mount_one']) }}
+{{ salt['service.ensure_dir']('t5_summarization_models_dir', models_dir, require=['mount: mount_one']) }}
+{{ salt['service.ensure_dir']('t5_summarization_hf_dir', hf_path, require=['mount: mount_one']) }}
 
 # python-transformers is needed for convert_hf_to_gguf.py (runs on host during build)
 {{ paru_install('python_transformers', 'python-transformers') }}
@@ -45,10 +45,10 @@ t5_summarization_convert:
       - cmd: install_python_transformers
 
 # In-place cutover: remove the native systemd unit file
-{{ remove_native_unit('t5_summarization') }}
+{{ salt['service.remove_native_unit']('t5_summarization') }}
 
 # Remove native package (idempotent — no-op if already removed)
-{{ remove_native_package('t5_summarization', ['llama.cpp-vulkan']) }}
+{{ salt['service.remove_native_package']('t5_summarization', ['llama.cpp-vulkan']) }}
 
 {{ container_service('t5_summarization', catalog.t5_summarization, image_registry,
     requires=['file: t5_summarization_hf_dir', 'cmd: t5_summarization_convert', 'cmd: t5_summarization_native_unit_daemon_reload']) }}

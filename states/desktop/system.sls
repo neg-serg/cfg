@@ -4,10 +4,10 @@ include:
 
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir, service_stopped, service_with_unit %}
+
 {% import_yaml 'data/desktop.yaml' as desktop %}
 
-{{ ensure_dir('pacman_hooks_dir', '/etc/pacman.d/hooks', mode='0755', user='root') }}
+{{ salt['service.ensure_dir']('pacman_hooks_dir', '/etc/pacman.d/hooks', mode='0755', user='root') }}
 
 pacman_salt_pkglist_hook:
   file.managed:
@@ -17,7 +17,7 @@ pacman_salt_pkglist_hook:
     - require:
       - file: pacman_hooks_dir
 
-{{ ensure_dir('pacman_salt_cache_dir', '/var/cache/salt', mode='0755', user='root') }}
+{{ salt['service.ensure_dir']('pacman_salt_cache_dir', '/var/cache/salt', mode='0755', user='root') }}
 
 faillock_config:
   file.replace:
@@ -88,7 +88,7 @@ pcscd_socket_enabled:
     - require:
       - cmd: install_pcsclite
 
-{{ service_stopped('tuned_stopped', 'tuned', onlyif='systemctl list-unit-files tuned.service 2>/dev/null | grep -q tuned') }}
+{{ salt['service.service_stopped']('tuned_stopped', 'tuned', onlyif='systemctl list-unit-files tuned.service 2>/dev/null | grep -q tuned') }}
 
 cpu_balanced_epp_script:
   file.managed:
@@ -96,4 +96,4 @@ cpu_balanced_epp_script:
     - source: salt://scripts/cpu-balanced-epp.sh
     - mode: '0755'
 
-{{ service_with_unit('cpu-balanced-epp', 'salt://units/cpu-balanced-epp.service', requires=['file: cpu_balanced_epp_script']) }}
+{{ salt['service.service_with_unit']('cpu-balanced-epp', 'salt://units/cpu-balanced-epp.service', requires=['file: cpu_balanced_epp_script']) }}

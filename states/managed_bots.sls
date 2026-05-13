@@ -1,6 +1,6 @@
 {# Managed Telegram Bots: Bot API 9.6 manager bot state #}
 {% from '_imports.jinja' import user, home, tg_secret %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% from '_macros_service_user.jinja' import user_service_enable, user_service_file %}
 {% import_yaml 'data/telegram_managed_bots.yaml' as mbdata %}
 
@@ -15,7 +15,7 @@ install_managed_bots_deps:
     - unless: python3 -c 'import telegram; import yaml' 2>/dev/null
     - parallel: true
 
-{{ ensure_dir('managed_bots_config_dir', home ~ '/.config/opencode') }}
+{{ salt['service.ensure_dir']('managed_bots_config_dir', home ~ '/.config/opencode') }}
 
 managed_bots_config:
   file.managed:

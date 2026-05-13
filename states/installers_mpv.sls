@@ -1,7 +1,7 @@
 {# MPV media player: scripts, plugins, and shaders for enhanced playback #}
 # MPV scripts and plugins (split from installers.sls)
 {% from '_imports.jinja' import user, home, retry_attempts, retry_interval, ver_dir %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% from '_macros_install.jinja' import http_file %}
 {% from '_macros_install.jinja' import github_release_to %}
 {% import_yaml 'data/mpv_scripts.yaml' as mpv %}
@@ -9,7 +9,7 @@
 
 {% set mpv_scripts_dir = home ~ '/.config/mpv/scripts' %}
 
-{{ ensure_dir('mpv_scripts_dir', mpv_scripts_dir) }}
+{{ salt['service.ensure_dir']('mpv_scripts_dir', mpv_scripts_dir) }}
 
 {% for filename, url in mpv.raw.items() %}
 {{ http_file('mpv_script_' ~ (filename | replace('.', '_') | replace('-', '_')), url, mpv_scripts_dir ~ '/' ~ filename, user=user, require=['file: mpv_scripts_dir']) }}

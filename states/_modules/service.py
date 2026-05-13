@@ -546,7 +546,7 @@ def render_service(name: str, opts: dict[str, Any], feature_flag: bool,
             if ct.get("template", "jinja"):
                 cfg[f"{name}_config_{i}"]["file.managed"].append({"template": "jinja"})
             if ctx:
-                cfg[f"{name}_config_{i}"]["file.managed"].append({"context": [ctx]})
+                cfg[f"{name}_config_{i}"]["file.managed"].append({"context": ctx})
             if ct_req:
                 cfg[f"{name}_config_{i}"]["file.managed"].append({"require": ct_req})
             ret.update(cfg)

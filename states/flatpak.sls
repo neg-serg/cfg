@@ -11,8 +11,9 @@ include:
 
 flatpak_flathub_remote:
   cmd.run:
-    - name: sudo -u {{ user }} flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    - unless: sudo -u {{ user }} flatpak remotes --user --columns=name | grep -qx 'flathub'
+    - name: flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    - runas: {{ user }}
+    - unless: flatpak remotes --user --columns=name | grep -qx 'flathub'
     - require:
       - cmd: install_flatpak
     - retry:

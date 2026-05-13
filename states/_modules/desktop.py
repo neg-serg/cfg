@@ -58,7 +58,7 @@ def dconf_settings(name: str, settings: dict[str, str],
     args: list[dict[str, Any]] = [
         {"name": "\n".join(lines)},
         {"shell": "/bin/bash"}, {"runas": u},
-        {"env": [{"DBUS_SESSION_BUS_ADDRESS": f"unix:path={h['runtime_dir']}/bus"}]},
+        {"env": {"DBUS_SESSION_BUS_ADDRESS": f"unix:path={h['runtime_dir']}/bus"}},
         {"unless": checks_joined},
     ]
     if require:

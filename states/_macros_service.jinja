@@ -179,6 +179,54 @@ test -e {{ _path }}
       - file: {{ name }}
 {%- endmacro -%}
 
+{# Config file deploy + reload/restart companion.
+   Emits two states: {{ name }} (file.managed) and {{ name }}_reload (cmd.run)
+   with onchanges from the reload state to the file state.
+   source: salt:// path for the config file template/static asset.
+   contents: inline content (used instead of source for short snippets).
+   Usage: {{ config_and_reload('sysctl_config', '/etc/sysctl.d/99-custom.conf', 'sysctl --system', source='salt://configs/sysctl-custom.conf.j2', template='jinja', onlyif='command -v sysctl >/dev/null 2>&1') }}
+          {{ config_and_reload('looking_glass_shm', '/etc/tmpfiles.d/10-looking-glass.conf', 'systemd-tmpfiles --create ...', contents='f /dev/shm/looking-glass ...') }}
+#}
+{%- macro config_and_reload(name, config_path, reload_cmd, source=None, contents=None, mode='0644', template=None, context=None, makedirs=False, require=None, onlyif=None) -%}
+{{ name }}:
+  file.managed:
+    - name: {{ config_path }}
+    - mode: '{{ mode }}'
+{%- if source %}
+    - source: {{ source }}
+{%- elif contents is not none %}
+    - contents: |
+{{ contents | trim | indent(8, first=True) }}
+{%- endif %}
+{%- if template %}
+    - template: {{ template }}
+{%- endif %}
+{%- if context %}
+    - context:
+{%- for k, v in context.items() %}
+        {{ k }}: {{ v }}
+{%- endfor %}
+{%- endif %}
+{%- if makedirs %}
+    - makedirs: True
+{%- endif %}
+{%- if require %}
+    - require:
+{%- for req in require %}
+      - {{ req }}
+{%- endfor %}
+{%- endif %}
+
+{{ name }}_reload:
+  cmd.run:
+    - name: {{ reload_cmd }}
+{%- if onlyif %}
+    - onlyif: {{ onlyif }}
+{%- endif %}
+    - onchanges:
+      - file: {{ name }}
+{%- endmacro -%}
+
 {# Clear failed state + ensure service is running with config watches.
    Emits two states: {{ name }}_reset_failed and {{ name }}_running.
    service: systemd service name override (default: name).

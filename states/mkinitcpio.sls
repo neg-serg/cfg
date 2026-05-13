@@ -1,17 +1,7 @@
 {# mkinitcpio initramfs configuration: hooks, modules, and compression settings #}
 # mkinitcpio: manage initramfs configuration (compression, hooks)
-# Optimizes boot speed by using fast zstd compression instead of archival-level.
+{% from '_macros_service.jinja' import config_and_reload %}
 
-mkinitcpio_config:
-  file.managed:
-    - name: /etc/mkinitcpio.conf
-    - source: salt://configs/mkinitcpio.conf.j2
-    - template: jinja
-    - mode: '0644'
-
-mkinitcpio_rebuild:
-  cmd.run:
-    - name: mkinitcpio -P
-    - onlyif: command -v mkinitcpio >/dev/null 2>&1
-    - onchanges:
-      - file: mkinitcpio_config
+{{ config_and_reload('mkinitcpio_config', '/etc/mkinitcpio.conf', 'mkinitcpio -P',
+    source='salt://configs/mkinitcpio.conf.j2', template='jinja',
+    onlyif='command -v mkinitcpio >/dev/null 2>&1') }}

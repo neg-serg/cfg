@@ -4,7 +4,7 @@ include:
 
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir, service_stopped, service_with_unit %}
+{% from '_macros_service.jinja' import config_and_reload, ensure_dir, service_stopped, service_with_unit %}
 {% import_yaml 'data/desktop.yaml' as desktop %}
 
 {{ ensure_dir('pacman_hooks_dir', '/etc/pacman.d/hooks', mode='0755', user='root') }}
@@ -78,18 +78,9 @@ libvirtd_socket_enabled:
       - cmd: install_libvirt
       - service: libvirtd_service_disabled
 
-looking_glass_shm:
-  file.managed:
-    - name: /etc/tmpfiles.d/10-looking-glass.conf
-    - contents: |
-        f /dev/shm/looking-glass 0660 {{ user }} kvm -
-    - mode: '0644'
-
-looking_glass_shm_create:
-  cmd.run:
-    - name: systemd-tmpfiles --create /etc/tmpfiles.d/10-looking-glass.conf
-    - onchanges:
-      - file: looking_glass_shm
+{{ config_and_reload('looking_glass_shm', '/etc/tmpfiles.d/10-looking-glass.conf',
+    'systemd-tmpfiles --create /etc/tmpfiles.d/10-looking-glass.conf',
+    contents='f /dev/shm/looking-glass 0660 ' ~ user ~ ' kvm -') }}
 
 pcscd_socket_enabled:
   service.enabled:

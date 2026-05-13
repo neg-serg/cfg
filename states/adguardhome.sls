@@ -2,7 +2,7 @@
 # AdGuard Home DNS filter — Quadlet container deployment
 # =============================================================================
 {% from '_imports.jinja' import host, user %}
-{% from '_macros_service.jinja' import ensure_dir, service_with_healthcheck, remove_native_unit %}
+{% from '_macros_service.jinja' import config_and_reload, ensure_dir, service_with_healthcheck, remove_native_unit %}
 {% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 
 # AdGuard Home DNS filter — pure Quadlet (Podman container).
@@ -38,19 +38,10 @@ adguardhome_initial_config:
       - file: adguardhome_conf_dir
 
 {# ── systemd-resolved integration (host-level, stays outside container) ── #}
-adguardhome_resolved_conf:
-  file.managed:
-    - name: /etc/systemd/resolved.conf.d/adguardhome.conf
-    - source: salt://configs/resolved-adguardhome.conf
-    - mode: '0644'
-    - makedirs: True
-
-systemd_resolved_restart_on_adguardhome_change:
-  cmd.run:
-    - name: systemctl restart systemd-resolved
-    - onlyif: systemctl is-enabled systemd-resolved >/dev/null 2>&1
-    - onchanges:
-      - file: adguardhome_resolved_conf
+{{ config_and_reload('adguardhome_resolved_conf', '/etc/systemd/resolved.conf.d/adguardhome.conf',
+    'systemctl restart systemd-resolved',
+    source='salt://configs/resolved-adguardhome.conf', makedirs=True,
+    onlyif='systemctl is-enabled systemd-resolved >/dev/null 2>&1') }}
 
 {# ── Container deployment ── #}
 {{ container_service('adguardhome', catalog.adguardhome, image_registry,

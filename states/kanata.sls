@@ -3,12 +3,12 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import user, home %}
-{% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir, udev_rule %}
-{% from '_macros_service_user.jinja' import user_service_with_unit %}
+
+
+
 {% import_yaml 'data/kanata.yaml' as kanata %}
 
-{{ paru_install('kanata', kanata.package) }}
+{{ salt['pkg.paru_install']('kanata', kanata.package) }}
 
 kanata_legacy_cleanup:
   file.absent:
@@ -28,7 +28,7 @@ kanata_load_uinput:
     - require:
       - file: kanata_uinput_module
 
-{{ udev_rule('kanata_udev_rule', kanata.uinput_rule_path, contents=kanata.uinput_rule) }}
+{{ salt['service.udev_rule']('kanata_udev_rule', kanata.uinput_rule_path, contents=kanata.uinput_rule) }}
 
 uinput_group:
   group.present:
@@ -42,7 +42,7 @@ kanata_user_groups:
     - require:
       - group: uinput_group
 
-{{ ensure_dir('kanata_config_dir', home ~ '/.config/kanata') }}
+{{ salt['service.ensure_dir']('kanata_config_dir', home ~ '/.config/kanata') }}
 kanata_config:
   file.managed:
     - name: {{ home }}/.config/kanata/config.kbd
@@ -54,4 +54,4 @@ kanata_config:
     - require:
       - file: kanata_config_dir
 
-{{ user_service_with_unit('kanata', 'kanata.service', requires=['cmd: install_kanata', 'file: kanata_config', 'cmd: kanata_user_groups', 'kmod: kanata_load_uinput']) }}
+{{ salt['user_service.user_service_with_unit']('kanata', 'kanata.service', requires=['cmd: install_kanata', 'file: kanata_config', 'cmd: kanata_user_groups', 'kmod: kanata_load_uinput']) }}

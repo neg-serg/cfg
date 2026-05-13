@@ -1,22 +1,10 @@
-"""Contract tests for _macros_config.jinja — delegates to _modules/config.py."""
+"""__macros_config.jinja cleared — all logic in _modules/."""  
 
 from tests import REPO_ROOT_PATH
 
-_CONFIG_MACRO = REPO_ROOT_PATH / "states" / "_macros_config.jinja"
-_SOURCE = _CONFIG_MACRO.read_text()
+_CONFIG = REPO_ROOT_PATH / "states" / "_macros_config.jinja"  
+_SRC = _CONFIG.read_text()
 
-
-def test_config_file_edit_delegates_to_python():
-    assert "config_file_edit" in _SOURCE
-    assert "salt[" in _SOURCE
-    assert "config.config_file_edit" in _SOURCE
-
-
-def test_imports_constants():
-    assert "from '_macros_common.jinja'" in _SOURCE
-    assert "retry_attempts" in _SOURCE
-    assert "retry_interval" in _SOURCE
-
-
-def test_config_file_edit_macro_exists():
-    assert "macro config_file_edit" in _SOURCE
+def test_macro_cleared():
+    """File kept for backward compat, no business logic"""
+    assert "# All business logic migrated" in _SRC or "# Business logic migrated" in _SRC

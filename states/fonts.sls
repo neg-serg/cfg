@@ -5,8 +5,8 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import user, home %}
-{% from '_macros_pkg.jinja' import paru_install, pkgbuild_install %}
-{% from '_macros_install.jinja' import download_font_zip %}
+
+
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/fonts.yaml' as fonts %}
 
@@ -15,7 +15,7 @@ include:
 # ===================================================================
 
 {% for name, pkg in fonts.pacman.items() %}
-{{ paru_install(name, pkg) }}
+{{ salt['pkg.paru_install'](name, pkg) }}
 {% endfor %}
 
 # ===================================================================
@@ -23,7 +23,7 @@ include:
 # ===================================================================
 
 {% for name, pkg in fonts.paru.items() %}
-{{ paru_install(name, pkg) }}
+{{ salt['pkg.paru_install'](name, pkg) }}
 {% endfor %}
 
 # ===================================================================
@@ -31,7 +31,7 @@ include:
 # ===================================================================
 
 # Iosevka with custom glyph variants, patched with Nerd Font icons
-{{ pkgbuild_install('iosevka-neg-fonts', 'salt://build/pkgbuilds/iosevka-neg-fonts', user=user, timeout=7200) }}
+{{ salt['pkg.pkgbuild_install']('iosevka-neg-fonts', 'salt://build/pkgbuilds/iosevka-neg-fonts', user=user, timeout=7200) }}
 
 # ===================================================================
 # Downloaded fonts (not in repos)
@@ -40,5 +40,5 @@ include:
 {% for name, opts in fonts.download_zip.items() %}
 {% set _v = ver.get(name, '') %}
 {% set url = opts.url | replace('${VER}', _v) %}
-{{ download_font_zip(name, url, opts.subdir, hash=opts.get('hash'), version=_v if _v else None, user=user, home=home) }}
+{{ salt['installer.download_font_zip'](name, url, opts.subdir, hash=opts.get('hash'), version=_v if _v else None, user=user, home=home) }}
 {% endfor %}

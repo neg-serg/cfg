@@ -1,10 +1,1 @@
-{# Delegation stubs → _modules/desktop.py #}
-{% from '_macros_common.jinja' import user as _user, home as _home, host, retry_attempts as _retry_attempts, retry_interval as _retry_interval %}
-{% from '_macros_service.jinja' import ensure_dir as _ensure_dir %}
-{% from '_macros_install.jinja' import firefox_extension as _firefox_extension %}
-
-{% macro browser_extensions(prefix, profile, extensions, user_js_id, unwanted=None, user=_user) %}{{ salt['desktop.browser_extensions'](prefix, profile, extensions, user_js_id, unwanted=unwanted, user=user) }}{% endmacro %}
-{% macro hyprpm_update(name, check_plugins=None, require=None, timeout=300) %}{{ salt['desktop.hyprpm_update'](name, check_plugins=check_plugins, require=require, timeout=timeout) }}{% endmacro %}
-{% macro hyprpm_add(name, repo_url, check_plugin, require=None, timeout=300) %}{{ salt['desktop.hyprpm_add'](name, repo_url, check_plugin, require=require, timeout=timeout) }}{% endmacro %}
-{% macro hyprpm_enable(name, plugin, require=None) %}{{ salt['desktop.hyprpm_enable'](name, plugin, require=require) }}{% endmacro %}
-{% macro dconf_settings(name, settings, user=_user, require=None) %}{{ salt['desktop.dconf_settings'](name, settings, user=user, require=require) }}{% endmacro %}
+{# All business logic migrated to states/_modules/. File kept for backward compatibility. #}

@@ -1,11 +1,1 @@
-{# Delegation stubs → _modules/user_service.py #}
-{% from '_macros_common.jinja' import user as _user, home as _home, host %}
-{% from '_macros_service.jinja' import env_block %}
-
-{% macro user_service_file(name, filename, source=None, template=None, context=None, user=_user, home=_home) %}{{ salt['user_service.user_service_file'](name, filename, source=source, template=template, context=context, user=user, home=home) }}{% endmacro %}
-{% macro user_unit_override(name, service, source=None, contents=None, filename='override.conf', requires=None, user=_user, home=_home) %}{{ salt['user_service.user_unit_override'](name, service, source=source, contents=contents, filename=filename, requires=requires, user=user, home=home) }}{% endmacro %}
-{% macro user_service_enable(name, services=None, start_now=None, daemon_reload=False, check='enabled', onlyif=None, requires=None, user=_user) %}{{ salt['user_service.user_service_enable'](name, services=services, start_now=start_now, daemon_reload=daemon_reload, check=check, onlyif=onlyif, requires=requires, user=user) }}{% endmacro %}
-{% macro user_service_with_unit(name, filename, source=None, services=None, start_now=None, requires=None, user=_user, home=_home) %}{{ salt['user_service.user_service_with_unit'](name, filename, source=source, services=services, start_now=start_now, requires=requires, user=user, home=home) }}{% endmacro %}
-{% macro user_service_restart(name, service, onlyif=None, requires=None, onchanges=None, user=_user) %}{{ salt['user_service.user_service_restart'](name, service, onlyif=onlyif, requires=requires, onchanges=onchanges, user=user) }}{% endmacro %}
-{% macro user_service_disable(name, units, user=_user) %}{{ salt['user_service.user_service_disable'](name, units, user=user) }}{% endmacro %}
-{% macro user_linger(name, user=_user, require=None) %}{{ salt['user_service.user_linger'](name, user=user, require=require) }}{% endmacro %}
+{# All business logic migrated to states/_modules/. File kept for backward compatibility. #}

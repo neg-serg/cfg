@@ -1,4 +1,1 @@
-{# Delegation stub → _modules/config.py #}
-{% from '_macros_common.jinja' import user as _user, home as _home, retry_attempts as _retry_attempts, retry_interval as _retry_interval %}
-
-{% macro config_file_edit(name, cmd, unless=None, check_pattern=None, check_file=None, onlyif=None, require=None, retry=False, shell=None) %}{{ salt['config.config_file_edit'](name, cmd, unless=unless, check_pattern=check_pattern, check_file=check_file, onlyif=onlyif, require=require, retry=retry, shell=shell) }}{% endmacro %}
+{# All business logic migrated to states/_modules/. File kept for backward compatibility. #}

@@ -1,6 +1,6 @@
 {# User-scoped systemd services: mail sync, backups, and auxiliary daemons #}
 {% from '_imports.jinja' import host, user, home %}
-{% from '_macros_service_user.jinja' import user_service_disable, user_service_enable, user_service_file, user_unit_override %}
+
 {% import_yaml 'data/user_services.yaml' as us %}
 
 include:
@@ -39,7 +39,7 @@ Wants=mpd.service
 Restart=always
 RestartSec=3
 {% endset %}
-{{ user_unit_override('mpdris2_user_service', 'mpDris2.service', contents=mpdris2_override) }}
+{{ salt['user_service.user_unit_override']('mpdris2_user_service', 'mpDris2.service', contents=mpdris2_override) }}
 {% endif %}
 
 chezmoi_source_symlink:
@@ -73,7 +73,7 @@ mail_directories:
 {%- set _unit_reqs = [] -%}
 {% for unit in us.unit_files %}
 {% if feature_entry_enabled(unit) == 'True' %}
-{{ user_service_file(unit.id, unit.filename) }}
+{{ salt['user_service.user_service_file'](unit.id, unit.filename) }}
 {%- do _unit_reqs.append('file: ' ~ unit.id) -%}
 {%- do _unit_reqs.append('cmd: ' ~ unit.id ~ '_daemon_reload') -%}
 {% endif %}
@@ -95,10 +95,10 @@ mail_directories:
 {%- endfor -%}
 
 # --- Enable user services: single daemon-reload + batch enable ---
-{{ user_service_enable('enable_user_services', filtered_services, start_now=filtered_timers, requires=_unit_reqs) }}
+{{ salt['user_service.user_service_enable']('enable_user_services', filtered_services, start_now=filtered_timers, requires=_unit_reqs) }}
 
 # --- Disable network mount services (rclone) — require explicit mount ---
-{{ user_service_disable('disable_rclone_services', ['rclone-gdrive.service', 'rclone-yadisk.service']) }}
+{{ salt['user_service.user_service_disable']('disable_rclone_services', ['rclone-gdrive.service', 'rclone-yadisk.service']) }}
 
 # --- Disable services for disabled features ---
 {%- set _all_feature_units = us.enable_services + us.enable_now_timers -%}
@@ -111,7 +111,7 @@ mail_directories:
 {%- endif -%}
 {%- endfor -%}
 {%- if disabled_units %}
-{{ user_service_disable('disable_' ~ feature_name ~ '_services', disabled_units) }}
+{{ salt['user_service.user_service_disable']('disable_' ~ feature_name ~ '_services', disabled_units) }}
 {%- endif -%}
 {%- endif -%}
 {%- endfor -%}

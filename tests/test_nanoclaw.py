@@ -72,12 +72,12 @@ def test_nanoclaw_env_managed():
 
 
 def test_nanoclaw_native_unit_absent():
-    assert "remove_native_unit('nanoclaw'" in _SOURCE
+    assert "salt['service.remove_native_unit']('nanoclaw'" in _SOURCE
     assert 'scope=\'user\'' in _SOURCE
 
 
 def test_nanoclaw_native_unit_daemon_reload_has_onlyif():
-    assert "remove_native_unit('nanoclaw'" in _SOURCE
+    assert "salt['service.remove_native_unit']('nanoclaw'" in _SOURCE
     assert 'scope=\'user\'' in _SOURCE
 
 

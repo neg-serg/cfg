@@ -1,6 +1,6 @@
 {# Video AI base: Python environment, dependencies, and shared utilities #}
 {% from '_imports.jinja' import host, user, retry_attempts, retry_interval %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% import_yaml 'data/video_ai.yaml' as video_ai %}
 {% set base_dir = host.mnt_one ~ '/video-ai' %}
 {% set comfyui_dir = base_dir ~ '/' ~ video_ai.subdirs.comfyui %}
@@ -9,11 +9,11 @@
 {% set output_dir = base_dir ~ '/' ~ video_ai.subdirs.output %}
 {% set images_dir = base_dir ~ '/' ~ video_ai.subdirs.images %}
 
-{{ ensure_dir('video_ai_base_dir', base_dir, require=['mount: mount_one']) }}
-{{ ensure_dir('video_ai_models_dir', models_dir, require=['file: video_ai_base_dir']) }}
-{{ ensure_dir('video_ai_workflows_dir', workflows_dir, require=['file: video_ai_base_dir']) }}
-{{ ensure_dir('video_ai_output_dir', output_dir, require=['file: video_ai_base_dir']) }}
-{{ ensure_dir('video_ai_images_dir', images_dir, require=['file: video_ai_base_dir']) }}
+{{ salt['service.ensure_dir']('video_ai_base_dir', base_dir, require=['mount: mount_one']) }}
+{{ salt['service.ensure_dir']('video_ai_models_dir', models_dir, require=['file: video_ai_base_dir']) }}
+{{ salt['service.ensure_dir']('video_ai_workflows_dir', workflows_dir, require=['file: video_ai_base_dir']) }}
+{{ salt['service.ensure_dir']('video_ai_output_dir', output_dir, require=['file: video_ai_base_dir']) }}
+{{ salt['service.ensure_dir']('video_ai_images_dir', images_dir, require=['file: video_ai_base_dir']) }}
 
 video_ai_comfyui_chown:
   cmd.run:

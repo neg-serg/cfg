@@ -1,11 +1,11 @@
 {# Amnezia VPN: builds AmneziaWG kernel module and Amnezia VPN desktop client from source. #}
 {% from '_imports.jinja' import host, user, home, retry_attempts, retry_interval %}
-{% from '_macros_service.jinja' import ensure_dir, service_with_unit %}
+
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/amnezia.yaml' as amnezia %}
 {% set cache = host.mnt_one ~ '/pkg/cache/amnezia' %}
 
-{{ ensure_dir('amnezia_cache_dir', cache, require=['mount: mount_one']) }}
+{{ salt['service.ensure_dir']('amnezia_cache_dir', cache, require=['mount: mount_one']) }}
 
 {% set _amnezia_ver = ver.get('amnezia_vpn', '') %}
 {% set _amnezia_ver_marker = '/var/cache/salt/versions/amnezia_vpn@' ~ _amnezia_ver if _amnezia_ver else '' %}
@@ -67,9 +67,9 @@ amnezia_version_stamp:
       - file: {{ bin_state }}
 {% endfor %}
 
-{{ service_with_unit('AmneziaVPN-source', 'salt://units/amnezia-vpn-source.service', enabled=True, requires=['file: amnezia_service_bin']) }}
+{{ salt['service.service_with_unit']('AmneziaVPN-source', 'salt://units/amnezia-vpn-source.service', enabled=True, requires=['file: amnezia_service_bin']) }}
 
-{{ ensure_dir('amnezia_apps_dir', home ~ '/.local/share/applications') }}
+{{ salt['service.ensure_dir']('amnezia_apps_dir', home ~ '/.local/share/applications') }}
 
 amnezia_desktop_entry:
   file.managed:

@@ -1,10 +1,1 @@
-{# Delegation stub → _modules/container.py #}
-{% from '_macros_common.jinja' import user as _user, home as _home, host, retry_attempts as _retry_attempts, retry_interval as _retry_interval %}
-{% import_yaml 'data/service_catalog.yaml' as catalog %}
-{% import_yaml 'data/container_images.yaml' as image_registry %}
-
-{%- macro container_service(name, catalog_entry, image_registry, user_scope=False, requires=None, watch=None, quadlet_unit_name=None) -%}
-{{- salt['container.deploy'](name, catalog_entry, image_registry, user_scope, requires, watch, quadlet_unit_name) -}}
-{%- endmacro -%}
-
-{%- macro _tilde_expand(raw_path, home_value) -%}{%- if raw_path == '~' -%}{{ home_value }}{%- elif raw_path is string and raw_path.startswith('~/') -%}{{ home_value }}/{{ raw_path[2:] }}{%- else -%}{{ raw_path }}{%- endif -%}{%- endmacro -%}
+{# All business logic migrated to states/_modules/. File kept for backward compatibility. #}

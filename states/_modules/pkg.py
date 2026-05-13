@@ -6,6 +6,7 @@ Replaces _macros_pkg.jinja.
 from __future__ import annotations
 
 from typing import Any
+from _yaml_out import yaml_output
 
 
 def _host() -> dict[str, Any]:
@@ -24,6 +25,7 @@ def _const() -> dict[str, Any]:
         return {"retry_attempts": 3, "retry_interval": 10, "ver_dir": "/tmp"}
 
 
+@yaml_output
 def paru_install(name: str, pkg: str, check: str | None = None,
                  requires: list[str] | None = None,
                  version: str = "") -> dict[str, Any]:
@@ -79,6 +81,8 @@ def paru_install(name: str, pkg: str, check: str | None = None,
     }
 
 
+@yaml_output
+@yaml_output
 def simple_service(name: str, pkgs: str, service: str | None = None,
                    check: str | None = None,
                    requires: list[str] | None = None) -> dict[str, Any]:
@@ -93,6 +97,7 @@ def simple_service(name: str, pkgs: str, service: str | None = None,
     return ret
 
 
+@yaml_output
 def pkgbuild_install(name: str, source: str, user: str | None = None,
                      build_base: str = "/tmp/pkgbuild", timeout: int = 600,
                      check: str | None = None,
@@ -164,6 +169,7 @@ def pkgbuild_install(name: str, source: str, user: str | None = None,
     return ret
 
 
+@yaml_output
 def flatpak_install(app_id: str, user: str | None = None) -> dict[str, Any]:
     h = _host()
     u = user or h["user"]

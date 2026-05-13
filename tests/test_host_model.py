@@ -1,8 +1,14 @@
 """Unit tests for scripts/host_model.py — shared host model builder."""
 
 # scripts/ is on sys.path via conftest.py
+import sys
+from pathlib import Path
+
 import host_model  # noqa: E402, I001
 import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "states" / "_modules"))
+
 
 # --- recursive_merge ---
 
@@ -634,20 +640,15 @@ def test_feature_registry_is_jinja_importable():
 
 
 def test_registry_macro_file_exists_and_valid():
-    """_macros_registry.jinja must be parseable and importable."""
-    import yaml
-
+    """Check that feature registry functions are available via Python modules."""
     try:
-        with open("states/_macros_registry.jinja") as f:
-            content = f.read()
-    except FileNotFoundError:
-        pytest.skip("_macros_registry.jinja not found")
+        from _modules.host_features import feature_enabled, feature_default
+    except ImportError:
+        pytest.skip("_modules.host_features not available")
 
-    assert "import_yaml 'data/feature_registry.yaml'" in content, (
-        "must import feature_registry.yaml"
-    )
-    assert "feature_default" in content, "must define feature_default macro"
-    assert "feature_enabled" in content, "must define feature_enabled macro"
+    assert callable(feature_enabled), "feature_enabled must be callable"
+    assert callable(feature_default), "feature_default must be callable"
+    assert feature_default("mpd") is True, "mpd default must be True"
 
     # Verify the imported YAML is valid
     with open("states/data/feature_registry.yaml") as f:

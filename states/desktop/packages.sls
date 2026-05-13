@@ -3,14 +3,14 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import home, user %}
-{% from '_macros_pkg.jinja' import paru_install %}
+
 {% import_yaml 'data/desktop.yaml' as desktop %}
 
-{{ paru_install('hyprland_desktop', desktop.hyprland_packages | join(' ')) }}
-{{ paru_install('screenshot_tools', desktop.screenshot_packages | join(' ')) }}
+{{ salt['pkg.paru_install']('hyprland_desktop', desktop.hyprland_packages | join(' ')) }}
+{{ salt['pkg.paru_install']('screenshot_tools', desktop.screenshot_packages | join(' ')) }}
 
 {% for name, pkg in desktop.desktop_packages.items() %}
-{{ paru_install(name, pkg) }}
+{{ salt['pkg.paru_install'](name, pkg) }}
 {% endfor %}
 
 swayimg_local_link_absent:

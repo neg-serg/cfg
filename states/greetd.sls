@@ -1,16 +1,16 @@
 {# greetd display manager with Hyprland compositor and quickshell greeter #}
 {% from '_imports.jinja' import host, user, home %}
-{% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
+
 {% import_yaml 'data/greetd.yaml' as greetd %}
 
 include:
   - pacman_db_warmup
   - systemd_resources
 
-{{ paru_install('greetd', 'greetd') }}
+{{ salt['pkg.paru_install']('greetd', 'greetd') }}
 
-{{ ensure_dir('greetd_config_dir', greetd.config_dir, mode='0755', user='root') }}
+{{ salt['service.ensure_dir']('greetd_config_dir', greetd.config_dir, mode='0755', user='root') }}
 
 greetd_main_config:
   file.managed:

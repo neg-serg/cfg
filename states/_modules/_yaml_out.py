@@ -1,12 +1,9 @@
-"""YAML serialization helper for state-emitting execution modules.
-
-When a Salt execution module returns a YAML string via {{ }},
-Jinja injects it directly into the template output as valid state YAML.
-"""
+"""YAML conversion helpers for Salt execution modules."""
 
 from __future__ import annotations
 
-from typing import Any
+import functools
+from typing import Any, Callable
 
 try:
     import yaml
@@ -15,29 +12,26 @@ except ImportError:
 
 
 def to_yaml(obj: Any) -> str:
-    """Convert a Python dict to a YAML string suitable for {{ }} injection.
-
-    Handles Salt state data structures like:
-      {'state_id': {'file.managed': [{'name': '/path'}, ...]}}
-    """
+    """Convert Python object to YAML string suitable for {{ }} injection."""
     if yaml is None:
         return str(obj)
     raw = yaml.dump(obj, default_flow_style=False, allow_unicode=True, sort_keys=False)
-    if raw.endswith("\n...\n"):
+    if raw.endswith("...\n"):
         raw = raw[:-4]
     return raw
 
 
-def to_yaml_multi(states: dict[str, Any]) -> str:
-    """Convert multiple state dicts into one YAML block.
-
-    Accepts either {'id': state_dict} or a list of such dicts.
+def yaml_output(func: Callable) -> Callable:
+    """Decorator: convert dict return values to YAML strings.
+    
+    State-emitting functions that return Salt state dicts use this
+    decorator so {{ salt['module.func'](...) }} outputs valid YAML.
+    Value-returning functions (bool, str, None) pass through unchanged.
     """
-    merged: dict[str, Any] = {}
-    if isinstance(states, list):
-        for d in states:
-            if isinstance(d, dict):
-                merged.update(d)
-    elif isinstance(states, dict):
-        merged = states
-    return to_yaml(merged)
+    @functools.wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        result = func(*args, **kwargs)
+        if isinstance(result, dict):
+            return to_yaml(result)
+        return result
+    return wrapper

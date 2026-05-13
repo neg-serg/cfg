@@ -1,7 +1,7 @@
 {# Xen user account: creation, groups, Steam library access, TTY #}
 
 {% from '_imports.jinja' import user, home, gopass_secret %}
-{% from '_macros_service.jinja' import ensure_dir %}
+
 {% import_yaml 'data/xen.yaml' as xen %}
 
 {% set xen_user = xen.user.name %}
@@ -25,7 +25,7 @@ xen_user:
     - require:
       - group: xen_group
 
-{% set xen_hash = gopass_secret('host/xen-password-hash') %}
+{% set xen_hash = salt['secrets.get']('host/xen-password-hash') %}
 ensure_xen_user_password:
   user.present:
     - name: {{ xen_user }}
@@ -50,7 +50,7 @@ xen_steam_group:
     - require:
       - user: xen_user
 
-{{ ensure_dir('xen_local_share', xen_home ~ '/.local/share', user=xen_user) }}
+{{ salt['service.ensure_dir']('xen_local_share', xen_home ~ '/.local/share', user=xen_user) }}
 
 xen_steam_symlink:
   file.symlink:

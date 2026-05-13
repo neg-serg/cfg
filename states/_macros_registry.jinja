@@ -1,12 +1,1 @@
-{# Zero-logic delegation stubs → _modules/host_features.py #}
-{% import_yaml 'data/feature_registry.yaml' as _reg %}
-{% set registry = _reg %}
-
-{%- macro feature_default(name) -%}
-{%- set _r = salt['host.feature_default'](name) -%}
-{%- if _r is not none -%}{{ _r }}{%- endif -%}
-{%- endmacro -%}
-
-{%- macro feature_enabled(host, name) -%}
-{%- if salt['host.feature_enabled'](name, host=host) -%}1{%- endif -%}
-{%- endmacro -%}
+{# All business logic migrated to states/_modules/. File kept for backward compatibility. #}

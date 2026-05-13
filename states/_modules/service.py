@@ -5,6 +5,7 @@ Each function returns a YAML STRING that templates inject via {{ }}.
 """
 
 from __future__ import annotations
+from _yaml_out import yaml_output
 
 from typing import Any
 
@@ -61,6 +62,7 @@ def env_block() -> str:
     return _render_env_block()
 
 
+@yaml_output
 def ensure_dir(name: str, path: str, mode: str | None = None,
                require: list[str] | None = None,
                user: str | None = None) -> str:
@@ -80,6 +82,7 @@ def ensure_dir(name: str, path: str, mode: str | None = None,
     return _to_yaml(obj)
 
 
+@yaml_output
 def remove_native_unit(name: str, unit_path: str | None = None,
                        scope: str = "system") -> dict[str, Any]:
     home = _host().get("home", "/root")
@@ -118,6 +121,8 @@ def remove_native_unit(name: str, unit_path: str | None = None,
     }
 
 
+@yaml_output
+@yaml_output
 def remove_native_package(name: str, pkgs: list[str]) -> dict[str, Any]:
     return {
         f"{name}_native_package_removed": {
@@ -126,6 +131,7 @@ def remove_native_package(name: str, pkgs: list[str]) -> dict[str, Any]:
     }
 
 
+@yaml_output
 def ensure_running(name: str, service: str | None = None,
                    watch: list[str] | None = None) -> dict[str, Any]:
     svc = service or name
@@ -150,6 +156,7 @@ def ensure_running(name: str, service: str | None = None,
     }
 
 
+@yaml_output
 def service_stopped(name: str, svc: str, stop: bool = True,
                     requires: list[str] | None = None,
                     onlyif: str | None = None) -> dict[str, Any]:
@@ -168,6 +175,8 @@ def service_stopped(name: str, svc: str, stop: bool = True,
     return {name: base}
 
 
+@yaml_output
+@yaml_output
 def service_with_healthcheck(name: str, service: str,
                               check_cmd: str | None = None,
                               timeout: int = 30,
@@ -230,6 +239,7 @@ def service_with_healthcheck(name: str, service: str,
     return ret
 
 
+@yaml_output
 def unit_override(name: str, service: str, source: str,
                   filename: str = "override.conf",
                   requires: list[str] | None = None) -> dict[str, Any]:
@@ -254,6 +264,7 @@ def unit_override(name: str, service: str, source: str,
     return ret
 
 
+@yaml_output
 def service_with_unit(name: str, source: str, unit_type: str = "service",
                       running: bool = False, enabled: bool = True,
                       requires: list[str] | None = None,

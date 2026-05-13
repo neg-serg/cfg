@@ -136,8 +136,10 @@ def _collect_known_units(repo_root: Path) -> set[str]:
 
 def _collect_container_service_deployments(repo_root: Path) -> dict[str, str]:
     deployments = {}
+    # Match both old container_service(...) and new salt['container.deploy'](...)
     pattern = re.compile(
-        r"container_service\(\s*'(?P<call_name>[^']+)'\s*,\s*catalog\.(?P<catalog_name>[A-Za-z0-9_]+)"
+        r"(?:container_service|salt\['container\.deploy'\])\("
+        r"\s*'(?P<call_name>[^']+)'\s*,\s*catalog\.(?P<catalog_name>[A-Za-z0-9_]+)"
         r"(?P<body>.*?)\)\s*}}",
         re.DOTALL,
     )

@@ -1,8 +1,8 @@
 {# Floorp browser: user.js, userChrome.css, extensions, and profile configuration #}
 # Floorp browser: user.js + userChrome.css + userContent.css + extensions.
 {% from '_imports.jinja' import host, user, home %}
-{% from '_macros_desktop.jinja' import browser_extensions %}
-{% from '_macros_install.jinja' import git_clone_deploy %}
+
+
 # Floorp browser: user.js + userChrome.css + userContent.css + extensions
 {% if host.features.floorp and host.floorp_profile %}
 {% import_yaml 'data/floorp.yaml' as floorp %}
@@ -28,7 +28,7 @@
     - makedirs: True
 {% endfor %}
 
-{{ git_clone_deploy('neptune_theme', 'https://github.com/yiiyahui/Neptune-Firefox.git', floorp_profile ~ '/chrome', items=['chrome/neptune'], creates=floorp_profile ~ '/chrome/neptune/theme/main.css') }}
+{{ salt['installer.git_clone_deploy']('neptune_theme', 'https://github.com/yiiyahui/Neptune-Firefox.git', floorp_profile ~ '/chrome', items=['chrome/neptune'], creates=floorp_profile ~ '/chrome/neptune/theme/main.css') }}
 
-{{ browser_extensions('floorp', floorp_profile, floorp.extensions, 'floorp_user_js', unwanted=floorp.unwanted) }}
+{{ salt['desktop.browser_extensions']('floorp', floorp_profile, floorp.extensions, 'floorp_user_js', unwanted=floorp.unwanted) }}
 {% endif %}

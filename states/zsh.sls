@@ -1,8 +1,8 @@
 {# Zsh shell environment: path setup, plugins, completions, and prompt configuration #}
 {% from '_imports.jinja' import user %}
-{% from '_macros_service.jinja' import ensure_dir %}
 
-{{ ensure_dir('zsh_config_dir', '/etc/zsh', mode='0755', user='root') }}
+
+{{ salt['service.ensure_dir']('zsh_config_dir', '/etc/zsh', mode='0755', user='root') }}
 
 zsh_system_env:
   file.managed:

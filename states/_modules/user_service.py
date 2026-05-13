@@ -8,6 +8,7 @@ when called inside Salt runtime, delegates to __states__.
 from __future__ import annotations
 
 from typing import Any
+from _yaml_out import yaml_output
 
 
 def _host() -> dict[str, Any]:
@@ -26,6 +27,7 @@ def _sysctl_env() -> list[str]:
     ]
 
 
+@yaml_output
 def user_service_file(name: str, filename: str, source: str | None = None,
                       template: str | None = None,
                       context: dict[str, Any] | None = None,
@@ -60,6 +62,8 @@ def user_service_file(name: str, filename: str, source: str | None = None,
     }
 
 
+@yaml_output
+@yaml_output
 def user_service_enable(name: str, services: list[str] | None = None,
                         start_now: list[str] | None = None,
                         daemon_reload: bool = False,
@@ -122,6 +126,7 @@ def user_service_enable(name: str, services: list[str] | None = None,
     return {name: {"cmd.run": args}}
 
 
+@yaml_output
 def user_service_with_unit(name: str, filename: str, source: str | None = None,
                            services: list[str] | None = None,
                            start_now: list[str] | None = None,
@@ -141,6 +146,7 @@ def user_service_with_unit(name: str, filename: str, source: str | None = None,
     return ret
 
 
+@yaml_output
 def user_service_restart(name: str, service: str, onlyif: str | None = None,
                          requires: list[str] | None = None,
                          onchanges: list[str] | None = None,
@@ -160,6 +166,7 @@ def user_service_restart(name: str, service: str, onlyif: str | None = None,
     return {name: {"cmd.run": args}}
 
 
+@yaml_output
 def user_service_disable(name: str, units: list[str],
                          user: str | None = None) -> dict[str, Any]:
     u = user or _host()["user"]
@@ -186,6 +193,7 @@ def user_service_disable(name: str, units: list[str],
     }
 
 
+@yaml_output
 def user_linger(name: str, user: str | None = None,
                 require: list[str] | None = None) -> dict[str, Any]:
     u = user or _host()["user"]

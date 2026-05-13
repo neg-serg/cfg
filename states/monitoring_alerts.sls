@@ -1,17 +1,17 @@
 {# Monitoring alerts: service watchdog timers and Loki alert rule deployment #}
 {% from '_imports.jinja' import host, user, home, tg_secret %}
-{% from '_macros_service.jinja' import ensure_dir %}
-{% from '_macros_service_user.jinja' import user_service_enable, user_service_file %}
+
+
 {% import_yaml 'data/monitored_services.yaml' as monitored %}
 {% if host.features.monitoring.alerts %}
 
 # ── Secret resolution ─────────────────────────────────────────────────
-{% set _telegram_token = tg_secret('api/nanoclaw-telegram', 'telegram-token') %}
-{% set _telegram_uid = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
+{% set _telegram_token = salt['secrets.tg_secret']('api/nanoclaw-telegram', 'telegram-token') %}
+{% set _telegram_uid = salt['secrets.tg_secret']('api/nanoclaw-telegram-uid', 'telegram-uid') %}
 
 # ── Directories ──────────────────────────────────────────────────────
-{{ ensure_dir('salt_monitor_cache_dir', home ~ '/.cache/salt-monitor', mode='0755') }}
-{{ ensure_dir('salt_monitor_alerts_dir', home ~ '/.cache/salt-monitor/alerts', mode='0755') }}
+{{ salt['service.ensure_dir']('salt_monitor_cache_dir', home ~ '/.cache/salt-monitor', mode='0755') }}
+{{ salt['service.ensure_dir']('salt_monitor_alerts_dir', home ~ '/.cache/salt-monitor/alerts', mode='0755') }}
 
 # ── Deploy salt-alert script ─────────────────────────────────────────
 salt_alert_script:
@@ -47,12 +47,12 @@ salt_monitor_script:
       - file: salt_alert_script
 
 # ── Systemd user units ──────────────────────────────────────────────
-{{ user_service_file('salt_monitor_service', 'salt-monitor.service', template='jinja', context={'runtime_dir': host.runtime_dir, 'project_dir': host.project_dir}) }}
-{{ user_service_file('salt_monitor_watchdog_service', 'salt-monitor-watchdog.service') }}
-{{ user_service_file('salt_monitor_watchdog_timer', 'salt-monitor-watchdog.timer') }}
+{{ salt['user_service.user_service_file']('salt_monitor_service', 'salt-monitor.service', template='jinja', context={'runtime_dir': host.runtime_dir, 'project_dir': host.project_dir}) }}
+{{ salt['user_service.user_service_file']('salt_monitor_watchdog_service', 'salt-monitor-watchdog.service') }}
+{{ salt['user_service.user_service_file']('salt_monitor_watchdog_timer', 'salt-monitor-watchdog.timer') }}
 
 # ── Enable services ─────────────────────────────────────────────────
-{{ user_service_enable('salt_monitor_enabled',
+{{ salt['user_service.user_service_enable']('salt_monitor_enabled',
     start_now=['salt-monitor.service', 'salt-monitor-watchdog.timer'],
     requires=['file: salt_monitor_script', 'file: salt_alert_script',
               'file: salt_monitor_service', 'file: salt_monitor_watchdog_service',

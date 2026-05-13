@@ -7,6 +7,7 @@ include:
 {% from '_imports.jinja' import host, user, home %}
 {% from '_macros_service.jinja' import ensure_dir, ensure_running, render_service, service_stopped, service_with_healthcheck, service_with_unit, unit_override %}
 {% from '_macros_pkg.jinja' import paru_install, simple_service %}
+
 {% import_yaml 'data/services.yaml' as services %}
 
 {% set svc = host.features.services %}
@@ -20,7 +21,7 @@ include:
 
 {% for name, opts in services.simple.items() %}
 {% if svc.get(name, False) %}
-{{ simple_service(name, opts.packages, service=opts.service) }}
+{{ salt['pkg.simple_service'](name, opts.packages, service=opts.service) }}
 {% endif %}
 {% endfor %}
 
@@ -58,13 +59,13 @@ include:
 # ===================================================================
 
 {% if mon.sysstat %}
-{{ simple_service('sysstat', 'sysstat') }}
+{{ salt['pkg.simple_service']('sysstat', 'sysstat') }}
 {% endif %}
 
 {% if mon.vnstat %}
-{{ simple_service('vnstat', 'vnstat') }}
+{{ salt['pkg.simple_service']('vnstat', 'vnstat') }}
 {% endif %}
 
 {% if mon.netdata %}
-{{ unit_override('netdata_override', 'netdata.service', 'salt://units/netdata-override.conf') }}
+{{ salt['service.unit_override']('netdata_override', 'netdata.service', 'salt://units/netdata-override.conf') }}
 {% endif %}

@@ -3,8 +3,8 @@
 # Zapret2 DPI bypass — configuration, hostlist, and helper service
 # =============================================================================
 {% from '_imports.jinja' import user %}
-{% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_service.jinja' import ensure_dir, service_with_unit %}
+
+
 {% import_yaml 'data/zapret2.yaml' as zapret2 %}
 
 {% set cfg_dir = zapret2.config.dir %}
@@ -14,13 +14,13 @@
 {% set helper_path = zapret2.helper.deployed_path %}
 {% set approval_file = zapret2.helper.approval_file %}
 
-{{ paru_install('zapret2', zapret2.package.name) }}
-{{ paru_install('ipset', 'ipset') }}
+{{ salt['pkg.paru_install']('zapret2', zapret2.package.name) }}
+{{ salt['pkg.paru_install']('ipset', 'ipset') }}
 
-{{ ensure_dir('zapret2_config_dir', cfg_dir, mode='0755', user='root') }}
-{{ ensure_dir('zapret2_hostlist_dir', hostlist_dir, mode='0755', user='root') }}
-{{ ensure_dir('zapret2_state_dir', '/var/lib/zapret2', mode='0755', user='root') }}
-{{ ensure_dir('zapret2_helper_dir', '/usr/local/libexec', mode='0755', user='root') }}
+{{ salt['service.ensure_dir']('zapret2_config_dir', cfg_dir, mode='0755', user='root') }}
+{{ salt['service.ensure_dir']('zapret2_hostlist_dir', hostlist_dir, mode='0755', user='root') }}
+{{ salt['service.ensure_dir']('zapret2_state_dir', '/var/lib/zapret2', mode='0755', user='root') }}
+{{ salt['service.ensure_dir']('zapret2_helper_dir', '/usr/local/libexec', mode='0755', user='root') }}
 
 zapret2_helper_script:
   file.managed:
@@ -87,7 +87,7 @@ zapret2_list_update_timer:
       - cmd: install_ipset
       - cmd: zapret2_refresh_lists
 
-{{ service_with_unit(
+{{ salt['service.service_with_unit'](
   'zapret2',
   'salt://units/zapret2.service.j2',
   enabled=True,

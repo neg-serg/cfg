@@ -8,7 +8,7 @@
    Requires: gopass api/he-tunnel with server_ipv4, client_ipv6, routed_prefix.
    ════════════════════════════════════════════════════════════════════ #}
 
-{% set _he_secret = gopass_secret('api/he-tunnel') %}
+{% set _he_secret = salt['secrets.get']('api/he-tunnel') %}
 {% set _has_he = _he_secret | length > 0 %}
 
 {% if _has_he %}

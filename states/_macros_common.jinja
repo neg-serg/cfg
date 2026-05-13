@@ -1,4 +1,8 @@
-{# Shared constants + delegation stubs for secrets → _modules/secrets.py #}
+{#- Single source of truth for all shared constants.
+    Imported by macro files (as _user, _home, …) and re-exported by _imports.jinja for .sls states.
+    Usage (macros):  {% from '_macros_common.jinja' import user as _user, home as _home, ... %}
+    Usage (states):  {% from '_imports.jinja' import host, user, home, ... %}
+-#}
 {%- import 'host_config.jinja' as _hc with context -%}
 {%- set host = _hc.host -%}
 {%- set user = host.user -%}
@@ -14,20 +18,84 @@
 {%- set ollama_pull_timeout = 14400 -%}
 {%- set registry = _hc.registry if _hc.registry is defined else {} -%}
 
-{%- macro gopass_secret(key, fallback_cmd='true', runas=None) -%}
-{%- set _r = salt['secrets.get'](key, fallback_cmd=fallback_cmd, runas=runas) -%}
-{{- _r -}}
+{#- Shell snippet: download a URL to cache_path with optional sha256 verification.
+    Outputs bash lines for use inside cmd.run name: blocks.
+    Caller must have already set `set -eo pipefail` and any temp dir / trap.
+    After this macro, the file is available at the cache_path for cp/install.
+    Usage (inside macro name: block):
+        {{ download_cached(url, _cache_path, hash=hash) }}
+        cp "$cache" "$_td/archive.tar.gz"
+-#}
+{%- macro download_cached(url, cache_path, hash=None) %}
+        cache='{{ cache_path }}'
+        mkdir -p "$(dirname "$cache")"
+        if [ ! -f "$cache" ]; then
+          curl -fsSL '{{ url }}' -o "$cache.tmp"
+{%- if hash %}
+          echo '{{ hash }}  '"$cache.tmp" | sha256sum -c --strict
+{%- endif %}
+          mv -f "$cache.tmp" "$cache"
+        fi
 {%- endmacro -%}
 
+{#- Shell one-liner: create version-encoded marker (used inside cmd.run name: blocks).
+    target: absolute path to installed artifact — creates a symlink so creates: detects deletion.
+    When omitted, creates a plain touch file (for cases without a single artifact, e.g. fonts).
+    Old-format markers (plain name) and stale versioned markers (name@*) are cleaned up. -#}
+{%- macro ver_stamp(vd, name, version, target=None) -%}
+mkdir -p {{ vd }} && rm -f '{{ vd }}/{{ name }}' {{ vd }}/{{ name }}@* && {% if target %}ln -sf '{{ target }}' '{{ vd }}/{{ name }}@{{ version }}'{% else %}touch '{{ vd }}/{{ name }}@{{ version }}'{% endif %}
+{%- endmacro -%}
+{#- Resolve a secret from gopass, with optional shell fallback command.
+    Returns the secret value, or the fallback result (empty string if no fallback).
+    Uses host.user by default; override with runas='other'.
+    Optimisation: the first call probes gopass availability; if gopass is
+    unreachable (daemon context — no GPG agent), subsequent calls skip the
+    gopass attempt entirely and use the fallback command directly.
+    Caches resolved values in _gopass_ns.values to avoid re-spawning gopass
+    for the same key across multiple .sls files.
+    Usage: {% set key = gopass_secret('api/my-key') %}
+           {% set key = gopass_secret('api/my-key', "awk '...' /path/to/config") %}
+-#}
+{%- set _gopass_ns = namespace(checked=False, available=False, values={}) -%}
+{%- macro gopass_secret(key, fallback_cmd='true', runas=None) -%}
+{%- set _u = runas if runas is not none else host.user -%}
+{%- set _cached = _gopass_ns.values.get(key) -%}
+{%- if _cached is not none -%}
+{{- _cached -}}
+{%- else -%}
+{%- set _try_gopass = (not _gopass_ns.checked) or _gopass_ns.available -%}
+{%- if _try_gopass -%}
+{%- set _r = salt['cmd.run_all']('PASSWORD_STORE_DIR=' ~ home ~ '/.local/share/pass GNUPGHOME=' ~ home ~ '/.local/share/gnupg XDG_RUNTIME_DIR=/run/user/$(id -u) gopass show -o ' ~ key ~ ' 2>/dev/null', runas=_u, python_shell=True, ignore_retcode=True) -%}
+{%- if not _gopass_ns.checked -%}
+{%- set _gopass_ns.checked = True -%}
+{%- set _gopass_ns.available = (_r.get('retcode', 1) == 0) -%}
+{%- endif -%}
+{%- if _r.get('retcode', 1) == 0 -%}
+{%- set _val = _r['stdout'].strip() -%}
+{%- set _ = _gopass_ns.values.update({key: _val}) -%}
+{{- _val -}}
+{%- else -%}
+{%- set _val = salt['cmd.run_stdout'](fallback_cmd, runas=_u, python_shell=True).strip() -%}
+{%- set _ = _gopass_ns.values.update({key: _val}) -%}
+{{- _val -}}
+{%- endif -%}
+{%- else -%}
+{%- set _val = salt['cmd.run_stdout'](fallback_cmd, runas=_u, python_shell=True).strip() -%}
+{%- set _ = _gopass_ns.values.update({key: _val}) -%}
+{{- _val -}}
+{%- endif -%}
+{%- endif -%}
+{%- endmacro -%}
+
+{#- Convenience wrappers for frequently-used secrets.
+    Centralise the fallback commands so each .sls file doesn't have to
+    copy-paste the same awk/cat one-liners.
+-#}
 {%- macro proxypilot_key() -%}
-{%- set _r = salt['secrets.proxypilot_key']() -%}
-{{- _r -}}
+{{ gopass_secret('api/proxypilot-local', "awk '/^api-keys:/{getline; sub(/^[[:space:]]*-[[:space:]]*\"?/, \"\"); sub(/\"?[[:space:]]*$/, \"\"); print; exit}' " ~ home ~ "/.config/proxypilot/config.yaml 2>/dev/null || true") }}
 {%- endmacro -%}
 
 {%- macro tg_secret(gopass_key, cred_file, cred_base=None) -%}
-{%- set _r = salt['secrets.tg_secret'](gopass_key, cred_file, cred_base=cred_base) -%}
-{{- _r -}}
+{%- set _base = cred_base if cred_base else (home ~ '/.nanoclaw/credentials') -%}
+{{ gopass_secret(gopass_key, "cat " ~ _base ~ "/" ~ cred_file ~ " 2>/dev/null || true") }}
 {%- endmacro -%}
-
-{%- macro download_cached(url, cache_path, hash=None) -%}{{ salt['installer.download_cached'](url, cache_path, hash_val=hash) }}{%- endmacro -%}
-{%- macro ver_stamp(vd, name, version, target=None) -%}{{ salt['installer.ver_stamp'](vd, name, version, target=target) }}{%- endmacro -%}

@@ -29,28 +29,23 @@ include:
 # ===================================================================
 
 {% set known_vars = {
-    'hostname': host.hostname,
-    'mnt_zero': host.mnt_zero,
-    'mnt_one': host.mnt_one,
-    'user': user,
-    'home': home,
     'vpn_split_router': net.get('vpn_split_router', False),
     'dns_unbound': dns.get('unbound', False),
 } %}
 
 {# ── Complex services ── #}
 {% for name, opts in services.get('complex', {}).items() %}
-{{ render_service(name, opts, svc.get(name, False), 'complex', known_vars=known_vars) }}
+{{ render_service(name, opts, svc.get(name, False), 'complex', known_vars=known_vars, host=host) }}
 {% endfor %}
 
 {# ── Network services ── #}
 {% for name, opts in services.get('network', {}).items() %}
-{{ render_service(name, opts, net.get(name, False), 'network', known_vars=known_vars) }}
+{{ render_service(name, opts, net.get(name, False), 'network', known_vars=known_vars, host=host) }}
 {% endfor %}
 
 {# ── DNS services ── #}
 {% for name, opts in services.get('dns', {}).items() %}
-{{ render_service(name, opts, dns.get(name, False), 'dns', known_vars=known_vars) }}
+{{ render_service(name, opts, dns.get(name, False), 'dns', known_vars=known_vars, host=host) }}
 {% endfor %}
 
 # ===================================================================

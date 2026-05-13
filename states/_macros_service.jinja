@@ -412,8 +412,10 @@ test -e {{ _path }}
 {%- endmacro -%}
 
 {# Renders one service section from services.yaml data.
-   Variables expected as parameters: name, opts, feature_flag, section_label, known_vars. #}
-{% macro render_service(name, opts, feature_flag, section_label, known_vars) %}
+   Variables expected as parameters: name, opts, feature_flag, section_label, known_vars.
+   host: optional — when provided, auto-resolves host.* field names in context. #}
+{% macro render_service(name, opts, feature_flag, section_label, known_vars, host=None) %}
+{%- set _host_fields = ['hostname', 'home', 'user', 'uid', 'mnt_zero', 'mnt_one'] -%}
 {% if feature_flag %}
 
 # --- {{ name }} ({{ section_label }}, data-driven) ---
@@ -459,6 +461,8 @@ test -e {{ _path }}
 {% for k, v in ct.get('context', {}).items() %}
 {% if v in known_vars %}
 {% do resolved_ctx.update({k: known_vars[v]}) %}
+{% elif host and v in _host_fields and v in host %}
+{% do resolved_ctx.update({k: host[v]}) %}
 {% else %}
 {% do resolved_ctx.update({k: v}) %}
 {% endif %}
@@ -547,6 +551,8 @@ test -e {{ _path }}
 {% for k, v in u.get('unit_context', {}).items() %}
 {% if v in known_vars %}
 {% do resolved_unit_context.update({k: known_vars[v]}) %}
+{% elif host and v in _host_fields and v in host %}
+{% do resolved_unit_context.update({k: host[v]}) %}
 {% else %}
 {% do resolved_unit_context.update({k: v}) %}
 {% endif %}

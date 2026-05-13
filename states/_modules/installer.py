@@ -57,6 +57,16 @@ def _download_cached_shell(url: str, cache_path: str, hash_val: str = "") -> str
     return "\n".join(lines)
 
 
+def download_cached(url: str, cache_path: str, hash_val: str = "") -> str:
+    """Public wrapper for _download_cached_shell — used by delegation macros."""
+    return _download_cached_shell(url, cache_path, hash_val)
+
+
+def ver_stamp(vd: str, name: str, version: str, target: str = "") -> str:
+    """Public wrapper for _ver_stamp_shell — used by delegation macros."""
+    return _ver_stamp_shell(vd, name, version, target)
+
+
 def go_pkg(name: str, pkg: str | None = None, bin: str | None = None,
            user: str | None = None, home: str | None = None) -> dict[str, Any]:
     h = _host()

@@ -4,6 +4,7 @@ naming conventions, unused imports, require resolution, dangling includes."""
 
 import collections
 import glob
+import importlib.util
 import json
 import os
 import re
@@ -139,7 +140,41 @@ def _scan_import_yaml(yaml_vars, source, states_dir):
 
 
 class _MockSalt:
-    """Mock salt function namespace so host_config.jinja can call slsutil.merge."""
+    """Mock salt function namespace — routes to Python modules when available."""
+
+    def __init__(self):
+        self._module_cache: dict[str, object] = {}
+
+    def _load_module(self, name: str):
+        if name in self._module_cache:
+            return self._module_cache[name]
+        module_map = {
+            "host.feature_default": ("_modules.host_features", "feature_default"),
+            "host.feature_enabled": ("_modules.host_features", "feature_enabled"),
+            "secrets.get": ("_modules.secrets", "gopass_secret"),
+            "secrets.proxypilot_key": ("_modules.secrets", "proxypilot_key"),
+            "secrets.tg_secret": ("_modules.secrets", "tg_secret"),
+            "config.config_file_edit": ("_modules.config", "config_file_edit"),
+            "pkg.paru_install": ("_modules.pkg", "paru_install"),
+            "pkg.simple_service": ("_modules.pkg", "simple_service"),
+            "pkg.pkgbuild_install": ("_modules.pkg", "pkgbuild_install"),
+            "pkg.flatpak_install": ("_modules.pkg", "flatpak_install"),
+        }
+        if name in module_map:
+            mod_name, func_name = module_map[name]
+            try:
+                mod_path = os.path.join(REPO_ROOT, "states", mod_name.replace(".", os.sep) + ".py")
+                spec = importlib.util.spec_from_file_location(mod_name, mod_path)
+                if spec and spec.loader:
+                    mod = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(mod)
+                    func = getattr(mod, func_name, None)
+                    if func:
+                        self._module_cache[name] = func
+                        return func
+            except Exception:
+                pass
+        return None
 
     def __getitem__(self, key):
         if key == "slsutil.merge":
@@ -148,6 +183,12 @@ class _MockSalt:
             return lambda *a, **kw: {"retcode": 1, "stdout": ""}
         if key == "cmd.run_stdout":
             return lambda *a, **kw: ""
+
+        # Try Python module routing
+        func = self._load_module(key)
+        if func is not None:
+            return func
+
         return lambda *a, **kw: ""
 
     @staticmethod

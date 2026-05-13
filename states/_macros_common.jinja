@@ -1,10 +1,4 @@
-{# Shared constants for Salt templates.
-   All macros have been migrated to Python modules in states/_modules/.
-   See: salt['host.feature_enabled']('mpd'), salt['container.deploy'](...), etc.
-   
-   Remaining: only data YAML imports and constant declarations.
-   No {% macro %} definitions — all business logic is in Python.
-#}
+{# Shared constants + delegation stubs for secrets → _modules/secrets.py #}
 {%- import 'host_config.jinja' as _hc with context -%}
 {%- set host = _hc.host -%}
 {%- set user = host.user -%}
@@ -19,3 +13,21 @@
 {%- set sudo_timeout_minutes = -1 -%}
 {%- set ollama_pull_timeout = 14400 -%}
 {%- set registry = _hc.registry if _hc.registry is defined else {} -%}
+
+{%- macro gopass_secret(key, fallback_cmd='true', runas=None) -%}
+{%- set _r = salt['secrets.get'](key, fallback_cmd=fallback_cmd, runas=runas) -%}
+{{- _r -}}
+{%- endmacro -%}
+
+{%- macro proxypilot_key() -%}
+{%- set _r = salt['secrets.proxypilot_key']() -%}
+{{- _r -}}
+{%- endmacro -%}
+
+{%- macro tg_secret(gopass_key, cred_file, cred_base=None) -%}
+{%- set _r = salt['secrets.tg_secret'](gopass_key, cred_file, cred_base=cred_base) -%}
+{{- _r -}}
+{%- endmacro -%}
+
+{%- macro download_cached(url, cache_path, hash=None) -%}{{ salt['installer.download_cached'](url, cache_path, hash_val=hash) }}{%- endmacro -%}
+{%- macro ver_stamp(vd, name, version, target=None) -%}{{ salt['installer.ver_stamp'](vd, name, version, target=target) }}{%- endmacro -%}

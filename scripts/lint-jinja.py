@@ -78,7 +78,7 @@ class SaltTagExtension(jinja2.ext.Extension):
             with open(full_path) as fh:
                 if tag_base in ("yaml", "text"):
                     data = yaml.safe_load(fh.read())
-                    return data if data is not None else {}
+                    return _strip_schema(data) if data is not None else {}
                 else:  # json
                     return json.loads(fh.read())
         except (FileNotFoundError, yaml.YAMLError, json.JSONDecodeError):
@@ -97,6 +97,13 @@ def check_jinja_syntax(files):
             print(f"\033[31mJinja: {f}:{e.lineno}: {e.message}\033[0m")
             errors += 1
     return errors
+
+
+def _strip_schema(data):
+    """Remove schema_version from loaded YAML dicts (metadata, not data)."""
+    if isinstance(data, dict):
+        data.pop("schema_version", None)
+    return data
 
 
 def _resolve_import_yaml(source, states_dir="states"):
@@ -134,7 +141,7 @@ def _scan_import_yaml(yaml_vars, source, states_dir):
         yaml_path = os.path.join(states_dir, rel_path)
         try:
             with open(yaml_path) as fh:
-                yaml_vars[var_name] = yaml.safe_load(fh.read())
+                yaml_vars[var_name] = _strip_schema(yaml.safe_load(fh.read()))
         except (FileNotFoundError, yaml.YAMLError):
             pass
 
@@ -216,8 +223,8 @@ class _MockSalt:
                 mod_path = os.path.join(REPO_ROOT, "states", mod_name.replace(".", os.sep) + ".py")
                 spec = importlib.util.spec_from_file_location(mod_name, mod_path)
                 if spec and spec.loader:
-                    _modules_dir = os.path.join(REPO_ROOT, "states", "_modules")
-                    sys.path.insert(0, _modules_dir)
+                    _mods_parent = os.path.join(REPO_ROOT, "states")
+                    sys.path.insert(0, _mods_parent)
                     try:
                         mod = importlib.util.module_from_spec(spec)
                         spec.loader.exec_module(mod)
@@ -226,8 +233,8 @@ class _MockSalt:
                             self._module_cache[name] = func
                             return func
                     finally:
-                        if _modules_dir in sys.path:
-                            sys.path.remove(_modules_dir)
+                        if _mods_parent in sys.path:
+                            sys.path.remove(_mods_parent)
             except Exception:
                 pass
         return None

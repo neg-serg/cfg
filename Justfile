@@ -10,7 +10,22 @@
 
 # Apply a state (default: auto — minimal-rollout via git diff)
 apply STATE="auto":
+    #!/usr/bin/env bash
+    set -o pipefail
     scripts/salt-apply.sh {{STATE}}
+    rc=$?
+    if [[ $rc -ne 0 ]]; then
+        log=$(ls -t logs/*.log 2>/dev/null | head -1)
+        echo ""
+        echo "▸▸▸ apply failed (exit $rc)"
+        echo "▸ Log: ${log:-none}"
+        echo "▸ Failed states: grep 'Result: False' ${log:-logs/*.log}"
+        echo "▸ Missing deps:  grep 'Requisite.*not found' ${log:-logs/*.log}"
+        echo "▸ Validate:      just validate"
+        echo "▸ Contracts:     python3 scripts/salt_contracts.py"
+        echo "▸ Force:         just force"
+    fi
+    exit $rc
 
 # Apply a state skipping contract validation (--force)
 apply-force STATE="auto":

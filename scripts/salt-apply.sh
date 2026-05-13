@@ -361,11 +361,15 @@ if [[ -z "${SALT_SKIP_CONTRACTS:-}" && "$FORCE_MODE" != true ]]; then
 	CONTRACT_OUTPUT=$(python3 "${SCRIPT_DIR}/salt_contracts.py" 2>&1)
 	CONTRACT_RC=$?
 	if [[ $CONTRACT_RC -ne 0 ]]; then
-		echo "=== Data contract violations detected ==="
+		VIOLATION_COUNT=$(echo "$CONTRACT_OUTPUT" | grep -c . 2>/dev/null || echo 0)
+		printf '\033[31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
+		printf '\033[31m  Data contract violations (%d found)\033[0m\n' "$VIOLATION_COUNT"
+		printf '\033[31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
 		echo "$CONTRACT_OUTPUT"
 		echo ""
-		echo "  Set SALT_SKIP_CONTRACTS=1 to bypass and apply anyway."
-		echo "  Run 'python3 scripts/salt_contracts.py' for details."
+		printf '\033[33m  Fix: resolve the violations above, then re-run.\033[0m\n'
+		printf '\033[33m  Bypass: just force          (skip contracts + apply)\033[0m\n'
+		printf '\033[33m  Inspect: python3 scripts/salt_contracts.py --verbose\033[0m\n'
 		exit 1
 	fi
 fi
@@ -431,6 +435,20 @@ if [[ $RC -eq 0 ]]; then
 		python3 "${SCRIPT_DIR}/salt_audit.py" --target "${STATE}" $TEST_FLAG
 	fi
 else
-	echo "--- ${STATE}: some states failed (see log above) ---"
+	FAILED_COUNT=$(grep -c 'Result: False' "${LOG_FILE}" 2>/dev/null || echo 0)
+	echo ""
+	if [[ $FAILED_COUNT -gt 0 && -f "${LOG_FILE}" ]]; then
+		echo "=== ${FAILED_COUNT} state(s) failed ==="
+		awk '/^----------$/{buf=$0; while(getline>0){buf=buf"\n"$0; if(/Result: False/){print buf; print ""; break} if(/^----------$/){break}}}' "${LOG_FILE}" 2>/dev/null
+		echo "=== Debug ==="
+		echo "  grep 'Result: False' ${LOG_FILE}  →  find all failures"
+		echo "  grep 'Requisite.*not found' ${LOG_FILE}  →  find missing dependencies"
+		echo "  just validate                     →  check all states render"
+		echo "  python3 scripts/salt_contracts.py →  check data contracts"
+	else
+		echo "--- ${STATE}: apply failed (exit code ${RC}, no state failures in log) ---"
+		echo "  This usually means a pre-flight check failed (e.g. salt_contracts)"
+		echo "  or salt-call itself crashed. See full log above for details."
+	fi
 	exit $RC
 fi

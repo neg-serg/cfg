@@ -3,7 +3,6 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import host, user, home, sudo_timeout_minutes %}
-{% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service_user.jinja' import user_linger %}
 {% import_yaml 'data/users.yaml' as users %}
 {% set uid = host.uid %}
@@ -26,7 +25,7 @@ plugdev_group:
     - name: plugdev
     - system: True
 
-{{ paru_install('realtime-privileges', 'realtime-privileges') }}
+{{ salt['pkg.paru_install']('realtime-privileges', 'realtime-privileges') }}
 
 neg_groups:
   cmd.run:
@@ -62,7 +61,7 @@ sudo_nopasswd:
     - check_cmd: /usr/sbin/visudo -c -f
 
 {% if host.features.sudo_ssh_agent %}
-{{ paru_install('pam_ssh_agent_auth', 'pam_ssh_agent_auth') }}
+{{ salt['pkg.paru_install']('pam_ssh_agent_auth', 'pam_ssh_agent_auth') }}
 
 sudo_pam_config:
   file.managed:

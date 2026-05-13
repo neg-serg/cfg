@@ -3,11 +3,10 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import host, user %}
-{% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service_user.jinja' import user_service_with_unit %}
 {% import_yaml 'data/espanso.yaml' as espanso %}
 
-{{ paru_install('espanso', espanso.package) }}
+{{ salt['pkg.paru_install']('espanso', espanso.package) }}
 
 {{ user_service_with_unit('espanso', espanso.service,
      start_now=[espanso.service],

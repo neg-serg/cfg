@@ -3,7 +3,6 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import user, home %}
-{% from '_macros_pkg.jinja' import paru_install %}
 
 {% import_yaml 'data/desktop.yaml' as desktop %}
 
@@ -62,7 +61,7 @@ sshd_restart:
       - file: sshd_hardening
 
 {% for name, pkg in desktop.system_packages.items() %}
-{{ paru_install(name, pkg) }}
+{{ salt['pkg.paru_install'](name, pkg) }}
 {% endfor %}
 
 libvirtd_service_disabled:

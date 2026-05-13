@@ -1,6 +1,5 @@
 {# CachyOS kernel packages, boot configuration, and kernel cmdline management #}
 {% from '_imports.jinja' import host %}
-{% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/cachyos.yaml' as cachyos %}
 
 include:
@@ -20,11 +19,11 @@ cachyos_kernel_cmdline:
     - require:
       - cmd: cachyos_boot_splash
 
-{{ paru_install('cachyos_kernels', cachyos.kernel_packages | join(' '), requires=['file: cachyos_kernel_cmdline']) }}
+{{ salt['pkg.paru_install']('cachyos_kernels', cachyos.kernel_packages | join(' '), requires=['file: cachyos_kernel_cmdline']) }}
 
-{{ paru_install('cachyos_settings', cachyos.settings_package, requires=['cmd: install_cachyos_kernels']) }}
+{{ salt['pkg.paru_install']('cachyos_settings', cachyos.settings_package, requires=['cmd: install_cachyos_kernels']) }}
 
-{{ paru_install('cachyos_scx', cachyos.scx_packages | join(' '), requires=['cmd: install_cachyos_settings']) }}
+{{ salt['pkg.paru_install']('cachyos_scx', cachyos.scx_packages | join(' '), requires=['cmd: install_cachyos_settings']) }}
 
 {% for variant in cachyos.kernel_variants %}
 {{ variant | replace('-', '_') }}_preset:

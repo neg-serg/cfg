@@ -4,7 +4,6 @@ include:
 
 {% from '_imports.jinja' import user, home %}
 {% from '_macros_install.jinja' import cargo_pkg, curl_bin, curl_extract_tar, curl_extract_zip, git_clone_build, git_clone_deploy, go_pkg, http_file, install_catalog, pip_pkg %}
-{% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/installers.yaml' as tools %}
 {% import_yaml 'data/versions.yaml' as ver %}
 
@@ -27,7 +26,7 @@ include:
 {{ install_catalog(tools.get('curl_extract_tar', {}), ver, 'curl_extract_tar', exclude=['essentia']) }}
 
 # ── AUR package installs ────────────────────────────────────────────
-{{ paru_install('tdl', 'tdl-bin') }}
+{{ salt['pkg.paru_install']('tdl', 'tdl-bin') }}
 
 tdl_legacy_cleanup:
   file.absent:

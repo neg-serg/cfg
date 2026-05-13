@@ -1,14 +1,12 @@
 {# Steam gaming platform: multilib, drivers, gamemode, and controller support #}
 {% from '_imports.jinja' import host, user %}
 
-{% from '_macros_pkg.jinja' import paru_install %}
-{% from '_macros_config.jinja' import config_file_edit %}
 {% import_yaml 'data/steam.yaml' as steam %}
 
 include:
   - pacman_db_warmup
 
-{{ config_file_edit('multilib_repo',
+{{ salt['cfg.config_file_edit']('multilib_repo',
     cmd=steam.multilib_repo.cmd,
     check_pattern=steam.multilib_repo.check_pattern,
     check_file=steam.multilib_repo.check_file,
@@ -19,11 +17,11 @@ include:
     'steam': steam.steam_packages,
     'lib32_audio': steam.lib32_audio_packages,
 }.items() %}
-{{ paru_install(id, pkgs | join(' '), requires=['cmd: multilib_repo']) }}
+{{ salt['pkg.paru_install'](id, pkgs | join(' '), requires=['cmd: multilib_repo']) }}
 {% endfor %}
 
 {{ salt['service.ensure_dir']('steam_library_dir', host.mnt_zero ~ '/steam/steamapps', require=['mount: mount_zero']) }}
-{{ paru_install('p7zip', '7zip') }}
+{{ salt['pkg.paru_install']('p7zip', '7zip') }}
 
 gamemode_config:
   file.managed:

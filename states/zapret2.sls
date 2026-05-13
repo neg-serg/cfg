@@ -3,7 +3,6 @@
 # Zapret2 DPI bypass — configuration, hostlist, and helper service
 # =============================================================================
 {% from '_imports.jinja' import user %}
-{% from '_macros_pkg.jinja' import paru_install %}
 
 {% import_yaml 'data/zapret2.yaml' as zapret2 %}
 
@@ -14,8 +13,8 @@
 {% set helper_path = zapret2.helper.deployed_path %}
 {% set approval_file = zapret2.helper.approval_file %}
 
-{{ paru_install('zapret2', zapret2.package.name) }}
-{{ paru_install('ipset', 'ipset') }}
+{{ salt['pkg.paru_install']('zapret2', zapret2.package.name) }}
+{{ salt['pkg.paru_install']('ipset', 'ipset') }}
 
 {{ salt['service.ensure_dir']('zapret2_config_dir', cfg_dir, mode='0755', user='root') }}
 {{ salt['service.ensure_dir']('zapret2_hostlist_dir', hostlist_dir, mode='0755', user='root') }}

@@ -3,7 +3,6 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import home, user %}
-{% from '_macros_pkg.jinja' import paru_install %}
 
 {% import_yaml 'data/desktop.yaml' as desktop %}
 
@@ -23,7 +22,7 @@ portal_config:
     - require:
       - file: portal_conf_dir
 
-{{ paru_install('xdg_termfilechooser', desktop.portal_package) }}
+{{ salt['pkg.paru_install']('xdg_termfilechooser', desktop.portal_package) }}
 
 portal_restart:
   cmd.run:

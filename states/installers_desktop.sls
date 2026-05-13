@@ -4,14 +4,13 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import user, pkg_list, retry_attempts, retry_interval %}
-{% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/installers_desktop.yaml' as apps %}
 # Desktop application installers: AUR packages
 # Definitions in data/installers_desktop.yaml; adding/updating is a YAML-only edit.
 
 # --- AUR packages (v4l2loopback-dkms for droidcam installed via pacman outside Salt) ---
 {% for name, pkg in apps.paru_install.items() %}
-{{ paru_install(name, pkg) }}
+{{ salt['pkg.paru_install'](name, pkg) }}
 {% endfor %}
 
 # rofi-file-browser-extended: needs PKGBUILD patching for CMake 4.0 + GCC 15 compat.

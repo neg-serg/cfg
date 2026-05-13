@@ -2,11 +2,10 @@
 include:
   - pacman_db_warmup
 
-{% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/audio.yaml' as audio %}
 
 {% for pkg in audio.packages %}
-{{ paru_install(pkg, pkg) }}
+{{ salt['pkg.paru_install'](pkg, pkg) }}
 {% endfor %}
 
 snd_aloop_strip_droidcam:

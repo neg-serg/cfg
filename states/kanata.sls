@@ -3,12 +3,11 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import user, home %}
-{% from '_macros_pkg.jinja' import paru_install %}
 
 {% from '_macros_service_user.jinja' import user_service_with_unit %}
 {% import_yaml 'data/kanata.yaml' as kanata %}
 
-{{ paru_install('kanata', kanata.package) }}
+{{ salt['pkg.paru_install']('kanata', kanata.package) }}
 
 kanata_legacy_cleanup:
   file.absent:

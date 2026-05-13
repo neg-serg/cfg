@@ -4,7 +4,6 @@ include:
 
 {% from '_imports.jinja' import home %}
 {% from '_macros_install.jinja' import pip_pkg %}
-{% from '_macros_pkg.jinja' import paru_install %}
 {% import_yaml 'data/code_rag.yaml' as code_rag %}
 
 {% set _rag_shared = home ~ code_rag.rag_shared | replace('~/', '/') %}
@@ -17,5 +16,5 @@ replace_mandb_with_mandoc:
     - require:
       - cmd: pacman_db_warmup
 
-{{ paru_install('mandoc', code_rag.mandoc) }}
+{{ salt['pkg.paru_install']('mandoc', code_rag.mandoc) }}
 {{ pip_pkg('docs_rag', pkg=home ~ code_rag.docs_rag | replace('~/', '/'), bin='docs-import', preinstall=_rag_shared) }}

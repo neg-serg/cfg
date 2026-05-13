@@ -1,6 +1,5 @@
 {% from '_imports.jinja' import host, retry_attempts, retry_interval, ollama_pull_timeout %}
 
-{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 {% import_yaml 'data/ollama.yaml' as ollama %}
 # Ollama LLM server — pure Quadlet (Podman container).
 # Service is NOT enabled at boot (manual_start) — VRAM is shared with desktop GPU.
@@ -13,7 +12,7 @@
 # /etc/systemd/system/ollama.service.
 {{ salt['service.remove_native_unit']('ollama') }}
 
-{{ container_service('ollama', catalog.ollama, image_registry,
+{{ salt['container.deploy']('ollama', catalog.ollama, image_registry,
     requires=['file: ollama_models_dir', 'mount: mount_one', 'cmd: ollama_native_unit_daemon_reload']) }}
 
 {% set ollama_base = '127.0.0.1:' ~ catalog.ollama.port %}

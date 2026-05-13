@@ -7,6 +7,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from _yaml_out import yaml_output
+
 
 def _host() -> dict[str, Any]:
     try:
@@ -24,6 +26,7 @@ def _const() -> dict[str, Any]:
         return {"retry_attempts": 3, "retry_interval": 10}
 
 
+@yaml_output
 def dconf_settings(name: str, settings: dict[str, str],
                    user: str | None = None,
                    require: list[str] | None = None) -> dict[str, Any]:
@@ -56,6 +59,7 @@ def dconf_settings(name: str, settings: dict[str, str],
     return {name: {"cmd.run": args}}
 
 
+@yaml_output
 def hyprpm_update(name: str, check_plugins: list[str] | None = None,
                   require: list[str] | None = None,
                   timeout: int = 300) -> dict[str, Any]:
@@ -98,6 +102,7 @@ def hyprpm_update(name: str, check_plugins: list[str] | None = None,
     return {name: {"cmd.run": args}}
 
 
+@yaml_output
 def hyprpm_add(name: str, repo_url: str, check_plugin: str,
                require: list[str] | None = None,
                timeout: int = 300) -> dict[str, Any]:
@@ -134,6 +139,7 @@ def hyprpm_add(name: str, repo_url: str, check_plugin: str,
     return {name: {"cmd.run": args}}
 
 
+@yaml_output
 def hyprpm_enable(name: str, plugin: str,
                   require: list[str] | None = None) -> dict[str, Any]:
     h = _host()
@@ -166,3 +172,81 @@ def hyprpm_enable(name: str, plugin: str,
         args.append({"require": [r for r in require]})
 
     return {name: {"cmd.run": args}}
+
+
+@yaml_output
+def browser_extensions(prefix: str, profile: str,
+                       extensions: list[dict[str, Any]],
+                       user_js_id: str,
+                       unwanted: list[str] | None = None,
+                       user: str | None = None) -> dict[str, Any]:
+    u = user or _host()["user"]
+    ext_dir = f"{profile}/extensions"
+    out: dict[str, Any] = {}
+
+    ext_dir_id = f"{prefix}_extensions_dir"
+    out[ext_dir_id] = {
+        "file.directory": [
+            {"name": ext_dir}, {"user": u}, {"group": u}, {"makedirs": True},
+        ]
+    }
+
+    for ext in extensions:
+        ext_id = ext.get("id", "")
+        slug = ext.get("slug", "")
+        xpi = f"{ext_dir}/{ext_id}.xpi"
+        slug_safe = slug.replace("-", "_")
+        state_id = f"{prefix}_ext_{slug_safe}"
+        cmd = (
+            f"rm -f '{xpi}.tmp'\n"
+            f"if curl --http1.1 --fail --silent --show-error --location "
+            f"--ipv4 "
+            f"--connect-timeout 10 --max-time 30 "
+            f"--retry 3 --retry-delay 3 --retry-max-time 60 --retry-all-errors "
+            f"-o '{xpi}.tmp' "
+            f"'https://addons.mozilla.org/firefox/downloads/latest/{slug}/latest.xpi'; then\n"
+            f"  mv -f '{xpi}.tmp' '{xpi}'\n"
+            f"else\n"
+            f"  rm -f '{xpi}.tmp'\n"
+            f'  echo "WARNING: download of {slug} failed, will retry on next apply" >&2\n'
+            f"fi"
+        )
+        out[state_id] = {
+            "cmd.run": [
+                {"name": cmd},
+                {"creates": xpi},
+                {"runas": u},
+                {"parallel": True},
+                {"require": [{"file": ext_dir_id}]},
+            ]
+        }
+
+    if unwanted:
+        for ext_id_val in unwanted:
+            safe_id = (ext_id_val
+                       .replace("{", "")
+                       .replace("}", "")
+                       .replace("-", "_")
+                       .replace("@", "_")
+                       .replace(".", "_"))
+            remove_id = f"{prefix}_remove_{safe_id}"
+            out[remove_id] = {
+                "file.absent": [
+                    {"name": f"{ext_dir}/{ext_id_val}.xpi"},
+                ]
+            }
+
+    reset_id = f"{prefix}_reset_extensions_json"
+    onchanges: list[dict[str, str]] = [{"file": user_js_id}]
+    for ext in extensions:
+        slug = ext.get("slug", "")
+        slug_safe = slug.replace("-", "_")
+        onchanges.append({"cmd": f"{prefix}_ext_{slug_safe}"})
+    out[reset_id] = {
+        "file.absent": [
+            {"name": f"{profile}/extensions.json"},
+            {"onchanges_any": onchanges},
+        ]
+    }
+
+    return out

@@ -1,7 +1,6 @@
 {# Monitoring alerts: service watchdog timers and Loki alert rule deployment #}
 {% from '_imports.jinja' import host, user, home, tg_secret %}
 
-{% from '_macros_service_user.jinja' import user_service_enable, user_service_file %}
 {% import_yaml 'data/monitored_services.yaml' as monitored %}
 {% if host.features.monitoring.alerts %}
 
@@ -47,12 +46,12 @@ salt_monitor_script:
       - file: salt_alert_script
 
 # ── Systemd user units ──────────────────────────────────────────────
-{{ user_service_file('salt_monitor_service', 'salt-monitor.service', template='jinja', context={'runtime_dir': host.runtime_dir, 'project_dir': host.project_dir}) }}
-{{ user_service_file('salt_monitor_watchdog_service', 'salt-monitor-watchdog.service') }}
-{{ user_service_file('salt_monitor_watchdog_timer', 'salt-monitor-watchdog.timer') }}
+{{ salt['user_service.user_service_file']('salt_monitor_service', 'salt-monitor.service', template='jinja', context={'runtime_dir': host.runtime_dir, 'project_dir': host.project_dir}) }}
+{{ salt['user_service.user_service_file']('salt_monitor_watchdog_service', 'salt-monitor-watchdog.service') }}
+{{ salt['user_service.user_service_file']('salt_monitor_watchdog_timer', 'salt-monitor-watchdog.timer') }}
 
 # ── Enable services ─────────────────────────────────────────────────
-{{ user_service_enable('salt_monitor_enabled',
+{{ salt['user_service.user_service_enable']('salt_monitor_enabled',
     start_now=['salt-monitor.service', 'salt-monitor-watchdog.timer'],
     requires=['file: salt_monitor_script', 'file: salt_alert_script',
               'file: salt_monitor_service', 'file: salt_monitor_watchdog_service',

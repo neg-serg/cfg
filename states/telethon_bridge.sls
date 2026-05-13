@@ -1,7 +1,6 @@
 {# Telethon Bridge: Telegram MTProto relay to HTTP for LLM bot integration #}
 {% from '_imports.jinja' import user, home, proxypilot_key, tg_secret %}
 
-{% from '_macros_service_user.jinja' import user_service_file, user_service_enable, user_service_with_unit %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/telethon_bridge.yaml' as tb %}
 {% set _tb_config_dir = home ~ '/.config/telethon-bridge' %}
@@ -73,10 +72,10 @@ telethon_bridge_react_helper:
     - mode: '0755'
 
 # Multi-unit pattern: react service + path → enable via start_now='telethon-bridge-react.path'
-{{ user_service_file('telethon_bridge_react_service', 'telethon-bridge-react.service') }}
-{{ user_service_file('telethon_bridge_react_path', 'telethon-bridge-react.path') }}
+{{ salt['user_service.user_service_file']('telethon_bridge_react_service', 'telethon-bridge-react.service') }}
+{{ salt['user_service.user_service_file']('telethon_bridge_react_path', 'telethon-bridge-react.path') }}
 
-{{ user_service_enable(
+{{ salt['user_service.user_service_enable'](
     'telethon_bridge_react_enabled',
     start_now=['telethon-bridge-react.path'],
     check='active',
@@ -89,7 +88,7 @@ telethon_bridge_react_helper:
     ],
 ) }}
 
-{{ user_service_with_unit('telethon_bridge',
+{{ salt['user_service.user_service_with_unit']('telethon_bridge',
     'telethon-bridge.service',
     start_now=['telethon-bridge.service'],
     requires=['cmd: install_python_telethon', 'file: telethon_bridge_config']) }}

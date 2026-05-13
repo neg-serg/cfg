@@ -3,7 +3,6 @@
 # Desktop user session — dconf, SSH keys, user services
 # =============================================================================
 {% from '_imports.jinja' import host, home %}
-{% from '_macros_desktop.jinja' import dconf_settings %}
 
 {% import_yaml 'data/desktop.yaml' as desktop %}
 
@@ -11,7 +10,7 @@
 {{ salt['service.ensure_dir']('ssh_dir', home ~ '/.ssh', mode='0700') }}
 
 # --- dconf: GTK/icon/font theme for Wayland apps ---
-{{ dconf_settings('dconf_themes', desktop.dconf_settings) }}
+{{ salt['desktop.dconf_settings']('dconf_themes', desktop.dconf_settings) }}
 
 # --- Salt daemon systemd unit ---
 salt_daemon_venv_ready:

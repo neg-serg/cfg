@@ -1,8 +1,6 @@
 {# T5 text summarization server: safetensors to GGUF conversion via Quadlet container #}
 {% from '_imports.jinja' import host, user %}
 
-{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
-{% from '_macros_install.jinja' import huggingface_file %}
 {% import_yaml 'data/t5_summarization.yaml' as t5 %}
 # llama.cpp T5 summarization server: UrukHan/t5-russian-summarization via Vulkan.
 # Downloads safetensors from HuggingFace, converts to GGUF, serves via llama-server.
@@ -20,9 +18,9 @@
 {{ salt['pkg.paru_install']('python_transformers', 'python-transformers') }}
 
 # Download model + tokenizer files from HuggingFace (unconditional — feeds container via bind-mount)
-{{ huggingface_file('t5_summarization_model', t5.hf_repo, hf_file, hf_path ~ '/' ~ hf_file, user=user, require=['file: t5_summarization_hf_dir'], parallel=False, version=hf_file, cache=False) }}
+{{ salt['installer.huggingface_file']('t5_summarization_model', t5.hf_repo, hf_file, hf_path ~ '/' ~ hf_file, user=user, require=['file: t5_summarization_hf_dir'], parallel=False, version=hf_file, cache=False) }}
 {% for fname in t5.tokenizer_files %}
-{{ huggingface_file('t5_summarization_' ~ fname | replace('.', '_'), t5.hf_repo, fname, hf_path ~ '/' ~ fname, user=user, require=['file: t5_summarization_hf_dir'], parallel=False, cache=False) }}
+{{ salt['installer.huggingface_file']('t5_summarization_' ~ fname | replace('.', '_'), t5.hf_repo, fname, hf_path ~ '/' ~ fname, user=user, require=['file: t5_summarization_hf_dir'], parallel=False, cache=False) }}
 {% endfor %}
 
 # Convert safetensors → GGUF (requires convert_hf_to_gguf.py from llama.cpp)
@@ -49,5 +47,5 @@ t5_summarization_convert:
 # Remove native package (idempotent — no-op if already removed)
 {{ salt['service.remove_native_package']('t5_summarization', ['llama.cpp-vulkan']) }}
 
-{{ container_service('t5_summarization', catalog.t5_summarization, image_registry,
+{{ salt['container.deploy']('t5_summarization', catalog.t5_summarization, image_registry,
     requires=['file: t5_summarization_hf_dir', 'cmd: t5_summarization_convert', 'cmd: t5_summarization_native_unit_daemon_reload']) }}

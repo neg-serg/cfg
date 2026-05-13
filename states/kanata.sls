@@ -4,7 +4,6 @@ include:
 
 {% from '_imports.jinja' import user, home %}
 
-{% from '_macros_service_user.jinja' import user_service_with_unit %}
 {% import_yaml 'data/kanata.yaml' as kanata %}
 
 {{ salt['pkg.paru_install']('kanata', kanata.package) }}
@@ -53,4 +52,4 @@ kanata_config:
     - require:
       - file: kanata_config_dir
 
-{{ user_service_with_unit('kanata', 'kanata.service', requires=['cmd: install_kanata', 'file: kanata_config', 'cmd: kanata_user_groups', 'kmod: kanata_load_uinput']) }}
+{{ salt['user_service.user_service_with_unit']('kanata', 'kanata.service', requires=['cmd: install_kanata', 'file: kanata_config', 'cmd: kanata_user_groups', 'kmod: kanata_load_uinput']) }}

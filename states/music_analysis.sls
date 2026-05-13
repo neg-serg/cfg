@@ -3,8 +3,6 @@
 include:
   - pacman_db_warmup
 
-{% from '_macros_service_user.jinja' import user_service_file, user_service_enable %}
-{% from '_macros_install.jinja' import install_catalog %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/installers.yaml' as tools %}
 
@@ -14,7 +12,7 @@ include:
 
 # Essentia streaming extractor (binary tarball, data-driven via installers.yaml)
 {% if tools.get('curl_extract_tar', {}).get('essentia') %}
-{{ install_catalog({'essentia': tools.curl_extract_tar.essentia}, ver, 'curl_extract_tar') }}
+{{ salt['installer.install_catalog']({'essentia': tools.curl_extract_tar.essentia}, ver, 'curl_extract_tar') }}
 {% endif %}
 
 essentia_validate:
@@ -25,9 +23,9 @@ essentia_validate:
       - cmd: install_essentia
 
 # User systemd units (timer + service)
-{{ user_service_file('music_index_service', 'music-index.service') }}
-{{ user_service_file('music_index_timer', 'music-index.timer') }}
-{{ user_service_enable('music_index_enabled',
+{{ salt['user_service.user_service_file']('music_index_service', 'music-index.service') }}
+{{ salt['user_service.user_service_file']('music_index_timer', 'music-index.timer') }}
+{{ salt['user_service.user_service_enable']('music_index_enabled',
     start_now=['music-index.timer'],
     requires=[
         'file: music_index_service',

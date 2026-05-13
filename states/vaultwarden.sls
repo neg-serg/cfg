@@ -5,9 +5,6 @@ include:
 
 {% from '_imports.jinja' import user, home %}
 
-{% from '_macros_service_user.jinja' import user_service_file, user_service_enable %}
-{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
-
 # AUR package for Bitwarden CLI
 {{ salt['pkg.paru_install']('bitwarden_cli', 'bitwarden-cli') }}
 
@@ -43,14 +40,14 @@ vault_full_backup_script:
 {{ salt['service.ensure_dir']('vaultwarden_data_dir', '/var/lib/vaultwarden', mode='0700') }}
 
 # Podman Quadlet container
-{{ container_service('vaultwarden', catalog.vaultwarden, image_registry,
+{{ salt['container.deploy']('vaultwarden', catalog.vaultwarden, image_registry,
     quadlet_unit_name='vaultwarden-container',
     requires=['file: vaultwarden_data_dir']) }}
 
 # ─── User units (bw-sync — hourly Vaultwarden ↔ gopass sync) ───
-{{ user_service_file('bw_sync_service', 'bw-sync.service') }}
-{{ user_service_file('bw_sync_timer', 'bw-sync.timer') }}
-{{ user_service_enable('bw_sync_enabled',
+{{ salt['user_service.user_service_file']('bw_sync_service', 'bw-sync.service') }}
+{{ salt['user_service.user_service_file']('bw_sync_timer', 'bw-sync.timer') }}
+{{ salt['user_service.user_service_enable']('bw_sync_enabled',
     start_now=['bw-sync.timer'],
     requires=[
         'file: bw_sync_service',
@@ -61,9 +58,9 @@ vault_full_backup_script:
 ) }}
 
 # ─── User units (vault-full-backup — daily age-encrypted archive) ───
-{{ user_service_file('vault_full_backup_service', 'vault-full-backup.service') }}
-{{ user_service_file('vault_full_backup_timer', 'vault-full-backup.timer') }}
-{{ user_service_enable('vault_full_backup_enabled',
+{{ salt['user_service.user_service_file']('vault_full_backup_service', 'vault-full-backup.service') }}
+{{ salt['user_service.user_service_file']('vault_full_backup_timer', 'vault-full-backup.timer') }}
+{{ salt['user_service.user_service_enable']('vault_full_backup_enabled',
     start_now=['vault-full-backup.timer'],
     requires=[
         'file: vault_full_backup_service',

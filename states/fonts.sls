@@ -5,7 +5,6 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import user, home %}
-{% from '_macros_install.jinja' import download_font_zip %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/fonts.yaml' as fonts %}
 
@@ -39,5 +38,5 @@ include:
 {% for name, opts in fonts.download_zip.items() %}
 {% set _v = ver.get(name, '') %}
 {% set url = opts.url | replace('${VER}', _v) %}
-{{ download_font_zip(name, url, opts.subdir, hash=opts.get('hash'), version=_v if _v else None, user=user, home=home) }}
+{{ salt['installer.download_font_zip'](name, url, opts.subdir, hash=opts.get('hash'), version=_v if _v else None, user=user, home=home) }}
 {% endfor %}

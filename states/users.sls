@@ -3,7 +3,6 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import host, user, home, sudo_timeout_minutes %}
-{% from '_macros_service_user.jinja' import user_linger %}
 {% import_yaml 'data/users.yaml' as users %}
 {% set uid = host.uid %}
 
@@ -107,4 +106,4 @@ sudo_ssh_agent_env_keep:
     - name: /etc/sudoers.d/ssh-agent-auth
 {% endif %}
 
-{{ user_linger('user_lingering') }}
+{{ salt['user_service.user_linger']('user_lingering') }}

@@ -1,7 +1,5 @@
 {% from '_imports.jinja' import user, home, proxypilot_key, gopass_secret %}
 
-{% from '_macros_service_user.jinja' import user_service_restart %}
-{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 {% import_yaml 'data/free_providers.yaml' as free_providers_data %}
 
 # ProxyPilot LLM proxy — pure Quadlet (Podman container).
@@ -65,12 +63,12 @@ proxypilot_config:
 {{ salt['service.remove_native_unit']('proxypilot', scope='user') }}
 
 {# ── Container deployment ── #}
-{{ container_service('proxypilot', catalog.proxypilot, image_registry,
+{{ salt['container.deploy']('proxypilot', catalog.proxypilot, image_registry,
     quadlet_unit_name='proxypilot-container',
     user_scope=True,
     requires=['file: proxypilot_config', 'cmd: proxypilot_native_unit_daemon_reload']) }}
 
 {# ── Restart on config change ── #}
-{{ user_service_restart('restart_proxypilot_on_config_change', 'proxypilot-container.service',
+{{ salt['user_service.user_service_restart']('restart_proxypilot_on_config_change', 'proxypilot-container.service',
     onlyif='systemctl --user is-active proxypilot-container.service >/dev/null 2>&1',
     onchanges=['file: proxypilot_config']) }}

@@ -1,7 +1,6 @@
 {# Managed Telegram Bots: Bot API 9.6 manager bot state #}
 {% from '_imports.jinja' import user, home, tg_secret %}
 
-{% from '_macros_service_user.jinja' import user_service_enable, user_service_file %}
 {% import_yaml 'data/telegram_managed_bots.yaml' as mbdata %}
 
 {% set _telegram_token = tg_secret('api/opencode-telegram-bot', 'telegram-token', cred_base=home ~ '/.config/opencode-telegram-bot/credentials') %}
@@ -37,8 +36,8 @@ managed_bots_script:
     - user: {{ user }}
     - group: {{ user }}
 
-{{ user_service_file('managed_bots', 'managed-bots.service') }}
+{{ salt['user_service.user_service_file']('managed_bots', 'managed-bots.service') }}
 
-{{ user_service_enable('managed_bots_enabled',
+{{ salt['user_service.user_service_enable']('managed_bots_enabled',
     start_now=['managed-bots.service'],
     requires=['file: managed_bots_script']) }}

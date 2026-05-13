@@ -3,8 +3,6 @@
 # =============================================================================
 {% from '_imports.jinja' import host, user %}
 
-{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
-
 # AdGuard Home DNS filter — pure Quadlet (Podman container).
 # Replaces native pacman package (adguardhome) + custom systemd unit.
 #
@@ -44,7 +42,7 @@ adguardhome_initial_config:
     onlyif='systemctl is-enabled systemd-resolved >/dev/null 2>&1') }}
 
 {# ── Container deployment ── #}
-{{ container_service('adguardhome', catalog.adguardhome, image_registry,
+{{ salt['container.deploy']('adguardhome', catalog.adguardhome, image_registry,
     quadlet_unit_name='adguardhome-container',
     requires=['file: adguardhome_work_dir', 'file: adguardhome_initial_config', 'cmd: adguardhome_native_unit_daemon_reload']) }}
 

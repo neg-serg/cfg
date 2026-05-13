@@ -1,8 +1,6 @@
 # Jellyfin media server — pure Quadlet (Podman container).
 {% from '_imports.jinja' import host %}
 
-{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
-
 # Jellyfin media server — pure Quadlet (Podman container).
 # Replaces native pacman packages (jellyfin-server, jellyfin-web).
 
@@ -13,6 +11,6 @@
 {{ salt['service.ensure_dir']('jellyfin_config_dir', '/etc/jellyfin', mode='0755') }}
 {{ salt['service.ensure_dir']('jellyfin_cache_dir', '/var/cache/jellyfin', mode='0755') }}
 
-{{ container_service('jellyfin', catalog.jellyfin, image_registry,
+{{ salt['container.deploy']('jellyfin', catalog.jellyfin, image_registry,
     quadlet_unit_name='jellyfin-container',
     requires=['file: jellyfin_config_dir', 'file: jellyfin_cache_dir', 'cmd: jellyfin_native_unit_daemon_reload']) }}

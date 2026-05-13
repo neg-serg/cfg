@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from _yaml_out import yaml_output
+
 
 def _host() -> dict[str, Any]:
     try:
@@ -26,6 +28,7 @@ def _sysctl_env() -> list[str]:
     ]
 
 
+@yaml_output
 def user_service_file(name: str, filename: str, source: str | None = None,
                       template: str | None = None,
                       context: dict[str, Any] | None = None,
@@ -33,10 +36,11 @@ def user_service_file(name: str, filename: str, source: str | None = None,
                       home: str | None = None) -> dict[str, Any]:
     u = user or _host()["user"]
     h = home or _host()["home"]
+    _user_dir = _host().get("systemd_user_unit_dir", f"{h}/.config/systemd/user/")
     src = source or f"salt://units/user/{filename}"
 
     fargs: list[dict[str, Any]] = [
-        {"name": f"{h}/.config/systemd/user/{filename}"},
+        {"name": f"{_user_dir}{filename}"},
         {"source": src},
         {"user": u}, {"group": u},
         {"mode": "0644"}, {"makedirs": True},
@@ -60,6 +64,43 @@ def user_service_file(name: str, filename: str, source: str | None = None,
     }
 
 
+@yaml_output
+def user_unit_override(name: str, service: str, source: str | None = None,
+                       contents: str | None = None,
+                       filename: str = "override.conf",
+                       requires: list[str] | None = None,
+                       user: str | None = None,
+                       home: str | None = None) -> dict[str, Any]:
+    u = user or _host()["user"]
+    h = home or _host()["home"]
+    _user_dir = _host().get("systemd_user_unit_dir", f"{h}/.config/systemd/user/")
+    fargs: list[dict[str, Any]] = [
+        {"name": f"{_user_dir}{service}.d/{filename}"},
+        {"user": u}, {"group": u},
+        {"mode": "0644"}, {"makedirs": True},
+    ]
+    if contents is not None:
+        fargs.append({"contents": contents})
+    elif source:
+        fargs.append({"source": source})
+    if requires:
+        fargs.append({"require": [r for r in requires]})
+    ret: dict[str, Any] = {
+        name: {"file.managed": fargs},
+        f"{name}_daemon_reload": {
+            "cmd.run": [
+                {"name": "systemctl --user daemon-reload"},
+                {"onlyif": "systemctl --user show-environment >/dev/null 2>&1"},
+                {"runas": u},
+                {"env": [e.split(": ", 1) for e in _sysctl_env()]},
+                {"onchanges": [{"file": name}]},
+            ]
+        },
+    }
+    return ret
+
+
+@yaml_output
 def user_service_enable(name: str, services: list[str] | None = None,
                         start_now: list[str] | None = None,
                         daemon_reload: bool = False,
@@ -122,6 +163,7 @@ def user_service_enable(name: str, services: list[str] | None = None,
     return {name: {"cmd.run": args}}
 
 
+@yaml_output
 def user_service_with_unit(name: str, filename: str, source: str | None = None,
                            services: list[str] | None = None,
                            start_now: list[str] | None = None,
@@ -141,6 +183,7 @@ def user_service_with_unit(name: str, filename: str, source: str | None = None,
     return ret
 
 
+@yaml_output
 def user_service_restart(name: str, service: str, onlyif: str | None = None,
                          requires: list[str] | None = None,
                          onchanges: list[str] | None = None,
@@ -160,6 +203,7 @@ def user_service_restart(name: str, service: str, onlyif: str | None = None,
     return {name: {"cmd.run": args}}
 
 
+@yaml_output
 def user_service_disable(name: str, units: list[str],
                          user: str | None = None) -> dict[str, Any]:
     u = user or _host()["user"]
@@ -186,6 +230,7 @@ def user_service_disable(name: str, units: list[str],
     }
 
 
+@yaml_output
 def user_linger(name: str, user: str | None = None,
                 require: list[str] | None = None) -> dict[str, Any]:
     u = user or _host()["user"]

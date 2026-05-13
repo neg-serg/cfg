@@ -1,6 +1,5 @@
 {# Hyprland Wayland compositor: plugins, config, and session management #}
 {% from '_imports.jinja' import user %}
-{% from '_macros_desktop.jinja' import hyprpm_add, hyprpm_enable, hyprpm_update %}
 
 {% import_yaml 'data/desktop.yaml' as desktop %}
 
@@ -37,12 +36,12 @@ hyprpm_repo_cache_{{ plugin.id }}:
       - file: hyprpm_cache_dir
 {% endfor %}
 
-{{ hyprpm_update('hyprpm_headers_update',
+{{ salt['desktop.hyprpm_update']('hyprpm_headers_update',
     check_plugins=desktop.hyprland_check_plugins,
     require=['cmd: install_hyprland_desktop', 'file: hyprpm_cache_dir']) }}
 
 {% for plugin in desktop.hyprland_plugins %}
-{{ hyprpm_add('hyprpm_add_' ~ plugin.id,
+{{ salt['desktop.hyprpm_add']('hyprpm_add_' ~ plugin.id,
     plugin.repo,
     'Repository ' ~ plugin.dir,
     require=['cmd: install_hyprland_desktop', 'cmd: hyprpm_headers_update', 'file: hyprpm_repo_cache_' ~ plugin.id]) }}
@@ -50,7 +49,7 @@ hyprpm_repo_cache_{{ plugin.id }}:
 
 {% for plugin in desktop.hyprland_plugins %}
 {% for ep in plugin.enable %}
-{{ hyprpm_enable('hyprpm_enable_' ~ ep.name | lower | replace('-', '_'),
+{{ salt['desktop.hyprpm_enable']('hyprpm_enable_' ~ ep.name | lower | replace('-', '_'),
     ep.name,
     require=['cmd: hyprpm_add_' ~ plugin.id]) }}
 {% endfor %}

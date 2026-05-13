@@ -3,8 +3,6 @@
 # installed for /etc/ directory structure and provisioning files.
 {% from '_imports.jinja' import host %}
 
-{% from '_macros_container.jinja' import container_service, catalog, image_registry %}
-
 {% set mon = host.features.monitoring %}
 
 {# ── Loki: log aggregation ── #}
@@ -28,7 +26,7 @@ loki_config:
 {{ salt['service.remove_native_unit']('loki') }}
 {{ salt['service.remove_native_package']('loki', ['loki']) }}
 
-{{ container_service('loki', catalog.loki, image_registry,
+{{ salt['container.deploy']('loki', catalog.loki, image_registry,
     quadlet_unit_name='loki-container',
     requires=['file: loki_config', 'file: loki_container_state_dir', 'cmd: loki_native_unit_daemon_reload']) }}
 
@@ -55,7 +53,7 @@ promtail_config:
 {{ salt['service.remove_native_unit']('promtail') }}
 {{ salt['service.remove_native_package']('promtail', ['promtail']) }}
 
-{{ container_service('promtail', catalog.promtail, image_registry,
+{{ salt['container.deploy']('promtail', catalog.promtail, image_registry,
     quadlet_unit_name='promtail-container',
     requires=['file: promtail_config', 'cmd: promtail_native_unit_daemon_reload']) }}
 {% endif %}
@@ -109,7 +107,7 @@ grafana_proxypilot_dashboard:
 {{ salt['service.remove_native_package']('grafana', ['grafana']) }}
 
 {% set _grafana_watch = ['file: grafana_config', 'file: grafana_dashboards_provider', 'file: grafana_proxypilot_dashboard'] + (['file: grafana_loki_datasource'] if mon.loki else []) %}
-{{ container_service('grafana', catalog.grafana, image_registry,
+{{ salt['container.deploy']('grafana', catalog.grafana, image_registry,
     quadlet_unit_name='grafana-container',
     requires=['file: grafana_config', 'file: grafana_dashboards_provider', 'file: grafana_proxypilot_dashboard', 'file: grafana_container_state_dir', 'cmd: grafana_native_unit_daemon_reload'],
     watch=_grafana_watch) }}

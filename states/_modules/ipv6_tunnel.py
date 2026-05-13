@@ -147,7 +147,7 @@ def _service_with_unit(name: str, source: str, unit_type: str = "service",
     if template:
         list(ret.values())[0]["file.managed"].append({"template": template})
     if context:
-        list(ret.values())[0]["file.managed"].append({"context": [context]})
+        list(ret.values())[0]["file.managed"].append({"context": context})
 
     ret[f"{name}_daemon_reload"] = {
         "cmd.run": [

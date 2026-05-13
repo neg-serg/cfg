@@ -90,7 +90,7 @@ def config_and_reload(name: str, config_path: str, reload_cmd: str,
     if template:
         fargs.append({"template": template})
     if context:
-        fargs.append({"context": [context]})
+        fargs.append({"context": context})
     if makedirs:
         fargs.append({"makedirs": True})
     if require:
@@ -383,10 +383,7 @@ def _service_with_unit_dict(name, source, unit_type="service",
     if template:
         list(fargs.values())[0]["file.managed"].append({"template": template})
     if context:
-        ctx_list = [{"context": []}]
-        for k, v in context.items():
-            ctx_list[0]["context"].append({k: v})
-        list(fargs.values())[0]["file.managed"].extend(ctx_list)
+        list(fargs.values())[0]["file.managed"].append({"context": context})
     ret.update(fargs)
 
     # Companion unit (timer+service pairs)

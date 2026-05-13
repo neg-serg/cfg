@@ -51,7 +51,7 @@ def _user_service_file_dict(name: str, filename: str, source: str | None = None,
     if template:
         fargs.append({"template": template})
     if context:
-        fargs.append({"context": [context]})
+        fargs.append({"context": context})
 
     return {
         name: {"file.managed": fargs},

@@ -1,8 +1,11 @@
 {#- Thin proxy: re-exports constants from _macros_common.jinja for .sls states.
-    Jinja2 {% from %} imports do NOT re-export — only {% set %} creates module exports.
-    Usage: {% from '_imports.jinja' import host, user, home %}
-    With registry: {% from '_imports.jinja' import host, registry %}
--#}
+    All macro business logic migrated to Python modules in states/_modules/.
+    
+    Usage: {% from '_imports.jinja' import host, user, home, retry_attempts %}
+    For secrets: use salt['secrets.get']('key') or salt['secrets.tg_secret'](...)
+    For features: use salt['host.feature_enabled']('mpd')
+    For containers: use salt['container.deploy'](...)
+#}
 {%- import '_macros_common.jinja' as _mc -%}
 {%- set host = _mc.host -%}
 {%- set user = _mc.user -%}
@@ -16,7 +19,4 @@
 {%- set ver_dir = _mc.ver_dir -%}
 {%- set sys_ver_dir = _mc.sys_ver_dir -%}
 {%- set download_cache = _mc.download_cache -%}
-{%- set gopass_secret = _mc.gopass_secret -%}
-{%- set proxypilot_key = _mc.proxypilot_key -%}
-{%- set tg_secret = _mc.tg_secret -%}
 {%- set registry = _mc.registry -%}

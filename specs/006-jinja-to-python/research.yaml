@@ -1,0 +1,37 @@
+# Phase 0 Research: Jinja Macros → Python Modules
+
+decisions:
+
+  - decision: "Use Salt _modules/ and _states/ directories"
+    rationale: "Standard Salt extension points since version 0.9. Execution modules callable as salt['mod.func'](); state modules as mystate.managed."
+    alternatives:
+      - "Custom Jinja filter extensions — more limited API surface"
+      - "External CLI tools — adds subprocess overhead"
+
+  - decision: "Custom state modules emit Salt state dicts using __states__ dictionary"
+    rationale: "Salt 3006.x exposes __states__['file.managed'](...), __states__['cmd.run'](...) etc. within custom state modules. Allows container_service() to emit 6-8 chained states from a single Python function."
+    alternatives:
+      - "Return lowstate list — more fragile, bypasses Salt's state compiler"
+      - "Generate YAML and call state.show_sls — adds indirection"
+
+  - decision: "Inject shared variables via Jinja globals in data_loader module"
+    rationale: "Salt's Jinja loader supports env.globals.update(). A Python module loaded at Salt startup populates user, home, retry_attempts, etc. Templates access them as bare Jinja variables without import statements."
+    alternatives:
+      - "Keep _macros_common.jinja for constant declarations — works but leaves a .jinja file with imports"
+      - "Pass variables as function arguments everywhere — verbose, changes .sls syntax"
+
+  - decision: "Mock lint environment imports Python modules directly"
+    rationale: "The _MockSalt class can delegate to real Python modules since they have no Salt runtime dependency (only YAML reading). lint-jinja.py already imports host_model.py this way."
+    alternatives:
+      - "Keep separate mock implementations — doubles maintenance"
+
+  - decision: "Version-stamp and download_cache paths remain Jinja variables"
+    rationale: "These are file path constants derived from host.home. They're set once per render and used inline in shell commands. Moving to Python would require function calls for every path concatenation, making templates less readable."
+    alternatives:
+      - "Move to Python global lookup — adds function call overhead for trivial path concatenation"
+
+  - decision: "import_yaml stays in .sls files but can be replaced by data_loader"
+    rationale: "{% import_yaml %} is a Salt built-in, not a user macro. data_loader can pre-populate all YAML data into Jinja globals, making import_yaml unnecessary. .sls files that currently do {% import_yaml 'data/X.yaml' as X %} can access X as a bare variable."
+    alternatives:
+      - "Keep import_yaml — simplest, but keeps Salt Jinja-specific syntax"
+      - "Use salt['data.load']() instead — changes .sls syntax significantly"

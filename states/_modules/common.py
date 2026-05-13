@@ -31,11 +31,7 @@ STATES_DIR = _find_states_dir()
 HOSTS_YAML = STATES_DIR / "data" / "hosts.yaml"
 FEATURE_REGISTRY_YAML = STATES_DIR / "data" / "feature_registry.yaml"
 
-# ── Hard-coded defaults (matching _macros_common.jinja) ─────────────
-RETRY_ATTEMPTS = 3
-RETRY_INTERVAL = 10
-HEALTHCHECK_TIMEOUT = 30
-OLLAMA_PULL_TIMEOUT = 14400
+
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -48,6 +44,15 @@ def _load_yaml(path: Path) -> dict[str, Any]:
         return data if isinstance(data, dict) else {}
     except (yaml.YAMLError, OSError):
         return {}
+
+
+# ── Data-driven defaults from system.yaml ─────────────────────────
+_SYSTEM = _load_yaml(STATES_DIR / "data" / "system.yaml")
+_TIMEOUTS = _SYSTEM.get("timeouts", {})
+RETRY_ATTEMPTS = _TIMEOUTS.get("retry_attempts", 3)
+RETRY_INTERVAL = _TIMEOUTS.get("retry_interval", 10)
+HEALTHCHECK_TIMEOUT = _TIMEOUTS.get("healthcheck_timeout", 30)
+OLLAMA_PULL_TIMEOUT = _TIMEOUTS.get("ollama_pull_timeout", 14400)
 
 
 def _build_host(hosts_data: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -71,6 +76,20 @@ def _build_host(hosts_data: dict[str, Any] | None = None) -> dict[str, Any]:
     host.setdefault("uid", uid)
     host["runtime_dir"] = f"/run/user/{host['uid']}"
     host["pkg_list"] = "/var/cache/salt/pacman_installed.txt"
+    host["ver_dir"] = f"{home}/.cache/salt-versions"
+    host["sys_ver_dir"] = "/var/cache/salt/versions"
+    host["download_cache"] = "/var/cache/salt/downloads"
+    host["gopass_dir"] = f"{home}/.local/share/pass"
+    host["gnupg_dir"] = f"{home}/.local/share/gnupg"
+    host["systemd_unit_dir"] = "/etc/systemd/system/"
+    host["systemd_user_unit_dir"] = f"{home}/.config/systemd/user/"
+    host["quadlet_system_dir"] = "/etc/containers/systemd/"
+    host["quadlet_user_dir"] = f"{home}/.config/containers/systemd/"
+    host["nftables_dir"] = "/etc/nftables/"
+    host["sysctl_dir"] = "/etc/sysctl.d/"
+    host["logrotate_dir"] = "/etc/logrotate.d/"
+    host["stamp_dir"] = "/var/cache/salt/"
+    host["mkinitcpio_dir"] = "/etc/mkinitcpio.d/"
 
     return host
 

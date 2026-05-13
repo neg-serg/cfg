@@ -3,7 +3,7 @@
 # SystemD managed resources — identity guards and path protections
 # =============================================================================
 {% import_yaml 'data/managed_resources.yaml' as managed %}
-{% from '_macros_service.jinja' import config_and_reload, managed_identity_guard, managed_path_guard %}
+{% from '_macros_service.jinja' import managed_identity_guard, managed_path_guard %}
 
 {% set identities = managed.get('managed_service_identities', {}) %}
 {% set paths = managed.get('managed_service_paths', {}) %}
@@ -19,7 +19,7 @@ managed_service_accounts_dir:
     - group: root
     - mode: '0755'
 
-{{ config_and_reload('managed_service_accounts_conf', '/etc/sysusers.d/salt-managed-service-accounts.conf',
+{{ salt['service.config_and_reload']('managed_service_accounts_conf', '/etc/sysusers.d/salt-managed-service-accounts.conf',
     'systemd-sysusers /etc/sysusers.d/salt-managed-service-accounts.conf',
     source='salt://configs/managed-service-accounts.conf.j2', template='jinja',
     context={'identities': identities},
@@ -51,7 +51,7 @@ managed_service_paths_dir:
     - group: root
     - mode: '0755'
 
-{{ config_and_reload('managed_service_paths_conf', '/etc/tmpfiles.d/salt-managed-service-paths.conf',
+{{ salt['service.config_and_reload']('managed_service_paths_conf', '/etc/tmpfiles.d/salt-managed-service-paths.conf',
     'systemd-tmpfiles --create /etc/tmpfiles.d/salt-managed-service-paths.conf',
     source='salt://configs/managed-service-paths.conf.j2', template='jinja',
     context={'paths': paths},

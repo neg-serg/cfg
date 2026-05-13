@@ -8,21 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-try:
-    import yaml as _yaml
-except ImportError:
-    _yaml = None  # type: ignore[assignment]
-
-
-def _to_yaml(obj: Any) -> str:
-    """Convert Python dict to YAML string for inline injection in templates."""
-    if _yaml is None:
-        return str(obj)
-    # Salt state YAML output — no document start marker, no flow style
-    raw = _yaml.dump(obj, default_flow_style=False, allow_unicode=True)
-    if raw.endswith("\n...\n"):
-        raw = raw[:-4]
-    return raw
+from _yaml_out import yaml_output, to_yaml as _to_yaml
 
 
 def _host() -> dict[str, Any]:
@@ -51,6 +37,72 @@ DEFAULT_RETRY_ATTEMPTS = 3
 DEFAULT_RETRY_INTERVAL = 10
 
 
+@yaml_output
+def udev_rule(name: str, path: str, source: str | None = None,
+              contents: str | None = None) -> dict[str, Any]:
+    """Deploy udev rule file + reload rules on change."""
+    fargs: list[dict[str, Any]] = [
+        {"name": path}, {"mode": "0644"},
+    ]
+    if contents is not None:
+        fargs.append({"contents": contents})
+    elif source:
+        fargs.append({"source": source})
+    return {
+        name: {"file.managed": fargs},
+        f"{name}_reload": {
+            "cmd.run": [
+                {"name": "udevadm control --reload-rules && udevadm trigger"},
+                {"onlyif": "command -v udevadm >/dev/null 2>&1"},
+                {"onchanges": [{"file": name}]},
+            ]
+        },
+    }
+
+
+@yaml_output
+def config_and_reload(name: str, config_path: str, reload_cmd: str,
+                      source: str | None = None,
+                      contents: str | None = None,
+                      mode: str = "0644",
+                      template: str | None = None,
+                      context: dict[str, Any] | None = None,
+                      makedirs: bool = False,
+                      require: list[str] | None = None,
+                      onlyif: str | None = None) -> dict[str, Any]:
+    """Deploy config file + reload/restart companion."""
+    fargs: list[dict[str, Any]] = [
+        {"name": config_path}, {"mode": mode},
+    ]
+    if source:
+        fargs.append({"source": source})
+    elif contents is not None:
+        fargs.append({"contents": contents})
+    if template:
+        fargs.append({"template": template})
+    if context:
+        fargs.append({"context": [context]})
+    if makedirs:
+        fargs.append({"makedirs": True})
+    if require:
+        fargs.append({"require": [r for r in require]})
+
+    ret: dict[str, Any] = {
+        name: {"file.managed": fargs},
+        f"{name}_reload": {
+            "cmd.run": [
+                {"name": reload_cmd},
+                {"onchanges": [{"file": name}]},
+            ]
+        },
+    }
+    rargs: list[dict[str, Any]] = list(ret[f"{name}_reload"]["cmd.run"])
+    if onlyif:
+        rargs.append({"onlyif": onlyif})
+    ret[f"{name}_reload"]["cmd.run"] = rargs
+    return ret
+
+
 def managed_resource_value(value: str) -> str:
     if value == "__CURRENT_USER__":
         return _host()["user"]
@@ -61,6 +113,7 @@ def env_block() -> str:
     return _render_env_block()
 
 
+@yaml_output
 def ensure_dir(name: str, path: str, mode: str | None = None,
                require: list[str] | None = None,
                user: str | None = None) -> str:
@@ -80,14 +133,17 @@ def ensure_dir(name: str, path: str, mode: str | None = None,
     return _to_yaml(obj)
 
 
+@yaml_output
 def remove_native_unit(name: str, unit_path: str | None = None,
                        scope: str = "system") -> dict[str, Any]:
     home = _host().get("home", "/root")
     if unit_path is None:
         if scope == "user":
-            unit_path = f"{home}/.config/systemd/user/{name}.service"
+            _user_dir = _host().get("systemd_user_unit_dir", f"{home}/.config/systemd/user/")
+            unit_path = f"{_user_dir}{name}.service"
         else:
-            unit_path = f"/etc/systemd/system/{name}.service"
+            _sys_dir = _host().get("systemd_unit_dir", "/etc/systemd/system/")
+            unit_path = f"{_sys_dir}{name}.service"
 
     daemon_reload_onlyif = (
         "systemctl --user show-environment >/dev/null 2>&1"
@@ -118,6 +174,7 @@ def remove_native_unit(name: str, unit_path: str | None = None,
     }
 
 
+@yaml_output
 def remove_native_package(name: str, pkgs: list[str]) -> dict[str, Any]:
     return {
         f"{name}_native_package_removed": {
@@ -126,6 +183,7 @@ def remove_native_package(name: str, pkgs: list[str]) -> dict[str, Any]:
     }
 
 
+@yaml_output
 def ensure_running(name: str, service: str | None = None,
                    watch: list[str] | None = None) -> dict[str, Any]:
     svc = service or name
@@ -150,6 +208,7 @@ def ensure_running(name: str, service: str | None = None,
     }
 
 
+@yaml_output
 def service_stopped(name: str, svc: str, stop: bool = True,
                     requires: list[str] | None = None,
                     onlyif: str | None = None) -> dict[str, Any]:
@@ -168,6 +227,7 @@ def service_stopped(name: str, svc: str, stop: bool = True,
     return {name: base}
 
 
+@yaml_output
 def service_with_healthcheck(name: str, service: str,
                               check_cmd: str | None = None,
                               timeout: int = 30,
@@ -230,13 +290,14 @@ def service_with_healthcheck(name: str, service: str,
     return ret
 
 
+@yaml_output
 def unit_override(name: str, service: str, source: str,
                   filename: str = "override.conf",
                   requires: list[str] | None = None) -> dict[str, Any]:
     ret: dict[str, Any] = {
         name: {
             "file.managed": [
-                {"name": f"/etc/systemd/system/{service}.d/{filename}"},
+                {"name": f"{_host().get('systemd_unit_dir', '/etc/systemd/system/')}{service}.d/{filename}"},
                 {"source": source},
                 {"makedirs": True},
                 {"mode": "0644"},
@@ -254,6 +315,7 @@ def unit_override(name: str, service: str, source: str,
     return ret
 
 
+@yaml_output
 def service_with_unit(name: str, source: str, unit_type: str = "service",
                       running: bool = False, enabled: bool = True,
                       requires: list[str] | None = None,
@@ -266,10 +328,11 @@ def service_with_unit(name: str, source: str, unit_type: str = "service",
     ret: dict[str, Any] = {}
 
     # Unit file
+    _sysd_dir = _host().get("systemd_unit_dir", "/etc/systemd/system/")
     fargs: dict[str, Any] = {
         f"{name}_service": {
             "file.managed": [
-                {"name": f"/etc/systemd/system/{name}.{unit_type}"},
+                {"name": f"{_sysd_dir}{name}.{unit_type}"},
                 {"mode": "0644"},
                 {"source": source},
             ]
@@ -289,7 +352,7 @@ def service_with_unit(name: str, source: str, unit_type: str = "service",
         comp_type = "service" if unit_type != "service" else "timer"
         ret[f"{name}_companion"] = {
             "file.managed": [
-                {"name": f"/etc/systemd/system/{name}.{comp_type}"},
+                {"name": f"{_sysd_dir}{name}.{comp_type}"},
                 {"mode": "0644"},
                 {"source": companion},
             ]
@@ -344,6 +407,7 @@ def service_with_unit(name: str, source: str, unit_type: str = "service",
     return ret
 
 
+@yaml_output
 def render_service(name: str, opts: dict[str, Any], feature_flag: bool,
                    section_label: str, known_vars: dict[str, Any]) -> dict[str, Any]:
     """Data-driven service renderer — replaces render_service() macro."""

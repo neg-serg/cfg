@@ -13,12 +13,11 @@ def test_system_description_feature_gates_zapret2():
 def test_zapret2_state_manages_package_config_unit_and_helper():
     source = (REPO_ROOT / "states" / "zapret2.sls").read_text()
 
-    assert "zapret2_install_pkg:" in source
-    assert "zapret2_install_ipset:" in source
-    assert "pacman -S --noconfirm --needed ipset" in source
+    assert "paru_install('zapret2'" in source
+    assert "paru_install('ipset'" in source
+    assert "salt://configs/zapret2.conf.j2" in source
     assert "zapret2_refresh_lists:" in source
     assert "zapret2-list-update.timer" in source
-    assert "salt://configs/zapret2.conf.j2" in source
     assert "salt://configs/zapret2-hosts-user.txt.j2" in source
     assert "salt://units/zapret2.service.j2" in source
     assert "salt://scripts/zapret2-rollout.sh" in source

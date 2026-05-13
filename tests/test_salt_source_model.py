@@ -115,11 +115,11 @@ def test_enrich_source_metadata_ignores_comment_only_feature_mentions():
     salt_source_model = _load_salt_source_model()
 
     record = salt_source_model.StateFileRecord(
-        relpath="states/opencode.sls",
-        state_name="opencode",
+        relpath="states/proxypilot.sls",
+        state_name="proxypilot",
         top_level_entrypoint=True,
         workflow_apply_target=True,
-        source_text=(REPO_ROOT_PATH / "states" / "opencode.sls").read_text(),
+        source_text=(REPO_ROOT_PATH / "states" / "proxypilot.sls").read_text(),
     )
 
     enriched = salt_source_model.enrich_source_metadata(record)

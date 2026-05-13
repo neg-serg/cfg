@@ -248,24 +248,46 @@ def write_audit_log(report: dict) -> Path:
 
 def print_diff(diff: list[dict]) -> None:
     if not diff:
-        print("All inventoried data files were consumed.")
+        try:
+            from lib.pretty import pretty
+            pretty.ok("All inventoried data files were consumed.")
+        except ImportError:
+            print("All inventoried data files were consumed.")
         return
+
     gated = [d for d in diff if d["reason"].startswith("feature_gated")]
     orphaned = [d for d in diff if d["reason"] == "truly_orphaned"]
     other = [d for d in diff if d not in gated and d not in orphaned]
 
+    try:
+        from lib.pretty import pretty
+    except ImportError:
+        pretty = None
+
     if gated:
-        print("\n  Feature-gated (not consumed because feature is disabled):")
-        for d in gated:
-            print(f"    - {d['data_file']:30s} {d['reason']}")
+        if pretty:
+            pretty.warn(f"Feature-gated: {len(gated)} files")
+            pretty.list_items([f"{d['data_file']:<30s} {d['reason']}" for d in gated], "dash")
+        else:
+            print("\n  Feature-gated (not consumed because feature is disabled):")
+            for d in gated:
+                print(f"    - {d['data_file']:30s} {d['reason']}")
     if orphaned:
-        print("\n  Truly orphaned (no known consumer):")
-        for d in orphaned:
-            print(f"    - {d['data_file']}")
+        if pretty:
+            pretty.warn(f"Truly orphaned: {len(orphaned)} files")
+            pretty.list_items([d['data_file'] for d in orphaned], "dash")
+        else:
+            print("\n  Truly orphaned (no known consumer):")
+            for d in orphaned:
+                print(f"    - {d['data_file']}")
     if other:
-        print("\n  Other:")
-        for d in other:
-            print(f"    - {d['data_file']:30s} {d['reason']}")
+        if pretty:
+            pretty.info(f"Other unused: {len(other)} files")
+            pretty.list_items([f"{d['data_file']:<30s} {d['reason']}" for d in other], "dash")
+        else:
+            print("\n  Other:")
+            for d in other:
+                print(f"    - {d['data_file']:30s} {d['reason']}")
 
 
 def main() -> int:
@@ -280,10 +302,18 @@ def main() -> int:
             with open(args.diff) as fh:
                 report = yaml.safe_load(fh.read())
         except FileNotFoundError:
-            print(f"Audit log not found: {args.diff}", file=sys.stderr)
+            try:
+                from lib.pretty import pretty as _p
+                _p.fail(f"Audit log not found: {args.diff}")
+            except ImportError:
+                print(f"Audit log not found: {args.diff}", file=sys.stderr)
             return 1
         except yaml.YAMLError as e:
-            print(f"Audit log YAML error: {e}", file=sys.stderr)
+            try:
+                from lib.pretty import pretty as _p
+                _p.fail(f"Audit log YAML error: {e}")
+            except ImportError:
+                print(f"Audit log YAML error: {e}", file=sys.stderr)
             return 1
 
         diff = compute_unused_diff(report)
@@ -323,12 +353,26 @@ def main() -> int:
 
 
 def _print_report_header(report: dict) -> None:
-    print("=== Salt Data Audit ===")
-    print(f"Target: {report.get('salt_target')}  "
-          f"Host: {report.get('hostname')}  "
-          f"Test: {report.get('test_mode')}  "
-          f"Duration: {report.get('duration_seconds', 0)}s")
-    print(f"Consumed: {report.get('consumed_count')}/{report.get('total_data_files')} data files")
+    try:
+        from lib.pretty import pretty
+        pretty.section("Salt Data Audit")
+        pretty.key_value({
+            "Target": str(report.get("salt_target", "")),
+            "Host": str(report.get("hostname", "")),
+            "Test mode": str(report.get("test_mode", "")),
+            "Duration": pretty.elapsed(report.get("duration_seconds", 0)),
+            "Consumed": (
+                f"{report.get('consumed_count', 0)}/"
+                f"{report.get('total_data_files', 0)} data files"
+            ),
+        })
+    except ImportError:
+        print("=== Salt Data Audit ===")
+        print(f"Target: {report.get('salt_target')}  "
+              f"Host: {report.get('hostname')}  "
+              f"Test: {report.get('test_mode')}  "
+              f"Duration: {report.get('duration_seconds', 0)}s")
+        print(f"Consumed: {report.get('consumed_count')}/{report.get('total_data_files')} data files")
 
 
 if __name__ == "__main__":

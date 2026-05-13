@@ -176,28 +176,63 @@ def main(argv=None):
     sls_files = _select_render_state_files()
     state_metadata = {record.relpath: record for record in _discover_render_state_records()}
     overall_errors = 0
+    total_scenarios = len(matrix)
+    scenario_n = 0
+
+    try:
+        from lib.pretty import pretty
+        pretty.header("Render Matrix")
+    except ImportError:
+        pass
 
     for entry in matrix:
+        scenario_n += 1
         name = entry.get("name")
         description = entry.get("description", "")
         env = _make_render_env()
         errors = render_for_scenario(env, name, sls_files)
-        if errors:
-            overall_errors += len(errors)
-            print(f"\n[FAIL] {name}: {len(errors)} template error(s)")
-            if description:
-                print(f"       {description}")
-            for path, exc in errors:
-                print(f"    - {path}: {exc}")
-                if path in state_metadata:
-                    _write_render_failure_bundle(state_metadata[path], name, exc)
-        else:
-            desc = f" – {description}" if description else ""
-            print(f"[OK] {name}{desc}")
+        try:
+            from lib.pretty import pretty as _p
+            _p.phase(name, n=scenario_n, total=total_scenarios)
+            if errors:
+                overall_errors += len(errors)
+                _p.fail(f"{len(errors)} template error(s)")
+                if description:
+                    _p.info(description)
+                for path, exc in errors:
+                    _p.fail(f"  {path}: {exc}")
+                    if path in state_metadata:
+                        _write_render_failure_bundle(state_metadata[path], name, exc)
+            else:
+                desc = f"  {description}" if description else ""
+                _p.ok(f"{len(sls_files)} states" + desc)
+        except ImportError:
+            if errors:
+                overall_errors += len(errors)
+                print(f"\n[FAIL] {name}: {len(errors)} template error(s)")
+                if description:
+                    print(f"       {description}")
+                for path, exc in errors:
+                    print(f"    - {path}: {exc}")
+                    if path in state_metadata:
+                        _write_render_failure_bundle(state_metadata[path], name, exc)
+            else:
+                desc = f" – {description}" if description else ""
+                print(f"[OK] {name}{desc}")
 
     if overall_errors:
+        try:
+            from lib.pretty import pretty as _p2
+            _p2.summary_line(total_scenarios - overall_errors, overall_errors, "Scenarios")
+        except ImportError:
+            pass
         return 1
 
+    try:
+        from lib.pretty import pretty as _p3
+        _p3.ok(f"All {total_scenarios} scenarios render without errors")
+    except ImportError:
+        pass
     return 0
 
 

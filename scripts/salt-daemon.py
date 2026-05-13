@@ -241,7 +241,7 @@ def _summarize_stream(text: str, keep: int = 2) -> list[str]:
     return [*lines[:keep], f"... {omitted} lines omitted ...", *lines[-keep:]]
 
 
-def _format_change_block(changes: dict) -> list[str]:
+def _format_change_block(changes: dict, colorize: bool = True) -> list[str]:
     lines: list[str] = []
     for key, value in changes.items():
         if key in {"stdout", "stderr"} and isinstance(value, str):
@@ -252,11 +252,18 @@ def _format_change_block(changes: dict) -> list[str]:
             for entry in summarized:
                 lines.append(f"                  {entry}")
             continue
-        lines.append(f"              {key}: {value}")
+        if colorize:
+            try:
+                from lib.pretty import pretty as _p
+                lines.append(f"              {key}: {_p.bold(str(value))}")
+            except ImportError:
+                lines.append(f"              {key}: {value}")
+        else:
+            lines.append(f"              {key}: {value}")
     return lines
 
 
-def _format_compact_highstate(result: dict) -> str:
+def _format_compact_highstate(result: dict, colorize: bool = True) -> str:
     ordered = sorted(
         (entry for entry in result.values() if isinstance(entry, dict)),
         key=lambda item: item.get("__run_num__", 0),
@@ -276,33 +283,50 @@ def _format_compact_highstate(result: dict) -> str:
         if entry.get("changes"):
             changed.append(entry)
 
+    if colorize:
+        try:
+            from lib.pretty import pretty as _p
+        except ImportError:
+            colorize = False
+
     lines = ["local:", ""]
     for entry in [*changed, *failed]:
-        lines.extend(
-            [
-                "----------",
-                f"      ID: {entry.get('__id__', entry.get('name', 'unknown'))}",
-                f"Function: {entry.get('fun', 'unknown')}",
-                f"    Name: {entry.get('name', '')}",
-                f"  Result: {entry.get('result')}",
-                f" Comment: {entry.get('comment', '')}",
-            ]
-        )
+        is_fail = entry.get("result") is False
+        badge = _p.status_badge("FAIL") if (colorize and is_fail) else ""
+        entry_color = _p.dim if (colorize and not is_fail) else (lambda s: s)
+
+        lines.append(entry_color("----------"))
+        lines.append(f"      ID: {entry.get('__id__', entry.get('name', 'unknown'))}{' ' + badge if badge else ''}")
+        lines.append(f"Function: {entry.get('fun', 'unknown')}")
+        lines.append(f"    Name: {entry.get('name', '')}")
+        lines.append(f"  Result: {entry.get('result')}")
+        lines.append(f" Comment: {entry.get('comment', '')}")
         duration = entry.get("duration")
         if duration is not None:
-            lines.append(f"Duration: {duration} ms")
+            dur_str = f"Duration: {duration} ms"
+            lines.append(dur_str if not colorize else _p.dim(dur_str))
         if entry.get("changes"):
             lines.append("     Changes:")
-            lines.append("              ----------")
-            lines.extend(_format_change_block(entry["changes"]))
+            lines.append(entry_color("              ----------"))
+            lines.extend(_format_change_block(entry["changes"], colorize))
+
+    summary_label = "Summary for local"
+    if colorize:
+        summary_label = _p.bold(summary_label)
+
+    succeeded_line = f"Succeeded: {success_count}"
+    if changed:
+        succeeded_line += f" (changed={len(changed)})"
+        if colorize:
+            succeeded_line = _p.bold(succeeded_line)
 
     lines.extend(
         [
             "",
-            "Summary for local",
+            summary_label,
             "--------------",
-            f"Succeeded: {success_count}" + (f" (changed={len(changed)})" if changed else ""),
-            f"Failed:      {failed_count}",
+            succeeded_line,
+            f"Failed:      {failed_count}" + (f" {_p.status_badge('FAIL')}" if colorize and failed_count else ""),
             "--------------",
             f"Total states run:     {len(ordered)}",
         ]
@@ -416,7 +440,7 @@ def run_state(
             exit_code = 1
 
         if isinstance(result, dict):
-            formatted_output = _format_compact_highstate(result)
+            formatted_output = _format_compact_highstate(result, colorize=True)
         else:
             # Capture display_output (which writes to sys.stdout)
             captured = io.StringIO()

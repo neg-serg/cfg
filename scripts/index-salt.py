@@ -795,6 +795,13 @@ def _purpose_from_first_heading(path):
     return ""
 
 
+def _log(pretty, msg: str) -> None:
+    if pretty:
+        pretty.info(msg)
+    else:
+        print(msg)
+
+
 def main():
     if not os.path.isdir(STATES_DIR):
         print(f"Error: {STATES_DIR} not found. Run from project root.", file=sys.stderr)
@@ -803,6 +810,14 @@ def main():
     os.makedirs(MEMORY_DIR, exist_ok=True)
     os.makedirs(DOCS_DIR, exist_ok=True)
 
+    try:
+        from lib.pretty import pretty
+    except ImportError:
+        pretty = None
+
+    if pretty:
+        pretty.section("Indexing Salt States")
+
     # 1. Macros
     jinja_files = sorted(glob.glob(os.path.join(STATES_DIR, "_macros_*.jinja")))
     macros = parse_macros(jinja_files)
@@ -810,7 +825,7 @@ def main():
     macros_path = os.path.join(MEMORY_DIR, "salt-macros.md")
     with open(macros_path, "w") as f:
         f.write(macros_md)
-    print(f"Wrote {macros_path} ({len(macros)} macros, {macros_md.count(chr(10))} lines)")
+    _log(pretty, f"Wrote {macros_path} ({len(macros)} macros, {macros_md.count(chr(10))} lines)")
 
     # 2. States
     sls_files = [record.relpath for record in discover_state_files(STATES_DIR)]
@@ -821,7 +836,10 @@ def main():
     with open(states_path, "w") as f:
         f.write(states_md)
     n_lines = states_md.count(chr(10))
-    print(f"Wrote {states_path} ({len(sls_files)} files, {rendered_ok} rendered, {n_lines} lines)")
+    _log(
+        pretty,
+        f"Wrote {states_path} ({len(sls_files)} files, {rendered_ok} rendered, {n_lines} lines)",
+    )
 
     # 3. Data files
     summaries = summarize_data_files()
@@ -829,7 +847,7 @@ def main():
     data_path = os.path.join(MEMORY_DIR, "salt-data.md")
     with open(data_path, "w") as f:
         f.write(data_md)
-    print(f"Wrote {data_path} ({len(summaries)} files, {data_md.count(chr(10))} lines)")
+    _log(pretty, f"Wrote {data_path} ({len(summaries)} files, {data_md.count(chr(10))} lines)")
 
     usage = collect_data_usage()
     macro_usage = collect_macro_data_usage()
@@ -840,7 +858,7 @@ def main():
     inventory_path = os.path.join(DOCS_DIR, "data-inventory.md")
     with open(inventory_path, "w") as f:
         f.write(eng_inventory)
-    print(f"Wrote {inventory_path}")
+    _log(pretty, f"Wrote {inventory_path}")
 
     # 4. State dependency map docs
     graph, reverse, guards_map = build_state_graph(state_results)
@@ -848,14 +866,14 @@ def main():
     eng_path = os.path.join(DOCS_DIR, "state-map.md")
     with open(eng_path, "w") as f:
         f.write(eng_map)
-    print(f"Wrote {eng_path}")
+    _log(pretty, f"Wrote {eng_path}")
 
     # 5. Module index (LLM-oriented YAML)
     module_index_yaml = generate_module_index(state_results, macros, summaries, usage)
     module_index_path = os.path.join(DOCS_DIR, "module-index.yaml")
     with open(module_index_path, "w") as f:
         f.write(module_index_yaml)
-    print(f"Wrote {module_index_path}")
+    _log(pretty, f"Wrote {module_index_path}")
 
     write_knowledge_base(macros, state_results, summaries)
 
@@ -866,11 +884,26 @@ def main():
         if issues:
             errs = sum(1 for sev, _ in issues if sev == "error")
             warns = sum(1 for sev, _ in issues if sev == "warn")
-            print(f"\nknowledge.yaml validation: {errs} errors, {warns} warnings")
-            for severity, msg in issues:
-                print(f"  [{severity.upper()}] {msg}")
+            msg = f"knowledge.yaml validation: {errs} errors, {warns} warnings"
+            if pretty:
+                if errs:
+                    pretty.fail(msg)
+                else:
+                    pretty.warn(msg)
+                for severity, msg_line in issues:
+                    if severity == "error":
+                        pretty.fail(f"  {msg_line}")
+                    else:
+                        pretty.warn(f"  {msg_line}")
+            else:
+                print(f"\n{msg}")
+                for severity, msg_line in issues:
+                    print(f"  [{severity.upper()}] {msg_line}")
         else:
-            print("knowledge.yaml validation: all references OK")
+            if pretty:
+                pretty.ok("knowledge.yaml validation: all references OK")
+            else:
+                print("knowledge.yaml validation: all references OK")
 
 if __name__ == "__main__":
     main()

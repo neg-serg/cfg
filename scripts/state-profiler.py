@@ -180,14 +180,34 @@ def run_trend(json_mode: bool) -> None:
     cols = [f"{'state_id':<60s}", f"{'count':>5s}", f"{'min_ms':>10s}"]
     cols += [f"{'avg_ms':>10s}", f"{'max_ms':>10s}", f"{'latest_ms':>10s}"]
     hdr = " ".join(cols)
-    print(f"Trend across {len(log_files)} log file(s):")
-    print(hdr)
-    print("-" * len(hdr))
-    for r in rows:
-        print(
-            f"{r['state_id']:<60s} {r['count']:>5d} {r['min_ms']:>10.2f} "
-            f"{r['avg_ms']:>10.2f} {r['max_ms']:>10.2f} {r['latest_ms']:>10.2f}"
+    try:
+        from lib.pretty import pretty
+        pretty.section(f"Trend across {len(log_files)} log file(s)")
+        tbl_rows = [
+            [
+                r["state_id"],
+                str(r["count"]),
+                f"{r['min_ms']:.2f}",
+                f"{r['avg_ms']:.2f}",
+                f"{r['max_ms']:.2f}",
+                f"{r['latest_ms']:.2f}",
+            ]
+            for r in rows
+        ]
+        pretty.table(
+            ["State ID", "Count", "Min (ms)", "Avg (ms)", "Max (ms)", "Latest (ms)"],
+            tbl_rows,
+            aligns=["<", ">", ">", ">", ">", ">"],
         )
+    except ImportError:
+        print(f"Trend across {len(log_files)} log file(s):")
+        print(hdr)
+        print("-" * len(hdr))
+        for r in rows:
+            print(
+                f"{r['state_id']:<60s} {r['count']:>5d} {r['min_ms']:>10.2f} "
+                f"{r['avg_ms']:>10.2f} {r['max_ms']:>10.2f} {r['latest_ms']:>10.2f}"
+            )
 
 
 def build_compare_rows(
@@ -273,32 +293,73 @@ def run_compare(
         print()
         return {"PASS": 0, "FAIL": 1, "INCONCLUSIVE": 2}[status] if gate else 0
 
-    hdr = f"{'state_id':<60s} {'log1_ms':>10s} {'log2_ms':>10s} {'delta_ms':>10s} {'change%':>8s}  "
-    print(f"Comparison: {log1} vs {log2}")
-    print(hdr)
-    print("-" * len(hdr))
-    for r in rows:
-        marker = "\u26a0" if r["regression"] else " "
-        print(
-            f"{r['state_id']:<60s} {r['log1_ms']:>10.2f} {r['log2_ms']:>10.2f} "
-            f"{r['delta_ms']:>10.2f} {r['change_pct']:>7.1f}% {marker}"
+    try:
+        from lib.pretty import pretty
+        pretty.section(f"Comparison: {log1.name} vs {log2.name}")
+        params = {
+            "Baseline": str(log1.name),
+            "Candidate": str(log2.name),
+            "Threshold": f"{max_regression_pct:.1f}%",
+            "Samples": str(len(rows)),
+        }
+        pretty.key_value(params)
+        tbl_rows = []
+        for r in rows:
+            marker = pretty.status_badge("WARN") if r["regression"] else " "
+            tbl_rows.append([
+                r["state_id"],
+                f"{r['log1_ms']:.2f}",
+                f"{r['log2_ms']:.2f}",
+                f"{r['delta_ms']:+.2f}",
+                f"{r['change_pct']:+.1f}% {marker}",
+            ])
+        pretty.table(
+            ["State ID", "Baseline (ms)", "Candidate (ms)", "Delta (ms)", "Change"],
+            tbl_rows,
+            aligns=["<", ">", ">", ">", "<"],
         )
+    except ImportError:
+        hdr = f"{'state_id':<60s} {'log1_ms':>10s} {'log2_ms':>10s} {'delta_ms':>10s} {'change%':>8s}  "
+        print(f"Comparison: {log1} vs {log2}")
+        print(hdr)
+        print("-" * len(hdr))
+        for r in rows:
+            marker = "\u26a0" if r["regression"] else " "
+            print(
+                f"{r['state_id']:<60s} {r['log1_ms']:>10.2f} {r['log2_ms']:>10.2f} "
+                f"{r['delta_ms']:>10.2f} {r['change_pct']:>7.1f}% {marker}"
+            )
     if gate:
         print()
-        print(
-            f"Gate status: {status} "
-            f"(threshold: {max_regression_pct:.1f}%, sample_count: {len(rows)}, "
-            f"min_sample_count: {min_sample_count})"
-        )
-        if regressions:
-            print("Top regressions:")
-            for row in regressions[:10]:
-                print(
-                    f"  {row['state_id']}: {row['log1_ms']:.2f} ms -> {row['log2_ms']:.2f} ms "
-                    f"({row['change_pct']:.1f}%)"
-                )
-        elif status == "INCONCLUSIVE":
-            print("Comparison is inconclusive: insufficient common states for a stable verdict.")
+        try:
+            from lib.pretty import pretty as _p2
+            badge = _p2.status_badge(status)
+            _p2.info(f"Gate status: {badge} (threshold: {max_regression_pct:.1f}%, "
+                      f"sample_count: {len(rows)}, min_sample_count: {min_sample_count})")
+            if regressions:
+                _p2.warn("Top regressions:")
+                for row in regressions[:10]:
+                    _p2.fail(
+                        f"  {row['state_id']}: {row['log1_ms']:.2f} ms -> "
+                        f"{row['log2_ms']:.2f} ms ({row['change_pct']:.1f}%)"
+                    )
+            elif status == "INCONCLUSIVE":
+                _p2.warn("Comparison is inconclusive: insufficient common states for a stable verdict.")
+        except ImportError:
+            print(
+                f"Gate status: {status} "
+                f"(threshold: {max_regression_pct:.1f}%, sample_count: {len(rows)}, "
+                f"min_sample_count: {min_sample_count})"
+            )
+            if regressions:
+                print("Top regressions:")
+                for row in regressions[:10]:
+                    print(
+                        f"  {row['state_id']}: {row['log1_ms']:.2f} ms -> {row['log2_ms']:.2f} ms "
+                        f"({row['change_pct']:.1f}%)"
+                    )
+            elif status == "INCONCLUSIVE":
+                print("Comparison is inconclusive: insufficient common states for a stable verdict.")
         return {"PASS": 0, "FAIL": 1, "INCONCLUSIVE": 2}[status]
     return 0
 
@@ -395,12 +456,28 @@ def main() -> None:
         print()
         return
 
-    print(f"Top {len(top)} slowest states in {args.log}:")
-    for duration, state_id in top:
-        context, _, _ = format_context(
-            state_id, state_files, include_paths, text_map, file_contents
+    try:
+        from lib.pretty import pretty
+        pretty.section(f"Top {len(top)} slowest states in {args.log}")
+        tbl_rows = [
+            [f"{duration:.2f} ms", context]
+            for duration, state_id in top
+            for context, _, _ in [format_context(
+                state_id, state_files, include_paths, text_map, file_contents
+            )]
+        ]
+        pretty.table(
+            ["Duration", "State chain"],
+            tbl_rows,
+            aligns=[">", "<"],
         )
-        print(f"  {duration:8.2f} ms  {context}")
+    except ImportError:
+        print(f"Top {len(top)} slowest states in {args.log}:")
+        for duration, state_id in top:
+            context, _, _ = format_context(
+                state_id, state_files, include_paths, text_map, file_contents
+            )
+            print(f"  {duration:8.2f} ms  {context}")
 
 
 if __name__ == "__main__":

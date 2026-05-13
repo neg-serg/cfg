@@ -1,7 +1,7 @@
 {# Service-related macros: render_service, remove_native_unit, remove_native_package, env_block, ensure_dir, udev_rule, ensure_running, service_stopped, service_with_healthcheck, unit_override, service_with_unit, managed_sysusers_line, managed_tmpfiles_line, managed_identity_guard, managed_path_guard
    User-scoped macros moved to _macros_service_user.jinja #}
 
-{% from '_macros_common.jinja' import user as _user, home as _home, healthcheck_timeout as _healthcheck_timeout, host, retry_attempts as _retry_attempts, retry_interval as _retry_interval %}
+{% from '_macros_common.jinja' import user as _user, home as _home, healthcheck_timeout as _healthcheck_timeout, host, retry_attempts as _retry_attempts, retry_interval as _retry_interval, tg_secret %}
 {% from '_macros_pkg.jinja' import paru_install, simple_service %}
 
 {# Shared env block for systemctl --user commands (daemon-reload, enable, restart, disable) #}
@@ -16,6 +16,14 @@
 {%- for entry in _systemctl_env %}
       - {{ entry }}
 {%- endfor %}
+{%- endmacro -%}
+
+{# Resolve monitoring Telegram credentials (token + uid).
+   Used by monitoring_alerts.sls and monitoring_alertmanager.sls.
+   Returns the two {% set %} lines for inlining. #}
+{%- macro telegram_monitoring_secrets() -%}
+{% set _telegram_token = tg_secret('api/nanoclaw-telegram', 'telegram-token') %}
+{% set _telegram_uid = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
 {%- endmacro -%}
 
 {# In-place cutover: remove a native systemd unit file and run daemon-reload.

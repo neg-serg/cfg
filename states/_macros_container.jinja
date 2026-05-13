@@ -52,12 +52,18 @@
      3. user_scope agreement with catalog_entry.scope
      4. gpu == 'amdgpu' implies scope == 'system'
 
-   Usage:
-     {{ container_service('ollama', catalog.ollama, image_registry,
-                          requires=['file: ollama_models_dir', 'mount: mount_one']) }}
-     {{ container_service('telethon_bridge', catalog.telethon_bridge, image_registry,
-                          user_scope=True,
-                          requires=['cmd: install_python_telethon']) }}
+    Usage:
+      {{ container_service('ollama', catalog.ollama, image_registry,
+                           requires=['file: ollama_models_dir', 'mount: mount_one']) }}
+      {{ container_service('telethon_bridge', catalog.telethon_bridge, image_registry,
+                           user_scope=True,
+                           requires=['cmd: install_python_telethon']) }}
+
+    Naming convention (quadlet_unit_name):
+      Services that previously had native systemd units use quadlet_unit_name
+      with '-container' suffix (e.g., 'loki-container') to avoid shadowing
+      the removed native unit.  New services use the catalog name unchanged
+      (e.g., 'ollama' → ollama.container, ollama.service).
 #}
 {%- macro _cs_fail(name, error_key, message) -%}
 container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:

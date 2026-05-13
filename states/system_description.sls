@@ -155,13 +155,18 @@ include:
 {% if host.features.get('video_ai', true) %}
   - video_ai
 {% endif %}
+{% if host.features.get('t5_summarization', true) %}
+  - t5_summarization
+{% endif %}
 {% if host.features.get('steam', true) %}
   - steam
 {% endif %}
 {% if host.features.get('xen_vr', false) %}
   - xen
 {% endif %}
+{% if host.features.get('monitoring', {}).get('loki', false) %}
   - monitoring_loki
+{% endif %}
 {% if host.features.get('monitoring', {}).get('loki', false) and host.features.get('monitoring', {}).get('alertmanager', false) %}
   - monitoring_alertmanager
 {% endif %}

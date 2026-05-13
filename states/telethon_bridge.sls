@@ -2,7 +2,7 @@
 {% from '_imports.jinja' import user, home, proxypilot_key, tg_secret %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service.jinja' import ensure_dir %}
-{% from '_macros_service_user.jinja' import user_service_file, user_service_enable %}
+{% from '_macros_service_user.jinja' import user_service_file, user_service_enable, user_service_with_unit %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/telethon_bridge.yaml' as tb %}
 {% set _tb_config_dir = home ~ '/.config/telethon-bridge' %}
@@ -73,6 +73,7 @@ telethon_bridge_react_helper:
     - group: {{ user }}
     - mode: '0755'
 
+# Multi-unit pattern: react service + path → enable via start_now='telethon-bridge-react.path'
 {{ user_service_file('telethon_bridge_react_service', 'telethon-bridge-react.service') }}
 {{ user_service_file('telethon_bridge_react_path', 'telethon-bridge-react.path') }}
 
@@ -89,14 +90,7 @@ telethon_bridge_react_helper:
     ],
 ) }}
 
-{{ user_service_file('telethon_bridge_service', 'telethon-bridge.service') }}
-
-{{ user_service_enable('telethon_bridge_enabled',
+{{ user_service_with_unit('telethon_bridge',
+    'telethon-bridge.service',
     start_now=['telethon-bridge.service'],
-    requires=[
-        'cmd: install_python_telethon',
-        'file: telethon_bridge_config',
-        'file: telethon_bridge_service',
-        'cmd: telethon_bridge_service_daemon_reload',
-    ],
-) }}
+    requires=['cmd: install_python_telethon', 'file: telethon_bridge_config']) }}

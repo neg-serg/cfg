@@ -11,7 +11,7 @@
 {%- macro user_service_file(name, filename, source=None, template=None, context=None, user=_user, home=_home) -%}
 {{ name }}:
   file.managed:
-    - name: {{ home }}/.config/systemd/user/{{ filename }}
+    - name: {{ host.systemd_user_unit_dir ~ filename }}
     - source: {{ source or ('salt://units/user/' ~ filename) }}
 {%- if template %}
     - template: {{ template }}
@@ -47,7 +47,7 @@
 {%- macro user_unit_override(name, service, source=None, contents=None, filename='override.conf', requires=None, user=_user, home=_home) -%}
 {{ name }}:
   file.managed:
-    - name: {{ home }}/.config/systemd/user/{{ service }}.d/{{ filename }}
+    - name: {{ host.systemd_user_unit_dir ~ service }}.d/{{ filename }}
     - user: {{ user }}
     - group: {{ user }}
     - mode: '0644'

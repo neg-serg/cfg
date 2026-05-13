@@ -1,27 +1,4 @@
-# Declarative systemd-managed service resources for long-lived services.
-#
-# managed_service_identities:
-#   <id>:
-#     user: required system account name
-#     group: primary group name (currently expected to match user)
-#     home: stable service-owned root path
-#     shell: login shell policy (default /usr/sbin/nologin)
-#     gecos: optional description string
-#
-# managed_service_paths:
-#   <id>:
-#     service: owning or dependent service identifier
-#     path: filesystem path to materialize
-#     type: tmpfiles type code (d, f, p, L, ...)
-#     mode: filesystem mode
-#     user: owner user (supports __CURRENT_USER__)
-#     group: owner group (supports __CURRENT_USER__)
-#     age: tmpfiles age field (default "-")
-#     argument: tmpfiles argument field (default "-")
-#
-# Tokens:
-#   __CURRENT_USER__ → current workstation user resolved from host config
-
+schema_version: 1
 managed_service_identities:
   greetd:
     user: greetd
@@ -29,77 +6,64 @@ managed_service_identities:
     home: /var/lib/greetd
     shell: /usr/sbin/nologin
     gecos: Salt managed greetd service account
-
   loki:
     user: loki
     group: loki
     home: /var/lib/loki
     shell: /usr/sbin/nologin
     gecos: Salt managed Loki service account
-
 managed_service_paths:
   loki_root:
     service: loki
     path: /var/lib/loki
     type: d
-    mode: "0755"
+    mode: '0755'
     user: loki
     group: loki
-    age: "-"
-    argument: "-"
-
-
+    age: '-'
+    argument: '-'
   loki_chunks:
     service: loki
     path: /var/lib/loki/chunks
     type: d
-    mode: "0755"
+    mode: '0755'
     user: loki
     group: loki
-    age: "-"
-    argument: "-"
-
-
+    age: '-'
+    argument: '-'
   loki_rules:
     service: loki
     path: /var/lib/loki/rules
     type: d
-    mode: "0755"
+    mode: '0755'
     user: loki
     group: loki
-    age: "-"
-    argument: "-"
-
-
+    age: '-'
+    argument: '-'
   loki_rules_temp:
     service: loki
     path: /var/lib/loki/rules-temp
     type: d
-    mode: "0755"
+    mode: '0755'
     user: loki
     group: loki
-    age: "-"
-    argument: "-"
-
-
+    age: '-'
+    argument: '-'
   greetd_root:
     service: greetd
     path: /var/lib/greetd
     type: d
-    mode: "0755"
+    mode: '0755'
     user: greetd
     group: greetd
-    age: "-"
-    argument: "-"
-
-
+    age: '-'
+    argument: '-'
   mpd_fifo:
     service: mpd
     path: /tmp/mpd.fifo
     type: p
-    mode: "0660"
+    mode: '0660'
     user: __CURRENT_USER__
     group: __CURRENT_USER__
-    age: "-"
-    argument: "-"
-
+    age: '-'
+    argument: '-'

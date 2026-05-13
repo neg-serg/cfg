@@ -1,40 +1,14 @@
-# Pinned versions for tools that don't use /latest/ URLs.
-# Centralised here so updating a tool is a one-line YAML edit.
-# Usage in .sls:  import_yaml 'data/versions.yaml' as ver
-#
-# ── Schema ────────────────────────────────────────────────────────────
-#
-# <key>: "<version>"               — version string, always quoted
-#   Key naming: matches tool name with - replaced by _ (e.g. ssh-to-age → ssh_to_age).
-#   Referenced in other data files as ${VER} in URLs — interpolated at render time.
-#
-# ─────────────────────────────────────────────────────────────────────
-
-# --- Core services ---
-
-# --- CLI tools ---
-essentia: "2.1_beta2"
-parm: "0.1.6"
-tdx: "0.12.0"
-
-# --- VPN ---
-amnezia_vpn: "4.8.14.5"
-hiddify: "2.5.7"
-
-# --- AI agents ---
-nanoclaw: "1.2.0"
-telethon: "1.42.0"
-
-# --- Desktop apps ---
-nyxt: "4.0.0"
-
-# --- Steam ---
-modern_steam: "0.2.7"
-
-# --- MPV plugins ---
-mpv_mpris: "1.2"  # source-only; built via meson in installers.sls
-uosc: "5.12.0"
-
-# --- Fonts ---
-fira_code_nerd: "3.3.0"
-oldschool_pc_fonts: "2.2"
+schema_version: 1
+essentia: 2.1_beta2
+parm: 0.1.6
+tdx: 0.12.0
+amnezia_vpn: 4.8.14.5
+hiddify: 2.5.7
+nanoclaw: 1.2.0
+telethon: 1.42.0
+nyxt: 4.0.0
+modern_steam: 0.2.7
+mpv_mpris: '1.2'
+uosc: 5.12.0
+fira_code_nerd: 3.3.0
+oldschool_pc_fonts: '2.2'

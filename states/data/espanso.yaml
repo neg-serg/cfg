@@ -1,4 +1,3 @@
-# Espanso text expander configuration.
-# Consumed by espanso.sls.
+schema_version: 1
 package: espanso-wayland
 service: espanso.service

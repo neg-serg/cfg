@@ -1,51 +1,26 @@
-# Unified service catalog — single source of truth for ports, health
-# endpoints, unit names, packages, and scope. Consumed via import_yaml by
-# _macros_service.jinja (service_with_healthcheck, container_service) and
-# individual .sls files.
-#
-# Fields (core):
-#   port:         HTTP port (optional — omit for non-HTTP services)
-#   health_path:  URL path for HTTP healthcheck (optional)
-#   health_cmd:   Custom healthcheck command (optional — overrides port+health_path)
-#   unit:         systemd unit name (required)
-#   scope:        system | user (required)
-#   packages:     pacman/AUR package name(s) (optional — omit if installed externally)
-#   manual_start: true if service should NOT be enabled at boot (optional, default false)
-#   timeout:      healthcheck timeout override in seconds (optional, default 30)
-#   health_host:  bind address override (optional, default 127.0.0.1)
-#
-# Fields (containerization):
-#   container_image:  string key into container_images.yaml (must match a
-#                     top-level map key there).
-#   gpu:              none (default) | amdgpu (/dev/kfd + /dev/dri/renderD128)
-#                     | render_group (/dev/dri/renderD128 only, Vulkan-only).
-#   bind_mounts:      list of {host: <path>, container: <path>, mode: ro|rw}.
-#                     Tilde (~) in host paths is expanded to the invoking user's
-#                     home by the container_service macro at render time.
-#   env_file:         absolute host path for Quadlet `EnvironmentFile=`, or null.
-
-loki:                          # Log aggregation (Grafana Loki)
+schema_version: 1
+loki:
   port: 3100
   health_path: /ready
-  health_cmd: timeout 1 bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/3100' 2>/dev/null || ss -H -t -l -n | grep -q ':3100 '
+  health_cmd: timeout 1 bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/3100' 2>/dev/null
+    || ss -H -t -l -n | grep -q ':3100 '
   timeout: 30
   unit: loki
   scope: system
   containerized: true
   container_image: loki
   cutover_mode: in_place
-  cutover_date: "2026-04-19"
+  cutover_date: '2026-04-19'
   gpu: none
   bind_mounts:
-    - host: /etc/loki
-      container: /etc/loki
-      mode: ro,Z               # Salt-managed config; container reads it read-only
-    - host: /var/lib/loki-container
-      container: /var/lib/loki
-      mode: rw,Z               # Container state dir
+  - host: /etc/loki
+    container: /etc/loki
+    mode: ro,Z
+  - host: /var/lib/loki-container
+    container: /var/lib/loki
+    mode: rw,Z
   env_file: null
-
-promtail:                      # Log shipper for Loki
+promtail:
   port: 9080
   health_path: /ready
   unit: promtail
@@ -53,24 +28,23 @@ promtail:                      # Log shipper for Loki
   containerized: true
   container_image: promtail
   cutover_mode: in_place
-  cutover_date: "2026-04-19"
+  cutover_date: '2026-04-19'
   gpu: none
   bind_mounts:
-    - host: /etc/promtail
-      container: /etc/promtail
-      mode: ro,Z
-    - host: /var/log/journal
-      container: /var/log/journal
-      mode: ro,Z               # systemd journal (persistent)
-    - host: /run/log/journal
-      container: /run/log/journal
-      mode: ro,Z               # systemd journal (runtime)
-    - host: /var/cache/promtail
-      container: /var/cache/promtail
-      mode: rw,Z
+  - host: /etc/promtail
+    container: /etc/promtail
+    mode: ro,Z
+  - host: /var/log/journal
+    container: /var/log/journal
+    mode: ro,Z
+  - host: /run/log/journal
+    container: /run/log/journal
+    mode: ro,Z
+  - host: /var/cache/promtail
+    container: /var/cache/promtail
+    mode: rw,Z
   env_file: null
-
-grafana:                       # Monitoring dashboard
+grafana:
   port: 3030
   health_path: /api/health
   timeout: 90
@@ -80,57 +54,54 @@ grafana:                       # Monitoring dashboard
   containerized: true
   container_image: grafana
   cutover_mode: in_place
-  cutover_date: "2026-04-19"
+  cutover_date: '2026-04-19'
   gpu: none
   bind_mounts:
-    - host: /etc/grafana.ini
-      container: /etc/grafana/grafana.ini
-      mode: ro,Z
-    - host: /etc/grafana/provisioning
-      container: /etc/grafana/provisioning
-      mode: ro,Z               # provisioning-as-code already Salt-managed
-    - host: /var/lib/grafana-container
-      container: /var/lib/grafana
-      mode: rw,Z
+  - host: /etc/grafana.ini
+    container: /etc/grafana/grafana.ini
+    mode: ro,Z
+  - host: /etc/grafana/provisioning
+    container: /etc/grafana/provisioning
+    mode: ro,Z
+  - host: /var/lib/grafana-container
+    container: /var/lib/grafana
+    mode: rw,Z
   env_file: null
-
-adguardhome:                   # DNS-level ad blocker (containerized)
+adguardhome:
   port: 3000
   health_path: /
   unit: adguardhome
   scope: system
-  packages: null               # installed via container_service image pull
+  packages: null
   containerized: true
   container_image: adguardhome
   gpu: none
   bind_mounts:
-    - host: /var/lib/adguardhome-container/conf
-      container: /opt/adguardhome/conf
-      mode: rw                 # AdGuardHome YAML config
-    - host: /var/lib/adguardhome-container/work
-      container: /opt/adguardhome/work
-      mode: rw                 # AdGuardHome dynamic data (sessions, stats, filters)
+  - host: /var/lib/adguardhome-container/conf
+    container: /opt/adguardhome/conf
+    mode: rw
+  - host: /var/lib/adguardhome-container/work
+    container: /opt/adguardhome/work
+    mode: rw
   env_file: null
-
-ollama:                        # Local LLM inference server
+ollama:
   port: 11434
   health_path: /api/tags
   unit: ollama
   scope: system
   manual_start: true
-  packages: null               # installed via container_service image pull
+  packages: null
   containerized: true
   container_image: ollama
   cutover_mode: in_place
-  cutover_date: "2026-04-11"
-  gpu: amdgpu                  # /dev/kfd (ROCm) + /dev/dri/renderD128
+  cutover_date: '2026-04-11'
+  gpu: amdgpu
   bind_mounts:
-    - host: /mnt/one/ollama/models
-      container: /root/.ollama/models
-      mode: rw
+  - host: /mnt/one/ollama/models
+    container: /root/.ollama/models
+    mode: rw
   env_file: null
-
-llama_embed:                   # llama.cpp embedding server (Vulkan)
+llama_embed:
   port: 11435
   health_path: /health
   unit: llama_embed
@@ -140,15 +111,14 @@ llama_embed:                   # llama.cpp embedding server (Vulkan)
   containerized: true
   container_image: llama_embed
   cutover_mode: in_place
-  cutover_date: "2026-04-11"
-  gpu: render_group            # Vulkan-only; no /dev/kfd needed
+  cutover_date: '2026-04-11'
+  gpu: render_group
   bind_mounts:
-    - host: /mnt/one/llama-embed/models
-      container: /models
-      mode: ro
+  - host: /mnt/one/llama-embed/models
+    container: /models
+    mode: ro
   env_file: null
-
-t5_summarization:              # llama.cpp T5 summarization server (Vulkan)
+t5_summarization:
   port: 11436
   health_path: /health
   unit: t5_summarization
@@ -156,171 +126,158 @@ t5_summarization:              # llama.cpp T5 summarization server (Vulkan)
   timeout: 90
   manual_start: true
   containerized: true
-  container_image: llama_embed   # reuses ggml-org/llama.cpp:server-vulkan
+  container_image: llama_embed
   cutover_mode: in_place
-  cutover_date: "2026-04-11"
-  gpu: render_group              # Vulkan-only; no /dev/kfd needed
+  cutover_date: '2026-04-11'
+  gpu: render_group
   bind_mounts:
-    - host: /mnt/one/t5-summarization/models
-      container: /models
-      mode: ro
+  - host: /mnt/one/t5-summarization/models
+    container: /models
+    mode: ro
   env_file: null
-
-jellyfin:                      # Media server (containerized)
+jellyfin:
   port: 8096
   health_path: /health
   unit: jellyfin
   scope: system
-  packages: null               # installed via container_service image pull
+  packages: null
   containerized: true
   container_image: jellyfin
-  gpu: render_group            # VA-API hardware transcoding
+  gpu: render_group
   bind_mounts:
-    - host: /etc/jellyfin
-      container: /config
-      mode: rw                 # Jellyfin config + library database
-    - host: /var/cache/jellyfin
-      container: /cache
-      mode: rw                 # transcoding cache, thumbnails
+  - host: /etc/jellyfin
+    container: /config
+    mode: rw
+  - host: /var/cache/jellyfin
+    container: /cache
+    mode: rw
   env_file: null
-
-transmission:                  # BitTorrent client (containerized)
+transmission:
   port: 9091
   health_path: /transmission/web/
   unit: transmission
   scope: system
-  packages: null               # installed via container_service image pull
+  packages: null
   containerized: true
   container_image: transmission
   gpu: none
   bind_mounts:
-    - host: /etc/transmission
-      container: /config
-      mode: rw                 # transmission config (settings.json lives here)
-    - host: ~/dw
-      container: /watch
-      mode: rw                 # torrent watch directory
-    - host: ~/torrent/data
-      container: /downloads
-      mode: rw                 # download directory
+  - host: /etc/transmission
+    container: /config
+    mode: rw
+  - host: ~/dw
+    container: /watch
+    mode: rw
+  - host: ~/torrent/data
+    container: /downloads
+    mode: rw
   env_file: null
-
-duckdns:                       # Dynamic DNS updater (containerized)
+duckdns:
   unit: duckdns-update
   scope: system
-  packages: null               # installed via container_service image pull
+  packages: null
   containerized: true
   container_image: duckdns
   gpu: none
   bind_mounts:
-    - host: /etc/duckdns.env
-      container: /etc/duckdns.env
-      mode: ro                 # DUCKDNS_TOKEN and DUCKDNS_DOMAIN
+  - host: /etc/duckdns.env
+    container: /etc/duckdns.env
+    mode: ro
   env_file: null
-
-alertmanager:                  # Alert notification routing for Loki
+alertmanager:
   port: 9093
   health_path: /-/ready
   unit: alertmanager
   scope: system
-  packages: null               # installed via container_service image pull
+  packages: null
   containerized: true
   container_image: alertmanager
   gpu: none
   bind_mounts:
-    - host: /etc/alertmanager
-      container: /etc/alertmanager
-      mode: ro,Z               # config only; no persistent state
+  - host: /etc/alertmanager
+    container: /etc/alertmanager
+    mode: ro,Z
   env_file: null
-
-unbound:                       # Recursive DNS resolver
-  health_cmd: "unbound-control status >/dev/null 2>&1"
+unbound:
+  health_cmd: unbound-control status >/dev/null 2>&1
   unit: unbound
   scope: system
   packages: unbound
-
-samba:                         # SMB file sharing
+samba:
   unit: smb
   scope: system
   packages: samba
   manual_start: true
-
-bitcoind:                      # Bitcoin Core node (containerized)
+bitcoind:
   unit: bitcoind
   scope: system
-  packages: null               # installed via container_service image pull
+  packages: null
   manual_start: true
   containerized: true
   container_image: bitcoind
   gpu: none
   bind_mounts:
-    - host: /var/lib/bitcoind-container
-      container: /var/lib/bitcoind
-      mode: rw                 # Bitcoin blockchain data
+  - host: /var/lib/bitcoind-container
+    container: /var/lib/bitcoind
+    mode: rw
   env_file: null
-
-# ─── Bridge tier (localhost images, built manually) ──────────────────
-proxypilot:                    # LLM proxy (containerized)
+proxypilot:
   port: 8317
-  health_cmd: "systemctl --user is-active --quiet proxypilot-container.service"
+  health_cmd: systemctl --user is-active --quiet proxypilot-container.service
   unit: proxypilot
   scope: user
-  packages: null               # installed via container_service image pull
+  packages: null
   containerized: true
   container_image: proxypilot
   gpu: none
   bind_mounts:
-    - host: ~/.config/proxypilot
-      container: /config
-      mode: rw                 # ProxyPilot config.yaml
-    - host: ~/.cli-proxy-api
-      container: /root/.cli-proxy-api
-      mode: rw                 # auth directory
+  - host: ~/.config/proxypilot
+    container: /config
+    mode: rw
+  - host: ~/.cli-proxy-api
+    container: /root/.cli-proxy-api
+    mode: rw
   env_file: null
-
-nanoclaw:                      # AI Telegram agent (containerized)
+nanoclaw:
   port: 8318
   health_cmd: null
   unit: nanoclaw
   scope: user
   manual_start: true
-  packages: null               # installed via container_service image pull
+  packages: null
   containerized: true
   container_image: nanoclaw
   gpu: none
   bind_mounts:
-    - host: ~/.local/share/nanoclaw
-      container: /app
-      mode: rw                 # app data (store, data, groups, .env)
-    - host: ~/.config/nanoclaw
-      container: /config
-      mode: rw                 # sender/mount allowlists
-    - host: ~/.local/share/nanoclaw/entrypoint.sh
-      container: /app/entrypoint.sh
-      mode: ro                 # overridden entrypoint for daemon mode
-    - host: ~/.local/share/nanoclaw/container-runtime-patched.ts
-      container: /app/src/container-runtime.ts
-      mode: ro                 # patched container runtime module
-    - host: ~/.local/share/nanoclaw/index-main-patched.ts
-      container: /app/src/index.ts
-      mode: ro                 # patched main index.ts (skip channel check)
+  - host: ~/.local/share/nanoclaw
+    container: /app
+    mode: rw
+  - host: ~/.config/nanoclaw
+    container: /config
+    mode: rw
+  - host: ~/.local/share/nanoclaw/entrypoint.sh
+    container: /app/entrypoint.sh
+    mode: ro
+  - host: ~/.local/share/nanoclaw/container-runtime-patched.ts
+    container: /app/src/container-runtime.ts
+    mode: ro
+  - host: ~/.local/share/nanoclaw/index-main-patched.ts
+    container: /app/src/index.ts
+    mode: ro
   env_file: ~/.local/share/nanoclaw/.env
-
-telethon_bridge:               # Telegram bridge (python-telethon)
+telethon_bridge:
   unit: telethon-bridge
   scope: user
   packages: python-telethon
-  health_cmd: "systemctl --user is-active --quiet telethon-bridge.service"
+  health_cmd: systemctl --user is-active --quiet telethon-bridge.service
   containerized: true
   container_image: telethon_bridge
   gpu: none
   bind_mounts:
-    - host: ~/.telethon-bridge
-      container: /data
-      mode: rw
+  - host: ~/.telethon-bridge
+    container: /data
+    mode: rw
   env_file: null
-
-# ─── Password management ────────────────────────────────────────────
 vaultwarden:
   port: 8222
   health_path: /
@@ -331,7 +288,7 @@ vaultwarden:
   container_image: vaultwarden
   gpu: none
   bind_mounts:
-    - host: /var/lib/vaultwarden
-      container: /data
-      mode: rw
+  - host: /var/lib/vaultwarden
+    container: /data
+    mode: rw
   env_file: null

@@ -1234,6 +1234,36 @@ def check_data_file_yaml_syntax(repo_root: Path = REPO_ROOT) -> list[str]:
     return errors
 
 
+EXPECTED_DATA_SCHEMA_VERSION = 1
+
+
+def check_data_schema_versions(repo_root: Path = REPO_ROOT) -> list[str]:
+    """Validate all states/data/*.yaml files have the expected schema_version."""
+    data_dir = repo_root / "states" / "data"
+    warnings = []
+
+    for yaml_path in sorted(data_dir.glob("*.yaml")):
+        rel = yaml_path.relative_to(repo_root)
+        data = load_yaml_file(yaml_path)
+
+        if not isinstance(data, dict):
+            continue
+
+        version = data.get("schema_version")
+        if version is None:
+            warnings.append(
+                f"Data file '{rel}': missing schema_version "
+                f"(expected {EXPECTED_DATA_SCHEMA_VERSION})"
+            )
+        elif version != EXPECTED_DATA_SCHEMA_VERSION:
+            warnings.append(
+                f"Data file '{rel}': schema_version {version} != "
+                f"expected {EXPECTED_DATA_SCHEMA_VERSION}"
+            )
+
+    return warnings
+
+
 # --- Aggregate ---
 
 
@@ -1302,6 +1332,7 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_service_catalog_scopes(repo_root))
     errors.extend(check_feature_matrix_unique_names(repo_root))
     errors.extend(check_data_file_yaml_syntax(repo_root))
+    errors.extend(check_data_schema_versions(repo_root))
     return errors
 
 

@@ -1,6 +1,6 @@
----
+schema_version: 1
 profiles:
-  - name: "Personal"
-    path: "personal"
-  - name: "Work"
-    path: "work"
+- name: Personal
+  path: personal
+- name: Work
+  path: work

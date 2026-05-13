@@ -1,5 +1,4 @@
-# Amnezia VPN build output binaries.
-# Consumed by amnezia.sls.
+schema_version: 1
 bins:
   amneziawg_go_bin:
     src: amneziawg-go-bin
@@ -13,12 +12,10 @@ bins:
   amnezia_service_bin:
     src: AmneziaVPN-service-bin
     dest: AmneziaVPN-service
-
 verification:
   amneziawg_go: /usr/local/bin/amneziawg-go --version
   awg: /usr/local/bin/awg --version
   amnezia_vpn: ldd /usr/local/bin/AmneziaVPN
   amnezia_service: ldd /usr/local/bin/AmneziaVPN-service
-
 systemd_unit: /usr/lib/systemd/system/AmneziaVPN-source.service
 desktop_entry: amnezia-vpn.desktop

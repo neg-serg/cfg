@@ -1,132 +1,97 @@
-# Generative AI model registry for video_ai.sls
-# Video models, image models, shared text encoders and VAEs.
-# Set enabled: true to download via Salt apply.
-#
-# ── Rejected models (do NOT re-add) ─────────────────────────────────
-# LTX-Video 2B (Lightricks/LTX-Video, ltx-video-2b-v0.9.5.safetensors)
-#   Rejected 2026-03: quality far below 22B models, 720p max, visible artifacts.
-#   Superseded by LTX-2.3 22B Distilled FP8 which is superior in every metric.
-#
-# LTX-2.3 22B Dev FP8 (Lightricks/LTX-2.3-fp8, ltx-2.3-22b-dev-fp8.safetensors)
-#   Rejected 2026-03: full 22B dev model is 29 GB — exceeds 24 GB VRAM on 7900 XT
-#   even with --lowvram. The distilled variant (8-step) fits and produces same quality.
-#
-# LTX-2.3 22B Distilled GGUF Q4 (unsloth/LTX-2.3-GGUF)
-#   Rejected 2026-03: GGUF pipeline for LTX-2.3 is broken on AMD RDNA3. Requires
-#   separate VAE + text_projection loaded simultaneously → OOM on 24 GB. 15 GB
-#   downloaded and deleted. Wait for ComfyUI-GGUF to fix multi-component loading.
-# ─────────────────────────────────────────────────────────────────────
-
-# Video AI base subdirectory names (consumed by video_ai/base.sls)
+schema_version: 1
 subdirs:
   comfyui: comfyui
   models: models
   workflows: workflows
   output: output
   images: images
-
-# Runner script names (consumed by video_ai/runners.sls)
 runners:
   generate: generate.sh
   generate_image: generate-image.sh
   gen_video: gen-video
-
-# ComfyUI custom nodes required by video models
 comfyui_nodes:
-  - repo: https://github.com/Lightricks/ComfyUI-LTXVideo  # LTX-Video nodes (covers 2B + 2.3)
-    dir: ComfyUI-LTXVideo
-  - repo: https://github.com/kijai/ComfyUI-WanVideoWrapper  # Wan2.1 nodes (GGUF support)
-    dir: ComfyUI-WanVideoWrapper
-  - repo: https://github.com/city96/ComfyUI-GGUF  # GGUF model loader
-    dir: ComfyUI-GGUF
-
+- repo: https://github.com/Lightricks/ComfyUI-LTXVideo
+  dir: ComfyUI-LTXVideo
+- repo: https://github.com/kijai/ComfyUI-WanVideoWrapper
+  dir: ComfyUI-WanVideoWrapper
+- repo: https://github.com/city96/ComfyUI-GGUF
+  dir: ComfyUI-GGUF
 models:
-  - id: ltx-23-distilled-fp8
-    name: "LTX-2.3 22B Distilled FP8"  # best quality, 4-8 step distilled, uncensored
-    enabled: true
-    repo: Kijai/LTX2.3_comfy
-    files:
-      - diffusion_models/ltx-2.3-22b-distilled-1.1_transformer_only_bf16.safetensors  # 23.5 GB, BF16 via fp8_e4m3fn dtype
-    loader: diffusion_model  # UNETLoader with weight_dtype fp8_e4m3fn
-    text_encoder: dual  # DualCLIPLoader: T5-XXL fp8 + LTX23 text projection
-    vae: taeltx2-3  # taeltx2_3.safetensors (Kijai's LTX-2.3 VAE)
-    precision: fp8
-    vram_gb: 22  # with lowvram offloading
-    modes:
-      - t2v  # text-to-video
-      - i2v  # image-to-video
-    max_resolution: 4k
-    steps: 8  # distilled model: 4-8 steps optimal
-    default: true
-    comfyui_workflow: ltx23-distilled-t2v.json
-    comfyui_workflow_i2v: ltx23-distilled-i2v.json
-    notes: "22B distilled, 4-8 step inference, uncensored, needs --lowvram on 24GB"
-
-  - id: wan21-t2v-14b
-    name: "Wan2.1 T2V 14B GGUF Q5"  # Alibaba, best quality among censored models
-    enabled: true
-    repo: city96/Wan2.1-T2V-14B-gguf
-    files:
-      - wan2.1-t2v-14b-Q5_K_M.gguf  # Q5 quantized 14B
-    precision: gguf-q5
-    vram_gb: 11
-    modes:
-      - t2v  # text-to-video
-    max_resolution: 480p
-    default: false
-    comfyui_workflow: wan21-t2v.json
-    notes: "very good quality, censored (Chinese training data), ~20 min per 4s clip"
-
-# ── Image generation models ────────────────────────────────────────
+- id: ltx-23-distilled-fp8
+  name: LTX-2.3 22B Distilled FP8
+  enabled: true
+  repo: Kijai/LTX2.3_comfy
+  files:
+  - diffusion_models/ltx-2.3-22b-distilled-1.1_transformer_only_bf16.safetensors
+  loader: diffusion_model
+  text_encoder: dual
+  vae: taeltx2-3
+  precision: fp8
+  vram_gb: 22
+  modes:
+  - t2v
+  - i2v
+  max_resolution: 4k
+  steps: 8
+  default: true
+  comfyui_workflow: ltx23-distilled-t2v.json
+  comfyui_workflow_i2v: ltx23-distilled-i2v.json
+  notes: 22B distilled, 4-8 step inference, uncensored, needs --lowvram on 24GB
+- id: wan21-t2v-14b
+  name: Wan2.1 T2V 14B GGUF Q5
+  enabled: true
+  repo: city96/Wan2.1-T2V-14B-gguf
+  files:
+  - wan2.1-t2v-14b-Q5_K_M.gguf
+  precision: gguf-q5
+  vram_gb: 11
+  modes:
+  - t2v
+  max_resolution: 480p
+  default: false
+  comfyui_workflow: wan21-t2v.json
+  notes: very good quality, censored (Chinese training data), ~20 min per 4s clip
 image_models:
-  - id: chroma-hd
-    name: "Chroma1-HD"  # 8.9B, uncensored, near FLUX.1 Dev quality, Apache 2.0
-    enabled: true
-    repo: lodestones/Chroma1-HD
-    file: Chroma1-HD.safetensors  # 17.8 GB BF16
-    loader: diffusion_model  # UNETLoader, not CheckpointLoaderSimple
-    text_encoder: t5xxl_fp8  # shared T5-XXL from text_encoders section
-    vae: flux-ae  # FLUX VAE from vaes section
-    vram_gb: 20  # peak with T5 offloaded
-    resolution: 1152x1152  # HD training resolution
-    steps: 26
-    cfg: 3.8
-    sampler: euler
-    scheduler: beta  # BetaSamplingScheduler (0.45/0.45)
-    comfyui_workflow: chroma-t2i.json
-    comfyui_workflow_i2i: chroma-i2i.json
-    notes: "BF16 only (FP8/GGUF broken on RDNA3), fits 24GB with T5 offloading"
-
-# ── Shared text encoders ───────────────────────────────────────────
+- id: chroma-hd
+  name: Chroma1-HD
+  enabled: true
+  repo: lodestones/Chroma1-HD
+  file: Chroma1-HD.safetensors
+  loader: diffusion_model
+  text_encoder: t5xxl_fp8
+  vae: flux-ae
+  vram_gb: 20
+  resolution: 1152x1152
+  steps: 26
+  cfg: 3.8
+  sampler: euler
+  scheduler: beta
+  comfyui_workflow: chroma-t2i.json
+  comfyui_workflow_i2i: chroma-i2i.json
+  notes: BF16 only (FP8/GGUF broken on RDNA3), fits 24GB with T5 offloading
 text_encoders:
-  - id: t5xxl_fp8
-    file: t5xxl_fp8_e4m3fn.safetensors  # 4.9 GB, shared by LTX Video + Chroma
-    repo: comfyanonymous/flux_text_encoders
-    dir: text_encoders
-
-  - id: gemma_fp4
-    file: gemma_3_12B_it_fp4_mixed.safetensors  # ~8 GB, LTX-2.3 dual-clip text encoder
-    repo: Comfy-Org/gemma_3_repackaged
-    dir: text_encoders
-
-  - id: ltx23_text_projection
-    file: ltx-2.3_text_projection_bf16.safetensors  # LTX-2.3 text projection for DualCLIPLoader
-    repo: Kijai/LTX2.3_comfy
-    dir: text_encoders
-
-  - id: gemma_tokenizer
-    file: tokenizer.model  # Gemma 3 tokenizer.model is public in the base repo
-    repo: unsloth/gemma-3-12b-it
-    dir: text_encoders
-
-# ── Shared VAE models ─────────────────────────────────────────────
+- id: t5xxl_fp8
+  file: t5xxl_fp8_e4m3fn.safetensors
+  repo: comfyanonymous/flux_text_encoders
+  dir: text_encoders
+- id: gemma_fp4
+  file: gemma_3_12B_it_fp4_mixed.safetensors
+  repo: Comfy-Org/gemma_3_repackaged
+  dir: text_encoders
+- id: ltx23_text_projection
+  file: ltx-2.3_text_projection_bf16.safetensors
+  repo: Kijai/LTX2.3_comfy
+  dir: text_encoders
+- id: gemma_tokenizer
+  file: tokenizer.model
+  repo: unsloth/gemma-3-12b-it
+  dir: text_encoders
 vaes:
-  - id: flux-ae
-    file: ae.safetensors  # 335 MB, FLUX VAE (used by Chroma)
-    repo: cocktailpeanut/xulf-dev  # public mirror, no auth required
-    dir: vae
-
-  - id: taeltx2-3
-    file: LTX23_video_vae_bf16.safetensors  # LTX-2.3 VAE from Kijai's Comfy-ready pack
-    repo: Kijai/LTX2.3_comfy
-    dir: vae
+- id: flux-ae
+  file: ae.safetensors
+  repo: cocktailpeanut/xulf-dev
+  dir: vae
+- id: taeltx2-3
+  file: LTX23_video_vae_bf16.safetensors
+  repo: Kijai/LTX2.3_comfy
+  dir: vae

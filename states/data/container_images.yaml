@@ -1,128 +1,108 @@
-# Container image registry — single source of truth for Podman Quadlet images.
-#
-# Rules:
-#   - Remote images (docker.io, ghcr.io) MUST have a non-null `digest`.
-#   - Localhost images (built manually via `podman build`) have `digest: null`.
-#   - Tag-based references are forbidden anywhere.
-#   - Digest format: `sha256:<64 hex chars>`.
-
-# ─── Inference layer ─────────────────────────────────────────────────
+schema_version: 1
 ollama:
   registry: docker.io
   image: ollama/ollama
   variant: rocm
   digest: sha256:24055d988770c0de2552fe14edff8af1508802a074638527f7578fdc332ccdbe
-  approved_at: "2026-04-10"
-  note: "Ollama LLM server; ROCm build for AMD 7900 XTX inference"
-
+  approved_at: '2026-04-10'
+  note: Ollama LLM server; ROCm build for AMD 7900 XTX inference
 llama_embed:
   registry: ghcr.io
   image: ggml-org/llama.cpp
   variant: server-vulkan
   digest: sha256:9532e967519cf3bcf15bd6f8c3d8af2c55c7363c04ac56ab3ddd952748259c03
-  approved_at: "2026-04-10"
-  note: "llama.cpp server with Vulkan backend; hosts Qwen3-Embedding-8B"
-
-# ─── Observability stack ─────────────────────────────────────────────
+  approved_at: '2026-04-10'
+  note: llama.cpp server with Vulkan backend; hosts Qwen3-Embedding-8B
 loki:
   registry: docker.io
   image: grafana/loki
-  variant: "3.x"
+  variant: 3.x
   digest: sha256:1694e9237e2b3d7cd4ad959bae1f21e12b6184d886d7412bd1b939fb0dd4e75c
-  approved_at: "2026-04-10"
-  note: "Grafana Loki log aggregator"
-
+  approved_at: '2026-04-10'
+  note: Grafana Loki log aggregator
 promtail:
   registry: docker.io
   image: grafana/promtail
-  variant: "3.x"
+  variant: 3.x
   digest: sha256:238d8562dc29ec83d2f5933c7fd6e9469a90ea316a04f160dcc7cf842910ca94
-  approved_at: "2026-04-10"
-  note: "Loki log shipper; reads host systemd journal via bind-mount"
-
+  approved_at: '2026-04-10'
+  note: Loki log shipper; reads host systemd journal via bind-mount
 grafana:
   registry: docker.io
   image: grafana/grafana-oss
-  variant: "11.x-oss"
+  variant: 11.x-oss
   digest: sha256:9419d74cb14745b96cf7068c6c5de30851d63ee45bfbe6387d48b12e62146ea4
-  approved_at: "2026-04-10"
-  note: "Grafana OSS; reads /etc/grafana* provisioning from host bind-mount"
-
-# ─── Utilities ───────────────────────────────────────────────────────
+  approved_at: '2026-04-10'
+  note: Grafana OSS; reads /etc/grafana* provisioning from host bind-mount
 duckdns:
   registry: docker.io
   image: linuxserver/duckdns
   variant: null
   digest: sha256:abbeb230a2d670c7b4182f3df92b98d5ce6874dd6459c8a640746940782bb68b
-  approved_at: "2026-04-16"
-  note: "DuckDNS dynamic DNS updater; runs on timer via Quadlet OnCalendar"
+  approved_at: '2026-04-16'
+  note: DuckDNS dynamic DNS updater; runs on timer via Quadlet OnCalendar
 adguardhome:
   registry: docker.io
   image: adguard/adguardhome
   variant: null
   digest: sha256:7fbf01d73ecb7a32d2d9e6cef8bf88e64bd787889ca80a1e8bce30cd4c084442
-  approved_at: "2026-04-16"
-  note: "AdGuard Home DNS filter; conf at /opt/adguardhome/conf, work at /opt/adguardhome/work"
+  approved_at: '2026-04-16'
+  note: AdGuard Home DNS filter; conf at /opt/adguardhome/conf, work at /opt/adguardhome/work
 bitcoind:
   registry: docker.io
   image: ruimarinho/bitcoin-core
   variant: null
   digest: sha256:79dd32455cf8c268c63e5d0114cc9882a8857e942b1d17a6b8ec40a6d44e3981
-  approved_at: "2026-04-16"
-  note: "Bitcoin Core daemon; data dir at /var/lib/bitcoind"
+  approved_at: '2026-04-16'
+  note: Bitcoin Core daemon; data dir at /var/lib/bitcoind
 transmission:
   registry: docker.io
   image: linuxserver/transmission
   variant: null
   digest: sha256:1bfdc7676c050109b599feb4ce1016d4b6977a0b2e45cee9b25a38c9134e769e
-  approved_at: "2026-04-15"
-  note: "Transmission BitTorrent client; config at /config, watch at /watch, downloads at /downloads"
+  approved_at: '2026-04-15'
+  note: Transmission BitTorrent client; config at /config, watch at /watch, downloads
+    at /downloads
 jellyfin:
   registry: docker.io
   image: jellyfin/jellyfin
   variant: null
   digest: sha256:1694ff069f0c9dafb283c36765175606866769f5d72f2ed56b6a0f1be922fc37
-  approved_at: "2026-04-15"
-  note: "Jellyfin media server; VA-API hardware transcoding via /dev/dri"
-
-# ─── Alerting ─────────────────────────────────────────────────────────
+  approved_at: '2026-04-15'
+  note: Jellyfin media server; VA-API hardware transcoding via /dev/dri
 alertmanager:
   registry: docker.io
   image: prom/alertmanager
   variant: v0.28.0
   digest: sha256:9139cd2c7ab7ff951e5ed9ffc4f70122a7de9678fb51065061a5f72549c91bab
-  approved_at: "2026-05-01"
-  note: "Alertmanager for Loki alert routing to Telegram"
-
-# ─── Bridge tier (localhost images, built manually) ──────────────────
+  approved_at: '2026-05-01'
+  note: Alertmanager for Loki alert routing to Telegram
 proxypilot:
   registry: localhost
   image: proxypilot
   variant: null
   digest: null
   approved_at: null
-  note: "Local image — build: podman build -t localhost/proxypilot build/pkgbuilds/proxypilot/"
-
+  note: 'Local image — build: podman build -t localhost/proxypilot build/pkgbuilds/proxypilot/'
 nanoclaw:
   registry: localhost
   image: nanoclaw-agent
   variant: null
   digest: null
   approved_at: null
-  note: "Local image — build: podman build -f build/nanoclaw/Dockerfile -t localhost/nanoclaw-agent /home/neg/src/cfg"
-
+  note: 'Local image — build: podman build -f build/nanoclaw/Dockerfile -t localhost/nanoclaw-agent
+    /home/neg/src/cfg'
 telethon_bridge:
   registry: localhost
   image: telethon-bridge
   variant: null
   digest: null
   approved_at: null
-  note: "Local image — build: podman build -t localhost/telethon-bridge ."
-
+  note: 'Local image — build: podman build -t localhost/telethon-bridge .'
 vaultwarden:
   registry: docker.io
   image: vaultwarden/server
   variant: null
   digest: sha256:1e6ebcede9be39fc1a7617eec4c984899edd954c09bd651b121cd89732e7aef4
-  approved_at: "2026-04-26"
-  note: "Vaultwarden password manager"
+  approved_at: '2026-04-26'
+  note: Vaultwarden password manager

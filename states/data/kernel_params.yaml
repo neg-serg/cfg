@@ -1,76 +1,44 @@
-# Kernel boot parameters.
-# Grouped by condition; assembled by states/configs/kernel-cmdline.j2.
-#
-# ── Schema ────────────────────────────────────────────────────────────
-#
-# common:                          — always included
-#   - <param>
-# amd:                             — included if host.cpu_vendor == 'amd'
-#   - <param>
-# intel:                           — included if host.cpu_vendor == 'intel'
-#   - <param>
-# laptop:                          — included if host.is_laptop
-#   - <param>
-# desktop:                         — included if not host.is_laptop
-#   - <param>
-#
-# Each param is a kernel cmdline token (e.g. "key=value" or bare flag).
-# host.extra_kargs and host.display are appended by the .sls at render time.
-#
-# ─────────────────────────────────────────────────────────────────────
-
+schema_version: 1
 common:
-  # Performance tweaks
-  - mitigations=off
-  - numa_balancing=disable
-  - processor.max_cstate=1
-  - cpufreq.default_governor=performance
-  - workqueue.power_efficient=0
-  - skew_tick=1
-  - clocksource=tsc
-  # Storage
-  - nvme_core.io_timeout=4294967295
-  - nvme_core.default_ps_max_latency_us=0
-  # Virtualisation
-  - kvm.ignore_msrs=1
-  - kvm.report_ignored_msrs=0
-  # Serial — not needed on modern hw
-  - 8250.nr_uarts=0
-  # LRU
-  - lru_gen=1
-  - lru_gen.min_ttl_ms=1000
-  # Memory
-  - transparent_hugepage=madvise
-  - page_alloc.shuffle=1
-  - slab_nomerge
-  - init_on_alloc=1
-  # Hardening
-  - randomize_kstack_offset=on
-  - vsyscall=none
-  - debugfs=off
-  # Misc
-  - vt.global_cursor_default=0
-  - noreplace-smp
-  - pcie_aspm=performance
-  - rcupdate.rcu_expedited=1
-  - tsc=reliable
-  - split_lock_detect=off
-  - nowatchdog
-  - kernel.nmi_watchdog=0
-  - idle=nomwait
-  - usbcore.autosuspend=-1
-
+- mitigations=off
+- numa_balancing=disable
+- processor.max_cstate=1
+- cpufreq.default_governor=performance
+- workqueue.power_efficient=0
+- skew_tick=1
+- clocksource=tsc
+- nvme_core.io_timeout=4294967295
+- nvme_core.default_ps_max_latency_us=0
+- kvm.ignore_msrs=1
+- kvm.report_ignored_msrs=0
+- 8250.nr_uarts=0
+- lru_gen=1
+- lru_gen.min_ttl_ms=1000
+- transparent_hugepage=madvise
+- page_alloc.shuffle=1
+- slab_nomerge
+- init_on_alloc=1
+- randomize_kstack_offset=on
+- vsyscall=none
+- debugfs=off
+- vt.global_cursor_default=0
+- noreplace-smp
+- pcie_aspm=performance
+- rcupdate.rcu_expedited=1
+- tsc=reliable
+- split_lock_detect=off
+- nowatchdog
+- kernel.nmi_watchdog=0
+- idle=nomwait
+- usbcore.autosuspend=-1
 amd:
-  - amd_pstate=active
-  - amdgpu.ppfeaturemask=0xffffffff
-  - amd_prefcore=enable
-
+- amd_pstate=active
+- amdgpu.ppfeaturemask=0xffffffff
+- amd_prefcore=enable
 intel:
-  - intel_pstate=active
-
+- intel_pstate=active
 laptop:
-  - mem_sleep_default=deep
-
+- mem_sleep_default=deep
 desktop:
-  - acpi_osi=!
-  - acpi_osi=Linux
+- acpi_osi=!
+- acpi_osi=Linux

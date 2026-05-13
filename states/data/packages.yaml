@@ -1,594 +1,561 @@
-# System packages grouped by category (base, dev, desktop, media, etc.).
-# Consumed by packages.sls via pacman -Qq idempotency check.
+schema_version: 1
 base:
-  - base
-  - base-devel
-  - limine
-  - linux
-  - linux-headers
-  - linux-firmware
-  - amd-ucode
-
+- base
+- base-devel
+- limine
+- linux
+- linux-headers
+- linux-firmware
+- amd-ucode
 desktop:
-  - broot
-  - chromium
-  - epiphany
-  - firefox
-  - gimp
-  - gnome-backgrounds
-  - gnome-calculator
-  - gnome-calendar
-  - gnome-characters
-  - gnome-clocks
-  - gnome-color-manager
-  - gnome-connections
-  - gnome-console
-  - cosmic-greeter
-  - dunst
-  - grim
-  - hypridle
-  - hyprland
-  - hyprlock
-  - hyprpicker
-  - hyprpolkitagent
-  - eza
-  - matugen
-  - rmpc
-  - rofi
-  - loupe
-  - satty
-  - slurp
-  - swayimg
-  - television
-  - wl-clipboard
-  - wlr-randr
-  - xdg-desktop-portal-hyprland
-  - yazi
-  - ark
-  - gnome-contacts
-  - gnome-control-center
-  - gnome-disk-utility
-  - gnome-font-viewer
-  - gnome-keyring
-  - gnome-logs
-  - gnome-maps
-  - gnome-menus
-  - gnome-music
-  - gnome-remote-desktop
-  - gnome-session
-  - gnome-settings-daemon
-  - gnome-shell
-  - gnome-software
-  - gnome-system-monitor
-  - gnome-text-editor
-  - gnome-tour
-  - gnome-tweaks
-  - gnome-user-docs
-  - gnome-user-share
-  - gnome-weather
-  - nautilus
-  - simple-scan
-  - sushi
-  - swayosd
-  - wofi
-  - xdg-user-dirs-gtk
-  - xdg-utils
-  - yelp
-
+- broot
+- chromium
+- epiphany
+- firefox
+- gimp
+- gnome-backgrounds
+- gnome-calculator
+- gnome-calendar
+- gnome-characters
+- gnome-clocks
+- gnome-color-manager
+- gnome-connections
+- gnome-console
+- cosmic-greeter
+- dunst
+- grim
+- hypridle
+- hyprland
+- hyprlock
+- hyprpicker
+- hyprpolkitagent
+- eza
+- matugen
+- rmpc
+- rofi
+- loupe
+- satty
+- slurp
+- swayimg
+- television
+- wl-clipboard
+- wlr-randr
+- xdg-desktop-portal-hyprland
+- yazi
+- ark
+- gnome-contacts
+- gnome-control-center
+- gnome-disk-utility
+- gnome-font-viewer
+- gnome-keyring
+- gnome-logs
+- gnome-maps
+- gnome-menus
+- gnome-music
+- gnome-remote-desktop
+- gnome-session
+- gnome-settings-daemon
+- gnome-shell
+- gnome-software
+- gnome-system-monitor
+- gnome-text-editor
+- gnome-tour
+- gnome-tweaks
+- gnome-user-docs
+- gnome-user-share
+- gnome-weather
+- nautilus
+- simple-scan
+- sushi
+- swayosd
+- wofi
+- xdg-user-dirs-gtk
+- xdg-utils
+- yelp
 dev:
-  - clang
-  - cmake
-  - gdb
-  - meson
-  - ninja
-  - fennel
-  - git
-  - lua-language-server
-  - lua53
-  - patchelf
-  - neovim
-  - neovim-remote
-  - nodejs
-  - npm
-  - python-pipx
-  - python-pyperclip
-  - python-textual
-  - python-poetry
-  - python-orjson
-  - python-numpy
-
-  - ruby
-  - jupyterlab
-  - subversion
-  - uv
-  - vale
-
+- clang
+- cmake
+- gdb
+- meson
+- ninja
+- fennel
+- git
+- lua-language-server
+- lua53
+- patchelf
+- neovim
+- neovim-remote
+- nodejs
+- npm
+- python-pipx
+- python-pyperclip
+- python-textual
+- python-poetry
+- python-orjson
+- python-numpy
+- ruby
+- jupyterlab
+- subversion
+- uv
+- vale
 network:
-  - cloudflare-speed-cli
-  - curl
-  - firewalld
-  - ufw
-  - networkmanager
-  - networkmanager-qt
-  - bluez
-  - nmap
-  - openssh
-  - tailscale
-  - proton-vpn-cli
-  - zapret2
-  - wget
-  - nethogs
-  - network-manager-applet
-
+- cloudflare-speed-cli
+- curl
+- firewalld
+- ufw
+- networkmanager
+- networkmanager-qt
+- bluez
+- nmap
+- openssh
+- tailscale
+- proton-vpn-cli
+- zapret2
+- wget
+- nethogs
+- network-manager-applet
 audio:
-
-  - pipewire
-  - gst-plugin-pipewire
-  - pavucontrol
-
-
+- pipewire
+- gst-plugin-pipewire
+- pavucontrol
 media:
-  - ffmpeg
-  - ffmpegthumbnailer
-  - gst-libav
-  - gst-plugins-bad
-  - gst-plugins-ugly
-  - imagemagick
-  - mpv
-  - grilo-plugins
-  - rygel
-  - showtime
-  - ytsurf
-
+- ffmpeg
+- ffmpegthumbnailer
+- gst-libav
+- gst-plugins-bad
+- gst-plugins-ugly
+- imagemagick
+- mpv
+- grilo-plugins
+- rygel
+- showtime
+- ytsurf
 fonts:
-
-  - noto-fonts-cjk
-  - ttf-jetbrains-mono-nerd
-
+- noto-fonts-cjk
+- ttf-jetbrains-mono-nerd
 gaming:
-  - lutris
-  - wine
-  - xorg-server
-  - xorg-xinit
-  - xf86-video-amdgpu
-  - xf86-video-ati
-  - nethack
-  # amdvlk removed — AUR PKGBUILD broken; vulkan-radeon (CachyOS) replaces it
-  - proton-ge-custom-bin
-
+- lutris
+- wine
+- xorg-server
+- xorg-xinit
+- xf86-video-amdgpu
+- xf86-video-ati
+- nethack
+- proton-ge-custom-bin
 system:
-  - bottom
-  - btop
-  - xorg-server
-  - xorg-xinit
-  - xf86-video-amdgpu
-  - htop
-  - lsof
-  - lvm2
-  - parted
-  - strace
-  - stress-ng
-  - sysstat
-  - pacman-contrib
-  - rebuild-detector
-  - cups
-  - cups-pk-helper
-  - gdm
-  - rsync
-  - samba
-  - slirp4netns
-  - system-config-printer
-  - zram-generator
-
+- bottom
+- btop
+- xorg-server
+- xorg-xinit
+- xf86-video-amdgpu
+- htop
+- lsof
+- lvm2
+- parted
+- strace
+- stress-ng
+- sysstat
+- pacman-contrib
+- rebuild-detector
+- cups
+- cups-pk-helper
+- gdm
+- rsync
+- samba
+- slirp4netns
+- system-config-printer
+- zram-generator
 other:
-  - abduco
-  - age
-  - android-tools
-  - aria2
-  - asciinema
-  - atop
-  - avahi
-  - bandwhich
-  - bat
-  - beets
-  - blender
-  - lib32-vulkan-radeon
-  - bluez-utils
-  - borg
-  - bpftrace
-  - bucklespring
-  - carla
-  - cava
-  - ccid
-  - yubikey-manager
-  - cdparanoia
-  - chafa
-  - chezmoi
-  - choose
-  - chromaprint
-
-  - cliphist
-  - convmv
-  - corectrl
-  - dosbox
-  - cowsay
-  - cpufetch
-  - cpupower
-  - ctop
-  - curlie
-  - dash
-  - ddrescue
-  - dhcpcd
-  - diff-so-fancy
-  - difftastic
-  - direnv
-  - distrobox
-  - dive
-  - dkms
-  - dnsmasq
-  - doggo
-  - dos2unix
-  - dust
-  - edk2-ovmf
-  - efibootmgr
-  - elfutils
-  - enca
-  - entr
-  - erdtree
-  - etckeeper
-  - expect
-  - fastfetch
-  - fclones
-  - fd
-  - figlet
-  - fio
-
-  - fortune-mod
-  - fping
-  - freerdp
-  - fwupd
-  - fzf
-  - genact
-  - geoip
-  - geoip-database
-  - gist
-  - git-crypt
-  - git-delta
-  - git-filter-repo
-  - github-cli
-  - gitleaks
-  - gitlogue
-  - git-lfs
-  - ghostty
-  - ghostty-shell-integration
-  - glow
-  - goaccess
-  - goimapnotify
-  - gopass
-  - go-yq
-  - gptfdisk
-  - grafana
-  - graphviz
-
-  - grex
-  - gvfs
-  - gvfs-mtp
-  - gvfs-smb
-  - gvfs-afc
-  - gvfs-dnssd
-  - gvfs-goa
-  - gvfs-gphoto2
-  - gvfs-nfs
-  - gvfs-onedrive
-  - gvfs-wsdd
-  - hashcat
-  - helix
-  - helvum
-  - hexyl
-  - himalaya
-  - htmlq
-  - httpie
-  - hunspell-ru
-  - hwinfo
-  - hyperfine
-  - id3v2
-  - iftop
-  - inotify-tools
-  - ioping
-  - iotop-c
-  - iperf3
-  - isync
-  - iwd
-  - jc
-  - jpegoptim
-  - jq
-  - jujutsu
-  - just
-  - kexec-tools
-  - kitty
-  - kmon
-  - kvantum
-  - kvantum-qt5
-  - lbzip2
-  - less
-  - libnotify
-  - liquidctl
-  - lldb
-  - lm_sensors
-  - lnav
-  - lolcat
-  - lowdown
-  - lshw
-  - lsp-plugins
-
-  - man-pages
-  - mediainfo
-  - media-player-info
-  - memtester
-  - miller
-  - minicom
-  - moreutils
-  - mpc
-  - mpd
-
-  - python-mutagen
-  - mtr
-  - multipath-tools
-  - ncdu
-  - neomutt
-  - nerdctl
-  - nicotine+
-  - nm-connection-editor
-  - nss-mdns
-  - nuspell
-  - nvtop
-  - ollama
-  - ollama-vulkan
-  - onefetch
-  - openbsd-netcat
-  - openocd
-  - openrgb
-  - optipng
-  - ouch
-  - pandoc-cli
-  - parallel
-
-  - pastel
-
-  - pbzip2
-  - pcmanfm
-  - pcsc-tools
-  - perf
-  - perl-image-exiftool
-  - pgcli
-  - picard
-  - pigz
-  - plocate
-  - pngquant
-  - podman
-  - powertop
-  - pre-commit
-  - python-faker
-  - python-internetarchive
-  - prettyping
-  - progress
-  - pv
-  - pwgen
-  - qemu-desktop
-  - qpwgraph
-  - qrencode
-  - qt5ct
-  - qt5-wayland
-  - qt6ct
-  - rawtherapee
-  - rclone
-  - recoll
-  - reptyr
-  - resvg
-  - ripgrep
-  - rlwrap
-  - ruff
-  - sad
-  - sbctl
-  - schedtool
-  - scour
-  - shellcheck
-  - shfmt
-  - smartmontools
-  - sops
-  - socat
-  - sonic-visualiser
-  - sox
-  - sshfs
-  - sshpass
-  - streamlink
-  - s-tui
-  - sudo
-  - swappy
-
-  - systemd-resolvconf
-  - tabiew
-  - taplo-cli
-  - tcpdump
-  - tealdeer
-  - telegram-desktop
-  - tesseract
-  - tesseract-data-eng
-  - tesseract-data-rus
-  - testdisk
-  - texlive-basic
-  - tig
-  - tmux
-  - toilet
-  - traceroute
-  - transmission-cli
-  - tree
-  - tree-sitter-cli
-  - ttyd
-  - tumbler
-  - turbostat
-  - udiskie
-  - ugrep
-  - unarchiver
-  - unbound
-  - unzip
-  - cpio
-  - upower
-  - urlscan
-  - urlwatch
-  - valgrind
-  - vdirsyncer
-  - virt-manager
-  - virt-viewer
-  - viu
-  - vnstat
-  - w3m
-  - waypipe
-  - wayvnc
-  - wev
-  - wf-recorder
-  - which
-  - whois
-  - wireshark-cli
-
-  - wtype
-  - xfsprogs
-  - xh
-  - yamllint
-  - ydotool
-  - yt-dlp
-  - zathura
-  - zathura-pdf-poppler
-  - zbar
-  - zellij
-  - zk
-  - zmap
-  - zoxide
-  - zsh
-  - handlr-regex
-
-
-  - i3status
-  - i3-wm
-  - inxi
-  - kate
-  - libpulse
-  - malcontent
-  - nano
-  - orca
-  - papers
-  - pass
-  - plasma-desktop
-  - plasma-workspace
-  - polkit-kde-agent
-  - breeze
-  - breeze-icons
-  - konsole
-  - proxypilot
-  - proxypilot-debug
-  - qt6-wayland
-  - snapshot
-  - ssh-to-age
-  - ssh-to-age-debug
-  - taoup
-  - tecla
-  - uwsm
-  - vim
-  - wiremix
-
+- abduco
+- age
+- android-tools
+- aria2
+- asciinema
+- atop
+- avahi
+- bandwhich
+- bat
+- beets
+- blender
+- lib32-vulkan-radeon
+- bluez-utils
+- borg
+- bpftrace
+- bucklespring
+- carla
+- cava
+- ccid
+- yubikey-manager
+- cdparanoia
+- chafa
+- chezmoi
+- choose
+- chromaprint
+- cliphist
+- convmv
+- corectrl
+- dosbox
+- cowsay
+- cpufetch
+- cpupower
+- ctop
+- curlie
+- dash
+- ddrescue
+- dhcpcd
+- diff-so-fancy
+- difftastic
+- direnv
+- distrobox
+- dive
+- dkms
+- dnsmasq
+- doggo
+- dos2unix
+- dust
+- edk2-ovmf
+- efibootmgr
+- elfutils
+- enca
+- entr
+- erdtree
+- etckeeper
+- expect
+- fastfetch
+- fclones
+- fd
+- figlet
+- fio
+- fortune-mod
+- fping
+- freerdp
+- fwupd
+- fzf
+- genact
+- geoip
+- geoip-database
+- gist
+- git-crypt
+- git-delta
+- git-filter-repo
+- github-cli
+- gitleaks
+- gitlogue
+- git-lfs
+- ghostty
+- ghostty-shell-integration
+- glow
+- goaccess
+- goimapnotify
+- gopass
+- go-yq
+- gptfdisk
+- grafana
+- graphviz
+- grex
+- gvfs
+- gvfs-mtp
+- gvfs-smb
+- gvfs-afc
+- gvfs-dnssd
+- gvfs-goa
+- gvfs-gphoto2
+- gvfs-nfs
+- gvfs-onedrive
+- gvfs-wsdd
+- hashcat
+- helix
+- helvum
+- hexyl
+- himalaya
+- htmlq
+- httpie
+- hunspell-ru
+- hwinfo
+- hyperfine
+- id3v2
+- iftop
+- inotify-tools
+- ioping
+- iotop-c
+- iperf3
+- isync
+- iwd
+- jc
+- jpegoptim
+- jq
+- jujutsu
+- just
+- kexec-tools
+- kitty
+- kmon
+- kvantum
+- kvantum-qt5
+- lbzip2
+- less
+- libnotify
+- liquidctl
+- lldb
+- lm_sensors
+- lnav
+- lolcat
+- lowdown
+- lshw
+- lsp-plugins
+- man-pages
+- mediainfo
+- media-player-info
+- memtester
+- miller
+- minicom
+- moreutils
+- mpc
+- mpd
+- python-mutagen
+- mtr
+- multipath-tools
+- ncdu
+- neomutt
+- nerdctl
+- nicotine+
+- nm-connection-editor
+- nss-mdns
+- nuspell
+- nvtop
+- ollama
+- ollama-vulkan
+- onefetch
+- openbsd-netcat
+- openocd
+- openrgb
+- optipng
+- ouch
+- pandoc-cli
+- parallel
+- pastel
+- pbzip2
+- pcmanfm
+- pcsc-tools
+- perf
+- perl-image-exiftool
+- pgcli
+- picard
+- pigz
+- plocate
+- pngquant
+- podman
+- powertop
+- pre-commit
+- python-faker
+- python-internetarchive
+- prettyping
+- progress
+- pv
+- pwgen
+- qemu-desktop
+- qpwgraph
+- qrencode
+- qt5ct
+- qt5-wayland
+- qt6ct
+- rawtherapee
+- rclone
+- recoll
+- reptyr
+- resvg
+- ripgrep
+- rlwrap
+- ruff
+- sad
+- sbctl
+- schedtool
+- scour
+- shellcheck
+- shfmt
+- smartmontools
+- sops
+- socat
+- sonic-visualiser
+- sox
+- sshfs
+- sshpass
+- streamlink
+- s-tui
+- sudo
+- swappy
+- systemd-resolvconf
+- tabiew
+- taplo-cli
+- tcpdump
+- tealdeer
+- telegram-desktop
+- tesseract
+- tesseract-data-eng
+- tesseract-data-rus
+- testdisk
+- texlive-basic
+- tig
+- tmux
+- toilet
+- traceroute
+- transmission-cli
+- tree
+- tree-sitter-cli
+- ttyd
+- tumbler
+- turbostat
+- udiskie
+- ugrep
+- unarchiver
+- unbound
+- unzip
+- cpio
+- upower
+- urlscan
+- urlwatch
+- valgrind
+- vdirsyncer
+- virt-manager
+- virt-viewer
+- viu
+- vnstat
+- w3m
+- waypipe
+- wayvnc
+- wev
+- wf-recorder
+- which
+- whois
+- wireshark-cli
+- wtype
+- xfsprogs
+- xh
+- yamllint
+- ydotool
+- yt-dlp
+- zathura
+- zathura-pdf-poppler
+- zbar
+- zellij
+- zk
+- zmap
+- zoxide
+- zsh
+- handlr-regex
+- i3status
+- i3-wm
+- inxi
+- kate
+- libpulse
+- malcontent
+- nano
+- orca
+- papers
+- pass
+- plasma-desktop
+- plasma-workspace
+- polkit-kde-agent
+- breeze
+- breeze-icons
+- konsole
+- proxypilot
+- proxypilot-debug
+- qt6-wayland
+- snapshot
+- ssh-to-age
+- ssh-to-age-debug
+- taoup
+- tecla
+- uwsm
+- vim
+- wiremix
 aur:
-
-  - amdgpu-vulkan-switcher-git
-  - act-bin
-  - optiscaler-universal
-  - advancecomp
-  - babashka-bin
-  - carapace-bin
-  - aliae-bin
-  - albumdetails
-  - claude-code
-  - cmake-language-server
-  - dcfldd
-  - ddccontrol
-  - dool
-  - dualsensectl
-  - eilmeldung-bin
-  - flclashx-bin
-  - v2raya-bin
-  - v2rayn-bin
-  - v2ray
-  - vicinae-bin
-  - fsel-bin
-  - epr-git
-  - freeze-bin
-
-  - ghgrab-bin
-  - gmap-bin
-  - git-extras
-  - google-chrome
-  - gowall-bin
-
-  - hishtory-bin
-  - hxd
-  - hw-probe
-  - hyprscratch
-  - instagram-cli
-  - iosevka-neg-fonts
-  - jdupes
-  - localsend-bin
-  - lazytail-bin
-  - lutgen-bin
-  - massren
-  - mpdris2-git
-  - mcat-bin
-  - mpdas
-  - neg-pretty-printer
-  - neo-matrix
-
-  - newsraft
-  - no-more-secrets
-  - oh-my-posh
-  - otter-launcher
-  - oports-git
-  - oyo
-  - par
-  - patool
-  - paru
-  - paru-debug
-  - pipemixer-git
-  - pup-bin
-  - python-ascii_magic
-  - python-rapidgzip
-  - quickshell
-  - reddix-bin
-  - repeater-bin
-  - regex-tui
-  - raysession
-  - resterm-bin
-  - richcolors
-  - rofi-file-browser-extended-git
-  - rofi-file-browser-extended-git-debug
-  - rustmission
-  - scc
-  - songfetch
-  - simutil-bin
-  - sing-box-bin
-  - strace-tui-bin
-  - systemd-manager-tui
-
-  - tanin-git
-  - tessen
-  - tmmpr
-  - ttfautohint
-  - unflac
-
-  - watchtower-bin
-  - witr-bin
-  - wget2
-  - wlogout
-  - wlr-which-key
-  - xdg-ninja
-  - youtube-tui
-  - bazecor
-  - python-telethon
-  - zen-browser-bin
+- amdgpu-vulkan-switcher-git
+- act-bin
+- optiscaler-universal
+- advancecomp
+- babashka-bin
+- carapace-bin
+- aliae-bin
+- albumdetails
+- claude-code
+- cmake-language-server
+- dcfldd
+- ddccontrol
+- dool
+- dualsensectl
+- eilmeldung-bin
+- flclashx-bin
+- v2raya-bin
+- v2rayn-bin
+- v2ray
+- vicinae-bin
+- fsel-bin
+- epr-git
+- freeze-bin
+- ghgrab-bin
+- gmap-bin
+- git-extras
+- google-chrome
+- gowall-bin
+- hishtory-bin
+- hxd
+- hw-probe
+- hyprscratch
+- instagram-cli
+- iosevka-neg-fonts
+- jdupes
+- localsend-bin
+- lazytail-bin
+- lutgen-bin
+- massren
+- mpdris2-git
+- mcat-bin
+- mpdas
+- neg-pretty-printer
+- neo-matrix
+- newsraft
+- no-more-secrets
+- oh-my-posh
+- otter-launcher
+- oports-git
+- oyo
+- par
+- patool
+- paru
+- paru-debug
+- pipemixer-git
+- pup-bin
+- python-ascii_magic
+- python-rapidgzip
+- quickshell
+- reddix-bin
+- repeater-bin
+- regex-tui
+- raysession
+- resterm-bin
+- richcolors
+- rofi-file-browser-extended-git
+- rofi-file-browser-extended-git-debug
+- rustmission
+- scc
+- songfetch
+- simutil-bin
+- sing-box-bin
+- strace-tui-bin
+- systemd-manager-tui
+- tanin-git
+- tessen
+- tmmpr
+- ttfautohint
+- unflac
+- watchtower-bin
+- witr-bin
+- wget2
+- wlogout
+- wlr-which-key
+- xdg-ninja
+- youtube-tui
+- bazecor
+- python-telethon
+- zen-browser-bin

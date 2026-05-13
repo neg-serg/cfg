@@ -1,23 +1,12 @@
-# Desktop application definitions for installers_desktop.sls — data separated from logic.
-# URLs with ${VER} are interpolated at render time from data/versions.yaml.
-#
-# ── Schema ────────────────────────────────────────────────────────────
-#
-# paru_install:                    → macro: paru_install(name, pkg) via paru
-#   <name>: <package_name>         — simple key: value pairs
-#
-# ─────────────────────────────────────────────────────────────────────
-
+schema_version: 1
 paru_install:
-  antigravity_tools: antigravity-tools-bin  # AI account manager & proxy for Google/Anthropic sessions (Tauri)
-  bottles: bottles  # Wine prefix manager with GUI
-  droidcam: droidcam  # use Android phone as webcam via v4l2loopback
-  # euporie: euporie  # terminal Jupyter notebook client (disabled: AUR deps fail on Python 3.14)
-  opensoundmeter: opensoundmeter  # real-time audio spectrum/impedance analyzer
-  overskride: overskride-bin  # Bluetooth GUI manager for Linux
-  proton-ge: proton-ge-custom-bin  # custom Proton (Wine) build for Steam
-  protonup-rs: protonup-rs-bin  # CLI manager for Proton-GE / Wine-GE version management
-  roomeqwizard: roomeqwizard  # room acoustics measurement and EQ tool
-  xwaylandvideobridge: xwaylandvideobridge  # bridge for screen sharing on Wayland via XWayland
-  yandex-browser: yandex-browser  # Chromium-based browser with Yandex services
-  # rofi-file-browser-extended: moved to installers_desktop.sls (needs CMAKE_POLICY_VERSION_MINIMUM for CMake 4.0)
+  antigravity_tools: antigravity-tools-bin
+  bottles: bottles
+  droidcam: droidcam
+  opensoundmeter: opensoundmeter
+  overskride: overskride-bin
+  proton-ge: proton-ge-custom-bin
+  protonup-rs: protonup-rs-bin
+  roomeqwizard: roomeqwizard
+  xwaylandvideobridge: xwaylandvideobridge
+  yandex-browser: yandex-browser

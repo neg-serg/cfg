@@ -1,10 +1,8 @@
-# User account groups and sudo configuration.
-# Consumed by users.sls.
+schema_version: 1
 groups:
-  - wheel
-  - libvirt
-  - kvm
-  - plugdev
-  - realtime
-
+- wheel
+- libvirt
+- kvm
+- plugdev
+- realtime
 sudoers_timeout: /etc/sudoers.d/timeout

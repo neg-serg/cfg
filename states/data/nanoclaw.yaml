@@ -1,5 +1,4 @@
-# NanoClaw AI agent configuration.
-# Consumed by nanoclaw.sls.
+schema_version: 1
 repo: https://github.com/qwibitai/nanoclaw.git
 tz: Europe/Moscow
 api_base_url: http://127.0.0.1:8317

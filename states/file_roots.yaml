@@ -1,0 +1,10 @@
+# Salt file_roots configuration — single source of truth.
+# Consumed by:
+#   - scripts/salt-runtime.sh  (generates minion config)
+#   - scripts/lint-jinja.py    (offline salt:// URI validation)
+#
+# Paths are resolved relative to the project root.
+# ${project_dir} is substituted by consumers.
+base:
+  - ${project_dir}/states/
+  - ${project_dir}/

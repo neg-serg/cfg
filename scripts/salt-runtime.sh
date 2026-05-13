@@ -1,6 +1,36 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Read file_roots from states/file_roots.yaml and output YAML block.
+# Replaces hardcoded file_roots in minion config generation.
+_salt_runtime_file_roots_block() {
+    local project_dir="$1"
+    local roots_file="${project_dir}/states/file_roots.yaml"
+
+    if [[ ! -f "$roots_file" ]]; then
+        printf 'file_roots:\n  base:\n    - %s/states/\n    - %s/\n' "$project_dir" "$project_dir"
+        return
+    fi
+
+    printf 'file_roots:\n  base:\n'
+    local in_base=0
+    while IFS= read -r line; do
+        case "$line" in
+            base:) in_base=1; continue ;;
+            *[a-zA-Z]*) ;;
+        esac
+        if [[ $in_base -eq 1 ]]; then
+            line="${line#"${line%%[![:space:]]*}"}"
+            line="${line#- }"
+            line="${line//\$\{project_dir\}/${project_dir}}"
+            if [[ -n "$line" ]]; then
+                printf '    - %s\n' "$line"
+            fi
+        fi
+    done < "$roots_file"
+}
+
+
 salt_runtime_prepare_dirs() {
     local project_dir="$1"
     local runtime_dir="$2"
@@ -35,10 +65,7 @@ pillar_cache_backend: disk
 pillar_cache_ttl: 3600
 file_client: local
 state_verbose: False
-file_roots:
-  base:
-    - ${project_dir}/states/
-    - ${project_dir}/
+$(_salt_runtime_file_roots_block "$project_dir")
 
 # --- Performance optimizations ---
 enable_fqdns_grains: False
@@ -63,10 +90,7 @@ log_file: /dev/null
 cachedir: ${runtime_dir}/var/cache/salt
 file_client: local
 state_verbose: False
-file_roots:
-  base:
-    - ${project_dir}/states/
-    - ${project_dir}/
+$(_salt_runtime_file_roots_block "$project_dir")
 enable_fqdns_grains: False
 enable_gpu_grains: False
 grains_cache: False

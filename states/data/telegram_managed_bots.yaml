@@ -1,6 +1,6 @@
----
+schema_version: 1
 owner_uids: []
 allowlist_uids: []
 pip_deps:
-  - python-telegram-bot[all]
-  - PyYAML
+- python-telegram-bot[all]
+- PyYAML

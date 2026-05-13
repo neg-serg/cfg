@@ -1,159 +1,81 @@
-# Service definitions for services.sls.
-# Each entry is gated by host_config.jinja features.services.<key>
-# or features.network.<key> (for the network: section).
-#
-# ── Schema: simple ──────────────────────────────────────────────────
-#
-# simple:                          → macro: simple_service(name, pkgs, service)
-#   <name>:
-#     packages: (required) space-separated pacman package names
-#     service:  (required) systemd service name to enable
-#
-# ── Schema: complex ─────────────────────────────────────────────────
-#
-# complex:                         → orchestrator loop in services.sls
-#   <name>:                        # key must match features.services.<name>
-#     # All fields optional; at least one actionable field must be present.
-#     packages: <string>           # space-separated pacman package names
-#     package_manager: pacman      # 'pacman' (default) or 'paru' (AUR)
-#     service: <string>            #   systemd service name (for simple enable)
-#     unit:                        # systemd unit management
-#       source: <salt:// path>     #   unit file source
-#       type: service              #   service|timer (default: service)
-#       enabled: true              #   enable at boot (default: true)
-#       running: false             #   ensure running + watch (default: false)
-#       companion: <salt:// path>  #   companion unit (timer↔service pair)
-#       template: null             #   'jinja' if unit needs rendering
-#       unit_context: {}           #   context for unit template
-#     manual_start:                # deploy but don't enable at boot
-#       service: <string>          #   systemd service name to disable
-#       stop: false                #   also stop the service (default: false)
-#     dirs:                        # directories to create
-#       - path: <absolute path>
-#         mode: null               #   optional file mode
-#         owner: null              #   optional owner override
-#         require: []              #   optional state requisites
-#     config_templates:            # config files to deploy
-#       - dest: <absolute path>
-#         source: <salt:// path>
-#         mode: '0644'             #   file mode (default: '0644')
-#         template: jinja          #   template engine (default: jinja)
-#         context: {}              #   keys from known_vars (hostname, mnt_zero, etc.)
-#         makedirs: false          #   create parent dirs (default: false)
-#         onchanges_restart: null  #   restart this service on config change
-#     scripts:                     # executable scripts to deploy
-#       - dest: <absolute path>
-#         source: <salt:// path>
-#     healthcheck:                 # health check after service start
-#       command: <shell command>
-#       requires: []               #   state requisites
-#     logrotate:                   # logrotate config
-#       source: <salt:// path>
-#     cleanup:                     # one-time file removal
-#       paths: []                  #   absolute paths to remove
-#       onlyif: <shell command>    #   guard
-#     has_escape_hatch: false      # if true, inline .sls block handles extra logic
-#
-# ── Schema: network ─────────────────────────────────────────────────
-#
-# network:                         → orchestrator loop in services.sls
-#   <name>:                        # key must match features.network.<name>
-#     # Same fields as complex: above, plus:
-#     #   package_manager: paru    # AUR packages (xray uses paru)
-#     #   service: tailscaled      # for simple enable (no custom unit)
-#
-# ─────────────────────────────────────────────────────────────────────
-
+schema_version: 1
 simple: {}
-
 complex:
   samba:
-    packages: samba  # SMB file sharing
+    packages: samba
     dirs:
-      - path: /mnt/zero/sync/smb  # shared directory
-        mode: '0755'
-        require:
-          - mount: mount_zero
+    - path: /mnt/zero/sync/smb
+      mode: '0755'
+      require:
+      - mount: mount_zero
     config_templates:
-      - dest: /etc/samba/smb.conf  # Samba configuration
-        source: salt://configs/smb.conf.j2
-        template: jinja
-        makedirs: true
-        context:
-          hostname: hostname
-          mnt_zero: mnt_zero
-          user: user
+    - dest: /etc/samba/smb.conf
+      source: salt://configs/smb.conf.j2
+      template: jinja
+      makedirs: true
+      context:
+        hostname: hostname
+        mnt_zero: mnt_zero
+        user: user
     manual_start:
-      service: smb  # manual start only: systemctl start smb
+      service: smb
       stop: false
-
-# ===================================================================
-# Network services (data-driven: gated by features.network.<name>)
-# ===================================================================
-# Same schema as complex: above, plus:
-#   package_manager: 'paru' for AUR packages (default: 'pacman')
-
 network:
   xray:
     packages: xray
     package_manager: paru
     dirs:
-      - path: /etc/xray
-        mode: '0750'
+    - path: /etc/xray
+      mode: '0750'
     unit:
       source: salt://units/xray.service
       enabled: false
       requires:
-        - cmd: install_xray
+      - cmd: install_xray
     cleanup:
       paths:
-        - /home/neg/.local/bin/xray  # legacy manually-installed binary
+      - /home/neg/.local/bin/xray
       onlyif: test -f /home/neg/.local/bin/xray
-
   singbox:
     unit:
       source: salt://units/sing-box-tun.service
       template: jinja
-      enabled: null  # skip enable/disable (enabled=None)
+      enabled: null
       unit_context:
         home: home
         uid: uid
         vpn_split_router: vpn_split_router
-
   tailscale:
     packages: tailscale
-    service: tailscaled  # enable package-provided service (no custom unit)
+    service: tailscaled
     config_templates:
-      - dest: /etc/unbound/unbound.conf.d/tailscale.conf
-        source: salt://configs/tailscale-dns-stub.conf.j2
-        makedirs: true
-        require:
-          - cmd: install_unbound
-        onchanges_restart: unbound  # restart unbound on config change
-
-# ===================================================================
-# DNS services (data-driven: gated by features.dns.<name>)
-# ===================================================================
-
+    - dest: /etc/unbound/unbound.conf.d/tailscale.conf
+      source: salt://configs/tailscale-dns-stub.conf.j2
+      makedirs: true
+      require:
+      - cmd: install_unbound
+      onchanges_restart: unbound
 dns:
   unbound:
     packages: unbound
     config_templates:
-      - dest: /etc/unbound/unbound.conf
-        source: salt://configs/unbound.conf
-        makedirs: true
-        mode: '0644'
+    - dest: /etc/unbound/unbound.conf
+      source: salt://configs/unbound.conf
+      makedirs: true
+      mode: '0644'
     dirs:
-      - path: /etc/unbound/unbound.conf.d
-        mode: '0755'
+    - path: /etc/unbound/unbound.conf.d
+      mode: '0755'
     setup_commands:
-      - name: unbound-anchor -a /var/lib/unbound/root.key || true
-        creates: /var/lib/unbound/root.key
-      - name: unbound-control-setup
-        creates: /etc/unbound/unbound_server.pem
-      - name: chown -R unbound:unbound /etc/unbound/unbound_*.pem /etc/unbound/unbound_*.key
-        onlyif: |
-          stat -c '%U' /etc/unbound/unbound_server.pem 2>/dev/null | grep -qv 'unbound'
+    - name: unbound-anchor -a /var/lib/unbound/root.key || true
+      creates: /var/lib/unbound/root.key
+    - name: unbound-control-setup
+      creates: /etc/unbound/unbound_server.pem
+    - name: chown -R unbound:unbound /etc/unbound/unbound_*.pem /etc/unbound/unbound_*.key
+      onlyif: 'stat -c ''%U'' /etc/unbound/unbound_server.pem 2>/dev/null | grep -qv
+        ''unbound''
+
+        '
     unit_override:
       name: unbound_restart_override
       service: unbound.service
@@ -161,22 +83,21 @@ dns:
     ensure_running:
       service: unbound
       watch:
-        - file: unbound_config_0
-        - file: unbound_restart_override
+      - file: unbound_config_0
+      - file: unbound_restart_override
     healthcheck:
       command: unbound-control status >/dev/null 2>&1
       requires:
-        - service: unbound_running
-
+      - service: unbound_running
   avahi:
     packages: avahi nss-mdns
-    service: avahi-daemon  # enable package-provided service
+    service: avahi-daemon
     config_templates:
-      - dest: /etc/avahi/avahi-daemon.conf
-        source: salt://configs/avahi-daemon.conf
-        makedirs: true
-        mode: '0644'
+    - dest: /etc/avahi/avahi-daemon.conf
+      source: salt://configs/avahi-daemon.conf
+      makedirs: true
+      mode: '0644'
     ensure_running:
       service: avahi-daemon
       watch:
-        - file: avahi_config_0
+      - file: avahi_config_0

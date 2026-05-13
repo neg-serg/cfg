@@ -1,250 +1,333 @@
-# Centralized feature registry — single source of truth for all feature flags.
-# Consumed by: host_config.jinja (via import_yaml), host_model.py, salt_contracts.py
-# Purpose: define every possible feature flag, its hierarchy, type, default, and
-#          what states it gates. Adding a new feature requires ONLY this file.
-
+schema_version: 1
 version: 1
-
-# Top-level feature groups and their members.
-# Each feature entry:
-#   default: default value (bool for flags)
-#   gates: list of state IDs gated by this feature (from module-index)
-#   description: human-readable purpose
 features:
   monitoring:
-    description: "Observability stack (Loki, Grafana, Promtail, Alertmanager, system monitors)"
+    description: Observability stack (Loki, Grafana, Promtail, Alertmanager, system
+      monitors)
     features:
       sysstat:
         default: true
-        description: "System activity data collector"
-        gates: [services]
+        description: System activity data collector
+        gates:
+        - services
       vnstat:
         default: true
-        description: "Network traffic monitor"
-        gates: [services]
+        description: Network traffic monitor
+        gates:
+        - services
       netdata:
         default: true
-        description: "Real-time performance monitoring"
-        gates: [services]
+        description: Real-time performance monitoring
+        gates:
+        - services
       loki:
         default: false
-        description: "Log aggregation (Grafana Loki)"
-        gates: [monitoring_loki, monitoring_alertmanager]
+        description: Log aggregation (Grafana Loki)
+        gates:
+        - monitoring_loki
+        - monitoring_alertmanager
       promtail:
         default: false
-        description: "Log shipper for Loki"
-        gates: [monitoring_loki]
+        description: Log shipper for Loki
+        gates:
+        - monitoring_loki
       grafana:
         default: false
-        description: "Monitoring dashboard (Grafana)"
-        gates: [monitoring_loki]
+        description: Monitoring dashboard (Grafana)
+        gates:
+        - monitoring_loki
       alertmanager:
         default: false
-        description: "Alertmanager webhook alerts"
-        gates: [monitoring_alertmanager]
+        description: Alertmanager webhook alerts
+        gates:
+        - monitoring_alertmanager
       alerts:
         default: false
-        description: "Service watchdog timers and alert rules"
-        gates: [monitoring_alerts]
+        description: Service watchdog timers and alert rules
+        gates:
+        - monitoring_alerts
   dns:
-    description: "DNS services (unbound, AdGuard Home, avahi)"
+    description: DNS services (unbound, AdGuard Home, avahi)
     features:
       unbound:
         default: false
-        description: "Unbound recursive DNS resolver"
-        gates: [dns, services]
+        description: Unbound recursive DNS resolver
+        gates:
+        - dns
+        - services
       adguardhome:
         default: false
-        description: "AdGuard Home DNS filtering"
-        gates: [adguardhome, system_description]
+        description: AdGuard Home DNS filtering
+        gates:
+        - adguardhome
+        - system_description
       avahi:
         default: true
-        description: "mDNS service discovery"
-        gates: [dns]
+        description: mDNS service discovery
+        gates:
+        - dns
   services:
-    description: "Home-server service toggles (Samba, Jellyfin, Bitcoind, DuckDNS, Transmission)"
+    description: Home-server service toggles (Samba, Jellyfin, Bitcoind, DuckDNS,
+      Transmission)
     features:
       samba:
         default: false
-        description: "Samba file sharing"
-        gates: [services]
+        description: Samba file sharing
+        gates:
+        - services
       jellyfin:
         default: false
-        description: "Jellyfin media server"
-        gates: [jellyfin, system_description]
+        description: Jellyfin media server
+        gates:
+        - jellyfin
+        - system_description
       bitcoind:
         default: false
-        description: "Bitcoin node data directory"
-        gates: [bitcoind, system_description]
+        description: Bitcoin node data directory
+        gates:
+        - bitcoind
+        - system_description
       duckdns:
         default: false
-        description: "DuckDNS dynamic DNS"
-        gates: [duckdns, system_description]
+        description: DuckDNS dynamic DNS
+        gates:
+        - duckdns
+        - system_description
       transmission:
         default: false
-        description: "Transmission BitTorrent client"
-        gates: [transmission, system_description]
+        description: Transmission BitTorrent client
+        gates:
+        - transmission
+        - system_description
   network:
-    description: "Network features (VPN, bridges, tunnels, firewall)"
+    description: Network features (VPN, bridges, tunnels, firewall)
     features:
       vm_bridge:
         default: false
-        description: "VM bridge network interface"
-        gates: [network]
+        description: VM bridge network interface
+        gates:
+        - network
       xray:
         default: false
-        description: "Xray VPN proxy"
-        gates: [network]
+        description: Xray VPN proxy
+        gates:
+        - network
       singbox:
         default: false
-        description: "sing-box VPN TUN interface"
-        gates: [network]
+        description: sing-box VPN TUN interface
+        gates:
+        - network
       tailscale:
         default: false
-        description: "Tailscale mesh VPN"
-        gates: [network]
+        description: Tailscale mesh VPN
+        gates:
+        - network
       zapret2:
         default: false
-        description: "DPI bypass (zapret2 nfqueue)"
-        gates: [zapret2, system_description]
+        description: DPI bypass (zapret2 nfqueue)
+        gates:
+        - zapret2
+        - system_description
       hiddify:
         default: false
-        description: "Hiddify VPN client"
-        gates: [hiddify, system_description]
+        description: Hiddify VPN client
+        gates:
+        - hiddify
+        - system_description
       wifi:
         default: false
-        description: "WiFi driver support"
-        gates: [hardware]
+        description: WiFi driver support
+        gates:
+        - hardware
       vpn_split_router:
         default: false
-        description: "DNS-based VPN split routing"
-        gates: [network]
+        description: DNS-based VPN split routing
+        gates:
+        - network
       vpn_hybrid:
         default: false
-        description: "Hybrid VPN (Xray + sing-box TUN)"
-        gates: [network]
+        description: Hybrid VPN (Xray + sing-box TUN)
+        gates:
+        - network
       ipv6:
         default: false
-        description: "IPv6 diagnostics"
-        gates: [group.network]
+        description: IPv6 diagnostics
+        gates:
+        - group.network
       ipv6_6to4:
         default: false
-        description: "IPv6 6to4 tunnel"
-        gates: [group.network]
+        description: IPv6 6to4 tunnel
+        gates:
+        - group.network
       ipv6_tunnel:
         default: false
-        description: "IPv6 HE.net tunnel"
-        gates: [group.network, ipv6_tunnel]
+        description: IPv6 HE.net tunnel
+        gates:
+        - group.network
+        - ipv6_tunnel
   user_services:
-    description: "User-scoped systemd services (mail, contacts)"
+    description: User-scoped systemd services (mail, contacts)
     features:
       mail:
         default: true
-        description: "Email sync (mbsync + imapnotify)"
-        gates: [user_services]
+        description: Email sync (mbsync + imapnotify)
+        gates:
+        - user_services
       vdirsyncer:
         default: true
-        description: "Contact/calendar sync (vdirsyncer)"
-        gates: [user_services]
-
-  # Flat (non-nested) feature flags
+        description: Contact/calendar sync (vdirsyncer)
+        gates:
+        - user_services
   fancontrol:
     default: false
-    description: "Fan speed control via hardware sensors"
-    gates: [hardware]
+    description: Fan speed control via hardware sensors
+    gates:
+    - hardware
   amnezia:
     default: false
-    description: "Amnezia VPN client + kernel module"
-    gates: [amnezia, system_description]
+    description: Amnezia VPN client + kernel module
+    gates:
+    - amnezia
+    - system_description
   outline:
     default: true
-    description: "Outline VPN client (always available)"
+    description: Outline VPN client (always available)
     gates: []
   steam:
     default: true
-    description: "Steam gaming platform"
-    gates: [steam, system_description]
+    description: Steam gaming platform
+    gates:
+    - steam
+    - system_description
   mpd:
     default: true
-    description: "Music Player Daemon"
-    gates: [mpd, system_description, user_services]
+    description: Music Player Daemon
+    gates:
+    - mpd
+    - system_description
+    - user_services
   ollama:
     default: true
-    description: "Ollama LLM inference server"
-    gates: [ollama, system_description, group.ai]
+    description: Ollama LLM inference server
+    gates:
+    - ollama
+    - system_description
+    - group.ai
   llama_embed:
     default: true
-    description: "llama.cpp embedding server (Qwen3-Embedding-8B)"
-    gates: [llama_embed, system_description, group.ai]
+    description: llama.cpp embedding server (Qwen3-Embedding-8B)
+    gates:
+    - llama_embed
+    - system_description
+    - group.ai
   t5_summarization:
     default: true
-    description: "T5 text summarization server"
-    gates: [t5_summarization, group.ai]
+    description: T5 text summarization server
+    gates:
+    - t5_summarization
+    - group.ai
   floorp:
     default: false
-    description: "Floorp browser profile"
-    gates: [floorp, system_description, zen_browser]
+    description: Floorp browser profile
+    gates:
+    - floorp
+    - system_description
+    - zen_browser
   espanso:
     default: false
-    description: "Espanso text expander"
-    gates: [espanso, system_description]
+    description: Espanso text expander
+    gates:
+    - espanso
+    - system_description
   kanata:
     default: true
-    description: "Kanata keyboard remapper"
-    gates: [kanata, system_description]
+    description: Kanata keyboard remapper
+    gates:
+    - kanata
+    - system_description
   flatpak:
     default: true
-    description: "Flatpak sandboxed desktop apps"
-    gates: [flatpak, system_description]
+    description: Flatpak sandboxed desktop apps
+    gates:
+    - flatpak
+    - system_description
   sudo_ssh_agent:
     default: false
-    description: "SSH agent auth for sudo"
-    gates: [users]
+    description: SSH agent auth for sudo
+    gates:
+    - users
   opencode:
     default: false
-    description: "OpenCode LLM CLI tool — proxypilot handles config; feature flag retained for host config compatibility"
+    description: OpenCode LLM CLI tool — proxypilot handles config; feature flag retained
+      for host config compatibility
     gates: []
   nanoclaw:
     default: false
-    description: "NanoClaw AI coding agent (Telegram bot)"
-    gates: [nanoclaw, system_description, group.ai]
+    description: NanoClaw AI coding agent (Telegram bot)
+    gates:
+    - nanoclaw
+    - system_description
+    - group.ai
   telethon_bridge:
     default: false
-    description: "Telegram MTProto relay to HTTP"
-    gates: [telethon_bridge, system_description, group.ai]
+    description: Telegram MTProto relay to HTTP
+    gates:
+    - telethon_bridge
+    - system_description
+    - group.ai
   managed_bots:
     default: false
-    description: "Managed Telegram Bots"
-    gates: [managed_bots, system_description]
+    description: Managed Telegram Bots
+    gates:
+    - managed_bots
+    - system_description
   video_ai:
     default: true
-    description: "Video AI processing pipeline"
-    gates: [video_ai, system_description, group.ai]
+    description: Video AI processing pipeline
+    gates:
+    - video_ai
+    - system_description
+    - group.ai
   image_gen:
     default: true
-    description: "AI image generation (free-tier providers)"
-    gates: [image_generation, system_description, group.ai]
+    description: AI image generation (free-tier providers)
+    gates:
+    - image_generation
+    - system_description
+    - group.ai
   proxypilot:
     default: true
-    description: "ProxyPilot dynamic proxy management"
-    gates: [proxypilot, system_description]
+    description: ProxyPilot dynamic proxy management
+    gates:
+    - proxypilot
+    - system_description
   xen_vr:
     default: false
-    description: "X11/Xorg VR session for SteamVR"
-    gates: [xen, system_description]
+    description: X11/Xorg VR session for SteamVR
+    gates:
+    - xen
+    - system_description
   music_analysis:
     default: false
-    description: "Music BPM/key/fingerprinting pipeline"
-    gates: [music_analysis, system_description]
+    description: Music BPM/key/fingerprinting pipeline
+    gates:
+    - music_analysis
+    - system_description
   tidal:
     default: false
-    description: "TidalCycles live coding environment"
-    gates: [tidal, system_description]
+    description: TidalCycles live coding environment
+    gates:
+    - tidal
+    - system_description
   vaultwarden:
     default: false
-    description: "Vaultwarden Bitwarden server"
-    gates: [vaultwarden, system_description]
+    description: Vaultwarden Bitwarden server
+    gates:
+    - vaultwarden
+    - system_description
   nyxt:
     default: false
-    description: "Nyxt Lisp-powered web browser"
-    gates: [nyxt, system_description]
+    description: Nyxt Lisp-powered web browser
+    gates:
+    - nyxt
+    - system_description

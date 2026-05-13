@@ -1,69 +1,80 @@
-# User systemd services (consumed by user_services.sls)
-#
-# ── Schema ────────────────────────────────────────────────────────────
-#
-# unit_files:                      → macro: user_service_file(name, filename, source)
-#   - id:       (required) Salt state ID for the file.managed state
-#     filename: (required) systemd unit filename (e.g. "mbsync-gmail.service")
-#     features: (optional) feature tags required for this unit to be deployed
-#               — source file: salt://units/<filename>
-#
-# enable_services:                 → macro: user_service_enable(services=...)
-#   - name:     (required) service/socket unit name
-#     features: (optional) feature tags required for enablement
-#                                    enabled via `systemctl --user enable`
-#
-# enable_now_timers:               → macro: user_service_enable(services=..., start_now=True)
-#   - name:     (required) timer/service unit name
-#     features: (optional) feature tags required for enablement
-#                                    enabled and started via `systemctl --user enable --now`
-#
-# ─────────────────────────────────────────────────────────────────────
-
-# Custom unit files to deploy to ~/.config/systemd/user/
+schema_version: 1
 unit_files:
-  - {id: mbsync_gmail_service, filename: mbsync-gmail.service, features: [mail]}
-  - {id: mbsync_gmail_timer, filename: mbsync-gmail.timer, features: [mail]}
-  - {id: imapnotify_gmail_service, filename: imapnotify-gmail.service, features: [mail]}
-  - {id: vdirsyncer_service, filename: vdirsyncer.service, features: [vdirsyncer]}
-  - {id: vdirsyncer_timer, filename: vdirsyncer.timer, features: [vdirsyncer]}
-  - {id: surfingkeys_server_service, filename: surfingkeys-server.service}
-  - {id: pic_dirs_list_service, filename: pic-dirs-list.service}
-  - {id: vicinae_service, filename: vicinae.service}
-  - {id: hyprscratch_service, filename: hyprscratch.service}
-  - {id: gopass_age_agent_service, filename: gopass-age-agent.service}
-  - {id: openrgb_profile_service, filename: openrgb-profile.service}
-  - {id: salt_drift_service, filename: salt-drift.service}
-  - {id: salt_drift_timer, filename: salt-drift.timer}
-  - {id: chezmoi_watch_service, filename: chezmoi-watch.service}
-  - {id: update_check_service, filename: update-check.service}
-  - {id: update_check_timer, filename: update-check.timer}
-  - {id: rclone_gdrive_service, filename: rclone-gdrive.service}
-  - {id: rclone_yadisk_service, filename: rclone-yadisk.service}
-  - {id: wl_service, filename: wl.service}
-  - {id: cache_cleanup_service, filename: cache-cleanup.service}
-  - {id: cache_cleanup_timer, filename: cache-cleanup.timer}
-
-# Services/sockets to enable (systemctl --user enable)
+- id: mbsync_gmail_service
+  filename: mbsync-gmail.service
+  features:
+  - mail
+- id: mbsync_gmail_timer
+  filename: mbsync-gmail.timer
+  features:
+  - mail
+- id: imapnotify_gmail_service
+  filename: imapnotify-gmail.service
+  features:
+  - mail
+- id: vdirsyncer_service
+  filename: vdirsyncer.service
+  features:
+  - vdirsyncer
+- id: vdirsyncer_timer
+  filename: vdirsyncer.timer
+  features:
+  - vdirsyncer
+- id: surfingkeys_server_service
+  filename: surfingkeys-server.service
+- id: pic_dirs_list_service
+  filename: pic-dirs-list.service
+- id: vicinae_service
+  filename: vicinae.service
+- id: hyprscratch_service
+  filename: hyprscratch.service
+- id: gopass_age_agent_service
+  filename: gopass-age-agent.service
+- id: openrgb_profile_service
+  filename: openrgb-profile.service
+- id: salt_drift_service
+  filename: salt-drift.service
+- id: salt_drift_timer
+  filename: salt-drift.timer
+- id: chezmoi_watch_service
+  filename: chezmoi-watch.service
+- id: update_check_service
+  filename: update-check.service
+- id: update_check_timer
+  filename: update-check.timer
+- id: rclone_gdrive_service
+  filename: rclone-gdrive.service
+- id: rclone_yadisk_service
+  filename: rclone-yadisk.service
+- id: wl_service
+  filename: wl.service
+- id: cache_cleanup_service
+  filename: cache-cleanup.service
+- id: cache_cleanup_timer
+  filename: cache-cleanup.timer
 enable_services:
-  - {name: imapnotify-gmail.service, features: [mail]}
-  - {name: surfingkeys-server.service}
-  - {name: pic-dirs-list.service}
-  - {name: vicinae.service}
-  - {name: hyprscratch.service}
-  - {name: gopass-age-agent.service}
-  - {name: openrgb-profile.service}
-  - {name: chezmoi-watch.service}
-  - {name: gpg-agent.socket}
-  - {name: ssh-agent.socket}
-  - {name: wl.service}
-  - {name: systemd-tmpfiles-setup.service}  # creates hashed GPG socket dirs from user-tmpfiles.d/
-  - {name: ydotool.service}  # input automation daemon for Hyprland MCP tools
-
-# Timers to enable and start immediately (systemctl --user enable --now)
+- name: imapnotify-gmail.service
+  features:
+  - mail
+- name: surfingkeys-server.service
+- name: pic-dirs-list.service
+- name: vicinae.service
+- name: hyprscratch.service
+- name: gopass-age-agent.service
+- name: openrgb-profile.service
+- name: chezmoi-watch.service
+- name: gpg-agent.socket
+- name: ssh-agent.socket
+- name: wl.service
+- name: systemd-tmpfiles-setup.service
+- name: ydotool.service
 enable_now_timers:
-  - {name: mbsync-gmail.timer, features: [mail]}
-  - {name: vdirsyncer.timer, features: [vdirsyncer]}
-  - {name: salt-drift.timer}
-  - {name: update-check.timer}
-  - {name: cache-cleanup.timer}
+- name: mbsync-gmail.timer
+  features:
+  - mail
+- name: vdirsyncer.timer
+  features:
+  - vdirsyncer
+- name: salt-drift.timer
+- name: update-check.timer
+- name: cache-cleanup.timer

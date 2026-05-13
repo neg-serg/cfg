@@ -15,7 +15,10 @@ _DATA = REPO_ROOT_PATH / "states" / "data"
 
 def _load(name):
     with open(_DATA / name) as fh:
-        return yaml.safe_load(fh)
+        data = yaml.safe_load(fh)
+    if isinstance(data, dict):
+        data.pop("schema_version", None)
+    return data
 
 
 def _assert_is_list_of_strings(items):

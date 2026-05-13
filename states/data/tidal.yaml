@@ -1,7 +1,6 @@
-# TidalCycles live coding environment packages.
-# Consumed by tidal.sls.
+schema_version: 1
 packages:
-  - supercollider
-  - sc3-plugins
-  - ghc
-  - haskell-tidal
+- supercollider
+- sc3-plugins
+- ghc
+- haskell-tidal

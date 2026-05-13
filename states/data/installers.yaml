@@ -1,116 +1,53 @@
-# Tool definitions for installers.sls — data separated from logic.
-# These entries are fallback/manual installs and should exist only when no
-# official repository or AUR package is a good fit.
-# Adding/updating a tool is a YAML-only edit; no Jinja changes needed.
-# Grouped by macro type (maps 1:1 to _macros.jinja macro signatures).
-# URLs with ${VER} are interpolated at render time from data/versions.yaml.
-#
-# ── Schema ────────────────────────────────────────────────────────────
-#
-# curl_bin:                        → macro: curl_bin(name, url)
-#   <name>:
-#     url:  (required) download URL; may contain ${VER}
-#     hash: (optional) sha256 checksum
-#
-# github_tar:                      → macro: github_tar(name, url)
-#   <name>:
-#     url:  (required) tar.gz URL; may contain ${VER}
-#     hash: (optional) sha256 checksum
-#
-# pip_pkg:                         → macro: pip_pkg(name, pkg, bin)
-#   <name>:
-#     pkg:  (optional) override package name (default: key name)
-#     bin:  (optional) override binary name  (default: key name)
-#     — empty dict {} uses key name for both
-#
-# cargo_pkg:                       → macro: cargo_pkg(name, pkg, bin, git)
-#   <name>:
-#     pkg:  (optional) override crate name   (default: key name)
-#     bin:  (optional) override binary name   (default: key name)
-#     git:  (optional) git repo URL for `cargo install --git`
-#     — empty dict {} installs from crates.io using key name
-#
-# curl_extract_zip:                → macro: curl_extract_zip(name, url, binary_path)
-#   <name>:
-#     url:          (required) ZIP URL; may contain ${VER}
-#     binary_path:  (required) path to binary inside ZIP
-#     binaries:     (optional) list of binaries if >1 file needed
-#     chmod:        (optional) bool — chmod +x extracted files
-#     hash:         (optional) sha256 checksum
-#
-# curl_extract_tar:                → macro: curl_extract_tar(name, url, binary_pattern)
-#   <name>:
-#     url:             (required) tar.gz URL; may contain ${VER}
-#     binary_pattern:  (required) glob/name to find binary after extraction
-#     bin:             (optional) override output binary name
-#     hash:            (optional) sha256 checksum
-#
-# ─────────────────────────────────────────────────────────────────────
-
+schema_version: 1
 curl_bin:
   rofi-systemd:
-    url: "https://raw.githubusercontent.com/IvanMalison/rofi-systemd/b8b156b7fd9c9dc0f034a88f1adeb07ecbdd4d7f/rofi-systemd"
-    hash: "b0a601b9fceec20117aeb533e03c75569c8700f08ffc3107ea75dde4e0ef43b0"
-  # Internet Archive interactive search TUI (fzf-based)
+    url: https://raw.githubusercontent.com/IvanMalison/rofi-systemd/b8b156b7fd9c9dc0f034a88f1adeb07ecbdd4d7f/rofi-systemd
+    hash: b0a601b9fceec20117aeb533e03c75569c8700f08ffc3107ea75dde4e0ef43b0
   ia-search:
-    url: "https://raw.githubusercontent.com/ahloiscreamo/ia-search/main/ia-search"
-  # markdown-native CLI todo manager (niklas-heer/tdx)
+    url: https://raw.githubusercontent.com/ahloiscreamo/ia-search/main/ia-search
   tdx:
-    url: "https://github.com/niklas-heer/tdx/releases/download/v${VER}/tdx-linux-amd64"
-
-# cross-platform package manager for GitHub Releases (yhoundz/parm)
+    url: https://github.com/niklas-heer/tdx/releases/download/v${VER}/tdx-linux-amd64
 github_tar:
   parm:
-    url: "https://github.com/yhoundz/parm/releases/download/v${VER}/parm-linux-amd64.tar.gz"
+    url: https://github.com/yhoundz/parm/releases/download/v${VER}/parm-linux-amd64.tar.gz
   nyxt:
-    url: "https://github.com/atlas-engineer/nyxt/releases/download/${VER}/Linux-Nyxt-x86_64.tar.gz"
-    binary_pattern: "Nyxt-x86_64.AppImage"
+    url: https://github.com/atlas-engineer/nyxt/releases/download/${VER}/Linux-Nyxt-x86_64.tar.gz
+    binary_pattern: Nyxt-x86_64.AppImage
     bin: nyxt
-
 pip_pkg:
   httpstat: {}
   scdl: {}
   sqlit:
-    pkg: "git+https://github.com/Maxteabag/sqlit"
+    pkg: git+https://github.com/Maxteabag/sqlit
     bin: sqlit
-  # push-to-talk voice typing for terminal via local Whisper (lmacan1/talktype)
-  # talktype:
-  #   pkg: "talktype[local] @ git+https://github.com/lmacan1/talktype.git"
   texicode:
     bin: txc
-
 cargo_pkg:
   pzip:
     bin: pz
   proteinview:
-    git: "https://github.com/001TMF/ProteinView"
+    git: https://github.com/001TMF/ProteinView
   rsmetrx:
-    git: "https://github.com/neg-serg/rsmetrx"
+    git: https://github.com/neg-serg/rsmetrx
   panther:
-    git: "https://github.com/PantherApex/Panther"
+    git: https://github.com/PantherApex/Panther
   spek-cli:
-    git: "https://github.com/SwagRGB/spek-cli"
-
+    git: https://github.com/SwagRGB/spek-cli
 go_pkg:
   ght:
-    pkg: "github.com/kwame-Owusu/ght"
+    pkg: github.com/kwame-Owusu/ght
   lazycut:
-    pkg: "github.com/ozemin/lazycut"
-  # Terminal sorting visualizer with sonification
+    pkg: github.com/ozemin/lazycut
   sound-of-sort:
-    pkg: "github.com/sahaj-b/sound-of-sort"
-  # Terminal regex visualizer
+    pkg: github.com/sahaj-b/sound-of-sort
   trex:
-    pkg: "github.com/samyakbardiya/trex"
-  # Astrological birth chart calculator with AI interpretations
+    pkg: github.com/samyakbardiya/trex
   astral-tui:
-    pkg: "github.com/ctrl-vfr/astral-tui"
-
+    pkg: github.com/ctrl-vfr/astral-tui
 curl_extract_zip: {}
-
 curl_extract_tar:
   essentia:
-    url: "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/extractors/essentia-extractor-v${VER}-linux-x86_64.tar.gz"
+    url: https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/extractors/essentia-extractor-v${VER}-linux-x86_64.tar.gz
     binary_pattern: streaming_extractor_music
     bin: essentia_streaming_extractor_music
-    hash: "d9902aadac4f442992877945da2a6fe8d6ea6b0de314ca8ac0c28dc5f253f7d8"
+    hash: d9902aadac4f442992877945da2a6fe8d6ea6b0de314ca8ac0c28dc5f253f7d8

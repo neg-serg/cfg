@@ -1,29 +1,26 @@
-# Theme and icon pack definitions (consumed by installers_themes.sls)
+schema_version: 1
 alkano:
   repo: https://github.com/neg-serg/Alkano-aio.git
   dest: /usr/share/icons/Alkano-aio
-
 git_clone_deploy:
-  matugen-themes:                                  # matugen color themes
+  matugen-themes:
     repo: https://github.com/InioX/matugen-themes.git
     dest: ~/.config/matugen/templates
     items:
-      - '*/'                                     # all template directories
-
-  kora-icons:                                      # Kora icon theme (4 variants)
+    - '*/'
+  kora-icons:
     repo: https://github.com/bikass/kora.git
     dest: ~/.local/share/icons
     creates: /.local/share/icons/kora
     items:
-      - kora                                       # default icon theme
-      - kora-light                                 # light variant
-      - kora-light-panel                           # light panel icons
-      - kora-pgrey                                 # grey variant
-
-  flight-gtk:                                      # Flight GTK theme (dark + light)
+    - kora
+    - kora-light
+    - kora-light-panel
+    - kora-pgrey
+  flight-gtk:
     repo: https://github.com/neg-serg/Flight-Plasma-Themes.git
     dest: ~/.local/share/themes
     creates: /.local/share/themes/Flight-Dark-GTK
     items:
-      - Flight-Dark-GTK                            # dark GTK theme
-      - Flight-light-GTK                           # light GTK theme
+    - Flight-Dark-GTK
+    - Flight-light-GTK

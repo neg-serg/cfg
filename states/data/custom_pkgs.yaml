@@ -1,58 +1,25 @@
-# Custom package builds from local PKGBUILDs.
-# These packages are not in official repos or AUR and require local builds.
-# Source is always salt://build/pkgbuilds/<name>.
-#
-# ── Schema ────────────────────────────────────────────────────────────
-#
-# pkgbuild:                        → macro: pkgbuild_install(name, source)
-#   <name>:
-#     timeout:        (optional) build timeout in seconds (default: 600)
-#     replace_check:  (optional) shell cmd to verify correct variant is installed;
-#                     if it fails, the old package is removed before rebuilding.
-#                     ⚠ Packages with replace_check are auto-added to IgnorePkg
-#                     in pacman.conf (see custom_pkgs.sls) to prevent pacman -Syu
-#                     from overwriting the fork with a stock version.
-#     conflicts:      (optional) list of old package names to remove before building
-#                     (for predecessor packages with different names, e.g. swww-vulkan → wl)
-#     extra_sources:  (optional) list of additional source trees to deploy:
-#       - source: "salt://..."   — salt file path
-#         dest:   "/tmp/..."     — local extraction target
-#     — empty dict {} builds from salt://build/pkgbuilds/<name> with defaults
-#
-# ─────────────────────────────────────────────────────────────────────
-
+schema_version: 1
 pkgbuild:
   raise: {}
   richcolors: {}
   albumdetails: {}
   taoup:
-    conflicts: [taoup-git]
-
-  # Binary download PKGBUILDs (migrated from manual curl downloads)
+    conflicts:
+    - taoup-git
   proxypilot: {}
   ssh-to-age: {}
   sidecar: {}
-
-  # Cargo build PKGBUILDs (migrated from cargo install)
   tailray: {}
-
-  # Desktop app PKGBUILD (migrated from curl_extract_zip)
   throne: {}
-
-  # neg-serg fork with --style plain; must replace stock duf if present
   duf:
-    replace_check: "pacman -Qi duf 2>/dev/null | grep -q neg-serg"
-
-  # Wayland wallpaper daemon with Vulkan backend; replaces stock swww
+    replace_check: pacman -Qi duf 2>/dev/null | grep -q neg-serg
   wl:
     timeout: 900
-    replace_check: "pacman -Qi wl 2>/dev/null | grep -q neg-serg"
+    replace_check: pacman -Qi wl 2>/dev/null | grep -q neg-serg
     conflicts:
-      - swww-vulkan
-      - swww
-
-  # Needs local source tree from build/pretty-printer/
+    - swww-vulkan
+    - swww
   neg-pretty-printer:
     extra_sources:
-      - source: "salt://build/pretty-printer"
-        dest: "/tmp/pretty-printer"
+    - source: salt://build/pretty-printer
+      dest: /tmp/pretty-printer

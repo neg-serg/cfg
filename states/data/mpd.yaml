@@ -1,6 +1,6 @@
-# MPD (Music Player Daemon) configuration.
-# Consumed by mpd.sls.
-wiremix_env: 'BINDGEN_EXTRA_CLANG_ARGS="-I/usr/lib/clang/$(ls /usr/lib/clang/ | sort -V | tail -1)/include"'
+schema_version: 1
+wiremix_env: BINDGEN_EXTRA_CLANG_ARGS="-I/usr/lib/clang/$(ls /usr/lib/clang/ | sort
+  -V | tail -1)/include"
 mpdas_config:
   host: localhost
   port: 6600

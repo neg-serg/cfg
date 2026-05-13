@@ -1,17 +1,4 @@
-# Disk mounts
-# Used by mounts.sls
-#
-# ── Schema ────────────────────────────────────────────────────────────
-#
-# disks:
-#   <name>:
-#     device: (required) block device path (e.g. /dev/mapper/xenon-one)
-#     path:   (required) mount point (e.g. /mnt/one)
-#     fstype: (required) filesystem type (xfs, btrfs, etc.)
-#     — mounted with options: noatime, persist: True, failhard: True
-#
-# ─────────────────────────────────────────────────────────────────────
-
+schema_version: 1
 disks:
   zero:
     device: /dev/mapper/argon-zero

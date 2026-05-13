@@ -1,8 +1,7 @@
-# Host configuration: per-machine defaults (user, mounts, partitions, features).
-# Loaded by host_config.jinja → re-exported through _imports.jinja.
+schema_version: 1
 defaults:
   user: neg
-  home: ""
+  home: ''
   uid: 1000
   mnt_zero: /mnt/zero
   mnt_one: /mnt/one
@@ -11,17 +10,17 @@ defaults:
   cursor_size: 23
   cpu_vendor: amd
   kvm_module: kvm_amd
-  display: ""
-  primary_output: ""
+  display: ''
+  primary_output: ''
   greetd_vt: 1
   greetd_scale: 1
   greetd_disable_outputs: []
   timezone: Europe/Moscow
   locale: en_US.UTF-8
-  floorp_profile: ""
-  zen_profile: ""
+  floorp_profile: ''
+  zen_profile: ''
   migrate_floorp_profile_to_zen: false
-  hostname: "{{ grains['host'] }}"
+  hostname: '{{ grains[''host''] }}'
   extra_kargs: []
   extra_modules: []
   features:
@@ -83,22 +82,20 @@ defaults:
     vaultwarden: false
     nyxt: false
     xen_vr: false
-
     music_analysis: false
     tidal: false
-
 hosts:
   telfir:
     display: 3840x2160@240
     primary_output: DP-2
     greetd_scale: 2
     floorp_profile: c85pjaxk.default-default
-    zen_profile: "qnkh60k3.Default (release)"
+    zen_profile: qnkh60k3.Default (release)
     migrate_floorp_profile_to_zen: true
     hostname: telfir
     extra_modules:
-      - ec_sys  # raw EC register access for hwmon sensors
-      - snd_hdspe  # RME HDSPe AIO Pro audio interface (DKMS, needs driver_override via udev)
+    - ec_sys
+    - snd_hdspe
     features:
       fancontrol: true
       monitoring:
@@ -123,7 +120,6 @@ hosts:
       music_analysis: true
       tidal: true
       xen_vr: false
-      nanoclaw: true           # Telegram bot
-
+      nanoclaw: true
 aliases:
   cachyos: telfir

@@ -26,6 +26,7 @@ import yaml  # noqa: E402
 # Salt adds tags like {% import_yaml %}, {% load_yaml %} etc.
 # Register them as no-op extensions so jinja2.parse() doesn't choke.
 
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class SaltTagExtension(jinja2.ext.Extension):
     """Mock Salt-specific Jinja2 tags so templates render in the test environment.
@@ -823,7 +824,35 @@ def check_cmd_shell(rendered_docs):
 _SALT_URI_RE = re.compile(r"""salt://([^'"\s}]+)""")
 
 # file_roots search order (relative to project root)
-_FILE_ROOTS = ["states", "."]
+def _load_file_roots():
+    """Read file_roots from states/file_roots.yaml (single source of truth).
+
+    Returns list of relative paths (e.g. ['states', '.']).
+    Falls back to hardcoded defaults if file is missing or unparseable.
+    """
+    roots_path = os.path.join("states", "file_roots.yaml")
+    default = ["states", "."]
+    try:
+        yaml_path = os.path.join(REPO_ROOT, roots_path)
+        with open(yaml_path) as fh:
+            data = yaml.safe_load(fh.read())
+    except (FileNotFoundError, AttributeError):
+        return default
+    if not isinstance(data, dict) or not isinstance(data.get("base"), list):
+        return default
+    paths = data["base"]
+    resolved = []
+    for p in paths:
+        if not isinstance(p, str):
+            continue
+        p = p.replace("${project_dir}/", "").rstrip("/")
+        if not p:
+            p = "."
+        resolved.append(p)
+    return resolved if resolved else default
+
+
+_FILE_ROOTS = _load_file_roots()
 
 
 def check_salt_uri_refs(sls_files, jinja_files, data_files=None):

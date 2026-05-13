@@ -1,79 +1,53 @@
-# Desktop environment configuration (consumed by desktop.sls and related states)
-#
-# ── Schema ────────────────────────────────────────────────────────────
-#
-# hyprland_packages:           — pacman packages for Hyprland
-# screenshot_packages:         — pacman packages for screenshots
-# running_services:            — systemd services to start and enable
-# dconf_settings:              — key: full dconf path, value: setting value
-# hyprland_plugins:            — Hyprland plugin repos (id → dir_name mapping)
-# hyprland_plugin_urls:        — id → git URL for hyprpm_add
-# hyprland_check_plugins:      — plugin names to check in hyprpm_update
-# niri_packages:               — niri compositor packages
-# portal_package:              — xdg-desktop-portal-termfilechooser AUR package
-# faillock_deny:               — faillock deny threshold value
-# desktop_packages:            — extra per-desktop packages (rsync, browsers, etc.)
-#
-# ─────────────────────────────────────────────────────────────────────
-
+schema_version: 1
 hyprland_packages:
-  - hypridle                            # idle daemon for Hyprland
-  - hyprlock                            # screen locker for Hyprland
-  - hyprpicker                          # color picker for Hyprland
-  - hyprpolkitagent                     # polkit authentication agent
-  - wlr-randr                           # wlroots display configuration tool
-  - xdg-desktop-portal-hyprland         # XDG desktop portal backend for Hyprland
-
+- hypridle
+- hyprlock
+- hyprpicker
+- hyprpolkitagent
+- wlr-randr
+- xdg-desktop-portal-hyprland
 screenshot_packages:
-  - grim                                # Wayland screenshot tool
-  - slurp                               # Wayland region selector
-
+- grim
+- slurp
 running_services:
-  - NetworkManager
-  - dbus-broker
-  - openrgb
-  - bluetooth
-  - sshd
-  - systemd-timesyncd
-
+- NetworkManager
+- dbus-broker
+- openrgb
+- bluetooth
+- sshd
+- systemd-timesyncd
 dconf_settings:
   /org/gnome/desktop/interface/gtk-theme: Flight-Dark-GTK
   /org/gnome/desktop/interface/icon-theme: kora
-  /org/gnome/desktop/interface/font-name: "Iosevka 10"
-
+  /org/gnome/desktop/interface/font-name: Iosevka 10
 hyprland_plugins:
-  - id: hyprland_plugins
-    repo: https://github.com/hyprwm/hyprland-plugins
-    dir: hyprland-plugins
-    enable:
-      - name: xtra-dispatchers
-  - id: hyprglass
-    repo: https://github.com/hyprnux/hyprglass
-    dir: HyprGlass
-    enable:
-      - name: hyprglass
-  - id: darkwindow
-    repo: https://github.com/micha4w/Hypr-DarkWindow
-    dir: Hypr-DarkWindow
-    enable:
-      - name: Hypr-DarkWindow
-
+- id: hyprland_plugins
+  repo: https://github.com/hyprwm/hyprland-plugins
+  dir: hyprland-plugins
+  enable:
+  - name: xtra-dispatchers
+- id: hyprglass
+  repo: https://github.com/hyprnux/hyprglass
+  dir: HyprGlass
+  enable:
+  - name: hyprglass
+- id: darkwindow
+  repo: https://github.com/micha4w/Hypr-DarkWindow
+  dir: Hypr-DarkWindow
+  enable:
+  - name: Hypr-DarkWindow
 hyprland_check_plugins:
-  - xtra-dispatchers
-  - HyprGlass
-  - Hypr-DarkWindow
-
+- xtra-dispatchers
+- HyprGlass
+- Hypr-DarkWindow
 niri_packages:
-  - niri
-  - xwayland-satellite
-  - xdg-desktop-portal-gnome
-  - xdg-desktop-portal-gtk
-
+- niri
+- xwayland-satellite
+- xdg-desktop-portal-gnome
+- xdg-desktop-portal-gtk
 portal_package: xdg-desktop-portal-termfilechooser-hunkyburrito-git
 portal_service: xdg-desktop-portal.service
-
 faillock_deny: '10'
-
 desktop_packages:
   rsync: rsync
   localsend: localsend-bin
@@ -81,7 +55,6 @@ desktop_packages:
   google_chrome: google-chrome
   zen_browser: zen-browser-bin
   wlr_which_key: wlr-which-key
-
 system_packages:
   swtpm: swtpm
   pcsclite: pcsclite

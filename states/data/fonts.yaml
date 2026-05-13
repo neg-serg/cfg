@@ -1,23 +1,4 @@
-# Font definitions for fonts.sls — data separated from logic.
-# URLs with ${VER} are interpolated at render time from data/versions.yaml.
-# Grouped by install method.
-#
-# ── Schema ────────────────────────────────────────────────────────────
-#
-# pacman:                          → macro: pacman_install(name, pkgs)
-#   <name>: <package_name>         — key: display name, value: pacman package
-#
-# paru:                            → macro: paru_install(name, pkg)
-#   <name>: <aur_package_name>     — key: display name, value: AUR package
-#
-# download_zip:                    → macro: download_font_zip(name, url, subdir)
-#   <name>:
-#     url:    (required) font ZIP URL; may contain ${VER}
-#     subdir: (required) subdirectory in ~/.local/share/fonts/
-#     hash:   (optional) sha256 checksum
-#
-# ─────────────────────────────────────────────────────────────────────
-
+schema_version: 1
 pacman:
   font-awesome: otf-font-awesome
   noto-fonts: noto-fonts
@@ -28,28 +9,26 @@ pacman:
   ibm-plex: ttf-ibm-plex
   inter-font: inter-font
   material-symbols: ttf-material-symbols-variable
-
 paru:
   material-design-icons: ttf-material-design-icons-extended
-
 download_zip:
   fira_code_nerd:
-    url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v${VER}/FiraCode.zip"
+    url: https://github.com/ryanoasis/nerd-fonts/releases/download/v${VER}/FiraCode.zip
     subdir: FiraCodeNerd
-    hash: "89978e6f870d044286a339161d5ed961569744b1cd2afee62337fa140cd0b397"
+    hash: 89978e6f870d044286a339161d5ed961569744b1cd2afee62337fa140cd0b397
   oldschool_pc_fonts:
-    url: "https://int10h.org/oldschool-pc-fonts/download/oldschool_pc_font_pack_v${VER}_linux.zip"
+    url: https://int10h.org/oldschool-pc-fonts/download/oldschool_pc_font_pack_v${VER}_linux.zip
     subdir: oldschool-pc
-    hash: "b30dc3ecc9931ad2dd8be7517dd01813c8834a1911b582ab7643191b41a3d759"
+    hash: b30dc3ecc9931ad2dd8be7517dd01813c8834a1911b582ab7643191b41a3d759
   sf_pro_display:
-    url: "https://font.download/dl/font/sf-pro-display.zip"
+    url: https://font.download/dl/font/sf-pro-display.zip
     subdir: SFProDisplay
-    hash: "569f23e3f8bcdab709824af5b6b6dfa4a4aa9864e4b4034b70970b48ee36f2f2"
+    hash: 569f23e3f8bcdab709824af5b6b6dfa4a4aa9864e4b4034b70970b48ee36f2f2
   anurati:
-    url: "https://font.download/dl/font/anurati.zip"
+    url: https://font.download/dl/font/anurati.zip
     subdir: Anurati
-    hash: "8a936d59a5ddeb53df9aee641137d8e3e81bd260395c8784c07231b3fd25c109"
+    hash: 8a936d59a5ddeb53df9aee641137d8e3e81bd260395c8784c07231b3fd25c109
   alfa_slab_one:
-    url: "https://font.download/dl/font/alfa-slab-one.zip"
+    url: https://font.download/dl/font/alfa-slab-one.zip
     subdir: AlfaSlabOne
-    hash: "d09294d4f7ff6717dec3a486a74059070bf26a74a821598e600e8ecc015b9a51"
+    hash: d09294d4f7ff6717dec3a486a74059070bf26a74a821598e600e8ecc015b9a51

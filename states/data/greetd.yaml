@@ -1,18 +1,17 @@
-# greetd display manager configuration.
-# Consumed by greetd.sls.
+schema_version: 1
 config_dir: /etc/greetd
 main_config: /etc/greetd/config.toml
 hyprland_config: /etc/greetd/hyprland-greeter.conf
 greeter_wrapper: /etc/greetd/greeter-wrapper
 session_wrapper: /etc/greetd/session-wrapper
 cleanup_paths:
-  - /etc/greetd/config.toml.pacnew
-  - /etc/greetd/config.toml.bak
-  - /etc/greetd/regreet.toml
-  - /etc/greetd/hyprland-greeter-config.conf
-  - /etc/greetd/kitty.conf
+- /etc/greetd/config.toml.pacnew
+- /etc/greetd/config.toml.bak
+- /etc/greetd/regreet.toml
+- /etc/greetd/hyprland-greeter-config.conf
+- /etc/greetd/kitty.conf
 broken_sessions:
-  - /usr/share/wayland-sessions/gnome.desktop
-  - /usr/share/wayland-sessions/hyprland-uwsm.desktop
+- /usr/share/wayland-sessions/gnome.desktop
+- /usr/share/wayland-sessions/hyprland-uwsm.desktop
 service: greetd
 emergency_tty: getty@tty2

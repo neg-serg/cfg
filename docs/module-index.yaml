@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-13T15:02:46'
+generated: '2026-05-13T15:13:10'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -612,6 +612,7 @@ states:
   - services.jellyfin
   - services.transmission
   - steam
+  - t5_summarization
   - telethon_bridge
   - tidal
   - vaultwarden
@@ -654,7 +655,6 @@ states:
   services:
   - telethon-bridge-react.path
   - telethon-bridge-react.service
-  - telethon-bridge.service
   configs:
   - configs/telethon-bridge.yaml.j2
 - id: tidal

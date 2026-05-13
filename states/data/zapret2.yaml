@@ -4,6 +4,8 @@ package:
   source: aur
   name: zapret2
   helper: paru
+  dependencies:
+    - ipset
 
 config:
   dir: /opt/zapret2
@@ -56,6 +58,9 @@ helper:
   deployed_path: /usr/local/libexec/zapret2-rollout
   approval_file: /var/lib/zapret2/activation-approval.json
 
+# Sections below are consumed by scripts/zapret2-rollout.sh for staged rollout.
+# managed_artifacts + approval_gate: consumed at runtime by zapret2-rollout.sh.
+# prerequisites + conflicts: operator documentation (not consumed at runtime).
 managed_artifacts:
   - id: zapret2_package
     artifact_type: package

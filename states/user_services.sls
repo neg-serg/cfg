@@ -9,7 +9,6 @@ include:
 # Systemd user services: mail, calendar, chezmoi, media, surfingkeys
 
 {% set svc = host.features.user_services %}
-{% set feature_enabled = {'mail': svc.mail, 'vdirsyncer': svc.vdirsyncer} %}
 
 {% macro feature_entry_enabled(entry) -%}
 {%- set features = entry.get('features', []) -%}
@@ -18,7 +17,7 @@ True
 {%- else -%}
 {%- set ns = namespace(enabled=True) -%}
 {%- for feature in features -%}
-{%- if not feature_enabled.get(feature, False) -%}
+{%- if not svc.get(feature, False) -%}
 {%- set ns.enabled = False -%}
 {%- endif -%}
 {%- endfor -%}
@@ -102,8 +101,16 @@ mail_directories:
 
 # --- Disable services for disabled features ---
 {%- set _all_feature_units = us.enable_services + us.enable_now_timers -%}
-{%- for feature_name, is_enabled in feature_enabled.items() -%}
-{%- if not is_enabled -%}
+{%- set _all_features = [] -%}
+{%- for entry in _all_feature_units -%}
+{%- for f in entry.get('features', []) -%}
+{%- if f not in _all_features -%}
+{%- do _all_features.append(f) -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endfor -%}
+{%- for feature_name in _all_features -%}
+{%- if not svc.get(feature_name, False) -%}
 {%- set disabled_units = [] -%}
 {%- for entry in _all_feature_units -%}
 {%- if feature_name in entry.get('features', []) -%}

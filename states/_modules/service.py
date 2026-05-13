@@ -13,10 +13,14 @@ from _yaml_out import yaml_output, to_yaml as _to_yaml
 
 def _host() -> dict[str, Any]:
     try:
-        from _modules.common import get_host
-        return get_host()
-    except Exception:
-        return {"user": "root", "home": "/root", "runtime_dir": "/run/user/1000"}
+        import __salt__  # type: ignore[import-untyped]
+        return __salt__["common.get_host"]()
+    except (ImportError, KeyError):
+        try:
+            from _modules.common import get_host
+            return get_host()
+        except Exception:
+            return {"user": "root", "home": "/root", "runtime_dir": "/run/user/1000", "pkg_list": "/var/cache/salt/pacman_installed.txt", "systemd_unit_dir": "/etc/systemd/system/", "systemd_user_unit_dir": "/root/.config/systemd/user/"}
 
 
 def _sysctl_env() -> list[str]:
@@ -144,10 +148,9 @@ def env_block() -> str:
     return _render_env_block()
 
 
-@yaml_output
-def ensure_dir(name: str, path: str, mode: str | None = None,
-               require: list[str] | None = None,
-               user: str | None = None) -> str:
+def _ensure_dir_dict(name: str, path: str, mode: str | None = None,
+                     require: list[str] | None = None,
+                     user: str | None = None) -> dict[str, Any]:
     u = user or _host().get("user", "root")
     obj = {
         name: {
@@ -161,7 +164,14 @@ def ensure_dir(name: str, path: str, mode: str | None = None,
         args.append({"mode": mode})
     if require:
         args.append({"require": require})
-    return _to_yaml(obj)
+    return obj
+
+
+@yaml_output
+def ensure_dir(name: str, path: str, mode: str | None = None,
+               require: list[str] | None = None,
+               user: str | None = None) -> str:
+    return _ensure_dir_dict(name, path, mode=mode, require=require, user=user)
 
 
 @yaml_output
@@ -346,16 +356,12 @@ def unit_override(name: str, service: str, source: str,
     return ret
 
 
-@yaml_output
-def service_with_unit(name: str, source: str, unit_type: str = "service",
-                      running: bool = False, enabled: bool = True,
-                      requires: list[str] | None = None,
-                      template: str | None = None,
-                      context: dict[str, Any] | None = None,
-                      onlyif: str | None = None,
-                      companion: str | None = None,
-                      watch: list[str] | None = None) -> dict[str, Any]:
-    """Generate complete systemd unit + service lifecycle states."""
+def _service_with_unit_dict(name, source, unit_type="service",
+                            running=False, enabled=True,
+                            requires=None, template=None,
+                            context=None, onlyif=None,
+                            companion=None, watch=None):
+    """Internal version — returns dict for composition."""
     ret: dict[str, Any] = {}
 
     # Unit file
@@ -438,6 +444,23 @@ def service_with_unit(name: str, source: str, unit_type: str = "service",
     return ret
 
 
+@yaml_output
+def service_with_unit(name: str, source: str, unit_type: str = "service",
+                      running: bool = False, enabled: bool = True,
+                      requires: list[str] | None = None,
+                      template: str | None = None,
+                      context: dict[str, Any] | None = None,
+                      onlyif: str | None = None,
+                      companion: str | None = None,
+                      watch: list[str] | None = None) -> dict[str, Any]:
+    """Generate complete systemd unit + service lifecycle states."""
+    return _service_with_unit_dict(name, source, unit_type=unit_type,
+                                   running=running, enabled=enabled,
+                                   requires=requires, template=template,
+                                   context=context, onlyif=onlyif,
+                                   companion=companion, watch=watch)
+
+
 _HOST_FIELDS = {"hostname", "home", "user", "uid", "mnt_zero", "mnt_one"}
 
 
@@ -491,8 +514,8 @@ def render_service(name: str, opts: dict[str, Any], feature_flag: bool,
     # Dirs
     if "dirs" in opts:
         for i, d in enumerate(opts["dirs"]):
-            ret.update(ensure_dir(f"{name}_dir_{i}", d["path"], mode=d.get("mode"),
-                                  require=d.get("require")))
+            ret.update(_ensure_dir_dict(f"{name}_dir_{i}", d["path"], mode=d.get("mode"),
+                                       require=d.get("require")))
 
     # Configs
     if "config_templates" in opts:
@@ -533,7 +556,7 @@ def render_service(name: str, opts: dict[str, Any], feature_flag: bool,
         if "packages" in opts:
             unit_req.append(f"cmd: install_{name.replace('-', '_')}")
         unit_req.extend(u.get("requires", []))
-        ret.update(service_with_unit(
+        ret.update(_service_with_unit_dict(
             name, u["source"],
             unit_type=u.get("type", "service"),
             enabled=u.get("enabled", True),

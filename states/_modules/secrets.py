@@ -15,10 +15,14 @@ _GOPASS_AVAILABLE: bool = False
 
 def _host() -> dict[str, Any]:
     try:
-        from _modules.common import get_host
-        return get_host()
-    except Exception:
-        return {"user": "root", "home": "/root"}
+        import __salt__  # type: ignore[import-untyped]
+        return __salt__["common.get_host"]()
+    except (ImportError, KeyError):
+        try:
+            from _modules.common import get_host
+            return get_host()
+        except Exception:
+            return {"user": "root", "home": "/root", "pkg_list": "/var/cache/salt/pacman_installed.txt"}
 
 
 def gopass_secret(key: str, fallback_cmd: str = "true",

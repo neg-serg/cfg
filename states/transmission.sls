@@ -19,6 +19,6 @@
 {{ salt['service.ensure_dir']('transmission_watch_dir', home ~ '/dw', mode='0755') }}
 {{ salt['service.ensure_dir']('transmission_download_dir', home ~ '/torrent/data', mode='0755') }}
 
-{{ salt['container.deploy']('transmission', catalog.transmission, image_registry,
+{{ salt['container.deploy']('transmission',
     quadlet_unit_name='transmission-container',
     requires=['file: transmission_config_dir', 'file: transmission_watch_dir', 'file: transmission_download_dir', 'cmd: transmission_native_unit_daemon_reload', 'service: transmission_native_service_disabled']) }}

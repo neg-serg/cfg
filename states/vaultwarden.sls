@@ -40,7 +40,7 @@ vault_full_backup_script:
 {{ salt['service.ensure_dir']('vaultwarden_data_dir', '/var/lib/vaultwarden', mode='0700') }}
 
 # Podman Quadlet container
-{{ salt['container.deploy']('vaultwarden', catalog.vaultwarden, image_registry,
+{{ salt['container.deploy']('vaultwarden',
     quadlet_unit_name='vaultwarden-container',
     requires=['file: vaultwarden_data_dir']) }}
 

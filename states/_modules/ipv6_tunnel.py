@@ -17,10 +17,14 @@ except ImportError:
 
 def _host() -> dict[str, Any]:
     try:
-        from _modules.common import get_host
-        return get_host()
-    except Exception:
-        return {"user": "root", "home": "/root"}
+        import __salt__  # type: ignore[import-untyped]
+        return __salt__["common.get_host"]()
+    except (ImportError, KeyError):
+        try:
+            from _modules.common import get_host
+            return get_host()
+        except Exception:
+            return {"user": "root", "home": "/root", "systemd_unit_dir": "/etc/systemd/system/", "nftables_dir": "/etc/nftables/", "sysctl_dir": "/etc/sysctl.d/"}
 
 
 def deploy(name: str, interface: str, service_name: str,

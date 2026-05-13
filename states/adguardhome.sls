@@ -42,7 +42,7 @@ adguardhome_initial_config:
     onlyif='systemctl is-enabled systemd-resolved >/dev/null 2>&1') }}
 
 {# ── Container deployment ── #}
-{{ salt['container.deploy']('adguardhome', catalog.adguardhome, image_registry,
+{{ salt['container.deploy']('adguardhome',
     quadlet_unit_name='adguardhome-container',
     requires=['file: adguardhome_work_dir', 'file: adguardhome_initial_config', 'cmd: adguardhome_native_unit_daemon_reload']) }}
 

@@ -12,18 +12,26 @@ from _yaml_out import yaml_output
 
 def _host() -> dict[str, Any]:
     try:
-        from _modules.common import get_host
-        return get_host()
-    except Exception:
-        return {"user": "root", "home": "/root", "runtime_dir": "/run/user/1000"}
+        import __salt__  # type: ignore[import-untyped]
+        return __salt__["common.get_host"]()
+    except (ImportError, KeyError):
+        try:
+            from _modules.common import get_host
+            return get_host()
+        except Exception:
+            return {"user": "root", "home": "/root", "uid": 1000, "runtime_dir": "/run/user/1000", "pkg_list": "/var/cache/salt/pacman_installed.txt"}
 
 
 def _const() -> dict[str, Any]:
     try:
-        from _modules.common import get_constants
-        return get_constants()
-    except Exception:
-        return {"retry_attempts": 3, "retry_interval": 10}
+        import __salt__  # type: ignore[import-untyped]
+        return __salt__["common.get_constants"]()
+    except (ImportError, KeyError):
+        try:
+            from _modules.common import get_constants
+            return get_constants()
+        except Exception:
+            return {"retry_attempts": 3, "retry_interval": 10}
 
 
 @yaml_output

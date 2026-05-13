@@ -12,10 +12,14 @@ from _yaml_out import yaml_output
 
 def _host() -> dict[str, Any]:
     try:
-        from _modules.common import get_host
-        return get_host()
-    except Exception:
-        return {"user": "root", "home": "/root"}
+        import __salt__  # type: ignore[import-untyped]
+        return __salt__["common.get_host"]()
+    except (ImportError, KeyError):
+        try:
+            from _modules.common import get_host
+            return get_host()
+        except Exception:
+            return {"user": "root", "home": "/root", "pkg_list": "/var/cache/salt/pacman_installed.txt"}
 
 
 def _const() -> dict[str, Any]:
@@ -26,55 +30,56 @@ def _const() -> dict[str, Any]:
         return {"retry_attempts": 3, "retry_interval": 10, "ver_dir": "/tmp"}
 
 
-@yaml_output
-def paru_install(name: str, pkg: str, check: str | None = None,
-                 requires: list[str] | None = None,
-                 version: str = "") -> dict[str, Any]:
+def _paru_install_dict(name: str, pkg: str, check: str | None = None,
+                       requires: list[str] | None = None,
+                       version: str = "") -> dict[str, Any]:
+    """Internal version — returns dict for simple_service to extend."""
     h = _host()
-    ver_dir = f"{h['home']}/.cache/salt-versions"
-    safe = name.replace("-", "_")
-
-    requires_list = ["cmd: pacman_db_warmup"]
+    u = h["user"]
+    _ver_dir = f"{h.get('home', '/root')}/.cache/salt-versions"
+    _check_all = check == "__ALL__" or (check is None and " " in pkg)
+    requires_list = [{"cmd": "pacman_db_warmup"}]
     if requires:
         requires_list.extend(requires)
 
     if version:
         cmd = (
             f"set -uo pipefail\n"
-            f"sudo -u {h['user']} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg}' || true\n"
-            f"mkdir -p {ver_dir} && rm -f {ver_dir}/{name} {ver_dir}/{name}@* "
-            f"&& touch {ver_dir}/{name}@{version}"
+            f"sudo -u {u} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg}' || true\n"
+            f"mkdir -p {_ver_dir} && rm -f {_ver_dir}/{name} {_ver_dir}/{name}@* && "
+            f"touch {_ver_dir}/{name}@{version}"
         )
         return {
-            f"install_{safe}": {
+            f"install_{name.replace('-', '_')}": {
                 "cmd.run": [
-                    {"name": cmd}, {"shell": "/bin/bash"},
-                    {"creates": f"{ver_dir}/{name}@{version}"},
+                    {"name": cmd},
+                    {"shell": "/bin/bash"},
+                    {"creates": f"{_ver_dir}/{name}@{version}"},
                     {"require": requires_list},
                 ]
             }
         }
 
-    check_all = check == "__ALL__" or (check is None and " " in pkg)
-    if check_all:
-        guard = ["set -e"]
-        for pn in pkg.split():
-            guard.append(f"grep -qxF '{pn}' {h['pkg_list']} || exit 1")
-        cmd = f"sudo -u {h['user']} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg} || true'"
+    if _check_all:
+        guard = "\n".join(
+            f"grep -qxF '{pn}' {h['pkg_list']} || exit 1"
+            for pn in pkg.split()
+        )
         return {
-            f"install_{safe}": {
+            f"install_{name.replace('-', '_')}": {
                 "cmd.run": [
-                    {"name": cmd}, {"shell": "/bin/bash"},
-                    {"unless": " && ".join(guard)},
+                    {"name": f"sudo -u {u} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg} || true'"},
+                    {"shell": "/bin/bash"},
+                    {"unless": f"set -e\n{guard}"},
                     {"require": requires_list},
                 ]
             }
         }
 
     return {
-        f"install_{safe}": {
+        f"install_{name.replace('-', '_')}": {
             "cmd.run": [
-                {"name": f"sudo -u {h['user']} paru -S --noconfirm --needed {pkg}"},
+                {"name": f"sudo -u {u} paru -S --noconfirm --needed {pkg}"},
                 {"unless": f"grep -qxF '{check or pkg}' {h['pkg_list']}"},
                 {"require": requires_list},
             ]
@@ -83,11 +88,18 @@ def paru_install(name: str, pkg: str, check: str | None = None,
 
 
 @yaml_output
+def paru_install(name: str, pkg: str, check: str | None = None,
+                 requires: list[str] | None = None,
+                 version: str = "") -> dict[str, Any]:
+    return _paru_install_dict(name, pkg, check=check, requires=requires, version=version)
+
+
+@yaml_output
 def simple_service(name: str, pkgs: str, service: str | None = None,
                    check: str | None = None,
                    requires: list[str] | None = None) -> dict[str, Any]:
     safe = name.replace("-", "_")
-    ret = paru_install(name, pkgs, check=check)
+    ret = _paru_install_dict(name, pkgs, check=check)
     ret[f"{name}_enabled"] = {
         "service.enabled": [
             {"name": service or name},

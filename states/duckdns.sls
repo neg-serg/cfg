@@ -12,6 +12,6 @@ duckdns_native_script_absent:
 
 {{ salt['service.ensure_dir']('duckdns_env_dir', '/etc', mode='0755', user='root') }}
 
-{{ salt['container.deploy']('duckdns', catalog.duckdns, image_registry,
+{{ salt['container.deploy']('duckdns',
     quadlet_unit_name='duckdns-update-container',
     requires=['cmd: duckdns_update_service_native_unit_daemon_reload']) }}

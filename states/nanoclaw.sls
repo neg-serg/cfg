@@ -83,7 +83,7 @@ nanoclaw_mount_allowlist:
 
 {{ salt['service.remove_native_unit']('nanoclaw', scope='user') }}
 
-{{ salt['container.deploy']('nanoclaw', catalog.nanoclaw, image_registry,
+{{ salt['container.deploy']('nanoclaw',
     quadlet_unit_name='nanoclaw-container',
     user_scope=True,
     requires=['cmd: nanoclaw_version', 'file: nanoclaw_env', 'file: nanoclaw_sender_allowlist', 'file: nanoclaw_mount_allowlist', 'cmd: nanoclaw_native_unit_daemon_reload']) }}

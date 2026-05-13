@@ -14,10 +14,14 @@ from _yaml_out import yaml_output
 
 def _host() -> dict[str, Any]:
     try:
-        from _modules.common import get_host
-        return get_host()
-    except Exception:
-        return {"user": "root", "home": "/root", "runtime_dir": "/run/user/1000"}
+        import __salt__  # type: ignore[import-untyped]
+        return __salt__["common.get_host"]()
+    except (ImportError, KeyError):
+        try:
+            from _modules.common import get_host
+            return get_host()
+        except Exception:
+            return {"user": "root", "home": "/root", "runtime_dir": "/run/user/1000", "pkg_list": "/var/cache/salt/pacman_installed.txt", "systemd_unit_dir": "/etc/systemd/system/", "systemd_user_unit_dir": "/root/.config/systemd/user/"}
 
 
 def _sysctl_env() -> list[str]:
@@ -28,12 +32,11 @@ def _sysctl_env() -> list[str]:
     ]
 
 
-@yaml_output
-def user_service_file(name: str, filename: str, source: str | None = None,
-                      template: str | None = None,
-                      context: dict[str, Any] | None = None,
-                      user: str | None = None,
-                      home: str | None = None) -> dict[str, Any]:
+def _user_service_file_dict(name: str, filename: str, source: str | None = None,
+                            template: str | None = None,
+                            context: dict[str, Any] | None = None,
+                            user: str | None = None,
+                            home: str | None = None) -> dict[str, Any]:
     u = user or _host()["user"]
     h = home or _host()["home"]
     _user_dir = _host().get("systemd_user_unit_dir", f"{h}/.config/systemd/user/")
@@ -62,6 +65,16 @@ def user_service_file(name: str, filename: str, source: str | None = None,
             ]
         },
     }
+
+
+@yaml_output
+def user_service_file(name: str, filename: str, source: str | None = None,
+                      template: str | None = None,
+                      context: dict[str, Any] | None = None,
+                      user: str | None = None,
+                      home: str | None = None) -> dict[str, Any]:
+    return _user_service_file_dict(name, filename, source=source, template=template,
+                                    context=context, user=user, home=home)
 
 
 @yaml_output
@@ -100,14 +113,13 @@ def user_unit_override(name: str, service: str, source: str | None = None,
     return ret
 
 
-@yaml_output
-def user_service_enable(name: str, services: list[str] | None = None,
-                        start_now: list[str] | None = None,
-                        daemon_reload: bool = False,
-                        check: str = "enabled",
-                        onlyif: str | None = None,
-                        requires: list[str] | None = None,
-                        user: str | None = None) -> dict[str, Any]:
+def _user_service_enable_dict(name: str, services: list[str] | None = None,
+                              start_now: list[str] | None = None,
+                              daemon_reload: bool = False,
+                              check: str = "enabled",
+                              onlyif: str | None = None,
+                              requires: list[str] | None = None,
+                              user: str | None = None) -> dict[str, Any]:
     u = user or _host()["user"]
     svc_list = services or []
     now_list = start_now or []
@@ -164,6 +176,19 @@ def user_service_enable(name: str, services: list[str] | None = None,
 
 
 @yaml_output
+def user_service_enable(name: str, services: list[str] | None = None,
+                        start_now: list[str] | None = None,
+                        daemon_reload: bool = False,
+                        check: str = "enabled",
+                        onlyif: str | None = None,
+                        requires: list[str] | None = None,
+                        user: str | None = None) -> dict[str, Any]:
+    return _user_service_enable_dict(name, services=services, start_now=start_now,
+                                      daemon_reload=daemon_reload, check=check,
+                                      onlyif=onlyif, requires=requires, user=user)
+
+
+@yaml_output
 def user_service_with_unit(name: str, filename: str, source: str | None = None,
                            services: list[str] | None = None,
                            start_now: list[str] | None = None,
@@ -172,11 +197,11 @@ def user_service_with_unit(name: str, filename: str, source: str | None = None,
                            home: str | None = None) -> dict[str, Any]:
     svc_list = services if services is not None else [filename]
     file_id = f"{name}_service"
-    ret = user_service_file(file_id, filename, source=source, user=user, home=home)
+    ret = _user_service_file_dict(file_id, filename, source=source, user=user, home=home)
     reqs = [f"file: {file_id}", f"cmd: {file_id}_daemon_reload"]
     if requires:
         reqs.extend(requires)
-    ret.update(user_service_enable(
+    ret.update(_user_service_enable_dict(
         f"{name}_enabled", services=svc_list, start_now=start_now or [],
         requires=reqs, user=user,
     ))

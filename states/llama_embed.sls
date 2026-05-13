@@ -3,6 +3,7 @@
 # Pure Quadlet (Podman container). Service is NOT enabled at boot (manual_start).
 {% from '_imports.jinja' import host, user %}
 
+{% import_yaml 'data/service_catalog.yaml' as catalog %}
 {% import_yaml 'data/llama_embed.yaml' as embed %}
 # llama.cpp embedding server: Qwen3-Embedding-8B via Vulkan.
 # Pure Quadlet (Podman container). Service is NOT enabled at boot (manual_start) — VRAM is shared with desktop GPU.
@@ -20,5 +21,5 @@
 # Remove native package (idempotent — no-op if already removed)
 {{ salt['service.remove_native_package']('llama_embed', ['llama.cpp-vulkan']) }}
 
-{{ salt['container.deploy']('llama_embed', catalog.llama_embed, image_registry,
+{{ salt['container.deploy']('llama_embed',
     requires=['file: llama_embed_models_dir', 'cmd: llama_embed_model', 'cmd: llama_embed_native_unit_daemon_reload']) }}

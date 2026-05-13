@@ -15,18 +15,29 @@ from _yaml_out import yaml_output
 
 def _host() -> dict[str, Any]:
     try:
-        from _modules.common import get_host
-        return get_host()
-    except Exception:
-        return {"user": "root", "home": "/root"}
+        import __salt__  # type: ignore[import-untyped]
+        return __salt__["common.get_host"]()
+    except (ImportError, KeyError):
+        try:
+            from _modules.common import get_host
+            return get_host()
+        except Exception:
+            return {"user": "root", "home": "/root", "pkg_list": "/var/cache/salt/pacman_installed.txt", "ver_dir": "/root/.cache/salt-versions", "sys_ver_dir": "/var/cache/salt/versions", "download_cache": "/var/cache/salt/downloads"}
 
 
 def _const() -> dict[str, Any]:
     try:
-        from _modules.common import get_constants
-        return get_constants()
-    except Exception:
-        return {"retry_attempts": 3, "retry_interval": 10}
+        import __salt__  # type: ignore[import-untyped]
+        return __salt__["common.get_constants"]()
+    except (ImportError, KeyError):
+        try:
+            from _modules.common import get_constants
+            return get_constants()
+        except Exception:
+            return {"retry_attempts": 3, "retry_interval": 10,
+                    "ver_dir": "/root/.cache/salt-versions",
+                    "sys_ver_dir": "/var/cache/salt/versions",
+                    "download_cache": "/var/cache/salt/downloads"}
 
 
 def _ver_stamp_shell(ver_dir: str, name: str, version: str,
@@ -76,10 +87,9 @@ def go_pkg(name: str, pkg: str | None = None, bin: str | None = None,
     }
 
 
-@yaml_output
-def curl_bin(name: str, url: str, version: str | None = None,
-             hash_val: str | None = None, user: str | None = None,
-             home: str | None = None) -> dict[str, Any]:
+def _curl_bin_dict(name: str, url: str, version: str | None = None,
+                   hash_val: str | None = None, user: str | None = None,
+                   home: str | None = None) -> dict[str, Any]:
     h = _host()
     hm = home or h["home"]
     u = user or h["user"]
@@ -116,6 +126,14 @@ def curl_bin(name: str, url: str, version: str | None = None,
             ]
         }
     }
+
+
+@yaml_output
+def curl_bin(name: str, url: str, version: str | None = None,
+             hash_val: str | None = None, user: str | None = None,
+             home: str | None = None) -> dict[str, Any]:
+    return _curl_bin_dict(name, url, version=version, hash_val=hash_val,
+                           user=user, home=home)
 
 
 @yaml_output
@@ -227,6 +245,21 @@ def http_file(name: str, url: str, dest: str, mode: str = "0644",
 
 
 @yaml_output
+def huggingface_file(name: str, repo: str, file: str, dest: str,
+                     mode: str = "0644", user: str | None = None,
+                     creates: str | None = None,
+                     require: list[str] | None = None,
+                     parallel: bool = True, hash: str | None = None,
+                     version: str | None = None,
+                     cache: bool = True) -> dict[str, Any]:
+    _hash = hash
+    return http_file(name, f"https://huggingface.co/{repo}/resolve/main/{file}",
+                     dest, mode=mode, user=user, creates=creates,
+                     require=require, parallel=parallel, hash_val=_hash,
+                     version=version, cache=cache)
+
+
+@yaml_output
 def git_clone_deploy(name: str, repo: str, dest: str,
                      items: list[str] | None = None,
                      creates: str | None = None, user: str | None = None,
@@ -299,15 +332,14 @@ def git_clone_build(name: str, repo_url: str, build_cmds: str,
     }
 
 
-@yaml_output
-def curl_extract_tar(name: str, url: str, binary_pattern: str | None = None,
-                     archive_ext: str = "tar.gz", fetch_tag: bool = False,
-                     strip_v: bool = False, binaries: list[str] | None = None,
-                     bin: str | None = None, chmod: bool = False,
-                     dest: str | None = None, strip_components: int | None = None,
-                     creates: str | None = None, bin_dest: str | None = None,
-                     hash_val: str | None = None, version: str | None = None,
-                     user: str | None = None, home: str | None = None) -> dict[str, Any]:
+def _curl_extract_tar_dict(name: str, url: str, binary_pattern: str | None = None,
+                           archive_ext: str = "tar.gz", fetch_tag: bool = False,
+                           strip_v: bool = False, binaries: list[str] | None = None,
+                           bin: str | None = None, chmod: bool = False,
+                           dest: str | None = None, strip_components: int | None = None,
+                           creates: str | None = None, bin_dest: str | None = None,
+                           hash_val: str | None = None, version: str | None = None,
+                           user: str | None = None, home: str | None = None) -> dict[str, Any]:
     h = _host()
     hm = home or h["home"]
     u = user or h["user"]
@@ -414,12 +446,29 @@ def curl_extract_tar(name: str, url: str, binary_pattern: str | None = None,
 
 
 @yaml_output
-def curl_extract_zip(name: str, url: str, binary_path: str | None = None,
-                     binaries: list[str] | None = None, bin: str | None = None,
-                     chmod: bool = False, dest: str | None = None,
-                     symlink: str | None = None, creates: str | None = None,
+def curl_extract_tar(name: str, url: str, binary_pattern: str | None = None,
+                     archive_ext: str = "tar.gz", fetch_tag: bool = False,
+                     strip_v: bool = False, binaries: list[str] | None = None,
+                     bin: str | None = None, chmod: bool = False,
+                     dest: str | None = None, strip_components: int | None = None,
+                     creates: str | None = None, bin_dest: str | None = None,
                      hash_val: str | None = None, version: str | None = None,
                      user: str | None = None, home: str | None = None) -> dict[str, Any]:
+    return _curl_extract_tar_dict(name, url, binary_pattern=binary_pattern,
+                                   archive_ext=archive_ext, fetch_tag=fetch_tag,
+                                   strip_v=strip_v, binaries=binaries, bin=bin,
+                                   chmod=chmod, dest=dest,
+                                   strip_components=strip_components, creates=creates,
+                                   bin_dest=bin_dest, hash_val=hash_val, version=version,
+                                   user=user, home=home)
+
+
+def _curl_extract_zip_dict(name: str, url: str, binary_path: str | None = None,
+                           binaries: list[str] | None = None, bin: str | None = None,
+                           chmod: bool = False, dest: str | None = None,
+                           symlink: str | None = None, creates: str | None = None,
+                           hash_val: str | None = None, version: str | None = None,
+                           user: str | None = None, home: str | None = None) -> dict[str, Any]:
     h = _host()
     hm = home or h["home"]
     u = user or h["user"]
@@ -476,11 +525,26 @@ def curl_extract_zip(name: str, url: str, binary_path: str | None = None,
 
 
 @yaml_output
+def curl_extract_zip(name: str, url: str, binary_path: str | None = None,
+                     binaries: list[str] | None = None, bin: str | None = None,
+                     chmod: bool = False, dest: str | None = None,
+                     symlink: str | None = None, creates: str | None = None,
+                     hash_val: str | None = None, version: str | None = None,
+                     user: str | None = None, home: str | None = None) -> dict[str, Any]:
+    return _curl_extract_zip_dict(name, url, binary_path=binary_path,
+                                   binaries=binaries, bin=bin, chmod=chmod,
+                                   dest=dest, symlink=symlink, creates=creates,
+                                   hash_val=hash_val, version=version, user=user,
+                                   home=home)
+
+
+@yaml_output
 def download_font_zip(name: str, url: str, subdir: str,
-                      hash_val: str | None = None, version: str | None = None,
+                      hash: str | None = None, version: str | None = None,
                       user: str | None = None, home: str | None = None) -> dict[str, Any]:
     h = _host()
     hm = home or h["home"]
+    _hash = hash
     u = user or h["user"]
     c = _const()
     fonts_dir = f"{hm}/.local/share/fonts"
@@ -500,7 +564,7 @@ def download_font_zip(name: str, url: str, subdir: str,
         "set -eo pipefail",
         '_td=$(mktemp -d)',
         'trap \'rm -rf "$_td"\' EXIT',
-        _download_cached_shell(url, cache_path, hash_val or ""),
+        _download_cached_shell(url, cache_path, _hash or ""),
         'cp "$cache" "$_td/archive.zip"',
         f'unzip -o "$_td/archive.zip" -d {fonts_dir}/{subdir}',
         f'fc-cache -f {fonts_dir}/{subdir}',
@@ -540,7 +604,7 @@ def download_font_zip(name: str, url: str, subdir: str,
 
 @yaml_output
 def github_release_to(state_id: str, name: str, repo: str, asset: str,
-                      dest: str, format_type: str = "file", tag: str | None = None,
+                      dest: str, format: str = "file", tag: str | None = None,
                       hash_val: str | None = None, version: str | None = None,
                       creates: str | None = None, require: str | None = None,
                       user: str | None = None) -> dict[str, Any]:
@@ -549,6 +613,7 @@ def github_release_to(state_id: str, name: str, repo: str, asset: str,
     c = _const()
     vd = f"{h['home']}/.cache/salt-versions"
     creates_path = creates or f"{dest}/{name}"
+    _format = format
 
     lines = ["set -eo pipefail"]
     if tag:
@@ -560,7 +625,7 @@ def github_release_to(state_id: str, name: str, repo: str, asset: str,
             f'[ -n "$TAG" ] || {{ echo "Failed to fetch release tag for {repo}" >&2; exit 1; }}',
         ])
 
-    if format_type == "zip":
+    if _format == "zip":
         lines.extend([
             '_td=$(mktemp -d)', 'trap \'rm -rf "$_td"\' EXIT',
             f'curl -fsSL "https://github.com/{repo}/releases/download/${{TAG}}/{asset}" -o "$_td/archive.zip"',
@@ -594,7 +659,7 @@ def github_release_to(state_id: str, name: str, repo: str, asset: str,
 
 
 @yaml_output
-def npm_build_workflow(name: str, dir_path: str, version: str | None = None,
+def npm_build_workflow(name: str, dir: str, version: str | None = None,
                        install_creates: str | None = None,
                        build_creates: str | None = None,
                        user: str | None = None,
@@ -602,21 +667,22 @@ def npm_build_workflow(name: str, dir_path: str, version: str | None = None,
     h = _host()
     u = user or h["user"]
     c = _const()
+    _dir = dir
 
-    i_creates = install_creates or f"{dir_path}/node_modules/.package-lock.json"
-    b_creates = build_creates or f"{dir_path}/dist/index.js"
+    i_creates = install_creates or f"{_dir}/node_modules/.package-lock.json"
+    b_creates = build_creates or f"{_dir}/dist/index.js"
 
     ret: dict[str, Any] = {
         f"{name}_npm_install": {
             "cmd.run": [
-                {"name": f"set -euo pipefail\ncd {dir_path}\nnpm install --no-fund --no-audit 2>&1"},
+                {"name": f"set -euo pipefail\ncd {_dir}\nnpm install --no-fund --no-audit 2>&1"},
                 {"shell": "/bin/bash"}, {"runas": u},
                 {"creates": i_creates},
             ]
         },
         f"{name}_build": {
             "cmd.run": [
-                {"name": f"set -euo pipefail\ncd {dir_path}\nnpm run build 2>&1"},
+                {"name": f"set -euo pipefail\ncd {_dir}\nnpm run build 2>&1"},
                 {"shell": "/bin/bash"}, {"runas": u},
                 {"creates": b_creates},
                 {"require": [{"cmd": f"{name}_npm_install"}]},
@@ -631,14 +697,14 @@ def npm_build_workflow(name: str, dir_path: str, version: str | None = None,
         ret[f"{name}_version"] = {
             "cmd.run": [
                 {"name": (
-                    f"set -euo pipefail\ncd {dir_path}\n"
+                    f"set -euo pipefail\ncd {_dir}\n"
                     f"git fetch --tags --depth=1\n"
                     f"git checkout v{version} 2>/dev/null || git checkout {version}\n"
                     f"npm install --no-fund --no-audit 2>&1\n"
                     f"npm run build 2>&1"
                 )},
                 {"shell": "/bin/bash"}, {"runas": u},
-                {"unless": f"cd {dir_path} && git describe --tags --exact-match 2>/dev/null | grep -qxF 'v{version}'"},
+                {"unless": f"cd {_dir} && git describe --tags --exact-match 2>/dev/null | grep -qxF 'v{version}'"},
                 {"retry": {"attempts": c["retry_attempts"], "interval": c["retry_interval"]}},
                 {"require": [{"cmd": f"{name}_build"}]},
             ]
@@ -647,6 +713,7 @@ def npm_build_workflow(name: str, dir_path: str, version: str | None = None,
     return ret
 
 
+@yaml_output
 def install_catalog(catalog: dict[str, Any], ver_dict: dict[str, str],
                     macro_type: str, exclude: list[str] | None = None) -> dict[str, Any]:
     """Data-driven installer dispatcher — replaces install_catalog() macro."""
@@ -666,16 +733,16 @@ def install_catalog(catalog: dict[str, Any], ver_dict: dict[str, str],
             hash_val = None
 
         if macro_type == "curl_bin":
-            ret.update(curl_bin(entry_name, url, version=ver if ver else None, hash_val=hash_val))
+            ret.update(_curl_bin_dict(entry_name, url, version=ver if ver else None, hash_val=hash_val))
         elif macro_type == "curl_extract_tar":
-            ret.update(curl_extract_tar(
+            ret.update(_curl_extract_tar_dict(
                 entry_name, url,
                 binary_pattern=raw.get("binary_pattern") if isinstance(raw, dict) else entry_name,
                 bin=raw.get("bin") if isinstance(raw, dict) else None,
                 version=ver if ver else None, hash_val=hash_val,
             ))
         elif macro_type == "curl_extract_zip":
-            ret.update(curl_extract_zip(
+            ret.update(_curl_extract_zip_dict(
                 entry_name, url,
                 binary_path=raw.get("binary_path") if isinstance(raw, dict) else None,
                 binaries=raw.get("binaries") if isinstance(raw, dict) else None,

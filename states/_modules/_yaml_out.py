@@ -15,6 +15,8 @@ def to_yaml(obj: Any) -> str:
     """Convert Python object to YAML string suitable for {{ }} injection."""
     if yaml is None:
         return str(obj)
+    if not obj:
+        return ""
     raw = yaml.dump(obj, default_flow_style=False, allow_unicode=True, sort_keys=False)
     if raw.endswith("...\n"):
         raw = raw[:-4]

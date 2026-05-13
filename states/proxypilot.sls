@@ -63,7 +63,7 @@ proxypilot_config:
 {{ salt['service.remove_native_unit']('proxypilot', scope='user') }}
 
 {# ── Container deployment ── #}
-{{ salt['container.deploy']('proxypilot', catalog.proxypilot, image_registry,
+{{ salt['container.deploy']('proxypilot',
     quadlet_unit_name='proxypilot-container',
     user_scope=True,
     requires=['file: proxypilot_config', 'cmd: proxypilot_native_unit_daemon_reload']) }}

@@ -12,6 +12,6 @@
 {# Data directory for blockchain state #}
 {{ salt['service.ensure_dir']('bitcoind_data_dir', '/var/lib/bitcoind-container', mode='0755', user='root') }}
 
-{{ salt['container.deploy']('bitcoind', catalog.bitcoind, image_registry,
+{{ salt['container.deploy']('bitcoind',
     quadlet_unit_name='bitcoind-container',
     requires=['file: bitcoind_data_dir', 'cmd: bitcoind_native_unit_daemon_reload']) }}

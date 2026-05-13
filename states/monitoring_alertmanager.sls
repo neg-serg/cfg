@@ -39,7 +39,7 @@ alertmanager_config:
 
 
 # ── Alertmanager Quadlet container ───────────────────────────────────
-{{ salt['container.deploy']('alertmanager', catalog.alertmanager, image_registry,
+{{ salt['container.deploy']('alertmanager',
     quadlet_unit_name='alertmanager-container',
     requires=['file: alertmanager_config']) }}
 

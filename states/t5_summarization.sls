@@ -26,7 +26,7 @@
 {{ huggingface_file('t5_summarization_' ~ fname | replace('.', '_'), t5.hf_repo, fname, hf_path ~ '/' ~ fname, user=user, require=['file: t5_summarization_hf_dir'], parallel=False, cache=False) }}
 {% endfor %}
 
-# Convert safetensors → GGUF (guarded by GGUF file existence)
+# Convert safetensors → GGUF (requires convert_hf_to_gguf.py from llama.cpp)
 t5_summarization_convert:
   cmd.run:
     - name: |
@@ -36,6 +36,7 @@ t5_summarization_convert:
     - shell: /bin/bash
     - runas: {{ user }}
     - creates: {{ gguf_path }}
+    - onlyif: test -x /usr/bin/convert_hf_to_gguf.py
     - require:
       - cmd: t5_summarization_model
 {%- for fname in t5.tokenizer_files %}

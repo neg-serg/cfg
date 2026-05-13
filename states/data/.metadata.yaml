@@ -37,6 +37,7 @@ schema_versions:
   service_catalog.yaml: 1
   services.yaml: 1
   steam.yaml: 1
+  sysctl.yaml: 1
   system.yaml: 1
   t5_summarization.yaml: 1
   telegram_managed_bots.yaml: 1

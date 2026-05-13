@@ -137,9 +137,15 @@ def _collect_known_units(repo_root: Path) -> set[str]:
 def _collect_container_service_deployments(repo_root: Path) -> dict[str, str]:
     deployments = {}
     # Match both old container_service(...) and new salt['container.deploy'](...)
-    pattern = re.compile(
+    pattern_old = re.compile(
         r"(?:container_service|salt\['container\.deploy'\])\("
         r"\s*'(?P<call_name>[^']+)'\s*,\s*catalog\.(?P<catalog_name>[A-Za-z0-9_]+)"
+        r"(?P<body>.*?)\)\s*}}",
+        re.DOTALL,
+    )
+    pattern_new = re.compile(
+        r"salt\['container\.deploy'\]\("
+        r"\s*'(?P<call_name>[^']+)'"
         r"(?P<body>.*?)\)\s*}}",
         re.DOTALL,
     )
@@ -147,9 +153,9 @@ def _collect_container_service_deployments(repo_root: Path) -> dict[str, str]:
 
     for sls_path in (repo_root / "states").glob("*.sls"):
         source = sls_path.read_text()
-        for match in pattern.finditer(source):
+        for match in list(pattern_old.finditer(source)) + list(pattern_new.finditer(source)):
             quadlet_match = quadlet_pattern.search(match.group("body"))
-            deployments[match.group("catalog_name")] = (
+            deployments[match.group("call_name")] = (
                 quadlet_match.group("quadlet_name") if quadlet_match else match.group("call_name")
             )
 

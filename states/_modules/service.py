@@ -206,7 +206,7 @@ def remove_native_unit(name: str, unit_path: str | None = None,
             {"runas": _host().get("user", "root")}
         )
         daemon_reload[f"{name}_native_unit_daemon_reload"]["cmd.run"].append(
-            {"env": [e.split(": ", 1) for e in _sysctl_env()]}
+            {"env": [e for e in _sysctl_env()]}
         )
 
     return {
@@ -323,7 +323,7 @@ def service_with_healthcheck(name: str, service: str,
 
     if user_scope:
         ret[name]["cmd.run"].append({"runas": u})
-        ret[name]["cmd.run"].append({"env": [e.split(": ", 1) for e in _sysctl_env()]})
+        ret[name]["cmd.run"].append({"env": [e for e in _sysctl_env()]})
 
     if requires:
         ret[name]["cmd.run"].append({"require": [r for r in requires]})

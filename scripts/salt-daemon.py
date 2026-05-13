@@ -57,6 +57,25 @@ import salt_compat
 
 salt_compat.patch()
 
+# Patch Salt's _module_dirs to include our custom execution modules.
+# (Same approach as salt_runner.py — needed for salt['module.func']() in Jinja.)
+import salt.loader as _daemon_salt_loader
+_daemon_salt_loader._module_dirs_orig = getattr(
+    _daemon_salt_loader, "_module_dirs_orig", None
+) or _daemon_salt_loader._module_dirs
+
+
+def _daemon_patched_module_dirs(*args, **kwargs):
+    dirs = _daemon_salt_loader._module_dirs_orig(*args, **kwargs)
+    if len(args) > 1 and args[1] == "modules":
+        _mod_path = os.path.join(_SCRIPT_DIR, "states", "_modules")
+        if _mod_path not in dirs:
+            dirs.append(_mod_path)
+    return dirs
+
+
+_daemon_salt_loader._module_dirs = _daemon_patched_module_dirs
+
 # ── Defaults ─────────────────────────────────────────────────────────────────
 _DEFAULT_SOCKET = "/run/salt-daemon.sock"
 _DEFAULT_CONFIG_DIR = os.path.join(_SCRIPT_DIR, ".salt_runtime")

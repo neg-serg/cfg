@@ -3,7 +3,6 @@
 # SystemD managed resources — identity guards and path protections
 # =============================================================================
 {% import_yaml 'data/managed_resources.yaml' as managed %}
-{% from '_macros_service.jinja' import managed_identity_guard, managed_path_guard %}
 
 {% set identities = managed.get('managed_service_identities', {}) %}
 {% set paths = managed.get('managed_service_paths', {}) %}
@@ -32,7 +31,7 @@ managed_service_accounts_ensure:
 {% if identities %}
     - unless: |
 {%- for _name, _entry in identities|dictsort %}
-        {{ managed_identity_guard(_entry) }}{% if not loop.last %} &&{% endif %}
+        {{ salt['service.managed_identity_guard'](_entry) }}{% if not loop.last %} &&{% endif %}
 {%- endfor %}
 {% else %}
     - unless: test 1 = 1
@@ -65,7 +64,7 @@ managed_service_paths_ensure:
         _ok=1
 {% if paths %}
 {% for _name, _entry in paths|dictsort %}
-        if ! {{ managed_path_guard(_entry) }}; then
+        if ! {{ salt['service.managed_path_guard'](_entry) }}; then
           _ok=0
         fi
 {% endfor %}

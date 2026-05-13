@@ -103,6 +103,37 @@ def config_and_reload(name: str, config_path: str, reload_cmd: str,
     return ret
 
 
+def managed_identity_guard(entry: dict[str, Any]) -> str:
+    """Shell guard: check if system user + group exist."""
+    u = managed_resource_value(entry.get("user", ""))
+    g = managed_resource_value(entry.get("group", ""))
+    return f"getent passwd {u} >/dev/null && getent group {g} >/dev/null"
+
+
+def managed_path_guard(entry: dict[str, Any]) -> str:
+    """Shell guard: check if managed path exists with correct owner/mode."""
+    path = managed_resource_value(entry.get("path", ""))
+    owner = managed_resource_value(entry.get("user", ""))
+    group = managed_resource_value(entry.get("group", ""))
+    mode = managed_mode_value(entry.get("mode", "0755"))
+    typ = entry.get("type", "d")
+    if typ == "d":
+        return f'test -d {path} && test "$(stat -c \'%U:%G:%a\' {path})" = "{owner}:{group}:{mode}"'
+    elif typ == "p":
+        return f'test -p {path} && test "$(stat -c \'%U:%G:%a\' {path})" = "{owner}:{group}:{mode}"'
+    elif typ == "f":
+        return f'test -f {path} && test "$(stat -c \'%U:%G:%a\' {path})" = "{owner}:{group}:{mode}"'
+    elif typ == "L":
+        arg = managed_resource_value(entry.get("argument", "-"))
+        return f'test -L {path} && test "$(readlink {path})" = "{arg}"'
+    return f"test -e {path}"
+
+
+def managed_mode_value(mode: Any) -> str:
+    _mode = str(managed_resource_value(str(mode)))
+    return _mode[1:] if _mode.startswith("0") else _mode
+
+
 def managed_resource_value(value: str) -> str:
     if value == "__CURRENT_USER__":
         return _host()["user"]
@@ -407,21 +438,42 @@ def service_with_unit(name: str, source: str, unit_type: str = "service",
     return ret
 
 
+_HOST_FIELDS = {"hostname", "home", "user", "uid", "mnt_zero", "mnt_one"}
+
+
 @yaml_output
 def render_service(name: str, opts: dict[str, Any], feature_flag: bool,
-                   section_label: str, known_vars: dict[str, Any]) -> dict[str, Any]:
+                   section_label: str, known_vars: dict[str, Any] | None = None,
+                   host: dict[str, Any] | None = None) -> dict[str, Any]:
     """Data-driven service renderer — replaces render_service() macro."""
     if not feature_flag:
         return {}
 
+    if known_vars is None:
+        known_vars = {}
+
+    def _resolve_val(v: str) -> Any:
+        if v in known_vars:
+            return known_vars[v]
+        if host and v in _HOST_FIELDS and v in host:
+            return host[v]
+        if host:
+            for _section in host.get("features", {}).values():
+                if isinstance(_section, dict) and v in _section:
+                    return _section[v]
+        return v
+
     ret: dict[str, Any] = {}
 
-    # Cleanup
+    # Cleanup (resolve __HOME__ from host)
     if "cleanup" in opts:
+        _paths = [p.replace("__HOME__", host.get("home", "")) if host else p
+                  for p in opts["cleanup"]["paths"]]
+        _onlyif = opts["cleanup"]["onlyif"].replace("__HOME__", host.get("home", "")) if host else opts["cleanup"]["onlyif"]
         ret[f"{name}_cleanup"] = {
             "file.absent": [
-                {"names": list(opts["cleanup"]["paths"])},
-                {"onlyif": opts["cleanup"]["onlyif"]},
+                {"names": _paths},
+                {"onlyif": _onlyif},
             ]
         }
 
@@ -447,7 +499,7 @@ def render_service(name: str, opts: dict[str, Any], feature_flag: bool,
         for i, ct in enumerate(opts["config_templates"]):
             ctx = {}
             for k, v in ct.get("context", {}).items():
-                ctx[k] = known_vars.get(v, v)
+                ctx[k] = _resolve_val(v)
             ct_req = []
             if "packages" in opts:
                 ct_req.append(f"cmd: install_{name.replace('-', '_')}")
@@ -476,7 +528,7 @@ def render_service(name: str, opts: dict[str, Any], feature_flag: bool,
         u = opts["unit"]
         unit_ctx = {}
         for k, v in u.get("unit_context", {}).items():
-            unit_ctx[k] = known_vars.get(v, v)
+            unit_ctx[k] = _resolve_val(v)
         unit_req = []
         if "packages" in opts:
             unit_req.append(f"cmd: install_{name.replace('-', '_')}")

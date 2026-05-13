@@ -1,6 +1,6 @@
 {# Amnezia VPN: builds AmneziaWG kernel module and Amnezia VPN desktop client from source. #}
 {% from '_imports.jinja' import host, user, home, retry_attempts, retry_interval %}
-{% from '_macros_service.jinja' import ensure_dir %}
+{% from '_macros_service.jinja' import ensure_dir, service_with_unit %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/amnezia.yaml' as amnezia %}
 {% set cache = host.mnt_one ~ '/pkg/cache/amnezia' %}
@@ -67,31 +67,7 @@ amnezia_version_stamp:
       - file: {{ bin_state }}
 {% endfor %}
 
-amnezia_systemd_unit:
-  file.managed:
-    - name: {{ amnezia.systemd_unit }}
-    - contents: |
-        [Unit]
-        Description=AmneziaVPN Service (source build)
-        After=network.target
-        StartLimitIntervalSec=0
-
-        [Service]
-        Type=simple
-        Restart=always
-        RestartSec=1
-        ExecStart=/usr/local/bin/AmneziaVPN-service
-
-        [Install]
-        WantedBy=multi-user.target
-    - require:
-      - file: amnezia_service_bin
-
-amnezia_service_enabled:
-  service.enabled:
-    - name: AmneziaVPN-source
-    - require:
-      - file: amnezia_systemd_unit
+{{ service_with_unit('AmneziaVPN-source', 'salt://units/amnezia-vpn-source.service', enabled=True, requires=['file: amnezia_service_bin']) }}
 
 {{ ensure_dir('amnezia_apps_dir', home ~ '/.local/share/applications') }}
 

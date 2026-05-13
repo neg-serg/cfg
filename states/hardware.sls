@@ -29,19 +29,10 @@ fancontrol_reapply_script:
 
 nct6775_module:
   cmd.run:
-    - name: |
-        set -euo pipefail
-        if lsmod | awk '{print $1}' | grep -Fxq {{ hw.nct6775_module }}; then
-          echo "changed=no comment='{{ hw.nct6775_module }} already loaded'"
-        elif modinfo {{ hw.nct6775_module }} >/dev/null 2>&1; then
-          modprobe {{ hw.nct6775_module }}
-          echo "changed=yes comment='loaded {{ hw.nct6775_module }}'"
-        else
-          echo "changed=no comment='{{ hw.nct6775_module }} unavailable on this kernel; skipping'"
-        fi
+    - name: modprobe {{ hw.nct6775_module }}
+    - unless: test -d /sys/module/{{ hw.nct6775_module }}
+    - onlyif: modinfo {{ hw.nct6775_module }} >/dev/null 2>&1
     - shell: /bin/bash
-    - onlyif: command -v lsmod >/dev/null 2>&1 && command -v modinfo >/dev/null 2>&1 && command -v modprobe >/dev/null 2>&1
-    - stateful: True
 
 {% endif %}
 

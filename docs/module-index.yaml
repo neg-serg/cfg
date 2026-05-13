@@ -1,5 +1,5 @@
 version: 1
-generated: '2026-05-12T19:29:51'
+generated: '2026-05-13T15:02:46'
 states:
 - id: adguardhome
   path: states/adguardhome.sls
@@ -191,7 +191,6 @@ states:
   - managed_bots
   - nanoclaw
   - ollama
-  - opencode
   - t5_summarization
   - telethon_bridge
   - video_ai
@@ -202,7 +201,6 @@ states:
   - managed_bots
   - nanoclaw
   - ollama
-  - opencode
   - pacman_db_warmup
   - t5_summarization
   - telethon_bridge
@@ -537,11 +535,6 @@ states:
   - ollama.container
   tests:
   - tests/test_ollama.py
-- id: opencode
-  path: states/opencode.sls
-  purpose: 'OpenCode LLM CLI tool: package install and configuration'
-  includes:
-  - proxypilot
 - id: packages
   path: states/packages.sls
   purpose: '- pacman -Qq checks ALL packages — fails if ANY is missing, triggering
@@ -605,8 +598,7 @@ states:
   - kanata
   - llama_embed
   - managed_bots
-  - monitoring.alertmanager
-  - monitoring.loki
+  - monitoring
   - mpd
   - music_analysis
   - nanoclaw
@@ -614,7 +606,6 @@ states:
   - network.zapret2
   - nyxt
   - ollama
-  - opencode
   - proxypilot
   - services.bitcoind
   - services.duckdns
@@ -744,7 +735,9 @@ states:
   data_files:
   - data/video_ai.yaml
   configs:
-  - configs/video-ai/{{
+  - configs/video-ai/{{model.comfyui_workflow_i2i}}
+  - configs/video-ai/{{model.comfyui_workflow_i2v}}
+  - configs/video-ai/{{model.comfyui_workflow}}
 - id: windows_mount
   path: states/windows_mount.sls
   purpose: Windows NTFS partition mount with proper permissions and fstab integration
@@ -1033,7 +1026,8 @@ data_files:
   consumers:
   - code_rag.sls
 - path: states/data/container_images.yaml
-  consumers: null
+  consumers:
+  - _macros_container.jinja
 - path: states/data/custom_pkgs.yaml
   consumers:
   - custom_pkgs.sls
@@ -1052,7 +1046,8 @@ data_files:
 - path: states/data/feature_matrix.yaml
   consumers: null
 - path: states/data/feature_registry.yaml
-  consumers: null
+  consumers:
+  - _macros_registry.jinja
 - path: states/data/flatpak.yaml
   consumers:
   - flatpak.sls
@@ -1133,7 +1128,8 @@ data_files:
   consumers:
   - packages.sls
 - path: states/data/service_catalog.yaml
-  consumers: null
+  consumers:
+  - _macros_container.jinja
 - path: states/data/services.yaml
   consumers:
   - services.sls

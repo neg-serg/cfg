@@ -19,9 +19,6 @@ include:
 {% if host.features.get('image_gen', true) %}
   - image_generation
 {% endif %}
-{% if host.features.get('opencode', false) %}
-  - opencode
-{% endif %}
 {% if host.features.get('managed_bots', false) %}
   - managed_bots
 {% endif %}

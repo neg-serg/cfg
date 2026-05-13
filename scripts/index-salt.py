@@ -398,7 +398,7 @@ def generate_data_md(summaries):
 
 def collect_data_usage():
     usage = {}
-    CONFIG_REF_RE = re.compile(r"salt://(configs/[^\s'\"}]+)")
+    CONFIG_REF_RE = re.compile(r"salt://(configs/[^\s'\"]+)")
 
     for path in glob.glob(os.path.join(STATES_DIR, "**", "*.sls"), recursive=True):
         with open(path) as f:
@@ -430,6 +430,32 @@ def collect_data_usage():
                 full = os.path.join(STATES_DIR, j2_rel)
                 usage.setdefault(full, set()).add(os.path.relpath(path, STATES_DIR))
 
+    return {k: sorted(v) for k, v in usage.items()}
+
+
+def collect_macro_data_usage():
+    """Scan Jinja macros for data file imports — used as indirect consumers."""
+    usage = {}
+    for path in glob.glob(os.path.join(STATES_DIR, "_macros_*.jinja")):
+        with open(path) as f:
+            content = f.read()
+        for match in IMPORT_YAML_RE.finditer(content):
+            rel = match.group(1)
+            if not rel.startswith("data/"):
+                continue
+            full = os.path.join(STATES_DIR, rel)
+            macro_name = os.path.basename(path)
+            usage.setdefault(full, set()).add(macro_name)
+    for path in glob.glob(os.path.join(STATES_DIR, "_imports.jinja")):
+        with open(path) as f:
+            content = f.read()
+        for match in IMPORT_YAML_RE.finditer(content):
+            rel = match.group(1)
+            if not rel.startswith("data/"):
+                continue
+            full = os.path.join(STATES_DIR, rel)
+            macro_name = os.path.basename(path)
+            usage.setdefault(full, set()).add(macro_name)
     return {k: sorted(v) for k, v in usage.items()}
 
 
@@ -482,7 +508,7 @@ _SECRET_RE = re.compile(r"(?:tg_secret|gopass_secret)\s*\(\s*'([^']+)'")
 _SERVICE_FILE_RE = re.compile(r"user_service_file\s*\(\s*'[^']+'\s*,\s*'([^']+)'")
 _SERVICE_ENABLE_RE = re.compile(r"user_service_enable\s*\(\s*'[^']+'(?:\s*,\s*start_now\s*=\s*\[([^\]]*)\])?")
 _CONTAINER_RE = re.compile(r"container_service\s*\(\s*'([^']+)'")
-_CONFIG_RE = re.compile(r"salt://(configs/[^\s'\"}]+)")
+_CONFIG_RE = re.compile(r"salt://(configs/[^\s'\"]+)")
 _DATA_IMPORT_RE = re.compile(r"import_yaml\s+['\"](data/[^'\"]+)['\"]")
 _NPM_PKG_RE = re.compile(r"npm_pkg\s*\(\s*'[^']+'\s*,\s*pkg\s*=\s*'([^']+)'")
 _DOC_COMMENT_RE = re.compile(r"\{#\s*(.*?)\s*#\}", re.DOTALL)
@@ -503,7 +529,9 @@ def _scan_state_source(relpath):
         return secrets, services, configs, data_files, purpose
 
     secrets = sorted(set(_SECRET_RE.findall(src)))
-    configs = sorted(set(_CONFIG_RE.findall(src)))
+    # Collapse spaces inside Jinja {{ }} to avoid regex truncation on spaces
+    _jinja_safe = re.sub(r"\{\{\s*(.*?)\s*\}\}", r"{{\1}}", src)
+    configs = sorted(set(_CONFIG_RE.findall(_jinja_safe)))
     data_files = sorted(set(o for o in _DATA_IMPORT_RE.findall(src) if o.startswith("data/")))
 
     # Also scan referenced config .j2 templates for data imports
@@ -804,6 +832,10 @@ def main():
     print(f"Wrote {data_path} ({len(summaries)} files, {data_md.count(chr(10))} lines)")
 
     usage = collect_data_usage()
+    macro_usage = collect_macro_data_usage()
+    for k, v in macro_usage.items():
+        usage.setdefault(k, set()).update(v)
+    usage = {k: sorted(v) for k, v in usage.items()}
     eng_inventory, _ = generate_data_inventory_docs(summaries, usage)
     inventory_path = os.path.join(DOCS_DIR, "data-inventory.md")
     with open(inventory_path, "w") as f:

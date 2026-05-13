@@ -140,9 +140,6 @@ include:
 {% if host.features.get('llama_embed', true) %}
   - llama_embed
 {% endif %}
-{% if host.features.get('opencode', false) %}
-  - opencode
-{% endif %}
 {% if host.features.get('nanoclaw', false) %}
   - nanoclaw
 {% endif %}

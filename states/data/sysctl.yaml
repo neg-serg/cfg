@@ -1,0 +1,61 @@
+sysctl:
+- section: Kernel security
+  params:
+    kernel.sysrq: 0
+    kernel.dmesg_restrict: 1
+    kernel.unprivileged_bpf_disabled: 1
+    net.core.bpf_jit_harden: 2
+- section: IP forwarding (VPN/containers)
+  params:
+    net.ipv4.ip_forward: 1
+    net.ipv6.conf.all.forwarding: 1
+- section: TCP hardening
+  params:
+    net.ipv4.icmp_ignore_bogus_error_responses: 1
+    net.ipv4.conf.default.rp_filter: 1
+    net.ipv4.conf.all.rp_filter: 1
+    net.ipv4.conf.all.accept_source_route: 0
+    net.ipv6.conf.all.accept_source_route: 0
+    net.ipv4.conf.all.send_redirects: 0
+    net.ipv4.conf.default.send_redirects: 0
+    net.ipv4.conf.all.accept_redirects: 0
+    net.ipv4.conf.default.accept_redirects: 0
+    net.ipv4.conf.all.secure_redirects: 0
+    net.ipv4.conf.default.secure_redirects: 0
+    net.ipv6.conf.all.accept_redirects: 0
+    net.ipv6.conf.default.accept_redirects: 0
+    net.ipv4.tcp_syncookies: 1
+    net.ipv4.tcp_rfc1337: 1
+- section: Log martian packets
+  params:
+    net.ipv4.conf.all.log_martians: 1
+    net.ipv4.conf.default.log_martians: 1
+- section: TCP optimization
+  params:
+    net.ipv4.tcp_fastopen: 3
+    net.ipv4.tcp_mtu_probing: 1
+    net.ipv4.tcp_congestion_control: bbr
+    net.core.default_qdisc: fq
+    net.ipv4.tcp_max_syn_backlog: 8192
+- section: Socket and queue sizes
+  params:
+    net.core.rmem_max: 4194304
+    net.core.wmem_max: 4194304
+    net.core.netdev_max_backlog: 32768
+    net.core.somaxconn: 8192
+- section: Memory tuning
+  params:
+    vm.swappiness: 10
+    vm.vfs_cache_pressure: 50
+    vm.max_map_count: 16777216
+    vm.nr_hugepages: 8192
+- section: 'Writeback tuning (reduce IO bursts)'
+  params:
+    vm.dirty_background_bytes: 67108864
+    vm.dirty_bytes: 268435456
+    vm.dirty_expire_centisecs: 3000
+    vm.dirty_writeback_centisecs: 500
+- section: Gaming latency tuning
+  params:
+    vm.compaction_proactiveness: 0
+    kernel.sched_cfs_bandwidth_slice_us: 3000

@@ -1,0 +1,10 @@
+{# Generated from states/data/sysctl.yaml — do not edit directly #}
+{% from '_imports.jinja' import host %}
+{% import_yaml 'data/sysctl.yaml' as _s %}
+{% for section in _s.sysctl %}
+# === {{ section.section }} ===
+{% for key, value in section.params.items() %}
+{{ key }} = {{ value }}
+{% endfor %}
+
+{% endfor %}

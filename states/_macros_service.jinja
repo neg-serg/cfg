@@ -420,15 +420,15 @@ test -e {{ _path }}
 
 # --- {{ name }} ({{ section_label }}, data-driven) ---
 
-{# cleanup #}
+{# cleanup (resolves __HOME__ markers from host.home) #}
 {% if opts.cleanup is defined %}
 {{ name }}_cleanup:
   file.absent:
     - names:
 {% for p in opts.cleanup.paths %}
-      - {{ p }}
+      - {{ p | replace('__HOME__', host.home) if host else p }}
 {% endfor %}
-    - onlyif: {{ opts.cleanup.onlyif }}
+    - onlyif: {{ opts.cleanup.onlyif | replace('__HOME__', host.home) if host else opts.cleanup.onlyif }}
 {% endif %}
 
 {# packages (skip when simple_service will handle it) #}

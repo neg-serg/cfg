@@ -1332,6 +1332,12 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     errors.extend(check_service_catalog_scopes(repo_root))
     errors.extend(check_feature_matrix_unique_names(repo_root))
     errors.extend(check_data_file_yaml_syntax(repo_root))
+    return errors
+
+
+def check_all_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
+    """Run all checks including schema version validation."""
+    errors = check_service_inventory_contracts(repo_root)
     errors.extend(check_data_schema_versions(repo_root))
     return errors
 
@@ -1435,7 +1441,7 @@ def main() -> int:
     args = parser.parse_args()
     if args.summary:
         return print_data_health_summary()
-    errors = check_service_inventory_contracts()
+    errors = check_all_contracts()
     if args.verbose:
         return print_contract_summary(errors)
     return print_contract_errors(errors)

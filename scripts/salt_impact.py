@@ -29,16 +29,6 @@ DATA_PREFIX = "states/data/"
 CONFIGS_PREFIX = "states/configs/"
 MACRO_PREFIX = "states/_macros_"
 SHARED_PATHS = {
-    "states/_macros_common.jinja": "shared macro input",
-    "states/_macros_config.jinja": "shared macro input",
-    "states/_macros_container.jinja": "shared macro input",
-    "states/_macros_desktop.jinja": "shared macro input",
-    "states/_macros_install.jinja": "shared macro input",
-    "states/_macros_pkg.jinja": "shared macro input",
-    "states/_macros_service.jinja": "shared macro input",
-    "states/_macros_every.jinja": "shared macro input",
-    "states/_macros_user.jinja": "shared macro input",
-    "states/_macros_zsh.jinja": "shared macro input",
     "states/_imports.jinja": "shared imports",
     "states/data/hosts.yaml": "shared data input",
 }

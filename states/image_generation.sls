@@ -1,7 +1,7 @@
 # =============================================================================
 # Image generation — ComfyUI deployment with multiple AI providers
 # =============================================================================
-{% from '_imports.jinja' import user, home, gopass_secret %}
+{% from '_imports.jinja' import user, home %}
 
 {% import_yaml 'data/image_providers.yaml' as image_providers_data %}
 {% set _image_gen_cfg = home ~ '/.config/image-gen/providers.yaml' %}

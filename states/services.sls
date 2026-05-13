@@ -5,8 +5,6 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import host, user, home %}
-{% from '_macros_service.jinja' import ensure_dir, ensure_running, render_service, service_stopped, service_with_healthcheck, service_with_unit, unit_override %}
-{% from '_macros_pkg.jinja' import paru_install, simple_service %}
 
 {% import_yaml 'data/services.yaml' as services %}
 
@@ -41,17 +39,17 @@ include:
 
 {# ── Complex services ── #}
 {% for name, opts in services.get('complex', {}).items() %}
-{{ render_service(name, opts, svc.get(name, False), 'complex', known_vars=known_vars) }}
+{{ salt['service.render_service_yaml'](name, opts, svc.get(name, False), 'complex', known_vars=known_vars) }}
 {% endfor %}
 
 {# ── Network services ── #}
 {% for name, opts in services.get('network', {}).items() %}
-{{ render_service(name, opts, net.get(name, False), 'network', known_vars=known_vars) }}
+{{ salt['service.render_service_yaml'](name, opts, net.get(name, False), 'network', known_vars=known_vars) }}
 {% endfor %}
 
 {# ── DNS services ── #}
 {% for name, opts in services.get('dns', {}).items() %}
-{{ render_service(name, opts, dns.get(name, False), 'dns', known_vars=known_vars) }}
+{{ salt['service.render_service_yaml'](name, opts, dns.get(name, False), 'dns', known_vars=known_vars) }}
 {% endfor %}
 
 # ===================================================================

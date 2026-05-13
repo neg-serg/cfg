@@ -1,5 +1,4 @@
-{% from '_imports.jinja' import gopass_secret %}
-{% from '_macros_ipv6_tunnel.jinja' import ipv6_tunnel with context %}
+
 {% import_yaml 'data/ipv6.yaml' as ipv6_config %}
 
 {# ════════════════════════════════════════════════════════════════════
@@ -54,7 +53,7 @@ table inet ipv6-tunnel {
 {%- set _firewall_rules = '' -%}
 {%- endif %}
 
-{{ ipv6_tunnel(
+{{ salt['service.ipv6_tunnel'](
      name='he_tunnel',
      interface=_tun.interface_name,
      service_name='he-tunnel',

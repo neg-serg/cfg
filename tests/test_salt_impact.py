@@ -25,10 +25,10 @@ def test_multiple_sls_files():
 
 
 def test_shared_macros_jinja():
-    result = plan_for_changed_files(["states/_macros_common.jinja"])
+    result = plan_for_changed_files(["states/_imports.jinja"])
     assert result["final_target"] == "system_description"
     assert result["selected_states"] == []
-    assert result["fallback_reasons"] == ["states/_macros_common.jinja is a shared macro input"]
+    assert result["fallback_reasons"] == ["states/_imports.jinja is a shared imports"]
 
 
 def test_shared_data_yaml():

@@ -193,6 +193,10 @@ class _MockSalt:
             "service.env_block": ("_modules.service", "env_block"),
             "service.managed_resource_value": ("_modules.service", "managed_resource_value"),
             "service.managed_mode_value": ("_modules.service", "managed_mode_value"),
+            "service.render_service_yaml": ("_modules.service", "render_service_yaml"),
+            "service.ipv6_tunnel": ("_modules.service", "ipv6_tunnel"),
+            "common.get_host": ("_modules.common", "get_host"),
+            "common.get_constants": ("_modules.common", "get_constants"),
             "user_service.user_service_file": ("_modules.user_service", "user_service_file"),
             "user_service.user_unit_override": ("_modules.user_service", "user_unit_override"),
             "user_service.user_service_enable": ("_modules.user_service", "user_service_enable"),
@@ -212,12 +216,18 @@ class _MockSalt:
                 mod_path = os.path.join(REPO_ROOT, "states", mod_name.replace(".", os.sep) + ".py")
                 spec = importlib.util.spec_from_file_location(mod_name, mod_path)
                 if spec and spec.loader:
-                    mod = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(mod)
-                    func = getattr(mod, func_name, None)
-                    if func:
-                        self._module_cache[name] = func
-                        return func
+                    _modules_dir = os.path.join(REPO_ROOT, "states", "_modules")
+                    sys.path.insert(0, _modules_dir)
+                    try:
+                        mod = importlib.util.module_from_spec(spec)
+                        spec.loader.exec_module(mod)
+                        func = getattr(mod, func_name, None)
+                        if func:
+                            self._module_cache[name] = func
+                            return func
+                    finally:
+                        if _modules_dir in sys.path:
+                            sys.path.remove(_modules_dir)
             except Exception:
                 pass
         return None

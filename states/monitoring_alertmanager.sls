@@ -1,7 +1,7 @@
 {# Alertmanager: Telegram webhook alerts from Loki log rules #}
 # Alertmanager — containerised alert routing for Loki → Telegram.
 # Gated on loki && alertmanager features (two independent feature flags).
-{% from '_imports.jinja' import host, user, home, tg_secret %}
+{% from '_imports.jinja' import host, user, home %}
 
 
 

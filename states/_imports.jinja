@@ -1,25 +1,19 @@
-{#- Thin proxy: re-exports constants from _macros_common.jinja for .sls states.
-    All macro business logic migrated to Python modules in states/_modules/.
-    
+{#- Thin proxy: re-exports constants from Python modules for .sls states.
     Usage: {% from '_imports.jinja' import host, user, home, retry_attempts %}
-    For secrets: use salt['secrets.get']('key') or salt['secrets.tg_secret'](...)
-    For features: use salt['host.feature_enabled']('mpd')
-    For containers: use salt['container.deploy'](...)
+    Secrets: salt['secrets.get']('key'), salt['secrets.tg_secret'](...)
+    Features: salt['host.feature_enabled']('mpd')
 #}
-{%- import '_macros_common.jinja' as _mc -%}
-{%- set host = _mc.host -%}
-{%- set user = _mc.user -%}
-{%- set home = _mc.home -%}
-{%- set pkg_list = _mc.pkg_list -%}
-{%- set retry_attempts = _mc.retry_attempts -%}
-{%- set retry_interval = _mc.retry_interval -%}
-{%- set healthcheck_timeout = _mc.healthcheck_timeout -%}
-{%- set sudo_timeout_minutes = _mc.sudo_timeout_minutes -%}
-{%- set ollama_pull_timeout = _mc.ollama_pull_timeout -%}
-{%- set ver_dir = _mc.ver_dir -%}
-{%- set sys_ver_dir = _mc.sys_ver_dir -%}
-{%- set download_cache = _mc.download_cache -%}
-{%- set registry = _mc.registry -%}
-{%- set gopass_secret = _mc.gopass_secret -%}
-{%- set proxypilot_key = _mc.proxypilot_key -%}
-{%- set tg_secret = _mc.tg_secret -%}
+{%- set _hc = salt['common.get_host']() -%}
+{%- set host = _hc -%}
+{%- set user = _hc.user -%}
+{%- set home = _hc.home -%}
+{%- set pkg_list = _hc.pkg_list -%}
+{%- set _cc = salt['common.get_constants']() -%}
+{%- set retry_attempts = _cc.retry_attempts -%}
+{%- set retry_interval = _cc.retry_interval -%}
+{%- set healthcheck_timeout = _cc.healthcheck_timeout if _cc.healthcheck_timeout is defined else 30 -%}
+{%- set sudo_timeout_minutes = _cc.sudo_timeout_minutes if _cc.sudo_timeout_minutes is defined else -1 -%}
+{%- set ollama_pull_timeout = _cc.ollama_pull_timeout if _cc.ollama_pull_timeout is defined else 14400 -%}
+{%- set ver_dir = _cc.ver_dir if _cc.ver_dir is defined else (home ~ '/.cache/salt-versions') -%}
+{%- set sys_ver_dir = _cc.sys_ver_dir if _cc.sys_ver_dir is defined else '/var/cache/salt/versions' -%}
+{%- set download_cache = _cc.download_cache if _cc.download_cache is defined else '/var/cache/salt/downloads' -%}

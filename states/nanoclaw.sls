@@ -1,5 +1,5 @@
 {# NanoClaw AI coding agent: git clone, npm install, Quadlet container deployment #}
-{% from '_imports.jinja' import user, home, retry_attempts, retry_interval, proxypilot_key, tg_secret %}
+{% from '_imports.jinja' import user, home, retry_attempts, retry_interval %}
 
 
 

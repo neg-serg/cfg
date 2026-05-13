@@ -1,5 +1,5 @@
 {# Music Player Daemon: audio playback server with Last.fm scrobbling #}
-{% from '_imports.jinja' import host, user, home, pkg_list, gopass_secret %}
+{% from '_imports.jinja' import host, user, home, pkg_list %}
 
 
 {% import_yaml 'data/mpd.yaml' as mpd %}

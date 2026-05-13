@@ -29,7 +29,7 @@
                       firewall_rules='',
                       sysctl_config='',
                       enable_healthcheck=False) -%}
-{%- set _fw_path = '/etc/nftables/' ~ firewall_table ~ '.conf' -%}
+{%- set _fw_path = host.nftables_dir ~ firewall_table ~ '.conf' -%}
 {%- set _has_firewall = firewall_rules | length > 0 -%}
 {%- set _has_sysctl = sysctl_config | length > 0 -%}
 {%- set _svc_requires = [] -%}
@@ -66,7 +66,7 @@
 
 {{ name }}_sysctl:
   file.managed:
-    - name: /etc/sysctl.d/99-{{ name }}.conf
+    - name: {{ host.sysctl_dir }}99-{{ name }}.conf
     - mode: '0644'
     - contents: |
 {{ sysctl_config | trim | indent(8, first=True) }}

@@ -29,9 +29,9 @@
 {%- macro remove_native_unit(name, unit_path=None, scope='system') -%}
 {%- if unit_path is none -%}
 {%- if scope == 'user' -%}
-{%- set _unit_path = _home ~ '/.config/systemd/user/' ~ name ~ '.service' -%}
+{%- set _unit_path = host.systemd_user_unit_dir ~ name ~ '.service' -%}
 {%- else -%}
-{%- set _unit_path = '/etc/systemd/system/' ~ name ~ '.service' -%}
+{%- set _unit_path = host.systemd_unit_dir ~ name ~ '.service' -%}
 {%- endif -%}
 {%- else -%}
 {%- set _unit_path = unit_path -%}
@@ -297,7 +297,7 @@ test -e {{ _path }}
 {%- macro unit_override(name, service, source, filename='override.conf', requires=None) -%}
 {{ name }}:
   file.managed:
-    - name: /etc/systemd/system/{{ service }}.d/{{ filename }}
+    - name: {{ host.systemd_unit_dir ~ service }}.d/{{ filename }}
     - source: {{ source }}
     - makedirs: True
     - mode: '0644'
@@ -333,7 +333,7 @@ test -e {{ _path }}
 {%- macro service_with_unit(name, source, unit_type='service', running=False, enabled=True, requires=None, template=None, context=None, onlyif=None, companion=None, watch=None) -%}
 {{ name }}_service:
   file.managed:
-    - name: /etc/systemd/system/{{ name }}.{{ unit_type }}
+    - name: {{ host.systemd_unit_dir ~ name }}.{{ unit_type }}
     - mode: '0644'
     - source: {{ source }}
 {%- if template %}
@@ -349,7 +349,7 @@ test -e {{ _path }}
 
 {{ name }}_companion:
   file.managed:
-    - name: /etc/systemd/system/{{ name }}.{{ 'service' if unit_type != 'service' else 'timer' }}
+    - name: {{ host.systemd_unit_dir ~ name }}.{{ 'service' if unit_type != 'service' else 'timer' }}
     - mode: '0644'
     - source: {{ companion }}
 {%- if template %}
@@ -463,10 +463,19 @@ test -e {{ _path }}
 {% do resolved_ctx.update({k: known_vars[v]}) %}
 {% elif host and v in _host_fields and v in host %}
 {% do resolved_ctx.update({k: host[v]}) %}
+{% elif host %}
+{% set _found = namespace(val=None) %}
+{% for _section in host.features.values() %}
+{% if _section is mapping and v in _section %}
+{% set _found.val = _section[v] %}
+{% endif %}
+{% endfor %}
+{% do resolved_ctx.update({k: _found.val if _found.val is not none else v}) %}
 {% else %}
 {% do resolved_ctx.update({k: v}) %}
 {% endif %}
 {% endfor %}
+
 {% set _ct_requires = [] %}
 {% if opts.packages is defined %}
 {% do _ct_requires.append('cmd: install_' ~ name | replace('-', '_')) %}
@@ -526,7 +535,7 @@ test -e {{ _path }}
 {% elif sc.get('onlyif') %}
     - onlyif: {{ sc.onlyif }}
 {% else %}
-    - creates: /var/cache/salt/setup-{{ name }}-{{ loop.index0 }}.stamp
+    - creates: {{ host.stamp_dir }}setup-{{ name }}-{{ loop.index0 }}.stamp
 {% endif %}
 {% if opts.packages is defined %}
     - require:
@@ -553,6 +562,14 @@ test -e {{ _path }}
 {% do resolved_unit_context.update({k: known_vars[v]}) %}
 {% elif host and v in _host_fields and v in host %}
 {% do resolved_unit_context.update({k: host[v]}) %}
+{% elif host %}
+{% set _found = namespace(val=None) %}
+{% for _section in host.features.values() %}
+{% if _section is mapping and v in _section %}
+{% set _found.val = _section[v] %}
+{% endif %}
+{% endfor %}
+{% do resolved_unit_context.update({k: _found.val if _found.val is not none else v}) %}
 {% else %}
 {% do resolved_unit_context.update({k: v}) %}
 {% endif %}
@@ -595,7 +612,7 @@ test -e {{ _path }}
 {% if opts.logrotate is defined %}
 {{ name }}_logrotate:
   file.managed:
-    - name: /etc/logrotate.d/{{ name }}
+    - name: {{ host.logrotate_dir ~ name }}
     - mode: '0644'
     - source: {{ opts.logrotate.source }}
 {% endif %}

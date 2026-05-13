@@ -104,10 +104,10 @@ container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
 {%- set _manual_start = catalog_entry.get('manual_start', False) -%}
 {#- Quadlet file location depends on scope -#}
 {%- if user_scope -%}
-{%- set _quadlet_path = _home ~ '/.config/containers/systemd/' ~ _quadlet_name ~ '.container' -%}
+{%- set _quadlet_path = host.quadlet_user_dir ~ _quadlet_name ~ '.container' -%}
 {%- set _quadlet_source = 'salt://units/user/' ~ _quadlet_name ~ '.container' -%}
 {%- else -%}
-{%- set _quadlet_path = '/etc/containers/systemd/' ~ _quadlet_name ~ '.container' -%}
+{%- set _quadlet_path = host.quadlet_system_dir ~ _quadlet_name ~ '.container' -%}
 {%- set _quadlet_source = 'salt://units/' ~ _quadlet_name ~ '.container' -%}
 {%- endif -%}
 {#- Pre-compute bind-mount list with tilde expansion -#}

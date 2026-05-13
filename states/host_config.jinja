@@ -60,3 +60,11 @@
 {% do host.update({'download_cache': '/var/cache/salt/downloads'}) %}
 {% do host.update({'gopass_dir': host.home ~ '/.local/share/pass'}) %}
 {% do host.update({'gnupg_dir': host.home ~ '/.local/share/gnupg'}) %}
+{% do host.update({'systemd_unit_dir': '/etc/systemd/system/'}) %}
+{% do host.update({'systemd_user_unit_dir': host.home ~ '/.config/systemd/user/'}) %}
+{% do host.update({'quadlet_system_dir': '/etc/containers/systemd/'}) %}
+{% do host.update({'quadlet_user_dir': host.home ~ '/.config/containers/systemd/'}) %}
+{% do host.update({'nftables_dir': '/etc/nftables/'}) %}
+{% do host.update({'sysctl_dir': '/etc/sysctl.d/'}) %}
+{% do host.update({'logrotate_dir': '/etc/logrotate.d/'}) %}
+{% do host.update({'stamp_dir': '/var/cache/salt/'}) %}

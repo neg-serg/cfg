@@ -42,8 +42,8 @@
    All hyprpm operations need HYPRLAND_INSTANCE_SIGNATURE from the running
    compositor. The onlyif guard skips gracefully when Hyprland is not running.
 #}
-{%- set _hypr_sig_cmd = "ls -d /run/user/" ~ host.uid ~ "/hypr/*/.socket.sock 2>/dev/null | head -1 | xargs dirname | xargs basename" -%}
-{%- set _hypr_onlyif = 'ss -xl 2>/dev/null | grep -q /run/user/' ~ host.uid ~ '/hypr/' -%}
+{%- set _hypr_sig_cmd = "ls -d " ~ host.runtime_dir ~ "/hypr/*/.socket.sock 2>/dev/null | head -1 | xargs dirname | xargs basename" -%}
+{%- set _hypr_onlyif = 'ss -xl 2>/dev/null | grep -q ' ~ host.runtime_dir ~ '/hypr/' -%}
 
 {# Shared env block for hyprpm commands (HOME + XDG_RUNTIME_DIR) #}
 {%- set _hypr_env = [

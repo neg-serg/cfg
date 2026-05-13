@@ -55,3 +55,8 @@
 {% do host.update({'pkg_list': '/var/cache/salt/pacman_installed.txt'}) %}
 {% set project_dir = salt['config.get']('project_dir', host.home ~ '/src/cfg') %}
 {% do host.update({'project_dir': project_dir}) %}
+{% do host.update({'ver_dir': host.home ~ '/.cache/salt-versions'}) %}
+{% do host.update({'sys_ver_dir': '/var/cache/salt/versions'}) %}
+{% do host.update({'download_cache': '/var/cache/salt/downloads'}) %}
+{% do host.update({'gopass_dir': host.home ~ '/.local/share/pass'}) %}
+{% do host.update({'gnupg_dir': host.home ~ '/.local/share/gnupg'}) %}

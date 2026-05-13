@@ -8,14 +8,15 @@
 {%- set user = host.user -%}
 {%- set home = host.home -%}
 {%- set pkg_list = host.pkg_list -%}
-{%- set retry_attempts = 3 -%}
-{%- set retry_interval = 10 -%}
-{%- set ver_dir = home ~ '/.cache/salt-versions' -%}
-{%- set sys_ver_dir = '/var/cache/salt/versions' -%}
-{%- set download_cache = '/var/cache/salt/downloads' -%}
-{%- set healthcheck_timeout = 30 -%}
-{%- set sudo_timeout_minutes = -1 -%}
-{%- set ollama_pull_timeout = 14400 -%}
+{%- import_yaml 'data/system.yaml' as _system -%}
+{%- set retry_attempts = _system.timeouts.retry_attempts -%}
+{%- set retry_interval = _system.timeouts.retry_interval -%}
+{%- set ver_dir = host.ver_dir -%}
+{%- set sys_ver_dir = host.sys_ver_dir -%}
+{%- set download_cache = host.download_cache -%}
+{%- set healthcheck_timeout = _system.timeouts.healthcheck_timeout -%}
+{%- set sudo_timeout_minutes = _system.timeouts.sudo_timeout_minutes -%}
+{%- set ollama_pull_timeout = _system.timeouts.ollama_pull_timeout -%}
 {%- set registry = _hc.registry if _hc.registry is defined else {} -%}
 
 {#- Shell snippet: download a URL to cache_path with optional sha256 verification.
@@ -65,7 +66,7 @@ mkdir -p {{ vd }} && rm -f '{{ vd }}/{{ name }}' {{ vd }}/{{ name }}@* && {% if 
 {%- else -%}
 {%- set _try_gopass = (not _gopass_ns.checked) or _gopass_ns.available -%}
 {%- if _try_gopass -%}
-{%- set _r = salt['cmd.run_all']('PASSWORD_STORE_DIR=' ~ home ~ '/.local/share/pass GNUPGHOME=' ~ home ~ '/.local/share/gnupg XDG_RUNTIME_DIR=/run/user/$(id -u) gopass show -o ' ~ key ~ ' 2>/dev/null', runas=_u, python_shell=True, ignore_retcode=True) -%}
+{%- set _r = salt['cmd.run_all']('PASSWORD_STORE_DIR=' ~ host.gopass_dir ~ ' GNUPGHOME=' ~ host.gnupg_dir ~ ' XDG_RUNTIME_DIR=/run/user/$(id -u) gopass show -o ' ~ key ~ ' 2>/dev/null', runas=_u, python_shell=True, ignore_retcode=True) -%}
 {%- if not _gopass_ns.checked -%}
 {%- set _gopass_ns.checked = True -%}
 {%- set _gopass_ns.available = (_r.get('retcode', 1) == 0) -%}

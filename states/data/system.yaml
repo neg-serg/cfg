@@ -1,2 +1,9 @@
 locale_pattern: ^#\s*(en_US\.UTF-8 UTF-8)
 x11_keymap: ru,us
+
+timeouts:
+  retry_attempts: 3
+  retry_interval: 10
+  healthcheck_timeout: 30
+  sudo_timeout_minutes: -1
+  ollama_pull_timeout: 14400

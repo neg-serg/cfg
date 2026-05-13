@@ -202,8 +202,8 @@ features:
     gates: [users]
   opencode:
     default: false
-    description: "OpenCode LLM CLI tool"
-    gates: [opencode, system_description, group.ai]
+    description: "OpenCode LLM CLI tool — proxypilot handles config; feature flag retained for host config compatibility"
+    gates: []
   nanoclaw:
     default: false
     description: "NanoClaw AI coding agent (Telegram bot)"

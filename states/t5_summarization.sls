@@ -18,7 +18,7 @@
 {{ ensure_dir('t5_summarization_hf_dir', hf_path, require=['mount: mount_one']) }}
 
 # python-transformers is needed for convert_hf_to_gguf.py (runs on host during build)
-# {{ paru_install('python_transformers', 'python-transformers') }}
+{{ paru_install('python_transformers', 'python-transformers') }}
 
 # Download model + tokenizer files from HuggingFace (unconditional — feeds container via bind-mount)
 {{ huggingface_file('t5_summarization_model', t5.hf_repo, hf_file, hf_path ~ '/' ~ hf_file, user=user, require=['file: t5_summarization_hf_dir'], parallel=False, version=hf_file, cache=False) }}

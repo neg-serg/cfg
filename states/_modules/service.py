@@ -192,7 +192,9 @@ def remove_native_unit(name: str, unit_path: str | None = None,
             unit_path = f"{_sys_dir}{name}.service"
 
     daemon_reload_onlyif = (
-        "systemctl --user show-environment >/dev/null 2>&1"
+        f"XDG_RUNTIME_DIR={_host().get('runtime_dir', '/run/user/1000')} "
+        f"DBUS_SESSION_BUS_ADDRESS=unix:path={_host().get('runtime_dir', '/run/user/1000')}/bus "
+        f"systemctl --user show-environment >/dev/null 2>&1"
         if scope == "user"
         else "test -e /run/systemd/system || test -e /etc/systemd/system"
     )

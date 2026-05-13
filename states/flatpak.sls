@@ -13,12 +13,8 @@ flatpak_flathub_remote:
   cmd.run:
     - name: flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
     - runas: {{ user }}
-    - unless: flatpak remotes --user --columns=name | grep -qx 'flathub'
     - require:
       - cmd: install_flatpak
-    - retry:
-        attempts: {{ retry_attempts }}
-        interval: {{ retry_interval }}
 
 {% for app_id in flatpak.apps %}
 {{ salt['pkg.flatpak_install'](app_id) }}

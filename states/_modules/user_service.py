@@ -32,6 +32,13 @@ def _sysctl_env() -> dict[str, str]:
     }
 
 
+def _user_env_prefix() -> str:
+    """Shell prefix that sets user-session env vars for systemctl --user."""
+    h = _host()
+    return (f"XDG_RUNTIME_DIR={h['runtime_dir']} "
+            f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus")
+
+
 def _user_service_file_dict(name: str, filename: str, source: str | None = None,
                             template: str | None = None,
                             context: dict[str, Any] | None = None,
@@ -58,7 +65,7 @@ def _user_service_file_dict(name: str, filename: str, source: str | None = None,
         f"{name}_daemon_reload": {
             "cmd.run": [
                 {"name": "systemctl --user daemon-reload"},
-                {"onlyif": "systemctl --user show-environment >/dev/null 2>&1"},
+                {"onlyif": _user_env_prefix() + " systemctl --user show-environment >/dev/null 2>&1"},
                 {"runas": u},
                 {"env": _sysctl_env()},
                 {"onchanges": [{"file": name}]},
@@ -103,7 +110,7 @@ def user_unit_override(name: str, service: str, source: str | None = None,
         f"{name}_daemon_reload": {
             "cmd.run": [
                 {"name": "systemctl --user daemon-reload"},
-                {"onlyif": "systemctl --user show-environment >/dev/null 2>&1"},
+                {"onlyif": _user_env_prefix() + " systemctl --user show-environment >/dev/null 2>&1"},
                 {"runas": u},
                 {"env": _sysctl_env()},
                 {"onchanges": [{"file": name}]},

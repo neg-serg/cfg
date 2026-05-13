@@ -72,9 +72,11 @@ def deploy(name: str,
         host = get_host()
         home = host.get("home", "/root")
         host_user = host.get("user", "root")
+        runtime_dir = host.get("runtime_dir", "/run/user/1000")
     except Exception:
         home = "/root"
         host_user = "root"
+        runtime_dir = "/run/user/1000"
 
     quadlet_name = quadlet_unit_name if quadlet_unit_name is not None else name
 
@@ -165,7 +167,8 @@ def deploy(name: str,
 
     # Daemon reload
     onlyif = (
-        "systemctl --user show-environment >/dev/null 2>&1"
+        f"XDG_RUNTIME_DIR={runtime_dir} DBUS_SESSION_BUS_ADDRESS=unix:path={runtime_dir}/bus "
+        f"systemctl --user show-environment >/dev/null 2>&1"
         if user_scope else
         "test -e /run/systemd/system || test -e /etc/systemd/system"
     )

@@ -192,7 +192,6 @@ def flatpak_install(app_id: str, user: str | None = None) -> dict[str, Any]:
             "cmd.run": [
                 {"name": f"flatpak install -y --user flathub {app_id}"},
                 {"runas": u},
-                {"unless": f"flatpak list --user --app --columns=application | grep -qxF '{app_id}'"},
                 {"retry": {"attempts": c["retry_attempts"], "interval": c["retry_interval"]}},
                 {"require": [{"cmd": "flatpak_flathub_remote"}]},
             ]

@@ -134,29 +134,6 @@ build_{{ safe }}:
       - cmd: pacman_db_warmup
 {%- endmacro -%}
 
-{# npm install -g (global npm package) with --prefix for user-level install.
-   Without --prefix, npm tries /usr/lib/node_modules/ (EACCES as non-root).
-   version: when set, uses version stamp file for idempotency instead of creates.
-   Usage: {{ npm_pkg('nanoclaw', pkg='nanoclaw@1.2.0', version='1.2.0') }}
-#}
-{%- macro npm_pkg(name, pkg=None, bin=None, version='', user=_user, home=_home) -%}
-{%- set _ver_dir = home ~ '/.cache/salt-versions' -%}
-install_{{ name | replace('-', '_') }}:
-  cmd.run:
-{%- if version %}
-    - name: |
-        npm install -g --prefix {{ home }}/.local {{ pkg or name }}
-        {{ ver_stamp(_ver_dir, name, version, home ~ '/.local/bin/' ~ (bin or name)) }}
-    - shell: /bin/bash
-    - creates: {{ _ver_dir }}/{{ name }}@{{ version }}
-{%- else %}
-    - name: npm install -g --prefix {{ home }}/.local {{ pkg or name }}
-    - creates: {{ home }}/.local/bin/{{ bin or name }}
-{%- endif %}
-    - runas: {{ user }}
-    - parallel: True
-{%- endmacro -%}
-
 {# Install a Flatpak app from Flathub (user-level).
    Usage: {{ flatpak_install('md.obsidian.Obsidian') }}
 #}

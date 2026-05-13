@@ -100,8 +100,13 @@ if [[ "$STATE" == "auto" ]]; then
 		CHANGED_STR=$(git -C "$PROJECT_DIR" diff --name-only "$AUTO_BASE" 2>/dev/null || true)
 
 		if [[ -z "$CHANGED_STR" ]]; then
-			echo "(auto: no changed files since $AUTO_BASE, nothing to apply)"
-			exit 0
+			if $FORCE_MODE; then
+				echo "(auto: no changed files — --force, applying system_description)"
+				STATE="system_description"
+			else
+				echo "(auto: no changed files since $AUTO_BASE, nothing to apply)"
+				exit 0
+			fi
 		else
 			CHANGED_FILES=(${(f)CHANGED_STR})
 			PLAN_JSON=$(python3 "${SCRIPT_DIR}/salt_impact.py" \

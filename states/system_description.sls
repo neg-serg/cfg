@@ -100,16 +100,16 @@ include:
   - proxypilot
 {% endif %}
 
-{% if host.features.amnezia %}
+{% if host.features.get('amnezia', false) %}
   - amnezia
 {% endif %}
-{% if host.features.flatpak %}
+{% if host.features.get('flatpak', true) %}
   - flatpak
 {% endif %}
 {% if host.features.get('espanso', false) %}
   - espanso
 {% endif %}
-{% if host.features.floorp and host.floorp_profile %}
+{% if host.features.get('floorp', false) and host.floorp_profile %}
   - floorp
 {% endif %}
 {% if host.features.get('nyxt', false) %}
@@ -122,25 +122,25 @@ include:
   - zen_browser
   - zen_profiles
 {% endif %}
-{% if host.features.kanata %}
+{% if host.features.get('kanata', true) %}
   - kanata
 {% endif %}
-{% if host.features.mpd %}
+{% if host.features.get('mpd', true) %}
   - mpd
 {% endif %}
-{% if host.features.get('music_analysis') %}
+{% if host.features.get('music_analysis', false) %}
   - music_analysis
 {% endif %}
-{% if host.features.tidal %}
+{% if host.features.get('tidal', false) %}
   - tidal
 {% endif %}
-{% if host.features.ollama %}
+{% if host.features.get('ollama', true) %}
   - ollama
 {% endif %}
-{% if host.features.llama_embed %}
+{% if host.features.get('llama_embed', true) %}
   - llama_embed
 {% endif %}
-{% if host.features.opencode %}
+{% if host.features.get('opencode', false) %}
   - opencode
 {% endif %}
 {% if host.features.get('nanoclaw', false) %}
@@ -152,20 +152,20 @@ include:
 {% if host.features.get('managed_bots', false) %}
   - managed_bots
 {% endif %}
-{% if host.features.get('image_gen', True) %}
+{% if host.features.get('image_gen', true) %}
   - image_generation
 {% endif %}
-{% if host.features.get('video_ai', False) %}
+{% if host.features.get('video_ai', true) %}
   - video_ai
 {% endif %}
-{% if host.features.steam %}
+{% if host.features.get('steam', true) %}
   - steam
 {% endif %}
 {% if host.features.get('xen_vr', false) %}
   - xen
 {% endif %}
   - monitoring_loki
-{% if host.features.monitoring.loki and host.features.monitoring.alertmanager %}
+{% if host.features.get('monitoring', {}).get('loki', false) and host.features.get('monitoring', {}).get('alertmanager', false) %}
   - monitoring_alertmanager
 {% endif %}
 {% if host.features.network.get('zapret2', false) %}

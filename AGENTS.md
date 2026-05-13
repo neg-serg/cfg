@@ -1,6 +1,6 @@
 # salt Development Guidelines
 
-Auto-generated from active feature plans. Last updated: 2026-05-07
+Auto-generated from active feature plans. Last updated: 2026-05-13
 
 ## Active Technologies
 - Jinja2 + YAML Salt states, Python 3, Bash/Zsh helper scripts

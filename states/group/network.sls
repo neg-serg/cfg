@@ -16,7 +16,7 @@ include:
 {% if host.features.network.get('ipv6_tunnel', false) %}
   - ipv6_tunnel
 {% endif %}
-{% if host.features.amnezia %}
+{% if host.features.get('amnezia', false) %}
   - amnezia
 {% endif %}
 {% if host.features.network.get('zapret2', false) %}

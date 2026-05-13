@@ -1,5 +1,5 @@
 {# Steam gaming platform: multilib, drivers, gamemode, and controller support #}
-{% from '_imports.jinja' import host, user, pkg_list %}
+{% from '_imports.jinja' import host, user %}
 {% from '_macros_service.jinja' import ensure_dir %}
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_config.jinja' import config_file_edit %}
@@ -14,27 +14,13 @@ include:
     check_file=steam.multilib_repo.check_file,
     retry=True) }}
 
-vulkan_radeon_pkg:
-  cmd.run:
-    - name: pacman -S --noconfirm --needed --ask 4 {{ steam.vulkan_packages | join(' ') }}
-    - unless: grep -qxF 'vulkan-radeon' {{ pkg_list }}
-    - require:
-      - cmd: pacman_db_warmup
-      - cmd: multilib_repo
-
-steam_pkg:
-  cmd.run:
-    - name: pacman -S --noconfirm --needed --ask 4 {{ steam.steam_packages | join(' ') }}
-    - unless: grep -qxF 'steam' {{ pkg_list }}
-    - require:
-      - cmd: vulkan_radeon_pkg
-
-steam_lib32_audio:
-  cmd.run:
-    - name: pacman -S --noconfirm --needed --ask 4 {{ steam.lib32_audio_packages | join(' ') }}
-    - unless: pacman -Qi lib32-pipewire-jack >/dev/null 2>&1
-    - require:
-      - cmd: steam_pkg
+{% for id, pkgs in {
+    'vulkan_radeon': steam.vulkan_packages,
+    'steam': steam.steam_packages,
+    'lib32_audio': steam.lib32_audio_packages,
+}.items() %}
+{{ paru_install(id, pkgs | join(' '), requires=['cmd: multilib_repo']) }}
+{% endfor %}
 
 {{ ensure_dir('steam_library_dir', host.mnt_zero ~ '/steam/steamapps', require=['mount: mount_zero']) }}
 {{ paru_install('p7zip', '7zip') }}
@@ -45,7 +31,7 @@ gamemode_config:
     - source: salt://configs/gamemode.ini
     - mode: '0644'
     - require:
-      - cmd: steam_pkg
+      - cmd: install_steam
 
 gamemode_start_script:
   file.managed:
@@ -53,7 +39,7 @@ gamemode_start_script:
     - source: salt://scripts/gamemode-start.sh
     - mode: '0755'
     - require:
-      - cmd: steam_pkg
+      - cmd: install_steam
 
 gamemode_end_script:
   file.managed:
@@ -61,7 +47,7 @@ gamemode_end_script:
     - source: salt://scripts/gamemode-end.sh
     - mode: '0755'
     - require:
-      - cmd: steam_pkg
+      - cmd: install_steam
 
 dxvk_resolution_fix:
   cmd.script:
@@ -78,4 +64,4 @@ dxvk_resolution_fix:
         done
         exit 0
     - require:
-      - cmd: steam_pkg
+      - cmd: install_steam

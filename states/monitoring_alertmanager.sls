@@ -1,15 +1,15 @@
 {# Alertmanager: Telegram webhook alerts from Loki log rules #}
 # Alertmanager — containerised alert routing for Loki → Telegram.
 # Gated on loki && alertmanager features (two independent feature flags).
-{% from '_imports.jinja' import host, user, home %}
-{% from '_macros_service.jinja' import telegram_monitoring_secrets %}
+{% from '_imports.jinja' import host, user, home, tg_secret %}
 {% from '_macros_service_user.jinja' import user_service_file, user_service_enable %}
 {% from '_macros_container.jinja' import container_service, catalog, image_registry %}
 
 {% if host.features.monitoring.loki and host.features.monitoring.alertmanager %}
 
 # ── Telegram credentials (same token as salt-alert) ──────────────────
-{{ telegram_monitoring_secrets() }}
+{% set _telegram_token = tg_secret('api/nanoclaw-telegram', 'telegram-token') %}
+{% set _telegram_uid = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
 
 
 # ── Webhook bridge script ────────────────────────────────────────────

@@ -14,6 +14,8 @@ cd "$project_dir"
 script_dir="${project_dir}/scripts"
 # shellcheck disable=SC1091
 source "${script_dir}/salt-runtime.sh"
+# shellcheck disable=SC1091
+source "${script_dir}/lib/pretty.sh" 2>/dev/null || true
 
 jobs="${VALIDATE_JOBS:-$(nproc)}"
 validate_timeout="${VALIDATE_TIMEOUT:-300}"
@@ -247,5 +249,19 @@ write_summary_artifact() {
 
 write_summary_artifact
 
-echo "Validated ${total} states, ${failed} failed"
+if declare -f pretty::ok >/dev/null 2>&1; then
+    if [[ "$failed" -eq 0 ]]; then
+        pretty::ok "All ${total} states valid"
+    else
+        pretty::fail "${failed}/${total} states failed"
+        while IFS=$'\t' read -r _ _ _ _ _ _ exitval _ command; do
+            [[ $exitval -ne 0 && "$command" != *"Seq"* ]] || continue
+            local target="${command#validate_one }"
+            target="${target% *}"
+            pretty::info "  ${target}"
+        done < "$joblog"
+    fi
+else
+    echo "Validated ${total} states, ${failed} failed"
+fi
 [[ "$failed" -eq 0 ]]

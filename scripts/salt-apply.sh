@@ -359,7 +359,10 @@ maintenance_lock_remove() {
 	rm -f "$MAINTENANCE_LOCK"
 }
 
-# ── Main ───────────────────────────────────────────────────────────────────────
+# ── Pre-flight: source shared libraries ───────────────────────────────────────
+# shellcheck disable=SC1091
+source "${SCRIPT_DIR}/lib/pretty.sh" 2>/dev/null || true
+
 # Pre-flight: validate data contracts before applying states
 # Set SALT_SKIP_CONTRACTS=1 or use --force to bypass (e.g., bootstrap scenarios)
 if [[ -z "${SALT_SKIP_CONTRACTS:-}" && "$FORCE_MODE" != true ]]; then

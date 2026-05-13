@@ -263,6 +263,62 @@ def _format_change_block(changes: dict, colorize: bool = True) -> list[str]:
     return lines
 
 
+def _write_result_json(result: dict, log_file: str | None, state: str) -> None:
+    """Write a structured JSON summary alongside the text log.
+
+    The JSON file is placed at <log_file>.json and contains:
+      - state: the state name applied
+      - success: overall pass/fail
+      - summary: {succeeded, failed, changed, total}
+      - details: list of {id, result, duration_ms, comment, changes_keys}
+    """
+    if not log_file:
+        return
+    json_path = log_file + ".json"
+    ordered = sorted(
+        (entry for entry in result.values() if isinstance(entry, dict)),
+        key=lambda item: item.get("__run_num__", 0),
+    )
+    details = []
+    succeeded = 0
+    failed = 0
+    changed = 0
+    for entry in ordered:
+        success = entry.get("result") is not False
+        if success:
+            succeeded += 1
+            if entry.get("changes"):
+                changed += 1
+        else:
+            failed += 1
+        details.append({
+            "id": entry.get("__id__", entry.get("name", "unknown")),
+            "fun": entry.get("fun", "unknown"),
+            "name": entry.get("name", ""),
+            "result": entry.get("result"),
+            "comment": entry.get("comment", ""),
+            "duration_ms": entry.get("duration", 0),
+            "changed": bool(entry.get("changes")),
+        })
+
+    summary = {
+        "state": state,
+        "success": failed == 0,
+        "summary": {
+            "succeeded": succeeded,
+            "failed": failed,
+            "changed": changed,
+            "total": len(ordered),
+        },
+        "details": details,
+    }
+    try:
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(summary, f, indent=2, sort_keys=True)
+    except OSError:
+        pass
+
+
 def _format_compact_highstate(result: dict, colorize: bool = True) -> str:
     ordered = sorted(
         (entry for entry in result.values() if isinstance(entry, dict)),
@@ -441,6 +497,8 @@ def run_state(
 
         if isinstance(result, dict):
             formatted_output = _format_compact_highstate(result, colorize=True)
+            # Write structured JSON result alongside text log
+            _write_result_json(result, log_file, state)
         else:
             # Capture display_output (which writes to sys.stdout)
             captured = io.StringIO()

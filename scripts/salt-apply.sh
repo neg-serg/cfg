@@ -458,14 +458,49 @@ if [[ $RC -eq 0 ]]; then
         python3 "${SCRIPT_DIR}/salt_audit.py" --target "${STATE}" $TEST_FLAG
     fi
 else
-    FAILED_COUNT=$(grep -c 'Result: False' "${LOG_FILE}" 2>/dev/null || echo 0)
+    JSON_FILE="${LOG_FILE}.json"
+    if [[ -f "${JSON_FILE}" ]]; then
+        # Machine-readable output from salt-daemon.py
+        FAILED_COUNT=$(python3 -c "
+import json
+with open('${JSON_FILE}') as f:
+    data = json.load(f)
+print(data['summary']['failed'])
+" 2>/dev/null || echo 0)
+        PASSED=$(python3 -c "
+import json
+with open('${JSON_FILE}') as f:
+    data = json.load(f)
+print(data['summary']['succeeded'])
+" 2>/dev/null || echo 0)
+        CHANGED=$(python3 -c "
+import json
+with open('${JSON_FILE}') as f:
+    data = json.load(f)
+print(data['summary']['changed'])
+" 2>/dev/null || echo 0)
+    else
+        FAILED_COUNT=$(grep -c 'Result: False' "${LOG_FILE}" 2>/dev/null || echo 0)
+        PASSED=$(( $(grep -c 'Result: True' "${LOG_FILE}" 2>/dev/null || echo 0) ))
+        CHANGED=0
+    fi
     echo ""
     if [[ $FAILED_COUNT -gt 0 && -f "${LOG_FILE}" ]]; then
         if declare -f pretty::summary_line >/dev/null 2>&1; then
-            PASSED=$(( $(grep -c 'Result: True' "${LOG_FILE}" 2>/dev/null || echo 0) ))
             pretty::summary_line "$PASSED" "$FAILED_COUNT" "States"
         fi
-        awk '/^----------$/{buf=$0; while(getline>0){buf=buf"\n"$0; if(/Result: False/){print buf; print ""; break} if(/^----------$/){break}}}' "${LOG_FILE}" 2>/dev/null
+        if [[ -f "${JSON_FILE}" ]]; then
+            python3 -c "
+import json
+with open('${JSON_FILE}') as f:
+    data = json.load(f)
+for d in data.get('details', []):
+    if d.get('result') is False:
+        print(f\"  [FAIL] {d['id']}: {d['comment']}\")
+" 2>/dev/null
+        else
+            awk '/^----------$/{buf=\$0; while(getline>0){buf=buf\"\n\"\$0; if(/Result: False/){print buf; print \"\"; break} if(/^----------$/){break}}}' "${LOG_FILE}" 2>/dev/null
+        fi
         if declare -f pretty::info >/dev/null 2>&1; then
             pretty::info "grep 'Result: False' ${LOG_FILE}"
             pretty::info "grep 'Requisite.*not found' ${LOG_FILE}"

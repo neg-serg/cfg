@@ -11,6 +11,7 @@ Output: logs/audit-<timestamp>.yaml with consumed/unused lists.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import subprocess
@@ -74,8 +75,8 @@ def _run_salt_test(target: str, test_mode: bool) -> tuple[list[str], float]:
     cmd = [
         "sudo", venv_python, "-u", runner,
         f"--config-dir={config_dir}",
-        "--local", "--log-level=warning", "--force-color",
-        "state.sls", target, "test=True",
+        "--local", "--log-level=warning",
+        "state.sls", target, "test=True", "--out=json",
     ]
 
     start = time.time()
@@ -85,9 +86,22 @@ def _run_salt_test(target: str, test_mode: bool) -> tuple[list[str], float]:
         return [], time.time() - start
 
     duration = time.time() - start
-    output = result.stdout + result.stderr
 
-    state_names = set(STATE_RESULT_RE.findall(output))
+    state_names = []
+    try:
+        data = json.loads(result.stdout)
+        local = data.get("local", {})
+        if isinstance(local, dict):
+            state_names = [
+                entry.get("__id__", entry.get("name", ""))
+                for entry in local.values()
+                if isinstance(entry, dict)
+            ]
+    except (json.JSONDecodeError, AttributeError, KeyError):
+        # Fallback: try regex on text output for non-daemon runs
+        output = result.stdout + result.stderr
+        state_names = list(set(STATE_RESULT_RE.findall(output)))
+
     return sorted(state_names), duration
 
 

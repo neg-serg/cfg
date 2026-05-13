@@ -53,6 +53,28 @@ def _parse_duration_expr(expr: str) -> float:
 
 
 def parse_log(path: Path) -> list[tuple[float, str]]:
+    """Parse Salt apply log for state durations.
+
+    Prefers JSON output from salt-daemon.py (at <path>.json).
+    Falls back to regex parsing of text log.
+    """
+    import json as _json
+
+    json_path = Path(str(path) + ".json")
+    if json_path.is_file():
+        try:
+            data = _json.loads(json_path.read_text())
+            durations = []
+            for entry in data.get("details", []):
+                dur_ms = entry.get("duration_ms", 0)
+                if isinstance(dur_ms, (int, float)) and dur_ms > 0:
+                    durations.append((float(dur_ms), entry.get("id", "unknown")))
+            if durations:
+                return durations
+        except (_json.JSONDecodeError, OSError, KeyError):
+            pass
+
+    # Fallback: regex parse text log
     durations: list[tuple[float, str]] = []
     with path.open() as fh:
         for raw in fh:

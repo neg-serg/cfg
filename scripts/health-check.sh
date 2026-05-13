@@ -8,6 +8,10 @@
 
 set -euo pipefail
 
+project_dir="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck disable=SC1091
+source "${project_dir}/scripts/lib/pretty.sh" 2>/dev/null || true
+
 JSON_MODE=false
 QUIET_MODE=false
 
@@ -358,26 +362,35 @@ if $JSON_MODE; then
 	exit $((unhealthy > 0 ? 1 : 0))
 fi
 
-# Table output
-printf '%b%-30s %-8s %-16s %-16s %-8s%b\n' "$BOLD" "SERVICE" "TYPE" "EXPECTED" "ACTUAL" "HEALTH" "$NC"
-printf '%.0s─' {1..86}
-echo ""
-
+# Table output — use pretty::service_status if available
+if declare -f pretty::header >/dev/null 2>&1; then
+    pretty::section "Service Health"
+fi
 for entry in "${results[@]}"; do
-	IFS=$'\t' read -r name type expected actual health status <<<"$entry"
-	if [ "$status" = "healthy" ]; then
-		color="$GREEN"
-	else
-		color="$RED"
-	fi
-	printf '%b%-30s %-8s %-16s %-16s %-8s%b\n' "$color" "$name" "$type" "$expected" "$actual" "$health" "$NC"
+    IFS=$'\t' read -r name _ _ _ _ status <<<"$entry"
+    if declare -f pretty::service_status >/dev/null 2>&1; then
+        pretty::service_status "$name" "$status"
+    else
+        case "$status" in
+            healthy) printf '  \033[32m%-40s active\033[0m\n' "$name" ;;
+            *)       printf '  \033[31m%-40s failed\033[0m\n' "$name" ;;
+        esac
+    fi
 done
 
 echo ""
-if [ "$unhealthy" -eq 0 ]; then
-	printf '%b%s%b\n' "$GREEN" "All services healthy" "$NC"
+if declare -f pretty::ok >/dev/null 2>&1; then
+    if [ "$unhealthy" -eq 0 ]; then
+        pretty::ok "All services healthy"
+    else
+        pretty::fail "${unhealthy} unhealthy service(s)"
+    fi
 else
-	printf '%b%d unhealthy service(s)%b\n' "$RED" "$unhealthy" "$NC"
+    if [ "$unhealthy" -eq 0 ]; then
+        printf '%b%s%b\n' "$GREEN" "All services healthy" "$NC"
+    else
+        printf '%b%d unhealthy service(s)%b\n' "$RED" "$unhealthy" "$NC"
+    fi
 fi
 
 exit $((unhealthy > 0 ? 1 : 0))

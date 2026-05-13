@@ -370,14 +370,16 @@ if [[ -z "${SALT_SKIP_CONTRACTS:-}" && "$FORCE_MODE" != true ]]; then
 	CONTRACT_RC=$?
 	if [[ $CONTRACT_RC -ne 0 ]]; then
 		VIOLATION_COUNT=$(echo "$CONTRACT_OUTPUT" | grep -c . 2>/dev/null || echo 0)
-		printf '\033[31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
-		printf '\033[31m  Data contract violations (%d found)\033[0m\n' "$VIOLATION_COUNT"
-		printf '\033[31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
-		echo "$CONTRACT_OUTPUT"
-		echo ""
-		printf '\033[33m  Fix: resolve the violations above, then re-run.\033[0m\n'
-		printf '\033[33m  Bypass: just force          (skip contracts + apply)\033[0m\n'
-		printf '\033[33m  Inspect: python3 scripts/salt_contracts.py --verbose\033[0m\n'
+		if declare -f pretty::header >/dev/null 2>&1; then
+			pretty::fail "${VIOLATION_COUNT} data contract violation(s)"
+			echo "$CONTRACT_OUTPUT"
+			pretty::info "Fix the violations above, then re-run"
+			pretty::info "Bypass: just force  |  Inspect: python3 scripts/salt_contracts.py --verbose"
+		else
+			echo "=== Data contract violations detected ==="
+			echo "$CONTRACT_OUTPUT"
+			echo "  Fix: resolve violations, then re-run."
+		fi
 		exit 1
 	fi
 fi
@@ -400,63 +402,86 @@ else
 fi
 
 echo ""
-echo "=== Finished ${STATE} (exit code: ${RC}) at $(date) ==="
-echo "Full log: ${LOG_FILE}"
+if declare -f pretty::section >/dev/null 2>&1; then
+    pretty::section "Apply ${STATE}"
+    echo "Log: ${LOG_FILE}"
+else
+    echo "=== Finished ${STATE} (exit code: ${RC}) at $(date) ==="
+    echo "Full log: ${LOG_FILE}"
+fi
 
 if [[ $RC -eq 0 ]]; then
-	echo "--- ${STATE}: all states passed ---"
-	echo "--- Applying dotfiles (chezmoi) ---"
-	# Keep the existing GPG flow usable by refreshing pinentry TTY when that backend is in use.
-	gpg-connect-agent updatestartuptty /bye &>/dev/null || true
-	# Bootstrap chezmoi config before apply (needed for gopass template rendering)
-	install -Dm644 "${PROJECT_DIR}/dotfiles/dot_config/chezmoi/chezmoi.toml" \
-		"${HOME}/.config/chezmoi/chezmoi.toml" 2>/dev/null || true
-	chezmoi_output=""
-	if ! chezmoi_output=$(chezmoi apply --force --source "${PROJECT_DIR}/dotfiles" 2>&1); then
-		echo ""
-		printf '\033[33m━━━ chezmoi apply failed ━━━\033[0m\n'
-		printf '\033[33m  Salt states succeeded; dotfiles were not fully applied.\033[0m\n'
-
-		if printf '%s\n' "$chezmoi_output" | rg -qi 'gopass|pinentry|failed to decrypt|decryption failed'; then
-			printf '\033[33m  Reason: gopass is locked or pinentry is unavailable in this session.\033[0m\n'
-			printf '\033[33m  Action: unlock gopass, then re-run: chezmoi apply --force --source %s/dotfiles\033[0m\n' "${PROJECT_DIR}"
-			printf '\033[33m  Verify: gopass show -o <known-key> (gopass ls alone does not prove decryption works).\033[0m\n'
-			printf '\033[33m  Details: see docs/gopass-setup.md if the unlock path is not configured.\033[0m\n'
-			printf '\033[33m  Continuing: Salt rollout succeeded; dotfiles were skipped for now.\033[0m\n'
-		else
-			printf '%s\n' "$chezmoi_output"
-			printf '\033[33m  Re-run: chezmoi apply --force --source %s/dotfiles\033[0m\n' "${PROJECT_DIR}"
-			exit 1
-		fi
-	fi
-	# Record last applied commit for future auto-mode diffs
-	if $AUTO_MODE; then
-		git -C "$PROJECT_DIR" rev-parse HEAD > "${RUNTIME_CONFIG_DIR}/last-applied-commit" 2>/dev/null || true
-	fi
-	python3 "${PROJECT_DIR}/scripts/drift_state.py" refresh-expected \
-		--project-dir "${PROJECT_DIR}" \
-		--cache-dir "${HOME}/.cache/salt-monitor" \
-		--salt-target "${STATE}"
-	if $AUDIT_MODE; then
-		TEST_FLAG=""
-		$TEST_MODE && TEST_FLAG="--test"
-		python3 "${SCRIPT_DIR}/salt_audit.py" --target "${STATE}" $TEST_FLAG
-	fi
+    if declare -f pretty::ok >/dev/null 2>&1; then
+        pretty::ok "All states applied successfully"
+        pretty::phase 1 2 "Dotfiles (chezmoi)"
+    else
+        echo "--- ${STATE}: all states passed ---"
+        echo "--- Applying dotfiles (chezmoi) ---"
+    fi
+    gpg-connect-agent updatestartuptty /bye &>/dev/null || true
+    install -Dm644 "${PROJECT_DIR}/dotfiles/dot_config/chezmoi/chezmoi.toml" \
+        "${HOME}/.config/chezmoi/chezmoi.toml" 2>/dev/null || true
+    chezmoi_output=""
+    if ! chezmoi_output=$(chezmoi apply --force --source "${PROJECT_DIR}/dotfiles" 2>&1); then
+        echo ""
+        if declare -f pretty::warn >/dev/null 2>&1; then
+            if printf '%s\n' "$chezmoi_output" | rg -qi 'gopass|pinentry|failed to decrypt|decryption failed'; then
+                pretty::warn "gopass locked — dotfiles skipped (Salt states OK)"
+                pretty::info "Unlock: gopass show -o <key>"
+            else
+                pretty::fail "chezmoi apply failed"
+                printf '%s\n' "$chezmoi_output"
+                exit 1
+            fi
+        else
+            printf '\033[33m━━━ chezmoi apply failed ━━━\033[0m\n'
+            if printf '%s\n' "$chezmoi_output" | rg -qi 'gopass|pinentry|failed to decrypt|decryption failed'; then
+                printf '\033[33m  Reason: gopass locked — Salt states OK, dotfiles skipped.\033[0m\n'
+            else
+                printf '%s\n' "$chezmoi_output"
+                exit 1
+            fi
+        fi
+    else
+        declare -f pretty::ok >/dev/null 2>&1 && pretty::phase 2 2 "Dotfiles applied"
+    fi
+    if $AUTO_MODE; then
+        git -C "$PROJECT_DIR" rev-parse HEAD > "${RUNTIME_CONFIG_DIR}/last-applied-commit" 2>/dev/null || true
+    fi
+    python3 "${PROJECT_DIR}/scripts/drift_state.py" refresh-expected \
+        --project-dir "${PROJECT_DIR}" \
+        --cache-dir "${HOME}/.cache/salt-monitor" \
+        --salt-target "${STATE}"
+    if $AUDIT_MODE; then
+        TEST_FLAG=""
+        $TEST_MODE && TEST_FLAG="--test"
+        python3 "${SCRIPT_DIR}/salt_audit.py" --target "${STATE}" $TEST_FLAG
+    fi
 else
-	FAILED_COUNT=$(grep -c 'Result: False' "${LOG_FILE}" 2>/dev/null || echo 0)
-	echo ""
-	if [[ $FAILED_COUNT -gt 0 && -f "${LOG_FILE}" ]]; then
-		echo "=== ${FAILED_COUNT} state(s) failed ==="
-		awk '/^----------$/{buf=$0; while(getline>0){buf=buf"\n"$0; if(/Result: False/){print buf; print ""; break} if(/^----------$/){break}}}' "${LOG_FILE}" 2>/dev/null
-		echo "=== Debug ==="
-		echo "  grep 'Result: False' ${LOG_FILE}  →  find all failures"
-		echo "  grep 'Requisite.*not found' ${LOG_FILE}  →  find missing dependencies"
-		echo "  just validate                     →  check all states render"
-		echo "  python3 scripts/salt_contracts.py →  check data contracts"
-	else
-		echo "--- ${STATE}: apply failed (exit code ${RC}, no state failures in log) ---"
-		echo "  This usually means a pre-flight check failed (e.g. salt_contracts)"
-		echo "  or salt-call itself crashed. See full log above for details."
-	fi
-	exit $RC
+    FAILED_COUNT=$(grep -c 'Result: False' "${LOG_FILE}" 2>/dev/null || echo 0)
+    echo ""
+    if [[ $FAILED_COUNT -gt 0 && -f "${LOG_FILE}" ]]; then
+        if declare -f pretty::summary_line >/dev/null 2>&1; then
+            PASSED=$(( $(grep -c 'Result: True' "${LOG_FILE}" 2>/dev/null || echo 0) ))
+            pretty::summary_line "$PASSED" "$FAILED_COUNT" "States"
+        fi
+        awk '/^----------$/{buf=$0; while(getline>0){buf=buf"\n"$0; if(/Result: False/){print buf; print ""; break} if(/^----------$/){break}}}' "${LOG_FILE}" 2>/dev/null
+        if declare -f pretty::info >/dev/null 2>&1; then
+            pretty::info "grep 'Result: False' ${LOG_FILE}"
+            pretty::info "grep 'Requisite.*not found' ${LOG_FILE}"
+            pretty::info "just validate  |  python3 scripts/salt_contracts.py"
+        else
+            echo "=== Debug ==="
+            echo "  grep 'Result: False' ${LOG_FILE}"
+            echo "  grep 'Requisite.*not found' ${LOG_FILE}"
+            echo "  just validate  |  python3 scripts/salt_contracts.py"
+        fi
+    else
+        if declare -f pretty::fail >/dev/null 2>&1; then
+            pretty::fail "apply failed (exit ${RC}) — pre-flight or salt-call crash"
+        else
+            echo "--- ${STATE}: apply failed (exit code ${RC}) — see log above ---"
+        fi
+    fi
+    exit $RC
 fi

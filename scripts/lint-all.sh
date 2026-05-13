@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+project_dir="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck disable=SC1091
+source "${project_dir}/scripts/lib/pretty.sh" 2>/dev/null || true
+
 errors=0
+HAS_PRETTY=0
+declare -f pretty::ok >/dev/null 2>&1 && HAS_PRETTY=1
+
+colors_ok="" colors_fail="" colors_reset=""
+if [ "$HAS_PRETTY" -eq 1 ]; then
+    colors_ok="\033[32m" colors_fail="\033[31m" colors_reset="\033[0m"
+fi
 
 for tool in .venv/bin/ruff shellcheck yamllint .venv/bin/python3; do
     if ! command -v "$tool" &>/dev/null && [ ! -x "$tool" ]; then
@@ -27,12 +38,22 @@ fi
 run_check() {
     local name="$1"
     shift
-    echo "--- $name ---"
-    if "$@"; then
-        echo "  OK"
+    if [ "$HAS_PRETTY" -eq 1 ]; then
+        pretty::info "${name}..."
+        if "$@" 2>&1; then
+            pretty::ok "${name}"
+        else
+            pretty::fail "${name}"
+            ((errors++))
+        fi
     else
-        echo "  FAIL: $name" >&2
-        ((errors++))
+        echo "--- $name ---"
+        if "$@"; then
+            echo "  OK"
+        else
+            echo "  FAIL: $name" >&2
+            ((errors++))
+        fi
     fi
 }
 
@@ -109,10 +130,18 @@ if $HAS_TAPLO; then
 fi
 
 if [ "$errors" -gt 0 ]; then
-    echo ""
-    echo "FAIL: $errors lint check(s) failed" >&2
+    if [ "$HAS_PRETTY" -eq 1 ]; then
+        pretty::fail "${errors} lint check(s) failed"
+    else
+        echo ""
+        echo "FAIL: $errors lint check(s) failed" >&2
+    fi
     exit 1
 fi
 
-echo ""
-echo "All lint checks passed"
+if [ "$HAS_PRETTY" -eq 1 ]; then
+    pretty::ok "All lint checks passed"
+else
+    echo ""
+    echo "All lint checks passed"
+fi

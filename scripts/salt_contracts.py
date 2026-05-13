@@ -4,11 +4,15 @@
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
 
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+SCRIPTS_DIR = REPO_ROOT / "scripts"
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
 DATA_DIR = REPO_ROOT / "states" / "data"
 UNITS_DIR = REPO_ROOT / "states" / "units"
 CONFIGS_DIR = REPO_ROOT / "states" / "configs"
@@ -1301,20 +1305,43 @@ def check_service_inventory_contracts(repo_root: Path = REPO_ROOT) -> list[str]:
     return errors
 
 
+def _get_pretty():
+    """Lazy-load pretty printer — returns None if unavailable."""
+    try:
+        from lib.pretty import pretty
+        return pretty
+    except ImportError:
+        return None
+
+
 def print_contract_errors(errors: list[str]) -> int:
-    for error in errors:
-        print(f"\033[31mContract: {error}\033[0m")
+    pretty = _get_pretty()
+    if pretty:
+        for error in errors:
+            pretty.fail(f"Contract: {error}")
+    else:
+        for error in errors:
+            print(f"\033[31mContract: {error}\033[0m")
     return len(errors)
 
 
 def print_contract_summary(errors: list[str]) -> int:
     total = len(errors)
-    if errors:
-        for error in errors:
-            print(f"\033[31mContract: {error}\033[0m")
-        print(f"\n\033[31m{total} contract violation(s) found\033[0m")
+    pretty = _get_pretty()
+    if pretty:
+        if errors:
+            for error in errors:
+                pretty.fail(f"Contract: {error}")
+            pretty.summary_line(0, total, "Contracts")
+        else:
+            pretty.ok("All data contracts pass — 0 violations")
     else:
-        print("\033[32mAll data contracts pass — 0 violations\033[0m")
+        if errors:
+            for error in errors:
+                print(f"\033[31mContract: {error}\033[0m")
+            print(f"\n\033[31m{total} contract violation(s) found\033[0m")
+        else:
+            print("\033[32mAll data contracts pass — 0 violations\033[0m")
     return total
 
 
@@ -1340,17 +1367,31 @@ def print_data_health_summary(repo_root: Path = REPO_ROOT) -> int:
 
     errors = check_service_inventory_contracts(repo_root)
 
-    print("=== Data Health Summary ===")
-    print(f"Data files:       {total_data:>4}  ({consumed} consumed, {orphaned} orphaned)")
-    print(f"Packages:         {total_packages:>4}  (across packages.yaml)")
-    print(f"Feature flags:    {total_features:>4}  (in feature_registry.yaml)")
-    print(f"Catalog services: {total_services:>4}  (in service_catalog.yaml)")
-    print(f"Contract errors:  {len(errors):>4}")
-    if errors:
-        for error in errors:
-            print(f"  \033[31m- {error}\033[0m")
+    pretty = _get_pretty()
+    if pretty:
+        pretty.section("Data Health Summary")
+        pretty.info(f"Data files:       {total_data:>4}  ({consumed} consumed, {orphaned} orphaned)")
+        pretty.info(f"Packages:         {total_packages:>4}  (across packages.yaml)")
+        pretty.info(f"Feature flags:    {total_features:>4}  (in feature_registry.yaml)")
+        pretty.info(f"Catalog services: {total_services:>4}  (in service_catalog.yaml)")
+        if errors:
+            pretty.fail(f"Contract errors:  {len(errors):>4}")
+            for error in errors:
+                pretty.fail(f"  {error}")
+        else:
+            pretty.ok(f"Contract errors:  {len(errors):>4}")
     else:
-        print("  \033[32mAll checks pass\033[0m")
+        print("=== Data Health Summary ===")
+        print(f"Data files:       {total_data:>4}  ({consumed} consumed, {orphaned} orphaned)")
+        print(f"Packages:         {total_packages:>4}  (across packages.yaml)")
+        print(f"Feature flags:    {total_features:>4}  (in feature_registry.yaml)")
+        print(f"Catalog services: {total_services:>4}  (in service_catalog.yaml)")
+        print(f"Contract errors:  {len(errors):>4}")
+        if errors:
+            for error in errors:
+                print(f"  \033[31m- {error}\033[0m")
+        else:
+            print("  \033[32mAll checks pass\033[0m")
 
     return min(len(errors), 1)
 

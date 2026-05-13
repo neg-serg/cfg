@@ -5,7 +5,7 @@ include:
 
 {% from '_macros_pkg.jinja' import paru_install %}
 {% from '_macros_service_user.jinja' import user_service_file, user_service_enable %}
-{% from '_macros_install.jinja' import curl_extract_tar %}
+{% from '_macros_install.jinja' import install_catalog %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/installers.yaml' as tools %}
 
@@ -13,13 +13,9 @@ include:
 
 {{ paru_install('python_annoy', 'python-annoy') }}
 
-# Essentia streaming extractor (binary tarball)
-{% set tar_defs = tools.get('curl_extract_tar', {}) %}
-{% set essentia = tar_defs.get('essentia') %}
-{% if essentia %}
-{% set _ver = ver.get('essentia', '') %}
-{% set resolved_url = essentia.url | replace('${VER}', _ver) %}
-{{ curl_extract_tar('essentia', resolved_url, binary_pattern=essentia.binary_pattern, bin=essentia.get('bin'), hash=essentia.get('hash'), version=_ver if _ver else None) }}
+# Essentia streaming extractor (binary tarball, data-driven via installers.yaml)
+{% if tools.get('curl_extract_tar', {}).get('essentia') %}
+{{ install_catalog({'essentia': tools.curl_extract_tar.essentia}, ver, 'curl_extract_tar') }}
 {% endif %}
 
 essentia_validate:

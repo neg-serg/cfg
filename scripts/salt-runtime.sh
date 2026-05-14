@@ -74,8 +74,6 @@ grains_cache: True
 grains_cache_expiration: 3600
 lazy_loader_strict_matching: True
 autoload_dynamic_modules: True
-module_dirs:
-  - ${project_dir}/states/_modules/
 fileserver_limit_traversal: True
 fileserver_followsymlinks: False
 process_count_max: 16

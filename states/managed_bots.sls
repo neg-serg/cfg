@@ -21,7 +21,7 @@ managed_bots_deps:
     - unless: python3 -c 'import telegram; import yaml' 2>/dev/null
     - parallel: true
 
-{{ salt['service.ensure_dir']('managed_bots_config_dir', home ~ '/.config/opencode') }}
+{{ salt['service.ensure_dir']('managed_bots_config_dir', home ~ '/.config/opencode', user=user) }}
 
 managed_bots_config:
   file.managed:

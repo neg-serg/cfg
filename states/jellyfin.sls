@@ -13,8 +13,8 @@
 {{ salt['service.remove_native_unit']('jellyfin') }}
 
 {# Config + cache directories on host — container bind-mounts need them to exist #}
-{{ salt['service.ensure_dir']('jellyfin_config_dir', '/etc/jellyfin', mode='0755') }}
-{{ salt['service.ensure_dir']('jellyfin_cache_dir', '/var/cache/jellyfin', mode='0755') }}
+{{ salt['service.ensure_dir']('jellyfin_config_dir', '/etc/jellyfin', mode='0755', user='root') }}
+{{ salt['service.ensure_dir']('jellyfin_cache_dir', '/var/cache/jellyfin', mode='0755', user='root') }}
 
 {{ salt['container.deploy']('jellyfin',
     quadlet_unit_name='jellyfin-container',

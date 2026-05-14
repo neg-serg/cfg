@@ -20,7 +20,7 @@
 {{ salt['service.service_stopped']('transmission_native_service_disabled', 'transmission', requires=['cmd: transmission_native_unit_daemon_reload']) }}
 
 {# Directories that will be bind-mounted into the container #}
-{{ salt['service.ensure_dir']('transmission_config_dir', '/etc/transmission', mode='0755') }}
+{{ salt['service.ensure_dir']('transmission_config_dir', '/etc/transmission', mode='0755', user='root') }}
 {{ salt['service.ensure_dir']('transmission_watch_dir', home ~ '/dw', mode='0755') }}
 {{ salt['service.ensure_dir']('transmission_download_dir', home ~ '/torrent/data', mode='0755') }}
 

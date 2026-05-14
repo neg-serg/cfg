@@ -51,9 +51,9 @@ system_hostname:
     - name: /etc/hostname
     - contents: {{ host.hostname }}
 
-{{ salt['service.ensure_dir']('user_version_cache_dir', host.home ~ '/.cache/salt-versions', mode='0755') }}
+{{ salt['service.ensure_dir']('user_version_cache_dir', host.home ~ '/.cache/salt-versions', mode='0755', user=user) }}
 {{ salt['service.ensure_dir']('system_version_cache_dir', '/var/cache/salt/versions', mode='0755', user='root') }}
-{{ salt['service.ensure_dir']('download_cache_dir', '/var/cache/salt/downloads', mode='0755') }}
+{{ salt['service.ensure_dir']('download_cache_dir', '/var/cache/salt/downloads', mode='0755', user='root') }}
 
 include:
   - pacman_db_warmup

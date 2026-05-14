@@ -13,7 +13,7 @@
 # ── Model downloads ──────────────────────────────────────────────────
 {% for model in video_ai.get('models', []) %}
 {% if model.enabled %}
-{{ salt['service.ensure_dir']('video_ai_model_dir_' ~ model.id | replace('-', '_'), models_dir ~ '/' ~ model.id, require=['file: video_ai_models_dir']) }}
+{{ salt['service.ensure_dir']('video_ai_model_dir_' ~ model.id | replace('-', '_'), models_dir ~ '/' ~ model.id, user=user, require=['file: video_ai_models_dir']) }}
 
 {% for file in model.files %}
 {{ salt['installer.huggingface_file'](

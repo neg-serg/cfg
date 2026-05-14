@@ -48,7 +48,7 @@
 {% endfor %}
 
 {# ── Config directory + config file ── #}
-{{ salt['service.ensure_dir']('proxypilot_config_dir', home ~ '/.config/proxypilot') }}
+{{ salt['service.ensure_dir']('proxypilot_config_dir', home ~ '/.config/proxypilot', user=user) }}
 
 proxypilot_config:
   file.managed:

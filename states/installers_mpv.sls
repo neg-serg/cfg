@@ -12,7 +12,7 @@
 
 {% set mpv_scripts_dir = home ~ '/.config/mpv/scripts' %}
 
-{{ salt['service.ensure_dir']('mpv_scripts_dir', mpv_scripts_dir) }}
+{{ salt['service.ensure_dir']('mpv_scripts_dir', mpv_scripts_dir, user=user) }}
 
 {% for filename, url in mpv.raw.items() %}
 {{ salt['installer.http_file']('mpv_script_' ~ (filename | replace('.', '_') | replace('-', '_')), url, mpv_scripts_dir ~ '/' ~ filename, user=user, require=['file: mpv_scripts_dir']) }}

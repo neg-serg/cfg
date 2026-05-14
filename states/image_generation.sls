@@ -33,7 +33,7 @@
   {% endif %}
 {% endfor %}
 
-{{ salt['service.ensure_dir']('image_gen_config_dir', home ~ '/.config/image-gen') }}
+{{ salt['service.ensure_dir']('image_gen_config_dir', home ~ '/.config/image-gen', user=user) }}
 image_gen_providers_config:
   file.managed:
     - name: {{ _image_gen_cfg }}

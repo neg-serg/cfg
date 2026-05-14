@@ -74,7 +74,7 @@ amnezia_version_stamp:
 
 {{ salt['service.service_with_unit']('AmneziaVPN-source', 'salt://units/amnezia-vpn-source.service', enabled=True, requires=['file: amnezia_service_bin']) }}
 
-{{ salt['service.ensure_dir']('amnezia_apps_dir', home ~ '/.local/share/applications') }}
+{{ salt['service.ensure_dir']('amnezia_apps_dir', home ~ '/.local/share/applications', user=user) }}
 
 amnezia_desktop_entry:
   file.managed:

@@ -43,7 +43,7 @@ vault_full_backup_script:
       - file: bw_sync_script_dir
 
 # Host data directory for Vaultwarden SQLite
-{{ salt['service.ensure_dir']('vaultwarden_data_dir', '/var/lib/vaultwarden', mode='0700') }}
+{{ salt['service.ensure_dir']('vaultwarden_data_dir', '/var/lib/vaultwarden', mode='0700', user='root') }}
 
 # Podman Quadlet container
 {{ salt['container.deploy']('vaultwarden',

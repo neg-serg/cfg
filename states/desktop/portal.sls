@@ -12,7 +12,7 @@ include:
 
 {% import_yaml 'data/desktop.yaml' as desktop %}
 
-{{ salt['service.ensure_dir']('portal_conf_dir', home ~ '/.config/xdg-desktop-portal', mode='0755') }}
+{{ salt['service.ensure_dir']('portal_conf_dir', home ~ '/.config/xdg-desktop-portal', mode='0755', user=user) }}
 
 portal_config:
   file.managed:

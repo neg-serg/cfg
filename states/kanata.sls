@@ -47,7 +47,7 @@ kanata_user_groups:
     - require:
       - group: uinput_group
 
-{{ salt['service.ensure_dir']('kanata_config_dir', home ~ '/.config/kanata') }}
+{{ salt['service.ensure_dir']('kanata_config_dir', home ~ '/.config/kanata', user=user) }}
 kanata_config:
   file.managed:
     - name: {{ home }}/.config/kanata/config.kbd

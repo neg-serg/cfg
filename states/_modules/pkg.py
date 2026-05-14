@@ -185,6 +185,8 @@ def pkgbuild_install(name: str, source: str, user: str | None = None,
 def flatpak_install(app_id: str, user: str | None = None) -> dict[str, Any]:
     h = _host()
     u = user or h["user"]
+    _home = h.get("home", f"/home/{u}")
+    _rt = h.get("runtime_dir", f"/run/user/{h.get('uid', 1000)}")
     c = _const()
     safe = app_id.replace(".", "_").replace("-", "_")
     return {
@@ -192,6 +194,7 @@ def flatpak_install(app_id: str, user: str | None = None) -> dict[str, Any]:
             "cmd.run": [
                 {"name": f"flatpak install -y --user flathub {app_id}"},
                 {"runas": u},
+                {"env": {"HOME": _home, "XDG_RUNTIME_DIR": _rt}},
                 {"retry": {"attempts": c["retry_attempts"], "interval": c["retry_interval"]}},
                 {"require": [{"cmd": "flatpak_flathub_remote"}]},
             ]

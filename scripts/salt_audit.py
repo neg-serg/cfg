@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Runtime data audit — tracks which states/data/`*.yaml` files are consumed during salt-apply.
+"""Runtime data audit — tracks which `states/data/*.yaml` files are consumed during salt-apply.
 
 Approach: reuses salt_impact.py's data→state dependency graph. Runs salt-call
 with test=True to evaluate templates, parses output to determine which states

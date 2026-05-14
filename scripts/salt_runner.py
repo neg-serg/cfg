@@ -15,7 +15,9 @@ import salt.loader as _salt_loader  # noqa: E402
 import salt.scripts  # noqa: E402
 
 # Patch Salt's _module_dirs to include our custom modules directory.
-_salt_loader._module_dirs_orig = getattr(_salt_loader, "_module_dirs_orig", None) or _salt_loader._module_dirs
+_salt_loader._module_dirs_orig = (
+    getattr(_salt_loader, "_module_dirs_orig", None) or _salt_loader._module_dirs
+)
 
 def _patched_module_dirs(*args, **kwargs):
     dirs = _salt_loader._module_dirs_orig(*args, **kwargs)

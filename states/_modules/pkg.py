@@ -18,7 +18,11 @@ def _host() -> dict[str, Any]:
             from _modules.common import get_host
             return get_host()
         except Exception:
-            return {"user": "root", "home": "/root", "pkg_list": "/var/cache/salt/pacman_installed.txt"}
+            return {
+                "user": "root",
+                "home": "/root",
+                "pkg_list": "/var/cache/salt/pacman_installed.txt",
+            }
 
 
 def _const() -> dict[str, Any]:
@@ -67,7 +71,10 @@ def _paru_install_dict(name: str, pkg: str, check: str | None = None,
         return {
             f"install_{name.replace('-', '_')}": {
                 "cmd.run": [
-                    {"name": f"sudo -u {u} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg} || true'"},
+                    {"name": (
+                        f"sudo -u {u} sh -c 'yes \"\" | "
+                        f"paru -S --noconfirm --needed {pkg} || true'"
+                    )},
                     {"shell": "/bin/bash"},
                     {"unless": f"set -e\n{guard}"},
                     {"require": requires_list},

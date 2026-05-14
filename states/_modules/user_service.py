@@ -20,7 +20,14 @@ def _host() -> dict[str, Any]:
             from _modules.common import get_host
             return get_host()
         except Exception:
-            return {"user": "root", "home": "/root", "runtime_dir": "/run/user/1000", "pkg_list": "/var/cache/salt/pacman_installed.txt", "systemd_unit_dir": "/etc/systemd/system/", "systemd_user_unit_dir": "/root/.config/systemd/user/"}
+            return {
+                "user": "root",
+                "home": "/root",
+                "runtime_dir": "/run/user/1000",
+                "pkg_list": "/var/cache/salt/pacman_installed.txt",
+                "systemd_unit_dir": "/etc/systemd/system/",
+                "systemd_user_unit_dir": "/root/.config/systemd/user/",
+            }
 
 
 def _sysctl_env() -> dict[str, str]:
@@ -64,7 +71,8 @@ def _user_service_file_dict(name: str, filename: str, source: str | None = None,
         f"{name}_daemon_reload": {
             "cmd.run": [
                 {"name": "systemctl --user daemon-reload"},
-                {"onlyif": _user_env_prefix() + " systemctl --user show-environment >/dev/null 2>&1"},
+                {"onlyif": (_user_env_prefix()
+                            + " systemctl --user show-environment >/dev/null 2>&1")},
                 {"runas": u},
                 {"env": _sysctl_env()},
                 {"onchanges": [{"file": name}]},
@@ -109,7 +117,8 @@ def user_unit_override(name: str, service: str, source: str | None = None,
         f"{name}_daemon_reload": {
             "cmd.run": [
                 {"name": "systemctl --user daemon-reload"},
-                {"onlyif": _user_env_prefix() + " systemctl --user show-environment >/dev/null 2>&1"},
+                {"onlyif": (_user_env_prefix()
+                            + " systemctl --user show-environment >/dev/null 2>&1")},
                 {"runas": u},
                 {"env": _sysctl_env()},
                 {"onchanges": [{"file": name}]},

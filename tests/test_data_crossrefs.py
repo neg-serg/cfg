@@ -393,7 +393,6 @@ def test_feature_registry_schema_is_valid():
 
 def test_feature_registry_features_match_hosts_yaml():
     registry = load_yaml("feature_registry.yaml")
-    hosts = load_yaml("hosts.yaml")
 
     registry_features = set()
     for name, config in registry["features"].items():
@@ -513,7 +512,6 @@ def test_services_config_templates_exist():
     services = load_yaml("services.yaml")
     import os
 
-    configs_dir = os.path.join(os.path.dirname(DATA_DIR), "configs")
     missing = []
 
     for section in ("simple", "complex", "network", "dns"):

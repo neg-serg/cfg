@@ -23,7 +23,13 @@ def _host() -> dict[str, Any]:
             from _modules.common import get_host
             return get_host()
         except Exception:
-            return {"user": "root", "home": "/root", "systemd_unit_dir": "/etc/systemd/system/", "nftables_dir": "/etc/nftables/", "sysctl_dir": "/etc/sysctl.d/"}
+            return {
+                "user": "root",
+                "home": "/root",
+                "systemd_unit_dir": "/etc/systemd/system/",
+                "nftables_dir": "/etc/nftables/",
+                "sysctl_dir": "/etc/sysctl.d/",
+            }
 
 
 def deploy(name: str, interface: str, service_name: str,
@@ -58,12 +64,18 @@ def deploy(name: str, interface: str, service_name: str,
                         "name": (
                             "set -euo pipefail\n"
                             "if command -v nft &>/dev/null; then\n"
-                            f"  nft -f {fw_path} 2>/dev/null || {{ nft delete table inet {firewall_table} 2>/dev/null || true; nft -f {fw_path}; }}\n"
+                            f"  nft -f {fw_path} 2>/dev/null || "
+                            f"{{ nft delete table inet {firewall_table} 2>/dev/null || true; "
+                            f"nft -f {fw_path}; }}\n"
                             f"elif command -v ip6tables &>/dev/null; then\n"
-                            f"  ip6tables -I INPUT -i {interface} -p icmpv6 -j ACCEPT 2>/dev/null || true\n"
-                            f"  ip6tables -I FORWARD -i {interface} -p icmpv6 -j ACCEPT 2>/dev/null || true\n"
-                            f"  ip6tables -I INPUT -i {interface} -m state --state ESTABLISHED,RELATED -j ACCEPT 2>/dev/null || true\n"
-                            f"  ip6tables -I FORWARD -i {interface} -m state --state ESTABLISHED,RELATED -j ACCEPT 2>/dev/null || true\n"
+                            f"  ip6tables -I INPUT -i {interface} "
+                            f"-p icmpv6 -j ACCEPT 2>/dev/null || true\n"
+                            f"  ip6tables -I FORWARD -i {interface} "
+                            f"-p icmpv6 -j ACCEPT 2>/dev/null || true\n"
+                            f"  ip6tables -I INPUT -i {interface} -m state --state "
+                            f"ESTABLISHED,RELATED -j ACCEPT 2>/dev/null || true\n"
+                            f"  ip6tables -I FORWARD -i {interface} -m state --state "
+                            f"ESTABLISHED,RELATED -j ACCEPT 2>/dev/null || true\n"
                             "fi"
                         )
                     },
@@ -109,7 +121,8 @@ def deploy(name: str, interface: str, service_name: str,
                         "name": (
                             "set -euo pipefail\n"
                             f"for i in $(seq 1 30); do\n"
-                            f"  ip -6 addr show {interface} 2>/dev/null | grep -q 'inet6' && exit 0\n"
+                            f"  ip -6 addr show {interface} 2>/dev/null"
+                            f" | grep -q 'inet6' && exit 0\n"
                             "  sleep 1\n"
                             "done\n"
                             f"echo \"Tunnel {name}: no IPv6 address after 30s\" >&2\n"
@@ -181,7 +194,11 @@ def _service_with_unit(name: str, source: str, unit_type: str = "service",
             ]},
         ]
         if requires:
-            run_args[1]["require"].extend({"cmd": r.split(": ", 1)[1]} for r in requires if r.startswith("cmd: "))
+            run_args[1]["require"].extend(
+                {"cmd": r.split(": ", 1)[1]}
+                for r in requires
+                if r.startswith("cmd: ")
+            )
         ret[f"{name}_running"] = {"service.running": run_args}
 
     return ret

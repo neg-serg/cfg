@@ -173,10 +173,18 @@ def main():
 
     if not DRY_RUN:
         for f in REPO_ROOT.glob("states/_macros_*.jinja"):
-            f.write_text("{# All business logic migrated to states/_modules/. File kept for backward compatibility. #}\n")
+            f.write_text(
+                "{# All business logic migrated to states/_modules/. "
+                "File kept for backward compatibility. #}\n"
+            )
             print(f"[CLEAR] {f.name}")
 
-    print("\nDone." + (" Use 'git diff' to review changes." if not DRY_RUN else " Run without --dry-run to apply."))
+    followup = (
+        " Use 'git diff' to review changes."
+        if not DRY_RUN
+        else " Run without --dry-run to apply."
+    )
+    print(f"\nDone.{followup}")
 
 
 if __name__ == "__main__":

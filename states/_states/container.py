@@ -172,8 +172,6 @@ def managed(
     else:
         full_image = f"{img_registry}/{img['image']}@{digest}"
 
-    manual_start = catalog.get("manual_start", False)
-
     # Quadlet paths
     if user_scope:
         quadlet_path = f"{home}/.config/containers/systemd/{quadlet_name}.container"

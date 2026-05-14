@@ -419,7 +419,6 @@ def test_all_feature_matrix_hosts_have_valid_derived_fields():
 
     for entry in matrix:
         name = entry.get("name", "?")
-        overrides = entry.get("overrides", {})
 
         host = host_model.build_host(name, host_model.load_hosts_yaml())
 
@@ -464,7 +463,6 @@ def test_host_config_jinja_imports_valid_yaml():
 
     import yaml
 
-    host_config_path = host_model.HOSTS_YAML_PATH.replace("data/", "").replace(".yaml", "")
     # host_config.jinja is at states/host_config.jinja
     jinja_path = "states/host_config.jinja"
     try:

@@ -212,7 +212,10 @@ class _MockSalt:
             "user_service.user_service_file": ("_modules.user_service", "user_service_file"),
             "user_service.user_unit_override": ("_modules.user_service", "user_unit_override"),
             "user_service.user_service_enable": ("_modules.user_service", "user_service_enable"),
-            "user_service.user_service_with_unit": ("_modules.user_service", "user_service_with_unit"),
+            "user_service.user_service_with_unit": (
+                "_modules.user_service",
+                "user_service_with_unit",
+            ),
             "user_service.user_service_restart": ("_modules.user_service", "user_service_restart"),
             "user_service.user_service_disable": ("_modules.user_service", "user_service_disable"),
             "user_service.user_linger": ("_modules.user_service", "user_linger"),

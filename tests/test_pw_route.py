@@ -85,10 +85,22 @@ alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX1
 
     assert result.returncode == 0, result.stderr
     assert "an -> AUX0/AUX1" in result.stdout
-    assert "-d alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX0 alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX2" in pw_link_log
-    assert "-d alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX1 alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX3" in pw_link_log
-    assert "alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX0 alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX0" in pw_link_log
-    assert "alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX1 alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX1" in pw_link_log
+    assert (
+        "-d alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX0 "
+        "alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX2"
+    ) in pw_link_log
+    assert (
+        "-d alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX1 "
+        "alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX3"
+    ) in pw_link_log
+    assert (
+        "alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX0 "
+        "alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX0"
+    ) in pw_link_log
+    assert (
+        "alsa_output.pci-0000_05_00.0.pro-output-0:monitor_AUX1 "
+        "alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX1"
+    ) in pw_link_log
 
 
 def test_toggle_prefers_aes_when_state_is_unknown_or_non_aes(tmp_path: Path):

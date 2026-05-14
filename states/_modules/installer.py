@@ -21,7 +21,14 @@ def _host() -> dict[str, Any]:
             from _modules.common import get_host
             return get_host()
         except Exception:
-            return {"user": "root", "home": "/root", "pkg_list": "/var/cache/salt/pacman_installed.txt", "ver_dir": "/root/.cache/salt-versions", "sys_ver_dir": "/var/cache/salt/versions", "download_cache": "/var/cache/salt/downloads"}
+            return {
+                "user": "root",
+                "home": "/root",
+                "pkg_list": "/var/cache/salt/pacman_installed.txt",
+                "ver_dir": "/root/.cache/salt-versions",
+                "sys_ver_dir": "/var/cache/salt/versions",
+                "download_cache": "/var/cache/salt/downloads",
+            }
 
 
 def _const() -> dict[str, Any]:
@@ -210,7 +217,6 @@ def http_file(name: str, url: str, dest: str, mode: str = "0644",
     u = user or h["user"]
     c = _const()
     vd = f"{h['home']}/.cache/salt-versions"
-    safe = name.replace("-", "_")
 
     lines = ["set -eo pipefail"]
     if cache:
@@ -424,7 +430,10 @@ def _curl_extract_tar_dict(name: str, url: str, binary_pattern: str | None = Non
                 f'{target_dir}/{bin or bp.rsplit("/", 1)[-1]} \\;'
             )
         if chmod:
-            for b in (binaries or [bin or binary_pattern.rsplit("/", 1)[-1] if binary_pattern else name]):
+            for b in (
+                binaries
+                or [bin or binary_pattern.rsplit("/", 1)[-1] if binary_pattern else name]
+            ):
                 lines.append(f"chmod +x {target_dir}/{b}")
 
     if version:
@@ -475,7 +484,11 @@ def _curl_extract_zip_dict(name: str, url: str, binary_path: str | None = None,
     vd = f"{hm}/.cache/salt-versions"
     cache_key = f"{name}-{version if version else 'latest'}"
     cache_path = f"{c['download_cache']}/{cache_key}.zip"
-    out_name = bin or (binaries[0] if binaries else (binary_path.rsplit("/", 1)[-1] if binary_path else name))
+    out_name = (
+        bin
+        or (binaries[0] if binaries
+            else (binary_path.rsplit("/", 1)[-1] if binary_path else name))
+    )
 
     if not creates:
         creates = (dest.replace("~", hm)) if dest else f"{hm}/.local/bin/{out_name}"
@@ -626,7 +639,8 @@ def github_release_to(state_id: str, name: str, repo: str, asset: str,
     if _format == "zip":
         lines.extend([
             '_td=$(mktemp -d)', 'trap \'rm -rf "$_td"\' EXIT',
-            f'curl -fsSL "https://github.com/{repo}/releases/download/${{TAG}}/{asset}" -o "$_td/archive.zip"',
+            (f'curl -fsSL "https://github.com/{repo}/releases/download/${{TAG}}/{asset}" '
+             f'-o "$_td/archive.zip"'),
         ])
         if hash_val:
             lines.append(f"echo '{hash_val}  '\"$_td/archive.zip\" | sha256sum -c --strict")
@@ -702,7 +716,8 @@ def npm_build_workflow(name: str, dir: str, version: str | None = None,
                     f"npm run build 2>&1"
                 )},
                 {"shell": "/bin/bash"}, {"runas": u},
-                {"unless": f"cd {_dir} && git describe --tags --exact-match 2>/dev/null | grep -qxF 'v{version}'"},
+                {"unless": (f"cd {_dir} && git describe --tags --exact-match "
+                            f"2>/dev/null | grep -qxF 'v{version}'")},
                 {"retry": {"attempts": c["retry_attempts"], "interval": c["retry_interval"]}},
                 {"require": [{"cmd": f"{name}_build"}]},
             ]
@@ -731,7 +746,11 @@ def install_catalog(catalog: dict[str, Any], ver_dict: dict[str, str],
             hash_val = None
 
         if macro_type == "curl_bin":
-            ret.update(_curl_bin_dict(entry_name, url, version=ver if ver else None, hash_val=hash_val))
+            ret.update(_curl_bin_dict(
+                entry_name, url,
+                version=ver if ver else None,
+                hash_val=hash_val,
+            ))
         elif macro_type == "curl_extract_tar":
             ret.update(_curl_extract_tar_dict(
                 entry_name, url,

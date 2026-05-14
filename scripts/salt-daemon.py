@@ -376,7 +376,9 @@ def _format_compact_highstate(result: dict, colorize: bool = True) -> str:
         entry_color = _p.dim if (colorize and not is_fail) else (lambda s: s)
 
         lines.append(entry_color("----------"))
-        lines.append(f"      ID: {entry.get('__id__', entry.get('name', 'unknown'))}{' ' + badge if badge else ''}")
+        raw_name = entry.get('__id__', entry.get('name', 'unknown'))
+        suffix = ' ' + badge if badge else ''
+        lines.append(f"      ID: {raw_name}{suffix}")
         lines.append(f"Function: {entry.get('fun', 'unknown')}")
         lines.append(f"    Name: {entry.get('name', '')}")
         lines.append(f"  Result: {entry.get('result')}")
@@ -406,7 +408,8 @@ def _format_compact_highstate(result: dict, colorize: bool = True) -> str:
             summary_label,
             "--------------",
             succeeded_line,
-            f"Failed:      {failed_count}" + (f" {_p.status_badge('FAIL')}" if colorize and failed_count else ""),
+            f"Failed:      {failed_count}"
+            + (f" {_p.status_badge('FAIL')}" if colorize and failed_count else ""),
             "--------------",
             f"Total states run:     {len(ordered)}",
         ]

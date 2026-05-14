@@ -1430,14 +1430,21 @@ def print_data_health_summary(repo_root: Path = REPO_ROOT) -> int:
     total_features = len(_collect_feature_names(registry))
 
     catalog = load_yaml_file(repo_root / "states" / "data" / "service_catalog.yaml")
-    total_services = len([k for k, v in catalog.items() if isinstance(v, dict)]) if isinstance(catalog, dict) else 0
+    total_services = (
+        len([k for k, v in catalog.items() if isinstance(v, dict)])
+        if isinstance(catalog, dict)
+        else 0
+    )
 
     errors = check_service_inventory_contracts(repo_root)
 
     pretty = _get_pretty()
     if pretty:
         pretty.section("Data Health Summary")
-        pretty.info(f"Data files:       {total_data:>4}  ({consumed} consumed, {orphaned} orphaned)")
+        pretty.info(
+            f"Data files:       {total_data:>4}  "
+            f"({consumed} consumed, {orphaned} orphaned)"
+        )
         pretty.info(f"Packages:         {total_packages:>4}  (across packages.yaml)")
         pretty.info(f"Feature flags:    {total_features:>4}  (in feature_registry.yaml)")
         pretty.info(f"Catalog services: {total_services:>4}  (in service_catalog.yaml)")

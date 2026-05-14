@@ -67,7 +67,6 @@ def _build_data_state_graph(repo_root: str | None = None) -> dict[str, list[str]
         return _DATA_TO_STATE_CACHE
 
     states_dir = repo_root or os.getcwd()
-    data_dir = os.path.join(states_dir, "states", "data")
     configs_dir = os.path.join(states_dir, "states", "configs")
 
     data_to_states: dict[str, list[str]] = defaultdict(list)
@@ -159,7 +158,6 @@ def _resolve_script_to_state(script_path: str, repo_root: str) -> str | None:
 
 def _build_config_state_map(repo_root: str) -> None:
     global CONFIG_TO_STATE, UNIT_TO_STATE, SCRIPT_TO_STATE
-    configs_dir = os.path.join(repo_root, "states", "configs")
     states_dir = os.path.join(repo_root, "states")
     CONFIG_TO_STATE = {}
     UNIT_TO_STATE = {}
@@ -243,7 +241,9 @@ def _owner_target(path: str) -> str | None:
     return None
 
 
-def plan_for_changed_files(changed_files: list[str], repo_root: str | None = None) -> dict[str, object]:
+def plan_for_changed_files(
+    changed_files: list[str], repo_root: str | None = None
+) -> dict[str, object]:
     normalized = _normalize_changed_files(changed_files)
     selected_states: list[str] = []
     fallback_reasons: list[str] = []
@@ -275,11 +275,16 @@ def plan_for_changed_files(changed_files: list[str], repo_root: str | None = Non
                 if target:
                     selected_states.append(target)
                     continue
-            fallback_reasons.append(f"{path} is a state asset (config/script/unit) — requires system_description for safety")
+            fallback_reasons.append(
+                f"{path} is a state asset (config/script/unit) — "
+                "requires system_description for safety"
+            )
             continue
 
         if path.startswith(MACRO_PREFIX):
-            fallback_reasons.append(f"{path} is a shared macro — requires system_description for safety")
+            fallback_reasons.append(
+                f"{path} is a shared macro — requires system_description for safety"
+            )
             continue
 
         if path.startswith(DATA_PREFIX):
@@ -313,7 +318,8 @@ def plan_for_changed_files(changed_files: list[str], repo_root: str | None = Non
     elif len(selected_states) == 1:
         if selected_states[0] in {"packages", "installers", "fonts", "custom_pkgs"}:
             fallback_reasons.append(
-                f"'{selected_states[0]}' requires prerequisites (pacman_db_warmup, etc.) — promoting to system_description"
+                f"'{selected_states[0]}' requires prerequisites "
+                "(pacman_db_warmup, etc.) — promoting to system_description"
             )
             final_target = "system_description"
         else:
@@ -339,7 +345,11 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--files", nargs="+")
     parser.add_argument("--json", action="store_true", dest="as_json")
-    parser.add_argument("--graph", action="store_true", help="Print full data→state dependency graph as JSON")
+    parser.add_argument(
+        "--graph",
+        action="store_true",
+        help="Print full data→state dependency graph as JSON",
+    )
     return parser
 
 

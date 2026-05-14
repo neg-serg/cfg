@@ -19,7 +19,14 @@ def _host() -> dict[str, Any]:
             from _modules.common import get_host
             return get_host()
         except Exception:
-            return {"user": "root", "home": "/root", "runtime_dir": "/run/user/1000", "pkg_list": "/var/cache/salt/pacman_installed.txt", "systemd_unit_dir": "/etc/systemd/system/", "systemd_user_unit_dir": "/root/.config/systemd/user/"}
+            return {
+                "user": "root",
+                "home": "/root",
+                "runtime_dir": "/run/user/1000",
+                "pkg_list": "/var/cache/salt/pacman_installed.txt",
+                "systemd_unit_dir": "/etc/systemd/system/",
+                "systemd_user_unit_dir": "/root/.config/systemd/user/",
+            }
 
 
 def _sysctl_env() -> dict[str, str]:
@@ -344,7 +351,8 @@ def unit_override(name: str, service: str, source: str,
     ret: dict[str, Any] = {
         name: {
             "file.managed": [
-                {"name": f"{_host().get('systemd_unit_dir', '/etc/systemd/system/')}{service}.d/{filename}"},
+                {"name": (f"{_host().get('systemd_unit_dir', '/etc/systemd/system/')}"
+                          f"{service}.d/{filename}")},
                 {"source": source},
                 {"makedirs": True},
                 {"mode": "0644"},
@@ -495,7 +503,11 @@ def render_service(name: str, opts: dict[str, Any], feature_flag: bool,
     if "cleanup" in opts:
         _paths = [p.replace("__HOME__", host.get("home", "")) if host else p
                   for p in opts["cleanup"]["paths"]]
-        _onlyif = opts["cleanup"]["onlyif"].replace("__HOME__", host.get("home", "")) if host else opts["cleanup"]["onlyif"]
+        _onlyif = (
+            opts["cleanup"]["onlyif"].replace("__HOME__", host.get("home", ""))
+            if host
+            else opts["cleanup"]["onlyif"]
+        )
         ret[f"{name}_cleanup"] = {
             "file.absent": [
                 {"names": _paths},

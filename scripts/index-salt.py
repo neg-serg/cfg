@@ -506,7 +506,9 @@ def generate_data_inventory_docs(summaries, usage):
 
 _SECRET_RE = re.compile(r"(?:tg_secret|gopass_secret)\s*\(\s*'([^']+)'")
 _SERVICE_FILE_RE = re.compile(r"user_service_file\s*\(\s*'[^']+'\s*,\s*'([^']+)'")
-_SERVICE_ENABLE_RE = re.compile(r"user_service_enable\s*\(\s*'[^']+'(?:\s*,\s*start_now\s*=\s*\[([^\]]*)\])?")
+_SERVICE_ENABLE_RE = re.compile(
+    r"user_service_enable\s*\(\s*'[^']+'(?:\s*,\s*start_now\s*=\s*\[([^\]]*)\])?"
+)
 _CONTAINER_RE = re.compile(r"container_service\s*\(\s*'([^']+)'")
 _CONFIG_RE = re.compile(r"salt://(configs/[^\s'\"]+)")
 _DATA_IMPORT_RE = re.compile(r"import_yaml\s+['\"](data/[^'\"]+)['\"]")
@@ -737,24 +739,38 @@ def validate_knowledge_references(knowledge_path, state_results, macros, summari
                     if name not in state_ids:
                         alt = name.replace("-", "_").replace(".", "_")
                         if alt not in state_ids:
-                            issues.append(("warn", f"[{cat_name}/{doc_id}] {ref}: state not found in module index"))
+                            issues.append((
+                                "warn",
+                                f"[{cat_name}/{doc_id}] {ref}: state not found in module index",
+                            ))
                 elif prefix == "macro":
                     mid = name.replace(".jinja", "")
                     if mid not in macro_ids:
                         issues.append(("error", f"[{cat_name}/{doc_id}] {ref}: macro not found"))
                 elif prefix == "data":
                     if name not in data_basenames:
-                        issues.append(("error", f"[{cat_name}/{doc_id}] {ref}: data file not found"))
+                        issues.append((
+                            "error",
+                            f"[{cat_name}/{doc_id}] {ref}: data file not found",
+                        ))
                 elif prefix == "script":
                     if name not in script_basenames:
                         issues.append(("error", f"[{cat_name}/{doc_id}] {ref}: script not found"))
                 elif prefix == "service":
                     if name not in service_names:
-                        issues.append(("warn", f"[{cat_name}/{doc_id}] {ref}: service not found in any state definition"))
+                        issues.append((
+                            "warn",
+                            f"[{cat_name}/{doc_id}] {ref}: "
+                            "service not found in any state definition",
+                        ))
 
             for ref in doc.get("related_docs", []):
                 if ref not in all_doc_ids:
-                    issues.append(("error", f"[{cat_name}/{doc_id}] related_docs '{ref}': target doc not found in knowledge.yaml"))
+                    issues.append((
+                        "error",
+                        f"[{cat_name}/{doc_id}] related_docs '{ref}': "
+                        "target doc not found in knowledge.yaml",
+                    ))
 
     return issues
 

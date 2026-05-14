@@ -386,7 +386,10 @@ def _print_report_header(report: dict) -> None:
               f"Host: {report.get('hostname')}  "
               f"Test: {report.get('test_mode')}  "
               f"Duration: {report.get('duration_seconds', 0)}s")
-        print(f"Consumed: {report.get('consumed_count')}/{report.get('total_data_files')} data files")
+        print(
+            f"Consumed: {report.get('consumed_count')}/"
+            f"{report.get('total_data_files')} data files"
+        )
 
 
 if __name__ == "__main__":

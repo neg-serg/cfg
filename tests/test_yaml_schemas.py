@@ -142,7 +142,9 @@ def test_feature_registry_all_entries_have_default(feature_registry):
                 assert isinstance(sub_config["default"], bool), (
                     f"feature '{name}.{sub_name}' default must be bool"
                 )
-                assert "description" in sub_config, f"feature '{name}.{sub_name}' missing description"
+                assert "description" in sub_config, (
+                    f"feature '{name}.{sub_name}' missing description"
+                )
         else:
             assert "default" in config, f"feature '{name}' missing default"
             assert isinstance(config["default"], bool), f"feature '{name}' default must be bool"
@@ -162,8 +164,12 @@ def test_container_images_all_have_registry_and_image(container_images):
         assert isinstance(cfg, dict), f"{name}: expected dict"
         assert "registry" in cfg, f"{name}: missing registry"
         assert "image" in cfg, f"{name}: missing image"
-        assert isinstance(cfg["registry"], str) and cfg["registry"], f"{name}: registry must be non-empty string"
-        assert isinstance(cfg["image"], str) and cfg["image"], f"{name}: image must be non-empty string"
+        assert isinstance(cfg["registry"], str) and cfg["registry"], (
+            f"{name}: registry must be non-empty string"
+        )
+        assert isinstance(cfg["image"], str) and cfg["image"], (
+            f"{name}: image must be non-empty string"
+        )
 
 
 def test_container_images_remote_have_digest(container_images):
@@ -173,7 +179,9 @@ def test_container_images_remote_have_digest(container_images):
             assert digest is not None, f"{name}: remote image must have a digest"
             assert isinstance(digest, str), f"{name}: digest must be string"
             assert digest.startswith("sha256:"), f"{name}: digest must start with sha256:"
-            assert len(digest) == 71, f"{name}: digest must be sha256:<64 hex> (got {len(digest)} chars)"
+            assert len(digest) == 71, (
+                f"{name}: digest must be sha256:<64 hex> (got {len(digest)} chars)"
+            )
 
 
 def test_container_images_localhost_digest_is_null(container_images):

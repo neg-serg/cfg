@@ -122,7 +122,11 @@ else:
         "ellipsis": "...",
     }
 
-_SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"] if _HAS_UTF8 else ["/", "-", "\\", "|"]
+_SPINNER = (
+    ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+    if _HAS_UTF8
+    else ["/", "-", "\\", "|"]
+)
 
 
 def _width():
@@ -175,7 +179,10 @@ class _Pretty:
         pad_left = max((inner - _visible_len(text)) // 2, 0)
         pad_right = max(inner - _visible_len(text) - pad_left, 0)
         print(f"{C['cyan_b']}{I['box_tl']}{_repeat(I['box_h'], w - 2)}{I['box_tr']}")
-        print(f"{I['box_v']}{' ' * pad_left}{C['white_b']}{text}{C['cyan_b']}{' ' * pad_right} {I['box_v']}")
+        print(
+            f"{I['box_v']}{' ' * pad_left}{C['white_b']}{text}"
+            f"{C['cyan_b']}{' ' * pad_right} {I['box_v']}"
+        )
         print(f"{I['box_bl']}{_repeat(I['box_h'], w - 2)}{I['box_br']}{C['reset']}")
 
     def ok(self, text: str):
@@ -199,7 +206,10 @@ class _Pretty:
     def section(self, text: str):
         w = _width()
         remain = max(w - _visible_len(text) - 6, 2)
-        print(f"{C['grey_b']}{_repeat(I['section'], 3)} {text} {_repeat(I['section'], remain)}{C['reset']}")
+        print(
+            f"{C['grey_b']}{_repeat(I['section'], 3)} {text} "
+            f"{_repeat(I['section'], remain)}{C['reset']}"
+        )
 
     def progress(self, current: int, total: int):
         bar_w = 30
@@ -215,13 +225,22 @@ class _Pretty:
         if failed:
             text += f", {failed} failed"
         pad = max((w - _visible_len(text) - 2) // 2, 0)
-        print(f"{C['bold']}{_repeat(I['section'], pad)} {text} {_repeat(I['section'], pad)}{C['reset']}")
+        print(
+            f"{C['bold']}{_repeat(I['section'], pad)} {text} "
+            f"{_repeat(I['section'], pad)}{C['reset']}"
+        )
 
     def service_status(self, name: str, status: str):
         if status in ("active", "running", "healthy", "enabled"):
-            print(f"{C['green_b']} {I['ok']} {C['green']}{name:<40}{C['reset']} {C['green']}active{C['reset']}")
+            print(
+                f"{C['green_b']} {I['ok']} {C['green']}{name:<40}"
+                f"{C['reset']} {C['green']}active{C['reset']}"
+            )
         elif status in ("failed", "error", "unhealthy", "inactive"):
-            print(f"{C['red_b']} {I['fail']} {C['red']}{name:<40}{C['reset']} {C['red']}failed{C['reset']}")
+            print(
+                f"{C['red_b']} {I['fail']} {C['red']}{name:<40}"
+                f"{C['reset']} {C['red']}failed{C['reset']}"
+            )
         else:
             print(f"{C['yellow']} {I['warn']} {C['reset']}{name:<40}{C['reset']} {status}")
 
@@ -297,7 +316,10 @@ class _Pretty:
         max_k = max(_visible_len(k) for k, _ in items)
         prefix = " " * indent
         for k, v in items:
-            print(f"{prefix}{C['almostgrey']}{_pad_right(k, max_k)} {C['dim']}:{C['reset']} {C['white_b']}{v}{C['reset']}")
+            print(
+                f"{prefix}{C['almostgrey']}{_pad_right(k, max_k)} "
+                f"{C['dim']}:{C['reset']} {C['white_b']}{v}{C['reset']}"
+            )
 
     # ── Panel (boxed info block) ──────────────────────────────────────────
 
@@ -305,7 +327,8 @@ class _Pretty:
         """Print text inside a box-drawn frame, optionally with a title."""
         lines = text.splitlines()
         w = _width()
-        box_w = min(max(max(_visible_len(line) for line in lines), _visible_len(title) + 4) + 4, w - 2)
+        max_line = max(_visible_len(line) for line in lines)
+        box_w = min(max(max_line, _visible_len(title) + 4) + 4, w - 2)
         box_w = max(box_w, 20)
 
         top_sep = f"{I['box_tl']}{_repeat(I['box_h'], box_w)}"
@@ -314,7 +337,11 @@ class _Pretty:
         print(f"{C['darkgrey']}{top_sep}{C['reset']}")
 
         for line in lines:
-            print(f"{C['darkgrey']}{I['box_v']}{C['reset']} {line}{' ' * max(0, box_w - _visible_len(line) - 1)} {C['darkgrey']}{I['box_v']}{C['reset']}")
+            padding = " " * max(0, box_w - _visible_len(line) - 1)
+            print(
+                f"{C['darkgrey']}{I['box_v']}{C['reset']} {line}{padding} "
+                f"{C['darkgrey']}{I['box_v']}{C['reset']}"
+            )
 
         print(f"{C['darkgrey']}{I['box_bl']}{_repeat(I['box_h'], box_w)}{I['box_br']}{C['reset']}")
 
@@ -326,7 +353,10 @@ class _Pretty:
         if title:
             padding = 2
             side = max((w - _visible_len(title) - padding * 2) // 2, 0)
-            print(f"{C['dim']}{_repeat(I['section'], side)} {C['white_b']}{title}{C['reset']} {C['dim']}{_repeat(I['section'], side)}{C['reset']}")
+            print(
+                f"{C['dim']}{_repeat(I['section'], side)} {C['white_b']}{title}"
+                f"{C['reset']} {C['dim']}{_repeat(I['section'], side)}{C['reset']}"
+            )
         else:
             print(f"{C['dim']}{_repeat(I['section'], w)}{C['reset']}")
 
@@ -389,7 +419,10 @@ class _Pretty:
                 connector = I["last"] if is_last else I["branch"]
                 continuation = "    " if is_last else I["pipe"]
                 key = key_fn(item)
-                print(f"{prefix}{C['darkgrey']}{connector}{C['reset']} {C['white']}{key}{C['reset']}")
+                print(
+                    f"{prefix}{C['darkgrey']}{connector}{C['reset']} "
+                    f"{C['white']}{key}{C['reset']}"
+                )
                 children = child_fn(item)
                 if children:
                     _walk(children, prefix + continuation, depth + 1)
@@ -405,7 +438,10 @@ class _Pretty:
 
     def list_items(self, items: list[str], style: str = "bullet"):
         """Print a bulleted list."""
-        bullet = {"bullet": I["bullet"], "dash": "-", "arrow": I["arrow"], "star": I["star"]}.get(style, I["bullet"])
+        bullets = {
+            "bullet": I["bullet"], "dash": "-", "arrow": I["arrow"], "star": I["star"],
+        }
+        bullet = bullets.get(style, I["bullet"])
         for item in items:
             print(f"  {C['dim']}{bullet}{C['reset']} {item}")
 
@@ -451,7 +487,11 @@ class _Pretty:
             while not stop.is_set():
                 elapsed_s = int((time.monotonic_ns() - start_ns) / 1e9)
                 ts = self.elapsed(elapsed_s) if hasattr(self, "elapsed") else f"{elapsed_s}s"
-                print(f"\r{C['cyan_b']} {_SPINNER[i % len(_SPINNER)]} {C['white']}{text}{C['reset']}  {ts}", end="")
+                print(
+                    f"\r{C['cyan_b']} {_SPINNER[i % len(_SPINNER)]} "
+                    f"{C['white']}{text}{C['reset']}  {ts}",
+                    end="",
+                )
                 i += 1
                 stop.wait(0.1)
 

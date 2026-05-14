@@ -341,7 +341,10 @@ def run_compare(
             aligns=["<", ">", ">", ">", "<"],
         )
     except ImportError:
-        hdr = f"{'state_id':<60s} {'log1_ms':>10s} {'log2_ms':>10s} {'delta_ms':>10s} {'change%':>8s}  "
+        hdr = (
+            f"{'state_id':<60s} {'log1_ms':>10s} {'log2_ms':>10s} "
+            f"{'delta_ms':>10s} {'change%':>8s}  "
+        )
         print(f"Comparison: {log1} vs {log2}")
         print(hdr)
         print("-" * len(hdr))
@@ -366,7 +369,9 @@ def run_compare(
                         f"{row['log2_ms']:.2f} ms ({row['change_pct']:.1f}%)"
                     )
             elif status == "INCONCLUSIVE":
-                _p2.warn("Comparison is inconclusive: insufficient common states for a stable verdict.")
+                _p2.warn(
+                    "Comparison is inconclusive: insufficient common states for a stable verdict."
+                )
         except ImportError:
             print(
                 f"Gate status: {status} "
@@ -381,7 +386,9 @@ def run_compare(
                         f"({row['change_pct']:.1f}%)"
                     )
             elif status == "INCONCLUSIVE":
-                print("Comparison is inconclusive: insufficient common states for a stable verdict.")
+                print(
+                    "Comparison is inconclusive: insufficient common states for a stable verdict."
+                )
         return {"PASS": 0, "FAIL": 1, "INCONCLUSIVE": 2}[status]
     return 0
 

@@ -42,7 +42,7 @@ class TestDataInventory:
 
 class TestAuditReport:
     def test_generate_report_has_all_keys(self):
-        audit = _load_salt_audit()
+        _ = _load_salt_audit()
         from datetime import datetime, timezone
 
         report = {
@@ -72,7 +72,7 @@ class TestAuditReport:
             assert key in report, f"missing key: {key}"
 
     def test_report_counts_consistent(self):
-        audit = _load_salt_audit()
+        _ = _load_salt_audit()
         from datetime import datetime, timezone
 
         consumed = [{
@@ -98,11 +98,13 @@ class TestAuditReport:
         assert len(report["consumed"]) + len(report["unused"]) == report["total_data_files"]
 
     def test_report_no_duplicates(self):
-        audit = _load_salt_audit()
+        _ = _load_salt_audit()
 
         consumed = [
-            {"data_file": "a.yaml", "consumers": ["a"], "access_method": "import_yaml", "eval_count": 1},
-            {"data_file": "b.yaml", "consumers": ["b"], "access_method": "import_yaml", "eval_count": 1},
+            {"data_file": "a.yaml", "consumers": ["a"],
+             "access_method": "import_yaml", "eval_count": 1},
+            {"data_file": "b.yaml", "consumers": ["b"],
+             "access_method": "import_yaml", "eval_count": 1},
         ]
         consumed_files = {r["data_file"] for r in consumed}
         unused = ["c.yaml"]
@@ -154,7 +156,7 @@ class TestFeatureGating:
 
 class TestWriteAuditLog:
     def test_write_creates_file(self, tmp_path):
-        audit = _load_salt_audit()
+        _ = _load_salt_audit()
         from datetime import datetime, timezone
 
         report = {

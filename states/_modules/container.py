@@ -84,7 +84,8 @@ def deploy(name: str,
     # --- Preconditions ---
     image_key = catalog.get("container_image")
     if not image_key or image_key not in registry:
-        return f"# PRECONDITION FAILED: container_service({name}): image_key '{image_key}' not found\n"
+        return (f"# PRECONDITION FAILED: container_service({name}): "
+                f"image_key '{image_key}' not found\n")
 
     img = registry[image_key]
     digest = img.get("digest")
@@ -96,7 +97,8 @@ def deploy(name: str,
     digest_ok = (is_localhost and digest is None) or (
         isinstance(digest, str) and digest.startswith("sha256:") and len(digest) == 71
     )
-    scope_ok = (user_scope and catalog_scope == "user") or ((not user_scope) and catalog_scope == "system")
+    scope_ok = ((user_scope and catalog_scope == "user")
+               or (not user_scope and catalog_scope == "system"))
     gpu_ok = not (gpu == "amdgpu" and user_scope)
 
     if not digest_ok:
@@ -104,7 +106,8 @@ def deploy(name: str,
     if not scope_ok:
         return f"# PRECONDITION FAILED: container_service({name}): scope mismatch\n"
     if not gpu_ok:
-        return f"# PRECONDITION FAILED: container_service({name}): gpu=amdgpu requires system scope\n"
+        return (f"# PRECONDITION FAILED: container_service({name}): "
+                f"gpu=amdgpu requires system scope\n")
 
     # --- Image ---
     if is_localhost:
@@ -219,7 +222,8 @@ def deploy(name: str,
         result[f"{name}_reset_failed"] = {"cmd.run": reset}
 
         running: list[dict[str, Any]] = [
-            {"name": f"systemctl {_sc('')}is-active {quadlet_name}.service >/dev/null 2>&1 || systemctl {_sc('')}start {quadlet_name}.service"},
+            {"name": (f"systemctl {_sc('')}is-active {quadlet_name}.service "
+                      f">/dev/null 2>&1 || systemctl {_sc('')}start {quadlet_name}.service")},
             {"unless": f"systemctl {_sc('')}is-active {quadlet_name}.service >/dev/null 2>&1"},
             {"watch": [{"file": f"{name}_container"}, *(watch or [])]},
             {"require": [{"cmd": f"{name}_enabled"}, {"cmd": f"{name}_reset_failed"}]},

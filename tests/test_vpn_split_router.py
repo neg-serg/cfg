@@ -486,9 +486,12 @@ def test_policy_sync_to_routing_removes_stale_policy_rules(tmp_path):
             "outbounds": [{"type": "wireguard", "tag": "vpn"}],
             "route": {
                 "rules": [
-                    {"tag": "vpn-policy-direct", "domain_suffix": ["old.example"], "outbound": "direct"},
-                    {"tag": "vpn-policy-vpn", "domain_suffix": ["old-vpn.example"], "outbound": "vpn"},
-                    {"tag": "vpn-split-router-managed", "domain_suffix": ["survivor.example"], "outbound": "vpn"},
+                    {"tag": "vpn-policy-direct",
+                     "domain_suffix": ["old.example"], "outbound": "direct"},
+                    {"tag": "vpn-policy-vpn",
+                     "domain_suffix": ["old-vpn.example"], "outbound": "vpn"},
+                    {"tag": "vpn-split-router-managed",
+                     "domain_suffix": ["survivor.example"], "outbound": "vpn"},
                 ]
             },
         }) + "\n",
@@ -508,7 +511,9 @@ def test_policy_sync_to_routing_removes_stale_policy_rules(tmp_path):
 def test_refresh_outputs_with_policy_injects_policy_rules(tmp_path):
     router = _load_module()
     policy_path = tmp_path / "policy.yaml"
-    policy_path.write_text("always_direct:\n  domains:\n    - policy-direct.example\n", encoding="utf-8")
+    policy_path.write_text(
+        "always_direct:\n  domains:\n    - policy-direct.example\n", encoding="utf-8",
+    )
     runtime_config_path = tmp_path / "config.json"
     runtime_config_path.write_text(
         json.dumps({
@@ -529,7 +534,10 @@ def test_refresh_outputs_with_policy_injects_policy_rules(tmp_path):
     observed_path = tmp_path / "observed.txt"
     vpn_path = tmp_path / "vpn-domains.txt"
 
-    router.refresh_outputs(state, config, observed_path, vpn_path, runtime_config_path, policy_path=policy_path)
+    router.refresh_outputs(
+        state, config, observed_path, vpn_path, runtime_config_path,
+        policy_path=policy_path,
+    )
     payload = json.loads(runtime_config_path.read_text(encoding="utf-8"))
     tags = [r["tag"] for r in payload["route"]["rules"]]
     assert "vpn-policy-direct" in tags
@@ -600,9 +608,14 @@ def test_command_policy_apply_creates_rollback_and_starts_timer(tmp_path, monkey
 def test_command_policy_apply_rejects_empty_policy(tmp_path):
     router = _load_module()
     policy_path = tmp_path / "policy.yaml"
-    policy_path.write_text("always_direct:\n  domains: []\nalways_vpn:\n  domains: []\n", encoding="utf-8")
+    policy_path.write_text(
+        "always_direct:\n  domains: []\nalways_vpn:\n  domains: []\n",
+        encoding="utf-8",
+    )
     args = SimpleNamespace(
-        policy=policy_path, policy_rollback=tmp_path / "rollback.yaml", runtime_config=tmp_path / "cfg.json",
+        policy=policy_path,
+        policy_rollback=tmp_path / "rollback.yaml",
+        runtime_config=tmp_path / "cfg.json",
     )
     assert router.command_policy_apply(args) == 1
 

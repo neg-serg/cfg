@@ -60,7 +60,10 @@ def test_alertmanager_quadlet_exists():
 def test_monitoring_alertmanager_included_in_system_description():
     src = (STATES_DIR / "system_description.sls").read_text()
     assert "monitoring_alertmanager" in src
-    assert ".get('monitoring', {}).get('loki', false) and host.features.get('monitoring', {}).get('alertmanager', false)" in src
+    assert (
+        ".get('monitoring', {}).get('loki', false) and "
+        "host.features.get('monitoring', {}).get('alertmanager', false)"
+    ) in src
 
 
 def test_loki_config_references_alertmanager_port():

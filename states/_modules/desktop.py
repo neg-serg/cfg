@@ -18,7 +18,13 @@ def _host() -> dict[str, Any]:
             from _modules.common import get_host
             return get_host()
         except Exception:
-            return {"user": "root", "home": "/root", "uid": 1000, "runtime_dir": "/run/user/1000", "pkg_list": "/var/cache/salt/pacman_installed.txt"}
+            return {
+                "user": "root",
+                "home": "/root",
+                "uid": 1000,
+                "runtime_dir": "/run/user/1000",
+                "pkg_list": "/var/cache/salt/pacman_installed.txt",
+            }
 
 
 def _const() -> dict[str, Any]:

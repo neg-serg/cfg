@@ -51,6 +51,9 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Sphinx build output
+docs/_build/
+
 # OpenCode session files
 session-*.md
 

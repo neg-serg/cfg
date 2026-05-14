@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Run all lint checks: ruff, shellcheck, yamllint, salt-lint, taplo, doc-blocks validation; orchestrates the full lint pipeline for pre-commit and CI.
+#
+
 set -euo pipefail
 
 project_dir="$(cd "$(dirname "$0")/.." && pwd)"
@@ -60,6 +64,7 @@ run_check() {
 run_check "ruff check" .venv/bin/ruff check .
 run_check "ruff format" .venv/bin/ruff format --check .
 run_check "lint-jinja" .venv/bin/python3 scripts/lint-jinja.py
+run_check "doc-blocks" python3 scripts/extract-inline-docs.py --validate
 run_check "lint-dotfiles" .venv/bin/python3 scripts/lint-dotfiles.py
 run_check "lint-ownership" .venv/bin/python3 scripts/lint-ownership.py
 run_check "lint-units" .venv/bin/python3 scripts/lint-units.py

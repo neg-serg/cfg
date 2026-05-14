@@ -12,11 +12,6 @@ import salt_compat
 
 salt_compat.patch()
 
-# Ensure _modules/ is on sys.path so `from _modules.common import get_host`
-# works inside Salt execution modules.
-_project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(_project_dir, "states", "_modules"))
-
 import salt.scripts
 import salt.loader as _salt_loader
 

@@ -28,6 +28,12 @@ import yaml  # noqa: E402
 # Register them as no-op extensions so jinja2.parse() doesn't choke.
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_MODULES_DIR = os.path.join(REPO_ROOT, "states", "_modules")
+_STATES_DIR = os.path.join(REPO_ROOT, "states", "_states")
+if _MODULES_DIR not in sys.path:
+    sys.path.insert(0, _MODULES_DIR)
+if _STATES_DIR not in sys.path:
+    sys.path.insert(0, _STATES_DIR)
 
 
 class SaltTagExtension(jinja2.ext.Extension):
@@ -191,6 +197,7 @@ class _MockSalt:
             "installer.install_catalog": ("_modules.installer", "install_catalog"),
             "installer.download_cached": ("_modules.installer", "download_cached"),
             "installer.ver_stamp": ("_modules.installer", "ver_stamp"),
+            "service.config_and_reload": ("_modules.service", "config_and_reload"),
             "service.ensure_dir": ("_modules.service", "ensure_dir"),
             "service.remove_native_unit": ("_modules.service", "remove_native_unit"),
             "service.remove_native_package": ("_modules.service", "remove_native_package"),
@@ -303,6 +310,7 @@ def check_duplicate_state_ids(sls_files):
     """
     env = _make_render_env()
     all_ids = []
+    file_ids: dict[str, list[str]] = {}
     rendered_docs = {}
     render_ok = 0
     for path in sls_files:
@@ -314,19 +322,35 @@ def check_duplicate_state_ids(sls_files):
                 yaml_vars = _resolve_import_yaml(fh.read())
             rendered = t.render(**yaml_vars)
             docs = []
+            doc_ids: list[str] = []
             for doc in yaml.safe_load_all(rendered):
                 if doc and isinstance(doc, dict):
                     for key in doc:
                         if key not in _SALT_DIRECTIVES:
                             all_ids.append(key)
+                            doc_ids.append(key)
                     docs.append(doc)
             rendered_docs[path] = docs
+            file_ids[path] = doc_ids
             render_ok += 1
         except Exception:
-            # Files using Salt-only features won't render
-            pass
+            # Files using Salt-only features won't render fully.
+            # Still extract state IDs from salt['module.func']('id', ...) calls
+            # so cross-file require checks can resolve dynamic IDs.
+            try:
+                with open(path) as fh:
+                    raw_source = fh.read()
+                for match in _SALT_STATE_ID_RE.finditer(raw_source):
+                    all_ids.append(match.group(1))
+            except Exception:
+                pass
 
-    dupes = [k for k, v in collections.Counter(all_ids).items() if v > 1]
+    # Duplicate state IDs within the SAME file (cross-file duplicates from
+    # include: chains are expected and harmless).
+    dupes: list[str] = []
+    for path, ids in file_ids.items():
+        per_file_dupes = [k for k, v in collections.Counter(ids).items() if v > 1]
+        dupes.extend(per_file_dupes)
     errors = 0
     for d in dupes:
         print(f"\033[31mDuplicate state ID: {d}\033[0m")
@@ -336,6 +360,8 @@ def check_duplicate_state_ids(sls_files):
 
 _RESERVED_PREFIXES = ("install_", "build_")
 _RAW_STATE_ID_RE = re.compile(r"^([A-Za-z_][\w.-]*)\s*:")
+# Extract state IDs from salt['module.func']('state_id', ...) calls
+_SALT_STATE_ID_RE = re.compile(r"""salt\[['"]\w+\.\w+['"]\]\s*\(\s*['"]([^'"]+)['"]""")
 
 
 def check_state_id_naming(sls_files, rendered_ids):

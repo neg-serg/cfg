@@ -1,8 +1,9 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # optiscaler-benchmark: wrapper around the packaged OptiScaler benchmark script.
 # The packaged script is broken as shipped, so we substitute the Diablo IV Steam app ID.
 
-set -euo pipefail
+set -eu
+setopt PIPE_FAIL
 
 SCRIPT="/usr/share/optiscaler-universal/scripts/benchmark.sh"
 APP_ID="${OPTISCALER_APP_ID:-2344520}"

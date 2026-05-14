@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 set -e
 
 ROUTING_YAML="$HOME/.config/audio/routing.yaml"

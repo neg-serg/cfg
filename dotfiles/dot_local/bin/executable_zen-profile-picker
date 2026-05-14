@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 set -e
 
 PROFILE=$(zen-profile list 2>/dev/null | tail -n +2 | rofi -dmenu -p "Zen Profile" -i | awk '{print $2}')

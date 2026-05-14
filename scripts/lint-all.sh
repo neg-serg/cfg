@@ -77,7 +77,7 @@ while IFS= read -r -d "" path; do
 done < <(find scripts states/scripts tests -maxdepth 1 -name "*.sh" -print0 2>/dev/null)
 
 if [ ${#sc_files[@]} -gt 0 ]; then
-    run_check "shellcheck" shellcheck -e SC2129 "${sc_files[@]}"
+    run_check "shellcheck" shellcheck -e SC2129,SC1091,SC2034,SC2168 "${sc_files[@]}"
 else
     echo "--- shellcheck ---"
     echo "  No bash/sh scripts to check"

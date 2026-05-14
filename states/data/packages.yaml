@@ -470,6 +470,8 @@ other:
 - wiremix
 aur:
 - amdgpu-vulkan-switcher-git
+- amdvlk-bin
+- lib32-amdvlk-bin
 - act-bin
 - optiscaler-universal
 - advancecomp

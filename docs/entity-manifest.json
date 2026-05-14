@@ -1,5 +1,5 @@
 {
-  "generated": "2026-05-15T00:49:07.823232",
+  "generated": "2026-05-15T00:54:57.615929",
   "entity_count": 263,
   "issue_count": 5,
   "entities": [
@@ -2457,8 +2457,8 @@
       "id": "salt_audit",
       "type": "script_py",
       "source_path": "scripts/salt_audit.py",
-      "purpose": "Runtime data audit — tracks which states/data/*.yaml files are consumed during salt-apply.",
-      "docstring": "Runtime data audit — tracks which states/data/*.yaml files are consumed during salt-apply.\n\nApproach: reuses salt_impact.py's data→state dependency graph. Runs salt-call\nwith test=True to evaluate templates, parses output to determine which states\nexecuted, then maps states back to their data file dependencies.\n\nOutput: logs/audit-<timestamp>.yaml with consumed/unused lists.",
+      "purpose": "Runtime data audit — tracks which states/data/`*.yaml` files are consumed during salt-apply.",
+      "docstring": "Runtime data audit — tracks which states/data/`*.yaml` files are consumed during salt-apply.\n\nApproach: reuses salt_impact.py's data→state dependency graph. Runs salt-call\nwith test=True to evaluate templates, parses output to determine which states\nexecuted, then maps states back to their data file dependencies.\n\nOutput: logs/audit-<timestamp>.yaml with consumed/unused lists.",
       "issues": []
     },
     {
@@ -2793,103 +2793,103 @@
       "issues": []
     },
     {
-      "id": "data/amnezia.yaml",
+      "id": "data/amnezia",
       "type": "data_file",
       "source_path": "states/data/amnezia.yaml",
-      "purpose": "Data file consumed by amnezia.sls",
+      "purpose": "Data file consumed by amnezia",
       "consumers": [
-        "amnezia.sls"
+        "amnezia"
       ],
       "issues": []
     },
     {
-      "id": "data/audio.yaml",
+      "id": "data/audio",
       "type": "data_file",
       "source_path": "states/data/audio.yaml",
-      "purpose": "Data file consumed by audio.sls",
+      "purpose": "Data file consumed by audio",
       "consumers": [
-        "audio.sls"
+        "audio"
       ],
       "issues": []
     },
     {
-      "id": "data/bind_mounts.yaml",
+      "id": "data/bind_mounts",
       "type": "data_file",
       "source_path": "states/data/bind_mounts.yaml",
-      "purpose": "Data file consumed by bind_mounts.sls",
+      "purpose": "Data file consumed by bind_mounts",
       "consumers": [
-        "bind_mounts.sls"
+        "bind_mounts"
       ],
       "issues": []
     },
     {
-      "id": "data/cachyos.yaml",
+      "id": "data/cachyos",
       "type": "data_file",
       "source_path": "states/data/cachyos.yaml",
-      "purpose": "Data file consumed by cachyos.sls",
+      "purpose": "Data file consumed by cachyos",
       "consumers": [
-        "cachyos.sls"
+        "cachyos"
       ],
       "issues": []
     },
     {
-      "id": "data/code_rag.yaml",
+      "id": "data/code_rag",
       "type": "data_file",
       "source_path": "states/data/code_rag.yaml",
-      "purpose": "Data file consumed by code_rag.sls",
+      "purpose": "Data file consumed by code_rag",
       "consumers": [
-        "code_rag.sls"
+        "code_rag"
       ],
       "issues": []
     },
     {
-      "id": "data/container_images.yaml",
+      "id": "data/container_images",
       "type": "data_file",
       "source_path": "states/data/container_images.yaml",
-      "purpose": "Data file consumed by _macros_container.jinja",
+      "purpose": "Data file consumed by _macros_container",
       "consumers": [
-        "_macros_container.jinja"
+        "_macros_container"
       ],
       "issues": []
     },
     {
-      "id": "data/custom_pkgs.yaml",
+      "id": "data/custom_pkgs",
       "type": "data_file",
       "source_path": "states/data/custom_pkgs.yaml",
-      "purpose": "Data file consumed by custom_pkgs.sls",
+      "purpose": "Data file consumed by custom_pkgs",
       "consumers": [
-        "custom_pkgs.sls"
+        "custom_pkgs"
       ],
       "issues": []
     },
     {
-      "id": "data/desktop.yaml",
+      "id": "data/desktop",
       "type": "data_file",
       "source_path": "states/data/desktop.yaml",
-      "purpose": "Data file consumed by desktop/hyprland.sls, desktop/niri.sls, desktop/packages.sls, desktop/portal.sls, desktop/system.sls, desktop/user.sls, desktop/vm_win11.sls",
+      "purpose": "Data file consumed by desktop/hyprland, desktop/niri, desktop/packages, desktop/portal, desktop/system, desktop/user, desktop/vm_win11",
       "consumers": [
-        "desktop/hyprland.sls",
-        "desktop/niri.sls",
-        "desktop/packages.sls",
-        "desktop/portal.sls",
-        "desktop/system.sls",
-        "desktop/user.sls",
-        "desktop/vm_win11.sls"
+        "desktop/hyprland",
+        "desktop/niri",
+        "desktop/packages",
+        "desktop/portal",
+        "desktop/system",
+        "desktop/user",
+        "desktop/vm_win11"
       ],
       "issues": []
     },
     {
-      "id": "data/espanso.yaml",
+      "id": "data/espanso",
       "type": "data_file",
       "source_path": "states/data/espanso.yaml",
-      "purpose": "Data file consumed by espanso.sls",
+      "purpose": "Data file consumed by espanso",
       "consumers": [
-        "espanso.sls"
+        "espanso"
       ],
       "issues": []
     },
     {
-      "id": "data/feature_matrix.yaml",
+      "id": "data/feature_matrix",
       "type": "data_file",
       "source_path": "states/data/feature_matrix.yaml",
       "purpose": "",
@@ -2897,459 +2897,459 @@
       "issues": []
     },
     {
-      "id": "data/feature_registry.yaml",
+      "id": "data/feature_registry",
       "type": "data_file",
       "source_path": "states/data/feature_registry.yaml",
-      "purpose": "Data file consumed by _macros_registry.jinja",
+      "purpose": "Data file consumed by _macros_registry",
       "consumers": [
-        "_macros_registry.jinja"
+        "_macros_registry"
       ],
       "issues": []
     },
     {
-      "id": "data/flatpak.yaml",
+      "id": "data/flatpak",
       "type": "data_file",
       "source_path": "states/data/flatpak.yaml",
-      "purpose": "Data file consumed by flatpak.sls",
+      "purpose": "Data file consumed by flatpak",
       "consumers": [
-        "flatpak.sls"
+        "flatpak"
       ],
       "issues": []
     },
     {
-      "id": "data/floorp.yaml",
+      "id": "data/floorp",
       "type": "data_file",
       "source_path": "states/data/floorp.yaml",
-      "purpose": "Data file consumed by floorp.sls",
+      "purpose": "Data file consumed by floorp",
       "consumers": [
-        "floorp.sls"
+        "floorp"
       ],
       "issues": []
     },
     {
-      "id": "data/fonts.yaml",
+      "id": "data/fonts",
       "type": "data_file",
       "source_path": "states/data/fonts.yaml",
-      "purpose": "Data file consumed by fonts.sls",
+      "purpose": "Data file consumed by fonts",
       "consumers": [
-        "fonts.sls"
+        "fonts"
       ],
       "issues": []
     },
     {
-      "id": "data/free_providers.yaml",
+      "id": "data/free_providers",
       "type": "data_file",
       "source_path": "states/data/free_providers.yaml",
-      "purpose": "Data file consumed by proxypilot.sls",
+      "purpose": "Data file consumed by proxypilot",
       "consumers": [
-        "proxypilot.sls"
+        "proxypilot"
       ],
       "issues": []
     },
     {
-      "id": "data/greetd.yaml",
+      "id": "data/greetd",
       "type": "data_file",
       "source_path": "states/data/greetd.yaml",
-      "purpose": "Data file consumed by greetd.sls",
+      "purpose": "Data file consumed by greetd",
       "consumers": [
-        "greetd.sls"
+        "greetd"
       ],
       "issues": []
     },
     {
-      "id": "data/hardware.yaml",
+      "id": "data/hardware",
       "type": "data_file",
       "source_path": "states/data/hardware.yaml",
-      "purpose": "Data file consumed by hardware.sls",
+      "purpose": "Data file consumed by hardware",
       "consumers": [
-        "hardware.sls"
+        "hardware"
       ],
       "issues": []
     },
     {
-      "id": "data/hiddify.yaml",
+      "id": "data/hiddify",
       "type": "data_file",
       "source_path": "states/data/hiddify.yaml",
-      "purpose": "Data file consumed by hiddify.sls",
+      "purpose": "Data file consumed by hiddify",
       "consumers": [
-        "hiddify.sls"
+        "hiddify"
       ],
       "issues": []
     },
     {
-      "id": "data/hosts.yaml",
+      "id": "data/hosts",
       "type": "data_file",
       "source_path": "states/data/hosts.yaml",
-      "purpose": "Data file consumed by cachyos.sls, zen_profiles.sls",
+      "purpose": "Data file consumed by cachyos, zen_profiles",
       "consumers": [
-        "cachyos.sls",
-        "zen_profiles.sls"
+        "cachyos",
+        "zen_profiles"
       ],
       "issues": []
     },
     {
-      "id": "data/image_providers.yaml",
+      "id": "data/image_providers",
       "type": "data_file",
       "source_path": "states/data/image_providers.yaml",
-      "purpose": "Data file consumed by image_generation.sls",
+      "purpose": "Data file consumed by image_generation",
       "consumers": [
-        "image_generation.sls"
+        "image_generation"
       ],
       "issues": []
     },
     {
-      "id": "data/installers.yaml",
+      "id": "data/installers",
       "type": "data_file",
       "source_path": "states/data/installers.yaml",
-      "purpose": "Data file consumed by installers.sls, music_analysis.sls",
+      "purpose": "Data file consumed by installers, music_analysis",
       "consumers": [
-        "installers.sls",
-        "music_analysis.sls"
+        "installers",
+        "music_analysis"
       ],
       "issues": []
     },
     {
-      "id": "data/installers_desktop.yaml",
+      "id": "data/installers_desktop",
       "type": "data_file",
       "source_path": "states/data/installers_desktop.yaml",
-      "purpose": "Data file consumed by installers_desktop.sls",
+      "purpose": "Data file consumed by installers_desktop",
       "consumers": [
-        "installers_desktop.sls"
+        "installers_desktop"
       ],
       "issues": []
     },
     {
-      "id": "data/installers_themes.yaml",
+      "id": "data/installers_themes",
       "type": "data_file",
       "source_path": "states/data/installers_themes.yaml",
-      "purpose": "Data file consumed by installers_themes.sls",
+      "purpose": "Data file consumed by installers_themes",
       "consumers": [
-        "installers_themes.sls"
+        "installers_themes"
       ],
       "issues": []
     },
     {
-      "id": "data/ipv6.yaml",
+      "id": "data/ipv6",
       "type": "data_file",
       "source_path": "states/data/ipv6.yaml",
-      "purpose": "Data file consumed by ipv6.sls, ipv6_tunnel.sls",
+      "purpose": "Data file consumed by ipv6, ipv6_tunnel",
       "consumers": [
-        "ipv6.sls",
-        "ipv6_tunnel.sls"
+        "ipv6",
+        "ipv6_tunnel"
       ],
       "issues": []
     },
     {
-      "id": "data/kanata.yaml",
+      "id": "data/kanata",
       "type": "data_file",
       "source_path": "states/data/kanata.yaml",
-      "purpose": "Data file consumed by kanata.sls",
+      "purpose": "Data file consumed by kanata",
       "consumers": [
-        "kanata.sls"
+        "kanata"
       ],
       "issues": []
     },
     {
-      "id": "data/kernel_params.yaml",
+      "id": "data/kernel_params",
       "type": "data_file",
       "source_path": "states/data/kernel_params.yaml",
-      "purpose": "Data file consumed by cachyos.sls, kernel_modules.sls",
+      "purpose": "Data file consumed by cachyos, kernel_modules",
       "consumers": [
-        "cachyos.sls",
-        "kernel_modules.sls"
+        "cachyos",
+        "kernel_modules"
       ],
       "issues": []
     },
     {
-      "id": "data/llama_embed.yaml",
+      "id": "data/llama_embed",
       "type": "data_file",
       "source_path": "states/data/llama_embed.yaml",
-      "purpose": "Data file consumed by llama_embed.sls",
+      "purpose": "Data file consumed by llama_embed",
       "consumers": [
-        "llama_embed.sls"
+        "llama_embed"
       ],
       "issues": []
     },
     {
-      "id": "data/managed_resources.yaml",
+      "id": "data/managed_resources",
       "type": "data_file",
       "source_path": "states/data/managed_resources.yaml",
-      "purpose": "Data file consumed by systemd_resources.sls",
+      "purpose": "Data file consumed by systemd_resources",
       "consumers": [
-        "systemd_resources.sls"
+        "systemd_resources"
       ],
       "issues": []
     },
     {
-      "id": "data/monitored_services.yaml",
+      "id": "data/monitored_services",
       "type": "data_file",
       "source_path": "states/data/monitored_services.yaml",
-      "purpose": "Data file consumed by monitoring_alerts.sls",
+      "purpose": "Data file consumed by monitoring_alerts",
       "consumers": [
-        "monitoring_alerts.sls"
+        "monitoring_alerts"
       ],
       "issues": []
     },
     {
-      "id": "data/mounts.yaml",
+      "id": "data/mounts",
       "type": "data_file",
       "source_path": "states/data/mounts.yaml",
-      "purpose": "Data file consumed by mounts.sls",
+      "purpose": "Data file consumed by mounts",
       "consumers": [
-        "mounts.sls"
+        "mounts"
       ],
       "issues": []
     },
     {
-      "id": "data/mpd.yaml",
+      "id": "data/mpd",
       "type": "data_file",
       "source_path": "states/data/mpd.yaml",
-      "purpose": "Data file consumed by mpd.sls",
+      "purpose": "Data file consumed by mpd",
       "consumers": [
-        "mpd.sls"
+        "mpd"
       ],
       "issues": []
     },
     {
-      "id": "data/mpv_scripts.yaml",
+      "id": "data/mpv_scripts",
       "type": "data_file",
       "source_path": "states/data/mpv_scripts.yaml",
-      "purpose": "Data file consumed by installers_mpv.sls",
+      "purpose": "Data file consumed by installers_mpv",
       "consumers": [
-        "installers_mpv.sls"
+        "installers_mpv"
       ],
       "issues": []
     },
     {
-      "id": "data/nanoclaw.yaml",
+      "id": "data/nanoclaw",
       "type": "data_file",
       "source_path": "states/data/nanoclaw.yaml",
-      "purpose": "Data file consumed by nanoclaw.sls",
+      "purpose": "Data file consumed by nanoclaw",
       "consumers": [
-        "nanoclaw.sls"
+        "nanoclaw"
       ],
       "issues": []
     },
     {
-      "id": "data/network.yaml",
+      "id": "data/network",
       "type": "data_file",
       "source_path": "states/data/network.yaml",
-      "purpose": "Data file consumed by network/vm_bridge.sls",
+      "purpose": "Data file consumed by network/vm_bridge",
       "consumers": [
-        "network/vm_bridge.sls"
+        "network/vm_bridge"
       ],
       "issues": []
     },
     {
-      "id": "data/ollama.yaml",
+      "id": "data/ollama",
       "type": "data_file",
       "source_path": "states/data/ollama.yaml",
-      "purpose": "Data file consumed by ollama.sls",
+      "purpose": "Data file consumed by ollama",
       "consumers": [
-        "ollama.sls"
+        "ollama"
       ],
       "issues": []
     },
     {
-      "id": "data/packages.yaml",
+      "id": "data/packages",
       "type": "data_file",
       "source_path": "states/data/packages.yaml",
-      "purpose": "Data file consumed by packages.sls",
+      "purpose": "Data file consumed by packages",
       "consumers": [
-        "packages.sls"
+        "packages"
       ],
       "issues": []
     },
     {
-      "id": "data/service_catalog.yaml",
+      "id": "data/service_catalog",
       "type": "data_file",
       "source_path": "states/data/service_catalog.yaml",
-      "purpose": "Data file consumed by _macros_container.jinja",
+      "purpose": "Data file consumed by _macros_container",
       "consumers": [
-        "_macros_container.jinja"
+        "_macros_container"
       ],
       "issues": []
     },
     {
-      "id": "data/services.yaml",
+      "id": "data/services",
       "type": "data_file",
       "source_path": "states/data/services.yaml",
-      "purpose": "Data file consumed by services.sls",
+      "purpose": "Data file consumed by services",
       "consumers": [
-        "services.sls"
+        "services"
       ],
       "issues": []
     },
     {
-      "id": "data/steam.yaml",
+      "id": "data/steam",
       "type": "data_file",
       "source_path": "states/data/steam.yaml",
-      "purpose": "Data file consumed by steam.sls",
+      "purpose": "Data file consumed by steam",
       "consumers": [
-        "steam.sls"
+        "steam"
       ],
       "issues": []
     },
     {
-      "id": "data/system.yaml",
+      "id": "data/system",
       "type": "data_file",
       "source_path": "states/data/system.yaml",
-      "purpose": "Data file consumed by system_description.sls",
+      "purpose": "Data file consumed by system_description",
       "consumers": [
-        "system_description.sls"
+        "system_description"
       ],
       "issues": []
     },
     {
-      "id": "data/t5_summarization.yaml",
+      "id": "data/t5_summarization",
       "type": "data_file",
       "source_path": "states/data/t5_summarization.yaml",
-      "purpose": "Data file consumed by t5_summarization.sls",
+      "purpose": "Data file consumed by t5_summarization",
       "consumers": [
-        "t5_summarization.sls"
+        "t5_summarization"
       ],
       "issues": []
     },
     {
-      "id": "data/telegram_managed_bots.yaml",
+      "id": "data/telegram_managed_bots",
       "type": "data_file",
       "source_path": "states/data/telegram_managed_bots.yaml",
-      "purpose": "Data file consumed by managed_bots.sls",
+      "purpose": "Data file consumed by managed_bots",
       "consumers": [
-        "managed_bots.sls"
+        "managed_bots"
       ],
       "issues": []
     },
     {
-      "id": "data/telethon_bridge.yaml",
+      "id": "data/telethon_bridge",
       "type": "data_file",
       "source_path": "states/data/telethon_bridge.yaml",
-      "purpose": "Data file consumed by telethon_bridge.sls",
+      "purpose": "Data file consumed by telethon_bridge",
       "consumers": [
-        "telethon_bridge.sls"
+        "telethon_bridge"
       ],
       "issues": []
     },
     {
-      "id": "data/tidal.yaml",
+      "id": "data/tidal",
       "type": "data_file",
       "source_path": "states/data/tidal.yaml",
-      "purpose": "Data file consumed by tidal.sls",
+      "purpose": "Data file consumed by tidal",
       "consumers": [
-        "tidal.sls"
+        "tidal"
       ],
       "issues": []
     },
     {
-      "id": "data/user_services.yaml",
+      "id": "data/user_services",
       "type": "data_file",
       "source_path": "states/data/user_services.yaml",
-      "purpose": "Data file consumed by user_services.sls",
+      "purpose": "Data file consumed by user_services",
       "consumers": [
-        "user_services.sls"
+        "user_services"
       ],
       "issues": []
     },
     {
-      "id": "data/users.yaml",
+      "id": "data/users",
       "type": "data_file",
       "source_path": "states/data/users.yaml",
-      "purpose": "Data file consumed by users.sls",
+      "purpose": "Data file consumed by users",
       "consumers": [
-        "users.sls"
+        "users"
       ],
       "issues": []
     },
     {
-      "id": "data/versions.yaml",
+      "id": "data/versions",
       "type": "data_file",
       "source_path": "states/data/versions.yaml",
-      "purpose": "Data file consumed by amnezia.sls, fonts.sls, installers.sls, installers_mpv.sls, music_analysis.sls, nanoclaw.sls, telethon_bridge.sls",
+      "purpose": "Data file consumed by amnezia, fonts, installers, installers_mpv, music_analysis, nanoclaw, telethon_bridge",
       "consumers": [
-        "amnezia.sls",
-        "fonts.sls",
-        "installers.sls",
-        "installers_mpv.sls",
-        "music_analysis.sls",
-        "nanoclaw.sls",
-        "telethon_bridge.sls"
+        "amnezia",
+        "fonts",
+        "installers",
+        "installers_mpv",
+        "music_analysis",
+        "nanoclaw",
+        "telethon_bridge"
       ],
       "issues": []
     },
     {
-      "id": "data/video_ai.yaml",
+      "id": "data/video_ai",
       "type": "data_file",
       "source_path": "states/data/video_ai.yaml",
-      "purpose": "Data file consumed by video_ai/base.sls, video_ai/models.sls, video_ai/runners.sls, video_ai/workflows.sls",
+      "purpose": "Data file consumed by video_ai/base, video_ai/models, video_ai/runners, video_ai/workflows",
       "consumers": [
-        "video_ai/base.sls",
-        "video_ai/models.sls",
-        "video_ai/runners.sls",
-        "video_ai/workflows.sls"
+        "video_ai/base",
+        "video_ai/models",
+        "video_ai/runners",
+        "video_ai/workflows"
       ],
       "issues": []
     },
     {
-      "id": "data/vpn.yaml",
+      "id": "data/vpn",
       "type": "data_file",
       "source_path": "states/data/vpn.yaml",
-      "purpose": "Data file consumed by ipv6_6to4.sls, network/vpn_hybrid.sls, network/vpn_split_router.sls",
+      "purpose": "Data file consumed by ipv6_6to4, network/vpn_hybrid, network/vpn_split_router",
       "consumers": [
-        "ipv6_6to4.sls",
-        "network/vpn_hybrid.sls",
-        "network/vpn_split_router.sls"
+        "ipv6_6to4",
+        "network/vpn_hybrid",
+        "network/vpn_split_router"
       ],
       "issues": []
     },
     {
-      "id": "data/windows_mount.yaml",
+      "id": "data/windows_mount",
       "type": "data_file",
       "source_path": "states/data/windows_mount.yaml",
-      "purpose": "Data file consumed by windows_mount.sls",
+      "purpose": "Data file consumed by windows_mount",
       "consumers": [
-        "windows_mount.sls"
+        "windows_mount"
       ],
       "issues": []
     },
     {
-      "id": "data/xen.yaml",
+      "id": "data/xen",
       "type": "data_file",
       "source_path": "states/data/xen.yaml",
-      "purpose": "Data file consumed by xen/kde_theme.sls, xen/sessions.sls, xen/user.sls",
+      "purpose": "Data file consumed by xen/kde_theme, xen/sessions, xen/user",
       "consumers": [
-        "xen/kde_theme.sls",
-        "xen/sessions.sls",
-        "xen/user.sls"
+        "xen/kde_theme",
+        "xen/sessions",
+        "xen/user"
       ],
       "issues": []
     },
     {
-      "id": "data/zapret2.yaml",
+      "id": "data/zapret2",
       "type": "data_file",
       "source_path": "states/data/zapret2.yaml",
-      "purpose": "Data file consumed by zapret2.sls",
+      "purpose": "Data file consumed by zapret2",
       "consumers": [
-        "zapret2.sls"
+        "zapret2"
       ],
       "issues": []
     },
     {
-      "id": "data/zen_browser.yaml",
+      "id": "data/zen_browser",
       "type": "data_file",
       "source_path": "states/data/zen_browser.yaml",
-      "purpose": "Data file consumed by zen_browser.sls",
+      "purpose": "Data file consumed by zen_browser",
       "consumers": [
-        "zen_browser.sls"
+        "zen_browser"
       ],
       "issues": []
     },
     {
-      "id": "data/zen_profiles.yaml",
+      "id": "data/zen_profiles",
       "type": "data_file",
       "source_path": "states/data/zen_profiles.yaml",
-      "purpose": "Data file consumed by zen_profiles.sls",
+      "purpose": "Data file consumed by zen_profiles",
       "consumers": [
-        "zen_profiles.sls"
+        "zen_profiles"
       ],
       "issues": []
     }

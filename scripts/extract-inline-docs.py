@@ -337,13 +337,14 @@ def scan_data_files():
         consumers = df.get('consumers', [])
         if not consumers:
             consumers = []
-        name = path.replace('states/', '')
+        name = path.replace('states/', '').replace('.yaml', '')
+        consumers_clean = [c.replace('.sls', '').replace('.jinja', '') for c in (consumers if isinstance(consumers, list) else [])]
         entities.append({
             'id': name,
             'type': 'data_file',
             'source_path': path,
-            'purpose': f"Data file consumed by {', '.join(consumers) if isinstance(consumers, list) else str(consumers)}" if consumers else '',
-            'consumers': consumers if isinstance(consumers, list) else [],
+            'purpose': f"Data file consumed by {', '.join(consumers_clean)}" if consumers else '',
+            'consumers': consumers_clean,
             'issues': [],
         })
     return entities
@@ -386,7 +387,7 @@ def gen_state_rst(entity: dict) -> str:
                 elif field == 'includes':
                     refs.append(f':salt:state:`{v}`')
                 elif field == 'tests':
-                    refs.append(f':salt:script:`{v}`')
+                    refs.append(f'``{v.replace("tests/", "")}``')
                 else:
                     refs.append(f'``{v}``')
             lines.extend(['', f'   * - {label}', f'     - {", ".join(refs)}'])
@@ -443,7 +444,7 @@ def gen_script_py_rst(entity: dict) -> str:
     lines = [
         f'.. salt:script-py:: {name}',
         '',
-        f'   {purpose}' if purpose else '',
+        f'   {rst_escape(purpose)}' if purpose else '',
         '',
         '.. list-table:: Metadata',
         '   :header-rows: 1',
@@ -504,7 +505,15 @@ def gen_data_file_rst(entity: dict) -> str:
     if purpose:
         lines.extend(['', '   * - Purpose', f'     - {purpose}'])
     if consumers:
-        refs = ', '.join(f':salt:state:`{c}`' for c in consumers)
+        refs_list = []
+        for c in consumers:
+            if c.endswith('.jinja'):
+                refs_list.append(f':salt:macro:`{c.replace(".jinja", "")}`')
+            elif c.endswith('.sls') or Path(PROJECT_ROOT / 'states' / c).exists() or Path(PROJECT_ROOT / 'states' / f'{c}.sls').exists():
+                refs_list.append(f':salt:state:`{c.replace(".sls", "")}`')
+            else:
+                refs_list.append(f'``{c}``')
+        refs = ', '.join(refs_list)
         lines.extend(['', '   * - Consumed By', f'     - {refs}'])
     if entity.get('issues'):
         lines.extend(['', '.. warning::', ''])
@@ -589,7 +598,7 @@ def update_conf_py_for_autodoc(scripts: list):
     for script in scripts:
         name = script['id']
         src_path = script['source_path']
-        module_path = str(src_path).replace('/', '.').replace('.py', '')
+        module_path = str(src_path).replace('/', '.').replace('.py', '').replace('-', '_')
         rst = [
             f'.. salt:script-py:: {name}',
             '',

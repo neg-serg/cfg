@@ -725,7 +725,7 @@ Python Scripts
 
    * - ``salt_audit``
      - ``scripts/salt_audit.py``
-     - Runtime data audit — tracks which states/data/*.yaml files are consumed during salt-apply.
+     - Runtime data audit — tracks which states/data/`*.yaml` files are consumed during salt-apply.
 
    * - ``salt_compat``
      - ``scripts/salt_compat.py``
@@ -899,218 +899,218 @@ Data Files
      - Source
      - Purpose
 
-   * - :salt:data:`data/amnezia.yaml`
+   * - :salt:data:`data/amnezia`
      - ``states/data/amnezia.yaml``
-     - Data file consumed by amnezia.sls
+     - Data file consumed by amnezia
 
-   * - :salt:data:`data/audio.yaml`
+   * - :salt:data:`data/audio`
      - ``states/data/audio.yaml``
-     - Data file consumed by audio.sls
+     - Data file consumed by audio
 
-   * - :salt:data:`data/bind_mounts.yaml`
+   * - :salt:data:`data/bind_mounts`
      - ``states/data/bind_mounts.yaml``
-     - Data file consumed by bind_mounts.sls
+     - Data file consumed by bind_mounts
 
-   * - :salt:data:`data/cachyos.yaml`
+   * - :salt:data:`data/cachyos`
      - ``states/data/cachyos.yaml``
-     - Data file consumed by cachyos.sls
+     - Data file consumed by cachyos
 
-   * - :salt:data:`data/code_rag.yaml`
+   * - :salt:data:`data/code_rag`
      - ``states/data/code_rag.yaml``
-     - Data file consumed by code_rag.sls
+     - Data file consumed by code_rag
 
-   * - :salt:data:`data/container_images.yaml`
+   * - :salt:data:`data/container_images`
      - ``states/data/container_images.yaml``
-     - Data file consumed by _macros_container.jinja
+     - Data file consumed by _macros_container
 
-   * - :salt:data:`data/custom_pkgs.yaml`
+   * - :salt:data:`data/custom_pkgs`
      - ``states/data/custom_pkgs.yaml``
-     - Data file consumed by custom_pkgs.sls
+     - Data file consumed by custom_pkgs
 
-   * - :salt:data:`data/desktop.yaml`
+   * - :salt:data:`data/desktop`
      - ``states/data/desktop.yaml``
-     - Data file consumed by desktop/hyprland.sls, desktop/niri.sls, desktop/packages.sls, desktop/portal.sls, desktop/system.sls, desktop/user.sls, desktop/vm_win11.sls
+     - Data file consumed by desktop/hyprland, desktop/niri, desktop/packages, desktop/portal, desktop/system, desktop/user, desktop/vm_win11
 
-   * - :salt:data:`data/espanso.yaml`
+   * - :salt:data:`data/espanso`
      - ``states/data/espanso.yaml``
-     - Data file consumed by espanso.sls
+     - Data file consumed by espanso
 
-   * - :salt:data:`data/feature_matrix.yaml`
+   * - :salt:data:`data/feature_matrix`
      - ``states/data/feature_matrix.yaml``
      - (no documentation)
 
-   * - :salt:data:`data/feature_registry.yaml`
+   * - :salt:data:`data/feature_registry`
      - ``states/data/feature_registry.yaml``
-     - Data file consumed by _macros_registry.jinja
+     - Data file consumed by _macros_registry
 
-   * - :salt:data:`data/flatpak.yaml`
+   * - :salt:data:`data/flatpak`
      - ``states/data/flatpak.yaml``
-     - Data file consumed by flatpak.sls
+     - Data file consumed by flatpak
 
-   * - :salt:data:`data/floorp.yaml`
+   * - :salt:data:`data/floorp`
      - ``states/data/floorp.yaml``
-     - Data file consumed by floorp.sls
+     - Data file consumed by floorp
 
-   * - :salt:data:`data/fonts.yaml`
+   * - :salt:data:`data/fonts`
      - ``states/data/fonts.yaml``
-     - Data file consumed by fonts.sls
+     - Data file consumed by fonts
 
-   * - :salt:data:`data/free_providers.yaml`
+   * - :salt:data:`data/free_providers`
      - ``states/data/free_providers.yaml``
-     - Data file consumed by proxypilot.sls
+     - Data file consumed by proxypilot
 
-   * - :salt:data:`data/greetd.yaml`
+   * - :salt:data:`data/greetd`
      - ``states/data/greetd.yaml``
-     - Data file consumed by greetd.sls
+     - Data file consumed by greetd
 
-   * - :salt:data:`data/hardware.yaml`
+   * - :salt:data:`data/hardware`
      - ``states/data/hardware.yaml``
-     - Data file consumed by hardware.sls
+     - Data file consumed by hardware
 
-   * - :salt:data:`data/hiddify.yaml`
+   * - :salt:data:`data/hiddify`
      - ``states/data/hiddify.yaml``
-     - Data file consumed by hiddify.sls
+     - Data file consumed by hiddify
 
-   * - :salt:data:`data/hosts.yaml`
+   * - :salt:data:`data/hosts`
      - ``states/data/hosts.yaml``
-     - Data file consumed by cachyos.sls, zen_profiles.sls
+     - Data file consumed by cachyos, zen_profiles
 
-   * - :salt:data:`data/image_providers.yaml`
+   * - :salt:data:`data/image_providers`
      - ``states/data/image_providers.yaml``
-     - Data file consumed by image_generation.sls
+     - Data file consumed by image_generation
 
-   * - :salt:data:`data/installers.yaml`
+   * - :salt:data:`data/installers`
      - ``states/data/installers.yaml``
-     - Data file consumed by installers.sls, music_analysis.sls
+     - Data file consumed by installers, music_analysis
 
-   * - :salt:data:`data/installers_desktop.yaml`
+   * - :salt:data:`data/installers_desktop`
      - ``states/data/installers_desktop.yaml``
-     - Data file consumed by installers_desktop.sls
+     - Data file consumed by installers_desktop
 
-   * - :salt:data:`data/installers_themes.yaml`
+   * - :salt:data:`data/installers_themes`
      - ``states/data/installers_themes.yaml``
-     - Data file consumed by installers_themes.sls
+     - Data file consumed by installers_themes
 
-   * - :salt:data:`data/ipv6.yaml`
+   * - :salt:data:`data/ipv6`
      - ``states/data/ipv6.yaml``
-     - Data file consumed by ipv6.sls, ipv6_tunnel.sls
+     - Data file consumed by ipv6, ipv6_tunnel
 
-   * - :salt:data:`data/kanata.yaml`
+   * - :salt:data:`data/kanata`
      - ``states/data/kanata.yaml``
-     - Data file consumed by kanata.sls
+     - Data file consumed by kanata
 
-   * - :salt:data:`data/kernel_params.yaml`
+   * - :salt:data:`data/kernel_params`
      - ``states/data/kernel_params.yaml``
-     - Data file consumed by cachyos.sls, kernel_modules.sls
+     - Data file consumed by cachyos, kernel_modules
 
-   * - :salt:data:`data/llama_embed.yaml`
+   * - :salt:data:`data/llama_embed`
      - ``states/data/llama_embed.yaml``
-     - Data file consumed by llama_embed.sls
+     - Data file consumed by llama_embed
 
-   * - :salt:data:`data/managed_resources.yaml`
+   * - :salt:data:`data/managed_resources`
      - ``states/data/managed_resources.yaml``
-     - Data file consumed by systemd_resources.sls
+     - Data file consumed by systemd_resources
 
-   * - :salt:data:`data/monitored_services.yaml`
+   * - :salt:data:`data/monitored_services`
      - ``states/data/monitored_services.yaml``
-     - Data file consumed by monitoring_alerts.sls
+     - Data file consumed by monitoring_alerts
 
-   * - :salt:data:`data/mounts.yaml`
+   * - :salt:data:`data/mounts`
      - ``states/data/mounts.yaml``
-     - Data file consumed by mounts.sls
+     - Data file consumed by mounts
 
-   * - :salt:data:`data/mpd.yaml`
+   * - :salt:data:`data/mpd`
      - ``states/data/mpd.yaml``
-     - Data file consumed by mpd.sls
+     - Data file consumed by mpd
 
-   * - :salt:data:`data/mpv_scripts.yaml`
+   * - :salt:data:`data/mpv_scripts`
      - ``states/data/mpv_scripts.yaml``
-     - Data file consumed by installers_mpv.sls
+     - Data file consumed by installers_mpv
 
-   * - :salt:data:`data/nanoclaw.yaml`
+   * - :salt:data:`data/nanoclaw`
      - ``states/data/nanoclaw.yaml``
-     - Data file consumed by nanoclaw.sls
+     - Data file consumed by nanoclaw
 
-   * - :salt:data:`data/network.yaml`
+   * - :salt:data:`data/network`
      - ``states/data/network.yaml``
-     - Data file consumed by network/vm_bridge.sls
+     - Data file consumed by network/vm_bridge
 
-   * - :salt:data:`data/ollama.yaml`
+   * - :salt:data:`data/ollama`
      - ``states/data/ollama.yaml``
-     - Data file consumed by ollama.sls
+     - Data file consumed by ollama
 
-   * - :salt:data:`data/packages.yaml`
+   * - :salt:data:`data/packages`
      - ``states/data/packages.yaml``
-     - Data file consumed by packages.sls
+     - Data file consumed by packages
 
-   * - :salt:data:`data/service_catalog.yaml`
+   * - :salt:data:`data/service_catalog`
      - ``states/data/service_catalog.yaml``
-     - Data file consumed by _macros_container.jinja
+     - Data file consumed by _macros_container
 
-   * - :salt:data:`data/services.yaml`
+   * - :salt:data:`data/services`
      - ``states/data/services.yaml``
-     - Data file consumed by services.sls
+     - Data file consumed by services
 
-   * - :salt:data:`data/steam.yaml`
+   * - :salt:data:`data/steam`
      - ``states/data/steam.yaml``
-     - Data file consumed by steam.sls
+     - Data file consumed by steam
 
-   * - :salt:data:`data/system.yaml`
+   * - :salt:data:`data/system`
      - ``states/data/system.yaml``
-     - Data file consumed by system_description.sls
+     - Data file consumed by system_description
 
-   * - :salt:data:`data/t5_summarization.yaml`
+   * - :salt:data:`data/t5_summarization`
      - ``states/data/t5_summarization.yaml``
-     - Data file consumed by t5_summarization.sls
+     - Data file consumed by t5_summarization
 
-   * - :salt:data:`data/telegram_managed_bots.yaml`
+   * - :salt:data:`data/telegram_managed_bots`
      - ``states/data/telegram_managed_bots.yaml``
-     - Data file consumed by managed_bots.sls
+     - Data file consumed by managed_bots
 
-   * - :salt:data:`data/telethon_bridge.yaml`
+   * - :salt:data:`data/telethon_bridge`
      - ``states/data/telethon_bridge.yaml``
-     - Data file consumed by telethon_bridge.sls
+     - Data file consumed by telethon_bridge
 
-   * - :salt:data:`data/tidal.yaml`
+   * - :salt:data:`data/tidal`
      - ``states/data/tidal.yaml``
-     - Data file consumed by tidal.sls
+     - Data file consumed by tidal
 
-   * - :salt:data:`data/user_services.yaml`
+   * - :salt:data:`data/user_services`
      - ``states/data/user_services.yaml``
-     - Data file consumed by user_services.sls
+     - Data file consumed by user_services
 
-   * - :salt:data:`data/users.yaml`
+   * - :salt:data:`data/users`
      - ``states/data/users.yaml``
-     - Data file consumed by users.sls
+     - Data file consumed by users
 
-   * - :salt:data:`data/versions.yaml`
+   * - :salt:data:`data/versions`
      - ``states/data/versions.yaml``
-     - Data file consumed by amnezia.sls, fonts.sls, installers.sls, installers_mpv.sls, music_analysis.sls, nanoclaw.sls, telethon_bridge.sls
+     - Data file consumed by amnezia, fonts, installers, installers_mpv, music_analysis, nanoclaw, telethon_bridge
 
-   * - :salt:data:`data/video_ai.yaml`
+   * - :salt:data:`data/video_ai`
      - ``states/data/video_ai.yaml``
-     - Data file consumed by video_ai/base.sls, video_ai/models.sls, video_ai/runners.sls, video_ai/workflows.sls
+     - Data file consumed by video_ai/base, video_ai/models, video_ai/runners, video_ai/workflows
 
-   * - :salt:data:`data/vpn.yaml`
+   * - :salt:data:`data/vpn`
      - ``states/data/vpn.yaml``
-     - Data file consumed by ipv6_6to4.sls, network/vpn_hybrid.sls, network/vpn_split_router.sls
+     - Data file consumed by ipv6_6to4, network/vpn_hybrid, network/vpn_split_router
 
-   * - :salt:data:`data/windows_mount.yaml`
+   * - :salt:data:`data/windows_mount`
      - ``states/data/windows_mount.yaml``
-     - Data file consumed by windows_mount.sls
+     - Data file consumed by windows_mount
 
-   * - :salt:data:`data/xen.yaml`
+   * - :salt:data:`data/xen`
      - ``states/data/xen.yaml``
-     - Data file consumed by xen/kde_theme.sls, xen/sessions.sls, xen/user.sls
+     - Data file consumed by xen/kde_theme, xen/sessions, xen/user
 
-   * - :salt:data:`data/zapret2.yaml`
+   * - :salt:data:`data/zapret2`
      - ``states/data/zapret2.yaml``
-     - Data file consumed by zapret2.sls
+     - Data file consumed by zapret2
 
-   * - :salt:data:`data/zen_browser.yaml`
+   * - :salt:data:`data/zen_browser`
      - ``states/data/zen_browser.yaml``
-     - Data file consumed by zen_browser.sls
+     - Data file consumed by zen_browser
 
-   * - :salt:data:`data/zen_profiles.yaml`
+   * - :salt:data:`data/zen_profiles`
      - ``states/data/zen_profiles.yaml``
-     - Data file consumed by zen_profiles.sls
+     - Data file consumed by zen_profiles

@@ -107,223 +107,223 @@ entities:
       repos or AUR.
     source: states/custom_pkgs.sls
     type: state
-  data/amnezia.yaml:
-    purpose: Data file consumed by amnezia.sls
+  data/amnezia:
+    purpose: Data file consumed by amnezia
     source: states/data/amnezia.yaml
     type: data_file
-  data/audio.yaml:
-    purpose: Data file consumed by audio.sls
+  data/audio:
+    purpose: Data file consumed by audio
     source: states/data/audio.yaml
     type: data_file
-  data/bind_mounts.yaml:
-    purpose: Data file consumed by bind_mounts.sls
+  data/bind_mounts:
+    purpose: Data file consumed by bind_mounts
     source: states/data/bind_mounts.yaml
     type: data_file
-  data/cachyos.yaml:
-    purpose: Data file consumed by cachyos.sls
+  data/cachyos:
+    purpose: Data file consumed by cachyos
     source: states/data/cachyos.yaml
     type: data_file
-  data/code_rag.yaml:
-    purpose: Data file consumed by code_rag.sls
+  data/code_rag:
+    purpose: Data file consumed by code_rag
     source: states/data/code_rag.yaml
     type: data_file
-  data/container_images.yaml:
-    purpose: Data file consumed by _macros_container.jinja
+  data/container_images:
+    purpose: Data file consumed by _macros_container
     source: states/data/container_images.yaml
     type: data_file
-  data/custom_pkgs.yaml:
-    purpose: Data file consumed by custom_pkgs.sls
+  data/custom_pkgs:
+    purpose: Data file consumed by custom_pkgs
     source: states/data/custom_pkgs.yaml
     type: data_file
-  data/desktop.yaml:
-    purpose: Data file consumed by desktop/hyprland.sls, desktop/niri.sls, desktop/packages.sls,
-      desktop/portal.sls, desktop/system.sls, desktop/user.sls, desktop/vm_win11.sls
+  data/desktop:
+    purpose: Data file consumed by desktop/hyprland, desktop/niri, desktop/packages,
+      desktop/portal, desktop/system, desktop/user, desktop/vm_win11
     source: states/data/desktop.yaml
     type: data_file
-  data/espanso.yaml:
-    purpose: Data file consumed by espanso.sls
+  data/espanso:
+    purpose: Data file consumed by espanso
     source: states/data/espanso.yaml
     type: data_file
-  data/feature_matrix.yaml:
+  data/feature_matrix:
     purpose: ''
     source: states/data/feature_matrix.yaml
     type: data_file
-  data/feature_registry.yaml:
-    purpose: Data file consumed by _macros_registry.jinja
+  data/feature_registry:
+    purpose: Data file consumed by _macros_registry
     source: states/data/feature_registry.yaml
     type: data_file
-  data/flatpak.yaml:
-    purpose: Data file consumed by flatpak.sls
+  data/flatpak:
+    purpose: Data file consumed by flatpak
     source: states/data/flatpak.yaml
     type: data_file
-  data/floorp.yaml:
-    purpose: Data file consumed by floorp.sls
+  data/floorp:
+    purpose: Data file consumed by floorp
     source: states/data/floorp.yaml
     type: data_file
-  data/fonts.yaml:
-    purpose: Data file consumed by fonts.sls
+  data/fonts:
+    purpose: Data file consumed by fonts
     source: states/data/fonts.yaml
     type: data_file
-  data/free_providers.yaml:
-    purpose: Data file consumed by proxypilot.sls
+  data/free_providers:
+    purpose: Data file consumed by proxypilot
     source: states/data/free_providers.yaml
     type: data_file
-  data/greetd.yaml:
-    purpose: Data file consumed by greetd.sls
+  data/greetd:
+    purpose: Data file consumed by greetd
     source: states/data/greetd.yaml
     type: data_file
-  data/hardware.yaml:
-    purpose: Data file consumed by hardware.sls
+  data/hardware:
+    purpose: Data file consumed by hardware
     source: states/data/hardware.yaml
     type: data_file
-  data/hiddify.yaml:
-    purpose: Data file consumed by hiddify.sls
+  data/hiddify:
+    purpose: Data file consumed by hiddify
     source: states/data/hiddify.yaml
     type: data_file
-  data/hosts.yaml:
-    purpose: Data file consumed by cachyos.sls, zen_profiles.sls
+  data/hosts:
+    purpose: Data file consumed by cachyos, zen_profiles
     source: states/data/hosts.yaml
     type: data_file
-  data/image_providers.yaml:
-    purpose: Data file consumed by image_generation.sls
+  data/image_providers:
+    purpose: Data file consumed by image_generation
     source: states/data/image_providers.yaml
     type: data_file
-  data/installers.yaml:
-    purpose: Data file consumed by installers.sls, music_analysis.sls
+  data/installers:
+    purpose: Data file consumed by installers, music_analysis
     source: states/data/installers.yaml
     type: data_file
-  data/installers_desktop.yaml:
-    purpose: Data file consumed by installers_desktop.sls
+  data/installers_desktop:
+    purpose: Data file consumed by installers_desktop
     source: states/data/installers_desktop.yaml
     type: data_file
-  data/installers_themes.yaml:
-    purpose: Data file consumed by installers_themes.sls
+  data/installers_themes:
+    purpose: Data file consumed by installers_themes
     source: states/data/installers_themes.yaml
     type: data_file
-  data/ipv6.yaml:
-    purpose: Data file consumed by ipv6.sls, ipv6_tunnel.sls
+  data/ipv6:
+    purpose: Data file consumed by ipv6, ipv6_tunnel
     source: states/data/ipv6.yaml
     type: data_file
-  data/kanata.yaml:
-    purpose: Data file consumed by kanata.sls
+  data/kanata:
+    purpose: Data file consumed by kanata
     source: states/data/kanata.yaml
     type: data_file
-  data/kernel_params.yaml:
-    purpose: Data file consumed by cachyos.sls, kernel_modules.sls
+  data/kernel_params:
+    purpose: Data file consumed by cachyos, kernel_modules
     source: states/data/kernel_params.yaml
     type: data_file
-  data/llama_embed.yaml:
-    purpose: Data file consumed by llama_embed.sls
+  data/llama_embed:
+    purpose: Data file consumed by llama_embed
     source: states/data/llama_embed.yaml
     type: data_file
-  data/managed_resources.yaml:
-    purpose: Data file consumed by systemd_resources.sls
+  data/managed_resources:
+    purpose: Data file consumed by systemd_resources
     source: states/data/managed_resources.yaml
     type: data_file
-  data/monitored_services.yaml:
-    purpose: Data file consumed by monitoring_alerts.sls
+  data/monitored_services:
+    purpose: Data file consumed by monitoring_alerts
     source: states/data/monitored_services.yaml
     type: data_file
-  data/mounts.yaml:
-    purpose: Data file consumed by mounts.sls
+  data/mounts:
+    purpose: Data file consumed by mounts
     source: states/data/mounts.yaml
     type: data_file
-  data/mpd.yaml:
-    purpose: Data file consumed by mpd.sls
+  data/mpd:
+    purpose: Data file consumed by mpd
     source: states/data/mpd.yaml
     type: data_file
-  data/mpv_scripts.yaml:
-    purpose: Data file consumed by installers_mpv.sls
+  data/mpv_scripts:
+    purpose: Data file consumed by installers_mpv
     source: states/data/mpv_scripts.yaml
     type: data_file
-  data/nanoclaw.yaml:
-    purpose: Data file consumed by nanoclaw.sls
+  data/nanoclaw:
+    purpose: Data file consumed by nanoclaw
     source: states/data/nanoclaw.yaml
     type: data_file
-  data/network.yaml:
-    purpose: Data file consumed by network/vm_bridge.sls
+  data/network:
+    purpose: Data file consumed by network/vm_bridge
     source: states/data/network.yaml
     type: data_file
-  data/ollama.yaml:
-    purpose: Data file consumed by ollama.sls
+  data/ollama:
+    purpose: Data file consumed by ollama
     source: states/data/ollama.yaml
     type: data_file
-  data/packages.yaml:
-    purpose: Data file consumed by packages.sls
+  data/packages:
+    purpose: Data file consumed by packages
     source: states/data/packages.yaml
     type: data_file
-  data/service_catalog.yaml:
-    purpose: Data file consumed by _macros_container.jinja
+  data/service_catalog:
+    purpose: Data file consumed by _macros_container
     source: states/data/service_catalog.yaml
     type: data_file
-  data/services.yaml:
-    purpose: Data file consumed by services.sls
+  data/services:
+    purpose: Data file consumed by services
     source: states/data/services.yaml
     type: data_file
-  data/steam.yaml:
-    purpose: Data file consumed by steam.sls
+  data/steam:
+    purpose: Data file consumed by steam
     source: states/data/steam.yaml
     type: data_file
-  data/system.yaml:
-    purpose: Data file consumed by system_description.sls
+  data/system:
+    purpose: Data file consumed by system_description
     source: states/data/system.yaml
     type: data_file
-  data/t5_summarization.yaml:
-    purpose: Data file consumed by t5_summarization.sls
+  data/t5_summarization:
+    purpose: Data file consumed by t5_summarization
     source: states/data/t5_summarization.yaml
     type: data_file
-  data/telegram_managed_bots.yaml:
-    purpose: Data file consumed by managed_bots.sls
+  data/telegram_managed_bots:
+    purpose: Data file consumed by managed_bots
     source: states/data/telegram_managed_bots.yaml
     type: data_file
-  data/telethon_bridge.yaml:
-    purpose: Data file consumed by telethon_bridge.sls
+  data/telethon_bridge:
+    purpose: Data file consumed by telethon_bridge
     source: states/data/telethon_bridge.yaml
     type: data_file
-  data/tidal.yaml:
-    purpose: Data file consumed by tidal.sls
+  data/tidal:
+    purpose: Data file consumed by tidal
     source: states/data/tidal.yaml
     type: data_file
-  data/user_services.yaml:
-    purpose: Data file consumed by user_services.sls
+  data/user_services:
+    purpose: Data file consumed by user_services
     source: states/data/user_services.yaml
     type: data_file
-  data/users.yaml:
-    purpose: Data file consumed by users.sls
+  data/users:
+    purpose: Data file consumed by users
     source: states/data/users.yaml
     type: data_file
-  data/versions.yaml:
-    purpose: Data file consumed by amnezia.sls, fonts.sls, installers.sls, installers_mpv.sls,
-      music_analysis.sls, nanoclaw.sls, telethon_bridge.sls
+  data/versions:
+    purpose: Data file consumed by amnezia, fonts, installers, installers_mpv, music_analysis,
+      nanoclaw, telethon_bridge
     source: states/data/versions.yaml
     type: data_file
-  data/video_ai.yaml:
-    purpose: Data file consumed by video_ai/base.sls, video_ai/models.sls, video_ai/runners.sls,
-      video_ai/workflows.sls
+  data/video_ai:
+    purpose: Data file consumed by video_ai/base, video_ai/models, video_ai/runners,
+      video_ai/workflows
     source: states/data/video_ai.yaml
     type: data_file
-  data/vpn.yaml:
-    purpose: Data file consumed by ipv6_6to4.sls, network/vpn_hybrid.sls, network/vpn_split_router.sls
+  data/vpn:
+    purpose: Data file consumed by ipv6_6to4, network/vpn_hybrid, network/vpn_split_router
     source: states/data/vpn.yaml
     type: data_file
-  data/windows_mount.yaml:
-    purpose: Data file consumed by windows_mount.sls
+  data/windows_mount:
+    purpose: Data file consumed by windows_mount
     source: states/data/windows_mount.yaml
     type: data_file
-  data/xen.yaml:
-    purpose: Data file consumed by xen/kde_theme.sls, xen/sessions.sls, xen/user.sls
+  data/xen:
+    purpose: Data file consumed by xen/kde_theme, xen/sessions, xen/user
     source: states/data/xen.yaml
     type: data_file
-  data/zapret2.yaml:
-    purpose: Data file consumed by zapret2.sls
+  data/zapret2:
+    purpose: Data file consumed by zapret2
     source: states/data/zapret2.yaml
     type: data_file
-  data/zen_browser.yaml:
-    purpose: Data file consumed by zen_browser.sls
+  data/zen_browser:
+    purpose: Data file consumed by zen_browser
     source: states/data/zen_browser.yaml
     type: data_file
-  data/zen_profiles.yaml:
-    purpose: Data file consumed by zen_profiles.sls
+  data/zen_profiles:
+    purpose: Data file consumed by zen_profiles
     source: states/data/zen_profiles.yaml
     type: data_file
   dconf_settings:
@@ -840,7 +840,7 @@ entities:
     source: scripts/salt-validate.sh
     type: script_sh
   salt_audit:
-    purpose: "Runtime data audit \u2014 tracks which states/data/*.yaml files are\
+    purpose: "Runtime data audit \u2014 tracks which states/data/`*.yaml` files are\
       \ consumed during salt-apply."
     source: scripts/salt_audit.py
     type: script_py

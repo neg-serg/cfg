@@ -11,6 +11,7 @@
 include:
   - pacman_db_warmup
 
+{% from '_imports.jinja' import user, home %}
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/installers.yaml' as tools %}
 

@@ -16,6 +16,7 @@
    Usage: {{ go_pkg('ght', pkg='github.com/kwame-Owusu/ght') }}
           {{ go_pkg('lazycut', pkg='github.com/ozemin/lazycut') }}
 #}
+
 {# @macro
    name: go_pkg
    purpose: ""
@@ -33,11 +34,11 @@ install_{{ name | replace('-', '_') }}:
 {# Fallback: download binary directly to ~/.local/bin/ and chmod +x.
    version: when set, enables update-on-version-bump via version file.
    Usage: {{ curl_bin('aliae', 'https://github.com/.../aliae-linux-amd64') }}
-          {{ curl_bin('tdl{# @macro
+          {{ curl_bin('tdl', '.../${VER}/...', version=ver.tdl) }}
+#}
+{# @macro
    name: curl_bin
    purpose: ""
-#}
-', '.../${VER}/...', version=ver.tdl) }}
 #}
 {%- macro curl_bin(name, url, version=None, hash=None, user=_user, home=_home) -%}
 {%- set _creates = home ~ '/.local/bin/' ~ name -%}
@@ -73,11 +74,12 @@ install_{{ name | replace('-', '_') }}:
    env: shell env prefix string (e.g. 'GIT_CONFIG_GLOBAL=/dev/null'); supports shell expansion.
    Usage: {{ pip_pkg('httpstat') }}
           {{ pip_pkg('neovim_python_deps', pkg='neovim-remote', bin='nvr') }}
-          {# @macro
+          
+{{ pip_pkg('dr14_tmeter', pkg='git+https://...', env='GIT_CONFIG_GLOBAL=/dev/null') }}
+#}
+{# @macro
    name: pip_pkg
    purpose: ""
-#}
-{{ pip_pkg('dr14_tmeter', pkg='git+https://...', env='GIT_CONFIG_GLOBAL=/dev/null') }}
 #}
 {%- macro pip_pkg(name, pkg=None, bin=None, env=None, preinstall=None, user=_user, home=_home) -%}
 {%- set _env = env ~ ' ' if env else '' -%}
@@ -106,11 +108,12 @@ install_{{ name | replace('-', '_') }}:
           {{ cargo_pkg('agg', git='https://github.com/asciinema/agg') }}
           {{ cargo_pkg('pzip', bin='pz') }}
           {{ cargo_pkg('wiremix', env='BINDGEN_EXTRA_CLANG_ARGS="..."') }}
-    {# @macro
+    
+      {{ cargo_pkg('tailray', git='https://...', version=ver.tailray, onlyif=['pkg-config --exists dbus-1', 'command -v cargo']) }}
+#}
+{# @macro
    name: cargo_pkg
    purpose: ""
-#}
-      {{ cargo_pkg('tailray', git='https://...', version=ver.tailray, onlyif=['pkg-config --exists dbus-1', 'command -v cargo']) }}
 #}
 {%- macro cargo_pkg(name, pkg=None, bin=None, git=None, env=None, onlyif=None, version=None, user=_user, home=_home) -%}
 {%- set _marker_dir = _ver_dir if user == _user else _sys_ver_dir -%}
@@ -135,13 +138,14 @@ install_{{ name | replace('-', '_') }}:
 {%- endmacro -%}
 
 {# Download and extract tar.gz/tar.xz archive to ~/.local/bin/.
-   fetch_tag: fetch latest GitHub release tag into ${TAG}; strip_v: set V{# @macro
-   name: curl_extract_tar
-   purpose: ""
-#}
+   fetch_tag: fetch latest GitHub release tag into ${TAG}; strip_v: set V
 ER=${TAG#v}.
    binary_pattern: find pattern after extraction; binaries: list of names to move.
    dest+strip_components: extract directly to a directory (skip binary find+move).
+#}
+{# @macro
+   name: curl_extract_tar
+   purpose: ""
 #}
 {%- macro curl_extract_tar(name, url, binary_pattern=None, archive_ext='tar.gz', fetch_tag=False, strip_v=False, binaries=None, bin=None, chmod=False, dest=None, strip_components=None, creates=None, bin_dest=None, hash=None, version=None, user=_user, home=_home) -%}
 {%- set ext_flag = 'J' if archive_ext == 'tar.xz' else 'z' -%}
@@ -211,13 +215,14 @@ install_{{ name | replace('-', '_') }}:
 
 {%- endmacro -%}
 
-{# Downloa{# @macro
-   name: curl_extract_zip
-   purpose: ""
-#}
+{# Downloa
 d and extract ZIP archive, move binary(ies) to ~/.local/bin/.
    binary_path: relative path after extraction; binaries: list to move; dest: extract to directory.
    symlink: create symlink from dest/<symlink> to ~/.local/bin/<name>.
+#}
+{# @macro
+   name: curl_extract_zip
+   purpose: ""
 #}
 {%- macro curl_extract_zip(name, url, binary_path=None, binaries=None, bin=None, chmod=False, dest=None, symlink=None, creates=None, hash=None, version=None, user=_user, home=_home) -%}
 {%- set out_name = bin or (binaries[0] if binaries else (binary_path.rsplit('/', 1)[-1] if binary_path else name)) -%}
@@ -272,14 +277,15 @@ install_{{ name | replace('-', '_') }}:
 
 {# Download Firefox/Floorp extension .xpi from addons.mozilla.org.
    ext: dict with 'id' (extension GUID) and 'slug' (AMO slug).
-{# @macro
-   name: firefox_extension
-   purpose: ""
-#}
+
    profile: path to browser profile directory.
    Download failures are non-fatal — state succeeds with a warning and retries
    on next apply (creates guard re-triggers when .xpi is still missing).
    Usage: {{ firefox_extension(ext, floorp_profile, require='floorp_extensions_dir') }}
+#}
+{# @macro
+   name: firefox_extension
+   purpose: ""
 #}
 {%- macro firefox_extension(ext, profile, require=None, user=_user, prefix='floorp_ext') -%}
 {%- set _xpi = profile ~ '/extensions/' ~ ext.id ~ '.xpi' -%}
@@ -295,10 +301,7 @@ install_{{ name | replace('-', '_') }}:
           'https://addons.mozilla.org/firefox/downloads/latest/{{ ext.slug }}/latest.xpi'; then
           mv -f '{{ _xpi }}.tmp' '{{ _xpi }}'
         else
-          rm -f '{{ _xpi{# @macro
-   name: download_font_zip
-   purpose: ""
-#}
+          rm -f '{{ _xpi
  }}.tmp'
           echo "WARNING: download of {{ ext.slug }} failed, will retry on next apply" >&2
         fi
@@ -312,6 +315,10 @@ install_{{ name | replace('-', '_') }}:
 {%- endmacro -%}
 
 {# Download font ZIP to ~/.local/share/fonts/<subdir>, run fc-cache. #}
+{# @macro
+   name: download_font_zip
+   purpose: ""
+#}
 {%- macro download_font_zip(name, url, subdir, hash=None, version=None, user=_user, home=_home) -%}
 {%- set fonts_dir = home ~ '/.local/share/fonts' -%}
 {%- set _cache_key = name ~ '-' ~ (version if version else 'latest') -%}
@@ -347,10 +354,7 @@ install_{{ name }}:
     - unless: |
         S="{{ fonts_dir }}/{{ subdir }}/.salt-installed"
         [ -f "$S" ] && exit 0
-      {# @macro
-   name: git_clone_deploy
-   purpose: ""
-#}
+      
   find {{ fonts_dir }}/{{ subdir }} -maxdepth 1 \( -name '*.otf' -o -name '*.ttf' \) -print -quit 2>/dev/null | grep -q .
 {%- endif %}
     - parallel: True
@@ -362,6 +366,10 @@ install_{{ name }}:
 {%- endmacro -%}
 
 {# Git clone a repo, copy selected items to dest. items: list of paths to cp -r. #}
+{# @macro
+   name: git_clone_deploy
+   purpose: ""
+#}
 {%- macro git_clone_deploy(name, repo, dest, items=None, creates=None, user=_user, home=_home) -%}
 install_{{ name | replace('-', '_') }}:
   cmd.run:
@@ -389,14 +397,15 @@ install_{{ name | replace('-', '_') }}:
 
 {# Git clone + build from source + install binary to ~/.local/bin/.
    build_cmds: shell commands to build (run inside cloned dir via cd).
-   binary_src: path to bui{# @macro
-   name: git_clone_build
-   purpose: ""
-#}
+   binary_src: path to bui
 lt binary relative to clone root.
    comment: optional package description comment.
    Usage: {{ git_clone_build('nface', 'https://github.com/tomScheers/nFace.git', 'make', 'bin/nface', comment='terminal ASCII webcam via ncurses/v4l2') }}
           {{ git_clone_build('termmark', 'https://github.com/ishanawal/TermMark.git', 'cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && make -C build', 'build/termmark', comment='terminal Markdown renderer') }}
+#}
+{# @macro
+   name: git_clone_build
+   purpose: ""
 #}
 {%- macro git_clone_build(name, repo_url, build_cmds, binary_src, binary_dest=None, comment=None, user=_user, home=_home) -%}
 {%- set _dest = binary_dest or (home ~ '/.local/bin/' ~ name) -%}
@@ -407,10 +416,7 @@ lt binary relative to clone root.
         set -eo pipefail
         _td=$(mktemp -d)
         trap 'rm -rf "$_td"' EXIT
-      {# @macro
-   name: http_file
-   purpose: ""
-#}
+      
   GIT_CONFIG_GLOBAL=/dev/null git clone --depth=1 {{ repo_url }} "$_td/{{ name }}"
         cd "$_td/{{ name }}"
         {{ build_cmds }}
@@ -425,6 +431,10 @@ lt binary relative to clone root.
 {%- endmacro -%}
 
 {# Download a single file via curl to dest with optional hash, cache, and version marker. #}
+{# @macro
+   name: http_file
+   purpose: ""
+#}
 {%- macro http_file(name, url, dest, mode='0644', user=_user, creates=None, require=None, parallel=True, hash=None, version=None, cache=True) -%}
 {%- set _vd = _ver_dir if user else _sys_ver_dir -%}
 {{ name }}:
@@ -444,10 +454,7 @@ lt binary relative to clone root.
 {%- endif %}
         install -m {{ mode }} -D "$src" '{{ dest }}'
 {%- if version %}
-   {# @macro
-   name: huggingface_file
-   purpose: ""
-#}
+   
      {{ _ver_stamp(_vd, name, version, target=dest) }}
 {%- endif %}
 {%- if user %}
@@ -465,15 +472,15 @@ lt binary relative to clone root.
     - require:
 {%- for req in require %}
       - {{ req }}
-{%- endf{# @macro
-   name: npm_build_workflow
-   purpose: ""
-#}
-or %}
+{%- endfor %}
 {%- endif %}
 {%- endmacro -%}
 
 {# Download a file from Hugging Face via http_file. #}
+{# @macro
+   name: huggingface_file
+   purpose: ""
+#}
 {%- macro huggingface_file(name, repo, file, dest, mode='0644', user=_user, creates=None, require=None, parallel=True, hash=None, version=None, cache=True) -%}
 {{ http_file(
     name,
@@ -491,6 +498,10 @@ or %}
 {%- endmacro -%}
 
 {# npm install + build + optional version pin. Generates 2–3 chained cmd.run states. #}
+{# @macro
+   name: npm_build_workflow
+   purpose: ""
+#}
 {%- macro npm_build_workflow(name, dir, version=None, install_creates=None, build_creates=None, user=_user, require=None) -%}
 {%- set _install_creates = install_creates or (dir ~ '/node_modules/.package-lock.json') -%}
 {%- set _build_creates = build_creates or (dir ~ '/dist/index.js') -%}
@@ -524,10 +535,7 @@ or %}
 {%- if version %}
 
 {{ name }}_version:
-  {# @macro
-   name: github_release_to
-   purpose: ""
-#}
+  
 cmd.run:
     - name: |
         set -euo pipefail
@@ -548,6 +556,10 @@ cmd.run:
 {%- endmacro -%}
 
 {# Download latest GitHub release asset to dest. format: 'file' (default) or 'zip'. #}
+{# @macro
+   name: github_release_to
+   purpose: ""
+#}
 {%- macro github_release_to(state_id, name, repo, asset, dest, format='file', tag=None, hash=None, version=None, creates=None, require=None, user=_user) -%}
 {%- set _creates = creates or (dest ~ '/' ~ name) -%}
 {{ state_id }}:
@@ -580,11 +592,7 @@ cmd.run:
 {%- endif %}
     - runas: {{ user }}
     - shell: /bin/bash
-    - creates: {{# @macro
-   name: install_catalog
-   purpose: ""
-#}
-{ _ver_dir ~ '/' ~ name ~ '@' ~ version if version else _creates }}
+    - creates: {{ _ver_dir ~ '/' ~ name ~ '@' ~ version if version else _creates }}
     - parallel: True
 {%- if require %}
     - require:
@@ -601,6 +609,10 @@ cmd.run:
    macro_type: 'curl_bin' | 'curl_extract_tar' | 'curl_extract_zip'.
    Usage: {{ install_catalog(tools.curl_bin, ver, 'curl_bin') }}
           {{ install_catalog(apps.curl_extract_zip, ver, 'curl_extract_zip') }}
+#}
+{# @macro
+   name: install_catalog
+   purpose: ""
 #}
 {%- macro install_catalog(catalog, ver_dict, macro_type, exclude=None) -%}
 {% for name, raw in catalog.items() %}

@@ -31,6 +31,7 @@
         {{ download_cached(url, _cache_path, hash=hash) }}
         cp "$cache" "$_td/archive.tar.gz"
 -#}
+
 {# @macro
    name: download_cached
    purpose: ""
@@ -50,11 +51,12 @@
 {#- Shell one-liner: create version-encoded marker (used inside cmd.run name: blocks).
     target: absolute path to installed artifact — creates a symlink so creates: detects deletion.
     When omitted, creates a plain touch file (for cases without a single artifact, e.g. fonts).
-    Old-format markers (plain name) and {# @macro
+    Old-format markers (plain name) and 
+stale versioned markers (name@*) are cleaned up. -#}
+{# @macro
    name: ver_stamp
    purpose: ""
 #}
-stale versioned markers (name@*) are cleaned up. -#}
 {%- macro ver_stamp(vd, name, version, target=None) -%}
 mkdir -p {{ vd }} && rm -f '{{ vd }}/{{ name }}' {{ vd }}/{{ name }}@* && {% if target %}ln -sf '{{ target }}' '{{ vd }}/{{ name }}@{{ version }}'{% else %}touch '{{ vd }}/{{ name }}@{{ version }}'{% endif %}
 {%- endmacro -%}
@@ -67,13 +69,14 @@ mkdir -p {{ vd }} && rm -f '{{ vd }}/{{ name }}' {{ vd }}/{{ name }}@* && {% if 
     Caches resolved values in _gopass_ns.values to avoid re-spawning gopass
     for the same key across multiple .sls files.
     Usage: {% set key = gopass_secret('api/my-key') %}
-           {% set key = gopass_secret('api/my-key', "awk '...' /pa{# @macro
-   name: gopass_secret
-   purpose: ""
-#}
+           {% set key = gopass_secret('api/my-key', "awk '...' /pa
 th/to/config") %}
 -#}
 {%- set _gopass_ns = namespace(checked=False, available=False, values={}) -%}
+{# @macro
+   name: gopass_secret
+   purpose: ""
+#}
 {%- macro gopass_secret(key, fallback_cmd='true', runas=None) -%}
 {%- set _u = runas if runas is not none else host.user -%}
 {%- set _cached = _gopass_ns.values.get(key) -%}
@@ -104,22 +107,24 @@ th/to/config") %}
 {%- endif -%}
 {%- endmacro -%}
 
-{#- Convenience wrappe{# @macro
-   name: proxypilot_key
-   purpose: ""
-#}
+{#- Convenience wrappe
 rs for frequently-used secrets.
     Centralise the fallback commands so each .sls file doesn't have to
     copy-paste the same awk/cat one-liners.
 -#}
-{%- macro proxypilot_key() -%}
-{{ gopass_secret('api/proxypilot-local', "{# @macro
-   name: tg_secret
+{# @macro
+   name: proxypilot_key
    purpose: ""
 #}
+{%- macro proxypilot_key() -%}
+{{ gopass_secret('api/proxypilot-local', "
 awk '/^api-keys:/{getline; sub(/^[[:space:]]*-[[:space:]]*\"?/, \"\"); sub(/\"?[[:space:]]*$/, \"\"); print; exit}' " ~ home ~ "/.config/proxypilot/config.yaml 2>/dev/null || true") }}
 {%- endmacro -%}
 
+{# @macro
+   name: tg_secret
+   purpose: ""
+#}
 {%- macro tg_secret(gopass_key, cred_file, cred_base=None) -%}
 {%- set _base = cred_base if cred_base else (home ~ '/.nanoclaw/credentials') -%}
 {{ gopass_secret(gopass_key, "cat " ~ _base ~ "/" ~ cred_file ~ " 2>/dev/null || true") }}

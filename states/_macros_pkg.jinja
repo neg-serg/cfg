@@ -15,6 +15,7 @@
           {{ paru_install('kanata', 'kanata-bin') }}
           {{ paru_install('python_telethon', 'python-telethon', version='1.2.0') }}
 #}
+
 {# @macro
    name: paru_install
    purpose: ""
@@ -59,11 +60,12 @@ install_{{ name | replace('-', '_') }}:
    requires: optional extra requisites for service.enabled beyond the install (e.g. config files).
    Usage: {{ simple_service('unbound', 'unbound') }}
            {{ simple_service('avahi', 'avahi nss-mdns', service='avahi-daemon', requires=['file: avahi_config']) }}
-          {{ simple_service('grafana', 'grafana', service='grafana-{# @macro
+          {{ simple_service('grafana', 'grafana', service='grafana-
+server', requires=['file: grafana_config']) }}
+#}
+{# @macro
    name: simple_service
    purpose: ""
-#}
-server', requires=['file: grafana_config']) }}
 #}
 {%- macro simple_service(name, pkgs, service=None, check=None, requires=None) -%}
 {{ paru_install(name, pkgs, check=check) }}
@@ -90,11 +92,12 @@ server', requires=['file: grafana_config']) }}
    Usage: {{ pkgbuild_install('raise', 'salt://build/pkgbuilds/raise', user=_user) }}
           {{ pkgbuild_install('iosevka-neg-fonts', 'salt://build/pkgbuilds/iosevka-neg-fonts', user=_user, timeout=7200) }}
           {{ pkgbuild_install('duf', 'salt://build/pkgbuilds/duf', user=_user, replace_check='pacman -Qi duf 2>/dev/null | grep -q neg-serg') }}
-        {# @macro
+        
+  {{ pkgbuild_install('wl', 'salt://build/pkgbuilds/wl', user=_user, conflicts=['swww-vulkan']) }}
+#}
+{# @macro
    name: pkgbuild_install
    purpose: ""
-#}
-  {{ pkgbuild_install('wl', 'salt://build/pkgbuilds/wl', user=_user, conflicts=['swww-vulkan']) }}
 #}
 {%- macro pkgbuild_install(name, source, user=_user, build_base='/tmp/pkgbuild', timeout=600, check=None, replace_check=None, conflicts=None, extra_sources=None) -%}
 {%- set safe = name | replace('-', '_') -%}
@@ -147,15 +150,16 @@ build_{{ safe }}:
 {%- for src in (extra_sources or []) %}
       - file: {{ safe }}_source_{{ loop.index }}
 {%- endfor %}
-   {# @macro
-   name: flatpak_install
-   purpose: ""
-#}
+   
    - cmd: pacman_db_warmup
 {%- endmacro -%}
 
 {# Install a Flatpak app from Flathub (user-level).
    Usage: {{ flatpak_install('md.obsidian.Obsidian') }}
+#}
+{# @macro
+   name: flatpak_install
+   purpose: ""
 #}
 {%- macro flatpak_install(app_id, user=_user) -%}
 {%- set safe = app_id | replace('.', '_') | replace('-', '_') -%}

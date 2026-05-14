@@ -1,6 +1,6 @@
 {
-  "generated": "2026-05-14T20:21:09.183254",
-  "entity_count": 264,
+  "generated": "2026-05-14T20:36:22.079641",
+  "entity_count": 263,
   "issue_count": 5,
   "entities": [
     {
@@ -2084,15 +2084,6 @@
     },
     {
       "id": "managed_sysusers_line",
-      "type": "macro",
-      "source_path": "states/_macros_service.jinja",
-      "purpose": "",
-      "params": [],
-      "returns": "",
-      "issues": []
-    },
-    {
-      "id": "managed_identity_guard",
       "type": "macro",
       "source_path": "states/_macros_service.jinja",
       "purpose": "",

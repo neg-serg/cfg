@@ -657,10 +657,6 @@ entities:
     purpose: 'Managed Telegram Bots: Bot API 9.6 manager bot state.'
     source: states/managed_bots.sls
     type: state
-  managed_identity_guard:
-    purpose: ''
-    source: states/_macros_service.jinja
-    type: macro
   managed_mode_value:
     purpose: ''
     source: states/_macros_service.jinja

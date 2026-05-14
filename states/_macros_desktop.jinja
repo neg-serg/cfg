@@ -16,6 +16,7 @@
    unwanted:     optional list of extension IDs to remove (e.g. ['{ext-guid}'])
    Usage: {{ browser_extensions('floorp', floorp_profile, floorp.extensions, 'floorp_user_js', unwanted=floorp.unwanted) }}
 #}
+
 {# @macro
    name: browser_extensions
    purpose: ""
@@ -62,11 +63,11 @@
 {# Update hyprpm headers (rebuilds plugin headers for current Hyprland version).
    check_plugins: optional list of plugin names to verify (all must exist in hyprpm list
    for the state to be skipped).
-   Usage: {{ hyprpm_update('hyprpm_headers_update', check_plugins=['xtra-dispatchers', 'HyprGlass'], require=['cmd: inst{# @macro
+   Usage: {{ hyprpm_update('hyprpm_headers_update', check_plugins=['xtra-dispatchers', 'HyprGlass'], require=['cmd: install_hyprland_desktop', 'file: hyprpm_cache_dir']) }}
+#}
+{# @macro
    name: hyprpm_update
    purpose: ""
-#}
-all_hyprland_desktop', 'file: hyprpm_cache_dir']) }}
 #}
 {%- macro hyprpm_update(name, check_plugins=None, require=None, timeout=300) -%}
 {{ name }}:
@@ -102,11 +103,12 @@ all_hyprland_desktop', 'file: hyprpm_cache_dir']) }}
 {# Add a hyprpm plugin repository.
    repo_url: git URL of the plugin repo.
    check_plugin: string to verify in hyprpm list (e.g. 'Repository hyprland-plugins').
-   Usage: {{ hyprpm_add('hyprpm_add_hyprland_plugins', 'https://github.{# @macro
+   Usage: {{ hyprpm_add('hyprpm_add_hyprland_plugins', 'https://github.
+com/hyprwm/hyprland-plugins', 'Repository hyprland-plugins', require=['cmd: hyprpm_headers_update']) }}
+#}
+{# @macro
    name: hyprpm_add
    purpose: ""
-#}
-com/hyprwm/hyprland-plugins', 'Repository hyprland-plugins', require=['cmd: hyprpm_headers_update']) }}
 #}
 {%- macro hyprpm_add(name, repo_url, check_plugin, require=None, timeout=300) -%}
 {{ name }}:
@@ -136,12 +138,13 @@ com/hyprwm/hyprland-plugins', 'Repository hyprland-plugins', require=['cmd: hypr
 {%- endmacro -%}
 
 {# Enable a hyprpm plugin.
-   plugin: p{# @macro
-   name: hyprpm_enable
-   purpose: ""
-#}
+   plugin: p
 lugin name to enable.
    Usage: {{ hyprpm_enable('hyprpm_enable_xtra_dispatchers', 'xtra-dispatchers', require=['cmd: hyprpm_add_hyprland_plugins']) }}
+#}
+{# @macro
+   name: hyprpm_enable
+   purpose: ""
 #}
 {%- macro hyprpm_enable(name, plugin, require=None) -%}
 {{ name }}:
@@ -168,13 +171,14 @@ lugin name to enable.
 
 {# Apply dconf settings from a key-value dictionary.
    Handles escaping of special chars (backslash, quotes, backticks, $) in both
-   the write commands and the{# @macro
-   name: dconf_settings
-   purpose: ""
-#}
+   the write commands and the
  mirrored unless guard.
    settings: dict of dconf path → value (e.g. {'/org/gnome/desktop/interface/gtk-theme': 'adw-gtk3-dark'}).
    Usage: {{ dconf_settings('dconf_themes', desktop.dconf_settings) }}
+#}
+{# @macro
+   name: dconf_settings
+   purpose: ""
 #}
 {%- macro dconf_settings(name, settings, user=_user, require=None) -%}
 {{ name }}:

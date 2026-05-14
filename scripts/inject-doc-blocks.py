@@ -97,7 +97,7 @@ def inject_macro_blocks(path: Path, provides: list):
                     name = line.split('name:')[1].strip().strip('"\'')
                     existing_macros.add(name)
 
-    for md in macro_defs:
+    for md in reversed(macro_defs):
         name = md.group(1)
         if name in existing_macros:
             print(f"  Skipped {name} (already has @macro block)")

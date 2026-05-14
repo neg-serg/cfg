@@ -505,10 +505,6 @@ Jinja2 Macros
      - ``states/_macros_ipv6_tunnel.jinja``
      - (no documentation)
 
-   * - :salt:macro:`managed_identity_guard`
-     - ``states/_macros_service.jinja``
-     - (no documentation)
-
    * - :salt:macro:`managed_mode_value`
      - ``states/_macros_service.jinja``
      - (no documentation)

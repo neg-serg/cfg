@@ -12,6 +12,7 @@
    Usage: {{ user_service_file('mbsync_gmail_service', 'mbsync-gmail.service') }}
           {{ user_service_file('mpdas_service_file', 'mpdas.service', source='salt://dotfiles/dot_config/systemd/user/mpdas.service') }}
 #}
+
 {# @macro
    name: user_service_file
    purpose: ""
@@ -50,11 +51,12 @@
    Analogous to unit_override (system) but for user services (~/.config/systemd/user/).
    Emits two states: {{ name }} (file.managed) and {{ name }}_daemon_reload (cmd.run).
    Usage: {{ user_unit_override('mpdris2_user_service', 'mpDris2.service', contents=override_text) }}
-          {{ user_unit_override('foo_override', 'foo.service{# @macro
+          {{ user_unit_override('foo_override', 'foo.service
+', source='salt://units/user/foo-override.conf') }}
+#}
+{# @macro
    name: user_unit_override
    purpose: ""
-#}
-', source='salt://units/user/foo-override.conf') }}
 #}
 {%- macro user_unit_override(name, service, source=None, contents=None, filename='override.conf', requires=None, user=_user, home=_home) -%}
 {{ name }}:
@@ -95,11 +97,11 @@
    onlyif: extra guard (e.g. package installed check). requires: list of state requisites.
    Usage: {{ user_service_enable('kanata_enabled', ['kanata.service'], daemon_reload=True, requires=['cmd: install_kanata', 'file: kanata_service']) }}
           {{ user_service_enable('mpd_enabled', start_now=['mpd.service'], check='active', onlyif='grep -qxF mpd ' ~ pkg_list) }}
-          {{ user_servi{# @macro
+           {{ user_service_enable('enable_user_services', svc_list, start_now=timer_list, daemon_reload=True, requires=req_list) }}
+#}
+{# @macro
    name: user_service_enable
    purpose: ""
-#}
-ce_enable('enable_user_services', svc_list, start_now=timer_list, daemon_reload=True, requires=req_list) }}
 #}
 {%- macro user_service_enable(name, services=None, start_now=None, daemon_reload=False, check='enabled', onlyif=None, requires=None, user=_user) -%}
 {%- set svc_list = services if services else [] -%}
@@ -152,12 +154,12 @@ ce_enable('enable_user_services', svc_list, start_now=timer_list, daemon_reload=
 {# Deploy user unit file + enable service in a single call.
    Combines user_service_file() + user_service_enable() with internal require chain.
    services: list of units to enable (default [filename]). start_now: list to enable --now (default []).
-   Usage: {{ user_service_with_unit('kanata', 'kanata.service', start_now=['kanata.service'], r{# @macro
+   Usage: {{ user_service_with_unit('kanata', 'kanata.service', start_now=['kanata.service'], requires=['cmd: install_kanata']) }}
+          {{ user_service_with_unit('mpdas', 'mpdas.service', source='salt://dotfiles/dot_config/systemd/user/mpdas.service') }}
+#}
+{# @macro
    name: user_service_with_unit
    purpose: ""
-#}
-equires=['cmd: install_kanata']) }}
-          {{ user_service_with_unit('mpdas', 'mpdas.service', source='salt://dotfiles/dot_config/systemd/user/mpdas.service') }}
 #}
 {%- macro user_service_with_unit(name, filename, source=None, services=None, start_now=None, requires=None, user=_user, home=_home) -%}
 {%- set _svc_list = services if services is not none else [filename] -%}
@@ -175,12 +177,13 @@ equires=['cmd: install_kanata']) }}
 {{ user_service_enable(name ~ '_enabled', services=_svc_list, start_now=_now_list, requires=_reqs, user=user) }}
 {%- endmacro -%}
 
-{# Restart a systemd user servic{# @macro
-   name: user_service_restart
-   purpose: ""
-#}
+{# Restart a systemd user servic
 e with proper environment wiring.
    Usage: {{ user_service_restart('restart_proxypilot', 'proxypilot.service', onlyif='systemctl --user is-active proxypilot.service >/dev/null 2>&1', requires=['file: proxypilot_config']) }}
+#}
+{# @macro
+   name: user_service_restart
+   purpose: ""
 #}
 {%- macro user_service_restart(name, service, onlyif=None, requires=None, onchanges=None, user=_user) -%}
 {{ name }}:
@@ -200,11 +203,7 @@ e with proper environment wiring.
 {%- endif %}
 {%- if onchanges %}
     - onchanges:
-{{# @macro
-   name: user_service_disable
-   purpose: ""
-#}
-%- for change in onchanges %}
+{%- for change in onchanges %}
       - {{ change }}
 {%- endfor %}
 {%- endif %}
@@ -212,6 +211,10 @@ e with proper environment wiring.
 
 {# Disable (and stop) systemd user services only when currently enabled.
    Usage: {{ user_service_disable('disable_mail_services', ['mbsync-gmail.timer', 'imapnotify-gmail.service']) }}
+#}
+{# @macro
+   name: user_service_disable
+   purpose: ""
 #}
 {%- macro user_service_disable(name, units, user=_user) -%}
 {{ name }}:
@@ -223,11 +226,7 @@ e with proper environment wiring.
     - onlyif: |
         export XDG_RUNTIME_DIR={{ host.runtime_dir }}
         export DBUS_SESSION_BUS_ADDRESS=unix:path={{ host.runtime_dir }}/bus
-{%- for{# @macro
-   name: user_linger
-   purpose: ""
-#}
- unit in units %}
+{%- for unit in units %}
         systemctl --user is-enabled '{{ unit }}' >/dev/null 2>&1 && exit 0
 {%- endfor %}
         exit 1
@@ -236,6 +235,10 @@ e with proper environment wiring.
 {# Enable loginctl lingering for a user (services survive logout).
    Generates a single cmd.run with unless guard.
    Usage: {{ user_linger('opencode_lingering', require=['cmd: install_opencode']) }}
+#}
+{# @macro
+   name: user_linger
+   purpose: ""
 #}
 {%- macro user_linger(name, user=_user, require=None) -%}
 {{ name }}:

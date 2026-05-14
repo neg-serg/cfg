@@ -186,7 +186,8 @@ def deploy(name: str,
         {"XDG_RUNTIME_DIR": runtime_dir, "DBUS_SESSION_BUS_ADDRESS": f"unix:path={runtime_dir}/bus"}
         if user_scope else None
     )
-    _sc = lambda cmd: f"{'--user ' if user_scope else ''}{cmd}"
+    def _sc(cmd):
+        return f"{'--user ' if user_scope else ''}{cmd}"
 
     # Enable + Running + Healthcheck (skip if manual start)
     if not manual_start:

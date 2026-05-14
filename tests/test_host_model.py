@@ -6,6 +6,7 @@ from pathlib import Path
 
 import host_model  # noqa: E402, I001
 import pytest
+import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "states" / "_modules"))
 
@@ -460,6 +461,7 @@ def test_feature_registry_validation_passes():
 
 def test_host_config_jinja_imports_valid_yaml():
     import re
+
     import yaml
 
     host_config_path = host_model.HOSTS_YAML_PATH.replace("data/", "").replace(".yaml", "")
@@ -642,7 +644,7 @@ def test_feature_registry_is_jinja_importable():
 def test_registry_macro_file_exists_and_valid():
     """Check that feature registry functions are available via Python modules."""
     try:
-        from _modules.host_features import feature_enabled, feature_default
+        from _modules.host_features import feature_default, feature_enabled
     except ImportError:
         pytest.skip("_modules.host_features not available")
 

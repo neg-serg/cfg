@@ -16,7 +16,7 @@ ignore = []
 [tool.ruff.lint.per-file-ignores]
 # salt_compat must be imported and patched before any salt imports
 "scripts/salt-daemon.py" = ["E402"]
-"scripts/salt-runner.py" = ["E402"]
+"scripts/salt_runner.py" = ["E402"]
 
 [tool.ruff.format]
 quote-style = "double"

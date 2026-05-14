@@ -102,7 +102,7 @@ else:
 
 # ── Icons ─────────────────────────────────────────────────────────────────
 if _HAS_UTF8:
-    I: dict[str, str] = {
+    I: dict[str, str] = {  # noqa: E741
         "ok": "✓", "fail": "✗", "warn": "⚠", "info": "●",
         "phase": "▶", "clock": "⏳", "arrow": "→", "star": "★",
         "bullet": "•", "box_v": "║", "box_h": "═",
@@ -112,7 +112,7 @@ if _HAS_UTF8:
         "ellipsis": "…",
     }
 else:
-    I = {
+    I = {  # noqa: E741
         "ok": "OK", "fail": "!!", "warn": "*", "info": ">",
         "phase": ">>", "clock": "...", "arrow": "->", "star": "*",
         "bullet": "-", "box_v": "|", "box_h": "=",

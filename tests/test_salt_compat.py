@@ -3,9 +3,14 @@
 import os
 import sys
 
+import pytest
 
-def test_patched_url_create_preserves_relative_paths_for_salt_lookup(monkeypatch):
-    sys.path.insert(0, os.path.join(os.getcwd(), "scripts"))
+pytest.importorskip("salt")
+
+sys.path.insert(0, os.path.join(os.getcwd(), "scripts"))
+
+
+def test_patched_url_create_preserves_relative_paths_for_salt_lookup():
     import salt_compat
 
     salt_compat.patch()

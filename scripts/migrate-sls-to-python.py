@@ -115,7 +115,7 @@ def migrate_sls(path: Path) -> str | None:
     for func_name in ALL_FUNC_NAMES:
         salt_path = FUNC_MAP[func_name]
         if func_name == "gopass_secret":
-            pattern = rf'(?<!\w)gopass_secret\('
+            pattern = r'(?<!\w)gopass_secret\('
         else:
             pattern = rf'(?<!\w){re.escape(func_name)}\('
 

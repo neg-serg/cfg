@@ -13,11 +13,12 @@ entries:
     keywords: [browser, floorp, web]
     mode: launchable
   - id: apps.browser_profiles
-    match: root|p|exec|zen-profile-picker
+    command: zen-profile
+    hotkey: Super+I, P, Z
     title: Switch Profile
     group: Apps
     keywords: [browser, profile, zen, switch]
-    mode: launchable
+    mode: docs_only
   - id: apps.terminal
     match: root|x|exec|raise --match "class:regex=^term$" --launch "kitty --single-instance --class term"
     title: Terminal

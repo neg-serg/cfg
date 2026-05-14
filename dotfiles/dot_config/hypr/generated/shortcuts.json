@@ -56,6 +56,21 @@
     "label": "Apps / Steam  Super+G"
   },
   {
+    "id": "apps.browser_profiles",
+    "title": "Switch Profile",
+    "group": "Apps",
+    "hotkey": "Super+I, P, Z",
+    "command": "zen-profile",
+    "mode": "docs_only",
+    "keywords": [
+      "browser",
+      "profile",
+      "zen",
+      "switch"
+    ],
+    "label": "Apps / Switch Profile  Super+I, P, Z"
+  },
+  {
     "id": "apps.terminal",
     "title": "Terminal",
     "group": "Apps",

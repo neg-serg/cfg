@@ -38,7 +38,6 @@ def dconf_settings(name: str, settings: dict[str, str],
                    require: list[str] | None = None) -> dict[str, Any]:
     u = user or _host()["user"]
     h = _host()
-    import re
 
     def _escape(v: str) -> str:
         for ch in ["\\", '"', "`", "$"]:

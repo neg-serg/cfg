@@ -17,14 +17,13 @@ def test_gen_video_all_flags():
     src = (SCRIPTS_DIR / "gen-video").read_text()
     assert "-m|--model" in src
     assert "-i|--image" in src
-    assert "-c|--cfg" in src
-    assert "-s|--steps" in src
-    assert "-f|--frames" in src
-    assert "--lowvram" in src
+    assert "-r|--resolution" in src
+    assert "-d|--duration" in src
+    assert "-o|--output" in src
     assert "--compat" in src
-    assert "--list" in src
+    assert "-l|--list" in src
     assert "--dry-run" in src
-    assert "--help" in src
+    assert "-h|--help" in src
 
 
 

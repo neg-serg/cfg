@@ -6,14 +6,13 @@ Usage:
 """
 
 import os
-import sys
 
 import salt_compat
 
 salt_compat.patch()
 
-import salt.scripts
-import salt.loader as _salt_loader
+import salt.loader as _salt_loader  # noqa: E402
+import salt.scripts  # noqa: E402
 
 # Patch Salt's _module_dirs to include our custom modules directory.
 _salt_loader._module_dirs_orig = getattr(_salt_loader, "_module_dirs_orig", None) or _salt_loader._module_dirs
@@ -31,5 +30,4 @@ def _patched_module_dirs(*args, **kwargs):
 _salt_loader._module_dirs = _patched_module_dirs
 
 # salt.scripts was imported as 'salt.scripts' above; call salt_call directly
-import salt.scripts
 salt.scripts.salt_call()

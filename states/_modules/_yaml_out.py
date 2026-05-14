@@ -25,7 +25,7 @@ def to_yaml(obj: Any) -> str:
 
 def yaml_output(func: Callable) -> Callable:
     """Decorator: convert dict return values to YAML strings.
-    
+
     State-emitting functions that return Salt state dicts use this
     decorator so {{ salt['module.func'](...) }} outputs valid YAML.
     Value-returning functions (bool, str, None) pass through unchanged.

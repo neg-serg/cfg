@@ -335,7 +335,7 @@ def test_check_service_catalog_units_rejects_containerized_unit_mismatch_despite
     _write(
         tmp_path / "states" / "data" / "service_catalog.yaml",
         """
-container_svc:
+container-svc:
   unit: sshd
   scope: system
   containerized: true
@@ -371,7 +371,7 @@ dns: {}
     errors = salt_contracts.check_service_catalog_units(tmp_path)
 
     assert errors == [
-        "Service catalog 'container_svc' unit 'sshd' does not match deployed "
+        "Service catalog 'container-svc' unit 'sshd' does not match deployed "
         "container service 'container-svc'"
     ]
 

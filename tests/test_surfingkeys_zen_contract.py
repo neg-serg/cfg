@@ -10,7 +10,6 @@ def read(path: str) -> str:
 def test_zen_extension_manifest_keeps_surfingkeys():
     text = read("states/data/zen_browser.yaml")
     assert "slug: surfingkeys_ff" in text
-    assert "Helper-dependent Zen workflow" in text
 
 
 

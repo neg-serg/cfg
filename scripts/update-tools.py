@@ -269,7 +269,7 @@ def update_with_salt(name, info):
             from lib.pretty import pretty as _p2
             _p2.fail(f"Failed to update {name}")
         except ImportError:
-            print(f"  \033[31mFAILED\033[0m")
+            print("  \033[31mFAILED\033[0m")
         stderr = result.stderr.strip()
         if stderr:
             for line in stderr.split("\n")[:5]:
@@ -281,9 +281,9 @@ def update_with_salt(name, info):
             from lib.pretty import pretty as _p2
             _p2.ok(f"Updated {name}")
         except ImportError:
-            print(f"  \033[32mOK\033[0m")
+            print("  \033[32mOK\033[0m")
     else:
-        print(f"  \033[33mDone (no guard file)\033[0m")
+        print("  \033[33mDone (no guard file)\033[0m")
     return True
 
 

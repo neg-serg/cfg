@@ -99,7 +99,6 @@ class TestAuditReport:
 
     def test_report_no_duplicates(self):
         audit = _load_salt_audit()
-        from datetime import datetime, timezone
 
         consumed = [
             {"data_file": "a.yaml", "consumers": ["a"], "access_method": "import_yaml", "eval_count": 1},

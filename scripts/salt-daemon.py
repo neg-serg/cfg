@@ -60,6 +60,7 @@ salt_compat.patch()
 # Patch Salt's _module_dirs to include our custom execution modules.
 # (Same approach as salt_runner.py — needed for salt['module.func']() in Jinja.)
 import salt.loader as _daemon_salt_loader
+
 _daemon_salt_loader._module_dirs_orig = getattr(
     _daemon_salt_loader, "_module_dirs_orig", None
 ) or _daemon_salt_loader._module_dirs

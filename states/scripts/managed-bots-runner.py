@@ -23,6 +23,7 @@ from telegram import (
     ReplyKeyboardRemove,
     Update,
 )
+
 try:
     from telegram import KeyboardButtonRequestManagedBot  # Bot API 9.6
     _managed_bot_supported = True

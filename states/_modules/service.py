@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from _yaml_out import yaml_output, to_yaml as _to_yaml
+from _yaml_out import yaml_output
 
 
 def _host() -> dict[str, Any]:

@@ -1,0 +1,66 @@
+#!/usr/bin/env zsh
+# spawn-or-toggle — toggle a scratchpad window in Niri
+#
+# Since Niri has no native scratchpad concept, this script emulates one:
+#   - If a window with matching app-id is already focused → hide it (move to ws 99)
+#   - If a window with matching app-id exists but not focused → focus it
+#   - If no such window exists → spawn the app with _NIRI_SCRATCH=1 env
+#
+# Usage: spawn-or-toggle <name>
+#   name is looked up in ~/.config/niri/scratchpads.yaml
+#
+# Dependencies: jq (for parse niri's window list JSON), yq for scratchpad registry
+
+set -euo pipefail
+
+CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/niri/scratchpads.yaml"
+NAME="${1:-}"
+
+if [ -z "$NAME" ]; then
+    echo "Usage: spawn-or-toggle <name>" >&2
+    exit 1
+fi
+
+if [ ! -f "$CONFIG" ]; then
+    echo "ERROR: scratchpad registry not found at $CONFIG" >&2
+    echo "Create it with:"
+    echo "  vim $CONFIG" >&2
+    exit 1
+fi
+
+# Parse scratchpad config
+APP_ID="$(yq -r ".scratchpads.\"$NAME\".app_id // \"\"" "$CONFIG" 2>/dev/null || echo "")"
+CMD="$(yq -r ".scratchpads.\"$NAME\".cmd // \"\"" "$CONFIG" 2>/dev/null || echo "")"
+
+if [ -z "$APP_ID" ] || [ -z "$CMD" ]; then
+    echo "ERROR: scratchpad '$NAME' not defined in $CONFIG" >&2
+    exit 1
+fi
+
+# Check if niri is running (desktop session check)
+if ! command -v niri &>/dev/null || ! niri msg windows 2>/dev/null >/dev/null; then
+    # Not in a niri session — just spawn
+    _NIRI_SCRATCH=1 exec "${(z)CMD}"
+    exit 0
+fi
+
+# Get window list from niri IPC
+WIN_JSON="$(niri msg windows 2>/dev/null || echo "")"
+MATCHED_WIN="$(echo "$WIN_JSON" | jq -r --arg id "$APP_ID" '.windows[]
+    | select(.app_id == $id)
+    | {id: .id, is_focused: .is_focused, workspace_id: (.workspace_id // 0)}
+    | "\(.id) \(.is_focused) \(.workspace_id)"' 2>/dev/null | head -1)"
+
+if [ -n "$MATCHED_WIN" ]; then
+    read -r WIN_ID IS_FOCUSED WS_ID <<< "$MATCHED_WIN"
+    if [ "$IS_FOCUSED" = "true" ]; then
+        # Hide: move to hidden workspace
+        niri msg action focus-workspace 99 2>/dev/null || true
+    else
+        # Focus existing window
+        niri msg action focus-window-id "$WIN_ID" 2>/dev/null || true
+    fi
+else
+    # Spawn new instance
+    _NIRI_SCRATCH=1 ${(z)CMD} &>/dev/null &
+fi

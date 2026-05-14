@@ -1,0 +1,23 @@
+# Niri scratchpad registry
+# Each scratchpad has:
+#   app_id — window app-id for matching
+#   cmd    — command to spawn the scratchpad window
+#
+# Used by ~/.local/bin/spawn-or-toggle
+
+scratchpads:
+  teardown:
+    app_id: "kitty"
+    cmd: "kitty --single-instance --class teardown -e tmux new-session -A -s teardown"
+  im:
+    app_id: "telegram-desktop"
+    cmd: "telegram-desktop"
+  music:
+    app_id: "kitty"
+    cmd: "kitty --single-instance --class music -e rmpc"
+  mixer:
+    app_id: "qpwgraph"
+    cmd: "qpwgraph"
+  torrents:
+    app_id: "transmission-qt"
+    cmd: "transmission-qt"

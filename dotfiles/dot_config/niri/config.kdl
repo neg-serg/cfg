@@ -1,4 +1,44 @@
-// Niri configuration (KDL)
+// Niri configuration (KDL) — expanded with Hyprland ports
+//
+// Sections (order matters in KDL):
+//   1. env        — environment variables
+//   2. output     — monitor configuration
+//   3. input      — keyboard, touchpad, mouse
+//   4. layout     — gaps, focus-ring, border, shadow, column widths
+//   5. window-rule — workspace routing, floating rules
+//   6. binds      — keybindings + spawn-at-startup
+//   7. animations
+//   8. misc
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 1. Environment variables (ported from Hyprland env.conf)
+// ═══════════════════════════════════════════════════════════════════════════
+
+env GDK_SCALE "2"
+env GDK_BACKEND "wayland"
+env QT_AUTO_SCREEN_SCALE_FACTOR "1"
+env QT_ENABLE_HIGHDPI_SCALING "1"
+env QT_QPA_PLATFORM "wayland;xcb"
+env QT_QPA_PLATFORMTHEME "qt5ct"
+env QT_STYLE_OVERRIDE "kvantum"
+env QT_XDG_DESKTOP_PORTAL "1"
+env CLUTTER_BACKEND "wayland"
+env XCURSOR_SIZE "23"
+env XCURSOR_THEME "Alkano-aio"
+env XCURSOR_THEME "Alkano-aio"
+env GDK_DPI_SCALE ""
+env GTK_THEME "Flight-Dark-GTK"
+env GTK_USE_PORTAL "1"
+env MOZ_ENABLE_WAYLAND "1"
+env ELECTRON_OZONE_PLATFORM_HINT "auto"
+env QML_XHR_ALLOW_FILE_READ "1"
+env XDG_CURRENT_DESKTOP "niri"
+env XDG_SESSION_DESKTOP "niri"
+env XDG_SESSION_TYPE "wayland"
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 2. Outputs (monitor configuration)
+// ═══════════════════════════════════════════════════════════════════════════
 
 output "DP-2" {
     mode "3840x2160@240"
@@ -10,6 +50,10 @@ output "DP-2" {
 output "DP-1" {
     off
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 3. Input (keyboard, touchpad, mouse)
+// ═══════════════════════════════════════════════════════════════════════════
 
 input {
     keyboard {
@@ -29,6 +73,10 @@ input {
     mouse {
     }
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 4. Layout (gaps, focus-ring, border, shadow, column widths)
+// ═══════════════════════════════════════════════════════════════════════════
 
 layout {
     gaps 0
@@ -64,6 +112,224 @@ layout {
     }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// 5. Window rules — workspace routing + floating rules
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Workspace routing (ported from Hyprland workspaces.conf)
+// 1:term  2:web  3:dev  4:games  5:doc  7:vid  8:obs  9:pic
+// 11:vm  12:wine  13:patchbay  14:daw  15:dw  16:keyboard  17:im  18:remote  19:notes  20:winboat
+
+// Workspace 1: terminal
+window-rule {
+    match app-id=r#"^kitty$"#
+    open-on-workspace "1"
+}
+
+// Workspace 2: web browsers
+window-rule {
+    match app-id=r#"^(zen|floorp|one\.ablaze\.floorp|floorpdeveloperedition|firefox|firefox-developer-edition|org\.mozilla\.firefox|org\.mozilla\.firefoxdeveloperedition|librewolf|chromium|google-chrome|google-chrome-stable|brave|brave-browser|vivaldi-stable|opera|microsoft-edge|microsoft-edge-dev)$"#
+    open-on-workspace "2"
+    open-on-workspace-silent true
+}
+
+// Workspace 3: development
+window-rule {
+    match app-id=r#"^(neovide|code-oss|cursor|jetbrains-idea|jetbrains-toolbox|nvim|nwim)$"#
+    open-on-workspace "3"
+}
+
+// Workspace 4: games
+window-rule {
+    match app-id=r#"^(steam|steam_app_.*|gamescope|lutris)$"#
+    open-on-workspace "4"
+}
+window-rule {
+    match title=r#".*\.exe$"#
+    open-on-workspace "12"
+}
+
+// Workspace 5: documents
+window-rule {
+    match app-id=r#"^(org\.pwmt\.zathura|zathura|okular|evince|atril)$"#
+    open-on-workspace "5"
+}
+
+// Workspace 7: video
+window-rule {
+    match app-id=r#"^(mpv|io\.mpv\.Mpv|vlc|org\.videolan\.vlc|celluloid)$"#
+    open-on-workspace "7"
+}
+
+// Workspace 8: obs
+window-rule {
+    match app-id=r#"^(obs|com\.obsproject\.Studio)$"#
+    open-on-workspace "8"
+}
+
+// Workspace 9: image/pic
+window-rule {
+    match app-id=r#"^(swayimg|imv|org\.gnome\.eog|gimp|org\.gimp\.GIMP|krita|org\.kde\.krita)$"#
+    open-on-workspace "9"
+}
+
+// Workspace 11: VM
+window-rule {
+    match app-id=r#"^(virt-manager|virt-viewer|org\.virt-manager\.virt-manager|qemu|quickemu|remote-viewer)$"#
+    open-on-workspace "11"
+}
+
+// Workspace 13: patchbay
+window-rule {
+    match app-id=r#"^(qpwgraph|helvum|patchage|catia|jack_mixer)$"#
+    open-on-workspace "13"
+}
+
+// Workspace 14: daw
+window-rule {
+    match app-id=r#"^(reaper|REAPER|ardour|org\.ardour\.Ardour|lmms|io\.lmms\.LMMS|musescore|org\.musescore\.MuseScore|rosegarden|hydrogen)$"#
+    open-on-workspace "14"
+}
+
+// Workspace 15: downloads (dw)
+window-rule {
+    match app-id=r#"^(org\.gtk\.Nautilus|nemo|dolphin|org\.kde\.dolphin|thunar|pcmanfm|ranger)$"#
+    open-on-workspace "15"
+}
+
+// Workspace 16: keyboard
+window-rule {
+    match app-id=r#"^(kanata|keyboard-center|input-remapper|showmethekey)$"#
+    open-on-workspace "16"
+}
+
+// Workspace 17: IM (messaging)
+window-rule {
+    match app-id=r#"^(telegram-desktop|org\.telegram\.desktop|discord|com\.discordapp\.Discord|caprine|org\.ferdium\.Ferdium|signal|org\.signal\.Signal|element|im\.element\.Element|slack|com\.slack\.Slack|whatsapp|whatsapp-nativefier|zoom|us\.zoom\.Zoom)$"#
+    open-on-workspace "17"
+}
+
+// Workspace 18: remote
+window-rule {
+    match app-id=r#"^(remmina|org\.remmina\.Remmina|rustdesk|com\.rustdesk\.RustDesk|anydesk|teamviewer)$"#
+    open-on-workspace "18"
+}
+
+// Workspace 19: notes
+window-rule {
+    match app-id=r#"^(obsidian|md\.obsidian\.Obsidian|logseq|com\.logseq\.Logseq|joplin|net\.cozic\.joplin_desktop|notion|notion-snap)$"#
+    open-on-workspace "19"
+}
+
+// Workspace 20: winboat
+window-rule {
+    match app-id=r#"^(winboat|winboat-installer)$"#
+    open-floating true
+    open-on-workspace "20"
+}
+
+// Floating utility windows (ported from Hyprland rules.conf)
+window-rule {
+    match app-id=r#"^nm-connection-editor$"#
+    open-floating true
+    open-width 900
+    open-height 600
+}
+
+window-rule {
+    match app-id=r#"^qt5ct$"#
+    match app-id=r#"^wine$"#
+    match app-id=r#"^steamwebhelper$"#
+    match app-id=r#"^sun-awt-X11-XFramePeer$"#
+    match app-id=r#"^install4j-roomeqwizard-RoomEQ_Wizard$"#
+    match app-id=r#"^xdg-desktop-portal-gtk$"#
+    open-floating true
+}
+
+// Yazi chooser
+window-rule {
+    match app-id=r#"^yazi$"#
+    match title=r#"^yazi-chooser"#
+    open-floating true
+    open-width 1300
+    open-height 900
+}
+
+// MPD add dialog
+window-rule {
+    match app-id=r#"^kitty$"#
+    match title=r#"^mpd-add"#
+    open-floating true
+    open-width 700
+    open-height 500
+    open-x 820
+    open-y 590
+}
+
+// File dialog
+window-rule {
+    match title=r#"^File\s*Dialog$"#
+    open-floating true
+}
+
+// Picture-in-Picture
+window-rule {
+    match title=r#"^Picture-in-Picture$"#
+    match title=r#"— Picture in picture$"#
+    open-floating true
+    open-width 400
+    open-height 300
+    open-x 1500
+    open-y 50
+}
+
+// Vicinae launcher
+window-rule {
+    match app-id=r#"^vicinae$"#
+    open-floating true
+    open-width 600
+    open-height 500
+}
+
+// Swayimg floating
+window-rule {
+    match app-id=r#"^swayimg$"#
+    open-floating true
+    open-width 1200
+    open-height 800
+}
+
+// Bazecor
+window-rule {
+    match app-id=r#"^Bazecor$"#
+    open-floating true
+}
+
+// Scratchpad windows — matched by _NIRI_SCRATCH env var set by spawn-or-toggle script
+window-rule {
+    match env="_NIRI_SCRATCH=1"
+    open-floating true
+}
+
+// Telegram desktop (center float)
+window-rule {
+    match app-id=r#"^telegram-desktop$"#
+    match app-id=r#"^org\.telegram\.desktop$"#
+    open-floating true
+    open-width 1000
+    open-height 750
+}
+
+// XWayland — no blur (Hyprland compat)
+window-rule {
+    match is-xwayland true
+    no-gaps true
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 6. Keybindings
+// ═══════════════════════════════════════════════════════════════════════════
+
 binds {
     // ── Navigation ──────────────────────────────────────
     Mod+H { focus-column-left; }
@@ -84,14 +350,7 @@ binds {
     Mod+Home { focus-workspace-first; }
     Mod+End  { focus-workspace-last; }
 
-    // ── Windows ─────────────────────────────────────────
-    Mod+Q     { close-window; }
-    Mod+Escape { close-window; }
-    Mod+F     { fullscreen-window; }
-    Mod+Shift+F { fullscreen-window; }
-    Mod+E     { toggle-window-floating; }
-
-    // Column resize
+    // Column resize (tiling submap from Hyprland ported as flat binds)
     Mod+Equal        { set-column-width "+50"; }
     Mod+Minus        { set-column-width "-50"; }
     Mod+BracketRight { set-column-width "+10"; }
@@ -105,24 +364,95 @@ binds {
     Mod+5 { set-column-width "0.75"; }
     Mod+6 { set-column-width "1.0"; }
 
-    // ── Launcher / UI ───────────────────────────────────
-    Mod+Return    { spawn "kitty" "--single-instance"; }
-    Mod+D         { spawn "vicinae" "toggle"; }
-    Mod+Shift+D   { spawn "zen-browser"; }
-    Mod+Space     { toggle-overview; }
-    Mod+Shift+Q   { exit; }
-    Mod+Slash     { spawn "sh" "-c" "~/.local/bin/hypr-shortcuts"; }
+    // Move windows between columns (ported from Hyprland tiling submap)
+    Mod+Alt+H { move-column-left; }
+    Mod+Alt+L { move-column-right; }
+    Mod+Alt+J { move-window-down; }
+    Mod+Alt+K { move-window-up; }
 
-    // ── Apps ────────────────────────────────────────────
-    Mod+X     { spawn "kitty" "--single-instance" "--class" "term"; }
-    Mod+W     { spawn "zen-browser"; }
-    Mod+Shift+W { spawn "floorp"; }
+    // ── Windows ─────────────────────────────────────────
+    Mod+Q           { close-window; }
+    Mod+Escape      { close-window; }
+    Mod+F           { fullscreen-window; }
+    Mod+Shift+F      { fullscreen-window; }
+    Mod+E           { toggle-window-floating; }
+    Mod+Shift+Space { toggle-window-tabbed; }
+
+    // ── App launchers (ported from Hyprland apps.conf) ───
+    // Note: Mod = Super. niri-native bindings take priority where collisions exist.
+    // Collision notes:
+    //   Mod+D → niri-native toggle-overview — kept
+    //   Super+D → teardown scratchpad (Hyprland) → moved to Mod+Alt+D
+    //   Mod+Q → niri-native close-window — kept
+    //   Super+Q → nvim (Hyprland) → moved to Mod+Shift+Q
+
+    // Browser (Hyprland: Super+W, niri-native: Mod+W — same)
+    Mod+W     { spawn "sh" "-c" "~/.local/bin/raise zen-browser"; }
+
+    // Floorp (Hyprland: Super+Shift+W, niri-native: Mod+Shift+W — same)
+    Mod+Shift+W { spawn "sh" "-c" "~/.local/bin/raise floorp"; }
+
+    // Terminal (Hyprland: Super+X, niri-native: Mod+X — same)
+    Mod+X { spawn "kitty" "--single-instance" "--class" "term"; }
+
+    // Neovim (Hyprland: Super+Q; collision with niri close-window, moved to Mod+Shift+Q)
+    // niri-native Mod+Shift+Q is exit — moved to Mod+Alt+Q
+    Mod+Shift+Q { spawn "sh" "-c" "~/.local/bin/raise nvim"; }
+    Mod+Alt+Q { exit; }
+
+    // Video (Hyprland: Super+B)
     Mod+B     { spawn "sh" "-c" "~/.local/bin/pl video"; }
+
+    // Steam (Hyprland: Super+G)
     Mod+G     { spawn "steam"; }
+
+    // Lutris (Hyprland: Super+Shift+G)
+    Mod+Shift+G { spawn "sh" "-c" "~/.local/bin/raise lutris"; }
+
+    // Zathura (Hyprland: Super+O)
     Mod+O     { spawn "zathura"; }
+
+    // OBS (Hyprland: Super+Ctrl+O)
     Mod+Ctrl+O { spawn "obs"; }
 
-    // ── Media keys ──────────────────────────────────────
+    // Obsidian (Hyprland: Super+Ctrl+N; collision niri-native Mod+Ctrl+N sys-relief)
+    // sys-relief moved to Mod+Alt+N
+    Mod+Ctrl+N { spawn "sh" "-c" "~/.local/bin/raise obsidian"; }
+    Mod+Alt+N  { spawn "sh" "-c" "~/.local/bin/sys-relief"; }
+
+    // Swayimg (Hyprland: Super+Ctrl+C)
+    Mod+Ctrl+C { spawn "swayimg" "/home/neg/dw"; }
+
+    // Random wallpaper (Hyprland: Super+Shift+C)
+    Mod+Shift+C { spawn "sh" "-c" "wl random ~/pic/wl"; }
+
+    // Bazecor (Hyprland: Super+Ctrl+V)
+    Mod+Ctrl+V { spawn "bazecor"; }
+
+    // ── Scratchpad toggles (ported from Hyprland apps.conf binds) ──
+    // Hyprland: Super+D → teardown (collision: niri Mod+D is toggle-overview)
+    //   → teardown moved to Mod+Alt+D
+    // Hyprland: Super+E → IM
+    // Hyprland: Super+F → music
+    // Hyprland: Super+T → torrents
+    // Hyprland: Super+Ctrl+P → mixer
+
+    Mod+Alt+D { spawn "sh" "-c" "~/.local/bin/spawn-or-toggle teardown"; }
+    Mod+E     { spawn "sh" "-c" "~/.local/bin/spawn-or-toggle im"; }
+    Mod+F     { spawn "sh" "-c" "~/.local/bin/spawn-or-toggle music"; }
+    Mod+T     { spawn "sh" "-c" "~/.local/bin/spawn-or-toggle torrents"; }
+    Mod+Ctrl+P { spawn "sh" "-c" "~/.local/bin/spawn-or-toggle mixer"; }
+
+    // ── Launcher / UI ───────────────────────────────────
+    // Mod+D is niri-native toggle-overview — kept as-is.
+    // Mod+Space is niri-native toggle-overview — D and Space do the same, that's fine.
+    Mod+Return    { spawn "kitty" "--single-instance"; }
+    Mod+D         { toggle-overview; }
+    Mod+Shift+D   { spawn "zen-browser"; }
+    Mod+Space     { toggle-overview; }
+    Mod+Slash     { spawn "sh" "-c" "~/.local/bin/hypr-shortcuts"; }
+
+    // ── Media keys (ported from Hyprland media.conf) ─────
     XF86AudioRaiseVolume { spawn "swayosd-client" "--output-volume" "+5"; }
     XF86AudioLowerVolume { spawn "swayosd-client" "--output-volume" "-5"; }
     XF86AudioMute        { spawn "swayosd-client" "--output-volume" "mute-toggle"; }
@@ -135,27 +465,29 @@ binds {
     XF86AudioPrev  { spawn "playerctl" "previous"; }
 
     Mod+Shift+S { spawn "playerctl" "play-pause"; }
+    // Note: Mod+/ is hypr-shortcuts (same as Hyprland). Mod+,/. already used for prev/next.
     Mod+Comma   { spawn "sh" "-c" "~/.local/bin/pl cmd previous"; }
     Mod+Period  { spawn "sh" "-c" "~/.local/bin/pl cmd next"; }
     Mod+M       { spawn "sh" "-c" "~/.local/bin/music-rename current"; }
 
-    // ── Screenshots ─────────────────────────────────────
+    // ── Screenshots (ported from Hyprland misc.conf) ─────
     Mod+Shift+R     { spawn "sh" "-c" "shot=\"$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png\"; grim \"$shot\" && pic-info \"$shot\""; }
     Mod+Ctrl+Shift+R { spawn "sh" "-c" "shot=\"$HOME/pic/shots/satty-$(date '+%Y%m%d-%H.%M.%S').png\"; grim -g \"$(slurp)\" \"$shot\" && pic-info \"$shot\""; }
     Mod+Shift+V     { spawn "sh" "-c" "~/.local/bin/screenrec screen"; }
     Mod+Ctrl+Shift+V { spawn "sh" "-c" "~/.local/bin/screenrec area"; }
 
-    // ── Misc ────────────────────────────────────────────
+    // ── Misc (ported from Hyprland misc.conf) ────────────
     Mod+N           { spawn "sh" "-c" "dunstctl history-pop"; }
+    Caps_Lock       { spawn "swayosd-client" "--caps-lock"; }
+    Mod+Shift+M     { spawn "sh" "-c" "~/.local/bin/main-menu"; }
+    Mod+Alt+P       { spawn "sh" "-c" "~/.local/bin/switch-proxy"; }
+    Mod+Apostrophe  { spawn "sh" "-c" "~/.local/bin/hypr-fix"; }
+
+    // Win-list (Hyprland: Alt+G, Alt+\)
     Mod+Alt+G       { spawn "sh" "-c" "~/.local/bin/hypr-win-list"; }
     Mod+Alt+Backslash { spawn "sh" "-c" "~/.local/bin/hypr-win-list"; }
-    Mod+Shift+M     { spawn "sh" "-c" "~/.local/bin/main-menu"; }
-    Caps_Lock       { spawn "swayosd-client" "--caps-lock"; }
-    Mod+Apostrophe  { spawn "sh" "-c" "~/.local/bin/hypr-fix"; }
-    Mod+Ctrl+N      { spawn "sh" "-c" "~/.local/bin/sys-relief"; }
-    Mod+Alt+P       { spawn "sh" "-c" "~/.local/bin/switch-proxy"; }
 
-    // ── Startup ─────────────────────────────────────────
+    // ── Startup (ported from Hyprland autostart.conf) ────
     spawn-at-startup "sh" "-c" "~/.local/bin/unlock"
     spawn-at-startup "dunst"
     spawn-at-startup "swayosd-server"
@@ -168,33 +500,18 @@ binds {
     spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY XDG_SESSION_TYPE && systemctl --user restart --no-block quickshell.service"
 }
 
-// Window rules
-window-rule {
-    match app-id=r#"^zen$"#
-    match app-id=r#"^floorp$"#
-    match app-id=r#"^one\.ablaze\.floorp$"#
-    match app-id=r#"^floorpdeveloperedition$"#
-}
-
-window-rule {
-    match app-id=r#"^qt5ct$"#
-    match app-id=r#"^wine$"#
-    match app-id=r#"^steamwebhelper$"#
-    match app-id=r#"^sun-awt-X11-XFramePeer$"#
-    match app-id=r#"^install4j-roomeqwizard-RoomEQ_Wizard$"#
-    match app-id=r#"^xdg-desktop-portal-gtk$"#
-    open-floating true
-}
-
-window-rule {
-    match title="^Picture-in-Picture$"
-    open-floating true
-}
+// ═══════════════════════════════════════════════════════════════════════════
+// 7. Animations
+// ═══════════════════════════════════════════════════════════════════════════
 
 animations {
     enabled true
     spring 400,0.5
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 8. Misc
+// ═══════════════════════════════════════════════════════════════════════════
 
 misc {
     focus_on_window_activation true

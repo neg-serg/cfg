@@ -487,6 +487,12 @@ binds {
     Mod+Alt+G       { spawn "sh" "-c" "~/.local/bin/hypr-win-list"; }
     Mod+Alt+Backslash { spawn "sh" "-c" "~/.local/bin/hypr-win-list"; }
 
+    // ── VPN toggles (ported from Hyprland VPN submap) ────
+    // Hyprland: Super+V,{H/A/F/N} → hiddify/amnezia/flclashx/v2rayN
+    // Niri has no submaps → ported as single chords
+    Mod+Ctrl+Shift+H { spawn "sh" "-c" "~/.local/bin/raise hiddify"; }
+    Mod+Ctrl+Shift+A { spawn "sh" "-c" "~/.local/bin/amnezia-vpn"; }
+
     // ── Startup (ported from Hyprland autostart.conf) ────
     spawn-at-startup "sh" "-c" "~/.local/bin/unlock"
     spawn-at-startup "dunst"

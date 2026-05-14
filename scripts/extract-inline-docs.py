@@ -2,16 +2,34 @@
 # ruff: noqa: E501
 """Extract structured inline documentation from source files and generate Sphinx RST pages.
 
+Scanner architecture:
+  - Regex-based line-wise parser extracts {# @state ... #}, {# @macro ... #},
+    # @script ... blocks from SLS, Jinja2, Python, and shell files
+  - Schema validator (validate_block) checks against contract schemas
+    from contracts/comment-block-schemas.yaml using the data-model
+  - RST generators (gen_state_rst, gen_macro_rst, etc.) produce Sphinx-compatible
+    pages under docs/{states,macros,scripts,data-files}/
+
+Integration:
+  - Invoked as Sphinx pre-build hook from docs/conf.py via builder-inited event
+  - Also callable standalone: extract-inline-docs.py --all (full rebuild)
+  - Validation mode: --validate (exit 1 on schema errors)
+  - Used by just lint via lint-all.sh for inline doc comment validation
+  - Produces docs/entity-manifest.json + docs/entity-manifest.yaml for LLM agent
+    consumption and cross-referencing
+
+Output:
+  - RST pages: docs/states/{id}.rst, docs/macros/{name}.rst, etc.
+  - Entity index: docs/index.md (regenerated from entity-manifest.json)
+  - Machine manifests: docs/entity-manifest.json, docs/entity-manifest.yaml
+
 Usage:
     extract-inline-docs.py --all           # Process all file types
     extract-inline-docs.py --sls           # Salt SLS files only
     extract-inline-docs.py --jinja         # Jinja2 macro files only
     extract-inline-docs.py --python        # Python scripts (autodoc config)
     extract-inline-docs.py --shell         # Shell scripts only
-
-The script scans project files for structured comment blocks, parses them
-into structured data, validates against schemas, and generates RST pages
-under docs/{states,macros,scripts,data-files}/ for Sphinx consumption.
+    extract-inline-docs.py --validate      # Validate only (for just lint)
 """
 
 import argparse
@@ -362,6 +380,7 @@ def gen_state_rst(entity: dict) -> str:
         if vals:
             refs = []
             for v in vals:
+                v = v.replace('.sls', '').replace('.yaml', '')
                 if field == 'data_files':
                     refs.append(f':salt:data:`{v}`')
                 elif field == 'includes':

@@ -4,17 +4,43 @@
 
 This migration replaces the Hyprland Wayland compositor with Niri while preserving the scrollable‑tiling workflow, VRR (Variable Refresh Rate), and 10‑bit color support. The goal is minimal performance regression and operational transparency.
 
-**Status:** In development (tested in windowed mode only).  
+**Status:** Expanded — see `specs/009-niri-config-expansion/`.  
 **Target:** CachyOS workstation with AMD GPU, DP‑2 monitor (3840×2160 @240 Hz, scale 2.0).  
-**Salt state:** `states/desktop/niri.sls` installs Niri and dependencies; config is managed via `dotfiles/dot_config/niri/config.kdl`.
+**Salt state:** `states/desktop/niri.sls` installs Niri and dependencies; config is managed via `dotfiles/dot_config/niri/config.kdl`.  
 
-## Installed Packages
+## Ported Features
 
-- `niri‑bin` (AUR) – Niri compositor
-- `xwayland‑satellite` – XWayland support
-- `xdg‑desktop‑portal‑gnome`, `xdg‑desktop‑portal‑gtk` – portal integration
+| Feature | Hyprland | Niri | Status |
+|---------|----------|------|--------|
+| Monitor config | `monitorv2` | `output` | ✅ Done |
+| Input (kb layout, repeat, touchpad) | `input` | `input` | ✅ Done |
+| Layout (gaps, border, shadow, column widths) | various | `layout` | ✅ Done |
+| Animations | `animations` | `animations` | ✅ Done |
+| Navigation keybindings (HJKL, workspace) | `bind = $M4, h, …` | `Mod+H { … }` | ✅ Done |
+| App launcher keybindings (W/X/B/G/O etc.) | `bind = $M4, w, …` | `Mod+W { … }` | ✅ Done |
+| Media keys (volume, brightness, playerctl) | `bindel = , XF86…` | `XF86… { … }` | ✅ Done |
+| Screenshot binds (grim, grim+slurp, screenrec) | `bind = $M4+$S, r, …` | `Mod+Shift+R { … }` | ✅ Done |
+| Window operations (close, fullscreen, float) | `bind = $M4, q, …` | `Mod+Q { … }` | ✅ Done |
+| Column resize (proportional + pixel) | submap | flat `Mod+1..6, Mod+=/-/[/]` | ✅ Done |
+| Scratchpad toggles (teardown, IM, music, mixer, torrents) | scratchpad-toggle script | `spawn-or-toggle` script | ✅ Done |
+| VPN toggles (hiddify, amnezia) | `$M4+$M1, v` submap | `Mod+Ctrl+Shift+H/A` | ✅ Done |
+| Environment variables (GDK_SCALE, QT_QPA_PLATFORM, etc.) | `env.conf` | `env` in config.kdl | ✅ Done |
+| Startup services (dunst, swayosd, cliphist, etc.) | `autostart.conf` | `spawn-at-startup` | ✅ Done |
+| Window rules: workspace routing (20 rules) | `rules.conf` + `workspaces.conf` | `window-rule` blocks | ✅ Done |
+| Window rules: floating utility windows | `rules.conf` | `window-rule { open-floating true }` | ✅ Done |
+| Window rules: PiP floating + position | `$pip_match` | `window-rule { … }` | ✅ Done |
+| Window rules: scratchpad floating | `_NIRI_SCRATCH env match | `match env="_NIRI_SCRATCH=1"` | ✅ Done |
+| Focus history script | `hypr-focus-hist` | `niri-focus-hist` | ✅ Done |
 
-**Optional:** `zen‑browser‑bin` (already present), `surfingkeys‑extension` (browser extension).
+**Not ported (no Niri equivalent):**
+- Explicit `bitdepth=10` forcing (relies on DRM/KMS auto-detection)
+- `allow_tearing` / `direct_scanout`
+- Scroll-layout refinements (`follow_focus`, `fullscreen_on_one_column`, etc.)
+- Window rounding, blur, per-window opacity
+- XWayland scaling config
+- Hyprland plugins (HyprGlass, Hypr-DarkWindow, xtra-dispatchers)
+- wlr-which-key overlay
+- Animation presets (Niri has single spring config)
 
 ## Configuration Differences
 

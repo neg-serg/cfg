@@ -65,15 +65,16 @@ class SaltDomain(Domain):
         docname = None
         prefix_map = {'state': 'state', 'macro': 'macro', 'data': 'data-file',
                       'script': 'script', 'config': 'config'}
-        target_id = f'{prefix_map.get(typ, typ)}-{target}'
+        safe_target = target.replace('/', '-').replace('.', '-')
+        target_id = f'{prefix_map.get(typ, typ)}-{safe_target}'
         for doc in env.found_docs:
-            if doc.startswith('states/') and typ == 'state' and doc.endswith(target.replace('.', '-')):
+            if doc.startswith('states/') and typ == 'state' and doc.endswith(safe_target):
                 docname = doc
                 break
-            if doc.startswith('macros/') and typ == 'macro' and doc.endswith(target.replace('.', '-')):
+            if doc.startswith('macros/') and typ == 'macro' and doc.endswith(safe_target):
                 docname = doc
                 break
-            if doc.startswith('data-files/') and typ == 'data' and doc.endswith(target.replace('/', '-')):
+            if doc.startswith('data-files/') and typ == 'data' and doc.endswith(safe_target):
                 docname = doc
                 break
         if docname is None:
@@ -81,7 +82,7 @@ class SaltDomain(Domain):
             if tentative in env.found_docs:
                 docname = tentative
         if docname:
-            return make_refnode(builder, fromdocname, docname, target_id, contnode, target)
+            return make_refnode(builder, fromdocname, docname, '', contnode, target)
         return None
 
     def resolve_any_xref(self, env, fromdocname, builder, target, node, contnode):

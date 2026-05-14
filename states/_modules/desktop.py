@@ -9,6 +9,24 @@ from typing import Any
 
 from _yaml_out import yaml_output
 
+try:
+    from _modules.common import _parse_requires
+except ImportError:
+
+    def _parse_requires(requires):
+        if not requires:
+            return []
+        parsed = []
+        for r in requires:
+            if isinstance(r, str) and ": " in r:
+                typ, rid = r.split(": ", 1)
+                parsed.append({typ: rid})
+            elif isinstance(r, dict):
+                parsed.append(r)
+            else:
+                parsed.append(r)
+        return parsed
+
 
 def _host() -> dict[str, Any]:
     try:
@@ -68,7 +86,7 @@ def dconf_settings(
         {"unless": checks_joined},
     ]
     if require:
-        args.append({"require": [r for r in require]})
+        args.append({"require": _parse_requires(require)})
 
     return {name: {"cmd.run": args}}
 
@@ -113,7 +131,7 @@ def hyprpm_update(
     if unless_cmd:
         args.append({"unless": unless_cmd})
     if require:
-        args.append({"require": [r for r in require]})
+        args.append({"require": _parse_requires(require)})
 
     return {name: {"cmd.run": args}}
 
@@ -158,7 +176,7 @@ def hyprpm_add(
         {"retry": {"attempts": _const()["retry_attempts"], "interval": _const()["retry_interval"]}},
     ]
     if require:
-        args.append({"require": [r for r in require]})
+        args.append({"require": _parse_requires(require)})
 
     return {name: {"cmd.run": args}}
 
@@ -195,7 +213,7 @@ def hyprpm_enable(name: str, plugin: str, require: list[str] | None = None) -> d
         {"env": env_entries},
     ]
     if require:
-        args.append({"require": [r for r in require]})
+        args.append({"require": _parse_requires(require)})
 
     return {name: {"cmd.run": args}}
 

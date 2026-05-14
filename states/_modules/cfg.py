@@ -9,6 +9,24 @@ from typing import Any
 
 from _yaml_out import yaml_output
 
+try:
+    from _modules.common import _parse_requires
+except ImportError:
+
+    def _parse_requires(requires):
+        if not requires:
+            return []
+        parsed = []
+        for r in requires:
+            if isinstance(r, str) and ": " in r:
+                typ, rid = r.split(": ", 1)
+                parsed.append({typ: rid})
+            elif isinstance(r, dict):
+                parsed.append(r)
+            else:
+                parsed.append(r)
+        return parsed
+
 
 def _const() -> dict[str, Any]:
     try:
@@ -47,6 +65,6 @@ def config_file_edit(
         c = _const()
         args.append({"retry": {"attempts": c["retry_attempts"], "interval": c["retry_interval"]}})
     if require:
-        args.append({"require": [r for r in require]})
+        args.append({"require": _parse_requires(require)})
 
     return {name: {"cmd.run": args}}

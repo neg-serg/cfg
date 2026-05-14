@@ -11,6 +11,24 @@ from typing import Any
 
 from _yaml_out import yaml_output
 
+try:
+    from _modules.common import _parse_requires
+except ImportError:
+
+    def _parse_requires(requires):
+        if not requires:
+            return []
+        parsed = []
+        for r in requires:
+            if isinstance(r, str) and ": " in r:
+                typ, rid = r.split(": ", 1)
+                parsed.append({typ: rid})
+            elif isinstance(r, dict):
+                parsed.append(r)
+            else:
+                parsed.append(r)
+        return parsed
+
 
 def _host() -> dict[str, Any]:
     try:
@@ -134,7 +152,7 @@ def user_unit_override(
     elif source:
         fargs.append({"source": source})
     if requires:
-        fargs.append({"require": [r for r in requires]})
+        fargs.append({"require": _parse_requires(requires)})
     ret: dict[str, Any] = {
         name: {"file.managed": fargs},
         f"{name}_daemon_reload": {
@@ -213,7 +231,7 @@ def _user_service_enable_dict(
     if onlyif:
         args.append({"onlyif": onlyif})
     if requires:
-        args.append({"require": [r for r in requires]})
+        args.append({"require": _parse_requires(requires)})
 
     return {name: {"cmd.run": args}}
 
@@ -255,9 +273,9 @@ def user_service_with_unit(
     svc_list = services if services is not None else [filename]
     file_id = f"{name}_service"
     ret = _user_service_file_dict(file_id, filename, source=source, user=user, home=home)
-    reqs = [f"file: {file_id}", f"cmd: {file_id}_daemon_reload"]
+    reqs = [{"file": file_id}, {"cmd": f"{file_id}_daemon_reload"}]
     if requires:
-        reqs.extend(requires)
+        reqs.extend(_parse_requires(requires))
     ret.update(
         _user_service_enable_dict(
             f"{name}_enabled",
@@ -294,7 +312,7 @@ def user_service_restart(
     if onlyif:
         args.append({"onlyif": onlyif})
     if requires:
-        args.append({"require": [r for r in requires]})
+        args.append({"require": _parse_requires(requires)})
     if onchanges:
         args.append({"onchanges": [c for c in onchanges]})
     return {name: {"cmd.run": args}}
@@ -339,5 +357,5 @@ def user_linger(
         {"unless": f"loginctl show-user {u} 2>/dev/null | grep -q '^Linger=yes'"},
     ]
     if require:
-        args.append({"require": [r for r in require]})
+        args.append({"require": _parse_requires(require)})
     return {name: {"cmd.run": args}}

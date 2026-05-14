@@ -9,6 +9,24 @@ from typing import Any
 
 from _yaml_out import yaml_output
 
+try:
+    from _modules.common import _parse_requires
+except ImportError:
+
+    def _parse_requires(requires):
+        if not requires:
+            return []
+        parsed = []
+        for r in requires:
+            if isinstance(r, str) and ": " in r:
+                typ, rid = r.split(": ", 1)
+                parsed.append({typ: rid})
+            elif isinstance(r, dict):
+                parsed.append(r)
+            else:
+                parsed.append(r)
+        return parsed
+
 
 def _host() -> dict[str, Any]:
     try:
@@ -49,7 +67,7 @@ def _paru_install_dict(
     _check_all = check == "__ALL__" or (check is None and " " in pkg)
     requires_list = [{"cmd": "pacman_db_warmup"}]
     if requires:
-        requires_list.extend(requires)
+        requires_list.extend(_parse_requires(requires))
 
     if version:
         cmd = (
@@ -122,7 +140,7 @@ def simple_service(
     ret[f"{name}_enabled"] = {
         "service.enabled": [
             {"name": service or name},
-            {"require": [{"cmd": f"install_{safe}"}, *(requires or [])]},
+            {"require": _parse_requires([{"cmd": f"install_{safe}"}] + (requires or []))},
         ]
     }
     return ret

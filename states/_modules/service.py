@@ -10,6 +10,24 @@ from typing import Any
 
 from _yaml_out import yaml_output
 
+try:
+    from _modules.common import _parse_requires
+except ImportError:
+
+    def _parse_requires(requires):
+        if not requires:
+            return []
+        parsed = []
+        for r in requires:
+            if isinstance(r, str) and ": " in r:
+                typ, rid = r.split(": ", 1)
+                parsed.append({typ: rid})
+            elif isinstance(r, dict):
+                parsed.append(r)
+            else:
+                parsed.append(r)
+        return parsed
+
 
 def _host() -> dict[str, Any]:
     try:
@@ -108,7 +126,7 @@ def config_and_reload(
     if makedirs:
         fargs.append({"makedirs": True})
     if require:
-        fargs.append({"require": [r for r in require]})
+        fargs.append({"require": _parse_requires(require)})
 
     ret: dict[str, Any] = {
         name: {"file.managed": fargs},
@@ -182,7 +200,7 @@ def _ensure_dir_dict(
     if mode:
         args.append({"mode": mode})
     if require:
-        args.append({"require": require})
+        args.append({"require": _parse_requires(require)})
     return obj
 
 
@@ -288,7 +306,7 @@ def service_stopped(
     if onlyif:
         list(base.values())[0].append({"onlyif": onlyif})
     if requires:
-        list(base.values())[0].append({"require": [r for r in requires]})
+        list(base.values())[0].append({"require": _parse_requires(requires)})
 
     return {name: base}
 
@@ -353,7 +371,7 @@ def service_with_healthcheck(
         ret[name]["cmd.run"].append({"env": [e for e in _sysctl_env()]})
 
     if requires:
-        ret[name]["cmd.run"].append({"require": [r for r in requires]})
+        ret[name]["cmd.run"].append({"require": _parse_requires(requires)})
 
     return ret
 
@@ -388,7 +406,7 @@ def unit_override(
         },
     }
     if requires:
-        ret[name]["file.managed"].append({"require": [r for r in requires]})
+        ret[name]["file.managed"].append({"require": _parse_requires(requires)})
     return ret
 
 
@@ -454,12 +472,15 @@ def _service_with_unit_dict(
         svc_state = "enabled" if enabled else "disabled"
         svc_args: list[dict[str, Any]] = [
             {"name": f"{name}.{unit_type}"},
-            {"require": [{"cmd": f"{name}_daemon_reload"}]},
         ]
         if onlyif and enabled:
             svc_args.append({"onlyif": onlyif})
         if requires:
-            svc_args.append({"require": [{"cmd": f"{name}_daemon_reload"}, *requires]})
+            svc_args.append(
+                {"require": _parse_requires([{"cmd": f"{name}_daemon_reload"}] + requires)}
+            )
+        else:
+            svc_args.append({"require": [{"cmd": f"{name}_daemon_reload"}]})
         ret[f"{name}_{svc_state}"] = {f"service.{svc_state}": svc_args}
 
     # Running
@@ -595,8 +616,8 @@ def render_service(
                 ctx[k] = _resolve_val(v)
             ct_req = []
             if "packages" in opts:
-                ct_req.append(f"cmd: install_{name.replace('-', '_')}")
-            ct_req.extend(ct.get("require", []))
+                ct_req.append({"cmd": f"install_{name.replace('-', '_')}"})
+            ct_req.extend(_parse_requires(ct.get("require", [])))
             cfg = {
                 f"{name}_config_{i}": {
                     "file.managed": [
@@ -624,8 +645,8 @@ def render_service(
             unit_ctx[k] = _resolve_val(v)
         unit_req = []
         if "packages" in opts:
-            unit_req.append(f"cmd: install_{name.replace('-', '_')}")
-        unit_req.extend(u.get("requires", []))
+            unit_req.append({"cmd": f"install_{name.replace('-', '_')}"})
+        unit_req.extend(_parse_requires(u.get("requires", [])))
         ret.update(
             _service_with_unit_dict(
                 name,

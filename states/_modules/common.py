@@ -138,6 +138,28 @@ def get_registry() -> dict[str, Any]:
     return _load_yaml(FEATURE_REGISTRY_YAML)
 
 
+def _parse_requires(requires):
+    """Convert string-format requires "type: id" to dict format {"type": "id"}.
+
+    Salt require fields must use dict format like [{"file": "alertmanager_config"}].
+    String format like ["file: alertmanager_config"] causes "requisites were not found"
+    errors at runtime. This helper converts string entries to dict format and
+    passes through already-dict entries unchanged.
+    """
+    if not requires:
+        return []
+    parsed = []
+    for r in requires:
+        if isinstance(r, str) and ": " in r:
+            typ, rid = r.split(": ", 1)
+            parsed.append({typ: rid})
+        elif isinstance(r, dict):
+            parsed.append(r)
+        else:
+            parsed.append(r)
+    return parsed
+
+
 # Make module callable as salt['common.get_host']() etc.
 __func_alias__ = {
     "get_host": "get_host",

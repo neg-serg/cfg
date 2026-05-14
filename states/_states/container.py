@@ -28,6 +28,25 @@ except ImportError:
         pass
 
 
+try:
+    from _modules.common import _parse_requires
+except ImportError:
+
+    def _parse_requires(requires):
+        if not requires:
+            return []
+        parsed = []
+        for r in requires:
+            if isinstance(r, str) and ": " in r:
+                typ, rid = r.split(": ", 1)
+                parsed.append({typ: rid})
+            elif isinstance(r, dict):
+                parsed.append(r)
+            else:
+                parsed.append(r)
+        return parsed
+
+
 def _load_yaml(path: Path) -> dict[str, Any]:
     if not path.is_file():
         return {}
@@ -242,10 +261,10 @@ def managed(
             }
             if user_scope:
                 pargs["runas"] = host_user
+            parsed_requires = [{"file": f"{name}_container"}]
             if requires:
-                pargs["require"] = [{"file": f"{name}_container"}] if requires else []
-            else:
-                pargs["require"] = [{"file": f"{name}_container"}]
+                parsed_requires.extend(_parse_requires(requires))
+            pargs["require"] = parsed_requires
             ret["changes"][f"{name}_image_pull"] = _states["cmd.run"](**pargs)
 
         return ret
@@ -273,12 +292,15 @@ def managed(
     }
 
     if not is_localhost:
-        result[f"{name}_image_pull"] = {
-            "cmd.run": [
-                {"name": f"podman pull {full_image}"},
-                {"unless": f"podman image exists {full_image}"},
-                {"retry": {"attempts": retry_attempts, "interval": retry_interval}},
-            ]
-        }
+        img_pull_data = [
+            {"name": f"podman pull {full_image}"},
+            {"unless": f"podman image exists {full_image}"},
+            {"retry": {"attempts": retry_attempts, "interval": retry_interval}},
+        ]
+        parsed_requires = [{"file": f"{name}_container"}]
+        if requires:
+            parsed_requires.extend(_parse_requires(requires))
+        img_pull_data.append({"require": parsed_requires})
+        result[f"{name}_image_pull"] = {"cmd.run": img_pull_data}
 
     return result

@@ -16,6 +16,25 @@ except ImportError:
         return str(obj)
 
 
+try:
+    from _modules.common import _parse_requires
+except ImportError:
+
+    def _parse_requires(requires):
+        if not requires:
+            return []
+        parsed = []
+        for r in requires:
+            if isinstance(r, str) and ": " in r:
+                typ, rid = r.split(": ", 1)
+                parsed.append({typ: rid})
+            elif isinstance(r, dict):
+                parsed.append(r)
+            else:
+                parsed.append(r)
+        return parsed
+
+
 def _host() -> dict[str, Any]:
     try:
         return __salt__["common.get_host"]()
@@ -56,7 +75,7 @@ def deploy(
     svc_watch: list[str] = []
 
     if has_fw:
-        svc_req.append(f"cmd: {name}_firewall_apply")
+        svc_req.append({"cmd": f"{name}_firewall_apply"})
         parts.append(
             _to_yaml(
                 {
@@ -99,7 +118,7 @@ def deploy(
         )
 
     if has_sys:
-        svc_watch = [f"file: {name}_sysctl"]
+        svc_watch = [{"file": f"{name}_sysctl"}]
         sysctl_path = f"{h.get('sysctl_dir', '/etc/sysctl.d/')}99-{name}.conf"
         parts.append(
             _to_yaml(
@@ -231,9 +250,7 @@ def _service_with_unit(
             },
         ]
         if requires:
-            run_args[1]["require"].extend(
-                {"cmd": r.split(": ", 1)[1]} for r in requires if r.startswith("cmd: ")
-            )
+            run_args[2]["require"].extend(_parse_requires(requires))
         ret[f"{name}_running"] = {"service.running": run_args}
 
     return ret

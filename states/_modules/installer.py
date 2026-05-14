@@ -12,6 +12,24 @@ from typing import Any
 
 from _yaml_out import yaml_output
 
+try:
+    from _modules.common import _parse_requires
+except ImportError:
+
+    def _parse_requires(requires):
+        if not requires:
+            return []
+        parsed = []
+        for r in requires:
+            if isinstance(r, str) and ": " in r:
+                typ, rid = r.split(": ", 1)
+                parsed.append({typ: rid})
+            elif isinstance(r, dict):
+                parsed.append(r)
+            else:
+                parsed.append(r)
+        return parsed
+
 
 def _host() -> dict[str, Any]:
     try:
@@ -283,7 +301,7 @@ def http_file(
         args.append({"parallel": True})
     args.append({"retry": {"attempts": c["retry_attempts"], "interval": c["retry_interval"]}})
     if require:
-        args.append({"require": [r for r in require]})
+        args.append({"require": _parse_requires(require)})
 
     return {name: {"cmd.run": args}}
 
@@ -828,7 +846,7 @@ def github_release_to(
         {"retry": {"attempts": c["retry_attempts"], "interval": c["retry_interval"]}},
     ]
     if require:
-        args.append({"require": [{"file": require}]})
+        args.append({"require": _parse_requires([require])})
 
     return {state_id: {"cmd.run": args}}
 
@@ -872,7 +890,7 @@ def npm_build_workflow(
     }
 
     if require and f"{name}_npm_install" in ret:
-        ret[f"{name}_npm_install"]["cmd.run"].append({"require": [r for r in require]})
+        ret[f"{name}_npm_install"]["cmd.run"].append({"require": _parse_requires(require)})
 
     if version:
         ret[f"{name}_version"] = {

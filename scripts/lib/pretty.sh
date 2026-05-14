@@ -60,6 +60,7 @@ if [[ $_PRETTY_TTY -eq 1 ]]; then
     _C_BG_BLUE='\033[44m'
     _C_BG_DARK='\033[48;5;236m'
 
+    _C_MAGENTA_BOLD='\033[1;35m'
     _C_GREY='\033[90m'
     _C_GREY_BOLD='\033[1;90m'
 else
@@ -68,7 +69,7 @@ else
     _C_RED='' ; _C_GREEN='' ; _C_YELLOW='' ; _C_BLUE='' ; _C_MAGENTA='' ; _C_CYAN='' ; _C_WHITE=''
     _C_RED_BOLD='' ; _C_GREEN_BOLD='' ; _C_YELLOW_BOLD='' ; _C_BLUE_BOLD='' ; _C_CYAN_BOLD='' ; _C_WHITE_BOLD=''
     _C_BG_RED='' ; _C_BG_GREEN='' ; _C_BG_BLUE='' ; _C_BG_DARK=''
-    _C_GREY='' ; _C_GREY_BOLD=''
+    _C_MAGENTA_BOLD='' ; _C_GREY='' ; _C_GREY_BOLD=''
 fi
 
 # ── Icons ────────────────────────────────────────────────────────────────
@@ -160,6 +161,30 @@ _pretty_elapsed() {
     fi
 }
 
+#   dim text — low-contrast output
+pretty::dim() {
+    printf '%b%s%b\n' "${_C_DIM}" "$*" "${_C_RESET}"
+}
+
+#   badge "STATUS" — colored inline badge (OK=green, FAIL=red, WARN=yellow, INFO=blue)
+pretty::badge() {
+    local s="${1:-}"
+    case "$(printf '%s' "$s" | tr '[:lower:]' '[:upper:]')" in
+        OK|PASS|SUCCESS|ACTIVE|ENABLED)
+            printf '%b %s %b' "${_C_BG_GREEN}${_C_WHITE_BOLD}" "$s" "${_C_RESET}" ;;
+        FAIL|ERROR|FAILED)
+            printf '%b %s %b' "${_C_BG_RED}${_C_WHITE_BOLD}" "$s" "${_C_RESET}" ;;
+        WARN|SKIP|SKIPPED|PENDING)
+            printf '%b %s %b' "${_C_YELLOW_BOLD}" "$s" "${_C_RESET}" ;;
+        INFO|NOTE)
+            printf '%b %s %b' "${_C_BLUE_BOLD}" "$s" "${_C_RESET}" ;;
+        CHANGED|UPDATED|MODIFIED)
+            printf '%b %s %b' "${_C_CYAN_BOLD}" "$s" "${_C_RESET}" ;;
+        *)
+            printf '%b %s %b' "${_C_GREY_BOLD}" "$s" "${_C_RESET}" ;;
+    esac
+}
+
 # ── Public API ───────────────────────────────────────────────────────────
 
 # ╔══════════════════════════════════════════╗
@@ -175,19 +200,18 @@ pretty::header() {
     (( pad_left < 0 )) && pad_left=0
     (( pad_right < 0 )) && pad_right=0
 
-    printf '%b' "${_C_CYAN_BOLD}"
-    printf '%s' "${_I_BOX_TL}"
+    printf '%b%s%b' "${_C_MAGENTA_BOLD}" "${_I_BOX_TL}" "${_C_CYAN_BOLD}"
     _pretty_repeat "${_I_BOX_H}" $((width - 2))
-    printf '%s\n' "${_I_BOX_TR}"
-    printf '%s ' "${_I_BOX_V}"
+    printf '%b%s%b\n' "${_C_MAGENTA_BOLD}" "${_I_BOX_TR}" "${_C_RESET}"
+    printf '%b%s%b' "${_C_CYAN_BOLD}" "${_I_BOX_V}" "${_C_RESET}"
+    printf '%s' ' '
     _pretty_repeat ' ' "$pad_left"
-    printf '%b%s%b' "${_C_WHITE_BOLD}" "$text" "${_C_CYAN_BOLD}"
+    printf '%b%s%b' "${_C_WHITE_BOLD}" "$text" "${_C_RESET}"
     _pretty_repeat ' ' "$pad_right"
-    printf ' %s\n' "${_I_BOX_V}"
-    printf '%s' "${_I_BOX_BL}"
+    printf ' %b%s%b\n' "${_C_CYAN_BOLD}" "${_I_BOX_V}" "${_C_RESET}"
+    printf '%b%s%b' "${_C_CYAN_BOLD}" "${_I_BOX_BL}" "${_C_MAGENTA_BOLD}"
     _pretty_repeat "${_I_BOX_H}" $((width - 2))
-    printf '%s\n' "${_I_BOX_BR}"
-    printf '%b' "${_C_RESET}"
+    printf '%b%s%b\n' "${_C_MAGENTA_BOLD}" "${_I_BOX_BR}" "${_C_RESET}"
 }
 
 #   ✓ message
@@ -205,16 +229,16 @@ pretty::warn() {
     printf '%b %s %b%s%b\n' "${_C_YELLOW_BOLD}" "${_I_WARN}" "${_C_YELLOW}" "$*" "${_C_RESET}"
 }
 
-#   ● message
+#   ● message (blue bullet, white text)
 pretty::info() {
-    printf '%b %s %b%s%b\n' "${_C_BLUE}" "${_I_INFO}" "${_C_RESET}" "$*" "${_C_RESET}"
+    printf '%b %s %b%s%b\n' "${_C_CYAN_BOLD}" "${_I_INFO}" "${_C_RESET}" "$*" "${_C_RESET}"
 }
 
 #   ▶ [N/T] message
 pretty::phase() {
     local n="${1:-?}" total="${2:-?}" msg="${3:-}"
     if [[ -n "$msg" ]]; then
-        printf '%b %s [%s/%s] %s%b\n' "${_C_CYAN_BOLD}" "${_I_PHASE}" "$n" "$total" "$msg" "${_C_RESET}"
+        printf '%b %s %b[%s/%s]%b %s%b\n' "${_C_CYAN_BOLD}" "${_I_PHASE}" "${_C_YELLOW}" "$n" "$total" "${_C_CYAN_BOLD}" "$msg" "${_C_RESET}"
     else
         printf '%b %s %s%b\n' "${_C_CYAN_BOLD}" "${_I_PHASE}" "${1:-}" "${_C_RESET}"
     fi
@@ -226,7 +250,7 @@ pretty::section() {
     local width=$(_pretty_width)
     local remain=$((width - ${#text} - 6))
     (( remain < 2 )) && remain=2
-    printf '%b%s %s ' "${_C_GREY_BOLD}" "$(_pretty_repeat "${_I_SECTION}" 3)" "$text"
+    printf '%b%s %b%s%b ' "${_C_GREY_BOLD}" "$(_pretty_repeat "${_I_SECTION}" 3)" "${_C_CYAN_BOLD}" "$text" "${_C_GREY_BOLD}"
     _pretty_repeat "${_I_SECTION}" "$remain"
     printf '%b\n' "${_C_RESET}"
 }
@@ -271,17 +295,22 @@ pretty::summary_line() {
     local passed="$1" failed="$2" label="${3:-Results}"
     local width=$(_pretty_width)
     local text
-    text="${label}: ${passed} passed"
+    text="${label}: "
     if [[ $failed -gt 0 ]]; then
-        text+=", ${failed} failed"
+        text+="${_C_GREEN_BOLD}${passed} passed${_C_BOLD}, ${_C_RED_BOLD}${failed} failed"
+    else
+        text+="${_C_GREEN_BOLD}${passed} passed"
     fi
     local text_len=${#text}
-    local pad=$(( (width - text_len - 2) / 2 ))
+    # Strip ANSI for width calc
+    local plain
+    plain=$(printf '%s' "$text" | sed 's/\x1b\[[0-9;]*m//g')
+    local pad=$(( (width - ${#plain} - 2) / 2 ))
     (( pad < 0 )) && pad=0
 
     printf '%b' "${_C_BOLD}"
     _pretty_repeat "${_I_SECTION}" "$pad"
-    printf ' %s ' "$text"
+    printf ' %b%s %b' "${_C_RESET}${_C_BOLD}" "$text" "${_C_BOLD}"
     _pretty_repeat "${_I_SECTION}" "$pad"
     printf '%b\n' "${_C_RESET}"
 }

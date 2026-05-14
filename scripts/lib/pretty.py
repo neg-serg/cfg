@@ -65,6 +65,7 @@ if _IS_TTY:
         "reset": "\033[0m",
         "bold": "\033[1m",
         "dim": "\033[2m",
+        "italic": "\033[3m",
         "red": "\033[31m",
         "green": "\033[32m",
         "yellow": "\033[33m",
@@ -78,6 +79,7 @@ if _IS_TTY:
         "yellow_b": "\033[1;33m",
         "blue_b": "\033[1;34m",
         "cyan_b": "\033[1;36m",
+        "magenta_b": "\033[1;35m",
         "white_b": "\033[1;37m",
         "grey_b": "\033[1;90m",
         # Background colors for badges
@@ -117,6 +119,7 @@ else:
         "reset",
         "bold",
         "dim",
+        "italic",
         "red",
         "green",
         "yellow",
@@ -130,6 +133,7 @@ else:
         "yellow_b",
         "blue_b",
         "cyan_b",
+        "magenta_b",
         "white_b",
         "grey_b",
         "bg_red",
@@ -253,12 +257,13 @@ class _Pretty:
         inner = w - 4
         pad_left = max((inner - _visible_len(text)) // 2, 0)
         pad_right = max(inner - _visible_len(text) - pad_left, 0)
-        print(f"{C['cyan_b']}{I['box_tl']}{_repeat(I['box_h'], w - 2)}{I['box_tr']}")
+        print(f"{C['magenta_b']}{I['box_tl']}{C['cyan_b']}{_repeat(I['box_h'], w - 2)}{C['magenta_b']}{I['box_tr']}{C['reset']}")
         print(
-            f"{I['box_v']}{' ' * pad_left}{C['white_b']}{text}"
-            f"{C['cyan_b']}{' ' * pad_right} {I['box_v']}"
+            f"{C['cyan_b']}{I['box_v']}{C['reset']}{' ' * pad_left}"
+            f"{C['white_b']}{text}{C['reset']}{' ' * pad_right} "
+            f"{C['cyan_b']}{I['box_v']}{C['reset']}"
         )
-        print(f"{I['box_bl']}{_repeat(I['box_h'], w - 2)}{I['box_br']}{C['reset']}")
+        print(f"{C['cyan_b']}{I['box_bl']}{C['magenta_b']}{_repeat(I['box_h'], w - 2)}{C['magenta_b']}{I['box_br']}{C['reset']}")
 
     def ok(self, text: str):
         print(f"{C['green_b']} {I['ok']} {C['green']}{text}{C['reset']}")
@@ -270,11 +275,11 @@ class _Pretty:
         print(f"{C['yellow_b']} {I['warn']} {C['yellow']}{text}{C['reset']}")
 
     def info(self, text: str):
-        print(f"{C['blue']} {I['info']} {C['reset']}{text}{C['reset']}")
+        print(f"{C['cyan_b']} {I['info']} {C['reset']}{text}{C['reset']}")
 
     def phase(self, text: str, n: int | None = None, total: int | None = None):
         if n is not None and total is not None:
-            print(f"{C['cyan_b']} {I['phase']} [{n}/{total}] {text}{C['reset']}")
+            print(f"{C['cyan_b']} {I['phase']} {C['subtleyellow']}[{n}/{total}]{C['cyan_b']} {text}{C['reset']}")
         else:
             print(f"{C['cyan_b']} {I['phase']} {text}{C['reset']}")
 
@@ -282,8 +287,8 @@ class _Pretty:
         w = _width()
         remain = max(w - _visible_len(text) - 6, 2)
         print(
-            f"{C['grey_b']}{_repeat(I['section'], 3)} {text} "
-            f"{_repeat(I['section'], remain)}{C['reset']}"
+            f"{C['grey_b']}{_repeat(I['section'], 3)} {C['cyan_b']}{text} "
+            f"{C['grey_b']}{_repeat(I['section'], remain)}{C['reset']}"
         )
 
     def progress(self, current: int, total: int):
@@ -296,13 +301,16 @@ class _Pretty:
 
     def summary_line(self, passed: int, failed: int, label: str = "Results"):
         w = _width()
-        text = f"{label}: {passed} passed"
+        passed_s = f"{C['green_b']}{passed} passed"
         if failed:
-            text += f", {failed} failed"
-        pad = max((w - _visible_len(text) - 2) // 2, 0)
+            text = f"{label}: {passed_s}{C['bold']}, {C['red_b']}{failed} failed"
+        else:
+            text = f"{label}: {passed_s}"
+        plain = re.sub(r"\033\[[0-9;]*m", "", text)
+        pad = max((w - len(plain) - 2) // 2, 0)
         print(
             f"{C['bold']}{_repeat(I['section'], pad)} {text} "
-            f"{_repeat(I['section'], pad)}{C['reset']}"
+            f"{C['bold']}{_repeat(I['section'], pad)}{C['reset']}"
         )
 
     def service_status(self, name: str, status: str):
@@ -546,6 +554,9 @@ class _Pretty:
 
     def bold(self, text: str) -> str:
         return f"{C['bold']}{text}{C['reset']}"
+
+    def italic(self, text: str) -> str:
+        return f"{C['italic']}{text}{C['reset']}"
 
     def truncate(self, text: str, width: int) -> str:
         """Truncate text to visible character width."""

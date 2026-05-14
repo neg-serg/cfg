@@ -1,5 +1,5 @@
 {
-  "generated": "2026-05-15T00:56:48.008151",
+  "generated": "2026-05-15T01:07:33.751954",
   "entity_count": 263,
   "issue_count": 5,
   "entities": [
@@ -2415,8 +2415,8 @@
       "id": "migrate-sls-to-python",
       "type": "script_py",
       "source_path": "scripts/migrate-sls-to-python.py",
-      "purpose": "Mechanically replace Jinja macro calls with salt['module.func']() in .sls files.",
-      "docstring": "Mechanically replace Jinja macro calls with salt['module.func']() in .sls files.\nAfter this script runs, macro files can be emptied.\n\nUsage: python3 scripts/migrate-sls-to-python.py [--dry-run]",
+      "purpose": "Mechanically replace Jinja macro calls with salt['module.func'] in .sls files.",
+      "docstring": "Mechanically replace Jinja macro calls with salt['module.func'] in .sls files.\nAfter this script runs, macro files can be emptied.\n\nUsage: python3 scripts/migrate-sls-to-python.py [--dry-run]",
       "issues": []
     },
     {

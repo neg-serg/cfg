@@ -94,4 +94,4 @@ paru -S webapp-manager
 ## See Also
 
 - Local documentation RAG pipeline
-- [docs_sources.yaml](../states/data/docs_sources.yaml) — documentation source registry
+- `docs_sources.yaml` — documentation source registry (in `states/data/`)

@@ -67,7 +67,7 @@ The manager bot receives two things:
 
 ### Token management
 
-```python
+```text
 # Get the token
 GET /bot<manager_token>/getManagedBotToken?user_id=<new_bot_user_id>
 → "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"

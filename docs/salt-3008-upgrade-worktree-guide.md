@@ -52,7 +52,7 @@ This project already uses git worktrees for parallel development (see `.worktree
 
 ## Upgrade Process Overview
 
-```mermaid
+```text
 graph TD
     A[Start: Clean main worktree] --> B[Create upgrade worktree]
     B --> C[Research Salt 3008 changes]

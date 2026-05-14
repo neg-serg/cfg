@@ -84,7 +84,7 @@ user           {{ gopass "email/gmail/address" }}
 Salt states use the `gopass_secret()` Jinja macro (defined in `_macros_common.jinja`)
 which gracefully falls back if gopass is unavailable:
 
-```yaml
+```jinja
 # In the .sls file:
 {%- set lastfm_user = gopass_secret('lastfm/username') | trim %}
 {%- set lastfm_pass = gopass_secret('lastfm/password') | trim %}

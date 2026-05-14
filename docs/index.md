@@ -6,7 +6,6 @@ Generated documentation for all project entities — states, macros, scripts, an
    :maxdepth: 1
    :glob:
 
-   *
    states/*
    macros/*
    scripts/*
@@ -701,7 +700,7 @@ Python Scripts
 
    * - ``migrate-sls-to-python``
      - ``scripts/migrate-sls-to-python.py``
-     - Mechanically replace Jinja macro calls with salt['module.func']() in .sls files.
+     - Mechanically replace Jinja macro calls with salt['module.func'] in .sls files.
 
    * - ``pretty``
      - ``scripts/lib/pretty.py``

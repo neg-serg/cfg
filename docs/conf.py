@@ -14,7 +14,8 @@ extensions = [
 ]
 source_suffix = {'.rst': 'restructuredtext', '.md': 'markdown'}
 master_doc = 'index'
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**/_ext/**', '**/_static/**']
+include_patterns = ['*.md', '*.rst']
 html_theme = 'sphinx_book_theme'
 html_title = 'Salt Configuration Docs'
 html_static_path = ['_static']
@@ -22,7 +23,10 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
 }
 nitpicky = True
-suppress_warnings = ['toc.not_included', 'myst.xref_missing', 'misc.highlighting_failure', 'myst.domains']
+suppress_warnings = ['toc.not_included'
+    # .md files in docs/ are stand-alone reference docs, not part of the
+    # entity toctree. They remain findable via Sphinx search and direct links.
+    ]
 
 
 def run_extractor(app):

@@ -360,6 +360,9 @@ def gen_state_rst(entity: dict) -> str:
     id_ = entity['id']
     purpose = entity.get('purpose', '')
     lines = [
+        f'Salt State: {id_}',
+        '=' * (len(id_) + 12),
+        '',
         f'.. salt:state:: {id_}',
         '',
         f'   {purpose}' if purpose else '',
@@ -406,6 +409,9 @@ def gen_macro_rst(entity: dict) -> str:
     name = entity['id']
     purpose = entity.get('purpose', '')
     lines = [
+        f'Macro: {name}',
+        '=' * (len(name) + 7),
+        '',
         f'.. salt:macro:: {name}',
         '',
         f'   {purpose}' if purpose else '',
@@ -446,7 +452,12 @@ def gen_script_py_rst(entity: dict) -> str:
     name = entity['id']
     purpose = entity.get('purpose', '')
     lines = [
+        f'Script: {name}',
+        '=' * (len(name) + 8),
+        '',
         f'.. salt:script-py:: {name}',
+        '',
+        f'   {purpose}' if purpose else '',
         '',
         f'   {rst_escape(purpose)}' if purpose else '',
         '',
@@ -470,6 +481,9 @@ def gen_script_sh_rst(entity: dict) -> str:
     name = entity['id']
     purpose = entity.get('purpose', '')
     lines = [
+        f'Shell Script: {name}',
+        '=' * (len(name) + 14),
+        '',
         f'.. salt:script-sh:: {name}',
         '',
         f'   {purpose}' if purpose else '',
@@ -495,6 +509,9 @@ def gen_data_file_rst(entity: dict) -> str:
     purpose = entity.get('purpose', '')
     consumers = entity.get('consumers', [])
     lines = [
+        f'Data File: {id_}',
+        '=' * (len(id_) + 11),
+        '',
         f'.. salt:data-file:: {id_}',
         '',
         f'   {purpose}' if purpose else '',
@@ -542,6 +559,10 @@ def gen_index(entities: list, manifest_path: Path):
         'data_file': 'Data Files',
     }
 
+    # List all hand-authored .md documents so they appear in the toctree
+    doc_files = sorted(DOCS_DIR.glob('*.md'))
+    doc_names = [p.stem for p in doc_files if p.stem not in ('index', 'README', 'module-index', 'knowledge')]
+
     lines = [
         '# Salt Configuration Documentation',
         '',
@@ -551,7 +572,6 @@ def gen_index(entities: list, manifest_path: Path):
         '   :maxdepth: 1',
         '   :glob:',
         '',
-        '   *',
         '   states/*',
         '   macros/*',
         '   scripts/*',
@@ -578,6 +598,7 @@ def gen_index(entities: list, manifest_path: Path):
                 ref = f':salt:data:`{eid}`'
             else:
                 ref = f'``{eid}``'
+            purpose = purpose.replace('()`', '() ')
             lines.extend(['', f'   * - {ref}', f'     - ``{source}``', f'     - {purpose}'])
 
     index_path = DOCS_DIR / 'index.md'

@@ -688,8 +688,8 @@ entities:
     source: scripts/migrate-floorp-to-zen-profile.sh
     type: script_sh
   migrate-sls-to-python:
-    purpose: Mechanically replace Jinja macro calls with salt['module.func']() in
-      .sls files.
+    purpose: Mechanically replace Jinja macro calls with salt['module.func'] in .sls
+      files.
     source: scripts/migrate-sls-to-python.py
     type: script_py
   mkinitcpio:

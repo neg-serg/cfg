@@ -274,7 +274,7 @@ Common mistakes that AI tools produce when generating Salt states for this proje
 **Root cause**: Salt official documentation prominently features pillar. LLMs over-index on official docs and default to pillar for any data storage.
 
 **Before** (wrong):
-```yaml
+```jinja
 # pillar/packages.sls — WRONG for masterless
 packages:
   - git
@@ -288,7 +288,7 @@ install_packages:
 ```
 
 **After** (correct):
-```yaml
+```jinja
 # states/data/packages.yaml
 base:
   - git   # version control system

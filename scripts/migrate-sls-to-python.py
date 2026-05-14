@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanically replace Jinja macro calls with salt['module.func']() in .sls files.
+"""Mechanically replace Jinja macro calls with salt['module.func'] in .sls files.
 After this script runs, macro files can be emptied.
 
 Usage: python3 scripts/migrate-sls-to-python.py [--dry-run]

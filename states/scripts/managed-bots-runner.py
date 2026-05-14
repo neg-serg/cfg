@@ -17,6 +17,9 @@ from typing import Optional
 from urllib.parse import quote
 
 import yaml
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+from lib.pretty import pretty
 from telegram import (
     Bot,
     ReplyKeyboardMarkup,
@@ -411,7 +414,7 @@ def main():
         sys.exit(1)
 
     if args.check:
-        print("can_manage_bots: True")
+        pretty.ok("can_manage_bots: True")
         sys.exit(0)
 
     registry = BotRegistry(config["registry"]["path"])

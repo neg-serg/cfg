@@ -109,7 +109,7 @@ def test_check_mode_reports_present_and_missing_keys(capsys):
 
     captured = capsys.readouterr()
     assert rc == 1
-    assert "OK: groq (api/groq)" in captured.out
+    assert "groq (api/groq)" in captured.out
     assert "MISSING: deepseek (api/deepseek)" in captured.out
 
 

@@ -5,9 +5,13 @@ from __future__ import annotations
 
 import argparse
 import subprocess
+import sys
 from pathlib import Path
 
 import yaml
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
 
 
 class SecretMissing(Exception):
@@ -76,9 +80,9 @@ def run_check(providers: list[dict], secret_reader) -> int:
             continue
         try:
             secret_reader(provider["gopass_key"])
-            print(f"OK: {provider['name']} ({provider['gopass_key']})")
+            pretty.ok(f"{provider['name']} ({provider['gopass_key']})")
         except SecretMissing:
-            print(f"MISSING: {provider['name']} ({provider['gopass_key']})")
+            pretty.fail(f"MISSING: {provider['name']} ({provider['gopass_key']})")
             rc = 1
     return rc
 
@@ -148,10 +152,10 @@ def main() -> int:
         return run_check(providers, read_gopass_secret)
     entries = build_provider_entries(providers, read_gopass_secret)
     if not entries:
-        print("ERROR: no provider entries resolved")
+        pretty.fail("No provider entries resolved")
         return 1
     write_openai_compatibility(args.config, entries)
-    print(f"Recovered openai-compatibility in {args.config}")
+    pretty.ok(f"Recovered openai-compatibility in {pretty.filepath(str(args.config))}")
     return 0
 
 

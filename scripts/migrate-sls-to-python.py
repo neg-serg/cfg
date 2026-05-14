@@ -11,6 +11,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DRY_RUN = "--dry-run" in sys.argv
 
@@ -160,16 +163,20 @@ def main():
         result = migrate_sls(path)
         if result:
             rel = path.relative_to(REPO_ROOT)
-            print(f"[{'DRY' if DRY_RUN else 'OK'}] {rel}")
+            status = f"[{'DRY' if DRY_RUN else 'OK'}] {rel}"
+            if DRY_RUN:
+                pretty.info(status)
+            else:
+                pretty.ok(status)
             for line in result.split("\n"):
                 print(f"    {line}")
             total += 1
 
     if total == 0:
-        print("No .sls files needed changes.")
+        pretty.info("No .sls files needed changes.")
         return
 
-    print(f"\n{total} files modified.")
+    pretty.ok(f"{total} files modified.")
 
     if not DRY_RUN:
         for f in REPO_ROOT.glob("states/_macros_*.jinja"):
@@ -177,14 +184,14 @@ def main():
                 "{# All business logic migrated to states/_modules/. "
                 "File kept for backward compatibility. #}\n"
             )
-            print(f"[CLEAR] {f.name}")
+            pretty.info(f"[CLEAR] {f.name}")
 
     followup = (
         " Use 'git diff' to review changes."
         if not DRY_RUN
         else " Run without --dry-run to apply."
     )
-    print(f"\nDone.{followup}")
+    pretty.info(f"Done.{followup}")
 
 
 if __name__ == "__main__":

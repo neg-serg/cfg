@@ -12,6 +12,10 @@ import os
 import re
 import sys
 from datetime import datetime
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
 
 QML_DIR = os.path.join("dotfiles", "dot_config", "quickshell")
 MEMORY_DIR = os.path.join(
@@ -226,9 +230,9 @@ def main():
     os.makedirs(MEMORY_DIR, exist_ok=True)
 
     modules = discover_modules(QML_DIR)
-    print(f"Found {len(modules)} modules:")
+    pretty.info(f"Found {len(modules)} modules:")
     for m in sorted(modules):
-        print(f"  {m}: {len(modules[m]['components'])} components")
+        pretty.info(f"  {m}: {len(modules[m]['components'])} components")
 
     # Components index
     comp_md = generate_components_md(modules, QML_DIR)
@@ -236,7 +240,7 @@ def main():
     with open(comp_path, "w") as f:
         f.write(comp_md)
     comp_lines = comp_md.count("\n")
-    print(f"Wrote {comp_path} ({comp_lines} lines)")
+    pretty.ok(f"Wrote {pretty.filepath(comp_path)} ({comp_lines} lines)")
 
     # Helpers index
     helpers_md = generate_helpers_md(QML_DIR)
@@ -244,7 +248,7 @@ def main():
     with open(helpers_path, "w") as f:
         f.write(helpers_md)
     helpers_lines = helpers_md.count("\n")
-    print(f"Wrote {helpers_path} ({helpers_lines} lines)")
+    pretty.ok(f"Wrote {pretty.filepath(helpers_path)} ({helpers_lines} lines)")
 
 
 if __name__ == "__main__":

@@ -16,6 +16,9 @@ import socks
 import yaml
 from telethon import TelegramClient
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+from lib.pretty import pretty
+
 CONFIG_PATH = Path.home() / ".config" / "telethon-bridge" / "config.yaml"
 
 
@@ -58,9 +61,9 @@ def main():
     if proxy_scheme == "socks5" and proxy_host and proxy_port:
         proxy = (socks.SOCKS5, proxy_host, int(proxy_port))
 
-    print(f"Initializing Telethon session at: {session_path}")
-    print(f"Proxy: {proxy_host}:{proxy_port} (SOCKS5)" if proxy else "Proxy: none")
-    print("You will be prompted for your phone number and verification code.")
+    pretty.info(f"Initializing Telethon session at: {session_path}")
+    pretty.key_value({"Proxy": f"{proxy_host}:{proxy_port} (SOCKS5)" if proxy else "none"})
+    pretty.info("You will be prompted for your phone number and verification code.")
     print()
 
     client = TelegramClient(
@@ -72,16 +75,16 @@ def main():
 
     with client:
         if not client.is_user_authorized():
-            print("Session created and authorized successfully!")
+            pretty.ok("Session created and authorized successfully!")
         else:
-            print("Session already authorized.")
+            pretty.ok("Session already authorized.")
 
     # Secure the session file
     os.chmod(session_path, 0o600)
-    print(f"Session file permissions set to 0600: {session_path}")
+    pretty.info(f"Session file permissions set to 0600: {pretty.filepath(session_path)}")
     print()
-    print("You can now start the service:")
-    print("  systemctl --user start telethon-bridge.service")
+    pretty.info("You can now start the service:")
+    pretty.info("  systemctl --user start telethon-bridge.service")
 
 
 if __name__ == "__main__":

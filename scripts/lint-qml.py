@@ -16,13 +16,10 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
 
-_ERR = '{_ERR}'
-_WARN = '{_WARN}'
-_OK = '{_OK}'
-_RESET = '{_RESET}'
-
-
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
 
 QML_DIR = os.path.join("dotfiles", "dot_config", "quickshell")
 QT_QML = "/usr/lib/qt6/qml"
@@ -70,18 +67,18 @@ def lint_files(files: list[str]) -> list[str]:
 
 def main():
     if not shutil.which("qmllint"):
-        print("qmllint not found, skipping QML lint")
+        pretty.warn("qmllint not found, skipping QML lint")
         return
 
     missing_types = [t for t in QMLTYPES if not os.path.exists(t)]
     if missing_types:
-        print(f"Missing qmltypes (install qt6-declarative + quickshell): {missing_types}")
-        print("Skipping QML lint")
+        pretty.warn(f"Missing qmltypes (install qt6-declarative + quickshell): {missing_types}")
+        pretty.info("Skipping QML lint")
         return
 
     all_files = sorted(glob.glob(os.path.join(QML_DIR, "**", "*.qml"), recursive=True))
     if not all_files:
-        print("No QML files found")
+        pretty.info("No QML files found")
         return
 
     # Split files: those needing pragma stripping vs clean ones
@@ -146,14 +143,14 @@ def main():
 
     if errors:
         for line in errors:
-            print(f"\033[31m{line}\033[0m")
-        print(
+            pretty.fail(line)
+        pretty.fail(
             f"QML lint: {len(all_files)} files "
             f"({len(pragma_files)} preprocessed), {len(errors)} errors"
         )
         sys.exit(1)
 
-    print(f"QML lint: {len(all_files)} files ({len(pragma_files)} preprocessed), 0 errors")
+    pretty.ok(f"QML lint: {len(all_files)} files ({len(pragma_files)} preprocessed), 0 errors")
 
 
 if __name__ == "__main__":

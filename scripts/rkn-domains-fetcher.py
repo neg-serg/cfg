@@ -14,6 +14,9 @@ from typing import Optional
 
 import yaml
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -410,40 +413,45 @@ def command_status(args: argparse.Namespace) -> int:
     """Show status"""
     state = load_state(args.state)
 
-    print("RKN Domains Fetcher Status")
-    print("=" * 50)
+    pretty.header("RKN Domains Fetcher Status")
 
     if state.get("last_success"):
         last_success = parse_iso(state["last_success"])
         age = now_utc() - last_success
-        print(f"Last successful fetch: {last_success} ({age.days}d {age.seconds // 3600}h ago)")
+        age_str = f"{last_success} ({age.days}d {age.seconds // 3600}h ago)"
+        pretty.key_value({"Last successful fetch": age_str})
     else:
-        print("Last successful fetch: Never")
+        pretty.key_value({"Last successful fetch": "Never"})
 
-    print(f"Domains count: {state.get('domains_count', 0)}")
-    print(f"Source used: {state.get('source_used', 'None')}")
-    print(f"Error count: {state.get('error_count', 0)}")
+    pretty.key_value({
+        "Domains count": str(state.get('domains_count', 0)),
+        "Source used": str(state.get('source_used', 'None')),
+        "Error count": str(state.get('error_count', 0)),
+    })
 
     stats = state.get("stats", {})
     if stats:
-        print("\nStatistics:")
-        print(f"  Total fetched: {stats.get('total_fetched', 0)}")
-        print(f"  Valid domains: {stats.get('valid_domains', 0)}")
-        print(f"  Filtered out: {stats.get('filtered_out', 0)}")
+        pretty.section("Statistics")
+        pretty.key_value({
+            "Total fetched": str(stats.get('total_fetched', 0)),
+            "Valid domains": str(stats.get('valid_domains', 0)),
+            "Filtered out": str(stats.get('filtered_out', 0)),
+        })
 
         by_category = stats.get("by_category", {})
         if by_category:
-            print("\n  By category:")
-            for category, count in sorted(by_category.items(), key=lambda x: x[1], reverse=True):
-                print(f"    {category}: {count}")
+            sorted_cats = sorted(by_category.items(), key=lambda x: x[1], reverse=True)
+            cat_pairs = {f"  {c}": str(n) for c, n in sorted_cats}
+            pretty.key_value(cat_pairs)
 
     # Check output file
+    output_path_str = pretty.filepath(str(args.output))
     if args.output.exists():
         with open(args.output) as fh:
             file_count = sum(1 for line in fh if line.strip())
-        print(f"\nOutput file: {args.output} ({file_count} domains)")
+        pretty.key_value({"Output file": f"{output_path_str} ({file_count} domains)"})
     else:
-        print(f"\nOutput file: {args.output} (not found)")
+        pretty.key_value({"Output file": f"{output_path_str} (not found)"})
 
     return 0
 
@@ -507,15 +515,17 @@ def command_validate(args: argparse.Namespace) -> int:
             if args.show_invalid:
                 print(f"Invalid: {domain}")
 
-    print(f"Valid domains: {valid_count}")
-    print(f"Invalid domains: {invalid_count}")
-    print(f"Total: {len(domains)}")
+    pretty.key_value({
+        "Valid domains": str(valid_count),
+        "Invalid domains": str(invalid_count),
+        "Total": str(len(domains)),
+    })
 
     if invalid_count > 0 and args.clean:
         logger.info("Cleaning invalid domains...")
         valid_domains = [d for d in domains if validate_domain(d, config)]
         save_domains_file(valid_domains, args.input)
-        print(f"Saved {len(valid_domains)} valid domains")
+        pretty.ok(f"Saved {len(valid_domains)} valid domains")
 
     return 0
 

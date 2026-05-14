@@ -17,7 +17,11 @@ import json
 import os
 import subprocess
 import sys
+from pathlib import Path
 from urllib.parse import urlparse
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+from lib.pretty import pretty
 
 GOPASS_PREFIX = "bw"
 
@@ -129,10 +133,10 @@ def sync_vaultwarden_to_gopass(session):
 
 def main():
     try:
-        print("bw-sync: starting sync Vaultwarden → gopass")
+        pretty.info("Starting sync Vaultwarden → gopass")
         session = bw_unlock()
         imported = sync_vaultwarden_to_gopass(session)
-        print(f"bw-sync: done — imported {imported} new items")
+        pretty.ok(f"Done — imported {imported} new items")
         run(["gopass", "sync"])
     except subprocess.CalledProcessError as e:
         print(f"bw-sync: FAILED — {e}", file=sys.stderr)

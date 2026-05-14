@@ -7,7 +7,11 @@ Designed for OLED/4K displays: pure black background with subtle geometric accen
 
 import argparse
 import re
+import sys
+from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
 from PIL import Image, ImageDraw
 
 
@@ -56,7 +60,7 @@ def generate_splash(width: int, height: int, output: str) -> None:
     )
 
     img.save(output, "BMP")
-    print(f"Generated {width}x{height} splash → {output}")
+    pretty.ok(f"Generated {width}x{height} splash → {pretty.filepath(output)}")
 
 
 def main() -> None:

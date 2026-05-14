@@ -137,6 +137,8 @@ def _user_service_enable_dict(name: str, services: list[str] | None = None,
         shell_cmd = "/usr/bin/true"
     else:
         parts = ["set -euo pipefail"]
+        parts.append(f"export XDG_RUNTIME_DIR={h['runtime_dir']} "
+                     f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus")
         if daemon_reload:
             parts.append("systemctl --user daemon-reload")
         for svc in svc_list:
@@ -221,10 +223,12 @@ def user_service_restart(name: str, service: str, onlyif: str | None = None,
                          onchanges: list[str] | None = None,
                          user: str | None = None) -> dict[str, Any]:
     u = user or _host()["user"]
+    _h = _host()
     args: list[dict[str, Any]] = [
-        {"name": f"systemctl --user restart {service}"},
+        {"name": (f"XDG_RUNTIME_DIR={_h['runtime_dir']} "
+                  f"DBUS_SESSION_BUS_ADDRESS=unix:path={_h['runtime_dir']}/bus "
+                  f"systemctl --user restart {service}")},
         {"runas": u},
-        {"env": _sysctl_env()},
     ]
     if onlyif:
         args.append({"onlyif": onlyif})
@@ -253,9 +257,10 @@ def user_service_disable(name: str, units: list[str],
     return {
         name: {
             "cmd.run": [
-                {"name": f"systemctl --user disable --now {' '.join(units)} 2>/dev/null || true"},
+                {"name": (f"XDG_RUNTIME_DIR={h['runtime_dir']} "
+                          f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus "
+                          f"systemctl --user disable --now {' '.join(units)} 2>/dev/null || true")},
                 {"runas": u},
-                {"env": _sysctl_env()},
                 {"onlyif": "\n".join(unless_parts)},
             ]
         }

@@ -1,3 +1,10 @@
+{#- @state
+   id: network.vpn_hybrid
+   purpose: ""
+   data_files: [data/vpn.yaml]
+   configs: [configs/sing-box-hybrid-config.json.j2]
+   feature_gate: [network.vpn_hybrid]
+#}
 {% from '_imports.jinja' import host, home, user %}
 
 {% import_yaml 'data/vpn.yaml' as vpn %}

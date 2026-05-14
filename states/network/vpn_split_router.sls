@@ -1,3 +1,12 @@
+{#- @state
+   id: network.vpn_split_router
+   purpose: ""
+   data_files: [data/vpn.yaml]
+   configs: [configs/vpn-split-router.yaml.j2]
+   services: [amnezia-import-tun.service, vpn-policy-rollback.service, vpn-policy-rollback.timer, vpn-split-router.service, vpn-split-router.timer]
+   feature_gate: [network.vpn_hybrid, network.vpn_split_router]
+   tests: [tests/test_vpn_split_router.py]
+#}
 {% from '_imports.jinja' import host, home, user %}
 
 {% import_yaml 'data/vpn.yaml' as vpn %}

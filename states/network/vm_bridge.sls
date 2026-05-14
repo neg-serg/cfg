@@ -1,3 +1,10 @@
+{#- @state
+   id: network.vm_bridge
+   purpose: ""
+   data_files: [data/network.yaml]
+   configs: [configs/br0.network]
+   feature_gate: [network.vm_bridge]
+#}
 {% from '_imports.jinja' import host %}
 {% import_yaml 'data/network.yaml' as network %}
 {% set net = host.features.network %}

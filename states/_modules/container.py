@@ -186,7 +186,7 @@ def deploy(name: str,
         {"XDG_RUNTIME_DIR": runtime_dir, "DBUS_SESSION_BUS_ADDRESS": f"unix:path={runtime_dir}/bus"}
         if user_scope else None
     )
-    _sc = lambda cmd: f"{'--machine=' + host_user + '@.host --user ' if user_scope else ''}{cmd}"
+    _sc = lambda cmd: f"{'--user ' if user_scope else ''}{cmd}"
 
     # Enable + Running + Healthcheck (skip if manual start)
     if not manual_start:
@@ -225,6 +225,7 @@ def deploy(name: str,
         ]
         if user_scope:
             running.append({"runas": host_user})
+            running.append({"env": _user_env})
         result[f"{name}_running"] = {"cmd.run": running}
 
     return _to_yaml(result)

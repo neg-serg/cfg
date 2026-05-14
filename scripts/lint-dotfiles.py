@@ -6,13 +6,10 @@ import os
 import re
 import subprocess
 import sys
+from pathlib import Path
 
-_ERR = '{_ERR}'
-_WARN = '{_WARN}'
-_OK = '{_OK}'
-_RESET = '{_RESET}'
-
-
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
 
 DOTFILES_BIN = os.path.join("dotfiles", "dot_local", "bin")
 DOTFILES_ROOT = "dotfiles"
@@ -54,13 +51,13 @@ def check_shebangs():
         with open(path, encoding="utf-8", errors="replace") as f:
             first_line = f.readline().rstrip("\n")
         if not first_line.startswith("#!"):
-            print(f"\033[31mMissing shebang: {path}\033[0m")
+            pretty.fail(f"Missing shebang: {path}")
             errors += 1
             continue
         if first_line in _NON_SHELL_SHEBANGS:
             continue
         if first_line != _ZSH_SHEBANG:
-            print(f"\033[31mBad shebang: {path}: {first_line}\033[0m")
+            pretty.fail(f"Bad shebang: {path}: {first_line}")
             errors += 1
     return errors, checked
 
@@ -90,10 +87,10 @@ def check_zsh_syntax():
         )
         if result.returncode != 0:
             stderr = result.stderr.strip()
-            print(f"\033[31mzsh syntax error: {path}\033[0m")
+            pretty.fail(f"zsh syntax error: {path}")
             if stderr:
                 for line in stderr.splitlines():
-                    print(f"  {line}")
+                    pretty.info(f"  {line}")
             errors += 1
     return errors, checked
 
@@ -131,7 +128,7 @@ def check_bash_idioms():
                 continue
             for pattern, msg in _BASH_IDIOMS:
                 if pattern.search(line):
-                    print(f"\033[31mBash idiom: {path}:{lineno}: {msg}\033[0m")
+                    pretty.fail(f"Bash idiom: {path}:{lineno}: {msg}")
                     errors += 1
                     break
     return errors, checked
@@ -187,9 +184,8 @@ def check_mpv_russian_keys():
     for lineno, key, cmd in bindings:
         cyrillic_key = _to_cyrillic_key(key)
         if cyrillic_key and cyrillic_key not in bound_keys:
-            print(
-                f"\033[31mmpv missing Russian duplicate: {conf}:{lineno}: "
-                f"{key} → needs {cyrillic_key}\033[0m"
+            pretty.fail(
+                f"mpv missing Russian duplicate: {conf}:{lineno}: {key} → needs {cyrillic_key}"
             )
             errors += 1
     return errors, checked
@@ -216,7 +212,7 @@ def check_xdg_paths():
                 continue
             for pat in _XDG_PATTERNS:
                 if pat.search(line):
-                    print(f"\033[31mCanonical XDG path: {path}:{lineno}: {line.rstrip()}\033[0m")
+                    pretty.fail(f"Canonical XDG path: {path}:{lineno}: {line.rstrip()}")
                     errors += 1
                     break
     return errors, checked
@@ -227,23 +223,38 @@ def main():
 
     shebang_errors, scripts_checked = check_shebangs()
     total_errors += shebang_errors
-    print(f"Shebangs: {scripts_checked} scripts, {shebang_errors} violations")
+    if shebang_errors:
+        pretty.summary_line(scripts_checked - shebang_errors, shebang_errors, "Shebangs")
+    else:
+        pretty.ok(f"Shebangs: {scripts_checked} scripts, 0 violations")
 
     syntax_errors, zsh_checked = check_zsh_syntax()
     total_errors += syntax_errors
-    print(f"Zsh syntax: {zsh_checked} scripts, {syntax_errors} errors")
+    if syntax_errors:
+        pretty.summary_line(zsh_checked - syntax_errors, syntax_errors, "Zsh syntax")
+    else:
+        pretty.ok(f"Zsh syntax: {zsh_checked} scripts, 0 errors")
 
     bash_errors, bash_checked = check_bash_idioms()
     total_errors += bash_errors
-    print(f"Bash idioms: {bash_checked} zsh scripts, {bash_errors} violations")
+    if bash_errors:
+        pretty.summary_line(bash_checked - bash_errors, bash_errors, "Bash idioms")
+    else:
+        pretty.ok(f"Bash idioms: {bash_checked} zsh scripts, 0 violations")
 
     xdg_errors, files_checked = check_xdg_paths()
     total_errors += xdg_errors
-    print(f"XDG paths: {files_checked} files, {xdg_errors} violations")
+    if xdg_errors:
+        pretty.summary_line(files_checked - xdg_errors, xdg_errors, "XDG paths")
+    else:
+        pretty.ok(f"XDG paths: {files_checked} files, 0 violations")
 
     mpv_errors, mpv_checked = check_mpv_russian_keys()
     total_errors += mpv_errors
-    print(f"mpv Russian keys: {mpv_checked} files, {mpv_errors} missing duplicates")
+    if mpv_errors:
+        pretty.summary_line(mpv_checked - mpv_errors, mpv_errors, "mpv Russian keys")
+    else:
+        pretty.ok(f"mpv Russian keys: {mpv_checked} files, 0 missing duplicates")
 
     sys.exit(1 if total_errors else 0)
 

@@ -13,13 +13,10 @@ import os
 import re
 import subprocess
 import sys
+from pathlib import Path
 
-_ERR = '{_ERR}'
-_WARN = '{_WARN}'
-_OK = '{_OK}'
-_RESET = '{_RESET}'
-
-
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
 
 UNITS_DIR = os.path.join("states", "units")
 
@@ -89,16 +86,16 @@ def verify_unit(path, templated_units):
 def main():
     units, templated_units = _scan_units()
     if not units:
-        print("No verifiable unit files found")
+        pretty.info("No verifiable unit files found")
         return
     errors = 0
     for path in units:
         issues = verify_unit(path, templated_units)
         if issues:
             errors += 1
-            print(f"\033[31m{path}:\033[0m")
+            pretty.fail(f"{path}:")
             for line in issues:
-                print(f"  {line}")
+                pretty.info(f"  {line}")
 
     skipped_j2 = len(glob.glob(os.path.join(UNITS_DIR, "**/*.j2"), recursive=True))
     skipped_conf = len(glob.glob(os.path.join(UNITS_DIR, "**/*.conf"), recursive=True))
@@ -109,11 +106,13 @@ def main():
     )
     skipped_inline = len(all_svc_timer) - len(units) - skipped_j2
 
-    print(
-        f"Systemd units: {len(units)} verified, "
-        f"{errors} with errors"
-        f" (skipped: {skipped_j2} .j2, {skipped_conf} .conf"
-        f"{f', {skipped_inline} inline-jinja' if skipped_inline > 0 else ''})"
+    if errors:
+        pretty.summary_line(len(units) - errors, errors, "Systemd units")
+    else:
+        pretty.ok(f"Systemd units: {len(units)} verified, 0 errors")
+    pretty.info(
+        f"skipped: {skipped_j2} .j2, {skipped_conf} .conf"
+        f"{f', {skipped_inline} inline-jinja' if skipped_inline > 0 else ''}"
     )
     sys.exit(1 if errors else 0)
 

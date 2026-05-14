@@ -17,6 +17,7 @@ if SCRIPTS_DIR not in sys.path:
 
 import salt_debug_report  # noqa: E402
 import salt_source_model  # noqa: E402
+from lib.pretty import pretty  # noqa: E402
 
 TOP_LEVEL_PREFIX = "states/"
 GROUP_PREFIX = "states/group/"
@@ -102,9 +103,7 @@ def _build_data_state_graph(repo_root: str | None = None) -> dict[str, list[str]
                     if config_state:
                         data_to_states[data_basename].append(config_state)
 
-    data_to_states = {
-        k: sorted(set(v)) for k, v in data_to_states.items() if v
-    }
+    data_to_states = {k: sorted(set(v)) for k, v in data_to_states.items() if v}
 
     _DATA_TO_STATE_CACHE = data_to_states
     return data_to_states
@@ -366,25 +365,25 @@ def _print_graph(repo_root: str | None = None) -> None:
 
 
 def _print_text(plan: dict[str, object]) -> None:
-    print("Changed files:")
-    for path in plan["changed_files"]:
-        print(f"- {path}")
+    pretty.section("Changed files")
+    if plan["changed_files"]:
+        pretty.list_items(plan["changed_files"])
+    else:
+        pretty.info("none")
 
-    print(f"Final target: {plan['final_target']}")
+    pretty.info(f"Final target: {plan['final_target']}")
 
-    print("Selected states:")
+    pretty.section("Selected states")
     if plan["selected_states"]:
-        for target in plan["selected_states"]:
-            print(f"- {target}")
+        pretty.list_items(plan["selected_states"])
     else:
-        print("- none")
+        pretty.info("none")
 
-    print("Fallback reasons:")
+    pretty.section("Fallback reasons")
     if plan["fallback_reasons"]:
-        for reason in plan["fallback_reasons"]:
-            print(f"- {reason}")
+        pretty.list_items(plan["fallback_reasons"])
     else:
-        print("- none")
+        pretty.info("none")
 
 
 def _debug_bundle_context(changed_files: list[str] | None) -> dict[str, object]:
@@ -426,7 +425,7 @@ def main() -> None:
             _print_graph()
             raise SystemExit(0)
         if not args.files:
-            print("Error: --files required (or use --graph)")
+            pretty.fail("--files required (or use --graph)")
             raise SystemExit(1)
         plan = plan_for_changed_files(args.files)
         if args.as_json:

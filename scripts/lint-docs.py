@@ -5,6 +5,10 @@ import glob
 import os
 import re
 import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
 
 # Directories containing docs
 DOC_DIRS = ["docs"]
@@ -32,16 +36,19 @@ def check_no_cyrillic():
         with open(path, encoding="utf-8") as f:
             for lineno, line in enumerate(f, 1):
                 if _CYRILLIC_RE.search(line):
-                    print(
-                        f"\033[31mCyrillic in English doc: {path}:{lineno}: {line.rstrip()}\033[0m"
-                    )
+                    pretty.fail(f"Cyrillic in English doc: {path}:{lineno}: {line.rstrip()}")
                     errors += 1
     return errors, files_checked
 
 
 def main():
     cyrillic_errors, files_checked = check_no_cyrillic()
-    print(f"Language consistency: {files_checked} files, {cyrillic_errors} violations")
+    if cyrillic_errors:
+        pretty.summary_line(
+            files_checked - cyrillic_errors, cyrillic_errors, "Language consistency"
+        )
+    else:
+        pretty.ok(f"Language consistency: {files_checked} files, 0 violations")
     sys.exit(1 if cyrillic_errors else 0)
 
 
@@ -51,5 +58,5 @@ if __name__ == "__main__":
     except (OSError, KeyboardInterrupt):
         raise
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        pretty.fail(f"Error: {e}")
         sys.exit(1)

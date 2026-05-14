@@ -16,6 +16,9 @@ from pathlib import Path
 
 import yaml
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
+
 DEFAULT_CONFIG_PATH = Path.home() / ".config" / "vpn-split-router" / "config.yaml"
 DEFAULT_STATE_PATH = Path.home() / ".local" / "state" / "vpn-split-router" / "state.json"
 DEFAULT_OBSERVED_PATH = (
@@ -376,8 +379,12 @@ def command_recheck(args: argparse.Namespace) -> int:
         apply_probe_result(record, config, probe)
     write_json(state_path, state)
     refresh_outputs(
-        state, config, observed_path, vpn_domains_path,
-        runtime_config_path, policy_path=args.policy,
+        state,
+        config,
+        observed_path,
+        vpn_domains_path,
+        runtime_config_path,
+        policy_path=args.policy,
     )
     return 0
 
@@ -389,8 +396,12 @@ def command_forget(args: argparse.Namespace) -> int:
     write_json(args.state, state)
     config = load_config(args.config)
     refresh_outputs(
-        state, config, args.observed, args.vpn_domains,
-        args.runtime_config, policy_path=args.policy,
+        state,
+        config,
+        args.observed,
+        args.vpn_domains,
+        args.runtime_config,
+        policy_path=args.policy,
     )
     return 0
 
@@ -412,8 +423,12 @@ def command_mark_vpn(args: argparse.Namespace) -> int:
         record["ttl_until"] = (now_utc() + timedelta(seconds=ttl_seconds)).isoformat()
     write_json(args.state, state)
     refresh_outputs(
-        state, config, args.observed, args.vpn_domains,
-        args.runtime_config, policy_path=args.policy,
+        state,
+        config,
+        args.observed,
+        args.vpn_domains,
+        args.runtime_config,
+        policy_path=args.policy,
     )
     return 0
 
@@ -435,8 +450,12 @@ def command_mark_direct(args: argparse.Namespace) -> int:
         record["ttl_until"] = (now_utc() + timedelta(seconds=ttl_seconds)).isoformat()
     write_json(args.state, state)
     refresh_outputs(
-        state, config, args.observed, args.vpn_domains,
-        args.runtime_config, policy_path=args.policy,
+        state,
+        config,
+        args.observed,
+        args.vpn_domains,
+        args.runtime_config,
+        policy_path=args.policy,
     )
     return 0
 
@@ -469,7 +488,7 @@ def command_policy_add_direct(args: argparse.Namespace) -> int:
         if normalized not in domains:
             domains.append(normalized)
     save_policy(args.policy, policy)
-    print(f"Added {len(args.targets)} domain(s) to always-direct")
+    pretty.ok(f"Added {len(args.targets)} domain(s) to always-direct")
     return 0
 
 
@@ -481,7 +500,7 @@ def command_policy_add_vpn(args: argparse.Namespace) -> int:
         if normalized not in domains:
             domains.append(normalized)
     save_policy(args.policy, policy)
-    print(f"Added {len(args.targets)} domain(s) to always-vpn")
+    pretty.ok(f"Added {len(args.targets)} domain(s) to always-vpn")
     return 0
 
 
@@ -496,30 +515,30 @@ def command_policy_remove(args: argparse.Namespace) -> int:
                 domains.remove(normalized)
                 removed += 1
     save_policy(args.policy, policy)
-    print(f"Removed {removed} domain(s) from policy")
+    pretty.ok(f"Removed {removed} domain(s) from policy")
     return 0
 
 
 def command_policy_apply(args: argparse.Namespace) -> int:
     policy = load_policy(args.policy)
-    if (
-        not policy.get("always_direct", {}).get("domains")
-        and not policy.get("always_vpn", {}).get("domains")
+    if not policy.get("always_direct", {}).get("domains") and not policy.get("always_vpn", {}).get(
+        "domains"
     ):
-        print("Policy is empty, nothing to apply", file=sys.stderr)
+        pretty.warn("Policy is empty, nothing to apply")
         return 1
     shutil.copy2(args.policy, args.policy_rollback)
     subprocess.run(
         ["systemctl", "--user", "start", "vpn-policy-rollback.timer"],
-        capture_output=True, check=False,
+        capture_output=True,
+        check=False,
     )
     changed = policy_sync_to_routing(args.policy, args.runtime_config)
-    print(
+    pretty.ok(
         "Policy applied with 5min auto-rollback timer "
         "(run 'vpn-split-router policy confirm' to keep)"
     )
     if changed:
-        print("Routing config updated")
+        pretty.info("Routing config updated")
     return 0
 
 
@@ -527,34 +546,36 @@ def command_policy_confirm(args: argparse.Namespace) -> int:
     args.policy_rollback.unlink(missing_ok=True)
     subprocess.run(
         ["systemctl", "--user", "stop", "vpn-policy-rollback.timer"],
-        capture_output=True, check=False,
+        capture_output=True,
+        check=False,
     )
-    print("Policy confirmed, rollback timer cancelled")
+    pretty.ok("Policy confirmed, rollback timer cancelled")
     return 0
 
 
 def command_policy_rollback(args: argparse.Namespace) -> int:
     if not args.policy_rollback.exists():
-        print("No rollback snapshot found", file=sys.stderr)
+        pretty.warn("No rollback snapshot found")
         return 1
     shutil.copy2(args.policy_rollback, args.policy)
     args.policy_rollback.unlink()
     subprocess.run(
         ["systemctl", "--user", "stop", "vpn-policy-rollback.timer"],
-        capture_output=True, check=False,
+        capture_output=True,
+        check=False,
     )
     changed = policy_sync_to_routing(args.policy, args.runtime_config)
-    print("Policy rolled back to previous state")
+    pretty.ok("Policy rolled back to previous state")
     if changed:
-        print("Routing config reverted")
+        pretty.info("Routing config reverted")
     return 0
 
 
 def command_policy_sync(args: argparse.Namespace) -> int:
     changed = policy_sync_to_routing(args.policy, args.runtime_config)
-    print("Policy synced to routing")
+    pretty.ok("Policy synced to routing")
     if changed:
-        print("Routing config updated")
+        pretty.info("Routing config updated")
     return 0
 
 

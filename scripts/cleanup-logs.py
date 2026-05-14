@@ -2,8 +2,12 @@
 """Delete Salt log files older than the given number of days."""
 
 import argparse
+import sys
 import time
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
 
 
 def prune_logs(log_dir: Path, max_age_days: int, dry_run: bool) -> list[tuple[Path, float]]:
@@ -37,12 +41,14 @@ def main() -> None:
     removed = prune_logs(log_dir, args.days, args.dry_run)
     action = "would remove" if args.dry_run else "removed"
     if removed:
-        print(f"{action.capitalize()} {len(removed)} file(s):")
-        for path, mtime in removed:
-            formatted = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(mtime))
-            print(f"  {path} (mtime {formatted})")
+        pretty.info(f"{action.capitalize()} {len(removed)} file(s):")
+        items = [
+            f"{path} (mtime {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(mtime))})"
+            for path, mtime in removed
+        ]
+        pretty.list_items(items)
     else:
-        print("No log files to prune")
+        pretty.ok("No log files to prune")
 
 
 if __name__ == "__main__":

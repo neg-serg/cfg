@@ -5,6 +5,10 @@ import glob
 import os
 import re
 import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
 
 STATES_DIR = "states"
 CHEZMOIIGNORE = os.path.join("dotfiles", ".chezmoiignore")
@@ -68,17 +72,18 @@ def main() -> int:
                     salt_rel = match.group(1)
                     chezmoi_path = convert_to_chezmoi_path(salt_rel)
                     if not is_covered(chezmoi_path, ignore_entries):
-                        print(
+                        pretty.fail(
                             f"{sls_path}:{lineno}: salt://dotfiles/{salt_rel} "
                             f"→ {chezmoi_path} not in .chezmoiignore"
                         )
                         errors += 1
 
     if errors:
-        print(f"\n{errors} ownership violation(s) found.")
-        print("Add missing paths to dotfiles/.chezmoiignore")
+        print()
+        pretty.fail(f"{errors} ownership violation(s) found.")
+        pretty.info("Add missing paths to dotfiles/.chezmoiignore")
     else:
-        print("lint-ownership: all salt://dotfiles/ refs covered by .chezmoiignore")
+        pretty.ok("lint-ownership: all salt://dotfiles/ refs covered by .chezmoiignore")
 
     return 1 if errors else 0
 

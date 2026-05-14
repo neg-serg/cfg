@@ -13,12 +13,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-_ERR = '{_ERR}'
-_WARN = '{_WARN}'
-_OK = '{_OK}'
-_RESET = '{_RESET}'
-
-
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
 
 SYSCTL_CONF = Path("states/configs/sysctl-custom.conf")
 SYSCTL_ETC_DIR = Path("/etc/sysctl.d")
@@ -28,12 +24,6 @@ SALT_MANAGED = {"99-custom.conf"}
 
 # Symlinks/stubs placed by packages — not user-managed, not a problem
 KNOWN_PACKAGE_FILES = {"99-sysctl.conf"}  # procps: symlink → /etc/sysctl.conf
-
-GREEN = "\033[32m"
-RED = "\033[31m"
-YELLOW = "\033[33m"
-RESET = "\033[0m"
-BOLD = "\033[1m"
 
 
 def parse_conf(path: Path) -> dict[str, str]:
@@ -71,15 +61,14 @@ def check_drift(conf_path: Path) -> tuple[int, int]:
     for key, expected in params.items():
         live = live_value(key)
         if live is None:
-            print(f"{RED}READ_FAIL {key}{RESET}  (param unreadable or unknown)")
+            pretty.fail(f"READ_FAIL {key}  (param unreadable or unknown)")
             errors += 1
         elif live != expected:
-            print(f"{RED}DRIFT     {key}{RESET}")
-            print(f"          expected : {expected}")
-            print(f"          live     : {live}")
+            pretty.fail(f"DRIFT     {key}")
+            pretty.key_value({"expected": expected, "live": live})
             errors += 1
         else:
-            print(f"{GREEN}OK        {key} = {live}{RESET}")
+            pretty.ok(f"OK        {key} = {live}")
     return errors, len(params)
 
 
@@ -90,43 +79,43 @@ def check_unmanaged() -> int:
     unmanaged = 0
     for f in sorted(SYSCTL_ETC_DIR.iterdir()):
         if f.name in SALT_MANAGED:
-            print(f"{GREEN}MANAGED   {f}{RESET}")
+            pretty.ok(f"MANAGED   {f}")
             continue
         if f.name in KNOWN_PACKAGE_FILES:
-            print(f"SKIP      {f}  (known package stub)")
+            pretty.info(f"SKIP      {f}  (known package stub)")
             continue
         owner = pkg_owner(f)
         if owner:
-            print(f"PKG       {f}  ({owner})")
+            pretty.info(f"PKG       {f}  ({owner})")
         else:
-            print(f"{RED}UNMANAGED {f}{RESET}")
+            pretty.fail(f"UNMANAGED {f}")
             unmanaged += 1
     return unmanaged
 
 
 def main() -> None:
     if not SYSCTL_CONF.exists():
-        print(f"{RED}ERROR: {SYSCTL_CONF} not found — run from project root{RESET}")
+        pretty.fail(f"ERROR: {SYSCTL_CONF} not found — run from project root")
         sys.exit(1)
 
     total_errors = 0
 
-    print(f"\n{BOLD}=== Drift check: {SYSCTL_CONF} ==={RESET}")
+    pretty.header(f"Drift check: {SYSCTL_CONF}")
     drift_errors, param_count = check_drift(SYSCTL_CONF)
     total_errors += drift_errors
-    drift_status = (
-        f"{RED}{drift_errors} drifted{RESET}" if drift_errors else f"{GREEN}all applied{RESET}"
-    )
-    read_fail_hint = "\n  hint: some params may need root — retry with sudo" if drift_errors else ""
-    print(f"\n{param_count} params checked, {drift_status}{read_fail_hint}")
+    if drift_errors:
+        pretty.summary_line(param_count - drift_errors, drift_errors, "Sysctl params")
+        pretty.info("hint: some params may need root — retry with sudo")
+    else:
+        pretty.ok(f"{param_count} params checked, all applied")
 
-    print(f"\n{BOLD}=== Unmanaged files: {SYSCTL_ETC_DIR} ==={RESET}")
+    pretty.header(f"Unmanaged files: {SYSCTL_ETC_DIR}")
     unmanaged = check_unmanaged()
     total_errors += unmanaged
     if unmanaged == 0:
-        print(f"{GREEN}No unmanaged sysctl.d files{RESET}")
+        pretty.ok("No unmanaged sysctl.d files")
     else:
-        print(f"\n{RED}{unmanaged} unmanaged file(s) — add to Salt or remove{RESET}")
+        pretty.fail(f"{unmanaged} unmanaged file(s) — add to Salt or remove")
 
     sys.exit(1 if total_errors else 0)
 
@@ -137,5 +126,5 @@ if __name__ == "__main__":
     except (OSError, KeyboardInterrupt):
         raise
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        pretty.fail(f"Error: {e}")
         sys.exit(1)

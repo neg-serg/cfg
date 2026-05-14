@@ -15,7 +15,7 @@ import yaml
 SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
-
+from lib.pretty import pretty  # noqa: E402
 
 _index_spec = importlib.util.spec_from_file_location(
     "index_salt_module", SCRIPTS_DIR / "index-salt.py"
@@ -305,19 +305,19 @@ def _resolve_query(
 
 def _print_text(kind: str, value: str, matches: list[dict[str, object]]) -> None:
     if not matches:
-        print(f"No provenance found for {kind} '{value}'")
+        pretty.warn(f"No provenance found for {kind} '{value}'")
         return
 
-    print(f"Provenance for {kind} '{value}':")
+    pretty.section(f"Provenance for {kind} '{value}'")
     for match in matches:
         if kind in {"state", "state_id", "macro"}:
-            print(f"- {match['state_name']} ({match['relpath']})")
+            pretty.info(f"{match['state_name']} ({match['relpath']})")
             if match["imported_yaml"]:
-                print(f"  imports: {', '.join(match['imported_yaml'])}")
+                pretty.info(f"  imports: {', '.join(match['imported_yaml'])}")
         else:
-            print(f"- {match['data_file']}")
+            pretty.info(f"{match['data_file']}")
             consumers = ", ".join(record["state_name"] for record in match["consumers"])
-            print(f"  consumers: {consumers or 'none'}")
+            pretty.info(f"  consumers: {consumers or 'none'}")
 
 
 def _debug_bundle_context(args: argparse.Namespace | None) -> dict[str, str]:

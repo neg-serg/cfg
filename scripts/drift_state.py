@@ -6,12 +6,16 @@ import hashlib
 import json
 import socket
 import subprocess
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
 from host_model import build_host, load_hosts_yaml
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
 
 
 def now_iso() -> str:
@@ -380,14 +384,16 @@ def print_report(payload: dict, *, json_mode: bool) -> None:
     if json_mode:
         print(json.dumps(payload, indent=2, sort_keys=True))
         return
-    print(f"status: {payload['status']}")
+    print(f"{pretty.status_badge(payload['status'])} Status: {payload['status']}")
     for category in ("package", "file", "unit", "runtime", "meta"):
-        section = [record for record in payload["records"] if record["category"] == category]
-        if not section:
+        section_records = [
+            record for record in payload["records"] if record["category"] == category
+        ]
+        if not section_records:
             continue
-        print(f"[{category}]")
-        for record in section:
-            print(f"- {record['object']}: {record['status']}")
+        pretty.section(category)
+        for record in section_records:
+            pretty.info(f"{record['object']}: {record['status']}")
 
 
 def main() -> int:
@@ -409,11 +415,11 @@ def main() -> int:
     if args.maintenance == "on":
         maintenance_lock_path.parent.mkdir(parents=True, exist_ok=True)
         maintenance_lock_path.write_text("")
-        print(f"maintenance lock created at {maintenance_lock_path}")
+        pretty.ok(f"maintenance lock created at {maintenance_lock_path}")
         return 0
     if args.maintenance == "off":
         maintenance_lock_path.unlink(missing_ok=True)
-        print(f"maintenance lock removed from {maintenance_lock_path}")
+        pretty.ok(f"maintenance lock removed from {maintenance_lock_path}")
         return 0
 
     hosts_data = load_hosts_yaml()
@@ -434,7 +440,7 @@ def main() -> int:
             previous_snapshot=previous,
         )
         write_json(expected_path, payload)
-        print(f"refreshed {expected_path}")
+        pretty.ok(f"refreshed {expected_path}")
         return 0
 
     expected = read_json(expected_path)
@@ -459,20 +465,19 @@ def main() -> int:
 
     expected = read_json(expected_path)
     if expected and not args.json:
-        meta_parts = []
+        meta = {}
         if "git_revision" in expected:
-            meta_parts.append(f"revision: {expected['git_revision']}")
+            meta["revision"] = expected["git_revision"]
         if "salt_target" in expected:
-            meta_parts.append(f"target: {expected['salt_target']}")
+            meta["target"] = expected["salt_target"]
         if "hostname" in expected:
-            meta_parts.append(f"host: {expected['hostname']}")
+            meta["host"] = expected["hostname"]
         if "generated_at" in expected:
-            meta_parts.append(f"generated: {expected['generated_at']}")
-        if meta_parts:
-            print("")
-            print("Baseline snapshot:")
-            for line in meta_parts:
-                print(f"  {line}")
+            meta["generated"] = expected["generated_at"]
+        if meta:
+            print()
+            pretty.section("Baseline snapshot")
+            pretty.key_value(meta)
 
     return 1 if payload["status"] in {"drifted", "degraded", "unknown"} else 0
 

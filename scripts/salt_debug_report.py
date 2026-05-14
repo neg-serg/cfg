@@ -8,6 +8,9 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.pretty import pretty
+
 
 def _debug_report_dir() -> Path:
     override = os.environ.get("SALT_DEBUG_REPORT_DIR")
@@ -104,5 +107,5 @@ if __name__ == "__main__":
     except (OSError, KeyboardInterrupt):
         raise
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        pretty.fail(f"Error: {e}")
         sys.exit(1)

@@ -10,6 +10,8 @@ from collections import defaultdict
 from pathlib import Path
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPTS_DIR))
+from lib.pretty import pretty  # noqa: E402
 
 # Reuse index-salt.py rendering (same pattern as state-profiler.py)
 _index_spec = importlib.util.spec_from_file_location(
@@ -252,7 +254,7 @@ def main():
     known_state_names = {record.state_name for record in all_state_records}
     sls_files = [record.relpath for record in all_state_records if record.top_level_entrypoint]
     if not sls_files:
-        print("No .sls files found in states/", file=sys.stderr)
+        pretty.fail("No .sls files found in states/")
         sys.exit(2)
 
     state_results = _index_module.render_states(sls_files)
@@ -261,9 +263,9 @@ def main():
     # Check for cycles
     cycles = detect_cycles(include_edges)
     if cycles:
-        print("WARNING: Circular dependencies detected:", file=sys.stderr)
+        pretty.warn("Circular dependencies detected:")
         for cycle in cycles:
-            print(f"  {' -> '.join(cycle)}", file=sys.stderr)
+            pretty.fail(f"  {' -> '.join(cycle)}")
         if args.format != "text":
             pass  # Still generate graph but with exit code 1
 
@@ -282,17 +284,17 @@ def main():
                 )
                 output = result.stdout
             except FileNotFoundError:
-                print("graphviz (dot) not found. Install: pacman -S graphviz", file=sys.stderr)
+                pretty.fail("graphviz (dot) not found. Install: pacman -S graphviz")
                 sys.exit(2)
             except subprocess.CalledProcessError as e:
-                print(f"dot failed: {e.stderr}", file=sys.stderr)
+                pretty.fail(f"dot failed: {e.stderr}")
                 sys.exit(2)
         else:
             output = dot_output
 
     if args.output:
         Path(args.output).write_text(output)
-        print(f"Written to {args.output}", file=sys.stderr)
+        pretty.ok(f"Written to {args.output}")
     else:
         print(output)
 

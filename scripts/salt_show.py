@@ -14,6 +14,9 @@ import sys
 from collections import defaultdict
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, SCRIPT_DIR)
+from lib.pretty import pretty  # noqa: E402
+
 PROJECT_DIR = os.path.dirname(SCRIPT_DIR)
 RUNTIME_DIR = os.path.join(PROJECT_DIR, ".salt_runtime")
 VENV_PYTHON = os.path.join(PROJECT_DIR, ".venv", "bin", "python3")
@@ -22,7 +25,7 @@ SALT_RUNNER = os.path.join(SCRIPT_DIR, "salt_runner.py")
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: salt_show.py <state>", file=sys.stderr)
+        pretty.fail("Usage: salt_show.py <state>")
         sys.exit(1)
 
     state = sys.argv[1].replace("/", ".")
@@ -47,9 +50,9 @@ def main():
         err = result.stderr.strip().split("\n")
         for line in err:
             if "Rendering SLS" in line or "not found" in line.lower():
-                print(f"Error: {line.strip()}", file=sys.stderr)
+                pretty.fail(f"Error: {line.strip()}")
                 sys.exit(1)
-        print(f"salt-call failed (exit {result.returncode})", file=sys.stderr)
+        pretty.fail(f"salt-call failed (exit {result.returncode})")
         if result.stderr:
             print(result.stderr[:500], file=sys.stderr)
         sys.exit(1)
@@ -66,16 +69,16 @@ def main():
             try:
                 data = json.loads(stdout[start:])
             except json.JSONDecodeError:
-                print("Failed to parse salt output", file=sys.stderr)
+                pretty.fail("Failed to parse salt output")
                 sys.exit(1)
         else:
-            print("No JSON output from salt", file=sys.stderr)
+            pretty.fail("No JSON output from salt")
             sys.exit(1)
 
     states = data.get("local", data)
     if isinstance(states, list):
         # Error response
-        print(f"Error: {states}", file=sys.stderr)
+        pretty.fail(f"Error: {states}")
         sys.exit(1)
 
     # Group state IDs by source .sls file
@@ -104,13 +107,15 @@ def main():
     # Print summary
     total = sum(len(v) for v in by_sls.values())
     sls_count = len(by_sls)
-    print(f"\n  {state}  →  {total} states from {sls_count} SLS files\n")
+    print()
+    pretty.section(f"{state}  →  {total} states from {sls_count} SLS files")
+    print()
 
     for sls in sorted(by_sls.keys()):
         items = by_sls[sls]
-        print(f"  {sls}  ({len(items)} states)")
+        pretty.info(f"{sls}  ({len(items)} states)")
         for state_id, func in items:
-            print(f"    · {state_id}  [{func}]")
+            pretty.info(f"  {state_id}  [{func}]")
         print()
 
 

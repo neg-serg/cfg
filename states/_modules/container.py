@@ -181,15 +181,19 @@ def deploy(name: str,
         reload.append({"runas": host_user})
     result[f"{name}_daemon_reload"] = {"cmd.run": reload}
 
+    _env_prefix = f"XDG_RUNTIME_DIR={runtime_dir} DBUS_SESSION_BUS_ADDRESS=unix:path={runtime_dir}/bus " if user_scope else ""
+    _sc = lambda cmd: f"{'--user ' if user_scope else ''}{cmd}"
+
     # Enable + Running + Healthcheck (skip if manual start)
     if not manual_start:
         enable: list[dict[str, Any]] = [
             {"name": (
-                f"systemctl {'--user ' if user_scope else ''}is-enabled "
+                f"{_env_prefix}"
+                f"systemctl {_sc('')}is-enabled "
                 f"{quadlet_name}.service >/dev/null 2>&1 || "
-                f"systemctl {'--user ' if user_scope else ''}enable {quadlet_name}.service"
+                f"systemctl {_sc('')}enable {quadlet_name}.service"
             )},
-            {"unless": f"systemctl {'--user ' if user_scope else ''}is-enabled {quadlet_name}.service >/dev/null 2>&1"},
+            {"unless": f"{_env_prefix}systemctl {_sc('')}is-enabled {quadlet_name}.service >/dev/null 2>&1"},
         ]
         enable_req = [{"cmd": f"{name}_daemon_reload"}]
         if not is_localhost:
@@ -200,8 +204,8 @@ def deploy(name: str,
         result[f"{name}_enabled"] = {"cmd.run": enable}
 
         reset: list[dict[str, Any]] = [
-            {"name": f"systemctl {'--user ' if user_scope else ''}reset-failed {quadlet_name} 2>/dev/null; true"},
-            {"onlyif": f"systemctl {'--user ' if user_scope else ''}is-failed {quadlet_name}"},
+            {"name": f"{_env_prefix}systemctl {_sc('')}reset-failed {quadlet_name} 2>/dev/null; true"},
+            {"onlyif": f"{_env_prefix}systemctl {_sc('')}is-failed {quadlet_name}"},
             {"require": [{"cmd": f"{name}_enabled"}]},
         ]
         if user_scope:
@@ -209,8 +213,8 @@ def deploy(name: str,
         result[f"{name}_reset_failed"] = {"cmd.run": reset}
 
         running: list[dict[str, Any]] = [
-            {"name": f"systemctl {'--user ' if user_scope else ''}is-active {quadlet_name}.service >/dev/null 2>&1 || systemctl {'--user ' if user_scope else ''}start {quadlet_name}.service"},
-            {"unless": f"systemctl {'--user ' if user_scope else ''}is-active {quadlet_name}.service >/dev/null 2>&1"},
+            {"name": f"{_env_prefix}systemctl {_sc('')}is-active {quadlet_name}.service >/dev/null 2>&1 || systemctl {_sc('')}start {quadlet_name}.service"},
+            {"unless": f"{_env_prefix}systemctl {_sc('')}is-active {quadlet_name}.service >/dev/null 2>&1"},
             {"watch": [{"file": f"{name}_container"}, *(watch or [])]},
             {"require": [{"cmd": f"{name}_enabled"}, {"cmd": f"{name}_reset_failed"}]},
         ]

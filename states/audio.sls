@@ -1,4 +1,10 @@
 {# PipeWire audio stack: ensures all runtime components (ALSA, JACK, Pulse) are installed #}
+{#- @state
+   id: audio
+   purpose: "PipeWire audio stack: ensures all runtime components (ALSA, JACK, Pulse) are installed."
+   includes: [pacman_db_warmup]
+   data_files: [data/audio.yaml]
+#}
 include:
   - pacman_db_warmup
 

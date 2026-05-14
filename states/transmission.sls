@@ -1,3 +1,8 @@
+{#- @state
+   id: transmission
+   purpose: "In-place cutover: remove native systemd unit so Quadlet-generated unit is not shadowed."
+   services: [transmission.container]
+#}
 {% from '_imports.jinja' import home %}
 
 # Transmission BitTorrent client — pure Quadlet (Podman container).

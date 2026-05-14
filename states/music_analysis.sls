@@ -1,4 +1,12 @@
 {# Music analysis pipeline: BPM/key detection, fingerprinting, and indexing #}
+{#- @state
+   id: music_analysis
+   purpose: "Music analysis pipeline: BPM/key detection, fingerprinting, and indexing."
+   includes: [pacman_db_warmup]
+   data_files: [data/installers.yaml, data/versions.yaml]
+   services: [music-index.service, music-index.timer]
+   tests: [tests/test_music_analysis.py]
+#}
 # Music analysis: Python dependencies for Annoy-based scripts + Essentia audio extractor.
 include:
   - pacman_db_warmup

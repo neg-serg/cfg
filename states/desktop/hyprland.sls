@@ -1,4 +1,10 @@
 {# Hyprland Wayland compositor: plugins, config, and session management #}
+{#- @state
+   id: desktop.hyprland
+   purpose: "Hyprland Wayland compositor: plugins, config, and session management."
+   data_files: [data/desktop.yaml]
+   configs: [configs/hyprpm-update.hook.j2]
+#}
 {% from '_imports.jinja' import user %}
 
 {% import_yaml 'data/desktop.yaml' as desktop %}

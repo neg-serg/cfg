@@ -1,4 +1,9 @@
 {# Video AI base: Python environment, dependencies, and shared utilities #}
+{#- @state
+   id: video_ai.base
+   purpose: "Video AI base: Python environment, dependencies, and shared utilities."
+   data_files: [data/video_ai.yaml]
+#}
 {% from '_imports.jinja' import host, user, retry_attempts, retry_interval %}
 
 {% import_yaml 'data/video_ai.yaml' as video_ai %}

@@ -1,4 +1,10 @@
 {# Desktop application installers: data-driven AUR package installation #}
+{#- @state
+   id: installers_desktop
+   purpose: "Desktop application installers: data-driven AUR package installation."
+   includes: [pacman_db_warmup]
+   data_files: [data/installers_desktop.yaml]
+#}
 # Desktop application installers: data-driven AUR packages.
 include:
   - pacman_db_warmup

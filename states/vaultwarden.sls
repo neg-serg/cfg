@@ -1,4 +1,10 @@
 {# Vaultwarden Bitwarden server: Quadlet container, backup timers, and bw-sync #}
+{#- @state
+   id: vaultwarden
+   purpose: "Vaultwarden Bitwarden server: Quadlet container, backup timers, and bw-sync."
+   includes: [pacman_db_warmup]
+   services: [bw-sync.service, bw-sync.timer, vault-full-backup.service, vault-full-backup.timer, vaultwarden.container]
+#}
 # Vaultwarden password manager — Podman Quadlet container + Bitwarden CLI.
 include:
   - pacman_db_warmup

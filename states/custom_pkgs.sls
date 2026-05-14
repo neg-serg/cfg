@@ -1,4 +1,10 @@
 {# Build and install custom packages from local PKGBUILDs not in official repos or AUR #}
+{#- @state
+   id: custom_pkgs
+   purpose: "Build and install custom packages from local PKGBUILDs not in official repos or AUR."
+   includes: [pacman_db_warmup]
+   data_files: [data/custom_pkgs.yaml]
+#}
 # Salt state to build and install custom packages from local PKGBUILDs
 # These packages are not in official repos or AUR and require local builds
 include:

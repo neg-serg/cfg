@@ -1,4 +1,10 @@
 {# Windows 11 QEMU/KVM virtual machine with GPU passthrough and Looking Glass #}
+{#- @state
+   id: desktop.vm_win11
+   purpose: "Windows 11 QEMU/KVM virtual machine with GPU passthrough and Looking Glass."
+   data_files: [data/desktop.yaml]
+   configs: [configs/win11.xml]
+#}
 {% import_yaml 'data/desktop.yaml' as desktop %}
 
 win11_xml:

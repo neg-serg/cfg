@@ -1,4 +1,10 @@
 {# Kernel module blacklisting and loading for hardware and virtualization #}
+{#- @state
+   id: kernel_modules
+   purpose: "Kernel module blacklisting and loading for hardware and virtualization."
+   data_files: [data/kernel_params.yaml]
+   configs: [configs/modprobe-blacklist.conf.j2]
+#}
 {% from '_imports.jinja' import host %}
 {% import_yaml 'data/kernel_params.yaml' as kernel_params %}
 

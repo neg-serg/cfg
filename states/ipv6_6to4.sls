@@ -4,6 +4,11 @@
    Zero-config: auto-detects public IPv4 via cached file (1h TTL), no gopass secrets needed.
    Uses anycast relay at 192.88.99.1 (RFC 3068).
    ════════════════════════════════════════════════════════════════════ #}
+{#- @state
+   id: ipv6_6to4
+   purpose: ""
+   data_files: [data/vpn.yaml]
+#}
 
 {% import_yaml 'data/vpn.yaml' as vpn %}
 

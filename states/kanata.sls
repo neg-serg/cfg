@@ -1,4 +1,11 @@
 {# Kanata keyboard remapper: advanced key remapping daemon configuration #}
+{#- @state
+   id: kanata
+   purpose: "Kanata keyboard remapper: advanced key remapping daemon configuration."
+   includes: [pacman_db_warmup]
+   data_files: [data/kanata.yaml]
+   configs: [configs/kanata.kbd]
+#}
 include:
   - pacman_db_warmup
 

@@ -1,4 +1,10 @@
 {# Video AI workflows: automated processing pipelines and job scheduling #}
+{#- @state
+   id: video_ai.workflows
+   purpose: "Video AI workflows: automated processing pipelines and job scheduling."
+   data_files: [data/video_ai.yaml]
+   configs: [configs/video-ai/{{model.comfyui_workflow_i2i}}, configs/video-ai/{{model.comfyui_workflow_i2v}}, configs/video-ai/{{model.comfyui_workflow}}]
+#}
 {% from '_imports.jinja' import host, user %}
 {% import_yaml 'data/video_ai.yaml' as video_ai %}
 {% set workflows_dir = host.mnt_one ~ '/video-ai/workflows' %}

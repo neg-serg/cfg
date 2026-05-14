@@ -1,4 +1,10 @@
 {# XDG Desktop Portal: screen sharing, file chooser, and sandboxing backends #}
+{#- @state
+   id: desktop.portal
+   purpose: "XDG Desktop Portal: screen sharing, file chooser, and sandboxing backends."
+   includes: [pacman_db_warmup]
+   data_files: [data/desktop.yaml]
+#}
 include:
   - pacman_db_warmup
 

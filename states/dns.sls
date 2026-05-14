@@ -1,4 +1,10 @@
 {# DNS services: unbound recursive resolver, AdGuard Home filtering, avahi mDNS, DoT #}
+{#- @state
+   id: dns
+   purpose: "DNS services: unbound recursive resolver, AdGuard Home filtering, avahi mDNS, DoT."
+   configs: [configs/resolved-dns-over-tls.conf]
+   feature_gate: [dns.adguardhome, dns.unbound]
+#}
 {% from '_imports.jinja' import host %}
 {% set dns = host.features.dns %}
 

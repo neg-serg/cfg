@@ -1,4 +1,11 @@
 {# User-scoped systemd services: mail sync, backups, and auxiliary daemons #}
+{#- @state
+   id: user_services
+   purpose: "User-scoped systemd services: mail sync, backups, and auxiliary daemons."
+   includes: [users]
+   data_files: [data/user_services.yaml]
+   feature_gate: [mpd, user_services.mail]
+#}
 {% from '_imports.jinja' import host, user, home %}
 {% import_yaml 'data/user_services.yaml' as us %}
 

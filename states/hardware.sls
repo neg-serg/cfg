@@ -1,4 +1,11 @@
 {# Hardware-specific configuration: udev rules, fan control, WiFi drivers #}
+{#- @state
+   id: hardware
+   purpose: "Hardware-specific configuration: udev rules, fan control, WiFi drivers."
+   data_files: [data/hardware.yaml]
+   configs: [configs/udev-custom.rules]
+   feature_gate: [fancontrol, network.wifi]
+#}
 {% from '_imports.jinja' import host %}
 
 {% import_yaml 'data/hardware.yaml' as hw %}

@@ -1,4 +1,11 @@
 {# Steam gaming platform: multilib, drivers, gamemode, and controller support #}
+{#- @state
+   id: steam
+   purpose: "Steam gaming platform: multilib, drivers, gamemode, and controller support."
+   includes: [pacman_db_warmup]
+   data_files: [data/steam.yaml]
+   configs: [configs/gamemode.ini]
+#}
 {% from '_imports.jinja' import host, user %}
 
 {% import_yaml 'data/steam.yaml' as steam %}

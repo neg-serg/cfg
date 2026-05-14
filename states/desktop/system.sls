@@ -1,4 +1,11 @@
 {# System-wide desktop configuration: fonts, themes, input methods, power management #}
+{#- @state
+   id: desktop.system
+   purpose: "System-wide desktop configuration: fonts, themes, input methods, power management."
+   includes: [pacman_db_warmup]
+   data_files: [data/desktop.yaml]
+   configs: [configs/pacman-salt-cache.hook, configs/sshd-hardening.conf]
+#}
 include:
   - pacman_db_warmup
 

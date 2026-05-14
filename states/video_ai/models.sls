@@ -1,4 +1,9 @@
 {# Video AI models: HuggingFace model downloads and safetensors management #}
+{#- @state
+   id: video_ai.models
+   purpose: "Video AI models: HuggingFace model downloads and safetensors management."
+   data_files: [data/video_ai.yaml]
+#}
 {% from '_imports.jinja' import host, user %}
 {% import_yaml 'data/video_ai.yaml' as video_ai %}
 {% set base_dir = host.mnt_one ~ '/video-ai' %}

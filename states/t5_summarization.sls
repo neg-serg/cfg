@@ -1,4 +1,10 @@
 {# T5 text summarization server: safetensors to GGUF conversion via Quadlet container #}
+{#- @state
+   id: t5_summarization
+   purpose: "T5 text summarization server: safetensors to GGUF conversion via Quadlet container."
+   data_files: [data/t5_summarization.yaml]
+   services: [t5_summarization.container]
+#}
 {% from '_imports.jinja' import host, user %}
 
 {% import_yaml 'data/service_catalog.yaml' as catalog %}

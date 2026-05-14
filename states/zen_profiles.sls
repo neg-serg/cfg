@@ -1,4 +1,9 @@
 {# Zen Browser Profiles: multi-profile management with isolated storage #}
+{#- @state
+   id: zen_profiles
+   purpose: "Zen Browser Profiles: multi-profile management with isolated storage."
+   data_files: [data/hosts.yaml, data/zen_profiles.yaml]
+#}
 {% from '_imports.jinja' import user, home %}
 
 {% import_yaml 'data/zen_profiles.yaml' as zpdata %}

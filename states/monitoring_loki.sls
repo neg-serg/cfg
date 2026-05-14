@@ -1,3 +1,10 @@
+{#- @state
+   id: monitoring_loki
+   purpose: "Loki: log aggregation."
+   configs: [configs/grafana-dashboard-proxypilot.json, configs/grafana-dashboards-provider.yaml, configs/grafana-loki-datasource.yaml.j2, configs/grafana.ini.j2, configs/loki.yaml.j2, configs/promtail.yaml.j2]
+   services: [grafana.container, loki.container, promtail.container]
+   feature_gate: [monitoring.grafana, monitoring.loki, monitoring.promtail]
+#}
 # Loki + Promtail + Grafana monitoring stack — pure Quadlet (Podman containers).
 # All three services run exclusively as containers; native packages stay
 # installed for /etc/ directory structure and provisioning files.

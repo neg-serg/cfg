@@ -1,4 +1,10 @@
 {# Systemd resource management: sysusers, tmpfiles, and service account provisioning #}
+{#- @state
+   id: systemd_resources
+   purpose: "Systemd resource management: sysusers, tmpfiles, and service account provisioning."
+   data_files: [data/managed_resources.yaml]
+   configs: [configs/managed-service-accounts.conf.j2, configs/managed-service-paths.conf.j2]
+#}
 # =============================================================================
 # SystemD managed resources — identity guards and path protections
 # =============================================================================

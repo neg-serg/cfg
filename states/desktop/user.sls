@@ -1,4 +1,9 @@
 {# User-level desktop configuration: dotfiles, services, and session autostart #}
+{#- @state
+   id: desktop.user
+   purpose: "User-level desktop configuration: dotfiles, services, and session autostart."
+   data_files: [data/desktop.yaml]
+#}
 # =============================================================================
 # Desktop user session — dconf, SSH keys, user services
 # =============================================================================

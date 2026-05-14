@@ -1,4 +1,10 @@
 {# Theme and icon installers: GTK, Qt, cursor, and icon themes from git repos #}
+{#- @state
+   id: installers_themes
+   purpose: "Theme and icon installers: GTK, Qt, cursor, and icon themes from git repos."
+   data_files: [data/installers_themes.yaml]
+   configs: [configs/vicinae/flight-dark.toml]
+#}
 {% from '_imports.jinja' import home, user %}
 {% import_yaml 'data/installers_themes.yaml' as themes %}
 

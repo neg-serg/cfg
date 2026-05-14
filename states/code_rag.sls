@@ -1,4 +1,10 @@
 {# code-rag: hybrid text+code RAG with AST-aware chunking and LanceDB vector search. #}
+{#- @state
+   id: code_rag
+   purpose: "code-rag: hybrid text+code RAG with AST-aware chunking and LanceDB vector search."
+   includes: [pacman_db_warmup]
+   data_files: [data/code_rag.yaml]
+#}
 include:
   - pacman_db_warmup
 

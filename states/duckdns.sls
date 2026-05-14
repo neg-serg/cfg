@@ -1,3 +1,8 @@
+{#- @state
+   id: duckdns
+   purpose: ""
+   services: [duckdns.container]
+#}
 # =============================================================================
 # DuckDNS dynamic DNS updater — Quadlet container deployment
 # =============================================================================

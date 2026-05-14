@@ -1,3 +1,8 @@
+{#- @state
+   id: bitcoind
+   purpose: "Data directory for blockchain state."
+   services: [bitcoind.container]
+#}
 # =============================================================================
 # Bitcoin Core daemon — Quadlet container deployment
 # =============================================================================

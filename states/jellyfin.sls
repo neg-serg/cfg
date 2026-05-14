@@ -1,3 +1,8 @@
+{#- @state
+   id: jellyfin
+   purpose: "In-place cutover: remove native systemd unit file so Quadlet-generated unit is not shadowed."
+   services: [jellyfin.container]
+#}
 # Jellyfin media server — pure Quadlet (Podman container).
 {% from '_imports.jinja' import host %}
 

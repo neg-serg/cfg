@@ -1,3 +1,7 @@
+{# @macro_file
+   provides: [ipv6_tunnel]
+#}
+
 {# IPv6 tunnel deployment macro.
    Encapsulates: nftables firewall file + apply, optional sysctl config + apply,
    systemd unit deployment, daemon-reload, enable, start, and optional healthcheck.
@@ -20,6 +24,10 @@
 
 {% from '_macros_service.jinja' import service_with_unit %}
 
+{# @macro
+   name: ipv6_tunnel
+   purpose: ""
+#}
 {%- macro ipv6_tunnel(name,
                       interface,
                       service_name,

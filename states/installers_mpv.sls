@@ -1,4 +1,9 @@
 {# MPV media player: scripts, plugins, and shaders for enhanced playback #}
+{#- @state
+   id: installers_mpv
+   purpose: "MPV media player: scripts, plugins, and shaders for enhanced playback."
+   data_files: [data/mpv_scripts.yaml, data/versions.yaml]
+#}
 # MPV scripts and plugins (split from installers.sls)
 {% from '_imports.jinja' import user, home, retry_attempts, retry_interval, ver_dir %}
 

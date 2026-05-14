@@ -1,4 +1,9 @@
 {# Hiddify VPN client: local AppImage wrapper with legacy shadow handler cleanup #}
+{#- @state
+   id: hiddify
+   purpose: "Hiddify VPN client: local AppImage wrapper with legacy shadow handler cleanup."
+   data_files: [data/hiddify.yaml]
+#}
 {% from '_imports.jinja' import user, home %}
 {% import_yaml 'data/hiddify.yaml' as hiddify %}
 

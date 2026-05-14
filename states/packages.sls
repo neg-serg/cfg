@@ -1,3 +1,9 @@
+{#- @state
+   id: packages
+   purpose: "- pacman -Qq checks ALL packages — fails if ANY is missing, triggering install."
+   includes: [pacman_db_warmup]
+   data_files: [data/packages.yaml]
+#}
 # Declarative package management — installs all packages from data/packages.yaml
 # Domain-specific packages (audio, fonts, steam, etc.) are managed by their own states.
 # This state covers everything else: base system, desktop tools, dev tools, etc.

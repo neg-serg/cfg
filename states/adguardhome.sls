@@ -1,3 +1,9 @@
+{#- @state
+   id: adguardhome
+   purpose: "Cleanup legacy binary."
+   configs: [configs/adguardhome-initial.yaml, configs/resolved-adguardhome.conf]
+   services: [adguardhome.container]
+#}
 # =============================================================================
 # AdGuard Home DNS filter — Quadlet container deployment
 # =============================================================================

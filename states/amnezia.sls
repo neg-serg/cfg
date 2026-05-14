@@ -1,4 +1,9 @@
 {# Amnezia VPN: builds AmneziaWG kernel module and Amnezia VPN desktop client from source. #}
+{#- @state
+   id: amnezia
+   purpose: "Amnezia VPN: builds AmneziaWG kernel module and Amnezia VPN desktop client from source."
+   data_files: [data/amnezia.yaml, data/versions.yaml]
+#}
 {% from '_imports.jinja' import host, user, home, retry_attempts, retry_interval %}
 
 {% import_yaml 'data/versions.yaml' as ver %}

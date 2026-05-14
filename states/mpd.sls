@@ -1,4 +1,12 @@
 {# Music Player Daemon: audio playback server with Last.fm scrobbling #}
+{#- @state
+   id: mpd
+   purpose: "Music Player Daemon: audio playback server with Last.fm scrobbling."
+   includes: [bind_mounts]
+   data_files: [data/mpd.yaml]
+   services: [mpdas.service]
+   secrets: [lastfm/password, lastfm/username]
+#}
 {% from '_imports.jinja' import host, user, home, pkg_list, gopass_secret %}
 {% import_yaml 'data/mpd.yaml' as mpd %}
 include:

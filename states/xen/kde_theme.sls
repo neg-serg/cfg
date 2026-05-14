@@ -1,4 +1,9 @@
 {# Xen KDE Breeze Dark theme seed configs — data-driven from states/data/xen.yaml #}
+{#- @state
+   id: xen.kde_theme
+   purpose: "Xen KDE Breeze Dark theme seed configs — data-driven from states/data/xen.yaml."
+   data_files: [data/xen.yaml]
+#}
 
 
 {% import_yaml 'data/xen.yaml' as xen %}

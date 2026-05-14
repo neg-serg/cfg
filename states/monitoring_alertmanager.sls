@@ -1,4 +1,13 @@
 {# Alertmanager: Telegram webhook alerts from Loki log rules #}
+{#- @state
+   id: monitoring_alertmanager
+   purpose: "Alertmanager: Telegram webhook alerts from Loki log rules."
+   configs: [configs/alertmanager.yml.j2]
+   services: [alertmanager-webhook.service, alertmanager.container]
+   secrets: [api/nanoclaw-telegram, api/nanoclaw-telegram-uid]
+   feature_gate: [monitoring.alertmanager, monitoring.loki]
+   tests: [tests/test_monitoring_alertmanager.py]
+#}
 # Alertmanager — containerised alert routing for Loki → Telegram.
 # Gated on loki && alertmanager features (two independent feature flags).
 {% from '_imports.jinja' import host, user, home, tg_secret %}

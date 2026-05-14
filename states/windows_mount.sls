@@ -1,4 +1,9 @@
 {# Windows NTFS partition mount with proper permissions and fstab integration #}
+{#- @state
+   id: windows_mount
+   purpose: "Windows NTFS partition mount with proper permissions and fstab integration."
+   data_files: [data/windows_mount.yaml]
+#}
 # Windows NTFS partition — automount on first access.
 # Uses x-systemd.automount so the partition is NOT mounted at boot.
 # The ntfs3 in-kernel driver is used (no extra package needed on Linux 5.15+).

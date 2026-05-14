@@ -1,4 +1,8 @@
 {# Format /etc/fstab with aligned columns, preserving comments and blank lines #}
+{#- @state
+   id: fstab_column
+   purpose: "Format /etc/fstab with aligned columns, preserving comments and blank lines."
+#}
 # Format /etc/fstab with aligned columns, preserving comments.
 # Only non‑comment lines are reformatted.
 # Script deployed to system path to decouple from repo location.

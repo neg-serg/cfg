@@ -1,4 +1,9 @@
 {# Video AI runners: inference server and processing daemon management #}
+{#- @state
+   id: video_ai.runners
+   purpose: "Video AI runners: inference server and processing daemon management."
+   data_files: [data/video_ai.yaml]
+#}
 {% from '_imports.jinja' import host, user, home %}
 {% import_yaml 'data/video_ai.yaml' as video_ai %}
 {% set base_dir = host.mnt_one ~ '/video-ai' %}

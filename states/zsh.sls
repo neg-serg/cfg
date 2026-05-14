@@ -1,4 +1,8 @@
 {# Zsh shell environment: path setup, plugins, completions, and prompt configuration #}
+{#- @state
+   id: zsh
+   purpose: "Zsh shell environment: path setup, plugins, completions, and prompt configuration."
+#}
 {% from '_imports.jinja' import user %}
 
 

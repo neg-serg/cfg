@@ -1,4 +1,9 @@
 {# Xen X11 session configs: .xinitrc, i3 config, greetd .desktop entries #}
+{#- @state
+   id: xen.sessions
+   purpose: "Xen X11 session configs: .xinitrc, i3 config, greetd .desktop entries."
+   data_files: [data/xen.yaml]
+#}
 
 
 {% import_yaml 'data/xen.yaml' as xen %}

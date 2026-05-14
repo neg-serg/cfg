@@ -1,4 +1,10 @@
 {# Fallback installers: tools built from GitHub releases, pip, cargo, go, or raw HTTP #}
+{#- @state
+   id: installers
+   purpose: "Fallback installers: tools built from GitHub releases, pip, cargo, go, or raw HTTP."
+   includes: [pacman_db_warmup]
+   data_files: [data/installers.yaml, data/versions.yaml]
+#}
 include:
   - pacman_db_warmup
 

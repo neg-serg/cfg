@@ -1,4 +1,10 @@
 {# greetd display manager with Hyprland compositor and quickshell greeter #}
+{#- @state
+   id: greetd
+   purpose: "greetd display manager with Hyprland compositor and quickshell greeter."
+   includes: [pacman_db_warmup, systemd_resources]
+   data_files: [data/greetd.yaml]
+#}
 {% from '_imports.jinja' import host, user, home %}
 
 {% import_yaml 'data/greetd.yaml' as greetd %}

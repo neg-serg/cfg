@@ -1,3 +1,7 @@
+{# @macro_file
+   provides: [config_file_edit]
+#}
+
 {# Config-editing macros: config_file_edit #}
 
 {% from '_macros_common.jinja' import user as _user, home as _home, retry_attempts as _retry_attempts, retry_interval as _retry_interval %}
@@ -11,6 +15,10 @@
    that touch the network (e.g. pacman -Sy after config edit).
    Usage: {{ config_file_edit('limine_timeout', cmd="sed -i 's/^timeout:.*/timeout: 1/' /boot/limine.conf", check_pattern='^timeout: 1$', check_file='/boot/limine.conf') }}
           {{ config_file_edit('multilib_repo', cmd="printf ... >> /etc/pacman.conf && pacman -Sy", check_pattern='^\[multilib\]', check_file='/etc/pacman.conf', retry=True) }}
+#}
+{# @macro
+   name: config_file_edit
+   purpose: ""
 #}
 {%- macro config_file_edit(name, cmd, unless=None, check_pattern=None, check_file=None, onlyif=None, require=None, retry=False, shell=None) -%}
 {%- set _guard = unless if unless is not none else ("grep -q '" ~ check_pattern ~ "' " ~ check_file if check_pattern and check_file else None) -%}

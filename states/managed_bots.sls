@@ -1,4 +1,11 @@
 {# Managed Telegram Bots: Bot API 9.6 manager bot state #}
+{#- @state
+   id: managed_bots
+   purpose: "Managed Telegram Bots: Bot API 9.6 manager bot state."
+   data_files: [data/telegram_managed_bots.yaml]
+   services: [managed-bots.service]
+   secrets: [api/nanoclaw-telegram-uid, api/opencode-telegram-bot, api/telegram-uid-levra]
+#}
 {% from '_imports.jinja' import user, home, tg_secret %}
 
 {% import_yaml 'data/telegram_managed_bots.yaml' as mbdata %}

@@ -1,3 +1,7 @@
+{# @macro_file
+   provides: [_tilde_expand, _cs_fail, container_service]
+#}
+
 {# Container-service supervisor macros: container_service, _tilde_expand, _cs_fail #}
 
 {% from '_macros_common.jinja' import user as _user, home as _home, host, retry_attempts as _retry_attempts, retry_interval as _retry_interval %}
@@ -10,6 +14,10 @@
 {# Tilde-expand a bind-mount host path against the caller's home directory.
    Used by container_service() to render absolute host paths in Quadlet Volume= lines.
    '~' alone → home; '~/foo' → home/foo; anything else passes through unchanged.
+#}
+{# @macro
+   name: _tilde_expand
+   purpose: ""
 #}
 {%- macro _tilde_expand(raw_path, home_value) -%}
 {%- if raw_path == '~' -%}
@@ -63,12 +71,20 @@
       Services that previously had native systemd units use quadlet_unit_name
       with '-container' suffix (e.g., 'loki-container') to avoid shadowing
       the removed native unit.  New services use the catalog name unchanged
-      (e.g., 'ollama' → ollama.container, ollama.service).
+      (e.g.{# @macro
+   name: _cs_fail
+   purpose: ""
+#}
+, 'ollama' → ollama.container, ollama.service).
 #}
 {%- macro _cs_fail(name, error_key, message) -%}
 container_service_PRECONDITION_FAILED_{{ name }}_{{ error_key }}:
   test.fail_without_changes:
-    - name: 'container_service({{ name }}): {{ message }}'
+ {# @macro
+   name: container_service
+   purpose: ""
+#}
+   - name: 'container_service({{ name }}): {{ message }}'
     - failhard: True
 {%- endmacro -%}
 

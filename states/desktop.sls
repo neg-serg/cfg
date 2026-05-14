@@ -1,4 +1,9 @@
 {# Desktop environment: top-level include for compositor, packages, portal, and user session #}
+{#- @state
+   id: desktop
+   purpose: "Desktop environment: top-level include for compositor, packages, portal, and user session."
+   includes: [desktop.hyprland, desktop.packages, desktop.portal, desktop.system, desktop.user, desktop.vm_win11]
+#}
 # =============================================================================
 # Desktop environment — top-level include for system, packages, portal, hyprland, user
 # =============================================================================

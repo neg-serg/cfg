@@ -1,4 +1,10 @@
 {# Espanso text expander: wayland variant with systemd user service and health check #}
+{#- @state
+   id: espanso
+   purpose: "Espanso text expander: wayland variant with systemd user service and health check."
+   includes: [pacman_db_warmup]
+   data_files: [data/espanso.yaml]
+#}
 include:
   - pacman_db_warmup
 

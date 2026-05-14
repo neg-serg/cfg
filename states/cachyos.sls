@@ -1,4 +1,11 @@
 {# CachyOS kernel packages, boot configuration, and kernel cmdline management #}
+{#- @state
+   id: cachyos
+   purpose: "CachyOS kernel packages, boot configuration, and kernel cmdline management."
+   includes: [pacman_db_warmup]
+   data_files: [data/cachyos.yaml, data/hosts.yaml, data/kernel_params.yaml]
+   configs: [configs/kernel-cmdline.j2, configs/mkinitcpio-cachyos-preset.j2]
+#}
 {% from '_imports.jinja' import host %}
 {% import_yaml 'data/cachyos.yaml' as cachyos %}
 

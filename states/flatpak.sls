@@ -1,4 +1,10 @@
 {# Flatpak sandboxed desktop applications with flathub remote setup #}
+{#- @state
+   id: flatpak
+   purpose: "Flatpak sandboxed desktop applications with flathub remote setup."
+   includes: [pacman_db_warmup]
+   data_files: [data/flatpak.yaml]
+#}
 # Flatpak: sandboxed desktop apps + flathub remote.
 include:
   - pacman_db_warmup

@@ -1,4 +1,10 @@
 {# Xen user account: creation, groups, Steam library access, TTY #}
+{#- @state
+   id: xen.user
+   purpose: "Xen user account: creation, groups, Steam library access, TTY."
+   data_files: [data/xen.yaml]
+   secrets: [host/xen-password-hash]
+#}
 
 {% from '_imports.jinja' import user, home, gopass_secret %}
 

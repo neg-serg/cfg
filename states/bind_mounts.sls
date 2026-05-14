@@ -1,4 +1,9 @@
 {# Bind mounts for user directories on external storage devices #}
+{#- @state
+   id: bind_mounts
+   purpose: "Bind mounts for user directories on external storage devices."
+   data_files: [data/bind_mounts.yaml]
+#}
 # Bind mounts for user directories on external storage
 # Migrated from NixOS fileSystems (modules/system/filesystems.nix)
 #

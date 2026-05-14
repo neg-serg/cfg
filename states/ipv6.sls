@@ -1,4 +1,9 @@
 {# IPv6 diagnostics: connectivity check, firewall rules, and health monitoring #}
+{#- @state
+   id: ipv6
+   purpose: "IPv6 diagnostics: connectivity check, firewall rules, and health monitoring."
+   data_files: [data/ipv6.yaml]
+#}
 {% from '_imports.jinja' import user %}
 
 {% import_yaml 'data/ipv6.yaml' as ipv6_config %}

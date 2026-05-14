@@ -1,3 +1,11 @@
+{#- @state
+   id: proxypilot
+   purpose: "Secret resolution."
+   data_files: [data/free_providers.yaml]
+   configs: [configs/proxypilot.yaml.j2]
+   services: [proxypilot.container]
+   secrets: [api/proxypilot-management]
+#}
 {% from '_imports.jinja' import user, home, proxypilot_key, gopass_secret %}
 
 {% import_yaml 'data/free_providers.yaml' as free_providers_data %}

@@ -1,4 +1,13 @@
 {# Telethon Bridge: Telegram MTProto relay to HTTP for LLM bot integration #}
+{#- @state
+   id: telethon_bridge
+   purpose: "Telethon Bridge: Telegram MTProto relay to HTTP for LLM bot integration."
+   includes: [pacman_db_warmup]
+   data_files: [data/telethon_bridge.yaml, data/versions.yaml]
+   configs: [configs/telethon-bridge.yaml.j2]
+   services: [telethon-bridge-react.path, telethon-bridge-react.service]
+   secrets: [api/nanoclaw-telegram-uid, api/telegram-telethon-hash, api/telegram-telethon-id, api/telegram-uid-guest2, api/telegram-uid-levra]
+#}
 {% from '_imports.jinja' import user, home, proxypilot_key, tg_secret %}
 
 {% import_yaml 'data/versions.yaml' as ver %}

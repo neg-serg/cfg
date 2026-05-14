@@ -1,4 +1,12 @@
 {# User account management: PAM sudo, SSH agent auth, and authorized keys #}
+{#- @state
+   id: users
+   purpose: "User account management: PAM sudo, SSH agent auth, and authorized keys."
+   includes: [pacman_db_warmup]
+   data_files: [data/users.yaml]
+   configs: [configs/pam-sudo.j2, configs/sudo-authorized-keys.j2, configs/sudoers-nopasswd.j2, configs/sudoers-ssh-agent-auth.j2]
+   feature_gate: [sudo_ssh_agent]
+#}
 include:
   - pacman_db_warmup
 

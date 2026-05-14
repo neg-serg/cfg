@@ -1,3 +1,9 @@
+{#- @state
+   id: image_generation
+   purpose: "Resolve image provider API keys from gopass (free-tier providers)."
+   data_files: [data/image_providers.yaml]
+   configs: [configs/image-gen-providers.yaml.j2]
+#}
 # =============================================================================
 # Image generation — ComfyUI deployment with multiple AI providers
 # =============================================================================

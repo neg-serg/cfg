@@ -1,3 +1,7 @@
+{# @macro_file
+   provides: [go_pkg, curl_bin, pip_pkg, cargo_pkg, curl_extract_tar, curl_extract_zip, firefox_extension, download_font_zip, git_clone_deploy, git_clone_build, http_file, huggingface_file, npm_build_workflow, github_release_to, install_catalog]
+#}
+
 {# Download/install macros: curl_bin, pip_pkg, cargo_pkg, curl_extract_tar,
    curl_extract_zip, firefox_extension, download_font_zip, git_clone_deploy,
    http_file, github_release_to, install_catalog.
@@ -12,6 +16,10 @@
    Usage: {{ go_pkg('ght', pkg='github.com/kwame-Owusu/ght') }}
           {{ go_pkg('lazycut', pkg='github.com/ozemin/lazycut') }}
 #}
+{# @macro
+   name: go_pkg
+   purpose: ""
+#}
 {%- macro go_pkg(name, pkg=None, bin=None, user=_user, home=_home) -%}
 {%- set _bin_path = home ~ '/.local/bin/' ~ (bin or name) -%}
 install_{{ name | replace('-', '_') }}:
@@ -25,7 +33,11 @@ install_{{ name | replace('-', '_') }}:
 {# Fallback: download binary directly to ~/.local/bin/ and chmod +x.
    version: when set, enables update-on-version-bump via version file.
    Usage: {{ curl_bin('aliae', 'https://github.com/.../aliae-linux-amd64') }}
-          {{ curl_bin('tdl', '.../${VER}/...', version=ver.tdl) }}
+          {{ curl_bin('tdl{# @macro
+   name: curl_bin
+   purpose: ""
+#}
+', '.../${VER}/...', version=ver.tdl) }}
 #}
 {%- macro curl_bin(name, url, version=None, hash=None, user=_user, home=_home) -%}
 {%- set _creates = home ~ '/.local/bin/' ~ name -%}
@@ -61,7 +73,11 @@ install_{{ name | replace('-', '_') }}:
    env: shell env prefix string (e.g. 'GIT_CONFIG_GLOBAL=/dev/null'); supports shell expansion.
    Usage: {{ pip_pkg('httpstat') }}
           {{ pip_pkg('neovim_python_deps', pkg='neovim-remote', bin='nvr') }}
-          {{ pip_pkg('dr14_tmeter', pkg='git+https://...', env='GIT_CONFIG_GLOBAL=/dev/null') }}
+          {# @macro
+   name: pip_pkg
+   purpose: ""
+#}
+{{ pip_pkg('dr14_tmeter', pkg='git+https://...', env='GIT_CONFIG_GLOBAL=/dev/null') }}
 #}
 {%- macro pip_pkg(name, pkg=None, bin=None, env=None, preinstall=None, user=_user, home=_home) -%}
 {%- set _env = env ~ ' ' if env else '' -%}
@@ -90,7 +106,11 @@ install_{{ name | replace('-', '_') }}:
           {{ cargo_pkg('agg', git='https://github.com/asciinema/agg') }}
           {{ cargo_pkg('pzip', bin='pz') }}
           {{ cargo_pkg('wiremix', env='BINDGEN_EXTRA_CLANG_ARGS="..."') }}
-          {{ cargo_pkg('tailray', git='https://...', version=ver.tailray, onlyif=['pkg-config --exists dbus-1', 'command -v cargo']) }}
+    {# @macro
+   name: cargo_pkg
+   purpose: ""
+#}
+      {{ cargo_pkg('tailray', git='https://...', version=ver.tailray, onlyif=['pkg-config --exists dbus-1', 'command -v cargo']) }}
 #}
 {%- macro cargo_pkg(name, pkg=None, bin=None, git=None, env=None, onlyif=None, version=None, user=_user, home=_home) -%}
 {%- set _marker_dir = _ver_dir if user == _user else _sys_ver_dir -%}
@@ -115,7 +135,11 @@ install_{{ name | replace('-', '_') }}:
 {%- endmacro -%}
 
 {# Download and extract tar.gz/tar.xz archive to ~/.local/bin/.
-   fetch_tag: fetch latest GitHub release tag into ${TAG}; strip_v: set VER=${TAG#v}.
+   fetch_tag: fetch latest GitHub release tag into ${TAG}; strip_v: set V{# @macro
+   name: curl_extract_tar
+   purpose: ""
+#}
+ER=${TAG#v}.
    binary_pattern: find pattern after extraction; binaries: list of names to move.
    dest+strip_components: extract directly to a directory (skip binary find+move).
 #}
@@ -187,7 +211,11 @@ install_{{ name | replace('-', '_') }}:
 
 {%- endmacro -%}
 
-{# Download and extract ZIP archive, move binary(ies) to ~/.local/bin/.
+{# Downloa{# @macro
+   name: curl_extract_zip
+   purpose: ""
+#}
+d and extract ZIP archive, move binary(ies) to ~/.local/bin/.
    binary_path: relative path after extraction; binaries: list to move; dest: extract to directory.
    symlink: create symlink from dest/<symlink> to ~/.local/bin/<name>.
 #}
@@ -244,6 +272,10 @@ install_{{ name | replace('-', '_') }}:
 
 {# Download Firefox/Floorp extension .xpi from addons.mozilla.org.
    ext: dict with 'id' (extension GUID) and 'slug' (AMO slug).
+{# @macro
+   name: firefox_extension
+   purpose: ""
+#}
    profile: path to browser profile directory.
    Download failures are non-fatal — state succeeds with a warning and retries
    on next apply (creates guard re-triggers when .xpi is still missing).
@@ -263,7 +295,11 @@ install_{{ name | replace('-', '_') }}:
           'https://addons.mozilla.org/firefox/downloads/latest/{{ ext.slug }}/latest.xpi'; then
           mv -f '{{ _xpi }}.tmp' '{{ _xpi }}'
         else
-          rm -f '{{ _xpi }}.tmp'
+          rm -f '{{ _xpi{# @macro
+   name: download_font_zip
+   purpose: ""
+#}
+ }}.tmp'
           echo "WARNING: download of {{ ext.slug }} failed, will retry on next apply" >&2
         fi
     - creates: {{ _xpi }}
@@ -311,7 +347,11 @@ install_{{ name }}:
     - unless: |
         S="{{ fonts_dir }}/{{ subdir }}/.salt-installed"
         [ -f "$S" ] && exit 0
-        find {{ fonts_dir }}/{{ subdir }} -maxdepth 1 \( -name '*.otf' -o -name '*.ttf' \) -print -quit 2>/dev/null | grep -q .
+      {# @macro
+   name: git_clone_deploy
+   purpose: ""
+#}
+  find {{ fonts_dir }}/{{ subdir }} -maxdepth 1 \( -name '*.otf' -o -name '*.ttf' \) -print -quit 2>/dev/null | grep -q .
 {%- endif %}
     - parallel: True
     - retry:
@@ -349,7 +389,11 @@ install_{{ name | replace('-', '_') }}:
 
 {# Git clone + build from source + install binary to ~/.local/bin/.
    build_cmds: shell commands to build (run inside cloned dir via cd).
-   binary_src: path to built binary relative to clone root.
+   binary_src: path to bui{# @macro
+   name: git_clone_build
+   purpose: ""
+#}
+lt binary relative to clone root.
    comment: optional package description comment.
    Usage: {{ git_clone_build('nface', 'https://github.com/tomScheers/nFace.git', 'make', 'bin/nface', comment='terminal ASCII webcam via ncurses/v4l2') }}
           {{ git_clone_build('termmark', 'https://github.com/ishanawal/TermMark.git', 'cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && make -C build', 'build/termmark', comment='terminal Markdown renderer') }}
@@ -363,7 +407,11 @@ install_{{ name | replace('-', '_') }}:
         set -eo pipefail
         _td=$(mktemp -d)
         trap 'rm -rf "$_td"' EXIT
-        GIT_CONFIG_GLOBAL=/dev/null git clone --depth=1 {{ repo_url }} "$_td/{{ name }}"
+      {# @macro
+   name: http_file
+   purpose: ""
+#}
+  GIT_CONFIG_GLOBAL=/dev/null git clone --depth=1 {{ repo_url }} "$_td/{{ name }}"
         cd "$_td/{{ name }}"
         {{ build_cmds }}
         install -m 0755 "$_td/{{ name }}/{{ binary_src }}" {{ _dest }}
@@ -396,7 +444,11 @@ install_{{ name | replace('-', '_') }}:
 {%- endif %}
         install -m {{ mode }} -D "$src" '{{ dest }}'
 {%- if version %}
-        {{ _ver_stamp(_vd, name, version, target=dest) }}
+   {# @macro
+   name: huggingface_file
+   purpose: ""
+#}
+     {{ _ver_stamp(_vd, name, version, target=dest) }}
 {%- endif %}
 {%- if user %}
     - runas: {{ user }}
@@ -413,7 +465,11 @@ install_{{ name | replace('-', '_') }}:
     - require:
 {%- for req in require %}
       - {{ req }}
-{%- endfor %}
+{%- endf{# @macro
+   name: npm_build_workflow
+   purpose: ""
+#}
+or %}
 {%- endif %}
 {%- endmacro -%}
 
@@ -468,7 +524,11 @@ install_{{ name | replace('-', '_') }}:
 {%- if version %}
 
 {{ name }}_version:
-  cmd.run:
+  {# @macro
+   name: github_release_to
+   purpose: ""
+#}
+cmd.run:
     - name: |
         set -euo pipefail
         cd {{ dir }}
@@ -520,7 +580,11 @@ install_{{ name | replace('-', '_') }}:
 {%- endif %}
     - runas: {{ user }}
     - shell: /bin/bash
-    - creates: {{ _ver_dir ~ '/' ~ name ~ '@' ~ version if version else _creates }}
+    - creates: {{# @macro
+   name: install_catalog
+   purpose: ""
+#}
+{ _ver_dir ~ '/' ~ name ~ '@' ~ version if version else _creates }}
     - parallel: True
 {%- if require %}
     - require:

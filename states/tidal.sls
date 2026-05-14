@@ -1,4 +1,10 @@
 {# TidalCycles live coding environment: Haskell, SuperDirt, and SuperCollider setup #}
+{#- @state
+   id: tidal
+   purpose: "TidalCycles live coding environment: Haskell, SuperDirt, and SuperCollider setup."
+   includes: [pacman_db_warmup]
+   data_files: [data/tidal.yaml]
+#}
 include:
   - pacman_db_warmup
 

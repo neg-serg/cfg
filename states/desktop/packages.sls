@@ -1,4 +1,10 @@
 {# Desktop application packages: browsers, terminals, media, productivity tools #}
+{#- @state
+   id: desktop.packages
+   purpose: "Desktop application packages: browsers, terminals, media, productivity tools."
+   includes: [pacman_db_warmup]
+   data_files: [data/desktop.yaml]
+#}
 include:
   - pacman_db_warmup
 

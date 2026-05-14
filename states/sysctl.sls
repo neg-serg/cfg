@@ -1,5 +1,10 @@
 {# Kernel sysctl parameters: custom tuning for networking, filesystems, and security
    Data-driven from states/data/sysctl.yaml via Jinja2 template. #}
+{#- @state
+   id: sysctl
+   purpose: "Kernel sysctl parameters: custom tuning for networking, filesystems, and security."
+   configs: [configs/sysctl-custom.conf]
+#}
 {% from '_imports.jinja' import host %}
 
 {{ salt['service.config_and_reload']('sysctl_config', host.sysctl_dir ~ '99-custom.conf', 'sysctl --system',

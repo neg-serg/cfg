@@ -1,4 +1,13 @@
 {# Monitoring alerts: service watchdog timers and Loki alert rule deployment #}
+{#- @state
+   id: monitoring_alerts
+   purpose: "Monitoring alerts: service watchdog timers and Loki alert rule deployment."
+   data_files: [data/monitored_services.yaml]
+   configs: [configs/loki-alert-rules.yaml.j2]
+   services: [salt-monitor-watchdog.service, salt-monitor-watchdog.timer, salt-monitor.service]
+   secrets: [api/nanoclaw-telegram, api/nanoclaw-telegram-uid]
+   feature_gate: [monitoring.alerts, monitoring.loki]
+#}
 {% from '_imports.jinja' import host, user, home, tg_secret %}
 
 {% import_yaml 'data/monitored_services.yaml' as monitored %}

@@ -1,3 +1,11 @@
+{#- @state
+   id: ollama
+   purpose: "Resolve manifest path: "model:tag" → library/model/tag, "ns/model:tag" → ns/model/tag."
+   data_files: [data/ollama.yaml]
+   services: [ollama.container]
+   feature_gate: [network.zapret2]
+   tests: [tests/test_ollama.py]
+#}
 {% from '_imports.jinja' import host, retry_attempts, retry_interval, ollama_pull_timeout %}
 
 {% import_yaml 'data/service_catalog.yaml' as catalog %}

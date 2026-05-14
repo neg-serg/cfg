@@ -1,3 +1,9 @@
+{#- @state
+   id: services
+   purpose: "Complex services."
+   data_files: [data/services.yaml]
+   feature_gate: [dns.*, monitoring.netdata, monitoring.sysstat, monitoring.vnstat, network.*, services.*]
+#}
 # =============================================================================
 # System services — data-driven service management (network, DNS, monitoring)
 # =============================================================================

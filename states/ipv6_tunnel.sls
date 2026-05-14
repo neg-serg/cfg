@@ -1,3 +1,9 @@
+{#- @state
+   id: ipv6_tunnel
+   purpose: ""
+   data_files: [data/ipv6.yaml]
+   secrets: [api/he-tunnel]
+#}
 {% from '_imports.jinja' import gopass_secret %}
 {% import_yaml 'data/ipv6.yaml' as ipv6_config %}
 

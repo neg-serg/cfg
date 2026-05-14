@@ -1,4 +1,12 @@
 {# Niri scrolling-tiling Wayland compositor: package install and session setup #}
+{#- @state
+   id: desktop.niri
+   purpose: "Niri scrolling-tiling Wayland compositor: package install, session setup, config, scratchpad support."
+   includes: [pacman_db_warmup]
+   data_files: [data/desktop.yaml]
+   configs: [dotfiles/dot_config/niri/config.kdl, dotfiles/dot_config/niri/scratchpads.yaml]
+   tests: [tests/test_niri_focus_hist.py]
+#}
 include:
   - pacman_db_warmup
 
@@ -33,3 +41,24 @@ niri_session_entry:
     - group: root
     - mode: '0644'
     - makedirs: true
+
+niri_scratchpad_config:
+  file.managed:
+    - name: {{ home }}/.config/niri/scratchpads.yaml
+    - source: salt://dotfiles/dot_config/niri/scratchpads.yaml
+    - user: {{ user }}
+    - group: {{ user }}
+    - mode: '0644'
+    - require:
+      - file: niri_config_dir
+
+niri_spawn_or_toggle:
+  file.managed:
+    - name: {{ home }}/.local/bin/spawn-or-toggle
+    - source: salt://dotfiles/dot_local/bin/executable_spawn-or-toggle
+    - user: {{ user }}
+    - group: {{ user }}
+    - mode: '0755'
+    - makedirs: true
+    - require:
+      - file: niri_config_dir

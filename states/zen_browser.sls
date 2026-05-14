@@ -1,4 +1,10 @@
 {# Zen Browser: Firefox-based browser with extensions, proxy switching, and VPN integration #}
+{#- @state
+   id: zen_browser
+   purpose: "Zen Browser: Firefox-based browser with extensions, proxy switching, and VPN integration."
+   data_files: [data/zen_browser.yaml]
+   feature_gate: [floorp]
+#}
 {% from '_imports.jinja' import host, user, home %}
 
 # Zen Browser: user.js + userChrome.css + extensions for the primary managed browser path

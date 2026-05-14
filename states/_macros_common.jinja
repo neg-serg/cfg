@@ -1,3 +1,7 @@
+{# @macro_file
+   provides: [download_cached, ver_stamp, gopass_secret, proxypilot_key, tg_secret]
+#}
+
 {#- Single source of truth for all shared constants.
     Imported by macro files (as _user, _home, …) and re-exported by _imports.jinja for .sls states.
     Usage (macros):  {% from '_macros_common.jinja' import user as _user, home as _home, ... %}
@@ -27,6 +31,10 @@
         {{ download_cached(url, _cache_path, hash=hash) }}
         cp "$cache" "$_td/archive.tar.gz"
 -#}
+{# @macro
+   name: download_cached
+   purpose: ""
+#}
 {%- macro download_cached(url, cache_path, hash=None) %}
         cache='{{ cache_path }}'
         mkdir -p "$(dirname "$cache")"
@@ -42,7 +50,11 @@
 {#- Shell one-liner: create version-encoded marker (used inside cmd.run name: blocks).
     target: absolute path to installed artifact — creates a symlink so creates: detects deletion.
     When omitted, creates a plain touch file (for cases without a single artifact, e.g. fonts).
-    Old-format markers (plain name) and stale versioned markers (name@*) are cleaned up. -#}
+    Old-format markers (plain name) and {# @macro
+   name: ver_stamp
+   purpose: ""
+#}
+stale versioned markers (name@*) are cleaned up. -#}
 {%- macro ver_stamp(vd, name, version, target=None) -%}
 mkdir -p {{ vd }} && rm -f '{{ vd }}/{{ name }}' {{ vd }}/{{ name }}@* && {% if target %}ln -sf '{{ target }}' '{{ vd }}/{{ name }}@{{ version }}'{% else %}touch '{{ vd }}/{{ name }}@{{ version }}'{% endif %}
 {%- endmacro -%}
@@ -55,7 +67,11 @@ mkdir -p {{ vd }} && rm -f '{{ vd }}/{{ name }}' {{ vd }}/{{ name }}@* && {% if 
     Caches resolved values in _gopass_ns.values to avoid re-spawning gopass
     for the same key across multiple .sls files.
     Usage: {% set key = gopass_secret('api/my-key') %}
-           {% set key = gopass_secret('api/my-key', "awk '...' /path/to/config") %}
+           {% set key = gopass_secret('api/my-key', "awk '...' /pa{# @macro
+   name: gopass_secret
+   purpose: ""
+#}
+th/to/config") %}
 -#}
 {%- set _gopass_ns = namespace(checked=False, available=False, values={}) -%}
 {%- macro gopass_secret(key, fallback_cmd='true', runas=None) -%}
@@ -88,12 +104,20 @@ mkdir -p {{ vd }} && rm -f '{{ vd }}/{{ name }}' {{ vd }}/{{ name }}@* && {% if 
 {%- endif -%}
 {%- endmacro -%}
 
-{#- Convenience wrappers for frequently-used secrets.
+{#- Convenience wrappe{# @macro
+   name: proxypilot_key
+   purpose: ""
+#}
+rs for frequently-used secrets.
     Centralise the fallback commands so each .sls file doesn't have to
     copy-paste the same awk/cat one-liners.
 -#}
 {%- macro proxypilot_key() -%}
-{{ gopass_secret('api/proxypilot-local', "awk '/^api-keys:/{getline; sub(/^[[:space:]]*-[[:space:]]*\"?/, \"\"); sub(/\"?[[:space:]]*$/, \"\"); print; exit}' " ~ home ~ "/.config/proxypilot/config.yaml 2>/dev/null || true") }}
+{{ gopass_secret('api/proxypilot-local', "{# @macro
+   name: tg_secret
+   purpose: ""
+#}
+awk '/^api-keys:/{getline; sub(/^[[:space:]]*-[[:space:]]*\"?/, \"\"); sub(/\"?[[:space:]]*$/, \"\"); print; exit}' " ~ home ~ "/.config/proxypilot/config.yaml 2>/dev/null || true") }}
 {%- endmacro -%}
 
 {%- macro tg_secret(gopass_key, cred_file, cred_base=None) -%}

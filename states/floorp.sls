@@ -1,4 +1,10 @@
 {# Floorp browser: user.js, userChrome.css, extensions, and profile configuration #}
+{#- @state
+   id: floorp
+   purpose: "Floorp browser: user.js, userChrome.css, extensions, and profile configuration."
+   data_files: [data/floorp.yaml]
+   feature_gate: [floorp]
+#}
 # Floorp browser: user.js + userChrome.css + userContent.css + extensions.
 {% from '_imports.jinja' import host, user, home %}
 # Floorp browser: user.js + userChrome.css + userContent.css + extensions

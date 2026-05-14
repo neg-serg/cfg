@@ -1,4 +1,9 @@
 {# Filesystem mounts: external drives, network shares, and special filesystems #}
+{#- @state
+   id: mounts
+   purpose: "Filesystem mounts: external drives, network shares, and special filesystems."
+   data_files: [data/mounts.yaml]
+#}
 # Disk mounts (/mnt/zero, /mnt/one)
 
 {% import_yaml 'data/mounts.yaml' as mounts %}

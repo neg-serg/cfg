@@ -1,4 +1,8 @@
 {# Pacman database warmup: ensures package databases are up to date before other states #}
+{#- @state
+   id: pacman_db_warmup
+   purpose: "Pacman database warmup: ensures package databases are up to date before other states."
+#}
 # Warm up pacman package list cache
 # Used by paru_install macro to detect installed packages.
 # Must be included before any paru_install states.

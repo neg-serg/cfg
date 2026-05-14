@@ -1,3 +1,7 @@
+{# @macro_file
+   provides: [env_block, remove_native_unit, remove_native_package, managed_resource_value, managed_mode_value, managed_sysusers_line, managed_identity_guard, managed_tmpfiles_line, managed_path_guard, ensure_dir, udev_rule, ensure_running, service_stopped, service_with_healthcheck, unit_override, service_with_unit, render_service]
+#}
+
 {# Service-related macros: render_service, remove_native_unit, remove_native_package, env_block, ensure_dir, udev_rule, ensure_running, service_stopped, service_with_healthcheck, unit_override, service_with_unit, managed_sysusers_line, managed_tmpfiles_line, managed_identity_guard, managed_path_guard
    User-scoped macros moved to _macros_service_user.jinja #}
 
@@ -12,6 +16,10 @@
 
 {# Render the _systemctl_env list as YAML env entries.
    Replaces the 14 identical for-loops scattered across user-service macros. #}
+{# @macro
+   name: env_block
+   purpose: ""
+#}
 {%- macro env_block() -%}
 {%- for entry in _systemctl_env %}
       - {{ entry }}
@@ -23,7 +31,11 @@
     Usage:
       {{ remove_native_unit('ollama') }}
     Emits:
-     {name}_native_unit_absent + {name}_native_unit_daemon_reload
+     {name}_native_uni{# @macro
+   name: remove_native_unit
+   purpose: ""
+#}
+t_absent + {name}_native_unit_daemon_reload
 #}
 {%- macro remove_native_unit(name, unit_path=None, scope='system') -%}
 {%- if unit_path is none -%}
@@ -56,7 +68,11 @@
 {%- endmacro -%}
 
 {# In-place cutover: remove native system packages displaced by containerized services.
-   Usage: {{ remove_native_package('loki', ['loki']) }}
+   Usage: {{ remove_native_pack{# @macro
+   name: remove_native_package
+   purpose: ""
+#}
+age('loki', ['loki']) }}
           {{ remove_native_package('llama_embed', ['llama.cpp-vulkan']) }}
 #}
 {%- macro remove_native_package(name, pkgs) -%}
@@ -65,11 +81,19 @@
     - pkgs:
 {%- for pkg in pkgs %}
       - {{ pkg }}
-{%- endfor %}
+{%- endfor %}{# @macro
+   name: managed_resource_value
+   purpose: ""
+#}
+
 {%- endmacro -%}
 
 {# Resolve symbolic inventory values for managed systemd resources.
-   Currently supports __CURRENT_USER__ for user-owned tmpfiles entries.
+   Cu{# @macro
+   name: managed_mode_value
+   purpose: ""
+#}
+rrently supports __CURRENT_USER__ for user-owned tmpfiles entries.
 #}
 {%- macro managed_resource_value(value) -%}
 {%- if value == '__CURRENT_USER__' -%}
@@ -81,7 +105,11 @@
 
 {%- macro managed_mode_value(mode) -%}
 {%- set _mode = managed_resource_value(mode)|string -%}
-{{ _mode[1:] if _mode.startswith('0') else _mode }}
+{{ _mode[1:] if _mode.start{# @macro
+   name: managed_sysusers_line
+   purpose: ""
+#}
+swith('0') else _mode }}
 {%- endmacro -%}
 
 {# Render a single sysusers.d entry from states/data/managed_resources.yaml.
@@ -89,19 +117,31 @@
    added to the inventory rather than using bespoke user.present states.
 #}
 {%- macro managed_sysusers_line(entry) -%}
-u {{ managed_resource_value(entry.user) }} - "{{ entry.get('gecos', 'Salt managed service account') }}" {{ managed_resource_value(entry.home) }} {{ entry.get('shell', '/usr/sbin/nologin') }}
+u {{ manag{# @macro
+   name: managed_identity_guard
+   purpose: ""
+#}
+ed_resource_value(entry.user) }} - "{{ entry.get('gecos', 'Salt managed service account') }}" {{ managed_resource_value(entry.home) }} {{ entry.get('shell', '/usr/sbin/nologin') }}
 {%- endmacro -%}
 
 {# Guard used by states/systemd_resources.sls to repair missing service accounts
    without rerunning systemd-sysusers on every apply.
 #}
-{%- macro managed_identity_guard(entry) -%}
+{%- macro mana{# @macro
+   name: managed_tmpfiles_line
+   purpose: ""
+#}
+ged_identity_guard(entry) -%}
 getent passwd {{ managed_resource_value(entry.user) }} >/dev/null && getent group {{ managed_resource_value(entry.group) }} >/dev/null
 {%- endmacro -%}
 
 {# Render a single tmpfiles.d entry from states/data/managed_resources.yaml.
    Prefer this shared inventory for long-lived service resources over one-off
    tmpfiles snippets embedded inside individual states.
+{# @macro
+   name: managed_path_guard
+   purpose: ""
+#}
 #}
 {%- macro managed_tmpfiles_line(entry) -%}
 {{ entry.type }} {{ managed_resource_value(entry.path) }} {{ entry.mode }} {{ managed_resource_value(entry.user) }} {{ managed_resource_value(entry.group) }} {{ entry.get('age', '-') }} {{ managed_resource_value(entry.get('argument', '-')) }}
@@ -124,7 +164,11 @@ test -f {{ _path }} && test "$(stat -c '%U:%G:%a' {{ _path }})" = "{{ _user_name
 {%- elif entry.type == 'L' -%}
 test -L {{ _path }} && test "$(readlink {{ _path }})" = "{{ managed_resource_value(entry.get('argument', '-')) }}"
 {%- else -%}
-test -e {{ _path }}
+test -e {{ _path{# @macro
+   name: ensure_dir
+   purpose: ""
+#}
+ }}
 {%- endif -%}
 {%- endmacro -%}
 
@@ -144,7 +188,11 @@ test -e {{ _path }}
     - makedirs: True
 {%- if mode %}
     - mode: '{{ mode }}'
-{%- endif %}
+{%- end{# @macro
+   name: udev_rule
+   purpose: ""
+#}
+if %}
 {%- if require %}
     - require:
 {%- for req in require %}
@@ -179,7 +227,11 @@ test -e {{ _path }}
 {%- endmacro -%}
 
 {# Config file deploy + reload/restart companion.
-   Emits two states: {{ name }} (file.managed) and {{ name }}_reload (cmd.run)
+   Emits two states: {{ name }} (file.managed) and {{ n{# @macro
+   name: config_and_reload
+   purpose: ""
+#}
+ame }}_reload (cmd.run)
    with onchanges from the reload state to the file state.
    source: salt:// path for the config file template/static asset.
    contents: inline content (used instead of source for short snippets).
@@ -208,7 +260,11 @@ test -e {{ _path }}
 {%- endif %}
 {%- if makedirs %}
     - makedirs: True
-{%- endif %}
+{%{# @macro
+   name: ensure_running
+   purpose: ""
+#}
+- endif %}
 {%- if require %}
     - require:
 {%- for req in require %}
@@ -237,6 +293,10 @@ test -e {{ _path }}
 {{ name }}_reset_failed:
   cmd.run:
     - name: systemctl reset-failed {{ svc }} 2>/dev/null; true
+{# @macro
+   name: service_stopped
+   purpose: ""
+#}
     - onlyif: systemctl is-failed {{ svc }}
     - require:
       - service: {{ name }}_enabled
@@ -283,7 +343,11 @@ test -e {{ _path }}
 
 {# Restart service and poll a health-check command until it succeeds.
    Skips entirely if the check already passes (unless guard).
-   check_cmd: shell command that returns 0 when service is ready (explicit override).
+   check_cmd{# @macro
+   name: service_with_healthcheck
+   purpose: ""
+#}
+: shell command that returns 0 when service is ready (explicit override).
    catalog: imported service_catalog.yaml dict — when provided and check_cmd is omitted,
    the macro looks up `service` in the catalog and constructs the healthcheck automatically:
      - catalog[service].health_cmd → use directly (non-HTTP checks like unbound-control)
@@ -318,7 +382,11 @@ test -e {{ _path }}
           {{ check_cmd }} && exit 0
           sleep 1
         done
-        echo "{{ service }} failed to start within {{ timeout }}s" >&2
+        echo "{{ service }} failed {# @macro
+   name: unit_override
+   purpose: ""
+#}
+to start within {{ timeout }}s" >&2
         exit 1
     - shell: /bin/bash
 {%- if user_scope %}
@@ -368,7 +436,11 @@ test -e {{ _path }}
    enabled: True (default) = service.enabled; False = service.disabled; None = skip enable/disable.
    requires: optional list of state requisites (includes daemon-reload as base requirement).
    template: 'jinja' (default None) to render the unit file as a Jinja template.
-   context: dict of template variables (default None), used with template='jinja'.
+   context: dict of template variables (default None), used with temp{# @macro
+   name: service_with_unit
+   purpose: ""
+#}
+late='jinja'.
    onlyif: guard for service.enabled (default None), e.g. 'command -v ollama'.
    companion: optional second unit source for service+timer pairs (daemon-reload watches both).
    watch: optional list of extra state requisites to watch (e.g. config files); used with running=True.
@@ -461,6 +533,10 @@ test -e {{ _path }}
 {# Renders one service section from services.yaml data.
    Variables expected as parameters: name, opts, feature_flag, section_label, known_vars.
    host: optional — when provided, auto-resolves host.* field names in context. #}
+{# @macro
+   name: render_service
+   purpose: ""
+#}
 {% macro render_service(name, opts, feature_flag, section_label, known_vars, host=None) %}
 {%- set _host_fields = ['hostname', 'home', 'user', 'uid', 'mnt_zero', 'mnt_one'] -%}
 {% if feature_flag %}

@@ -1,4 +1,10 @@
 {# Font installation: pacman, AUR, downloaded, and custom PKGBUILD builds #}
+{#- @state
+   id: fonts
+   purpose: "Font installation: pacman, AUR, downloaded, and custom PKGBUILD builds."
+   includes: [pacman_db_warmup]
+   data_files: [data/fonts.yaml, data/versions.yaml]
+#}
 # All font installs: pacman, AUR, downloaded, custom PKGBUILD builds
 # Run: sudo salt-call --local state.apply fonts
 include:

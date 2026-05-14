@@ -1,4 +1,10 @@
 {# llama.cpp embedding server: Qwen3-Embedding-8B via Vulkan in Quadlet container #}
+{#- @state
+   id: llama_embed
+   purpose: "llama.cpp embedding server: Qwen3-Embedding-8B via Vulkan in Quadlet container."
+   data_files: [data/llama_embed.yaml]
+   services: [llama_embed.container]
+#}
 # llama.cpp embedding server: Qwen3-Embedding-8B via Vulkan.
 # Pure Quadlet (Podman container). Service is NOT enabled at boot (manual_start).
 {% from '_imports.jinja' import host, user %}

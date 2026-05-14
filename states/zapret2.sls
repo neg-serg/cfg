@@ -1,4 +1,10 @@
 {# Zapret2 DPI bypass: nfqueue-based traffic filter with domain-specific rules #}
+{#- @state
+   id: zapret2
+   purpose: "Zapret2 DPI bypass: nfqueue-based traffic filter with domain-specific rules."
+   data_files: [data/zapret2.yaml]
+   configs: [configs/zapret2-hosts-user.txt.j2, configs/zapret2.conf.j2]
+#}
 # =============================================================================
 # Zapret2 DPI bypass — configuration, hostlist, and helper service
 # =============================================================================

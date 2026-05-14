@@ -191,33 +191,35 @@ def _user_service_enable_dict(
     if not all_units and not daemon_reload:
         shell_cmd = "/usr/bin/true"
     else:
+        _su = f"sudo -u {u}" if u != "root" else ""
         parts = ["set -euo pipefail"]
         parts.append(
             f"export XDG_RUNTIME_DIR={h['runtime_dir']} "
             f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus"
         )
         if daemon_reload:
-            parts.append("systemctl --user daemon-reload")
+            parts.append(f"{_su} systemctl --user daemon-reload")
         for svc in svc_list:
             parts.append(
-                f"systemctl --user is-{check} '{svc}' >/dev/null 2>&1 "
-                f"|| systemctl --user enable '{svc}'"
+                f"{_su} systemctl --user is-{check} '{svc}' >/dev/null 2>&1 "
+                f"|| {_su} systemctl --user enable '{svc}'"
             )
         for svc in now_list:
             parts.append(
-                f"systemctl --user is-active '{svc}' >/dev/null 2>&1 "
-                f"|| systemctl --user enable --now '{svc}'"
+                f"{_su} systemctl --user is-active '{svc}' >/dev/null 2>&1 "
+                f"|| {_su} systemctl --user enable --now '{svc}'"
             )
         shell_cmd = "\n".join(parts)
 
     unless_cmd = None
     if all_units:
+        _su = f"sudo -u {u}" if u != "root" else ""
         checks = [f"export XDG_RUNTIME_DIR={h['runtime_dir']}"]
         checks.append(f"export DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus")
         for svc in svc_list:
-            checks.append(f"systemctl --user is-{check} '{svc}' >/dev/null 2>&1")
+            checks.append(f"{_su} systemctl --user is-{check} '{svc}' >/dev/null 2>&1")
         for svc in now_list:
-            checks.append(f"systemctl --user is-enabled '{svc}' >/dev/null 2>&1")
+            checks.append(f"{_su} systemctl --user is-enabled '{svc}' >/dev/null 2>&1")
         unless_cmd = " && ".join(checks)
 
     args: list[dict[str, Any]] = [

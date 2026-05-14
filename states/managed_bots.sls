@@ -47,4 +47,5 @@ managed_bots_script:
 
 {{ salt['user_service.user_service_enable']('managed_bots_enabled',
     start_now=['managed-bots.service'],
+    user=user,
     requires=['file: managed_bots_script']) }}

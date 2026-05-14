@@ -39,6 +39,10 @@
 set -euo pipefail
 
 SCRIPT_DIR="${0:A:h}"
+
+# Early pretty loading for auto-mode messages and general output
+# shellcheck disable=SC1091
+source "${SCRIPT_DIR}/lib/pretty.sh" 2>/dev/null || true
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 VENV_DIR="${PROJECT_DIR}/.venv"
 RUNTIME_CONFIG_DIR="${PROJECT_DIR}/.salt_runtime"
@@ -60,7 +64,7 @@ for arg in "$@"; do
 	--audit) AUDIT_MODE=true ;;
 	--force | -f) FORCE_MODE=true ;;
 	-*)
-		echo "Unknown flag: $arg" >&2
+		pretty::fail "Unknown flag: $arg"
 		exit 1
 		;;
 	*)
@@ -85,7 +89,7 @@ AUTO_MODE=false
 if [[ "$STATE" == "auto" ]]; then
 	AUTO_MODE=true
 	if [[ -n "${SALT_AUTO_DISABLE:-}" ]]; then
-		echo "(auto: disabled via SALT_AUTO_DISABLE, applying system_description)"
+		pretty::warn "auto: disabled via SALT_AUTO_DISABLE, applying system_description"
 		STATE="system_description"
 	else
 		AUTO_BASE="${AUTO_BASE:-}"
@@ -101,10 +105,10 @@ if [[ "$STATE" == "auto" ]]; then
 
 		if [[ -z "$CHANGED_STR" ]]; then
 			if $FORCE_MODE; then
-				echo "(auto: no changed files — --force, applying system_description)"
+				pretty::info "auto: no changed files — --force, applying system_description"
 				STATE="system_description"
 			else
-				echo "(auto: no changed files since $AUTO_BASE, nothing to apply)"
+				pretty::ok "auto: no changed files since $AUTO_BASE, nothing to apply"
 				exit 0
 			fi
 		else
@@ -113,7 +117,7 @@ if [[ "$STATE" == "auto" ]]; then
 				--files "${CHANGED_FILES[@]}" --json 2>/dev/null || \
 				python3 -c "import json; print(json.dumps({'changed_files':[],'selected_states':[],'fallback_reasons':['salt_impact.py failed'],'final_target':'system_description'}))")
 
-			echo "--- Salt impact plan ---"
+			pretty::section "Salt impact plan"
 			echo "$PLAN_JSON" | python3 -c "
 import json, sys
 plan = json.load(sys.stdin)
@@ -135,10 +139,10 @@ print('------------------------')
 "
 			STATE=$(echo "$PLAN_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin)['final_target'])")
 			if [[ "$STATE" == "none" ]]; then
-				echo "(auto: no impactful changes, nothing to apply)"
+				pretty::ok "auto: no impactful changes, nothing to apply"
 				exit 0
 			fi
-			[[ "$STATE" != "system_description" ]] && echo "(auto: narrowed to $STATE)"
+			[[ "$STATE" != "system_description" ]] && pretty::info "auto: narrowed to $STATE"
 		fi
 	fi
 fi
@@ -161,18 +165,18 @@ repair_stale_venv_entrypoints() {
 	[[ -f "$launcher_path" ]] || return 0
 	grep -qF "$expected_shebang" "$launcher_path" && return 0
 
-	echo "--- Repairing relocated venv entrypoints ---"
+	pretty::warn "Repairing relocated venv entrypoints"
 	"$VENV_DIR/bin/python3" -m pip install --force-reinstall -r "${PROJECT_DIR}/requirements.txt"
 }
 
 bootstrap_salt() {
 	if [[ ! -d "$VENV_DIR" ]]; then
-		echo "--- Bootstrapping Salt (creating venv) ---"
+		pretty::phase "Bootstrapping Salt (creating venv)"
 		python3 -m venv "$VENV_DIR"
 	fi
 
 	if [[ ! -f "$VENV_DIR/bin/salt-call" ]]; then
-		echo "--- Installing Salt and dependencies ---"
+		pretty::phase "Installing Salt and dependencies"
 		"$VENV_DIR/bin/pip" install -r "${PROJECT_DIR}/requirements.txt"
 	fi
 
@@ -225,8 +229,8 @@ get_sudo() {
 		SUDO_CMD=(sudo -S)
 		SUDO_PASS=$(<"${PROJECT_DIR}/.password")
 	else
-		echo "error: no NOPASSWD sudo and no .password file found" >&2
-		echo "  either configure NOPASSWD or create .password" >&2
+		pretty::fail "no NOPASSWD sudo and no .password file found"
+		pretty::info "either configure NOPASSWD or create .password"
 		exit 1
 	fi
 }
@@ -255,7 +259,7 @@ except Exception:
 ensure_daemon() {
 	daemon_running && return 0
 	[[ -x "$DAEMON_SCRIPT" ]] || return 1
-	echo "(starting salt-daemon in background...)"
+	pretty::info "starting salt-daemon in background..."
 	"${SUDO_CMD[@]}" "$DAEMON_SCRIPT" \
 		--config-dir "$RUNTIME_CONFIG_DIR" \
 		--socket "$DAEMON_SOCK" \
@@ -269,8 +273,8 @@ ensure_daemon() {
 
 # ── Run via daemon ─────────────────────────────────────────────────────────────
 run_via_daemon() {
-	echo "=== Applying ${STATE} via daemon ($(date)) ==="
-	echo "Log: ${LOG_FILE}"
+	pretty::header "Apply ${STATE} (via daemon)"
+	pretty::info "Log: ${LOG_FILE}"
 
 	local kwargs='{}'
 	$TEST_MODE && kwargs='{"test":true}'
@@ -320,9 +324,9 @@ PYEOF
 SALT_RUNNER="${SCRIPT_DIR}/salt_runner.py"
 
 run_direct() {
-	echo "=== Applying ${STATE} directly (daemon not running) ($(date)) ==="
-	echo "Log: ${LOG_FILE}"
-	echo "(Start salt-daemon for faster subsequent runs)"
+	pretty::header "Apply ${STATE} (direct)"
+	pretty::info "Log: ${LOG_FILE}"
+	pretty::dim "Start salt-daemon for faster subsequent runs"
 
 	local -a salt_cmd
 	salt_cmd=(
@@ -363,7 +367,7 @@ maintenance_lock_remove() {
 # shellcheck disable=SC1091
 source "${SCRIPT_DIR}/lib/pretty.sh" 2>/dev/null || true
 
-# Pre-flight: validate data contracts before applying states
+# ── Bootstrap helpers (after pretty.sh loaded) ────────────────────────────────
 # Set SALT_SKIP_CONTRACTS=1 or use --force to bypass (e.g., bootstrap scenarios)
 if [[ -z "${SALT_SKIP_CONTRACTS:-}" && "$FORCE_MODE" != true ]]; then
 	CONTRACT_OUTPUT=$(python3 "${SCRIPT_DIR}/salt_contracts.py" 2>&1)
@@ -376,9 +380,9 @@ if [[ -z "${SALT_SKIP_CONTRACTS:-}" && "$FORCE_MODE" != true ]]; then
 			pretty::info "Fix the violations above, then re-run"
 			pretty::info "Bypass: just force  |  Inspect: python3 scripts/salt_contracts.py --verbose"
 		else
-			echo "=== Data contract violations detected ==="
+			pretty::fail "Data contract violations detected"
 			echo "$CONTRACT_OUTPUT"
-			echo "  Fix: resolve violations, then re-run."
+			pretty::info "Fix: resolve violations, then re-run."
 		fi
 		exit 1
 	fi
@@ -394,7 +398,7 @@ trap maintenance_lock_remove EXIT
 if ensure_daemon; then
 	run_via_daemon && RC=$? || RC=$?
 	if [[ $RC -eq 75 ]]; then
-		echo "(daemon busy — falling back to direct salt-call)"
+		pretty::warn "daemon busy — falling back to direct salt-call"
 		run_direct && RC=$? || RC=$?
 	fi
 else
@@ -404,10 +408,10 @@ fi
 echo ""
 if declare -f pretty::section >/dev/null 2>&1; then
     pretty::section "Apply ${STATE}"
-    echo "Log: ${LOG_FILE}"
+    pretty::info "Log: ${LOG_FILE}"
 else
-    echo "=== Finished ${STATE} (exit code: ${RC}) at $(date) ==="
-    echo "Full log: ${LOG_FILE}"
+    pretty::ok "Apply ${STATE} — exit ${RC}"
+    echo "Log: ${LOG_FILE}"
 fi
 
 if [[ $RC -eq 0 ]]; then
@@ -415,8 +419,8 @@ if [[ $RC -eq 0 ]]; then
         pretty::ok "All states applied successfully"
         pretty::phase 1 2 "Dotfiles (chezmoi)"
     else
-        echo "--- ${STATE}: all states passed ---"
-        echo "--- Applying dotfiles (chezmoi) ---"
+        pretty::ok "${STATE}: all states passed"
+        echo "--- Applying dotfiles ---"
     fi
     gpg-connect-agent updatestartuptty /bye &>/dev/null || true
     install -Dm644 "${PROJECT_DIR}/dotfiles/dot_config/chezmoi/chezmoi.toml" \
@@ -506,16 +510,16 @@ for d in data.get('details', []):
             pretty::info "grep 'Requisite.*not found' ${LOG_FILE}"
             pretty::info "just validate  |  python3 scripts/salt_contracts.py"
         else
-            echo "=== Debug ==="
-            echo "  grep 'Result: False' ${LOG_FILE}"
-            echo "  grep 'Requisite.*not found' ${LOG_FILE}"
-            echo "  just validate  |  python3 scripts/salt_contracts.py"
+            pretty::fail "State failures detected"
+            pretty::info "grep 'Result: False' ${LOG_FILE}"
+            pretty::info "grep 'Requisite.*not found' ${LOG_FILE}"
+            pretty::info "just validate  |  python3 scripts/salt_contracts.py"
         fi
     else
         if declare -f pretty::fail >/dev/null 2>&1; then
             pretty::fail "apply failed (exit ${RC}) — pre-flight or salt-call crash"
         else
-            echo "--- ${STATE}: apply failed (exit code ${RC}) — see log above ---"
+            pretty::fail "${STATE}: apply failed (exit ${RC}) — see log above"
         fi
     fi
     exit $RC

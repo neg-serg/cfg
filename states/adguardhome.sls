@@ -48,5 +48,4 @@ adguardhome_initial_config:
 
 {# ── Healthcheck ── #}
 {{ salt['service.service_with_healthcheck']('adguardhome_start', 'adguardhome-container',
-    catalog={'adguardhome-container': catalog.adguardhome},
     requires=['cmd: adguardhome_running']) }}

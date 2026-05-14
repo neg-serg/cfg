@@ -1,0 +1,3366 @@
+{
+  "generated": "2026-05-14T20:21:09.183254",
+  "entity_count": 264,
+  "issue_count": 5,
+  "entities": [
+    {
+      "id": "adguardhome",
+      "type": "state",
+      "source_path": "states/adguardhome.sls",
+      "purpose": "Cleanup legacy binary.",
+      "includes": [],
+      "data_files": [],
+      "configs": [
+        "configs/adguardhome-initial.yaml",
+        "configs/resolved-adguardhome.conf"
+      ],
+      "services": [
+        "adguardhome.container"
+      ],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "amnezia",
+      "type": "state",
+      "source_path": "states/amnezia.sls",
+      "purpose": "Amnezia VPN: builds AmneziaWG kernel module and Amnezia VPN desktop client from source.",
+      "includes": [],
+      "data_files": [
+        "data/amnezia.yaml",
+        "data/versions.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "audio",
+      "type": "state",
+      "source_path": "states/audio.sls",
+      "purpose": "PipeWire audio stack: ensures all runtime components (ALSA, JACK, Pulse) are installed.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/audio.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "bind_mounts",
+      "type": "state",
+      "source_path": "states/bind_mounts.sls",
+      "purpose": "Bind mounts for user directories on external storage devices.",
+      "includes": [],
+      "data_files": [
+        "data/bind_mounts.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "bitcoind",
+      "type": "state",
+      "source_path": "states/bitcoind.sls",
+      "purpose": "Data directory for blockchain state.",
+      "includes": [],
+      "data_files": [],
+      "configs": [],
+      "services": [
+        "bitcoind.container"
+      ],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "cachyos",
+      "type": "state",
+      "source_path": "states/cachyos.sls",
+      "purpose": "CachyOS kernel packages, boot configuration, and kernel cmdline management.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/cachyos.yaml",
+        "data/hosts.yaml",
+        "data/kernel_params.yaml"
+      ],
+      "configs": [
+        "configs/kernel-cmdline.j2",
+        "configs/mkinitcpio-cachyos-preset.j2"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "code_rag",
+      "type": "state",
+      "source_path": "states/code_rag.sls",
+      "purpose": "code-rag: hybrid text+code RAG with AST-aware chunking and LanceDB vector search.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/code_rag.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "custom_pkgs",
+      "type": "state",
+      "source_path": "states/custom_pkgs.sls",
+      "purpose": "Build and install custom packages from local PKGBUILDs not in official repos or AUR.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/custom_pkgs.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "desktop.hyprland",
+      "type": "state",
+      "source_path": "states/desktop/hyprland.sls",
+      "purpose": "Hyprland Wayland compositor: plugins, config, and session management.",
+      "includes": [],
+      "data_files": [
+        "data/desktop.yaml"
+      ],
+      "configs": [
+        "configs/hyprpm-update.hook.j2"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "desktop.niri",
+      "type": "state",
+      "source_path": "states/desktop/niri.sls",
+      "purpose": "Niri scrolling-tiling Wayland compositor: package install, session setup, config, scratchpad support.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/desktop.yaml"
+      ],
+      "configs": [
+        "dotfiles/dot_config/niri/config.kdl",
+        "dotfiles/dot_config/niri/scratchpads.yaml"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [
+        "tests/test_niri_focus_hist.py"
+      ],
+      "issues": []
+    },
+    {
+      "id": "desktop.packages",
+      "type": "state",
+      "source_path": "states/desktop/packages.sls",
+      "purpose": "Desktop application packages: browsers, terminals, media, productivity tools.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/desktop.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "desktop.portal",
+      "type": "state",
+      "source_path": "states/desktop/portal.sls",
+      "purpose": "XDG Desktop Portal: screen sharing, file chooser, and sandboxing backends.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/desktop.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "desktop.system",
+      "type": "state",
+      "source_path": "states/desktop/system.sls",
+      "purpose": "System-wide desktop configuration: fonts, themes, input methods, power management.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/desktop.yaml"
+      ],
+      "configs": [
+        "configs/pacman-salt-cache.hook",
+        "configs/sshd-hardening.conf"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "desktop.user",
+      "type": "state",
+      "source_path": "states/desktop/user.sls",
+      "purpose": "User-level desktop configuration: dotfiles, services, and session autostart.",
+      "includes": [],
+      "data_files": [
+        "data/desktop.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "desktop.vm_win11",
+      "type": "state",
+      "source_path": "states/desktop/vm_win11.sls",
+      "purpose": "Windows 11 QEMU/KVM virtual machine with GPU passthrough and Looking Glass.",
+      "includes": [],
+      "data_files": [
+        "data/desktop.yaml"
+      ],
+      "configs": [
+        "configs/win11.xml"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "desktop",
+      "type": "state",
+      "source_path": "states/desktop.sls",
+      "purpose": "Desktop environment: top-level include for compositor, packages, portal, and user session.",
+      "includes": [
+        "desktop.hyprland",
+        "desktop.packages",
+        "desktop.portal",
+        "desktop.system",
+        "desktop.user",
+        "desktop.vm_win11"
+      ],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "dns",
+      "type": "state",
+      "source_path": "states/dns.sls",
+      "purpose": "DNS services: unbound recursive resolver, AdGuard Home filtering, avahi mDNS, DoT.",
+      "includes": [],
+      "data_files": [],
+      "configs": [
+        "configs/resolved-dns-over-tls.conf"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [
+        "dns.adguardhome",
+        "dns.unbound"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "duckdns",
+      "type": "state",
+      "source_path": "states/duckdns.sls",
+      "purpose": "",
+      "includes": [],
+      "data_files": [],
+      "configs": [],
+      "services": [
+        "duckdns.container"
+      ],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "espanso",
+      "type": "state",
+      "source_path": "states/espanso.sls",
+      "purpose": "Espanso text expander: wayland variant with systemd user service and health check.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/espanso.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "flatpak",
+      "type": "state",
+      "source_path": "states/flatpak.sls",
+      "purpose": "Flatpak sandboxed desktop applications with flathub remote setup.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/flatpak.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "floorp",
+      "type": "state",
+      "source_path": "states/floorp.sls",
+      "purpose": "Floorp browser: user.js, userChrome.css, extensions, and profile configuration.",
+      "includes": [],
+      "data_files": [
+        "data/floorp.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [
+        "floorp"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "fonts",
+      "type": "state",
+      "source_path": "states/fonts.sls",
+      "purpose": "Font installation: pacman, AUR, downloaded, and custom PKGBUILD builds.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/fonts.yaml",
+        "data/versions.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "fstab_column",
+      "type": "state",
+      "source_path": "states/fstab_column.sls",
+      "purpose": "Format /etc/fstab with aligned columns, preserving comments and blank lines.",
+      "includes": [],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "greetd",
+      "type": "state",
+      "source_path": "states/greetd.sls",
+      "purpose": "greetd display manager with Hyprland compositor and quickshell greeter.",
+      "includes": [
+        "pacman_db_warmup",
+        "systemd_resources"
+      ],
+      "data_files": [
+        "data/greetd.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "group.ai",
+      "type": "state",
+      "source_path": "states/group/ai.sls",
+      "purpose": "AI group: llama_embed, ollama, nanoclaw, opencode, telethon_bridge, video_ai, image_gen.",
+      "includes": [
+        "code_rag",
+        "image_generation",
+        "llama_embed",
+        "managed_bots",
+        "nanoclaw",
+        "ollama",
+        "pacman_db_warmup",
+        "t5_summarization",
+        "telethon_bridge",
+        "video_ai"
+      ],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [
+        "image_gen",
+        "llama_embed",
+        "managed_bots",
+        "nanoclaw",
+        "ollama",
+        "t5_summarization",
+        "telethon_bridge",
+        "video_ai"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "group.core",
+      "type": "state",
+      "source_path": "states/group/core.sls",
+      "purpose": "Core group: users, shell, mounts, kernel modules, sysctl, systemd resources.",
+      "includes": [
+        "bind_mounts",
+        "cachyos",
+        "fstab_column",
+        "hardware",
+        "kernel_modules",
+        "mkinitcpio",
+        "mounts",
+        "pacman_db_warmup",
+        "sysctl",
+        "systemd_resources",
+        "users",
+        "windows_mount",
+        "zsh"
+      ],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "group.desktop",
+      "type": "state",
+      "source_path": "states/group/desktop.sls",
+      "purpose": "Desktop group: audio, compositor, fonts, display manager, and user session.",
+      "includes": [
+        "audio",
+        "desktop",
+        "fonts",
+        "greetd",
+        "pacman_db_warmup"
+      ],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "group.network",
+      "type": "state",
+      "source_path": "states/group/network.sls",
+      "purpose": "Network group: VPN, firewall, DNS, IPv6 tunnels, and routing.",
+      "includes": [
+        "amnezia",
+        "dns",
+        "hiddify",
+        "ipv6",
+        "ipv6_6to4",
+        "ipv6_tunnel",
+        "network",
+        "zapret2"
+      ],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [
+        "amnezia",
+        "network.hiddify",
+        "network.ipv6",
+        "network.ipv6_6to4",
+        "network.ipv6_tunnel",
+        "network.zapret2"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "group.packages",
+      "type": "state",
+      "source_path": "states/group/packages.sls",
+      "purpose": "Packages group: system packages, AUR installers, mpv scripts, themes.",
+      "includes": [
+        "custom_pkgs",
+        "installers",
+        "installers_desktop",
+        "installers_mpv",
+        "installers_themes",
+        "packages",
+        "pacman_db_warmup"
+      ],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "group.services",
+      "type": "state",
+      "source_path": "states/group/services.sls",
+      "purpose": "Services group: systemd services, user services, and monitoring alerts.",
+      "includes": [
+        "monitoring_alerts",
+        "pacman_db_warmup",
+        "services",
+        "user_services"
+      ],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "hardware",
+      "type": "state",
+      "source_path": "states/hardware.sls",
+      "purpose": "Hardware-specific configuration: udev rules, fan control, WiFi drivers.",
+      "includes": [],
+      "data_files": [
+        "data/hardware.yaml"
+      ],
+      "configs": [
+        "configs/udev-custom.rules"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [
+        "fancontrol",
+        "network.wifi"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "hiddify",
+      "type": "state",
+      "source_path": "states/hiddify.sls",
+      "purpose": "Hiddify VPN client: local AppImage wrapper with legacy shadow handler cleanup.",
+      "includes": [],
+      "data_files": [
+        "data/hiddify.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "image_generation",
+      "type": "state",
+      "source_path": "states/image_generation.sls",
+      "purpose": "Resolve image provider API keys from gopass (free-tier providers).",
+      "includes": [],
+      "data_files": [
+        "data/image_providers.yaml"
+      ],
+      "configs": [
+        "configs/image-gen-providers.yaml.j2"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "installers",
+      "type": "state",
+      "source_path": "states/installers.sls",
+      "purpose": "Fallback installers: tools built from GitHub releases, pip, cargo, go, or raw HTTP.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/installers.yaml",
+        "data/versions.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "installers_desktop",
+      "type": "state",
+      "source_path": "states/installers_desktop.sls",
+      "purpose": "Desktop application installers: data-driven AUR package installation.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/installers_desktop.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "installers_mpv",
+      "type": "state",
+      "source_path": "states/installers_mpv.sls",
+      "purpose": "MPV media player: scripts, plugins, and shaders for enhanced playback.",
+      "includes": [],
+      "data_files": [
+        "data/mpv_scripts.yaml",
+        "data/versions.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "installers_themes",
+      "type": "state",
+      "source_path": "states/installers_themes.sls",
+      "purpose": "Theme and icon installers: GTK, Qt, cursor, and icon themes from git repos.",
+      "includes": [],
+      "data_files": [
+        "data/installers_themes.yaml"
+      ],
+      "configs": [
+        "configs/vicinae/flight-dark.toml"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "ipv6",
+      "type": "state",
+      "source_path": "states/ipv6.sls",
+      "purpose": "IPv6 diagnostics: connectivity check, firewall rules, and health monitoring.",
+      "includes": [],
+      "data_files": [
+        "data/ipv6.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "ipv6_6to4",
+      "type": "state",
+      "source_path": "states/ipv6_6to4.sls",
+      "purpose": "",
+      "includes": [],
+      "data_files": [
+        "data/vpn.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "ipv6_tunnel",
+      "type": "state",
+      "source_path": "states/ipv6_tunnel.sls",
+      "purpose": "",
+      "includes": [],
+      "data_files": [
+        "data/ipv6.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [
+        "api/he-tunnel"
+      ],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "jellyfin",
+      "type": "state",
+      "source_path": "states/jellyfin.sls",
+      "purpose": "In-place cutover: remove native systemd unit file so Quadlet-generated unit is not shadowed.",
+      "includes": [],
+      "data_files": [],
+      "configs": [],
+      "services": [
+        "jellyfin.container"
+      ],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "kanata",
+      "type": "state",
+      "source_path": "states/kanata.sls",
+      "purpose": "Kanata keyboard remapper: advanced key remapping daemon configuration.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/kanata.yaml"
+      ],
+      "configs": [
+        "configs/kanata.kbd"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "kernel_modules",
+      "type": "state",
+      "source_path": "states/kernel_modules.sls",
+      "purpose": "Kernel module blacklisting and loading for hardware and virtualization.",
+      "includes": [],
+      "data_files": [
+        "data/kernel_params.yaml"
+      ],
+      "configs": [
+        "configs/modprobe-blacklist.conf.j2"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "llama_embed",
+      "type": "state",
+      "source_path": "states/llama_embed.sls",
+      "purpose": "llama.cpp embedding server: Qwen3-Embedding-8B via Vulkan in Quadlet container.",
+      "includes": [],
+      "data_files": [
+        "data/llama_embed.yaml"
+      ],
+      "configs": [],
+      "services": [
+        "llama_embed.container"
+      ],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "managed_bots",
+      "type": "state",
+      "source_path": "states/managed_bots.sls",
+      "purpose": "Managed Telegram Bots: Bot API 9.6 manager bot state.",
+      "includes": [],
+      "data_files": [
+        "data/telegram_managed_bots.yaml"
+      ],
+      "configs": [],
+      "services": [
+        "managed-bots.service"
+      ],
+      "secrets": [
+        "api/nanoclaw-telegram-uid",
+        "api/opencode-telegram-bot",
+        "api/telegram-uid-levra"
+      ],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "mkinitcpio",
+      "type": "state",
+      "source_path": "states/mkinitcpio.sls",
+      "purpose": "mkinitcpio initramfs configuration: hooks, modules, and compression settings.",
+      "includes": [],
+      "data_files": [],
+      "configs": [
+        "configs/mkinitcpio.conf.j2"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "monitoring_alertmanager",
+      "type": "state",
+      "source_path": "states/monitoring_alertmanager.sls",
+      "purpose": "Alertmanager: Telegram webhook alerts from Loki log rules.",
+      "includes": [],
+      "data_files": [],
+      "configs": [
+        "configs/alertmanager.yml.j2"
+      ],
+      "services": [
+        "alertmanager-webhook.service",
+        "alertmanager.container"
+      ],
+      "secrets": [
+        "api/nanoclaw-telegram",
+        "api/nanoclaw-telegram-uid"
+      ],
+      "feature_gate": [
+        "monitoring.alertmanager",
+        "monitoring.loki"
+      ],
+      "tests": [
+        "tests/test_monitoring_alertmanager.py"
+      ],
+      "issues": []
+    },
+    {
+      "id": "monitoring_alerts",
+      "type": "state",
+      "source_path": "states/monitoring_alerts.sls",
+      "purpose": "Monitoring alerts: service watchdog timers and Loki alert rule deployment.",
+      "includes": [],
+      "data_files": [
+        "data/monitored_services.yaml"
+      ],
+      "configs": [
+        "configs/loki-alert-rules.yaml.j2"
+      ],
+      "services": [
+        "salt-monitor-watchdog.service",
+        "salt-monitor-watchdog.timer",
+        "salt-monitor.service"
+      ],
+      "secrets": [
+        "api/nanoclaw-telegram",
+        "api/nanoclaw-telegram-uid"
+      ],
+      "feature_gate": [
+        "monitoring.alerts",
+        "monitoring.loki"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "monitoring_loki",
+      "type": "state",
+      "source_path": "states/monitoring_loki.sls",
+      "purpose": "Loki: log aggregation.",
+      "includes": [],
+      "data_files": [],
+      "configs": [
+        "configs/grafana-dashboard-proxypilot.json",
+        "configs/grafana-dashboards-provider.yaml",
+        "configs/grafana-loki-datasource.yaml.j2",
+        "configs/grafana.ini.j2",
+        "configs/loki.yaml.j2",
+        "configs/promtail.yaml.j2"
+      ],
+      "services": [
+        "grafana.container",
+        "loki.container",
+        "promtail.container"
+      ],
+      "secrets": [],
+      "feature_gate": [
+        "monitoring.grafana",
+        "monitoring.loki",
+        "monitoring.promtail"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "mounts",
+      "type": "state",
+      "source_path": "states/mounts.sls",
+      "purpose": "Filesystem mounts: external drives, network shares, and special filesystems.",
+      "includes": [],
+      "data_files": [
+        "data/mounts.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "mpd",
+      "type": "state",
+      "source_path": "states/mpd.sls",
+      "purpose": "Music Player Daemon: audio playback server with Last.fm scrobbling.",
+      "includes": [
+        "bind_mounts"
+      ],
+      "data_files": [
+        "data/mpd.yaml"
+      ],
+      "configs": [],
+      "services": [
+        "mpdas.service"
+      ],
+      "secrets": [
+        "lastfm/password",
+        "lastfm/username"
+      ],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "music_analysis",
+      "type": "state",
+      "source_path": "states/music_analysis.sls",
+      "purpose": "Music analysis pipeline: BPM/key detection, fingerprinting, and indexing.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/installers.yaml",
+        "data/versions.yaml"
+      ],
+      "configs": [],
+      "services": [
+        "music-index.service",
+        "music-index.timer"
+      ],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [
+        "tests/test_music_analysis.py"
+      ],
+      "issues": []
+    },
+    {
+      "id": "network.vm_bridge",
+      "type": "state",
+      "source_path": "states/network/vm_bridge.sls",
+      "purpose": "",
+      "includes": [],
+      "data_files": [
+        "data/network.yaml"
+      ],
+      "configs": [
+        "configs/br0.network"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [
+        "network.vm_bridge"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "network.vpn_hybrid",
+      "type": "state",
+      "source_path": "states/network/vpn_hybrid.sls",
+      "purpose": "",
+      "includes": [],
+      "data_files": [
+        "data/vpn.yaml"
+      ],
+      "configs": [
+        "configs/sing-box-hybrid-config.json.j2"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [
+        "network.vpn_hybrid"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "network.vpn_split_router",
+      "type": "state",
+      "source_path": "states/network/vpn_split_router.sls",
+      "purpose": "",
+      "includes": [],
+      "data_files": [
+        "data/vpn.yaml"
+      ],
+      "configs": [
+        "configs/vpn-split-router.yaml.j2"
+      ],
+      "services": [
+        "amnezia-import-tun.service",
+        "vpn-policy-rollback.service",
+        "vpn-policy-rollback.timer",
+        "vpn-split-router.service",
+        "vpn-split-router.timer"
+      ],
+      "secrets": [],
+      "feature_gate": [
+        "network.vpn_hybrid",
+        "network.vpn_split_router"
+      ],
+      "tests": [
+        "tests/test_vpn_split_router.py"
+      ],
+      "issues": []
+    },
+    {
+      "id": "network",
+      "type": "state",
+      "source_path": "states/network.sls",
+      "purpose": "",
+      "includes": [
+        "network.vm_bridge",
+        "network.vpn_hybrid",
+        "network.vpn_split_router"
+      ],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "nyxt",
+      "type": "state",
+      "source_path": "states/nyxt.sls",
+      "purpose": "Nyxt browser: extensible Lisp-powered web browser managed as system package.",
+      "includes": [],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "ollama",
+      "type": "state",
+      "source_path": "states/ollama.sls",
+      "purpose": "Resolve manifest path: \"model:tag\" → library/model/tag, \"ns/model:tag\" → ns/model/tag.",
+      "includes": [],
+      "data_files": [
+        "data/ollama.yaml"
+      ],
+      "configs": [],
+      "services": [
+        "ollama.container"
+      ],
+      "secrets": [],
+      "feature_gate": [
+        "network.zapret2"
+      ],
+      "tests": [
+        "tests/test_ollama.py"
+      ],
+      "issues": []
+    },
+    {
+      "id": "packages",
+      "type": "state",
+      "source_path": "states/packages.sls",
+      "purpose": "- pacman -Qq checks ALL packages — fails if ANY is missing, triggering install.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/packages.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "pacman_db_warmup",
+      "type": "state",
+      "source_path": "states/pacman_db_warmup.sls",
+      "purpose": "Pacman database warmup: ensures package databases are up to date before other states.",
+      "includes": [],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "proxypilot",
+      "type": "state",
+      "source_path": "states/proxypilot.sls",
+      "purpose": "Secret resolution.",
+      "includes": [],
+      "data_files": [
+        "data/free_providers.yaml"
+      ],
+      "configs": [
+        "configs/proxypilot.yaml.j2"
+      ],
+      "services": [
+        "proxypilot.container"
+      ],
+      "secrets": [
+        "api/proxypilot-management"
+      ],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "services",
+      "type": "state",
+      "source_path": "states/services.sls",
+      "purpose": "Complex services.",
+      "includes": [],
+      "data_files": [
+        "data/services.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [
+        "dns.*",
+        "monitoring.netdata",
+        "monitoring.sysstat",
+        "monitoring.vnstat",
+        "network.*",
+        "services.*"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "steam",
+      "type": "state",
+      "source_path": "states/steam.sls",
+      "purpose": "Steam gaming platform: multilib, drivers, gamemode, and controller support.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/steam.yaml"
+      ],
+      "configs": [
+        "configs/gamemode.ini"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "sysctl",
+      "type": "state",
+      "source_path": "states/sysctl.sls",
+      "purpose": "Kernel sysctl parameters: custom tuning for networking, filesystems, and security.",
+      "includes": [],
+      "data_files": [],
+      "configs": [
+        "configs/sysctl-custom.conf"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "system_description",
+      "type": "state",
+      "source_path": "states/system_description.sls",
+      "purpose": "System description: /etc/os-release branding and feature-gated state orchestration.",
+      "includes": [],
+      "data_files": [
+        "data/system.yaml"
+      ],
+      "configs": [
+        "configs/os-release.j2"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [
+        "amnezia",
+        "dns.adguardhome",
+        "espanso",
+        "flatpak",
+        "floorp",
+        "image_gen",
+        "kanata",
+        "llama_embed",
+        "managed_bots",
+        "monitoring",
+        "mpd",
+        "music_analysis",
+        "nanoclaw",
+        "network.hiddify",
+        "network.zapret2",
+        "nyxt",
+        "ollama",
+        "proxypilot",
+        "services.bitcoind",
+        "services.duckdns",
+        "services.jellyfin",
+        "services.transmission",
+        "steam",
+        "t5_summarization",
+        "telethon_bridge",
+        "tidal",
+        "vaultwarden",
+        "video_ai",
+        "xen_vr"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "systemd_resources",
+      "type": "state",
+      "source_path": "states/systemd_resources.sls",
+      "purpose": "Systemd resource management: sysusers, tmpfiles, and service account provisioning.",
+      "includes": [],
+      "data_files": [
+        "data/managed_resources.yaml"
+      ],
+      "configs": [
+        "configs/managed-service-accounts.conf.j2",
+        "configs/managed-service-paths.conf.j2"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "t5_summarization",
+      "type": "state",
+      "source_path": "states/t5_summarization.sls",
+      "purpose": "T5 text summarization server: safetensors to GGUF conversion via Quadlet container.",
+      "includes": [],
+      "data_files": [
+        "data/t5_summarization.yaml"
+      ],
+      "configs": [],
+      "services": [
+        "t5_summarization.container"
+      ],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "telethon_bridge",
+      "type": "state",
+      "source_path": "states/telethon_bridge.sls",
+      "purpose": "Telethon Bridge: Telegram MTProto relay to HTTP for LLM bot integration.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/telethon_bridge.yaml",
+        "data/versions.yaml"
+      ],
+      "configs": [
+        "configs/telethon-bridge.yaml.j2"
+      ],
+      "services": [
+        "telethon-bridge-react.path",
+        "telethon-bridge-react.service"
+      ],
+      "secrets": [
+        "api/nanoclaw-telegram-uid",
+        "api/telegram-telethon-hash",
+        "api/telegram-telethon-id",
+        "api/telegram-uid-guest2",
+        "api/telegram-uid-levra"
+      ],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "tidal",
+      "type": "state",
+      "source_path": "states/tidal.sls",
+      "purpose": "TidalCycles live coding environment: Haskell, SuperDirt, and SuperCollider setup.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/tidal.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "transmission",
+      "type": "state",
+      "source_path": "states/transmission.sls",
+      "purpose": "In-place cutover: remove native systemd unit so Quadlet-generated unit is not shadowed.",
+      "includes": [],
+      "data_files": [],
+      "configs": [],
+      "services": [
+        "transmission.container"
+      ],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "user_services",
+      "type": "state",
+      "source_path": "states/user_services.sls",
+      "purpose": "User-scoped systemd services: mail sync, backups, and auxiliary daemons.",
+      "includes": [
+        "users"
+      ],
+      "data_files": [
+        "data/user_services.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [
+        "mpd",
+        "user_services.mail"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "users",
+      "type": "state",
+      "source_path": "states/users.sls",
+      "purpose": "User account management: PAM sudo, SSH agent auth, and authorized keys.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [
+        "data/users.yaml"
+      ],
+      "configs": [
+        "configs/pam-sudo.j2",
+        "configs/sudo-authorized-keys.j2",
+        "configs/sudoers-nopasswd.j2",
+        "configs/sudoers-ssh-agent-auth.j2"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [
+        "sudo_ssh_agent"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "vaultwarden",
+      "type": "state",
+      "source_path": "states/vaultwarden.sls",
+      "purpose": "Vaultwarden Bitwarden server: Quadlet container, backup timers, and bw-sync.",
+      "includes": [
+        "pacman_db_warmup"
+      ],
+      "data_files": [],
+      "configs": [],
+      "services": [
+        "bw-sync.service",
+        "bw-sync.timer",
+        "vault-full-backup.service",
+        "vault-full-backup.timer",
+        "vaultwarden.container"
+      ],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "video_ai.base",
+      "type": "state",
+      "source_path": "states/video_ai/base.sls",
+      "purpose": "Video AI base: Python environment, dependencies, and shared utilities.",
+      "includes": [],
+      "data_files": [
+        "data/video_ai.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "video_ai.models",
+      "type": "state",
+      "source_path": "states/video_ai/models.sls",
+      "purpose": "Video AI models: HuggingFace model downloads and safetensors management.",
+      "includes": [],
+      "data_files": [
+        "data/video_ai.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "video_ai.runners",
+      "type": "state",
+      "source_path": "states/video_ai/runners.sls",
+      "purpose": "Video AI runners: inference server and processing daemon management.",
+      "includes": [],
+      "data_files": [
+        "data/video_ai.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "video_ai.workflows",
+      "type": "state",
+      "source_path": "states/video_ai/workflows.sls",
+      "purpose": "Video AI workflows: automated processing pipelines and job scheduling.",
+      "includes": [],
+      "data_files": [
+        "data/video_ai.yaml"
+      ],
+      "configs": [
+        "configs/video-ai/{{model.comfyui_workflow_i2i}}",
+        "configs/video-ai/{{model.comfyui_workflow_i2v}}",
+        "configs/video-ai/{{model.comfyui_workflow}}"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "video_ai",
+      "type": "state",
+      "source_path": "states/video_ai.sls",
+      "purpose": "Video AI pipeline: includes base, models, runners, and workflow definitions.",
+      "includes": [
+        "video_ai.base",
+        "video_ai.models",
+        "video_ai.runners",
+        "video_ai.workflows"
+      ],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "windows_mount",
+      "type": "state",
+      "source_path": "states/windows_mount.sls",
+      "purpose": "Windows NTFS partition mount with proper permissions and fstab integration.",
+      "includes": [],
+      "data_files": [
+        "data/windows_mount.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "xen.kde_theme",
+      "type": "state",
+      "source_path": "states/xen/kde_theme.sls",
+      "purpose": "Xen KDE Breeze Dark theme seed configs — data-driven from states/data/xen.yaml.",
+      "includes": [],
+      "data_files": [
+        "data/xen.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "xen.sessions",
+      "type": "state",
+      "source_path": "states/xen/sessions.sls",
+      "purpose": "Xen X11 session configs: .xinitrc, i3 config, greetd .desktop entries.",
+      "includes": [],
+      "data_files": [
+        "data/xen.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "xen.user",
+      "type": "state",
+      "source_path": "states/xen/user.sls",
+      "purpose": "Xen user account: creation, groups, Steam library access, TTY.",
+      "includes": [],
+      "data_files": [
+        "data/xen.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [
+        "host/xen-password-hash"
+      ],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "xen",
+      "type": "state",
+      "source_path": "states/xen.sls",
+      "purpose": "Xen VR session — thin include hub. Sub-states split across xen/ directory.",
+      "includes": [
+        "users",
+        "xen.kde_theme",
+        "xen.sessions",
+        "xen.user"
+      ],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "zapret2",
+      "type": "state",
+      "source_path": "states/zapret2.sls",
+      "purpose": "Zapret2 DPI bypass: nfqueue-based traffic filter with domain-specific rules.",
+      "includes": [],
+      "data_files": [
+        "data/zapret2.yaml"
+      ],
+      "configs": [
+        "configs/zapret2-hosts-user.txt.j2",
+        "configs/zapret2.conf.j2"
+      ],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "zen_browser",
+      "type": "state",
+      "source_path": "states/zen_browser.sls",
+      "purpose": "Zen Browser: Firefox-based browser with extensions, proxy switching, and VPN integration.",
+      "includes": [],
+      "data_files": [
+        "data/zen_browser.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [
+        "floorp"
+      ],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "zen_profiles",
+      "type": "state",
+      "source_path": "states/zen_profiles.sls",
+      "purpose": "Zen Browser Profiles: multi-profile management with isolated storage.",
+      "includes": [],
+      "data_files": [
+        "data/hosts.yaml",
+        "data/zen_profiles.yaml"
+      ],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "zsh",
+      "type": "state",
+      "source_path": "states/zsh.sls",
+      "purpose": "Zsh shell environment: path setup, plugins, completions, and prompt configuration.",
+      "includes": [],
+      "data_files": [],
+      "configs": [],
+      "services": [],
+      "secrets": [],
+      "feature_gate": [],
+      "tests": [],
+      "issues": []
+    },
+    {
+      "id": "download_cached",
+      "type": "macro",
+      "source_path": "states/_macros_common.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "ver_stamp",
+      "type": "macro",
+      "source_path": "states/_macros_common.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "gopass_secret",
+      "type": "macro",
+      "source_path": "states/_macros_common.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "proxypilot_key",
+      "type": "macro",
+      "source_path": "states/_macros_common.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "tg_secret",
+      "type": "macro",
+      "source_path": "states/_macros_common.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "config_file_edit",
+      "type": "macro",
+      "source_path": "states/_macros_config.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "_tilde_expand",
+      "type": "macro",
+      "source_path": "states/_macros_container.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "_cs_fail",
+      "type": "macro",
+      "source_path": "states/_macros_container.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "container_service",
+      "type": "macro",
+      "source_path": "states/_macros_container.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "browser_extensions",
+      "type": "macro",
+      "source_path": "states/_macros_desktop.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "hyprpm_update",
+      "type": "macro",
+      "source_path": "states/_macros_desktop.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "hyprpm_add",
+      "type": "macro",
+      "source_path": "states/_macros_desktop.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "hyprpm_enable",
+      "type": "macro",
+      "source_path": "states/_macros_desktop.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "dconf_settings",
+      "type": "macro",
+      "source_path": "states/_macros_desktop.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "go_pkg",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "curl_bin",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "pip_pkg",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "cargo_pkg",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "curl_extract_tar",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "curl_extract_zip",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "firefox_extension",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "download_font_zip",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "git_clone_deploy",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "git_clone_build",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "http_file",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "huggingface_file",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "npm_build_workflow",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "github_release_to",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "install_catalog",
+      "type": "macro",
+      "source_path": "states/_macros_install.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "ipv6_tunnel",
+      "type": "macro",
+      "source_path": "states/_macros_ipv6_tunnel.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "paru_install",
+      "type": "macro",
+      "source_path": "states/_macros_pkg.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "simple_service",
+      "type": "macro",
+      "source_path": "states/_macros_pkg.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "pkgbuild_install",
+      "type": "macro",
+      "source_path": "states/_macros_pkg.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "flatpak_install",
+      "type": "macro",
+      "source_path": "states/_macros_pkg.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "_macros_registry",
+      "type": "macro",
+      "source_path": "states/_macros_registry.jinja",
+      "purpose": "",
+      "issues": [
+        "BLOCK_MISSING: no @macro blocks found"
+      ]
+    },
+    {
+      "id": "env_block",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "remove_native_unit",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "remove_native_package",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "managed_resource_value",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "managed_mode_value",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "managed_sysusers_line",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "managed_identity_guard",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "managed_tmpfiles_line",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "managed_path_guard",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "ensure_dir",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "udev_rule",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "config_and_reload",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "ensure_running",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "service_stopped",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "service_with_healthcheck",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "unit_override",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "service_with_unit",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "render_service",
+      "type": "macro",
+      "source_path": "states/_macros_service.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "user_service_file",
+      "type": "macro",
+      "source_path": "states/_macros_service_user.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "user_unit_override",
+      "type": "macro",
+      "source_path": "states/_macros_service_user.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "user_service_enable",
+      "type": "macro",
+      "source_path": "states/_macros_service_user.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "user_service_with_unit",
+      "type": "macro",
+      "source_path": "states/_macros_service_user.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "user_service_restart",
+      "type": "macro",
+      "source_path": "states/_macros_service_user.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "user_service_disable",
+      "type": "macro",
+      "source_path": "states/_macros_service_user.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "user_linger",
+      "type": "macro",
+      "source_path": "states/_macros_service_user.jinja",
+      "purpose": "",
+      "params": [],
+      "returns": "",
+      "issues": []
+    },
+    {
+      "id": "cleanup-logs",
+      "type": "script_py",
+      "source_path": "scripts/cleanup-logs.py",
+      "purpose": "Delete Salt log files older than the given number of days.",
+      "docstring": "Delete Salt log files older than the given number of days.",
+      "issues": []
+    },
+    {
+      "id": "dep-graph",
+      "type": "script_py",
+      "source_path": "scripts/dep-graph.py",
+      "purpose": "Generate dependency graph of Salt states (include/require/watch/onchanges).",
+      "docstring": "Generate dependency graph of Salt states (include/require/watch/onchanges).",
+      "issues": []
+    },
+    {
+      "id": "drift_state",
+      "type": "script_py",
+      "source_path": "scripts/drift_state.py",
+      "purpose": "",
+      "docstring": "",
+      "issues": [
+        "BLOCK_MISSING: no module-level docstring"
+      ]
+    },
+    {
+      "id": "extract-inline-docs",
+      "type": "script_py",
+      "source_path": "scripts/extract-inline-docs.py",
+      "purpose": "",
+      "docstring": "",
+      "issues": [
+        "BLOCK_MISSING: no module-level docstring"
+      ]
+    },
+    {
+      "id": "format-fstab",
+      "type": "script_py",
+      "source_path": "scripts/format-fstab.py",
+      "purpose": "Format /etc/fstab with aligned columns, preserving comments and blank lines.",
+      "docstring": "Format /etc/fstab with aligned columns, preserving comments and blank lines.\nOnly non‑comment lines are reformatted; column widths are computed across all data lines.\n\nUsage:\n  format-fstab.py          # format if needed\n  format-fstab.py --check  # return 0 if already formatted, 1 otherwise\n  format-fstab.py --dry-run # show what would change, don't modify",
+      "issues": []
+    },
+    {
+      "id": "generate-boot-splash",
+      "type": "script_py",
+      "source_path": "scripts/generate-boot-splash.py",
+      "purpose": "Generate a minimal dark boot splash BMP for systemd-boot UKI embedding.",
+      "docstring": "Generate a minimal dark boot splash BMP for systemd-boot UKI embedding.\n\nMatches the host monitor resolution for a clean native-resolution boot screen.\nDesigned for OLED/4K displays: pure black background with subtle geometric accents.",
+      "issues": []
+    },
+    {
+      "id": "generate_hypr_shortcuts",
+      "type": "script_py",
+      "source_path": "scripts/generate_hypr_shortcuts.py",
+      "purpose": "Generate Hyprland shortcut search data and wlr-which-key config.",
+      "docstring": "Generate Hyprland shortcut search data and wlr-which-key config.",
+      "issues": []
+    },
+    {
+      "id": "host_model",
+      "type": "script_py",
+      "source_path": "scripts/host_model.py",
+      "purpose": "Shared host model builder — single source of truth for Python tooling.",
+      "docstring": "Shared host model builder — single source of truth for Python tooling.\n\nLoads states/data/hosts.yaml and states/data/feature_matrix.yaml, builds\nfully-resolved host configurations (defaults + overrides + derived fields),\nand validates host config structure.\n\nConsumers: lint-jinja.py, render-matrix.py, index-salt.py.\nSalt runtime uses host_config.jinja directly (cannot import Python modules).",
+      "issues": []
+    },
+    {
+      "id": "index-qml",
+      "type": "script_py",
+      "source_path": "scripts/index-qml.py",
+      "purpose": "Generate QML component and JS helper indexes for Claude Code memory.",
+      "docstring": "Generate QML component and JS helper indexes for Claude Code memory.\n\nParses qmldir files for module structure, regex-scans QML files for public\nproperties/signals/functions, and JS files for function signatures.\n\nOutputs markdown to memory/generated/qml-components.md and qml-helpers.md.",
+      "issues": []
+    },
+    {
+      "id": "index-salt",
+      "type": "script_py",
+      "source_path": "scripts/index-salt.py",
+      "purpose": "Generate Salt state, macro, and data indexes for Claude Code memory.",
+      "docstring": "Generate Salt state, macro, and data indexes for Claude Code memory.\n\nParses macro .jinja files for signatures, renders .sls with mock Jinja env\nfor state IDs and require chains, and summarizes YAML data files.\n\nReuses parsing infrastructure from lint-jinja.py.\n\nOutputs markdown to memory/generated/salt-macros.md, salt-states.md, salt-data.md.",
+      "issues": []
+    },
+    {
+      "id": "inject-doc-blocks",
+      "type": "script_py",
+      "source_path": "scripts/inject-doc-blocks.py",
+      "purpose": "",
+      "docstring": "",
+      "issues": [
+        "BLOCK_MISSING: no module-level docstring"
+      ]
+    },
+    {
+      "id": "pretty",
+      "type": "script_py",
+      "source_path": "scripts/lib/pretty.py",
+      "purpose": "pretty.py — unified terminal aesthetics for all Python scripts.",
+      "docstring": "pretty.py — unified terminal aesthetics for all Python scripts.\n\nUsage:\n    from scripts.lib.pretty import pretty\n    pretty.header(\"Deploying system_description\")\n    pretty.ok(\"All 65 states valid\")\n    pretty.fail(\"zapret2.sls: missing dependency\")\n    pretty.warn(\"gopass locked\")\n    pretty.info(\"Log: logs/system_description.log\")\n    pretty.phase(\"Installing packages\", n=3, total=10)\n    pretty.progress(67, 100)\n    pretty.section(\"Network Configuration\")\n    pretty.summary_line(727, 2, \"States\")\n    pretty.service_status(\"ollama\", \"active\")\n    pretty.status_badge(\"OK\")\n    pretty.table([\"ID\", \"Duration\", \"Result\"], [[\"foo\", \"12ms\", \"✓\"], [\"bar\", \"340ms\", \"✗\"]])\n    pretty.key_value({\"Host\": \"mirage\", \"OS\": \"CachyOS\", \"Kernel\": \"6.14\"})\n    pretty.panel(\"Important context block\", title=\"Details\")\n    pretty.filepath(\"~/src/cfg/states/desktop.sls\")\n    pretty.filesize(1048576)\n    pretty.filelen(1423)\n    pretty.rule(\"Dependencies\")\n    pretty.elapsed(94.3)\n    pretty.list_items([\"item one\", \"item two\", \"item three\"])\n    pretty.tree(states, key_fn=lambda s: s.name, child_fn=lambda s: s.includes)\n\n    with pretty.spinner(\"Pulling image\"):\n        ...slow work...\n\n    out, rc = pretty.capture(\"salt_contracts.py\", [\"python3\", \"scripts/salt_contracts.py\"])",
+      "issues": []
+    },
+    {
+      "id": "lint-docs",
+      "type": "script_py",
+      "source_path": "scripts/lint-docs.py",
+      "purpose": "Lint documentation: language consistency only (Russian docs discontinued).",
+      "docstring": "Lint documentation: language consistency only (Russian docs discontinued).",
+      "issues": []
+    },
+    {
+      "id": "lint-dotfiles",
+      "type": "script_py",
+      "source_path": "scripts/lint-dotfiles.py",
+      "purpose": "Lint dotfiles: shebang conventions, XDG path usage, zsh syntax.",
+      "docstring": "Lint dotfiles: shebang conventions, XDG path usage, zsh syntax.",
+      "issues": []
+    },
+    {
+      "id": "lint-jinja",
+      "type": "script_py",
+      "source_path": "scripts/lint-jinja.py",
+      "purpose": "Lint Salt state files: Jinja2 syntax, YAML validity, duplicate state IDs,",
+      "docstring": "Lint Salt state files: Jinja2 syntax, YAML validity, duplicate state IDs,\nnaming conventions, unused imports, require resolution, dangling includes.",
+      "issues": []
+    },
+    {
+      "id": "lint-ownership",
+      "type": "script_py",
+      "source_path": "scripts/lint-ownership.py",
+      "purpose": "Lint file ownership: detect salt://dotfiles/ refs not covered by .chezmoiignore.",
+      "docstring": "Lint file ownership: detect salt://dotfiles/ refs not covered by .chezmoiignore.",
+      "issues": []
+    },
+    {
+      "id": "lint-qml",
+      "type": "script_py",
+      "source_path": "scripts/lint-qml.py",
+      "purpose": "Lint QML files via qmllint with QuickShell type info.",
+      "docstring": "Lint QML files via qmllint with QuickShell type info.\n\nRequires: qmllint (qt6-declarative), quickshell QML types installed.\nRuns basic syntax + import checking (no -U flag — that produces ~460\nfalse positives from Qt internals and unregistered project types).\n\nWorkaround: qmllint 1.0 doesn't understand `pragma ComponentBehavior`,\nso files containing it are preprocessed to strip the pragma line.",
+      "issues": []
+    },
+    {
+      "id": "lint-sysctl",
+      "type": "script_py",
+      "source_path": "scripts/lint-sysctl.py",
+      "purpose": "lint-sysctl: two-part sysctl hygiene check.",
+      "docstring": "lint-sysctl: two-part sysctl hygiene check.\n\n1. Drift: every param in sysctl-custom.conf must match the live kernel value.\n2. Unmanaged: /etc/sysctl.d/ must contain only Salt-managed or package-owned files.\n\nRun from project root. Most params are readable as a regular user;\nif READ_FAIL entries appear, retry with sudo.",
+      "issues": []
+    },
+    {
+      "id": "lint-units",
+      "type": "script_py",
+      "source_path": "scripts/lint-units.py",
+      "purpose": "Lint systemd unit files via systemd-analyze verify.",
+      "docstring": "Lint systemd unit files via systemd-analyze verify.\n\nSkips:\n- Jinja2 templates (.j2 extension or {{ }} markers)\n- Drop-in overrides (.conf) — not standalone units\n- \"not executable\" / \"No such file\" errors (binaries may not be installed)\n- \"Unit X not found\" when X exists as a .j2 template (rendered at deploy time)",
+      "issues": []
+    },
+    {
+      "id": "migrate-sls-to-python",
+      "type": "script_py",
+      "source_path": "scripts/migrate-sls-to-python.py",
+      "purpose": "Mechanically replace Jinja macro calls with salt['module.func']() in .sls files.",
+      "docstring": "Mechanically replace Jinja macro calls with salt['module.func']() in .sls files.\nAfter this script runs, macro files can be emptied.\n\nUsage: python3 scripts/migrate-sls-to-python.py [--dry-run]",
+      "issues": []
+    },
+    {
+      "id": "proxypilot_recover",
+      "type": "script_py",
+      "source_path": "scripts/proxypilot_recover.py",
+      "purpose": "Recover ProxyPilot free-provider config from gopass-backed provider data.",
+      "docstring": "Recover ProxyPilot free-provider config from gopass-backed provider data.",
+      "issues": []
+    },
+    {
+      "id": "render-matrix",
+      "type": "script_py",
+      "source_path": "scripts/render-matrix.py",
+      "purpose": "Render Salt states for each feature-matrix host scenario.",
+      "docstring": "Render Salt states for each feature-matrix host scenario.\n\nLoads states/data/feature_matrix.yaml and renders every top-level states/*.sls\nfile with recursive include support from `states/**/*.sls` using the same Jinja\nloader roots as production rendering.\ngrains['host'] set to the scenario's name.  Ensures all feature combinations\ntemplate correctly (catches missing imports/macros before deployment).",
+      "issues": []
+    },
+    {
+      "id": "rkn-domains-fetcher",
+      "type": "script_py",
+      "source_path": "scripts/rkn-domains-fetcher.py",
+      "purpose": "",
+      "docstring": "",
+      "issues": [
+        "BLOCK_MISSING: no module-level docstring"
+      ]
+    },
+    {
+      "id": "salt-daemon",
+      "type": "script_py",
+      "source_path": "scripts/salt-daemon.py",
+      "purpose": "salt-daemon.py — pre-loaded Salt Caller daemon for faster state.apply",
+      "docstring": "salt-daemon.py — pre-loaded Salt Caller daemon for faster state.apply\n\nRuns as root. Pre-loads salt modules once, then handles state.apply\nrequests over a Unix socket without re-loading Python/Salt on each run.\n\nSaves ~0.4s per run by avoiding Python import + salt module loading overhead.\n\nProtocol (line-oriented over Unix socket):\n  Client → daemon: single JSON line:\n    {\"state\": \"system_description\", \"kwargs\": {\"test\": true}, \"log_file\": \"/path/to/log\"}\n  Daemon → client: streaming JSON lines:\n    {\"type\": \"stdout\", \"line\": \"...\"}   -- formatted salt output (summary)\n    {\"type\": \"exit\",   \"code\": 0}       -- final exit code\n\nLog file handling:\n  - The daemon adds a FileHandler to the root logger writing to the given\n    log_file path. This captures \"Executing state X for [name]\" debug lines\n    that salt-apply.sh's awk watcher expects to read via `tail -f`.\n  - The formatted salt output summary is written to the log file AND sent\n    to the client.\n\nUsage:\n  sudo /path/to/.venv/bin/python3 scripts/salt-daemon.py\n  sudo /path/to/.venv/bin/python3 scripts/salt-daemon.py --config-dir /path/to/.salt_runtime\n  sudo /path/to/.venv/bin/python3 scripts/salt-daemon.py --socket /tmp/salt-daemon.sock\n\n  Client: scripts/salt-apply.sh [state] [--test]",
+      "issues": []
+    },
+    {
+      "id": "salt_audit",
+      "type": "script_py",
+      "source_path": "scripts/salt_audit.py",
+      "purpose": "Runtime data audit — tracks which states/data/*.yaml files are consumed during salt-apply.",
+      "docstring": "Runtime data audit — tracks which states/data/*.yaml files are consumed during salt-apply.\n\nApproach: reuses salt_impact.py's data→state dependency graph. Runs salt-call\nwith test=True to evaluate templates, parses output to determine which states\nexecuted, then maps states back to their data file dependencies.\n\nOutput: logs/audit-<timestamp>.yaml with consumed/unused lists.",
+      "issues": []
+    },
+    {
+      "id": "salt_compat",
+      "type": "script_py",
+      "source_path": "scripts/salt_compat.py",
+      "purpose": "Python 3.13+ compatibility shims for Salt (PEP 594 module removals).",
+      "docstring": "Python 3.13+ compatibility shims for Salt (PEP 594 module removals).\n\nCall patch() before importing any salt module. Installs:\n  - MockCrypt: replaces removed `crypt` module using passlib\n  - MockSpwd: replaces removed `spwd` module\n  - Warning filter: suppresses Salt's own DeprecationWarnings\n  - Multiprocessing fork fix: Python 3.14 changed default to forkserver\n  - URL fix: Python 3.14 urlunparse normalization breaks salt:// URL creation",
+      "issues": []
+    },
+    {
+      "id": "salt_contracts",
+      "type": "script_py",
+      "source_path": "scripts/salt_contracts.py",
+      "purpose": "Explicit contract checks for Salt inventory data.",
+      "docstring": "Explicit contract checks for Salt inventory data.",
+      "issues": []
+    },
+    {
+      "id": "salt_debug_report",
+      "type": "script_py",
+      "source_path": "scripts/salt_debug_report.py",
+      "purpose": "Write structured Salt debug bundles for failure analysis.",
+      "docstring": "Write structured Salt debug bundles for failure analysis.",
+      "issues": []
+    },
+    {
+      "id": "salt_impact",
+      "type": "script_py",
+      "source_path": "scripts/salt_impact.py",
+      "purpose": "Conservative impact planner for Salt auto-plan preview.",
+      "docstring": "Conservative impact planner for Salt auto-plan preview.",
+      "issues": []
+    },
+    {
+      "id": "salt_provenance",
+      "type": "script_py",
+      "source_path": "scripts/salt_provenance.py",
+      "purpose": "Query minimal provenance for Salt states and imported data files.",
+      "docstring": "Query minimal provenance for Salt states and imported data files.",
+      "issues": []
+    },
+    {
+      "id": "salt_runner",
+      "type": "script_py",
+      "source_path": "scripts/salt_runner.py",
+      "purpose": "Salt-call wrapper with compatibility shims for Python 3.13+.",
+      "docstring": "Salt-call wrapper with compatibility shims for Python 3.13+.\n\nUsage:\n  python3 scripts/salt_runner.py --config-dir=.salt_runtime --local state.sls ...",
+      "issues": []
+    },
+    {
+      "id": "salt_show",
+      "type": "script_py",
+      "source_path": "scripts/salt_show.py",
+      "purpose": "Show which states a Salt SLS would apply, without executing anything.",
+      "docstring": "Show which states a Salt SLS would apply, without executing anything.\n\nUsage: salt_show.py <state>           # e.g. group.core, desktop, system_description\n       salt_show.py group/core        # slash syntax also works\n\nOutputs a compact list grouped by source .sls file.",
+      "issues": []
+    },
+    {
+      "id": "salt_source_model",
+      "type": "script_py",
+      "source_path": "scripts/salt_source_model.py",
+      "purpose": "Shared discovery helpers for Salt source analysis.",
+      "docstring": "Shared discovery helpers for Salt source analysis.",
+      "issues": []
+    },
+    {
+      "id": "state-profiler",
+      "type": "script_py",
+      "source_path": "scripts/state-profiler.py",
+      "purpose": "Parse salt-apply logs and print the slowest states with include context.",
+      "docstring": "Parse salt-apply logs and print the slowest states with include context.",
+      "issues": []
+    },
+    {
+      "id": "update-tools",
+      "type": "script_py",
+      "source_path": "scripts/update-tools.py",
+      "purpose": "Update tools defined in data/installers.yaml.",
+      "docstring": "Update tools defined in data/installers.yaml.\n\nUsage:\n    update-tools.py                  # list all tools with install status\n    update-tools.py --check          # check latest GitHub release tags vs pinned\n    update-tools.py --check --markdown # same, but markdown output + exit 1 if updates\n    update-tools.py --update name..  # update specific tools\n    update-tools.py --update --all   # update all tools",
+      "issues": []
+    },
+    {
+      "id": "vpn_split_router",
+      "type": "script_py",
+      "source_path": "scripts/vpn_split_router.py",
+      "purpose": "DNS-based VPN split routing: observe, learn, and route domains through VPN/proxy.",
+      "docstring": "DNS-based VPN split routing: observe, learn, and route domains through VPN/proxy.",
+      "issues": []
+    },
+    {
+      "id": "amnezia-import-tun-config",
+      "type": "script_sh",
+      "source_path": "scripts/amnezia-import-tun-config.sh",
+      "purpose": "Source: ~/.config/AmneziaVPN.ORG/AmneziaVPN.conf",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "bootstrap-cachyos",
+      "type": "script_sh",
+      "source_path": "scripts/bootstrap-cachyos.sh",
+      "purpose": "Bootstrap CachyOS (Zen4/5 optimized) rootfs via Podman + Arch container.",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "cache-cleanup",
+      "type": "script_sh",
+      "source_path": "scripts/cache-cleanup.sh",
+      "purpose": "Periodic cache cleanup for user-level caches not covered by paccache.timer.",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "cachyos-packages",
+      "type": "script_sh",
+      "source_path": "scripts/cachyos-packages.sh",
+      "purpose": "Install all user packages on CachyOS after bootstrap",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "check-ipv6",
+      "type": "script_sh",
+      "source_path": "scripts/check-ipv6.sh",
+      "purpose": "IPv6 diagnostics script",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "check-vpn-status",
+      "type": "script_sh",
+      "source_path": "scripts/check-vpn-status.sh",
+      "purpose": "VPN Status Check Script",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "drift-notify",
+      "type": "script_sh",
+      "source_path": "scripts/drift-notify.sh",
+      "purpose": "drift-notify.sh — run full drift check via drift_state.py and notify on drift",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "enable-vpn-hybrid",
+      "type": "script_sh",
+      "source_path": "scripts/enable-vpn-hybrid.sh",
+      "purpose": "Enable hybrid VPN (Xray + sing-box TUN) via Salt states",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "health-check",
+      "type": "script_sh",
+      "source_path": "scripts/health-check.sh",
+      "purpose": "health-check.sh — check health of all Salt-managed services",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "kvm-network-rc-local",
+      "type": "script_sh",
+      "source_path": "scripts/kvm-network-rc-local.sh",
+      "purpose": "kvm-network-rc-local.sh — boot-time network setup for KVM test VMs",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "lint-all",
+      "type": "script_sh",
+      "source_path": "scripts/lint-all.sh",
+      "purpose": "Run all lint checks: ruff, shellcheck, yamllint, salt-lint, taplo, doc-blocks validation; orchestrates the full lint pipeline for pre-commit and CI.",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "manual-tun-routes",
+      "type": "script_sh",
+      "source_path": "scripts/manual-tun-routes.sh",
+      "purpose": "Manual TUN interface setup for sing-box when auto_route fails",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "migrate-floorp-to-zen-profile",
+      "type": "script_sh",
+      "source_path": "scripts/migrate-floorp-to-zen-profile.sh",
+      "purpose": "Copy user data from Floorp browser profile into a Zen browser profile without overwriting Salt-managed Zen files. One-shot operation guarded by a marker stamp.",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "rkn-domains-integration",
+      "type": "script_sh",
+      "source_path": "scripts/rkn-domains-integration.sh",
+      "purpose": "RKN Domains Integration Script",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "salt-apply",
+      "type": "script_sh",
+      "source_path": "scripts/salt-apply.sh",
+      "purpose": "salt-apply.sh — apply Salt states (daemon-aware)",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "salt-runtime",
+      "type": "script_sh",
+      "source_path": "scripts/salt-runtime.sh",
+      "purpose": "Generate Salt minion runtime configuration: reads file_roots from states/file_roots.yaml, creates minion config, and manages runtime directories. Called by salt-apply.sh.",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "salt-validate",
+      "type": "script_sh",
+      "source_path": "scripts/salt-validate.sh",
+      "purpose": "Validate all Salt state files render without errors.",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "start-hybrid-vpn",
+      "type": "script_sh",
+      "source_path": "scripts/start-hybrid-vpn.sh",
+      "purpose": "Hybrid VPN setup: Xray handles XHTTP transport, sing-box handles TUN interface",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "telethon-bridge-react",
+      "type": "script_sh",
+      "source_path": "scripts/telethon-bridge-react.sh",
+      "purpose": "Reactive path-triggered launcher for telethon-bridge service: checks for existing session file and starts telethon-bridge.service via a .path systemd unit.",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "test-browser-vpn",
+      "type": "script_sh",
+      "source_path": "scripts/test-browser-vpn.sh",
+      "purpose": "Test browser VPN integration",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "test-kvm-deploy-lib",
+      "type": "script_sh",
+      "source_path": "scripts/test-kvm-deploy-lib.sh",
+      "purpose": "test-kvm-deploy-lib.sh — shared functions for KVM deployment testing",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "test-kvm-deploy",
+      "type": "script_sh",
+      "source_path": "scripts/test-kvm-deploy.sh",
+      "purpose": "test-kvm-deploy.sh — KVM/QEMU Salt deployment test runner",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "vm-smoke",
+      "type": "script_sh",
+      "source_path": "scripts/vm-smoke.sh",
+      "purpose": "vm-smoke.sh — run CachyOS VM deployment test inside a Podman container",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "zapret2-rollout",
+      "type": "script_sh",
+      "source_path": "scripts/zapret2-rollout.sh",
+      "purpose": "Safe rollout workflow for zapret2 DPI bypass configuration changes: staged approval, policy review, expiration, and rollback. Enables operator-reviewed config deployment.",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "zen-vpn",
+      "type": "script_sh",
+      "source_path": "scripts/zen-vpn.sh",
+      "purpose": "Launch zen-browser with VPN SOCKS5 proxy",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "pkg-drift",
+      "type": "script_sh",
+      "source_path": "scripts/pkg-drift.zsh",
+      "purpose": "pkg-drift.zsh — Compare declared packages against actual system state",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "pkg-snapshot",
+      "type": "script_sh",
+      "source_path": "scripts/pkg-snapshot.zsh",
+      "purpose": "pkg-snapshot.zsh — Capture current system packages into states/data/packages.yaml",
+      "dependencies": [],
+      "outputs": [],
+      "issues": []
+    },
+    {
+      "id": "data/amnezia.yaml",
+      "type": "data_file",
+      "source_path": "states/data/amnezia.yaml",
+      "purpose": "Data file consumed by amnezia.sls",
+      "consumers": [
+        "amnezia.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/audio.yaml",
+      "type": "data_file",
+      "source_path": "states/data/audio.yaml",
+      "purpose": "Data file consumed by audio.sls",
+      "consumers": [
+        "audio.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/bind_mounts.yaml",
+      "type": "data_file",
+      "source_path": "states/data/bind_mounts.yaml",
+      "purpose": "Data file consumed by bind_mounts.sls",
+      "consumers": [
+        "bind_mounts.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/cachyos.yaml",
+      "type": "data_file",
+      "source_path": "states/data/cachyos.yaml",
+      "purpose": "Data file consumed by cachyos.sls",
+      "consumers": [
+        "cachyos.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/code_rag.yaml",
+      "type": "data_file",
+      "source_path": "states/data/code_rag.yaml",
+      "purpose": "Data file consumed by code_rag.sls",
+      "consumers": [
+        "code_rag.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/container_images.yaml",
+      "type": "data_file",
+      "source_path": "states/data/container_images.yaml",
+      "purpose": "Data file consumed by _macros_container.jinja",
+      "consumers": [
+        "_macros_container.jinja"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/custom_pkgs.yaml",
+      "type": "data_file",
+      "source_path": "states/data/custom_pkgs.yaml",
+      "purpose": "Data file consumed by custom_pkgs.sls",
+      "consumers": [
+        "custom_pkgs.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/desktop.yaml",
+      "type": "data_file",
+      "source_path": "states/data/desktop.yaml",
+      "purpose": "Data file consumed by desktop/hyprland.sls, desktop/niri.sls, desktop/packages.sls, desktop/portal.sls, desktop/system.sls, desktop/user.sls, desktop/vm_win11.sls",
+      "consumers": [
+        "desktop/hyprland.sls",
+        "desktop/niri.sls",
+        "desktop/packages.sls",
+        "desktop/portal.sls",
+        "desktop/system.sls",
+        "desktop/user.sls",
+        "desktop/vm_win11.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/espanso.yaml",
+      "type": "data_file",
+      "source_path": "states/data/espanso.yaml",
+      "purpose": "Data file consumed by espanso.sls",
+      "consumers": [
+        "espanso.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/feature_matrix.yaml",
+      "type": "data_file",
+      "source_path": "states/data/feature_matrix.yaml",
+      "purpose": "",
+      "consumers": [],
+      "issues": []
+    },
+    {
+      "id": "data/feature_registry.yaml",
+      "type": "data_file",
+      "source_path": "states/data/feature_registry.yaml",
+      "purpose": "Data file consumed by _macros_registry.jinja",
+      "consumers": [
+        "_macros_registry.jinja"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/flatpak.yaml",
+      "type": "data_file",
+      "source_path": "states/data/flatpak.yaml",
+      "purpose": "Data file consumed by flatpak.sls",
+      "consumers": [
+        "flatpak.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/floorp.yaml",
+      "type": "data_file",
+      "source_path": "states/data/floorp.yaml",
+      "purpose": "Data file consumed by floorp.sls",
+      "consumers": [
+        "floorp.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/fonts.yaml",
+      "type": "data_file",
+      "source_path": "states/data/fonts.yaml",
+      "purpose": "Data file consumed by fonts.sls",
+      "consumers": [
+        "fonts.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/free_providers.yaml",
+      "type": "data_file",
+      "source_path": "states/data/free_providers.yaml",
+      "purpose": "Data file consumed by proxypilot.sls",
+      "consumers": [
+        "proxypilot.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/greetd.yaml",
+      "type": "data_file",
+      "source_path": "states/data/greetd.yaml",
+      "purpose": "Data file consumed by greetd.sls",
+      "consumers": [
+        "greetd.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/hardware.yaml",
+      "type": "data_file",
+      "source_path": "states/data/hardware.yaml",
+      "purpose": "Data file consumed by hardware.sls",
+      "consumers": [
+        "hardware.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/hiddify.yaml",
+      "type": "data_file",
+      "source_path": "states/data/hiddify.yaml",
+      "purpose": "Data file consumed by hiddify.sls",
+      "consumers": [
+        "hiddify.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/hosts.yaml",
+      "type": "data_file",
+      "source_path": "states/data/hosts.yaml",
+      "purpose": "Data file consumed by cachyos.sls, zen_profiles.sls",
+      "consumers": [
+        "cachyos.sls",
+        "zen_profiles.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/image_providers.yaml",
+      "type": "data_file",
+      "source_path": "states/data/image_providers.yaml",
+      "purpose": "Data file consumed by image_generation.sls",
+      "consumers": [
+        "image_generation.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/installers.yaml",
+      "type": "data_file",
+      "source_path": "states/data/installers.yaml",
+      "purpose": "Data file consumed by installers.sls, music_analysis.sls",
+      "consumers": [
+        "installers.sls",
+        "music_analysis.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/installers_desktop.yaml",
+      "type": "data_file",
+      "source_path": "states/data/installers_desktop.yaml",
+      "purpose": "Data file consumed by installers_desktop.sls",
+      "consumers": [
+        "installers_desktop.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/installers_themes.yaml",
+      "type": "data_file",
+      "source_path": "states/data/installers_themes.yaml",
+      "purpose": "Data file consumed by installers_themes.sls",
+      "consumers": [
+        "installers_themes.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/ipv6.yaml",
+      "type": "data_file",
+      "source_path": "states/data/ipv6.yaml",
+      "purpose": "Data file consumed by ipv6.sls, ipv6_tunnel.sls",
+      "consumers": [
+        "ipv6.sls",
+        "ipv6_tunnel.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/kanata.yaml",
+      "type": "data_file",
+      "source_path": "states/data/kanata.yaml",
+      "purpose": "Data file consumed by kanata.sls",
+      "consumers": [
+        "kanata.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/kernel_params.yaml",
+      "type": "data_file",
+      "source_path": "states/data/kernel_params.yaml",
+      "purpose": "Data file consumed by cachyos.sls, kernel_modules.sls",
+      "consumers": [
+        "cachyos.sls",
+        "kernel_modules.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/llama_embed.yaml",
+      "type": "data_file",
+      "source_path": "states/data/llama_embed.yaml",
+      "purpose": "Data file consumed by llama_embed.sls",
+      "consumers": [
+        "llama_embed.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/managed_resources.yaml",
+      "type": "data_file",
+      "source_path": "states/data/managed_resources.yaml",
+      "purpose": "Data file consumed by systemd_resources.sls",
+      "consumers": [
+        "systemd_resources.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/monitored_services.yaml",
+      "type": "data_file",
+      "source_path": "states/data/monitored_services.yaml",
+      "purpose": "Data file consumed by monitoring_alerts.sls",
+      "consumers": [
+        "monitoring_alerts.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/mounts.yaml",
+      "type": "data_file",
+      "source_path": "states/data/mounts.yaml",
+      "purpose": "Data file consumed by mounts.sls",
+      "consumers": [
+        "mounts.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/mpd.yaml",
+      "type": "data_file",
+      "source_path": "states/data/mpd.yaml",
+      "purpose": "Data file consumed by mpd.sls",
+      "consumers": [
+        "mpd.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/mpv_scripts.yaml",
+      "type": "data_file",
+      "source_path": "states/data/mpv_scripts.yaml",
+      "purpose": "Data file consumed by installers_mpv.sls",
+      "consumers": [
+        "installers_mpv.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/nanoclaw.yaml",
+      "type": "data_file",
+      "source_path": "states/data/nanoclaw.yaml",
+      "purpose": "Data file consumed by nanoclaw.sls",
+      "consumers": [
+        "nanoclaw.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/network.yaml",
+      "type": "data_file",
+      "source_path": "states/data/network.yaml",
+      "purpose": "Data file consumed by network/vm_bridge.sls",
+      "consumers": [
+        "network/vm_bridge.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/ollama.yaml",
+      "type": "data_file",
+      "source_path": "states/data/ollama.yaml",
+      "purpose": "Data file consumed by ollama.sls",
+      "consumers": [
+        "ollama.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/packages.yaml",
+      "type": "data_file",
+      "source_path": "states/data/packages.yaml",
+      "purpose": "Data file consumed by packages.sls",
+      "consumers": [
+        "packages.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/service_catalog.yaml",
+      "type": "data_file",
+      "source_path": "states/data/service_catalog.yaml",
+      "purpose": "Data file consumed by _macros_container.jinja",
+      "consumers": [
+        "_macros_container.jinja"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/services.yaml",
+      "type": "data_file",
+      "source_path": "states/data/services.yaml",
+      "purpose": "Data file consumed by services.sls",
+      "consumers": [
+        "services.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/steam.yaml",
+      "type": "data_file",
+      "source_path": "states/data/steam.yaml",
+      "purpose": "Data file consumed by steam.sls",
+      "consumers": [
+        "steam.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/system.yaml",
+      "type": "data_file",
+      "source_path": "states/data/system.yaml",
+      "purpose": "Data file consumed by system_description.sls",
+      "consumers": [
+        "system_description.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/t5_summarization.yaml",
+      "type": "data_file",
+      "source_path": "states/data/t5_summarization.yaml",
+      "purpose": "Data file consumed by t5_summarization.sls",
+      "consumers": [
+        "t5_summarization.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/telegram_managed_bots.yaml",
+      "type": "data_file",
+      "source_path": "states/data/telegram_managed_bots.yaml",
+      "purpose": "Data file consumed by managed_bots.sls",
+      "consumers": [
+        "managed_bots.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/telethon_bridge.yaml",
+      "type": "data_file",
+      "source_path": "states/data/telethon_bridge.yaml",
+      "purpose": "Data file consumed by telethon_bridge.sls",
+      "consumers": [
+        "telethon_bridge.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/tidal.yaml",
+      "type": "data_file",
+      "source_path": "states/data/tidal.yaml",
+      "purpose": "Data file consumed by tidal.sls",
+      "consumers": [
+        "tidal.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/user_services.yaml",
+      "type": "data_file",
+      "source_path": "states/data/user_services.yaml",
+      "purpose": "Data file consumed by user_services.sls",
+      "consumers": [
+        "user_services.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/users.yaml",
+      "type": "data_file",
+      "source_path": "states/data/users.yaml",
+      "purpose": "Data file consumed by users.sls",
+      "consumers": [
+        "users.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/versions.yaml",
+      "type": "data_file",
+      "source_path": "states/data/versions.yaml",
+      "purpose": "Data file consumed by amnezia.sls, fonts.sls, installers.sls, installers_mpv.sls, music_analysis.sls, nanoclaw.sls, telethon_bridge.sls",
+      "consumers": [
+        "amnezia.sls",
+        "fonts.sls",
+        "installers.sls",
+        "installers_mpv.sls",
+        "music_analysis.sls",
+        "nanoclaw.sls",
+        "telethon_bridge.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/video_ai.yaml",
+      "type": "data_file",
+      "source_path": "states/data/video_ai.yaml",
+      "purpose": "Data file consumed by video_ai/base.sls, video_ai/models.sls, video_ai/runners.sls, video_ai/workflows.sls",
+      "consumers": [
+        "video_ai/base.sls",
+        "video_ai/models.sls",
+        "video_ai/runners.sls",
+        "video_ai/workflows.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/vpn.yaml",
+      "type": "data_file",
+      "source_path": "states/data/vpn.yaml",
+      "purpose": "Data file consumed by ipv6_6to4.sls, network/vpn_hybrid.sls, network/vpn_split_router.sls",
+      "consumers": [
+        "ipv6_6to4.sls",
+        "network/vpn_hybrid.sls",
+        "network/vpn_split_router.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/windows_mount.yaml",
+      "type": "data_file",
+      "source_path": "states/data/windows_mount.yaml",
+      "purpose": "Data file consumed by windows_mount.sls",
+      "consumers": [
+        "windows_mount.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/xen.yaml",
+      "type": "data_file",
+      "source_path": "states/data/xen.yaml",
+      "purpose": "Data file consumed by xen/kde_theme.sls, xen/sessions.sls, xen/user.sls",
+      "consumers": [
+        "xen/kde_theme.sls",
+        "xen/sessions.sls",
+        "xen/user.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/zapret2.yaml",
+      "type": "data_file",
+      "source_path": "states/data/zapret2.yaml",
+      "purpose": "Data file consumed by zapret2.sls",
+      "consumers": [
+        "zapret2.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/zen_browser.yaml",
+      "type": "data_file",
+      "source_path": "states/data/zen_browser.yaml",
+      "purpose": "Data file consumed by zen_browser.sls",
+      "consumers": [
+        "zen_browser.sls"
+      ],
+      "issues": []
+    },
+    {
+      "id": "data/zen_profiles.yaml",
+      "type": "data_file",
+      "source_path": "states/data/zen_profiles.yaml",
+      "purpose": "Data file consumed by zen_profiles.sls",
+      "consumers": [
+        "zen_profiles.sls"
+      ],
+      "issues": []
+    }
+  ]
+}

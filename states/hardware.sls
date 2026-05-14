@@ -63,6 +63,7 @@ rme_hdspe_dkms_build:
   cmd.run:
     - name: dkms build {{ hw.hdspe.dkms_name }}/{{ hw.hdspe.dkms_version }}
     - unless: test -f /var/lib/dkms/{{ hw.hdspe.dkms_name }}/{{ hw.hdspe.dkms_version }}/$(uname -r)/*/module/snd-hdspe.ko* 2>/dev/null
+    - onlyif: test -d /usr/lib/modules/$(uname -r)/build
     - require:
       - cmd: rme_hdspe_dkms_add
 
@@ -70,6 +71,7 @@ rme_hdspe_dkms_install:
   cmd.run:
     - name: dkms install {{ hw.hdspe.dkms_name }}/{{ hw.hdspe.dkms_version }}
     - unless: test -f /usr/lib/modules/$(uname -r)/updates/dkms/snd-hdspe.ko* 2>/dev/null
-    - require:
+    - onlyif: test -d /usr/lib/modules/$(uname -r)/build
+    - onchanges:
       - cmd: rme_hdspe_dkms_build
 {% endif %}

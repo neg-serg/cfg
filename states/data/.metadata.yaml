@@ -30,7 +30,6 @@ schema_versions:
   mounts.yaml: 1
   mpd.yaml: 1
   mpv_scripts.yaml: 1
-  nanoclaw.yaml: 1
   network.yaml: 1
   ollama.yaml: 1
   packages.yaml: 1

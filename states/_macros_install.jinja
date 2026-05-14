@@ -88,9 +88,9 @@ install_{{ name | replace('-', '_') }}:
   cmd.run:
     - name: |
         set -euo pipefail
-        {{ _env }}pipx install{{ _preinstall }} {{ pkg or name }} 2>/dev/null || true
+        {{ _env }}pipx install{{ _preinstall }} {{ pkg or name }} &>/dev/null || true
 {%- if preinstall %}
-        test -x {{ home }}/.local/bin/{{ bin or name }} || { pipx uninstall {{ name }} 2>/dev/null; {{ _env }}pipx install{{ _preinstall }} {{ pkg or name }}; }
+        test -x {{ home }}/.local/bin/{{ bin or name }} || { pipx uninstall {{ name }} &>/dev/null; {{ _env }}pipx install{{ _preinstall }} {{ pkg or name }} &>/dev/null; }
 {%- else %}
         test -x {{ home }}/.local/bin/{{ bin or name }} || {{ _env }}pipx reinstall {{ pkg or name }}
 {%- endif %}

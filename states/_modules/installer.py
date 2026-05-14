@@ -232,12 +232,12 @@ def pip_pkg(
     preinst = f" --preinstall {preinstall}" if preinstall else ""
 
     lines = ["set -euo pipefail"]
-    lines.append(f"{env_pref}pipx install{preinst} {pkg or name} 2>/dev/null || true")
+    lines.append(f"{env_pref}pipx install{preinst} {pkg or name} &>/dev/null || true")
     if preinstall:
         lines.append(
             f"test -x {hm}/.local/bin/{bin or name} || "
-            f"{{ pipx uninstall {name} 2>/dev/null; "
-            f"{env_pref}pipx install{preinst} {pkg or name}; }}"
+            f"{{ pipx uninstall {name} &>/dev/null; "
+            f"{env_pref}pipx install{preinst} {pkg or name} &>/dev/null; }}"
         )
     else:
         lines.append(

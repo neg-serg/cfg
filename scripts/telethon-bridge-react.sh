@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Reactive path-triggered launcher for telethon-bridge service: checks for existing session file and starts telethon-bridge.service via a .path systemd unit.
+#
+
 set -euo pipefail
 
 STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"

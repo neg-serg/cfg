@@ -1,4 +1,8 @@
 #!/usr/bin/env zsh
+# @script
+# purpose: salt-apply.sh — apply Salt states (daemon-aware)
+#
+
 # salt-apply.sh — apply Salt states (daemon-aware)
 #
 # Bootstraps venv + runtime config on first run, then uses the running

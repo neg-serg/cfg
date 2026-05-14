@@ -975,11 +975,13 @@ scripts_sh:
 - path: scripts/kvm-network-rc-local.sh
   purpose: kvm-network-rc-local.sh — boot-time network setup for KVM test VMs
 - path: scripts/lint-all.sh
-  purpose: ''
+  purpose: 'Run all lint checks: ruff, shellcheck, yamllint, salt-lint, taplo, doc-blocks
+    validation; orchestrates the full lint pipeline for pre-commit and CI.'
 - path: scripts/manual-tun-routes.sh
   purpose: Manual TUN interface setup for sing-box when auto_route fails
 - path: scripts/migrate-floorp-to-zen-profile.sh
-  purpose: ''
+  purpose: Copy user data from Floorp browser profile into a Zen browser profile without
+    overwriting Salt-managed Zen files. One-shot operation guarded by a marker stamp.
 - path: scripts/pkg-drift.zsh
   purpose: pkg-drift.zsh — Compare declared packages against actual system state
 - path: scripts/pkg-snapshot.zsh
@@ -989,13 +991,15 @@ scripts_sh:
 - path: scripts/salt-apply.sh
   purpose: salt-apply.sh — apply Salt states (daemon-aware)
 - path: scripts/salt-runtime.sh
-  purpose: ''
+  purpose: 'Generate Salt minion runtime configuration: reads file_roots from states/file_roots.yaml,
+    creates minion config, and manages runtime directories. Called by salt-apply.sh.'
 - path: scripts/salt-validate.sh
   purpose: Validate all Salt state files render without errors.
 - path: scripts/start-hybrid-vpn.sh
   purpose: 'Hybrid VPN setup: Xray handles XHTTP transport, sing-box handles TUN interface'
 - path: scripts/telethon-bridge-react.sh
-  purpose: ''
+  purpose: 'Reactive path-triggered launcher for telethon-bridge service: checks for
+    existing session file and starts telethon-bridge.service via a .path systemd unit.'
 - path: scripts/test-browser-vpn.sh
   purpose: Test browser VPN integration
 - path: scripts/test-kvm-deploy-lib.sh
@@ -1005,7 +1009,9 @@ scripts_sh:
 - path: scripts/vm-smoke.sh
   purpose: vm-smoke.sh — run CachyOS VM deployment test inside a Podman container
 - path: scripts/zapret2-rollout.sh
-  purpose: ''
+  purpose: 'Safe rollout workflow for zapret2 DPI bypass configuration changes: staged
+    approval, policy review, expiration, and rollback. Enables operator-reviewed config
+    deployment.'
 - path: scripts/zen-vpn.sh
   purpose: Launch zen-browser with VPN SOCKS5 proxy
 data_files:

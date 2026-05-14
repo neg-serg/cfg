@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Manual TUN interface setup for sing-box when auto_route fails
+#
+
 set -euo pipefail
 
 # Manual TUN interface setup for sing-box when auto_route fails

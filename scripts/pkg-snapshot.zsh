@@ -1,4 +1,8 @@
 #!/usr/bin/env zsh
+# @script
+# purpose: pkg-snapshot.zsh — Capture current system packages into states/data/packages.yaml
+#
+
 # pkg-snapshot.zsh — Capture current system packages into states/data/packages.yaml
 #
 # Reads pacman -Qqe (explicitly installed packages), excludes packages already

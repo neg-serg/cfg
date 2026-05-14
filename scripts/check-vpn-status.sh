@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: VPN Status Check Script
+#
+
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

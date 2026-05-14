@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Launch zen-browser with VPN SOCKS5 proxy
+#
+
 set -euo pipefail
 
 # Launch zen-browser with VPN SOCKS5 proxy

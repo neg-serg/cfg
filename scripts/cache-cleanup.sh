@@ -1,4 +1,8 @@
 #!/bin/bash
+# @script
+# purpose: Periodic cache cleanup for user-level caches not covered by paccache.timer.
+#
+
 # Periodic cache cleanup for user-level caches not covered by paccache.timer.
 # Runs as a systemd --user oneshot service, triggered by cache-cleanup.timer.
 set -euo pipefail

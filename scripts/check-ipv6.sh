@@ -1,4 +1,8 @@
 #!/usr/bin/env zsh
+# @script
+# purpose: IPv6 diagnostics script
+#
+
 set -euo pipefail
 
 # IPv6 diagnostics script

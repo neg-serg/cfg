@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Copy user data from Floorp browser profile into a Zen browser profile without overwriting Salt-managed Zen files. One-shot operation guarded by a marker stamp.
+#
+
 
 set -euo pipefail
 

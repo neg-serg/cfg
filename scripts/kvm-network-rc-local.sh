@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: kvm-network-rc-local.sh — boot-time network setup for KVM test VMs
+#
+
 # kvm-network-rc-local.sh — boot-time network setup for KVM test VMs
 # Deployed as /etc/rc.local in the VM rootfs by kvm-bootstrap recipe.
 set -euo pipefail

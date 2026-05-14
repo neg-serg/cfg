@@ -1,4 +1,8 @@
 #!/usr/bin/env zsh
+# @script
+# purpose: test-kvm-deploy-lib.sh — shared functions for KVM deployment testing
+#
+
 # test-kvm-deploy-lib.sh — shared functions for KVM deployment testing
 # Source this file from test-kvm-deploy.sh
 

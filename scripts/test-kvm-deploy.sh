@@ -1,4 +1,8 @@
 #!/usr/bin/env zsh
+# @script
+# purpose: test-kvm-deploy.sh — KVM/QEMU Salt deployment test runner
+#
+
 # test-kvm-deploy.sh — KVM/QEMU Salt deployment test runner
 #
 # Boots a CachyOS rootfs in a QEMU/KVM VM, applies Salt states,

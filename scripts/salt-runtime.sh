@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Generate Salt minion runtime configuration: reads file_roots from states/file_roots.yaml, creates minion config, and manages runtime directories. Called by salt-apply.sh.
+#
+
 set -euo pipefail
 
 # Read file_roots from states/file_roots.yaml and output YAML block.

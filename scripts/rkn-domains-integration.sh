@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: RKN Domains Integration Script
+#
+
 set -euo pipefail
 
 # RKN Domains Integration Script

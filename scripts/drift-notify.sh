@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: drift-notify.sh — run full drift check via drift_state.py and notify on drift
+#
+
 # drift-notify.sh — run full drift check via drift_state.py and notify on drift
 set -euo pipefail
 

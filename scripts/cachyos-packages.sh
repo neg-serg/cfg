@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Install all user packages on CachyOS after bootstrap
+#
+
 # Install all user packages on CachyOS after bootstrap
 # Run as root after first boot (or from arch-chroot)
 #

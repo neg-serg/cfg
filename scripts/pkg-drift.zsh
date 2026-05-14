@@ -1,4 +1,8 @@
 #!/usr/bin/env zsh
+# @script
+# purpose: pkg-drift.zsh — Compare declared packages against actual system state
+#
+
 # pkg-drift.zsh — Compare declared packages against actual system state
 #
 # Reports three categories:

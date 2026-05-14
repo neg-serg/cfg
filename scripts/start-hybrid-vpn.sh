@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Hybrid VPN setup: Xray handles XHTTP transport, sing-box handles TUN interface
+#
+
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

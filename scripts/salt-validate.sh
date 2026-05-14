@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Validate all Salt state files render without errors.
+#
+
 set -euo pipefail
 
 # Validate all Salt state files render without errors.

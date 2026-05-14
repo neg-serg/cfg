@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: vm-smoke.sh — run CachyOS VM deployment test inside a Podman container
+#
+
 # vm-smoke.sh — run CachyOS VM deployment test inside a Podman container
 
 set -euo pipefail

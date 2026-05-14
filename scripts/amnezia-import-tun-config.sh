@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Source: ~/.config/AmneziaVPN.ORG/AmneziaVPN.conf
+#
+
 
 set -euo pipefail
 

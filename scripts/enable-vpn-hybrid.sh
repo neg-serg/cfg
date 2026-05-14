@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Enable hybrid VPN (Xray + sing-box TUN) via Salt states
+#
+
 set -euo pipefail
 
 # Enable hybrid VPN (Xray + sing-box TUN) via Salt states

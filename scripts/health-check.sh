@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: health-check.sh — check health of all Salt-managed services
+#
+
 # health-check.sh — check health of all Salt-managed services
 #
 # Usage:

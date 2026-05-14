@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Safe rollout workflow for zapret2 DPI bypass configuration changes: staged approval, policy review, expiration, and rollback. Enables operator-reviewed config deployment.
+#
+
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

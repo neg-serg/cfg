@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# @script
+# purpose: Test browser VPN integration
+#
+
 # Test browser VPN integration
 
 set -euo pipefail

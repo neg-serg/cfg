@@ -1,4 +1,8 @@
 #!/usr/bin/env zsh
+# @script
+# purpose: Bootstrap CachyOS (Zen4/5 optimized) rootfs via Podman + Arch container.
+#
+
 # Bootstrap CachyOS (Zen4/5 optimized) rootfs via Podman + Arch container.
 # Produces a rootfs with Limine bootloader.
 #

@@ -3,7 +3,7 @@
 include:
   - pacman_db_warmup
 
-{% from '_imports.jinja' import user %}
+{% from '_imports.jinja' import host, user %}
 # Flatpak: install runtime + flathub remote + user-level apps
 {% import_yaml 'data/flatpak.yaml' as flatpak %}
 
@@ -11,7 +11,10 @@ include:
 
 flatpak_flathub_remote:
   cmd.run:
-    - name: runuser -u {{ user }} -- flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    - name: flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    - runas: {{ user }}
+    - env:
+      - HOME: {{ host.home }}
     - require:
       - cmd: install_flatpak
 

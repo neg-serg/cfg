@@ -184,12 +184,15 @@ def pkgbuild_install(name: str, source: str, user: str | None = None,
 def flatpak_install(app_id: str, user: str | None = None) -> dict[str, Any]:
     h = _host()
     u = user or h["user"]
+    _home = h.get("home") or f"/home/{u}"
     c = _const()
     safe = app_id.replace(".", "_").replace("-", "_")
     return {
         f"install_flatpak_{safe}": {
             "cmd.run": [
-                {"name": f"runuser -u {u} -- flatpak install -y --user flathub {app_id}"},
+                {"name": f"flatpak install -y --user flathub {app_id}"},
+                {"runas": u},
+                {"env": {"HOME": _home}},
                 {"retry": {"attempts": c["retry_attempts"], "interval": c["retry_interval"]}},
                 {"require": [{"cmd": "flatpak_flathub_remote"}]},
             ]

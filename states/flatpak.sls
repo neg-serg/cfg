@@ -11,7 +11,7 @@ include:
 
 flatpak_flathub_remote:
   cmd.run:
-    - name: su - {{ user }} -c 'flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo'
+    - name: runuser -u {{ user }} -- flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
     - require:
       - cmd: install_flatpak
 

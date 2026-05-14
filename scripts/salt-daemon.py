@@ -76,6 +76,10 @@ def _daemon_patched_module_dirs(*args, **kwargs):
 
 _daemon_salt_loader._module_dirs = _daemon_patched_module_dirs
 
+# Ensure _modules/ is on sys.path so `from _modules.common import get_host` works
+# inside Salt execution modules (Python import, not Salt's module loader).
+sys.path.insert(0, os.path.join(_SCRIPT_DIR, "states", "_modules"))
+
 # ── Defaults ─────────────────────────────────────────────────────────────────
 _DEFAULT_SOCKET = "/run/salt-daemon.sock"
 _DEFAULT_CONFIG_DIR = os.path.join(_SCRIPT_DIR, ".salt_runtime")

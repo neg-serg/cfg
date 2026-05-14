@@ -33,7 +33,7 @@ essentia_validate:
 # User systemd units (timer + service)
 {{ salt['user_service.user_service_file']('music_index_service', 'music-index.service') }}
 {{ salt['user_service.user_service_file']('music_index_timer', 'music-index.timer') }}
-{{ salt['user_service.user_service_enable']('music_index_enabled',
+{{ salt['user_service.user_service_enable']('music_index_enabled', user=user,
     start_now=['music-index.timer'],
     requires=[
         'file: music_index_service',

@@ -22,7 +22,7 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
 }
 nitpicky = True
-suppress_warnings = ['toc.not_included', 'myst.xref_missing', 'misc.highlighting_failure', 'myst.domains', 'ref.state', 'ref.script', 'ref.data', 'autodoc']
+suppress_warnings = ['toc.not_included', 'myst.xref_missing', 'misc.highlighting_failure', 'myst.domains']
 
 
 def run_extractor(app):

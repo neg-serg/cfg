@@ -385,7 +385,11 @@ def gen_state_rst(entity: dict) -> str:
                 if field == 'data_files':
                     refs.append(f':salt:data:`{v}`')
                 elif field == 'includes':
-                    refs.append(f':salt:state:`{v}`')
+                    sls_path = v if v.endswith('.sls') else f'{v}.sls'
+                    if Path(PROJECT_ROOT / 'states' / sls_path).exists() or Path(PROJECT_ROOT / 'states' / f'{v.replace(".", "/")}.sls').exists():
+                        refs.append(f':salt:state:`{v}`')
+                    else:
+                        refs.append(f'``{v}``')
                 elif field == 'tests':
                     refs.append(f'``{v.replace("tests/", "")}``')
                 else:
@@ -599,18 +603,28 @@ def update_conf_py_for_autodoc(scripts: list):
         name = script['id']
         src_path = script['source_path']
         module_path = str(src_path).replace('/', '.').replace('.py', '').replace('-', '_')
+        # Check if the module can be imported — Salt scripts fail outside Salt env
+        import importlib
+        try:
+            importlib.import_module(module_path)
+            can_import = True
+        except Exception:
+            can_import = False
         rst = [
             f'.. salt:script-py:: {name}',
             '',
             f'   {script.get("purpose", "")}',
             '',
             '',
-            '.. automodule:: ' + module_path,
-            '   :members:',
-            '   :undoc-members:',
-            '   :show-inheritance:',
-            '',
         ]
+        if can_import:
+            rst.extend([
+                '.. automodule:: ' + module_path,
+                '   :members:',
+                '   :undoc-members:',
+                '   :show-inheritance:',
+                '',
+            ])
         rst_path = autodoc_dir / f'{name}.rst'
         rst_path.write_text('\n'.join(rst) + '\n', encoding='utf-8')
         print(f"  Wrote {rst_path}")

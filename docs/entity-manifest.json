@@ -1,5 +1,5 @@
 {
-  "generated": "2026-05-15T00:54:57.615929",
+  "generated": "2026-05-15T00:56:48.008151",
   "entity_count": 263,
   "issue_count": 5,
   "entities": [
@@ -2457,8 +2457,8 @@
       "id": "salt_audit",
       "type": "script_py",
       "source_path": "scripts/salt_audit.py",
-      "purpose": "Runtime data audit — tracks which states/data/`*.yaml` files are consumed during salt-apply.",
-      "docstring": "Runtime data audit — tracks which states/data/`*.yaml` files are consumed during salt-apply.\n\nApproach: reuses salt_impact.py's data→state dependency graph. Runs salt-call\nwith test=True to evaluate templates, parses output to determine which states\nexecuted, then maps states back to their data file dependencies.\n\nOutput: logs/audit-<timestamp>.yaml with consumed/unused lists.",
+      "purpose": "Runtime data audit — tracks which `states/data/*.yaml` files are consumed during salt-apply.",
+      "docstring": "Runtime data audit — tracks which `states/data/*.yaml` files are consumed during salt-apply.\n\nApproach: reuses salt_impact.py's data→state dependency graph. Runs salt-call\nwith test=True to evaluate templates, parses output to determine which states\nexecuted, then maps states back to their data file dependencies.\n\nOutput: logs/audit-<timestamp>.yaml with consumed/unused lists.",
       "issues": []
     },
     {

@@ -840,7 +840,7 @@ entities:
     source: scripts/salt-validate.sh
     type: script_sh
   salt_audit:
-    purpose: "Runtime data audit \u2014 tracks which states/data/`*.yaml` files are\
+    purpose: "Runtime data audit \u2014 tracks which `states/data/*.yaml` files are\
       \ consumed during salt-apply."
     source: scripts/salt_audit.py
     type: script_py

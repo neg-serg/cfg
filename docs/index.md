@@ -725,7 +725,7 @@ Python Scripts
 
    * - ``salt_audit``
      - ``scripts/salt_audit.py``
-     - Runtime data audit — tracks which states/data/`*.yaml` files are consumed during salt-apply.
+     - Runtime data audit — tracks which `states/data/*.yaml` files are consumed during salt-apply.
 
    * - ``salt_compat``
      - ``scripts/salt_compat.py``

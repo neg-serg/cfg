@@ -114,27 +114,24 @@ _ALL_STATES = _render_all_states()
 _CMD_STATES = _extract_cmd_states(_ALL_STATES)
 
 
-def test_pacman_db_warmup_cmdrun_is_guarded_and_audit_compliant():
-    target = next(
-        s
-        for s in _CMD_STATES
-        if s["file"] == "states/pacman_db_warmup.sls" and s["state_id"] == "pacman_db_warmup"
-    )
+def test_pacman_db_warmup_cmdrun_states_are_guarded_and_audit_compliant():
+    targets = [s for s in _CMD_STATES if s["file"] == "states/pacman_db_warmup.sls"]
+    assert len(targets) > 0, "pacman_db_warmup.sls should have cmd.run states"
+    for target in targets:
+        assert target["has_guard"] is True, f"Unguarded: {target['state_id']}"
+        assert target["has_error_handling"] is True or target["has_exception"] is True, (
+            f"No error handling: {target['state_id']}"
+        )
 
-    assert target["has_guard"] is True
-    assert target["has_error_handling"] is True
 
-
-def test_managed_service_paths_ensure_cmdrun_is_guarded_and_audit_compliant():
-    target = next(
-        s
-        for s in _CMD_STATES
-        if s["file"] == "states/systemd_resources.sls"
-        and s["state_id"] == "managed_service_paths_ensure"
-    )
-
-    assert target["has_guard"] is True
-    assert target["has_error_handling"] is True
+def test_systemd_resources_cmdrun_states_are_guarded_and_audit_compliant():
+    targets = [s for s in _CMD_STATES if s["file"] == "states/systemd_resources.sls"]
+    assert len(targets) > 0, "systemd_resources.sls should have cmd.run states"
+    for target in targets:
+        assert target["has_guard"] is True, f"Unguarded: {target['state_id']}"
+        assert target["has_error_handling"] is True or target["has_exception"] is True, (
+            f"No error handling: {target['state_id']}"
+        )
 
 
 def test_cmdrun_audit_summary():

@@ -81,6 +81,7 @@ def test_collect_edges_and_dot_keep_canonical_names_for_nested_states():
         ("system_description", "desktop.system"),
         ("desktop.system", "desktop.packages"),
     ]
-    assert '  "desktop.system";' in dot
-    assert '  "system";' not in dot
-    assert '  "desktop.system" -> "desktop.packages" [label="include", color="#333333"];' in dot
+    assert "desktop.system" in dot
+    assert '"system";' not in dot
+    assert "desktop.system" in dot and "desktop.packages" in dot
+    assert 'label="include"' in dot

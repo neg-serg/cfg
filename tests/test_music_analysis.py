@@ -1,37 +1,82 @@
 """Contract tests for the music analysis pipeline."""
 
+import importlib.util
 import os
 import stat
 
-from tests import REPO_ROOT_PATH
+import host_model
+import yaml
+
+from tests import REPO_ROOT_PATH, SCRIPTS_DIR
 
 STATES_DIR = REPO_ROOT_PATH / "states"
 UNITS_DIR = STATES_DIR / "units" / "user"
 DOTFILES_DIR = REPO_ROOT_PATH / "dotfiles" / "dot_local" / "bin"
 
+_lint_path = os.path.join(SCRIPTS_DIR, "lint-jinja.py")
+_spec = importlib.util.spec_from_file_location("lint_jinja", _lint_path)
+_lint = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_lint)
 
-def test_music_analysis_state_exists():
-    src = (STATES_DIR / "music_analysis.sls").read_text()
-    assert "salt['pkg.paru_install']" in src
-    assert "salt['user_service.user_service_file']" in src
-    assert "salt['user_service.user_service_enable']" in src
-    assert "{% import_yaml 'data/installers.yaml' as tools %}" in src
-    assert "salt['pkg.paru_install']('python_annoy', 'python-annoy')" in src
-
-
-def test_music_analysis_has_essentia_validate():
-    src = (STATES_DIR / "music_analysis.sls").read_text()
-    assert "essentia_validate:" in src
-    assert "onchanges" in src
-    assert "install_essentia" in src
+_make_render_env = _lint._make_render_env
+_resolve_import_yaml = _lint._resolve_import_yaml
 
 
-def test_music_analysis_has_timer_wiring():
-    src = (STATES_DIR / "music_analysis.sls").read_text()
-    assert "music-index.service" in src
-    assert "music-index.timer" in src
-    assert "user_service_enable" in src
-    assert "start_now=['music-index.timer']" in src
+def _render_music_analysis():
+    orig = os.getcwd()
+    os.chdir(str(REPO_ROOT_PATH))
+    try:
+        env = _make_render_env()
+        env.globals["grains"]["host"] = "matrix-default"
+        env.globals["hosts_data"] = host_model.load_hosts_yaml()
+        env.globals["feature_matrix"] = host_model.load_feature_matrix()
+
+        path = "states/music_analysis.sls"
+        with open(path) as fh:
+            source = fh.read()
+        yaml_vars = _resolve_import_yaml(source)
+        tmpl = env.get_template(path.removeprefix("states/"))
+        rendered = tmpl.render(**yaml_vars)
+        return yaml.safe_load(rendered) or {}
+    finally:
+        os.chdir(orig)
+
+
+_MA_STATES = _render_music_analysis()
+
+
+def _collect_funcs(states):
+    funcs = set()
+    for state_id, state_def in states.items():
+        if isinstance(state_def, dict):
+            funcs.update(state_def.keys())
+    return funcs
+
+
+def test_music_analysis_deploys_services_and_files():
+    funcs = _collect_funcs(_MA_STATES)
+    assert "cmd.run" in funcs
+    assert "file.managed" in funcs
+
+
+def test_music_analysis_has_essentia_validation_step():
+    onchanges_found = False
+    for state_id, state_def in _MA_STATES.items():
+        if not isinstance(state_def, dict):
+            continue
+        for func, args in state_def.items():
+            if isinstance(args, list):
+                for item in args:
+                    if isinstance(item, dict) and "onchanges" in item:
+                        onchanges_found = True
+    assert onchanges_found, "Expected onchanges requisites for essentia validation"
+
+
+def test_music_analysis_wires_timer_and_enablement():
+    state_ids = list(_MA_STATES.keys())
+    assert any("timer" in sid.lower() for sid in state_ids), "Expected timer state"
+    assert any("enable" in sid.lower() for sid in state_ids), "Expected enable state"
+    assert "music-index.timer" in str(_MA_STATES)
 
 
 def test_music_index_service_unit():

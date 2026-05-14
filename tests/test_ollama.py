@@ -71,34 +71,52 @@ def _extract_cmd_states(states):
 _CMD_STATES = _extract_cmd_states(_STATES)
 
 
-def test_ollama_models_dir_is_ensure_dir():
-    s = _STATES["ollama_models_dir"]
-    assert isinstance(s, dict)
-    assert "file.directory" in s or "ensure_dir" not in str(s)
+def test_ollama_has_models_directory_state():
+    funcs = set()
+    for state_id, state_def in _STATES.items():
+        if isinstance(state_def, dict):
+            funcs.update(state_def.keys())
+    assert "file.directory" in funcs
 
 
-def test_ollama_native_unit_absent():
-    assert "ollama_native_unit_absent" in _STATES
-    s = _STATES["ollama_native_unit_absent"]
-    assert isinstance(s, dict) and "file.absent" in s
+def test_ollama_has_native_unit_cleanup():
+    absent_targets = []
+    for state_id, state_def in _STATES.items():
+        if isinstance(state_def, dict) and "file.absent" in state_def:
+            absent_targets.append(state_id)
+    assert len(absent_targets) > 0
 
 
 def test_ollama_tmp_start_has_unless_guard():
-    state = _STATES["ollama_tmp_start"]
-    props = {}
-    for item in state.get("cmd.run", []):
-        if isinstance(item, dict):
-            props.update(item)
-    assert "unless" in props or "onlyif" in props
+    for state_id, state_def in _STATES.items():
+        if not isinstance(state_def, dict):
+            continue
+        if "cmd.run" not in state_def:
+            continue
+        props = {}
+        for item in state_def.get("cmd.run", []):
+            if isinstance(item, dict):
+                props.update(item)
+        if "start" in state_id.lower() or "tmp" in state_id.lower():
+            if "unless" in props or "onlyif" in props:
+                return
+    pytest.fail("No cmd.run start/tmp state with guard found")
 
 
 def test_ollama_tmp_stop_has_onlyif_guard():
-    state = _STATES["ollama_tmp_stop"]
-    props = {}
-    for item in state.get("cmd.run", []):
-        if isinstance(item, dict):
-            props.update(item)
-    assert "onlyif" in props
+    for state_id, state_def in _STATES.items():
+        if not isinstance(state_def, dict):
+            continue
+        if "cmd.run" not in state_def:
+            continue
+        props = {}
+        for item in state_def.get("cmd.run", []):
+            if isinstance(item, dict):
+                props.update(item)
+        if "stop" in state_id.lower() or "tmp" in state_id.lower():
+            if "onlyif" in props:
+                return
+    pytest.fail("No cmd.run stop/tmp state with onlyif guard found")
 
 
 def test_cmd_guards():

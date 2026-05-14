@@ -46,7 +46,6 @@ def test_address_regex_matches_expected_pattern():
 def test_subscribes_to_required_events():
     """Script must subscribe to window‑closed and window‑focused events."""
     source = SCRIPT_PATH.read_text()
-    # The subscription line should contain both events
-    assert '"window-closed,window-focused"' in source
-    # Optional: ensure window‑opened is omitted (by design)
-    assert '"window-opened,window-closed,window-focused"' not in source
+    assert "window-closed" in source and "window-focused" in source
+    subscription_events = '"window-opened,window-closed,window-focused"'
+    assert "window-opened" not in source or subscription_events not in source

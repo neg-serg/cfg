@@ -18,8 +18,8 @@
 {% set gguf_path = models_dir ~ '/' ~ t5.gguf_file %}
 {% set port = catalog.t5_summarization.port %}
 
-{{ salt['service.ensure_dir']('t5_summarization_models_dir', models_dir, require=['mount: mount_one']) }}
-{{ salt['service.ensure_dir']('t5_summarization_hf_dir', hf_path, require=['mount: mount_one']) }}
+{{ salt['service.ensure_dir']('t5_summarization_models_dir', models_dir, user=user, require=['mount: mount_one']) }}
+{{ salt['service.ensure_dir']('t5_summarization_hf_dir', hf_path, user=user, require=['mount: mount_one']) }}
 
 # python-transformers is needed for convert_hf_to_gguf.py (runs on host during build)
 {{ salt['pkg.paru_install']('python_transformers', 'python-transformers') }}

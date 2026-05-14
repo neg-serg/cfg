@@ -10,30 +10,30 @@ include:
   - pacman_db_warmup
 
 {% from '_imports.jinja' import host, user %}
-# Flatpak: install runtime + flathub remote + user-level apps
 {% import_yaml 'data/flatpak.yaml' as flatpak %}
 
-{{ salt['pkg.paru_install']('flatpak', 'flatpak') }}
+# ── Flatpak temporarily disabled for debugging ──
+# Re-enable by commenting out the onlyif:false guards below.
+#
+# Issues:
+#   - flatpak install fails with "No remote refs found for 'flathub'"
+#     when appstream data hasn't been fetched (missing update --appstream).
+#   - Proxy (socks5h://127.0.0.1:10808) was added but may not be
+#     reliably available during all phases of state.apply.
+#   - See commits f4c7ee52 / ec081bdd for proxy + appstream fixes.
+#
+# To re-enable:
+#   1. Remove the `- onlyif: false` line from paru_install below
+#   2. Uncomment the app loop at the bottom
+#   3. Ensure SOCKS5 proxy is running on 127.0.0.1:10808
 
-flatpak_flathub_remote:
+{# Flatpak runtime package — disabled for now via onlyif:false #}
+install_flatpak:
   cmd.run:
-    - name: https_proxy=socks5h://127.0.0.1:10808 flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    - runas: {{ user }}
-    - env:
-      - HOME: {{ host.home }}
-    - unless: flatpak remote-list --user 2>/dev/null | grep -q '^flathub$'
-    - require:
-      - cmd: install_flatpak
+    - name: /bin/true
+    - onlyif: false
 
-flatpak_flathub_refs:
-  cmd.run:
-    - name: https_proxy=socks5h://127.0.0.1:10808 flatpak update --appstream --user flathub
-    - runas: {{ user }}
-    - env:
-      - HOME: {{ host.home }}
-    - require:
-      - cmd: flatpak_flathub_remote
-
+{# Flatpak install of apps — disabled #}
 {% for app_id in flatpak.apps %}
-{{ salt['pkg.flatpak_install'](app_id) }}
+{# {{ salt['pkg.flatpak_install'](app_id) }} #}
 {% endfor %}

@@ -24,8 +24,8 @@ def _run_pw_route(tmp_path: Path, command: str, pw_link_listing: str):
         bin_dir / "pw-cli",
         "#!/usr/bin/env zsh\n"
         "setopt ERR_EXIT NOUNSET PIPE_FAIL\n"
-        f"print -r -- \"$*\" >> {pw_cli_log}\n"
-        "if [[ \"${1:-}\" == \"list-objects\" && \"${2:-}\" == \"Node\" ]]; then\n"
+        f'print -r -- "$*" >> {pw_cli_log}\n'
+        'if [[ "${1:-}" == "list-objects" && "${2:-}" == "Node" ]]; then\n'
         "  cat <<'EOF'\n"
         'node.name = "alsa_output.pci-0000_05_00.0.pro-output-0"\n'
         'node.nick = "RME AIO Pro"\n'
@@ -37,8 +37,8 @@ def _run_pw_route(tmp_path: Path, command: str, pw_link_listing: str):
         bin_dir / "pw-link",
         "#!/usr/bin/env zsh\n"
         "setopt ERR_EXIT NOUNSET PIPE_FAIL\n"
-        f"print -r -- \"$*\" >> {pw_link_log}\n"
-        "if [[ \"${1:-}\" == \"-l\" || \"${1:-}\" == \"-iol\" ]]; then\n"
+        f'print -r -- "$*" >> {pw_link_log}\n'
+        'if [[ "${1:-}" == "-l" || "${1:-}" == "-iol" ]]; then\n'
         "  cat <<'EOF'\n"
         f"{pw_link_listing}"
         "EOF\n"

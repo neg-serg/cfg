@@ -16,6 +16,7 @@ def _host() -> dict[str, Any]:
     except (NameError, KeyError):
         try:
             from _modules.common import get_host
+
             return get_host()
         except Exception:
             return {
@@ -28,14 +29,19 @@ def _host() -> dict[str, Any]:
 def _const() -> dict[str, Any]:
     try:
         from _modules.common import get_constants
+
         return get_constants()
     except Exception:
         return {"retry_attempts": 3, "retry_interval": 10, "ver_dir": "/tmp"}
 
 
-def _paru_install_dict(name: str, pkg: str, check: str | None = None,
-                       requires: list[str] | None = None,
-                       version: str = "") -> dict[str, Any]:
+def _paru_install_dict(
+    name: str,
+    pkg: str,
+    check: str | None = None,
+    requires: list[str] | None = None,
+    version: str = "",
+) -> dict[str, Any]:
     """Internal version — returns dict for simple_service to extend."""
     h = _host()
     u = h["user"]
@@ -64,17 +70,16 @@ def _paru_install_dict(name: str, pkg: str, check: str | None = None,
         }
 
     if _check_all:
-        guard = "\n".join(
-            f"grep -qxF '{pn}' {h['pkg_list']} || exit 1"
-            for pn in pkg.split()
-        )
+        guard = "\n".join(f"grep -qxF '{pn}' {h['pkg_list']} || exit 1" for pn in pkg.split())
         return {
             f"install_{name.replace('-', '_')}": {
                 "cmd.run": [
-                    {"name": (
-                        f"sudo -u {u} sh -c 'yes \"\" | "
-                        f"paru -S --noconfirm --needed {pkg} || true'"
-                    )},
+                    {
+                        "name": (
+                            f'sudo -u {u} sh -c \'yes "" | '
+                            f"paru -S --noconfirm --needed {pkg} || true'"
+                        )
+                    },
                     {"shell": "/bin/bash"},
                     {"unless": f"set -e\n{guard}"},
                     {"require": requires_list},
@@ -94,16 +99,24 @@ def _paru_install_dict(name: str, pkg: str, check: str | None = None,
 
 
 @yaml_output
-def paru_install(name: str, pkg: str, check: str | None = None,
-                 requires: list[str] | None = None,
-                 version: str = "") -> dict[str, Any]:
+def paru_install(
+    name: str,
+    pkg: str,
+    check: str | None = None,
+    requires: list[str] | None = None,
+    version: str = "",
+) -> dict[str, Any]:
     return _paru_install_dict(name, pkg, check=check, requires=requires, version=version)
 
 
 @yaml_output
-def simple_service(name: str, pkgs: str, service: str | None = None,
-                   check: str | None = None,
-                   requires: list[str] | None = None) -> dict[str, Any]:
+def simple_service(
+    name: str,
+    pkgs: str,
+    service: str | None = None,
+    check: str | None = None,
+    requires: list[str] | None = None,
+) -> dict[str, Any]:
     safe = name.replace("-", "_")
     ret = _paru_install_dict(name, pkgs, check=check)
     ret[f"{name}_enabled"] = {
@@ -116,25 +129,33 @@ def simple_service(name: str, pkgs: str, service: str | None = None,
 
 
 @yaml_output
-def pkgbuild_install(name: str, source: str, user: str | None = None,
-                     build_base: str = "/tmp/pkgbuild", timeout: int = 600,
-                     check: str | None = None,
-                     replace_check: str | None = None,
-                     conflicts: list[str] | None = None,
-                     extra_sources: list[dict[str, str]] | None = None) -> dict[str, Any]:
+def pkgbuild_install(
+    name: str,
+    source: str,
+    user: str | None = None,
+    build_base: str = "/tmp/pkgbuild",
+    timeout: int = 600,
+    check: str | None = None,
+    replace_check: str | None = None,
+    conflicts: list[str] | None = None,
+    extra_sources: list[dict[str, str]] | None = None,
+) -> dict[str, Any]:
     h = _host()
     u = user or h["user"]
     safe = name.replace("-", "_")
 
-    pkg_guard = f"grep -qxF \"{check or name}\" {h['pkg_list']}"
+    pkg_guard = f'grep -qxF "{check or name}" {h["pkg_list"]}'
     if replace_check:
         pkg_guard += f" && {replace_check}"
 
     ret: dict[str, Any] = {
         f"{safe}_pkgbuild": {
             "file.recurse": [
-                {"name": f"{build_base}/{name}"}, {"source": source},
-                {"makedirs": True}, {"user": u}, {"group": u},
+                {"name": f"{build_base}/{name}"},
+                {"source": source},
+                {"makedirs": True},
+                {"user": u},
+                {"group": u},
                 {"unless": pkg_guard},
             ]
         }
@@ -145,8 +166,11 @@ def pkgbuild_install(name: str, source: str, user: str | None = None,
         for i, es in enumerate(extra_sources):
             ret[f"{safe}_source_{i}"] = {
                 "file.recurse": [
-                    {"name": es["dest"]}, {"source": es["source"]},
-                    {"makedirs": True}, {"user": u}, {"group": u},
+                    {"name": es["dest"]},
+                    {"source": es["source"]},
+                    {"makedirs": True},
+                    {"user": u},
+                    {"group": u},
                     {"unless": pkg_guard},
                 ]
             }
@@ -165,22 +189,25 @@ def pkgbuild_install(name: str, source: str, user: str | None = None,
             f"if pacman -Q {name} &>/dev/null && ! {replace_check}; then\n"
             f"    pacman -Rdd --noconfirm {name}\nfi"
         )
-    for conflict in (conflicts or []):
+    for conflict in conflicts or []:
         script_lines.append(
-            f"if pacman -Q {conflict} &>/dev/null; then\n"
-            f"    pacman -Rdd --noconfirm {conflict}\nfi"
+            f"if pacman -Q {conflict} &>/dev/null; then\n    pacman -Rdd --noconfirm {conflict}\nfi"
         )
-    script_lines.extend([
-        f"su - {u} -c 'cd {build_base}/{name} && rm -rf src pkg && makepkg -sf --noconfirm'",
-        f"pkgs=$(ls {build_base}/{name}/*.pkg.tar.zst 2>/dev/null | grep -v -- '-debug-')",
-        "if [ -n \"$pkgs\" ]; then pacman -U --noconfirm --needed $pkgs 2>/dev/null || true; fi",
-        f"rm -rf {build_base}/{name}{' ' + extra_source_dirs if extra_source_dirs else ''}",
-    ])
+    script_lines.extend(
+        [
+            f"su - {u} -c 'cd {build_base}/{name} && rm -rf src pkg && makepkg -sf --noconfirm'",
+            f"pkgs=$(ls {build_base}/{name}/*.pkg.tar.zst 2>/dev/null | grep -v -- '-debug-')",
+            'if [ -n "$pkgs" ]; then pacman -U --noconfirm --needed $pkgs 2>/dev/null || true; fi',
+            f"rm -rf {build_base}/{name}{' ' + extra_source_dirs if extra_source_dirs else ''}",
+        ]
+    )
 
     ret[f"build_{safe}"] = {
         "cmd.run": [
-            {"name": "\n".join(script_lines)}, {"shell": "/bin/bash"},
-            {"timeout": timeout}, {"unless": pkg_guard},
+            {"name": "\n".join(script_lines)},
+            {"shell": "/bin/bash"},
+            {"timeout": timeout},
+            {"unless": pkg_guard},
             {"require": build_req},
         ]
     }

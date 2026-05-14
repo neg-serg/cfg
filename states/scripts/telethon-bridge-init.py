@@ -67,7 +67,9 @@ def main():
     print()
 
     client = TelegramClient(
-        session_path, api_id, api_hash,
+        session_path,
+        api_id,
+        api_hash,
         proxy=proxy,
         device_model="Desktop",
         system_version="Windows 10",

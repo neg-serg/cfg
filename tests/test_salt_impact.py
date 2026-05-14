@@ -39,14 +39,16 @@ def test_shared_data_yaml():
 
 
 def test_noop_paths_ignored():
-    result = plan_for_changed_files([
-        "scripts/foo.sh",
-        "tests/test_thing.py",
-        "docs/readme.md",
-        "dotfiles/.bashrc",
-        "specs/spec.yaml",
-        ".specify/templates/foo.yaml",
-    ])
+    result = plan_for_changed_files(
+        [
+            "scripts/foo.sh",
+            "tests/test_thing.py",
+            "docs/readme.md",
+            "dotfiles/.bashrc",
+            "specs/spec.yaml",
+            ".specify/templates/foo.yaml",
+        ]
+    )
     assert result["final_target"] == "none"
     assert result["selected_states"] == []
     assert result["fallback_reasons"] == []
@@ -92,5 +94,8 @@ def test_json_output_mode():
     reloaded = json.loads(dumped)
     assert reloaded == result
     assert set(result.keys()) == {
-        "changed_files", "selected_states", "fallback_reasons", "final_target",
+        "changed_files",
+        "selected_states",
+        "fallback_reasons",
+        "final_target",
     }

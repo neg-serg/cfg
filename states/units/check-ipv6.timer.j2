@@ -3,8 +3,8 @@ Description=Daily IPv6 health check
 Requires=check-ipv6.service
 
 [Timer]
-OnCalendar={{ on_calendar }}
-RandomizedDelaySec={{ randomized_delay_sec }}
+OnCalendar={{ on_calendar | default('*-*-* 06:00:00') }}
+RandomizedDelaySec={{ randomized_delay_sec | default(600) }}s
 Persistent=true
 
 [Install]

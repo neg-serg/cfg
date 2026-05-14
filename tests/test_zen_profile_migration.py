@@ -40,5 +40,3 @@ def test_zen_user_js_has_betterfox_prefs_from_floorp():
     assert 'user_pref("browser.cache.disk.enable", false);' in text
     # Download dir uses Jinja template
     assert "{{ home }}/dw" in text
-
-

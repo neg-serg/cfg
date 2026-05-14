@@ -14,9 +14,8 @@ import re
 
 import yaml
 
-_ERR = '{_ERR}'
-_RESET = '{_RESET}'
-
+_ERR = "{_ERR}"
+_RESET = "{_RESET}"
 
 
 HOSTS_YAML_PATH = os.path.join("states", "data", "hosts.yaml")

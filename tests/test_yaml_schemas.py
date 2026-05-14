@@ -13,6 +13,7 @@ _DATA = REPO_ROOT_PATH / "states" / "data"
 
 # ── Helpers ─────────────────────────────────────────────────────────────
 
+
 def _load(name):
     with open(_DATA / name) as fh:
         data = yaml.safe_load(fh)
@@ -36,10 +37,10 @@ def _assert_is_dict_of_strings(d):
 
 # ── packages.yaml ────────────────────────────────────────────────────────
 
+
 @pytest.fixture(scope="module")
 def packages():
     return _load("packages.yaml")
-
 
 
 def test_packages_no_empty_categories(packages):
@@ -55,18 +56,29 @@ def test_packages_items_are_strings(packages):
 
 
 def test_packages_known_categories(packages):
-    expected = {"base", "desktop", "dev", "network", "audio", "media",
-                "fonts", "gaming", "system", "other", "aur"}
+    expected = {
+        "base",
+        "desktop",
+        "dev",
+        "network",
+        "audio",
+        "media",
+        "fonts",
+        "gaming",
+        "system",
+        "other",
+        "aur",
+    }
     for cat in packages:
         assert cat in expected, f"unknown category: {cat}"
 
 
 # ── versions.yaml ────────────────────────────────────────────────────────
 
+
 @pytest.fixture(scope="module")
 def versions():
     return _load("versions.yaml")
-
 
 
 def test_versions_values_are_strings(versions):
@@ -74,8 +86,8 @@ def test_versions_values_are_strings(versions):
         assert isinstance(val, str) and val, f"{key}: expected non‑empty string"
 
 
-
 # ── hosts.yaml ───────────────────────────────────────────────────────────
+
 
 @pytest.fixture(scope="module")
 def hosts():
@@ -91,9 +103,6 @@ def test_hosts_defaults_has_required_fields(hosts):
     required = {"user", "uid", "timezone", "locale", "features"}
     for field in required:
         assert field in hosts["defaults"], f"missing defaults field: {field}"
-
-
-
 
 
 def test_hosts_defaults_features_have_expected_keys(hosts):
@@ -212,10 +221,21 @@ def test_services_simple_entries(services_data):
 
 def test_services_complex_entries_have_valid_keys(services_data):
     known = {
-        "packages", "package_manager", "service", "unit", "unit_override",
-        "ensure_running", "manual_start", "scripts", "config_templates",
-        "dirs", "logrotate", "healthcheck", "has_escape_hatch",
-        "cleanup", "setup_commands",
+        "packages",
+        "package_manager",
+        "service",
+        "unit",
+        "unit_override",
+        "ensure_running",
+        "manual_start",
+        "scripts",
+        "config_templates",
+        "dirs",
+        "logrotate",
+        "healthcheck",
+        "has_escape_hatch",
+        "cleanup",
+        "setup_commands",
     }
     for name, cfg in services_data.get("complex", {}).items():
         assert isinstance(cfg, dict), f"complex.{name}: expected dict"

@@ -625,29 +625,35 @@ def generate_module_index(state_results, macros, summaries, usage):
     for name, params, src, doc in macros:
         by_file.setdefault(src, []).append(name)
     for src in sorted(by_file):
-        macros_list.append({
-            "id": os.path.basename(src).replace(".jinja", ""),
-            "path": src,
-            "provides": by_file[src],
-        })
+        macros_list.append(
+            {
+                "id": os.path.basename(src).replace(".jinja", ""),
+                "path": src,
+                "provides": by_file[src],
+            }
+        )
     index["macros"] = macros_list
 
     # Python scripts
     py_scripts = []
     for f in sorted(glob.glob("scripts/*.py")):
-        py_scripts.append({
-            "path": f,
-            "purpose": _purpose_from_docstring(f),
-        })
+        py_scripts.append(
+            {
+                "path": f,
+                "purpose": _purpose_from_docstring(f),
+            }
+        )
     index["scripts_py"] = py_scripts
 
     # Shell scripts
     sh_scripts = []
     for f in sorted(glob.glob("scripts/*.sh") + glob.glob("scripts/*.zsh")):
-        sh_scripts.append({
-            "path": f,
-            "purpose": _purpose_from_shebang_comment(f),
-        })
+        sh_scripts.append(
+            {
+                "path": f,
+                "purpose": _purpose_from_shebang_comment(f),
+            }
+        )
     index["scripts_sh"] = sh_scripts
 
     # Data files
@@ -655,27 +661,33 @@ def generate_module_index(state_results, macros, summaries, usage):
     for rel, _ in summaries:
         data_key = os.path.join(STATES_DIR, rel.removeprefix("states/"))
         consumers = usage.get(data_key, [])
-        data_list.append({
-            "path": rel,
-            "consumers": sorted(consumers) if consumers else None,
-        })
+        data_list.append(
+            {
+                "path": rel,
+                "consumers": sorted(consumers) if consumers else None,
+            }
+        )
     index["data_files"] = data_list
 
     # Test files
     test_list = []
     for f in sorted(glob.glob("tests/test_*.py")):
-        test_list.append({
-            "path": f,
-        })
+        test_list.append(
+            {
+                "path": f,
+            }
+        )
     index["test_files"] = test_list
 
     # Docs
     docs_list = []
     for f in sorted(glob.glob("docs/*.md")):
-        docs_list.append({
-            "path": f,
-            "purpose": _purpose_from_first_heading(f),
-        })
+        docs_list.append(
+            {
+                "path": f,
+                "purpose": _purpose_from_first_heading(f),
+            }
+        )
     index["docs"] = docs_list
 
     return yaml.dump(index, default_flow_style=False, allow_unicode=True, sort_keys=False)
@@ -739,38 +751,46 @@ def validate_knowledge_references(knowledge_path, state_results, macros, summari
                     if name not in state_ids:
                         alt = name.replace("-", "_").replace(".", "_")
                         if alt not in state_ids:
-                            issues.append((
-                                "warn",
-                                f"[{cat_name}/{doc_id}] {ref}: state not found in module index",
-                            ))
+                            issues.append(
+                                (
+                                    "warn",
+                                    f"[{cat_name}/{doc_id}] {ref}: state not found in module index",
+                                )
+                            )
                 elif prefix == "macro":
                     mid = name.replace(".jinja", "")
                     if mid not in macro_ids:
                         issues.append(("error", f"[{cat_name}/{doc_id}] {ref}: macro not found"))
                 elif prefix == "data":
                     if name not in data_basenames:
-                        issues.append((
-                            "error",
-                            f"[{cat_name}/{doc_id}] {ref}: data file not found",
-                        ))
+                        issues.append(
+                            (
+                                "error",
+                                f"[{cat_name}/{doc_id}] {ref}: data file not found",
+                            )
+                        )
                 elif prefix == "script":
                     if name not in script_basenames:
                         issues.append(("error", f"[{cat_name}/{doc_id}] {ref}: script not found"))
                 elif prefix == "service":
                     if name not in service_names:
-                        issues.append((
-                            "warn",
-                            f"[{cat_name}/{doc_id}] {ref}: "
-                            "service not found in any state definition",
-                        ))
+                        issues.append(
+                            (
+                                "warn",
+                                f"[{cat_name}/{doc_id}] {ref}: "
+                                "service not found in any state definition",
+                            )
+                        )
 
             for ref in doc.get("related_docs", []):
                 if ref not in all_doc_ids:
-                    issues.append((
-                        "error",
-                        f"[{cat_name}/{doc_id}] related_docs '{ref}': "
-                        "target doc not found in knowledge.yaml",
-                    ))
+                    issues.append(
+                        (
+                            "error",
+                            f"[{cat_name}/{doc_id}] related_docs '{ref}': "
+                            "target doc not found in knowledge.yaml",
+                        )
+                    )
 
     return issues
 
@@ -920,6 +940,7 @@ def main():
                 pretty.ok("knowledge.yaml validation: all references OK")
             else:
                 print("knowledge.yaml validation: all references OK")
+
 
 if __name__ == "__main__":
     main()

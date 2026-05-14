@@ -31,8 +31,8 @@ def generate_splash(width: int, height: int, output: str) -> None:
     r_outer = 24 * scale
     r_inner = 8 * scale
     r_circle = 3 * scale
-    dark = (28, 28, 32)   # near-black, visible only on close inspection
-    dim = (18, 18, 22)    # even subtler
+    dark = (28, 28, 32)  # near-black, visible only on close inspection
+    dim = (18, 18, 22)  # even subtler
 
     # outer diamond
     pts_outer = [
@@ -67,12 +67,17 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate a minimal dark boot splash BMP for systemd-boot UKI"
     )
-    parser.add_argument("--display", type=str, default=None,
-                        help="Display resolution (e.g. 3840x2160@240). Overrides --width/--height.")
+    parser.add_argument(
+        "--display",
+        type=str,
+        default=None,
+        help="Display resolution (e.g. 3840x2160@240). Overrides --width/--height.",
+    )
     parser.add_argument("--width", type=int, default=3840, help="Splash width (default: 3840)")
     parser.add_argument("--height", type=int, default=2160, help="Splash height (default: 2160)")
     parser.add_argument(
-        "--output", type=str,
+        "--output",
+        type=str,
         default="/usr/share/systemd/bootctl/splash-custom.bmp",
         help="Output BMP path",
     )

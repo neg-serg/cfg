@@ -16,6 +16,7 @@ def _host() -> dict[str, Any]:
     except (NameError, KeyError):
         try:
             from _modules.common import get_host
+
             return get_host()
         except Exception:
             return {
@@ -33,15 +34,16 @@ def _const() -> dict[str, Any]:
     except (NameError, KeyError):
         try:
             from _modules.common import get_constants
+
             return get_constants()
         except Exception:
             return {"retry_attempts": 3, "retry_interval": 10}
 
 
 @yaml_output
-def dconf_settings(name: str, settings: dict[str, str],
-                   user: str | None = None,
-                   require: list[str] | None = None) -> dict[str, Any]:
+def dconf_settings(
+    name: str, settings: dict[str, str], user: str | None = None, require: list[str] | None = None
+) -> dict[str, Any]:
     u = user or _host()["user"]
     h = _host()
 
@@ -55,12 +57,13 @@ def dconf_settings(name: str, settings: dict[str, str],
     for key, val in settings.items():
         safe = _escape(val)
         lines.append(f"dconf write {key} \"'{safe}'\"")
-        checks.append(f"test \"$(dconf read {key})\" = \"'{safe}'\"")
+        checks.append(f'test "$(dconf read {key})" = "\'{safe}\'"')
     checks_joined = " && ".join(checks)
 
     args: list[dict[str, Any]] = [
         {"name": "\n".join(lines)},
-        {"shell": "/bin/bash"}, {"runas": u},
+        {"shell": "/bin/bash"},
+        {"runas": u},
         {"env": {"DBUS_SESSION_BUS_ADDRESS": f"unix:path={h['runtime_dir']}/bus"}},
         {"unless": checks_joined},
     ]
@@ -71,9 +74,12 @@ def dconf_settings(name: str, settings: dict[str, str],
 
 
 @yaml_output
-def hyprpm_update(name: str, check_plugins: list[str] | None = None,
-                  require: list[str] | None = None,
-                  timeout: int = 300) -> dict[str, Any]:
+def hyprpm_update(
+    name: str,
+    check_plugins: list[str] | None = None,
+    require: list[str] | None = None,
+    timeout: int = 300,
+) -> dict[str, Any]:
     h = _host()
     u = h["user"]
     sig_cmd = (
@@ -87,10 +93,7 @@ def hyprpm_update(name: str, check_plugins: list[str] | None = None,
         "XDG_RUNTIME_DIR": h["runtime_dir"],
     }
 
-    cmd = (
-        f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
-        f"hyprpm update 2>/dev/null || true"
-    )
+    cmd = f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && hyprpm update 2>/dev/null || true"
 
     unless_cmd = None
     if check_plugins:
@@ -100,7 +103,9 @@ def hyprpm_update(name: str, check_plugins: list[str] | None = None,
         unless_cmd = " && ".join(checks)
 
     args: list[dict[str, Any]] = [
-        {"name": cmd}, {"runas": u}, {"onlyif": onlyif},
+        {"name": cmd},
+        {"runas": u},
+        {"onlyif": onlyif},
         {"env": env_entries},
         {"retry": {"attempts": _const()["retry_attempts"], "interval": _const()["retry_interval"]}},
         {"timeout": timeout},
@@ -114,9 +119,13 @@ def hyprpm_update(name: str, check_plugins: list[str] | None = None,
 
 
 @yaml_output
-def hyprpm_add(name: str, repo_url: str, check_plugin: str,
-               require: list[str] | None = None,
-               timeout: int = 300) -> dict[str, Any]:
+def hyprpm_add(
+    name: str,
+    repo_url: str,
+    check_plugin: str,
+    require: list[str] | None = None,
+    timeout: int = 300,
+) -> dict[str, Any]:
     h = _host()
     u = h["user"]
     sig_cmd = (
@@ -140,8 +149,12 @@ def hyprpm_add(name: str, repo_url: str, check_plugin: str,
     )
 
     args: list[dict[str, Any]] = [
-        {"name": cmd}, {"runas": u}, {"onlyif": onlyif}, {"unless": unless_cmd},
-        {"env": env_entries}, {"timeout": timeout},
+        {"name": cmd},
+        {"runas": u},
+        {"onlyif": onlyif},
+        {"unless": unless_cmd},
+        {"env": env_entries},
+        {"timeout": timeout},
         {"retry": {"attempts": _const()["retry_attempts"], "interval": _const()["retry_interval"]}},
     ]
     if require:
@@ -151,8 +164,7 @@ def hyprpm_add(name: str, repo_url: str, check_plugin: str,
 
 
 @yaml_output
-def hyprpm_enable(name: str, plugin: str,
-                  require: list[str] | None = None) -> dict[str, Any]:
+def hyprpm_enable(name: str, plugin: str, require: list[str] | None = None) -> dict[str, Any]:
     h = _host()
     u = h["user"]
     sig_cmd = (
@@ -176,7 +188,10 @@ def hyprpm_enable(name: str, plugin: str,
     )
 
     args: list[dict[str, Any]] = [
-        {"name": cmd}, {"runas": u}, {"onlyif": onlyif}, {"unless": unless_cmd},
+        {"name": cmd},
+        {"runas": u},
+        {"onlyif": onlyif},
+        {"unless": unless_cmd},
         {"env": env_entries},
     ]
     if require:
@@ -186,11 +201,14 @@ def hyprpm_enable(name: str, plugin: str,
 
 
 @yaml_output
-def browser_extensions(prefix: str, profile: str,
-                       extensions: list[dict[str, Any]],
-                       user_js_id: str,
-                       unwanted: list[str] | None = None,
-                       user: str | None = None) -> dict[str, Any]:
+def browser_extensions(
+    prefix: str,
+    profile: str,
+    extensions: list[dict[str, Any]],
+    user_js_id: str,
+    unwanted: list[str] | None = None,
+    user: str | None = None,
+) -> dict[str, Any]:
     u = user or _host()["user"]
     ext_dir = f"{profile}/extensions"
     out: dict[str, Any] = {}
@@ -198,7 +216,10 @@ def browser_extensions(prefix: str, profile: str,
     ext_dir_id = f"{prefix}_extensions_dir"
     out[ext_dir_id] = {
         "file.directory": [
-            {"name": ext_dir}, {"user": u}, {"group": u}, {"makedirs": True},
+            {"name": ext_dir},
+            {"user": u},
+            {"group": u},
+            {"makedirs": True},
         ]
     }
 
@@ -234,12 +255,13 @@ def browser_extensions(prefix: str, profile: str,
 
     if unwanted:
         for ext_id_val in unwanted:
-            safe_id = (ext_id_val
-                       .replace("{", "")
-                       .replace("}", "")
-                       .replace("-", "_")
-                       .replace("@", "_")
-                       .replace(".", "_"))
+            safe_id = (
+                ext_id_val.replace("{", "")
+                .replace("}", "")
+                .replace("-", "_")
+                .replace("@", "_")
+                .replace(".", "_")
+            )
             remove_id = f"{prefix}_remove_{safe_id}"
             out[remove_id] = {
                 "file.absent": [

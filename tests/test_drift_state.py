@@ -199,6 +199,3 @@ def test_gating_round_trip_expected_matches_actual_returns_ok():
 
     assert payload["status"] == "clean", f"expected clean, got {payload['status']}"
     assert payload["records"] == [], f"expected no records, got {payload['records']}"
-
-
-

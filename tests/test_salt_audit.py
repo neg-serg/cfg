@@ -52,21 +52,30 @@ class TestAuditReport:
             "salt_target": "test",
             "test_mode": True,
             "duration_seconds": 0.5,
-            "consumed": [{
-                "data_file": "packages.yaml",
-                "consumers": ["packages"],
-                "access_method": "import_yaml",
-                "eval_count": 1,
-            }],
+            "consumed": [
+                {
+                    "data_file": "packages.yaml",
+                    "consumers": ["packages"],
+                    "access_method": "import_yaml",
+                    "eval_count": 1,
+                }
+            ],
             "unused": [],
             "total_data_files": 39,
             "consumed_count": 1,
         }
 
         required_keys = [
-            "version", "timestamp", "hostname", "salt_target",
-            "test_mode", "duration_seconds", "consumed", "unused",
-            "total_data_files", "consumed_count",
+            "version",
+            "timestamp",
+            "hostname",
+            "salt_target",
+            "test_mode",
+            "duration_seconds",
+            "consumed",
+            "unused",
+            "total_data_files",
+            "consumed_count",
         ]
         for key in required_keys:
             assert key in report, f"missing key: {key}"
@@ -75,12 +84,14 @@ class TestAuditReport:
         _ = _load_salt_audit()
         from datetime import datetime, timezone
 
-        consumed = [{
-            "data_file": "a.yaml",
-            "consumers": ["a"],
-            "access_method": "import_yaml",
-            "eval_count": 1,
-        }]
+        consumed = [
+            {
+                "data_file": "a.yaml",
+                "consumers": ["a"],
+                "access_method": "import_yaml",
+                "eval_count": 1,
+            }
+        ]
         unused = ["b.yaml", "c.yaml"]
         report = {
             "version": 1,
@@ -101,10 +112,18 @@ class TestAuditReport:
         _ = _load_salt_audit()
 
         consumed = [
-            {"data_file": "a.yaml", "consumers": ["a"],
-             "access_method": "import_yaml", "eval_count": 1},
-            {"data_file": "b.yaml", "consumers": ["b"],
-             "access_method": "import_yaml", "eval_count": 1},
+            {
+                "data_file": "a.yaml",
+                "consumers": ["a"],
+                "access_method": "import_yaml",
+                "eval_count": 1,
+            },
+            {
+                "data_file": "b.yaml",
+                "consumers": ["b"],
+                "access_method": "import_yaml",
+                "eval_count": 1,
+            },
         ]
         consumed_files = {r["data_file"] for r in consumed}
         unused = ["c.yaml"]

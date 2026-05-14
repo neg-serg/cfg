@@ -118,9 +118,9 @@ def migrate_sls(path: Path) -> str | None:
     for func_name in ALL_FUNC_NAMES:
         salt_path = FUNC_MAP[func_name]
         if func_name == "gopass_secret":
-            pattern = r'(?<!\w)gopass_secret\('
+            pattern = r"(?<!\w)gopass_secret\("
         else:
-            pattern = rf'(?<!\w){re.escape(func_name)}\('
+            pattern = rf"(?<!\w){re.escape(func_name)}\("
 
         count = len(re.findall(pattern, content))
         if count > 0:
@@ -142,7 +142,7 @@ def migrate_sls(path: Path) -> str | None:
         modified2 = re.sub(
             r"salt\['host\.feature_enabled'\]\((\w+)\s*,\s*'([^']+)'\)",
             r"salt['host.feature_enabled']('\2', host=\1)",
-            content
+            content,
         )
         if modified2 != content:
             changes.append(f"fix: reordered feature_enabled args for {count2} calls")
@@ -187,9 +187,7 @@ def main():
             pretty.info(f"[CLEAR] {f.name}")
 
     followup = (
-        " Use 'git diff' to review changes."
-        if not DRY_RUN
-        else " Run without --dry-run to apply."
+        " Use 'git diff' to review changes." if not DRY_RUN else " Run without --dry-run to apply."
     )
     pretty.info(f"Done.{followup}")
 

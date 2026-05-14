@@ -32,6 +32,3 @@ def test_hiddify_local_desktop_uses_wrapper_exec():
 
     assert "Exec=/home/neg/.local/bin/hiddify-launch %U" in source
     assert "MimeType=x-scheme-handler/hiddify" in source
-
-
-

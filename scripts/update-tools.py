@@ -267,6 +267,7 @@ def update_with_salt(name, info):
     if result.returncode != 0:
         try:
             from lib.pretty import pretty as _p2
+
             _p2.fail(f"Failed to update {name}")
         except ImportError:
             print("  \033[31mFAILED\033[0m")
@@ -279,6 +280,7 @@ def update_with_salt(name, info):
     if gp and os.path.exists(gp):
         try:
             from lib.pretty import pretty as _p2
+
             _p2.ok(f"Updated {name}")
         except ImportError:
             print("  \033[32mOK\033[0m")

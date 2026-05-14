@@ -181,6 +181,7 @@ def main(argv=None):
 
     try:
         from lib.pretty import pretty
+
         pretty.header("Render Matrix")
     except ImportError:
         pass
@@ -193,6 +194,7 @@ def main(argv=None):
         errors = render_for_scenario(env, name, sls_files)
         try:
             from lib.pretty import pretty as _p
+
             _p.phase(name, n=scenario_n, total=total_scenarios)
             if errors:
                 overall_errors += len(errors)
@@ -223,6 +225,7 @@ def main(argv=None):
     if overall_errors:
         try:
             from lib.pretty import pretty as _p2
+
             _p2.summary_line(total_scenarios - overall_errors, overall_errors, "Scenarios")
         except ImportError:
             pass
@@ -230,6 +233,7 @@ def main(argv=None):
 
     try:
         from lib.pretty import pretty as _p3
+
         _p3.ok(f"All {total_scenarios} scenarios render without errors")
     except ImportError:
         pass

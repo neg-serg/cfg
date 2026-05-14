@@ -57,26 +57,28 @@ def _collect_data_inventory() -> list[str]:
     data_dir = Path("states/data")
     if not data_dir.is_dir():
         return []
-    return sorted(
-        p.name for p in data_dir.glob("*.yaml")
-        if p.name not in EXCLUDED_DATA_FILES
-    )
+    return sorted(p.name for p in data_dir.glob("*.yaml") if p.name not in EXCLUDED_DATA_FILES)
 
 
 def _run_salt_test(target: str, test_mode: bool) -> tuple[list[str], float]:
     import time
 
-    venv_python = os.path.join(
-        os.path.dirname(SCRIPTS_DIR), ".venv", "bin", "python3"
-    )
+    venv_python = os.path.join(os.path.dirname(SCRIPTS_DIR), ".venv", "bin", "python3")
     runner = str(SCRIPTS_DIR / "salt_runner.py")
     config_dir = os.path.join(os.path.dirname(SCRIPTS_DIR), ".salt_runtime")
 
     cmd = [
-        "sudo", venv_python, "-u", runner,
+        "sudo",
+        venv_python,
+        "-u",
+        runner,
         f"--config-dir={config_dir}",
-        "--local", "--log-level=warning",
-        "state.sls", target, "test=True", "--out=json",
+        "--local",
+        "--log-level=warning",
+        "state.sls",
+        target,
+        "test=True",
+        "--out=json",
     ]
 
     start = time.time()
@@ -119,22 +121,26 @@ def _resolve_states_to_data(
                     access = "import_yaml"
                     if data_file == "kernel_params.yaml":
                         access = "j2_template"
-                    records.append({
-                        "data_file": data_file,
-                        "consumers": [s for s in consumers if s in state_names],
-                        "access_method": access,
-                        "eval_count": 1,
-                    })
+                    records.append(
+                        {
+                            "data_file": data_file,
+                            "consumers": [s for s in consumers if s in state_names],
+                            "access_method": access,
+                            "eval_count": 1,
+                        }
+                    )
                     seen.add(data_file)
 
     for data_file in CORE_ALWAYS_CONSUMED:
         if data_file not in seen:
-            records.append({
-                "data_file": data_file,
-                "consumers": ["host_config.jinja"],
-                "access_method": "import_yaml",
-                "eval_count": 1,
-            })
+            records.append(
+                {
+                    "data_file": data_file,
+                    "consumers": ["host_config.jinja"],
+                    "access_method": "import_yaml",
+                    "eval_count": 1,
+                }
+            )
             seen.add(data_file)
 
     return sorted(records, key=lambda r: r["data_file"])
@@ -243,10 +249,12 @@ def compute_unused_diff(audit_report: dict) -> list[dict]:
     diff = []
     for data_file in sorted(unused):
         reason = _resolve_feature_gating(hostname, data_file)
-        diff.append({
-            "data_file": data_file,
-            "reason": reason or "truly_orphaned",
-        })
+        diff.append(
+            {
+                "data_file": data_file,
+                "reason": reason or "truly_orphaned",
+            }
+        )
     return diff
 
 
@@ -264,6 +272,7 @@ def print_diff(diff: list[dict]) -> None:
     if not diff:
         try:
             from lib.pretty import pretty
+
             pretty.ok("All inventoried data files were consumed.")
         except ImportError:
             print("All inventoried data files were consumed.")
@@ -289,7 +298,7 @@ def print_diff(diff: list[dict]) -> None:
     if orphaned:
         if pretty:
             pretty.warn(f"Truly orphaned: {len(orphaned)} files")
-            pretty.list_items([d['data_file'] for d in orphaned], "dash")
+            pretty.list_items([d["data_file"] for d in orphaned], "dash")
         else:
             print("\n  Truly orphaned (no known consumer):")
             for d in orphaned:
@@ -318,6 +327,7 @@ def main() -> int:
         except FileNotFoundError:
             try:
                 from lib.pretty import pretty as _p
+
                 _p.fail(f"Audit log not found: {args.diff}")
             except ImportError:
                 print(f"Audit log not found: {args.diff}", file=sys.stderr)
@@ -325,6 +335,7 @@ def main() -> int:
         except yaml.YAMLError as e:
             try:
                 from lib.pretty import pretty as _p
+
                 _p.fail(f"Audit log YAML error: {e}")
             except ImportError:
                 print(f"Audit log YAML error: {e}", file=sys.stderr)
@@ -369,26 +380,30 @@ def main() -> int:
 def _print_report_header(report: dict) -> None:
     try:
         from lib.pretty import pretty
+
         pretty.section("Salt Data Audit")
-        pretty.key_value({
-            "Target": str(report.get("salt_target", "")),
-            "Host": str(report.get("hostname", "")),
-            "Test mode": str(report.get("test_mode", "")),
-            "Duration": pretty.elapsed(report.get("duration_seconds", 0)),
-            "Consumed": (
-                f"{report.get('consumed_count', 0)}/"
-                f"{report.get('total_data_files', 0)} data files"
-            ),
-        })
+        pretty.key_value(
+            {
+                "Target": str(report.get("salt_target", "")),
+                "Host": str(report.get("hostname", "")),
+                "Test mode": str(report.get("test_mode", "")),
+                "Duration": pretty.elapsed(report.get("duration_seconds", 0)),
+                "Consumed": (
+                    f"{report.get('consumed_count', 0)}/"
+                    f"{report.get('total_data_files', 0)} data files"
+                ),
+            }
+        )
     except ImportError:
         print("=== Salt Data Audit ===")
-        print(f"Target: {report.get('salt_target')}  "
-              f"Host: {report.get('hostname')}  "
-              f"Test: {report.get('test_mode')}  "
-              f"Duration: {report.get('duration_seconds', 0)}s")
         print(
-            f"Consumed: {report.get('consumed_count')}/"
-            f"{report.get('total_data_files')} data files"
+            f"Target: {report.get('salt_target')}  "
+            f"Host: {report.get('hostname')}  "
+            f"Test: {report.get('test_mode')}  "
+            f"Duration: {report.get('duration_seconds', 0)}s"
+        )
+        print(
+            f"Consumed: {report.get('consumed_count')}/{report.get('total_data_files')} data files"
         )
 
 

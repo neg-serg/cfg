@@ -84,6 +84,7 @@ def inject_globals(env) -> dict[str, Any]:
 
     # Constants
     from .common import get_constants as _get_constants
+
     constants = _get_constants()
     for key, value in constants.items():
         injected[key] = value

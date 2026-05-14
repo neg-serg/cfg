@@ -510,6 +510,3 @@ def test_salt_debug_report_main_outputs_semantic_scenario_diff(monkeypatch, tmp_
         "failure_changed": True,
     }
     assert captured.err == ""
-
-
-

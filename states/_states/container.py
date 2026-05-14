@@ -23,6 +23,7 @@ from typing import Any
 try:
     from salt.exceptions import SaltInvocationError
 except ImportError:
+
     class SaltInvocationError(Exception):
         pass
 
@@ -32,6 +33,7 @@ def _load_yaml(path: Path) -> dict[str, Any]:
         return {}
     try:
         import yaml
+
         data = yaml.safe_load(path.read_text())
         return data if isinstance(data, dict) else {}
     except Exception:
@@ -102,6 +104,7 @@ def managed(
     # Resolve host for home directory
     try:
         from _modules.common import get_host
+
         host = get_host()
         home = host.get("home", "/root")
         host_user = host.get("user", "root")
@@ -132,9 +135,7 @@ def managed(
     gpu = catalog.get("gpu", "none")
 
     digest_ok = (is_localhost and digest is None) or (
-        isinstance(digest, str)
-        and digest.startswith("sha256:")
-        and len(digest) == 71
+        isinstance(digest, str) and digest.startswith("sha256:") and len(digest) == 71
     )
     scope_ok = (user_scope and catalog_scope == "user") or (
         not user_scope and catalog_scope == "system"
@@ -183,17 +184,20 @@ def managed(
     # Expand bind mounts
     expanded_mounts = []
     for bm in catalog.get("bind_mounts", []):
-        expanded_mounts.append({
-            "host": _tilde_expand(bm["host"], home),
-            "container": bm["container"],
-            "mode": bm["mode"],
-        })
+        expanded_mounts.append(
+            {
+                "host": _tilde_expand(bm["host"], home),
+                "container": bm["container"],
+                "mode": bm["mode"],
+            }
+        )
 
     retry_attempts = 3
     retry_interval = 10
 
     try:
         from _modules.common import get_constants
+
         c = get_constants()
         retry_attempts = c["retry_attempts"]
         retry_interval = c["retry_interval"]
@@ -257,12 +261,14 @@ def managed(
             {"template": "jinja"},
             {"mode": "0644"},
             {"makedirs": True},
-            {"context": {
-                "catalog_entry": catalog,
-                "image": full_image,
-                "expanded_mounts": expanded_mounts,
-                "user_scope": user_scope,
-            }},
+            {
+                "context": {
+                    "catalog_entry": catalog,
+                    "image": full_image,
+                    "expanded_mounts": expanded_mounts,
+                    "user_scope": user_scope,
+                }
+            },
         ]
     }
 

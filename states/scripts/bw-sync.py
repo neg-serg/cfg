@@ -27,9 +27,7 @@ GOPASS_PREFIX = "bw"
 
 
 def run(cmd, **kwargs):
-    return subprocess.run(
-        cmd, capture_output=True, text=True, check=True, **kwargs
-    )
+    return subprocess.run(cmd, capture_output=True, text=True, check=True, **kwargs)
 
 
 def bw_unlock():
@@ -124,7 +122,7 @@ def sync_vaultwarden_to_gopass(session):
         }
         uris = login.get("uris", [])
         for i, uri_info in enumerate(uris):
-            fields[f"uri_{i+1}"] = uri_info.get("uri", "")
+            fields[f"uri_{i + 1}"] = uri_info.get("uri", "")
         gopass_insert(path, password, fields)
         print(f"  imported {path}")
         imported += 1

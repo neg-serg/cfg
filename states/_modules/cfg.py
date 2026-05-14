@@ -13,19 +13,24 @@ from _yaml_out import yaml_output
 def _const() -> dict[str, Any]:
     try:
         from _modules.common import get_constants
+
         return get_constants()
     except Exception:
         return {"retry_attempts": 3, "retry_interval": 10}
 
 
 @yaml_output
-def config_file_edit(name: str, cmd: str, unless: str | None = None,
-                     check_pattern: str | None = None,
-                     check_file: str | None = None,
-                     onlyif: str | None = None,
-                     require: list[str] | None = None,
-                     retry: bool = False,
-                     shell: str | None = None) -> dict[str, Any]:
+def config_file_edit(
+    name: str,
+    cmd: str,
+    unless: str | None = None,
+    check_pattern: str | None = None,
+    check_file: str | None = None,
+    onlyif: str | None = None,
+    require: list[str] | None = None,
+    retry: bool = False,
+    shell: str | None = None,
+) -> dict[str, Any]:
     """Wrap a config-file edit with idempotency guard and optional retry."""
     guard = unless
     if guard is None and check_pattern and check_file:

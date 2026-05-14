@@ -412,7 +412,9 @@ class TelethonBridge:
         api_id = int(tg.get("api_id", "1"))
         api_hash = tg.get("api_hash") or "b6b154c370b1b2a2e8f7e0a1c1a0b0a0"
         self.client = TelegramClient(
-            session_path, api_id, api_hash,
+            session_path,
+            api_id,
+            api_hash,
             proxy=proxy,
             device_model="Desktop",
             system_version="Windows 10",

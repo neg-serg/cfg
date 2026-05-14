@@ -30,10 +30,12 @@ def yaml_output(func: Callable) -> Callable:
     decorator so {{ salt['module.func'](...) }} outputs valid YAML.
     Value-returning functions (bool, str, None) pass through unchanged.
     """
+
     @functools.wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         result = func(*args, **kwargs)
         if isinstance(result, dict):
             return to_yaml(result)
         return result
+
     return wrapper

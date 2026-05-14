@@ -14,7 +14,6 @@ def _load_state_profiler():
     return module
 
 
-
 def test_services_sls_no_longer_has_transmission_escape_hatch():
     source = (REPO_ROOT_PATH / "states" / "services.sls").read_text()
 
@@ -60,7 +59,6 @@ def test_state_profiler_compare_rows_honor_threshold(tmp_path):
 
     assert by_state["fast_state"]["regression"] is False
     assert by_state["slow_state"]["regression"] is True
-
 
 
 # workflow removed; state-profiler gate tested in

@@ -62,7 +62,6 @@ def test_generated_hypr_shortcuts_index_contains_browser_and_selector_entries():
     assert by_id["selectors.wallpaper"]["mode"] == "docs_only"
 
 
-
 def test_hypr_slash_bind_opens_hotkey_search_without_conflicts():
     bindings = read("dotfiles/dot_config/hypr/bindings.conf")
     misc = read("dotfiles/dot_config/hypr/bindings/misc.conf")
@@ -197,7 +196,6 @@ def test_hypr_shortcuts_reports_malformed_json_and_exits_non_zero(tmp_path):
     assert "hypr-shortcuts: failed to parse launchable shortcuts from" in result.stderr
     assert not output_capture.exists()
     assert not called_capture.exists()
-
 
 
 PRIMARY_BROWSER_REGEX = (

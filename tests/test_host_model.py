@@ -422,9 +422,7 @@ def test_all_feature_matrix_hosts_have_valid_derived_fields():
 
         host = host_model.build_host(name, host_model.load_hosts_yaml())
 
-        assert isinstance(host.get("home"), str) and host["home"], (
-            f"matrix '{name}': missing home"
-        )
+        assert isinstance(host.get("home"), str) and host["home"], f"matrix '{name}': missing home"
         assert host["home"] == f"/home/{host['user']}", (
             f"matrix '{name}': home mismatch: {host['home']}"
         )
@@ -440,9 +438,7 @@ def test_all_feature_matrix_hosts_have_valid_derived_fields():
         assert host.get("project_dir") == host["home"] + "/src/cfg", (
             f"matrix '{name}': project_dir mismatch"
         )
-        assert isinstance(host.get("features"), dict), (
-            f"matrix '{name}': missing features dict"
-        )
+        assert isinstance(host.get("features"), dict), f"matrix '{name}': missing features dict"
 
 
 def test_host_config_validation_passes_for_all_matrix_hosts():
@@ -518,9 +514,7 @@ def test_build_lint_host_enables_all_registry_features():
         return falses
 
     still_false = find_false(host.get("features", {}))
-    assert not still_false, (
-        f"lint host has {len(still_false)} features still False: {still_false}"
-    )
+    assert not still_false, f"lint host has {len(still_false)} features still False: {still_false}"
 
 
 def test_lint_host_has_all_registry_feature_keys():
@@ -546,8 +540,7 @@ def test_lint_host_has_all_registry_feature_keys():
             missing_from_host.add(full_name)
 
     assert not missing_from_host, (
-        f"lint host missing {len(missing_from_host)} registry feature keys:"
-        f" {missing_from_host}"
+        f"lint host missing {len(missing_from_host)} registry feature keys: {missing_from_host}"
     )
 
 

@@ -422,10 +422,13 @@ def test_policy_sync_to_routing_injects_direct_and_vpn_rules(tmp_path):
     )
     runtime_path = tmp_path / "config.json"
     runtime_path.write_text(
-        json.dumps({
-            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
-            "route": {"rules": [{"outbound": "direct", "protocol": "dns"}]},
-        }) + "\n",
+        json.dumps(
+            {
+                "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+                "route": {"rules": [{"outbound": "direct", "protocol": "dns"}]},
+            }
+        )
+        + "\n",
         encoding="utf-8",
     )
 
@@ -451,16 +454,18 @@ def test_policy_sync_to_routing_priority_order(tmp_path):
     router = _load_module()
     policy_path = tmp_path / "policy.yaml"
     policy_path.write_text(
-        "always_direct:\n  domains:\n    - a.example\n"
-        "always_vpn:\n  domains:\n    - b.example\n",
+        "always_direct:\n  domains:\n    - a.example\nalways_vpn:\n  domains:\n    - b.example\n",
         encoding="utf-8",
     )
     runtime_path = tmp_path / "config.json"
     runtime_path.write_text(
-        json.dumps({
-            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
-            "route": {"rules": []},
-        }) + "\n",
+        json.dumps(
+            {
+                "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+                "route": {"rules": []},
+            }
+        )
+        + "\n",
         encoding="utf-8",
     )
 
@@ -476,25 +481,36 @@ def test_policy_sync_to_routing_removes_stale_policy_rules(tmp_path):
     router = _load_module()
     policy_path = tmp_path / "policy.yaml"
     policy_path.write_text(
-        "always_direct:\n  domains:\n    - new.example\n"
-        "always_vpn:\n  domains: []\n",
+        "always_direct:\n  domains:\n    - new.example\nalways_vpn:\n  domains: []\n",
         encoding="utf-8",
     )
     runtime_path = tmp_path / "config.json"
     runtime_path.write_text(
-        json.dumps({
-            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
-            "route": {
-                "rules": [
-                    {"tag": "vpn-policy-direct",
-                     "domain_suffix": ["old.example"], "outbound": "direct"},
-                    {"tag": "vpn-policy-vpn",
-                     "domain_suffix": ["old-vpn.example"], "outbound": "vpn"},
-                    {"tag": "vpn-split-router-managed",
-                     "domain_suffix": ["survivor.example"], "outbound": "vpn"},
-                ]
-            },
-        }) + "\n",
+        json.dumps(
+            {
+                "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+                "route": {
+                    "rules": [
+                        {
+                            "tag": "vpn-policy-direct",
+                            "domain_suffix": ["old.example"],
+                            "outbound": "direct",
+                        },
+                        {
+                            "tag": "vpn-policy-vpn",
+                            "domain_suffix": ["old-vpn.example"],
+                            "outbound": "vpn",
+                        },
+                        {
+                            "tag": "vpn-split-router-managed",
+                            "domain_suffix": ["survivor.example"],
+                            "outbound": "vpn",
+                        },
+                    ]
+                },
+            }
+        )
+        + "\n",
         encoding="utf-8",
     )
 
@@ -512,21 +528,27 @@ def test_refresh_outputs_with_policy_injects_policy_rules(tmp_path):
     router = _load_module()
     policy_path = tmp_path / "policy.yaml"
     policy_path.write_text(
-        "always_direct:\n  domains:\n    - policy-direct.example\n", encoding="utf-8",
+        "always_direct:\n  domains:\n    - policy-direct.example\n",
+        encoding="utf-8",
     )
     runtime_config_path = tmp_path / "config.json"
     runtime_config_path.write_text(
-        json.dumps({
-            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
-            "route": {"rules": []},
-        }) + "\n",
+        json.dumps(
+            {
+                "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+                "route": {"rules": []},
+            }
+        )
+        + "\n",
         encoding="utf-8",
     )
     state = {
         "domains": {
             "probe-vpn.example": {
-                "domain": "probe-vpn.example", "source": "seed",
-                "route": "vpn", "ttl_until": "2099-01-01T00:00:00+00:00",
+                "domain": "probe-vpn.example",
+                "source": "seed",
+                "route": "vpn",
+                "ttl_until": "2099-01-01T00:00:00+00:00",
             }
         }
     }
@@ -535,7 +557,11 @@ def test_refresh_outputs_with_policy_injects_policy_rules(tmp_path):
     vpn_path = tmp_path / "vpn-domains.txt"
 
     router.refresh_outputs(
-        state, config, observed_path, vpn_path, runtime_config_path,
+        state,
+        config,
+        observed_path,
+        vpn_path,
+        runtime_config_path,
         policy_path=policy_path,
     )
     payload = json.loads(runtime_config_path.read_text(encoding="utf-8"))
@@ -567,8 +593,7 @@ def test_command_policy_remove(tmp_path):
     router = _load_module()
     policy_path = tmp_path / "policy.yaml"
     policy_path.write_text(
-        "always_direct:\n  domains:\n    - a.example\n"
-        "always_vpn:\n  domains:\n    - a.example\n",
+        "always_direct:\n  domains:\n    - a.example\nalways_vpn:\n  domains:\n    - a.example\n",
         encoding="utf-8",
     )
     args = SimpleNamespace(policy=policy_path, targets=["a.example"])
@@ -585,10 +610,13 @@ def test_command_policy_apply_creates_rollback_and_starts_timer(tmp_path, monkey
     policy_path.write_text("always_direct:\n  domains:\n    - x.example\n", encoding="utf-8")
     runtime_path = tmp_path / "config.json"
     runtime_path.write_text(
-        json.dumps({
-            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
-            "route": {"rules": []},
-        }) + "\n",
+        json.dumps(
+            {
+                "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+                "route": {"rules": []},
+            }
+        )
+        + "\n",
         encoding="utf-8",
     )
 
@@ -596,7 +624,9 @@ def test_command_policy_apply_creates_rollback_and_starts_timer(tmp_path, monkey
     monkeypatch.setattr(router.subprocess, "run", lambda *a, **kw: subprocess_called.append(a[0]))
 
     args = SimpleNamespace(
-        policy=policy_path, policy_rollback=rollback_path, runtime_config=runtime_path,
+        policy=policy_path,
+        policy_rollback=rollback_path,
+        runtime_config=runtime_path,
     )
     assert router.command_policy_apply(args) == 0
 
@@ -643,10 +673,13 @@ def test_command_policy_rollback_restores_from_backup(tmp_path, monkeypatch):
     rollback_path.write_text("always_direct:\n  domains:\n    - saved.example\n", encoding="utf-8")
     runtime_path = tmp_path / "config.json"
     runtime_path.write_text(
-        json.dumps({
-            "outbounds": [{"type": "wireguard", "tag": "vpn"}],
-            "route": {"rules": []},
-        }) + "\n",
+        json.dumps(
+            {
+                "outbounds": [{"type": "wireguard", "tag": "vpn"}],
+                "route": {"rules": []},
+            }
+        )
+        + "\n",
         encoding="utf-8",
     )
 
@@ -654,7 +687,9 @@ def test_command_policy_rollback_restores_from_backup(tmp_path, monkeypatch):
     monkeypatch.setattr(router.subprocess, "run", lambda *a, **kw: subprocess_called.append(a[0]))
 
     args = SimpleNamespace(
-        policy=policy_path, policy_rollback=rollback_path, runtime_config=runtime_path,
+        policy=policy_path,
+        policy_rollback=rollback_path,
+        runtime_config=runtime_path,
     )
     assert router.command_policy_rollback(args) == 0
 
@@ -666,10 +701,8 @@ def test_command_policy_rollback_restores_from_backup(tmp_path, monkeypatch):
 def test_command_policy_rollback_fails_without_backup(tmp_path):
     router = _load_module()
     args = SimpleNamespace(
-        policy=tmp_path / "policy.yaml", policy_rollback=tmp_path / "nonexistent.rollback",
+        policy=tmp_path / "policy.yaml",
+        policy_rollback=tmp_path / "nonexistent.rollback",
         runtime_config=tmp_path / "cfg.json",
     )
     assert router.command_policy_rollback(args) == 1
-
-
-

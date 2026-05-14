@@ -1,4 +1,3 @@
-
 import generate_hypr_shortcuts as gen
 
 from tests import REPO_ROOT_PATH
@@ -27,7 +26,6 @@ def test_load_bindings_follows_source_graph_and_excludes_unsourced_files(tmp_pat
     assert "should-not-appear" not in arguments
 
 
-
 def test_render_which_key_config_keeps_browser_menu_and_wraps_shell_commands():
     actions = gen.load_bindings(
         REPO_ROOT_PATH / "dotfiles" / "dot_config" / "hypr" / "bindings.conf"
@@ -51,7 +49,6 @@ def test_render_which_key_config_keeps_browser_menu_and_wraps_shell_commands():
     assert "cmd: sh -lc" in rendered
     assert 'pic-info \\"$shot\\"' in rendered
     assert "namespace:" not in rendered
-
 
 
 def test_generated_repo_files_are_in_sync_with_the_generator(tmp_path):

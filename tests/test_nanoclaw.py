@@ -33,9 +33,7 @@ def _find_state_ids(source: str):
 
 def _find_cmd_states(source: str):
     """Find state IDs followed by cmd.run or cmd.script."""
-    pattern = re.compile(
-        r"^(\w+):\s*\n\s+cmd\.(?:run|script):", re.MULTILINE
-    )
+    pattern = re.compile(r"^(\w+):\s*\n\s+cmd\.(?:run|script):", re.MULTILINE)
     return pattern.findall(source)
 
 
@@ -56,14 +54,8 @@ def _cmd_has_guard(source: str, state_id: str) -> bool:
     return False
 
 
-
 def test_nanoclaw_clone_has_guard():
     assert _cmd_has_guard(_SOURCE, "nanoclaw_clone")
-
-
-
-
-
 
 
 def test_nanoclaw_env_managed():
@@ -73,13 +65,9 @@ def test_nanoclaw_env_managed():
 
 def test_nanoclaw_native_unit_absent():
     assert "salt['service.remove_native_unit']('nanoclaw'" in _SOURCE
-    assert 'scope=\'user\'' in _SOURCE
+    assert "scope='user'" in _SOURCE
 
 
 def test_nanoclaw_native_unit_daemon_reload_has_onlyif():
     assert "salt['service.remove_native_unit']('nanoclaw'" in _SOURCE
-    assert 'scope=\'user\'' in _SOURCE
-
-
-
-
+    assert "scope='user'" in _SOURCE

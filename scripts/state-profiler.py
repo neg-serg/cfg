@@ -204,6 +204,7 @@ def run_trend(json_mode: bool) -> None:
     hdr = " ".join(cols)
     try:
         from lib.pretty import pretty
+
         pretty.section(f"Trend across {len(log_files)} log file(s)")
         tbl_rows = [
             [
@@ -317,6 +318,7 @@ def run_compare(
 
     try:
         from lib.pretty import pretty
+
         pretty.section(f"Comparison: {log1.name} vs {log2.name}")
         params = {
             "Baseline": str(log1.name),
@@ -328,13 +330,15 @@ def run_compare(
         tbl_rows = []
         for r in rows:
             marker = pretty.status_badge("WARN") if r["regression"] else " "
-            tbl_rows.append([
-                r["state_id"],
-                f"{r['log1_ms']:.2f}",
-                f"{r['log2_ms']:.2f}",
-                f"{r['delta_ms']:+.2f}",
-                f"{r['change_pct']:+.1f}% {marker}",
-            ])
+            tbl_rows.append(
+                [
+                    r["state_id"],
+                    f"{r['log1_ms']:.2f}",
+                    f"{r['log2_ms']:.2f}",
+                    f"{r['delta_ms']:+.2f}",
+                    f"{r['change_pct']:+.1f}% {marker}",
+                ]
+            )
         pretty.table(
             ["State ID", "Baseline (ms)", "Candidate (ms)", "Delta (ms)", "Change"],
             tbl_rows,
@@ -358,9 +362,12 @@ def run_compare(
         print()
         try:
             from lib.pretty import pretty as _p2
+
             badge = _p2.status_badge(status)
-            _p2.info(f"Gate status: {badge} (threshold: {max_regression_pct:.1f}%, "
-                      f"sample_count: {len(rows)}, min_sample_count: {min_sample_count})")
+            _p2.info(
+                f"Gate status: {badge} (threshold: {max_regression_pct:.1f}%, "
+                f"sample_count: {len(rows)}, min_sample_count: {min_sample_count})"
+            )
             if regressions:
                 _p2.warn("Top regressions:")
                 for row in regressions[:10]:
@@ -487,13 +494,14 @@ def main() -> None:
 
     try:
         from lib.pretty import pretty
+
         pretty.section(f"Top {len(top)} slowest states in {args.log}")
         tbl_rows = [
             [f"{duration:.2f} ms", context]
             for duration, state_id in top
-            for context, _, _ in [format_context(
-                state_id, state_files, include_paths, text_map, file_contents
-            )]
+            for context, _, _ in [
+                format_context(state_id, state_files, include_paths, text_map, file_contents)
+            ]
         ]
         pretty.table(
             ["Duration", "State chain"],

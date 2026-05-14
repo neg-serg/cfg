@@ -19,6 +19,7 @@ def _host() -> dict[str, Any]:
     except (NameError, KeyError):
         try:
             from _modules.common import get_host
+
             return get_host()
         except Exception:
             return {
@@ -28,8 +29,7 @@ def _host() -> dict[str, Any]:
             }
 
 
-def gopass_secret(key: str, fallback_cmd: str = "true",
-                  runas: str | None = None) -> str:
+def gopass_secret(key: str, fallback_cmd: str = "true", runas: str | None = None) -> str:
     """Resolve a secret from gopass, with optional shell fallback.
 
     Caches results across calls within the same render session.
@@ -53,19 +53,26 @@ def gopass_secret(key: str, fallback_cmd: str = "true",
         try:
             result = subprocess.run(
                 [
-                    "sudo", "-u", u,
+                    "sudo",
+                    "-u",
+                    u,
                     "env",
                     f"HOME={home}",
                     f"PASSWORD_STORE_DIR={home}/.local/share/pass",
                     f"GNUPGHOME={home}/.local/share/gnupg",
                     "XDG_RUNTIME_DIR=/run/user/$(id -u)",
-                    "gopass", "show", "-o", key,
+                    "gopass",
+                    "show",
+                    "-o",
+                    key,
                 ],
-                capture_output=True, text=True, timeout=10,
+                capture_output=True,
+                text=True,
+                timeout=10,
             )
             if not _GOPASS_CHECKED:
                 _GOPASS_CHECKED = True
-                _GOPASS_AVAILABLE = (result.returncode == 0)
+                _GOPASS_AVAILABLE = result.returncode == 0
 
             if result.returncode == 0:
                 val = result.stdout.strip()
@@ -80,7 +87,9 @@ def gopass_secret(key: str, fallback_cmd: str = "true",
     try:
         fallback_result = subprocess.run(
             ["sudo", "-u", u, "bash", "-c", fallback_cmd],
-            capture_output=True, text=True, timeout=10,
+            capture_output=True,
+            text=True,
+            timeout=10,
         )
         val = fallback_result.stdout.strip()
     except Exception:
@@ -94,15 +103,14 @@ def proxypilot_key() -> str:
     h = _host()
     home = h["home"]
     fallback = (
-        f"awk '/^api-keys:/{{getline; sub(/^[[:space:]]*-[[:space:]]*\"?/, \"\"); "
-        f"sub(/\"?[[:space:]]*$/, \"\"); print; exit}}' "
+        f'awk \'/^api-keys:/{{getline; sub(/^[[:space:]]*-[[:space:]]*"?/, ""); '
+        f'sub(/"?[[:space:]]*$/, ""); print; exit}}\' '
         f"{home}/.config/proxypilot/config.yaml 2>/dev/null || true"
     )
     return gopass_secret("api/proxypilot-local", fallback)
 
 
-def tg_secret(gopass_key: str, cred_file: str,
-              cred_base: str | None = None) -> str:
+def tg_secret(gopass_key: str, cred_file: str, cred_base: str | None = None) -> str:
     h = _host()
     home = h["home"]
     base = cred_base or f"{home}/.nanoclaw/credentials"

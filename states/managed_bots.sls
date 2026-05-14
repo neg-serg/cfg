@@ -7,7 +7,7 @@
 {% set _uid_levra = tg_secret('api/telegram-uid-levra', 'telegram-uid-levra') %}
 {% set _uid_nanoclaw = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
 
-install_managed_bots_deps:
+managed_bots_deps:
   cmd.run:
     - name: pip install --break-system-packages {{ mbdata.pip_deps | join(' ') }}
     - runas: {{ user }}

@@ -423,20 +423,24 @@ def command_status(args: argparse.Namespace) -> int:
     else:
         pretty.key_value({"Last successful fetch": "Never"})
 
-    pretty.key_value({
-        "Domains count": str(state.get('domains_count', 0)),
-        "Source used": str(state.get('source_used', 'None')),
-        "Error count": str(state.get('error_count', 0)),
-    })
+    pretty.key_value(
+        {
+            "Domains count": str(state.get("domains_count", 0)),
+            "Source used": str(state.get("source_used", "None")),
+            "Error count": str(state.get("error_count", 0)),
+        }
+    )
 
     stats = state.get("stats", {})
     if stats:
         pretty.section("Statistics")
-        pretty.key_value({
-            "Total fetched": str(stats.get('total_fetched', 0)),
-            "Valid domains": str(stats.get('valid_domains', 0)),
-            "Filtered out": str(stats.get('filtered_out', 0)),
-        })
+        pretty.key_value(
+            {
+                "Total fetched": str(stats.get("total_fetched", 0)),
+                "Valid domains": str(stats.get("valid_domains", 0)),
+                "Filtered out": str(stats.get("filtered_out", 0)),
+            }
+        )
 
         by_category = stats.get("by_category", {})
         if by_category:
@@ -515,11 +519,13 @@ def command_validate(args: argparse.Namespace) -> int:
             if args.show_invalid:
                 print(f"Invalid: {domain}")
 
-    pretty.key_value({
-        "Valid domains": str(valid_count),
-        "Invalid domains": str(invalid_count),
-        "Total": str(len(domains)),
-    })
+    pretty.key_value(
+        {
+            "Valid domains": str(valid_count),
+            "Invalid domains": str(invalid_count),
+            "Total": str(len(domains)),
+        }
+    )
 
     if invalid_count > 0 and args.clean:
         logger.info("Cleaning invalid domains...")

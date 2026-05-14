@@ -19,6 +19,7 @@ _salt_loader._module_dirs_orig = (
     getattr(_salt_loader, "_module_dirs_orig", None) or _salt_loader._module_dirs
 )
 
+
 def _patched_module_dirs(*args, **kwargs):
     dirs = _salt_loader._module_dirs_orig(*args, **kwargs)
     # args[0] is opts, args[1] is ext_type (modules, grains, states, etc.)
@@ -28,6 +29,7 @@ def _patched_module_dirs(*args, **kwargs):
         if _mod_path not in dirs:
             dirs.append(_mod_path)
     return dirs
+
 
 _salt_loader._module_dirs = _patched_module_dirs
 

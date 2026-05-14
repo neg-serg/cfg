@@ -29,6 +29,7 @@ from telegram import (
 
 try:
     from telegram import KeyboardButtonRequestManagedBot  # Bot API 9.6
+
     _managed_bot_supported = True
 except ImportError:
     _managed_bot_supported = False
@@ -42,8 +43,14 @@ from telegram.ext import (
 
 logger = logging.getLogger("managed-bots")
 
-REGISTRY_FIELDS = ["bot_user_id", "username", "creator_uid", "created_at",
-                   "last_rotated_at", "token_gopass_path"]
+REGISTRY_FIELDS = [
+    "bot_user_id",
+    "username",
+    "creator_uid",
+    "created_at",
+    "last_rotated_at",
+    "token_gopass_path",
+]
 
 
 def load_config(path: str) -> dict:
@@ -54,7 +61,9 @@ def load_config(path: str) -> dict:
 def gopass_read(path: str) -> str:
     result = subprocess.run(
         ["gopass", "show", "-o", path],
-        capture_output=True, text=True, check=False,
+        capture_output=True,
+        text=True,
+        check=False,
     )
     if result.returncode != 0:
         raise RuntimeError(f"gopass read failed for {path}: {result.stderr.strip()}")
@@ -64,7 +73,10 @@ def gopass_read(path: str) -> str:
 def gopass_insert(path: str, value: str) -> None:
     result = subprocess.run(
         ["gopass", "insert", path],
-        input=value, capture_output=True, text=True, check=False,
+        input=value,
+        capture_output=True,
+        text=True,
+        check=False,
     )
     if result.returncode != 0:
         raise RuntimeError(f"gopass insert failed for {path}: {result.stderr.strip()}")
@@ -87,8 +99,7 @@ class BotRegistry:
         with open(self.path, "w") as f:
             yaml.dump(self._data, f, default_flow_style=False, allow_unicode=True)
 
-    def add(self, username: str, bot_user_id: int, creator_uid: int,
-            token_gopass_path: str):
+    def add(self, username: str, bot_user_id: int, creator_uid: int, token_gopass_path: str):
         self._data[username] = {
             "bot_user_id": bot_user_id,
             "username": username,
@@ -98,8 +109,7 @@ class BotRegistry:
             "token_gopass_path": token_gopass_path,
         }
         self._save()
-        logger.info("Bot registered: @%s (id=%d) by uid=%d",
-                    username, bot_user_id, creator_uid)
+        logger.info("Bot registered: @%s (id=%d) by uid=%d", username, bot_user_id, creator_uid)
 
     def get(self, username: str) -> Optional[dict]:
         return self._data.get(username)
@@ -141,24 +151,24 @@ def authorized(uid: int) -> bool:
 
 # ── US5: /start handler with self-service gating ────────────────────────
 
+
 async def start_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if not update.message or not update.effective_user:
         return
     uid = update.effective_user.id
     if not authorized(uid):
-        await update.message.reply_text("Not authorized.",
-                                        reply_markup=ReplyKeyboardRemove())
+        await update.message.reply_text("Not authorized.", reply_markup=ReplyKeyboardRemove())
         return
     max_bots = 1 if allowlisted(uid) and not owner_only(uid) else None
     if max_bots is not None and state.registry.count_for_user(uid) >= max_bots:
-        await update.message.reply_text(
-            f"You already have a managed bot. Maximum is {max_bots}.")
+        await update.message.reply_text(f"You already have a managed bot. Maximum is {max_bots}.")
         return
     if not _managed_bot_supported:
         await update.message.reply_text(
             "Managed bot creation is not yet supported — "
             "python-telegram-bot library update pending.",
-            reply_markup=ReplyKeyboardRemove())
+            reply_markup=ReplyKeyboardRemove(),
+        )
         return
     button = KeyboardButtonRequestManagedBot(
         request_id=0,
@@ -178,18 +188,17 @@ async def start_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
 # ── US6: /newbot handler (t.me/newbot/ link flow) ──────────────────────
 
+
 async def newbot_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if not update.message or not update.effective_user:
         return
     uid = update.effective_user.id
     if not authorized(uid):
-        await update.message.reply_text("Not authorized.",
-                                        reply_markup=ReplyKeyboardRemove())
+        await update.message.reply_text("Not authorized.", reply_markup=ReplyKeyboardRemove())
         return
     max_bots = 1 if allowlisted(uid) and not owner_only(uid) else None
     if max_bots is not None and state.registry.count_for_user(uid) >= max_bots:
-        await update.message.reply_text(
-            f"You already have a managed bot. Maximum is {max_bots}.")
+        await update.message.reply_text(f"You already have a managed bot. Maximum is {max_bots}.")
         return
     parts = (update.message.text or "").split()
     if len(parts) > 1:
@@ -198,10 +207,11 @@ async def newbot_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         suggested = "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=6)) + "_bot"
     name = update.effective_user.full_name or "My Helper Bot"
     link = f"t.me/newbot/{state.manager_username}/{suggested}?name={quote(name)}"
-    await update.message.reply_text(
-        f"Tap the link below to create your managed bot:\n{link}")
+    await update.message.reply_text(f"Tap the link below to create your managed bot:\n{link}")
+
 
 # ── US1: ManagedBotUpdated handler ─────────────────────────────────────
+
 
 async def on_managed_bot_update(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     managed = getattr(update, "managed_bot", None)
@@ -218,12 +228,12 @@ async def on_managed_bot_update(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if not bot_id or not creator_uid:
         logger.warning("ManagedBotUpdated missing ids: %s", managed)
         return
-    logger.info("ManagedBotUpdated: @%s (id=%d) created by uid=%d",
-                username, bot_id, creator_uid)
+    logger.info("ManagedBotUpdated: @%s (id=%d) created by uid=%d", username, bot_id, creator_uid)
     await handle_new_bot(username, bot_id, creator_uid, update, ctx)
 
 
 # ── US1: managed_bot_created message handler (duplicate notif) ──────────
+
 
 async def on_managed_bot_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if not update.message:
@@ -235,8 +245,14 @@ async def on_managed_bot_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE)
 
 # ── US2: getManagedBotToken + gopass + registry ────────────────────────
 
-async def handle_new_bot(username: str, bot_user_id: int, creator_uid: int,
-                          update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+
+async def handle_new_bot(
+    username: str,
+    bot_user_id: int,
+    creator_uid: int,
+    update: Update,
+    ctx: ContextTypes.DEFAULT_TYPE,
+):
     gopass_path = f"{state.gopass_prefix}/{username}"
     if state.registry.get(username):
         logger.info("Bot @%s already registered, skipping token fetch", username)
@@ -247,8 +263,7 @@ async def handle_new_bot(username: str, bot_user_id: int, creator_uid: int,
     except Exception as e:
         logger.error("getManagedBotToken failed for @%s: %s", username, e)
         if update.message:
-            await update.message.reply_text(
-                f"Failed to fetch token for @{username}: {e}")
+            await update.message.reply_text(f"Failed to fetch token for @{username}: {e}")
         return
     if not token:
         logger.error("getManagedBotToken returned empty token for @%s", username)
@@ -259,7 +274,8 @@ async def handle_new_bot(username: str, bot_user_id: int, creator_uid: int,
         logger.error("gopass insert failed: %s", e)
         if update.message:
             await update.message.reply_text(
-                f"Bot @{username} created but token storage failed: {e}")
+                f"Bot @{username} created but token storage failed: {e}"
+            )
         return
     state.registry.add(
         username=username,
@@ -275,15 +291,14 @@ async def handle_new_bot(username: str, bot_user_id: int, creator_uid: int,
 
 # ── Startup: can_manage_bots check ─────────────────────────────────────
 
+
 def check_can_manage_bots(config: dict) -> bool:
-    bot = Bot(token=config["telegram"]["token"],
-              base_url="https://api.telegram.org/bot")
+    bot = Bot(token=config["telegram"]["token"], base_url="https://api.telegram.org/bot")
     proxy = config["telegram"].get("proxy", {})
     if proxy:
-        os.environ["HTTPS_PROXY"] = (
-            f"{proxy['scheme']}://{proxy['host']}:{proxy['port']}"
-        )
+        os.environ["HTTPS_PROXY"] = f"{proxy['scheme']}://{proxy['host']}:{proxy['port']}"
     import asyncio
+
     me = asyncio.run(bot.get_me())
     state.manager_username = me.username
     can_manage = getattr(me, "can_manage_bots", False)
@@ -292,6 +307,7 @@ def check_can_manage_bots(config: dict) -> bool:
 
 
 # ── US2: Startup registry reconciliation ───────────────────────────────
+
 
 def reconcile_registry(config: dict, registry: BotRegistry):
     gopass_pfx = config["gopass"]["token_prefix"]
@@ -305,6 +321,7 @@ def reconcile_registry(config: dict, registry: BotRegistry):
 
 
 # ── US4: /bots handler ─────────────────────────────────────────────────
+
 
 async def bots_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if not update.message or not update.effective_user:
@@ -320,13 +337,16 @@ async def bots_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     lines = ["Managed bots:"]
     for e in entries:
         status = ""
-        lines.append(f"  @{e['username']} (id: {e['bot_user_id']}) "
-                      f"created {e['created_at'][:10]} by uid {e['creator_uid']}"
-                      f"{status}")
+        lines.append(
+            f"  @{e['username']} (id: {e['bot_user_id']}) "
+            f"created {e['created_at'][:10]} by uid {e['creator_uid']}"
+            f"{status}"
+        )
     await update.message.reply_text("\n".join(lines))
 
 
 # ── US3: /rotate_token handler ─────────────────────────────────────────
+
 
 async def rotate_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if not update.message or not update.effective_user:
@@ -369,35 +389,36 @@ async def rotate_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
 # ── Build application ──────────────────────────────────────────────────
 
+
 def build_application(config: dict, registry: BotRegistry) -> Application:
     builder = Application.builder()
     builder.token(config["telegram"]["token"])
     proxy = config["telegram"].get("proxy", {})
     if proxy:
-        builder.proxy_url(
-            f"{proxy['scheme']}://{proxy['host']}:{proxy['port']}"
-        )
+        builder.proxy_url(f"{proxy['scheme']}://{proxy['host']}:{proxy['port']}")
     app = builder.build()
     app.add_handler(CommandHandler("start", start_handler))
     app.add_handler(CommandHandler("newbot", newbot_handler))
     app.add_handler(CommandHandler("bots", bots_handler))
     app.add_handler(CommandHandler("rotate_token", rotate_handler))
-    app.add_handler(MessageHandler(
-        filters.StatusUpdate.NEW_CHAT_MEMBERS | filters.StatusUpdate.LEFT_CHAT_MEMBER,
-        lambda u, c: None,
-    ))
+    app.add_handler(
+        MessageHandler(
+            filters.StatusUpdate.NEW_CHAT_MEMBERS | filters.StatusUpdate.LEFT_CHAT_MEMBER,
+            lambda u, c: None,
+        )
+    )
     app.add_handler(MessageHandler(filters.ALL, on_managed_bot_message), group=-1)
     return app
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Managed Telegram Bots — Bot API 9.6 manager")
-    parser.add_argument("--config", default=os.path.expanduser(
-        "~/.config/opencode/managed-bots.yaml"),
-        help="Path to YAML config")
-    parser.add_argument("--check", action="store_true",
-        help="Check can_manage_bots and exit")
+    parser = argparse.ArgumentParser(description="Managed Telegram Bots — Bot API 9.6 manager")
+    parser.add_argument(
+        "--config",
+        default=os.path.expanduser("~/.config/opencode/managed-bots.yaml"),
+        help="Path to YAML config",
+    )
+    parser.add_argument("--check", action="store_true", help="Check can_manage_bots and exit")
     args = parser.parse_args()
 
     logging.basicConfig(

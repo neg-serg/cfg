@@ -20,6 +20,7 @@ def _load_registry() -> dict[str, Any]:
         return {}
     try:
         import yaml
+
         data = yaml.safe_load(path.read_text())
         return data if isinstance(data, dict) else {}
     except Exception:
@@ -51,6 +52,7 @@ def feature_enabled(name: str, host: dict[str, Any] | None = None) -> bool:
     if host is None:
         try:
             from .common import get_host
+
             host = get_host()
         except Exception:
             return False

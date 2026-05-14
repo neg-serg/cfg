@@ -17,6 +17,7 @@ def _host() -> dict[str, Any]:
     except (NameError, KeyError):
         try:
             from _modules.common import get_host
+
             return get_host()
         except Exception:
             return {
@@ -53,11 +54,13 @@ DEFAULT_RETRY_INTERVAL = 10
 
 
 @yaml_output
-def udev_rule(name: str, path: str, source: str | None = None,
-              contents: str | None = None) -> dict[str, Any]:
+def udev_rule(
+    name: str, path: str, source: str | None = None, contents: str | None = None
+) -> dict[str, Any]:
     """Deploy udev rule file + reload rules on change."""
     fargs: list[dict[str, Any]] = [
-        {"name": path}, {"mode": "0644"},
+        {"name": path},
+        {"mode": "0644"},
     ]
     if contents is not None:
         fargs.append({"contents": contents})
@@ -76,18 +79,23 @@ def udev_rule(name: str, path: str, source: str | None = None,
 
 
 @yaml_output
-def config_and_reload(name: str, config_path: str, reload_cmd: str,
-                      source: str | None = None,
-                      contents: str | None = None,
-                      mode: str = "0644",
-                      template: str | None = None,
-                      context: dict[str, Any] | None = None,
-                      makedirs: bool = False,
-                      require: list[str] | None = None,
-                      onlyif: str | None = None) -> dict[str, Any]:
+def config_and_reload(
+    name: str,
+    config_path: str,
+    reload_cmd: str,
+    source: str | None = None,
+    contents: str | None = None,
+    mode: str = "0644",
+    template: str | None = None,
+    context: dict[str, Any] | None = None,
+    makedirs: bool = False,
+    require: list[str] | None = None,
+    onlyif: str | None = None,
+) -> dict[str, Any]:
     """Deploy config file + reload/restart companion."""
     fargs: list[dict[str, Any]] = [
-        {"name": config_path}, {"mode": mode},
+        {"name": config_path},
+        {"mode": mode},
     ]
     if source:
         fargs.append({"source": source})
@@ -159,16 +167,16 @@ def env_block() -> str:
     return _render_env_block()
 
 
-def _ensure_dir_dict(name: str, path: str, mode: str | None = None,
-                     require: list[str] | None = None,
-                     user: str | None = None) -> dict[str, Any]:
+def _ensure_dir_dict(
+    name: str,
+    path: str,
+    mode: str | None = None,
+    require: list[str] | None = None,
+    user: str | None = None,
+) -> dict[str, Any]:
     u = user or _host().get("user", "root")
     obj = {
-        name: {
-            "file.directory": [
-                {"name": path}, {"user": u}, {"group": u}, {"makedirs": True}
-            ]
-        }
+        name: {"file.directory": [{"name": path}, {"user": u}, {"group": u}, {"makedirs": True}]}
     }
     args = obj[name]["file.directory"]
     if mode:
@@ -179,15 +187,20 @@ def _ensure_dir_dict(name: str, path: str, mode: str | None = None,
 
 
 @yaml_output
-def ensure_dir(name: str, path: str, mode: str | None = None,
-               require: list[str] | None = None,
-               user: str | None = None) -> str:
+def ensure_dir(
+    name: str,
+    path: str,
+    mode: str | None = None,
+    require: list[str] | None = None,
+    user: str | None = None,
+) -> str:
     return _ensure_dir_dict(name, path, mode=mode, require=require, user=user)
 
 
 @yaml_output
-def remove_native_unit(name: str, unit_path: str | None = None,
-                       scope: str = "system") -> dict[str, Any]:
+def remove_native_unit(
+    name: str, unit_path: str | None = None, scope: str = "system"
+) -> dict[str, Any]:
     home = _host().get("home", "/root")
     if unit_path is None:
         if scope == "user":
@@ -218,9 +231,7 @@ def remove_native_unit(name: str, unit_path: str | None = None,
         daemon_reload[f"{name}_native_unit_daemon_reload"]["cmd.run"].append(
             {"runas": _host().get("user", "root")}
         )
-        daemon_reload[f"{name}_native_unit_daemon_reload"]["cmd.run"].append(
-            {"env": _sysctl_env()}
-        )
+        daemon_reload[f"{name}_native_unit_daemon_reload"]["cmd.run"].append({"env": _sysctl_env()})
 
     return {
         f"{name}_native_unit_absent": {"file.absent": [{"name": unit_path}]},
@@ -230,16 +241,13 @@ def remove_native_unit(name: str, unit_path: str | None = None,
 
 @yaml_output
 def remove_native_package(name: str, pkgs: list[str]) -> dict[str, Any]:
-    return {
-        f"{name}_native_package_removed": {
-            "pkg.removed": [{"pkgs": list(pkgs)}]
-        }
-    }
+    return {f"{name}_native_package_removed": {"pkg.removed": [{"pkgs": list(pkgs)}]}}
 
 
 @yaml_output
-def ensure_running(name: str, service: str | None = None,
-                   watch: list[str] | None = None) -> dict[str, Any]:
+def ensure_running(
+    name: str, service: str | None = None, watch: list[str] | None = None
+) -> dict[str, Any]:
     svc = service or name
     return {
         f"{name}_reset_failed": {
@@ -252,10 +260,12 @@ def ensure_running(name: str, service: str | None = None,
         f"{name}_running": {
             "service.running": [
                 {"name": svc},
-                {"require": [
-                    {"service": f"{name}_enabled"},
-                    {"cmd": f"{name}_reset_failed"},
-                ]},
+                {
+                    "require": [
+                        {"service": f"{name}_enabled"},
+                        {"cmd": f"{name}_reset_failed"},
+                    ]
+                },
                 *([{"watch": [{"file": w} for w in watch]}] if watch else []),
             ]
         },
@@ -263,13 +273,15 @@ def ensure_running(name: str, service: str | None = None,
 
 
 @yaml_output
-def service_stopped(name: str, svc: str, stop: bool = True,
-                    requires: list[str] | None = None,
-                    onlyif: str | None = None) -> dict[str, Any]:
+def service_stopped(
+    name: str,
+    svc: str,
+    stop: bool = True,
+    requires: list[str] | None = None,
+    onlyif: str | None = None,
+) -> dict[str, Any]:
     if stop:
-        base: dict[str, list[dict[str, Any]]] = {
-            "service.dead": [{"name": svc}, {"enable": False}]
-        }
+        base: dict[str, list[dict[str, Any]]] = {"service.dead": [{"name": svc}, {"enable": False}]}
     else:
         base = {"service.disabled": [{"name": svc}]}
 
@@ -282,13 +294,16 @@ def service_stopped(name: str, svc: str, stop: bool = True,
 
 
 @yaml_output
-def service_with_healthcheck(name: str, service: str,
-                              check_cmd: str | None = None,
-                              timeout: int = 30,
-                              requires: list[str] | None = None,
-                              catalog: dict[str, Any] | None = None,
-                              user_scope: bool = False,
-                              user: str | None = None) -> dict[str, Any]:
+def service_with_healthcheck(
+    name: str,
+    service: str,
+    check_cmd: str | None = None,
+    timeout: int = 30,
+    requires: list[str] | None = None,
+    catalog: dict[str, Any] | None = None,
+    user_scope: bool = False,
+    user: str | None = None,
+) -> dict[str, Any]:
     """Resolve healthcheck command and emit cmd.run."""
     actual_cmd = check_cmd
     actual_timeout = timeout
@@ -301,8 +316,7 @@ def service_with_healthcheck(name: str, service: str,
         elif entry.get("port") and entry.get("health_path"):
             h = entry.get("health_host", "127.0.0.1")
             actual_cmd = (
-                f"curl -sf http://{h}:{entry['port']}{entry['health_path']}"
-                f" >/dev/null 2>&1"
+                f"curl -sf http://{h}:{entry['port']}{entry['health_path']} >/dev/null 2>&1"
             )
         if entry.get("timeout"):
             actual_timeout = entry["timeout"]
@@ -320,7 +334,7 @@ def service_with_healthcheck(name: str, service: str,
         f"  {actual_cmd} && exit 0\n"
         f"  sleep 1\n"
         f"done\n"
-        f"echo \"{service} failed to start within {actual_timeout}s\" >&2\n"
+        f'echo "{service} failed to start within {actual_timeout}s" >&2\n'
         f"exit 1"
     )
 
@@ -345,14 +359,22 @@ def service_with_healthcheck(name: str, service: str,
 
 
 @yaml_output
-def unit_override(name: str, service: str, source: str,
-                  filename: str = "override.conf",
-                  requires: list[str] | None = None) -> dict[str, Any]:
+def unit_override(
+    name: str,
+    service: str,
+    source: str,
+    filename: str = "override.conf",
+    requires: list[str] | None = None,
+) -> dict[str, Any]:
     ret: dict[str, Any] = {
         name: {
             "file.managed": [
-                {"name": (f"{_host().get('systemd_unit_dir', '/etc/systemd/system/')}"
-                          f"{service}.d/{filename}")},
+                {
+                    "name": (
+                        f"{_host().get('systemd_unit_dir', '/etc/systemd/system/')}"
+                        f"{service}.d/{filename}"
+                    )
+                },
                 {"source": source},
                 {"makedirs": True},
                 {"mode": "0644"},
@@ -370,11 +392,19 @@ def unit_override(name: str, service: str, source: str,
     return ret
 
 
-def _service_with_unit_dict(name, source, unit_type="service",
-                            running=False, enabled=True,
-                            requires=None, template=None,
-                            context=None, onlyif=None,
-                            companion=None, watch=None):
+def _service_with_unit_dict(
+    name,
+    source,
+    unit_type="service",
+    running=False,
+    enabled=True,
+    requires=None,
+    template=None,
+    context=None,
+    onlyif=None,
+    companion=None,
+    watch=None,
+):
     """Internal version — returns dict for composition."""
     ret: dict[str, Any] = {}
 
@@ -445,10 +475,12 @@ def _service_with_unit_dict(name, source, unit_type="service",
         running_args: list[dict[str, Any]] = [
             {"name": f"{name}.{unit_type}"},
             {"watch": [{"file": f"{name}_service"}, *[{"file": w} for w in (watch or [])]]},
-            {"require": [
-                {"service": f"{name}_enabled"},
-                {"cmd": f"{name}_reset_failed"},
-            ]},
+            {
+                "require": [
+                    {"service": f"{name}_enabled"},
+                    {"cmd": f"{name}_reset_failed"},
+                ]
+            },
         ]
         ret[f"{name}_running"] = {"service.running": running_args}
 
@@ -456,29 +488,47 @@ def _service_with_unit_dict(name, source, unit_type="service",
 
 
 @yaml_output
-def service_with_unit(name: str, source: str, unit_type: str = "service",
-                      running: bool = False, enabled: bool = True,
-                      requires: list[str] | None = None,
-                      template: str | None = None,
-                      context: dict[str, Any] | None = None,
-                      onlyif: str | None = None,
-                      companion: str | None = None,
-                      watch: list[str] | None = None) -> dict[str, Any]:
+def service_with_unit(
+    name: str,
+    source: str,
+    unit_type: str = "service",
+    running: bool = False,
+    enabled: bool = True,
+    requires: list[str] | None = None,
+    template: str | None = None,
+    context: dict[str, Any] | None = None,
+    onlyif: str | None = None,
+    companion: str | None = None,
+    watch: list[str] | None = None,
+) -> dict[str, Any]:
     """Generate complete systemd unit + service lifecycle states."""
-    return _service_with_unit_dict(name, source, unit_type=unit_type,
-                                   running=running, enabled=enabled,
-                                   requires=requires, template=template,
-                                   context=context, onlyif=onlyif,
-                                   companion=companion, watch=watch)
+    return _service_with_unit_dict(
+        name,
+        source,
+        unit_type=unit_type,
+        running=running,
+        enabled=enabled,
+        requires=requires,
+        template=template,
+        context=context,
+        onlyif=onlyif,
+        companion=companion,
+        watch=watch,
+    )
 
 
 _HOST_FIELDS = {"hostname", "home", "user", "uid", "mnt_zero", "mnt_one"}
 
 
 @yaml_output
-def render_service(name: str, opts: dict[str, Any], feature_flag: bool,
-                   section_label: str, known_vars: dict[str, Any] | None = None,
-                   host: dict[str, Any] | None = None) -> dict[str, Any]:
+def render_service(
+    name: str,
+    opts: dict[str, Any],
+    feature_flag: bool,
+    section_label: str,
+    known_vars: dict[str, Any] | None = None,
+    host: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Data-driven service renderer — replaces render_service() macro."""
     if not feature_flag:
         return {}
@@ -501,8 +551,10 @@ def render_service(name: str, opts: dict[str, Any], feature_flag: bool,
 
     # Cleanup (resolve __HOME__ from host)
     if "cleanup" in opts:
-        _paths = [p.replace("__HOME__", host.get("home", "")) if host else p
-                  for p in opts["cleanup"]["paths"]]
+        _paths = [
+            p.replace("__HOME__", host.get("home", "")) if host else p
+            for p in opts["cleanup"]["paths"]
+        ]
         _onlyif = (
             opts["cleanup"]["onlyif"].replace("__HOME__", host.get("home", ""))
             if host
@@ -529,8 +581,11 @@ def render_service(name: str, opts: dict[str, Any], feature_flag: bool,
     # Dirs
     if "dirs" in opts:
         for i, d in enumerate(opts["dirs"]):
-            ret.update(_ensure_dir_dict(f"{name}_dir_{i}", d["path"], mode=d.get("mode"),
-                                       require=d.get("require")))
+            ret.update(
+                _ensure_dir_dict(
+                    f"{name}_dir_{i}", d["path"], mode=d.get("mode"), require=d.get("require")
+                )
+            )
 
     # Configs
     if "config_templates" in opts:
@@ -571,15 +626,18 @@ def render_service(name: str, opts: dict[str, Any], feature_flag: bool,
         if "packages" in opts:
             unit_req.append(f"cmd: install_{name.replace('-', '_')}")
         unit_req.extend(u.get("requires", []))
-        ret.update(_service_with_unit_dict(
-            name, u["source"],
-            unit_type=u.get("type", "service"),
-            enabled=u.get("enabled", True),
-            running=u.get("running", False),
-            companion=u.get("companion"),
-            template=u.get("template"),
-            context=unit_ctx if unit_ctx else None,
-            requires=unit_req if unit_req else None,
-        ))
+        ret.update(
+            _service_with_unit_dict(
+                name,
+                u["source"],
+                unit_type=u.get("type", "service"),
+                enabled=u.get("enabled", True),
+                running=u.get("running", False),
+                companion=u.get("companion"),
+                template=u.get("template"),
+                context=unit_ctx if unit_ctx else None,
+                requires=unit_req if unit_req else None,
+            )
+        )
 
     return ret

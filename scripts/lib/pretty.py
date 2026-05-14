@@ -50,52 +50,101 @@ _HAS_UTF8 = any(
     for k in ("LANG", "LC_ALL", "LC_CTYPE")
 )
 _HAS_256 = _IS_TTY and os.environ.get("TERM", "") in (
-    "xterm-256color", "screen-256color", "tmux-256color",
-    "foot", "alacritty", "kitty", "wezterm",
+    "xterm-256color",
+    "screen-256color",
+    "tmux-256color",
+    "foot",
+    "alacritty",
+    "kitty",
+    "wezterm",
 )
 
 # ── Color palette ─────────────────────────────────────────────────────────
 if _IS_TTY:
     C: dict[str, str] = {
-        "reset": "\033[0m", "bold": "\033[1m", "dim": "\033[2m",
-        "red": "\033[31m", "green": "\033[32m", "yellow": "\033[33m",
-        "blue": "\033[34m", "magenta": "\033[35m", "cyan": "\033[36m",
-        "white": "\033[37m", "grey": "\033[90m",
-        "red_b": "\033[1;31m", "green_b": "\033[1;32m", "yellow_b": "\033[1;33m",
-        "blue_b": "\033[1;34m", "cyan_b": "\033[1;36m", "white_b": "\033[1;37m",
+        "reset": "\033[0m",
+        "bold": "\033[1m",
+        "dim": "\033[2m",
+        "red": "\033[31m",
+        "green": "\033[32m",
+        "yellow": "\033[33m",
+        "blue": "\033[34m",
+        "magenta": "\033[35m",
+        "cyan": "\033[36m",
+        "white": "\033[37m",
+        "grey": "\033[90m",
+        "red_b": "\033[1;31m",
+        "green_b": "\033[1;32m",
+        "yellow_b": "\033[1;33m",
+        "blue_b": "\033[1;34m",
+        "cyan_b": "\033[1;36m",
+        "white_b": "\033[1;37m",
         "grey_b": "\033[1;90m",
         # Background colors for badges
-        "bg_red": "\033[41m", "bg_green": "\033[42m", "bg_yellow": "\033[43m",
-        "bg_blue": "\033[44m", "bg_magenta": "\033[45m", "bg_cyan": "\033[46m",
+        "bg_red": "\033[41m",
+        "bg_green": "\033[42m",
+        "bg_yellow": "\033[43m",
+        "bg_blue": "\033[44m",
+        "bg_magenta": "\033[45m",
+        "bg_cyan": "\033[46m",
         "bg_grey": "\033[100m",
         "black": "\033[30m",
     }
     if _HAS_256:
-        C.update({
-            "darkblue": "\033[38;5;24m",
-            "nicecyan": "\033[38;5;37m",
-            "almostgrey": "\033[38;5;243m",
-            "darkgrey": "\033[38;5;238m",
-            "subtleyellow": "\033[38;5;220m",
-            "softgreen": "\033[38;5;71m",
-        })
+        C.update(
+            {
+                "darkblue": "\033[38;5;24m",
+                "nicecyan": "\033[38;5;37m",
+                "almostgrey": "\033[38;5;243m",
+                "darkgrey": "\033[38;5;238m",
+                "subtleyellow": "\033[38;5;220m",
+                "softgreen": "\033[38;5;71m",
+            }
+        )
     else:
-        C.update({
-            "darkblue": "\033[34m",
-            "nicecyan": "\033[36m",
-            "almostgrey": "\033[37m",
-            "darkgrey": "\033[90m",
-            "subtleyellow": "\033[33m",
-            "softgreen": "\033[32m",
-        })
+        C.update(
+            {
+                "darkblue": "\033[34m",
+                "nicecyan": "\033[36m",
+                "almostgrey": "\033[37m",
+                "darkgrey": "\033[90m",
+                "subtleyellow": "\033[33m",
+                "softgreen": "\033[32m",
+            }
+        )
 else:
     _empty_colors = [
-        "reset", "bold", "dim", "red", "green", "yellow", "blue", "magenta",
-        "cyan", "white", "grey", "red_b", "green_b", "yellow_b", "blue_b",
-        "cyan_b", "white_b", "grey_b",
-        "bg_red", "bg_green", "bg_yellow", "bg_blue", "bg_magenta", "bg_cyan",
-        "bg_grey", "black",
-        "darkblue", "nicecyan", "almostgrey", "darkgrey", "subtleyellow",
+        "reset",
+        "bold",
+        "dim",
+        "red",
+        "green",
+        "yellow",
+        "blue",
+        "magenta",
+        "cyan",
+        "white",
+        "grey",
+        "red_b",
+        "green_b",
+        "yellow_b",
+        "blue_b",
+        "cyan_b",
+        "white_b",
+        "grey_b",
+        "bg_red",
+        "bg_green",
+        "bg_yellow",
+        "bg_blue",
+        "bg_magenta",
+        "bg_cyan",
+        "bg_grey",
+        "black",
+        "darkblue",
+        "nicecyan",
+        "almostgrey",
+        "darkgrey",
+        "subtleyellow",
         "softgreen",
     ]
     C = {k: "" for k in _empty_colors}
@@ -103,29 +152,55 @@ else:
 # ── Icons ─────────────────────────────────────────────────────────────────
 if _HAS_UTF8:
     I: dict[str, str] = {  # noqa: E741
-        "ok": "✓", "fail": "✗", "warn": "⚠", "info": "●",
-        "phase": "▶", "clock": "⏳", "arrow": "→", "star": "★",
-        "bullet": "•", "box_v": "║", "box_h": "═",
-        "box_tl": "╔", "box_tr": "╗", "box_bl": "╚", "box_br": "╝",
+        "ok": "✓",
+        "fail": "✗",
+        "warn": "⚠",
+        "info": "●",
+        "phase": "▶",
+        "clock": "⏳",
+        "arrow": "→",
+        "star": "★",
+        "bullet": "•",
+        "box_v": "║",
+        "box_h": "═",
+        "box_tl": "╔",
+        "box_tr": "╗",
+        "box_bl": "╚",
+        "box_br": "╝",
         "section": "─",
-        "branch": "├──", "last": "└──", "pipe": "│  ", "spacer": "   ",
+        "branch": "├──",
+        "last": "└──",
+        "pipe": "│  ",
+        "spacer": "   ",
         "ellipsis": "…",
     }
 else:
     I = {  # noqa: E741
-        "ok": "OK", "fail": "!!", "warn": "*", "info": ">",
-        "phase": ">>", "clock": "...", "arrow": "->", "star": "*",
-        "bullet": "-", "box_v": "|", "box_h": "=",
-        "box_tl": "+", "box_tr": "+", "box_bl": "+", "box_br": "+",
+        "ok": "OK",
+        "fail": "!!",
+        "warn": "*",
+        "info": ">",
+        "phase": ">>",
+        "clock": "...",
+        "arrow": "->",
+        "star": "*",
+        "bullet": "-",
+        "box_v": "|",
+        "box_h": "=",
+        "box_tl": "+",
+        "box_tr": "+",
+        "box_bl": "+",
+        "box_br": "+",
         "section": "-",
-        "branch": "+--", "last": "+--", "pipe": "|  ", "spacer": "   ",
+        "branch": "+--",
+        "last": "+--",
+        "pipe": "|  ",
+        "spacer": "   ",
         "ellipsis": "...",
     }
 
 _SPINNER = (
-    ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
-    if _HAS_UTF8
-    else ["/", "-", "\\", "|"]
+    ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"] if _HAS_UTF8 else ["/", "-", "\\", "|"]
 )
 
 
@@ -165,7 +240,7 @@ def _truncate(text: str, width: int, suffix: str = "…") -> str:
         return suffix[:width]
     # Walk characters to find cut point (unaware of ANSI codes, strip them first)
     plain = re.sub(r"\033\[[0-9;]*m", "", text)
-    return plain[:width - suffix_w] + suffix
+    return plain[: width - suffix_w] + suffix
 
 
 class _Pretty:
@@ -411,17 +486,17 @@ class _Pretty:
         child_fn: extracts list of child nodes from a node
         max_depth: maximum recursion depth
         """
+
         def _walk(items: list, prefix: str, depth: int):
             if depth > max_depth:
                 return
             for i, item in enumerate(items):
-                is_last = (i == len(items) - 1)
+                is_last = i == len(items) - 1
                 connector = I["last"] if is_last else I["branch"]
                 continuation = "    " if is_last else I["pipe"]
                 key = key_fn(item)
                 print(
-                    f"{prefix}{C['darkgrey']}{connector}{C['reset']} "
-                    f"{C['white']}{key}{C['reset']}"
+                    f"{prefix}{C['darkgrey']}{connector}{C['reset']} {C['white']}{key}{C['reset']}"
                 )
                 children = child_fn(item)
                 if children:
@@ -439,7 +514,10 @@ class _Pretty:
     def list_items(self, items: list[str], style: str = "bullet"):
         """Print a bulleted list."""
         bullets = {
-            "bullet": I["bullet"], "dash": "-", "arrow": I["arrow"], "star": I["star"],
+            "bullet": I["bullet"],
+            "dash": "-",
+            "arrow": I["arrow"],
+            "star": I["star"],
         }
         bullet = bullets.get(style, I["bullet"])
         for item in items:

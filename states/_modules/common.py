@@ -20,6 +20,7 @@ try:
 except ImportError:
     yaml = None  # type: ignore[assignment]
 
+
 # ── Path resolution (works both inside Salt and standalone) ──────────
 def _find_states_dir() -> Path:
     """Resolve states/ directory relative to this module file."""
@@ -29,8 +30,6 @@ def _find_states_dir() -> Path:
 STATES_DIR = _find_states_dir()
 HOSTS_YAML = STATES_DIR / "data" / "hosts.yaml"
 FEATURE_REGISTRY_YAML = STATES_DIR / "data" / "feature_registry.yaml"
-
-
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:

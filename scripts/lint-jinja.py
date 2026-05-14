@@ -29,6 +29,7 @@ import yaml  # noqa: E402
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 class SaltTagExtension(jinja2.ext.Extension):
     """Mock Salt-specific Jinja2 tags so templates render in the test environment.
 
@@ -37,6 +38,7 @@ class SaltTagExtension(jinja2.ext.Extension):
     as a template variable. This allows macro files to export YAML-imported
     variables via {% from 'file' import var %}.
     """
+
     tags = {"import_yaml", "load_yaml", "import_json", "load_json", "import_text"}
 
     def parse(self, parser):
@@ -284,9 +286,11 @@ def _make_render_env():
     env.globals["salt"] = _MockSalt()
     # Macros in _macros_pkg/_macros_service access these directly (not via import)
     env.globals["host"] = host
+
     # Salt-specific filters
     def _yaml_dquote(value):
         return '"' + str(value).replace("\\", "\\\\").replace('"', '\\"') + '"'
+
     env.filters["yaml_dquote"] = _yaml_dquote
     return env
 
@@ -934,6 +938,7 @@ def check_cmd_shell(rendered_docs):
 
 # salt:// paths in string literals (handles both 'salt://...' and "salt://...")
 _SALT_URI_RE = re.compile(r"""salt://([^'"\s}]+)""")
+
 
 # file_roots search order (relative to project root)
 def _load_file_roots():

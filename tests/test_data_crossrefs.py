@@ -462,9 +462,7 @@ def test_feature_matrix_entries_are_valid():
         overrides = entry.get("overrides", {}).get("features", {})
         matrix_features = _collect_names(overrides)
         unknown = matrix_features - registry_features
-        assert not unknown, (
-            f"feature_matrix '{entry['name']}' unknown features: {unknown}"
-        )
+        assert not unknown, f"feature_matrix '{entry['name']}' unknown features: {unknown}"
 
 
 def test_feature_matrix_has_all_features_scenario():

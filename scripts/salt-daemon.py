@@ -61,9 +61,9 @@ salt_compat.patch()
 # (Same approach as salt_runner.py — needed for salt['module.func']() in Jinja.)
 import salt.loader as _daemon_salt_loader
 
-_daemon_salt_loader._module_dirs_orig = getattr(
-    _daemon_salt_loader, "_module_dirs_orig", None
-) or _daemon_salt_loader._module_dirs
+_daemon_salt_loader._module_dirs_orig = (
+    getattr(_daemon_salt_loader, "_module_dirs_orig", None) or _daemon_salt_loader._module_dirs
+)
 
 
 def _daemon_patched_module_dirs(*args, **kwargs):
@@ -279,6 +279,7 @@ def _format_change_block(changes: dict, colorize: bool = True) -> list[str]:
         if colorize:
             try:
                 from lib.pretty import pretty as _p
+
                 lines.append(f"              {key}: {_p.bold(str(value))}")
             except ImportError:
                 lines.append(f"              {key}: {value}")
@@ -315,15 +316,17 @@ def _write_result_json(result: dict, log_file: str | None, state: str) -> None:
                 changed += 1
         else:
             failed += 1
-        details.append({
-            "id": entry.get("__id__", entry.get("name", "unknown")),
-            "fun": entry.get("fun", "unknown"),
-            "name": entry.get("name", ""),
-            "result": entry.get("result"),
-            "comment": entry.get("comment", ""),
-            "duration_ms": entry.get("duration", 0),
-            "changed": bool(entry.get("changes")),
-        })
+        details.append(
+            {
+                "id": entry.get("__id__", entry.get("name", "unknown")),
+                "fun": entry.get("fun", "unknown"),
+                "name": entry.get("name", ""),
+                "result": entry.get("result"),
+                "comment": entry.get("comment", ""),
+                "duration_ms": entry.get("duration", 0),
+                "changed": bool(entry.get("changes")),
+            }
+        )
 
     summary = {
         "state": state,
@@ -376,8 +379,8 @@ def _format_compact_highstate(result: dict, colorize: bool = True) -> str:
         entry_color = _p.dim if (colorize and not is_fail) else (lambda s: s)
 
         lines.append(entry_color("----------"))
-        raw_name = entry.get('__id__', entry.get('name', 'unknown'))
-        suffix = ' ' + badge if badge else ''
+        raw_name = entry.get("__id__", entry.get("name", "unknown"))
+        suffix = " " + badge if badge else ""
         lines.append(f"      ID: {raw_name}{suffix}")
         lines.append(f"Function: {entry.get('fun', 'unknown')}")
         lines.append(f"    Name: {entry.get('name', '')}")

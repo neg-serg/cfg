@@ -43,7 +43,6 @@ def test_address_regex_matches_expected_pattern():
     assert not addr_regex.fullmatch(" 0x1a2b3c")
 
 
-
 def test_subscribes_to_required_events():
     """Script must subscribe to window‑closed and window‑focused events."""
     source = SCRIPT_PATH.read_text()

@@ -72,10 +72,7 @@ def _has_invalid_user_service_features(features, allowed: set[str] | None = None
         allowed = _collect_allowed_user_service_features()
     if not isinstance(features, list):
         return True
-    return any(
-        not isinstance(feature, str) or feature not in allowed
-        for feature in features
-    )
+    return any(not isinstance(feature, str) or feature not in allowed for feature in features)
 
 
 def _user_service_group_entries(user_services: dict, group_name: str, errors: list[str]) -> list:
@@ -513,9 +510,7 @@ def _collect_nested_feature_names(features: dict, prefix: str = "") -> set[str]:
     names = set()
     for key, value in features.items():
         full_name = f"{prefix}.{key}" if prefix else key
-        if isinstance(value, dict) and any(
-            isinstance(v, bool) for v in value.values()
-        ):
+        if isinstance(value, dict) and any(isinstance(v, bool) for v in value.values()):
             names.update(_collect_nested_feature_names(value, full_name))
         elif isinstance(value, bool):
             names.add(full_name)
@@ -537,9 +532,7 @@ def check_features_against_registry(repo_root: Path = REPO_ROOT) -> list[str]:
 
     for feature in hosts_features:
         if feature not in registry_features:
-            errors.append(
-                f"hosts.yaml feature '{feature}' not declared in feature_registry.yaml"
-            )
+            errors.append(f"hosts.yaml feature '{feature}' not declared in feature_registry.yaml")
 
     for hostname, config in hosts_data.get("hosts", {}).items():
         if not isinstance(config, dict):
@@ -702,15 +695,11 @@ def _collect_data_consumers(repo_root: Path = REPO_ROOT) -> dict[str, set[str]]:
         for match in DATA_IMPORT_RE.finditer(src):
             data_rel = match.group(1)
             data_basename = data_rel.split("/")[-1]
-            usage.setdefault(data_basename, set()).add(
-                str(sls_path.relative_to(repo_root))
-            )
+            usage.setdefault(data_basename, set()).add(str(sls_path.relative_to(repo_root)))
         for match in CP_FILE_DATA_RE.finditer(src):
             data_rel = match.group(1)
             data_basename = data_rel.split("/")[-1]
-            usage.setdefault(data_basename, set()).add(
-                str(sls_path.relative_to(repo_root))
-            )
+            usage.setdefault(data_basename, set()).add(str(sls_path.relative_to(repo_root)))
 
     for config_path in (states_dir / "configs").rglob("*.j2"):
         try:
@@ -734,9 +723,7 @@ def _collect_data_consumers(repo_root: Path = REPO_ROOT) -> dict[str, set[str]]:
             data_rel = match.group(1)
             if data_rel.startswith("data/"):
                 data_basename = data_rel.split("/")[-1]
-                usage.setdefault(data_basename, set()).add(
-                    str(jinja_path.relative_to(repo_root))
-                )
+                usage.setdefault(data_basename, set()).add(str(jinja_path.relative_to(repo_root)))
 
     return usage
 
@@ -774,9 +761,7 @@ def check_monitored_services_references(repo_root: Path = REPO_ROOT) -> list[str
             is_optional = entry.get("optional", False)
             normalized = name.replace("-", "_")
             if not is_optional and name not in known and normalized not in known:
-                errors.append(
-                    f"monitored_services.yaml {scope}.{name}: unknown service"
-                )
+                errors.append(f"monitored_services.yaml {scope}.{name}: unknown service")
 
     return errors
 
@@ -793,10 +778,12 @@ def check_drift_inventory_units(repo_root: Path = REPO_ROOT) -> list[str]:
     known.update(_collect_catalog_service_targets(repo_root))
     known.update(_collect_service_domains_from_services_yaml(repo_root))
     known.update(_collect_known_units(repo_root))
-    known.update({
-        "salt-monitor.service",
-        "salt-monitor-watchdog.timer",
-    })
+    known.update(
+        {
+            "salt-monitor.service",
+            "salt-monitor-watchdog.timer",
+        }
+    )
 
     errors = []
 
@@ -812,9 +799,7 @@ def check_drift_inventory_units(repo_root: Path = REPO_ROOT) -> list[str]:
                 continue
             base = name.rsplit(".", 1)[0] if "." in name else name
             if name not in known and base not in known:
-                errors.append(
-                    f"drift_inventory.yaml {scope}.{name}: unknown unit"
-                )
+                errors.append(f"drift_inventory.yaml {scope}.{name}: unknown unit")
 
     return errors
 
@@ -884,9 +869,7 @@ def check_data_file_liveness(repo_root: Path = REPO_ROOT) -> list[str]:
         if basename in _CORE_DATA_FILES or basename == ".metadata.yaml":
             continue
         if basename not in consumers:
-            errors.append(
-                f"Data file 'states/data/{basename}' has no SLS or config consumers"
-            )
+            errors.append(f"Data file 'states/data/{basename}' has no SLS or config consumers")
 
     return errors
 
@@ -992,7 +975,8 @@ def check_sls_feature_gates_against_registry(repo_root: Path = REPO_ROOT) -> lis
 
     # Groups are namespace-only, not features themselves
     registry_groups = {
-        name for name, config in registry.get("features", {}).items()
+        name
+        for name, config in registry.get("features", {}).items()
         if isinstance(config, dict) and "features" in config
     }
 
@@ -1034,7 +1018,8 @@ def check_registry_gates_resolve_to_states(repo_root: Path = REPO_ROOT) -> list[
 
     states_dir = repo_root / "states"
     existing_sls = {
-        p.stem for p in states_dir.glob("*.sls")
+        p.stem
+        for p in states_dir.glob("*.sls")
         if not p.name.startswith("_") and not p.name.startswith("group.")
     }
     for p in (states_dir / "group").glob("*.sls"):
@@ -1190,9 +1175,7 @@ def check_service_catalog_scopes(repo_root: Path = REPO_ROOT) -> list[str]:
                 f" (must be one of {valid_scopes})"
             )
         elif not isinstance(scope, str):
-            errors.append(
-                f"Service catalog '{service_name}' missing or invalid scope field"
-            )
+            errors.append(f"Service catalog '{service_name}' missing or invalid scope field")
 
     return errors
 
@@ -1233,13 +1216,9 @@ def check_data_file_yaml_syntax(repo_root: Path = REPO_ROOT) -> list[str]:
             with yaml_path.open() as fh:
                 yaml.safe_load(fh.read())
         except yaml.YAMLError as e:
-            errors.append(
-                f"Data file '{yaml_path.relative_to(repo_root)}' YAML error: {e}"
-            )
+            errors.append(f"Data file '{yaml_path.relative_to(repo_root)}' YAML error: {e}")
         except (OSError, IOError):
-            errors.append(
-                f"Data file '{yaml_path.relative_to(repo_root)}' cannot be read"
-            )
+            errors.append(f"Data file '{yaml_path.relative_to(repo_root)}' cannot be read")
 
     return errors
 
@@ -1275,21 +1254,14 @@ def check_data_schema_versions(repo_root: Path = REPO_ROOT) -> list[str]:
             # Check if file is a dict (lists don't need schema_version)
             data = load_yaml_file(yaml_path)
             if isinstance(data, dict):
-                warnings.append(
-                    f"Data file '{rel}': not listed in .metadata.yaml"
-                )
+                warnings.append(f"Data file '{rel}': not listed in .metadata.yaml")
         elif actual != expected:
-            warnings.append(
-                f"Data file '{rel}': schema_version {actual} != "
-                f"expected {expected}"
-            )
+            warnings.append(f"Data file '{rel}': schema_version {actual} != expected {expected}")
 
     # Warn about metadata entries with no corresponding file
     for fname in versions:
         if not (data_dir / fname).is_file():
-            warnings.append(
-                f"'.metadata.yaml' lists '{fname}' but file does not exist"
-            )
+            warnings.append(f"'.metadata.yaml' lists '{fname}' but file does not exist")
 
     return warnings
 
@@ -1376,6 +1348,7 @@ def _get_pretty():
     """Lazy-load pretty printer — returns None if unavailable."""
     try:
         from lib.pretty import pretty
+
         return pretty
     except ImportError:
         return None
@@ -1442,8 +1415,7 @@ def print_data_health_summary(repo_root: Path = REPO_ROOT) -> int:
     if pretty:
         pretty.section("Data Health Summary")
         pretty.info(
-            f"Data files:       {total_data:>4}  "
-            f"({consumed} consumed, {orphaned} orphaned)"
+            f"Data files:       {total_data:>4}  ({consumed} consumed, {orphaned} orphaned)"
         )
         pretty.info(f"Packages:         {total_packages:>4}  (across packages.yaml)")
         pretty.info(f"Feature flags:    {total_features:>4}  (in feature_registry.yaml)")
@@ -1472,6 +1444,7 @@ def print_data_health_summary(repo_root: Path = REPO_ROOT) -> int:
 
 def main() -> int:
     import argparse
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--verbose", "-v", action="store_true", help="Show summary even when clean")
     parser.add_argument("--summary", "-s", action="store_true", help="Show data health overview")

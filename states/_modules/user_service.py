@@ -18,6 +18,7 @@ def _host() -> dict[str, Any]:
     except (NameError, KeyError):
         try:
             from _modules.common import get_host
+
             return get_host()
         except Exception:
             return {
@@ -41,15 +42,21 @@ def _sysctl_env() -> dict[str, str]:
 def _user_env_prefix() -> str:
     """Shell prefix that sets user-session env vars for systemctl --user."""
     h = _host()
-    return (f"XDG_RUNTIME_DIR={h['runtime_dir']} "
-            f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus")
+    return (
+        f"XDG_RUNTIME_DIR={h['runtime_dir']} "
+        f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus"
+    )
 
 
-def _user_service_file_dict(name: str, filename: str, source: str | None = None,
-                            template: str | None = None,
-                            context: dict[str, Any] | None = None,
-                            user: str | None = None,
-                            home: str | None = None) -> dict[str, Any]:
+def _user_service_file_dict(
+    name: str,
+    filename: str,
+    source: str | None = None,
+    template: str | None = None,
+    context: dict[str, Any] | None = None,
+    user: str | None = None,
+    home: str | None = None,
+) -> dict[str, Any]:
     u = user or _host()["user"]
     h = home or _host()["home"]
     _user_dir = _host().get("systemd_user_unit_dir", f"{h}/.config/systemd/user/")
@@ -58,8 +65,10 @@ def _user_service_file_dict(name: str, filename: str, source: str | None = None,
     fargs: list[dict[str, Any]] = [
         {"name": f"{_user_dir}{filename}"},
         {"source": src},
-        {"user": u}, {"group": u},
-        {"mode": "0644"}, {"makedirs": True},
+        {"user": u},
+        {"group": u},
+        {"mode": "0644"},
+        {"makedirs": True},
     ]
     if template:
         fargs.append({"template": template})
@@ -71,8 +80,11 @@ def _user_service_file_dict(name: str, filename: str, source: str | None = None,
         f"{name}_daemon_reload": {
             "cmd.run": [
                 {"name": "systemctl --user daemon-reload"},
-                {"onlyif": (_user_env_prefix()
-                            + " systemctl --user show-environment >/dev/null 2>&1")},
+                {
+                    "onlyif": (
+                        _user_env_prefix() + " systemctl --user show-environment >/dev/null 2>&1"
+                    )
+                },
                 {"runas": u},
                 {"env": _sysctl_env()},
                 {"onchanges": [{"file": name}]},
@@ -82,29 +94,40 @@ def _user_service_file_dict(name: str, filename: str, source: str | None = None,
 
 
 @yaml_output
-def user_service_file(name: str, filename: str, source: str | None = None,
-                      template: str | None = None,
-                      context: dict[str, Any] | None = None,
-                      user: str | None = None,
-                      home: str | None = None) -> dict[str, Any]:
-    return _user_service_file_dict(name, filename, source=source, template=template,
-                                   context=context, user=user, home=home)
+def user_service_file(
+    name: str,
+    filename: str,
+    source: str | None = None,
+    template: str | None = None,
+    context: dict[str, Any] | None = None,
+    user: str | None = None,
+    home: str | None = None,
+) -> dict[str, Any]:
+    return _user_service_file_dict(
+        name, filename, source=source, template=template, context=context, user=user, home=home
+    )
 
 
 @yaml_output
-def user_unit_override(name: str, service: str, source: str | None = None,
-                      contents: str | None = None,
-                      filename: str = "override.conf",
-                      requires: list[str] | None = None,
-                      user: str | None = None,
-                      home: str | None = None) -> dict[str, Any]:
+def user_unit_override(
+    name: str,
+    service: str,
+    source: str | None = None,
+    contents: str | None = None,
+    filename: str = "override.conf",
+    requires: list[str] | None = None,
+    user: str | None = None,
+    home: str | None = None,
+) -> dict[str, Any]:
     u = user or _host()["user"]
     h = home or _host()["home"]
     _user_dir = _host().get("systemd_user_unit_dir", f"{h}/.config/systemd/user/")
     fargs: list[dict[str, Any]] = [
         {"name": f"{_user_dir}{service}.d/{filename}"},
-        {"user": u}, {"group": u},
-        {"mode": "0644"}, {"makedirs": True},
+        {"user": u},
+        {"group": u},
+        {"mode": "0644"},
+        {"makedirs": True},
     ]
     if contents is not None:
         fargs.append({"contents": contents})
@@ -117,8 +140,11 @@ def user_unit_override(name: str, service: str, source: str | None = None,
         f"{name}_daemon_reload": {
             "cmd.run": [
                 {"name": "systemctl --user daemon-reload"},
-                {"onlyif": (_user_env_prefix()
-                            + " systemctl --user show-environment >/dev/null 2>&1")},
+                {
+                    "onlyif": (
+                        _user_env_prefix() + " systemctl --user show-environment >/dev/null 2>&1"
+                    )
+                },
                 {"runas": u},
                 {"env": _sysctl_env()},
                 {"onchanges": [{"file": name}]},
@@ -128,13 +154,16 @@ def user_unit_override(name: str, service: str, source: str | None = None,
     return ret
 
 
-def _user_service_enable_dict(name: str, services: list[str] | None = None,
-                              start_now: list[str] | None = None,
-                              daemon_reload: bool = False,
-                              check: str = "enabled",
-                              onlyif: str | None = None,
-                              requires: list[str] | None = None,
-                              user: str | None = None) -> dict[str, Any]:
+def _user_service_enable_dict(
+    name: str,
+    services: list[str] | None = None,
+    start_now: list[str] | None = None,
+    daemon_reload: bool = False,
+    check: str = "enabled",
+    onlyif: str | None = None,
+    requires: list[str] | None = None,
+    user: str | None = None,
+) -> dict[str, Any]:
     u = user or _host()["user"]
     svc_list = services or []
     now_list = start_now or []
@@ -145,8 +174,10 @@ def _user_service_enable_dict(name: str, services: list[str] | None = None,
         shell_cmd = "/usr/bin/true"
     else:
         parts = ["set -euo pipefail"]
-        parts.append(f"export XDG_RUNTIME_DIR={h['runtime_dir']} "
-                     f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus")
+        parts.append(
+            f"export XDG_RUNTIME_DIR={h['runtime_dir']} "
+            f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus"
+        )
         if daemon_reload:
             parts.append("systemctl --user daemon-reload")
         for svc in svc_list:
@@ -164,22 +195,17 @@ def _user_service_enable_dict(name: str, services: list[str] | None = None,
     unless_cmd = None
     if all_units:
         checks = [f"export XDG_RUNTIME_DIR={h['runtime_dir']}"]
-        checks.append(
-            f"export DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus"
-        )
+        checks.append(f"export DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus")
         for svc in svc_list:
-            checks.append(
-                f"systemctl --user is-{check} '{svc}' >/dev/null 2>&1"
-            )
+            checks.append(f"systemctl --user is-{check} '{svc}' >/dev/null 2>&1")
         for svc in now_list:
-            checks.append(
-                f"systemctl --user is-enabled '{svc}' >/dev/null 2>&1"
-            )
+            checks.append(f"systemctl --user is-enabled '{svc}' >/dev/null 2>&1")
         unless_cmd = " && ".join(checks)
 
     args: list[dict[str, Any]] = [
         {"name": shell_cmd},
-        {"shell": "/bin/bash"}, {"runas": u},
+        {"shell": "/bin/bash"},
+        {"runas": u},
         {"env": _sysctl_env()},
     ]
     if unless_cmd:
@@ -193,49 +219,76 @@ def _user_service_enable_dict(name: str, services: list[str] | None = None,
 
 
 @yaml_output
-def user_service_enable(name: str, services: list[str] | None = None,
-                        start_now: list[str] | None = None,
-                        daemon_reload: bool = False,
-                        check: str = "enabled",
-                        onlyif: str | None = None,
-                        requires: list[str] | None = None,
-                        user: str | None = None) -> dict[str, Any]:
-    return _user_service_enable_dict(name, services=services, start_now=start_now,
-                                      daemon_reload=daemon_reload, check=check,
-                                      onlyif=onlyif, requires=requires, user=user)
+def user_service_enable(
+    name: str,
+    services: list[str] | None = None,
+    start_now: list[str] | None = None,
+    daemon_reload: bool = False,
+    check: str = "enabled",
+    onlyif: str | None = None,
+    requires: list[str] | None = None,
+    user: str | None = None,
+) -> dict[str, Any]:
+    return _user_service_enable_dict(
+        name,
+        services=services,
+        start_now=start_now,
+        daemon_reload=daemon_reload,
+        check=check,
+        onlyif=onlyif,
+        requires=requires,
+        user=user,
+    )
 
 
 @yaml_output
-def user_service_with_unit(name: str, filename: str, source: str | None = None,
-                           services: list[str] | None = None,
-                           start_now: list[str] | None = None,
-                           requires: list[str] | None = None,
-                           user: str | None = None,
-                           home: str | None = None) -> dict[str, Any]:
+def user_service_with_unit(
+    name: str,
+    filename: str,
+    source: str | None = None,
+    services: list[str] | None = None,
+    start_now: list[str] | None = None,
+    requires: list[str] | None = None,
+    user: str | None = None,
+    home: str | None = None,
+) -> dict[str, Any]:
     svc_list = services if services is not None else [filename]
     file_id = f"{name}_service"
     ret = _user_service_file_dict(file_id, filename, source=source, user=user, home=home)
     reqs = [f"file: {file_id}", f"cmd: {file_id}_daemon_reload"]
     if requires:
         reqs.extend(requires)
-    ret.update(_user_service_enable_dict(
-        f"{name}_enabled", services=svc_list, start_now=start_now or [],
-        requires=reqs, user=user,
-    ))
+    ret.update(
+        _user_service_enable_dict(
+            f"{name}_enabled",
+            services=svc_list,
+            start_now=start_now or [],
+            requires=reqs,
+            user=user,
+        )
+    )
     return ret
 
 
 @yaml_output
-def user_service_restart(name: str, service: str, onlyif: str | None = None,
-                         requires: list[str] | None = None,
-                         onchanges: list[str] | None = None,
-                         user: str | None = None) -> dict[str, Any]:
+def user_service_restart(
+    name: str,
+    service: str,
+    onlyif: str | None = None,
+    requires: list[str] | None = None,
+    onchanges: list[str] | None = None,
+    user: str | None = None,
+) -> dict[str, Any]:
     u = user or _host()["user"]
     _h = _host()
     args: list[dict[str, Any]] = [
-        {"name": (f"XDG_RUNTIME_DIR={_h['runtime_dir']} "
-                  f"DBUS_SESSION_BUS_ADDRESS=unix:path={_h['runtime_dir']}/bus "
-                  f"systemctl --user restart {service}")},
+        {
+            "name": (
+                f"XDG_RUNTIME_DIR={_h['runtime_dir']} "
+                f"DBUS_SESSION_BUS_ADDRESS=unix:path={_h['runtime_dir']}/bus "
+                f"systemctl --user restart {service}"
+            )
+        },
         {"runas": u},
     ]
     if onlyif:
@@ -248,8 +301,7 @@ def user_service_restart(name: str, service: str, onlyif: str | None = None,
 
 
 @yaml_output
-def user_service_disable(name: str, units: list[str],
-                         user: str | None = None) -> dict[str, Any]:
+def user_service_disable(name: str, units: list[str], user: str | None = None) -> dict[str, Any]:
     u = user or _host()["user"]
     h = _host()
     unless_parts = [
@@ -257,17 +309,19 @@ def user_service_disable(name: str, units: list[str],
         f"export DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus",
     ]
     for unit in units:
-        unless_parts.append(
-            f"systemctl --user is-enabled '{unit}' >/dev/null 2>&1 && exit 0"
-        )
+        unless_parts.append(f"systemctl --user is-enabled '{unit}' >/dev/null 2>&1 && exit 0")
     unless_parts.append("exit 1")
 
     return {
         name: {
             "cmd.run": [
-                {"name": (f"XDG_RUNTIME_DIR={h['runtime_dir']} "
-                          f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus "
-                          f"systemctl --user disable --now {' '.join(units)} 2>/dev/null || true")},
+                {
+                    "name": (
+                        f"XDG_RUNTIME_DIR={h['runtime_dir']} "
+                        f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus "
+                        f"systemctl --user disable --now {' '.join(units)} 2>/dev/null || true"
+                    )
+                },
                 {"runas": u},
                 {"onlyif": "\n".join(unless_parts)},
             ]
@@ -276,8 +330,9 @@ def user_service_disable(name: str, units: list[str],
 
 
 @yaml_output
-def user_linger(name: str, user: str | None = None,
-                require: list[str] | None = None) -> dict[str, Any]:
+def user_linger(
+    name: str, user: str | None = None, require: list[str] | None = None
+) -> dict[str, Any]:
     u = user or _host()["user"]
     args: list[dict[str, Any]] = [
         {"name": f"loginctl enable-linger {u}"},

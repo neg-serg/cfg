@@ -6,8 +6,6 @@ SCRIPTS_DIR = REPO_ROOT_PATH / "states" / "scripts"
 CONFIGS_DIR = REPO_ROOT_PATH / "states" / "configs" / "video-ai"
 
 
-
-
 def test_gen_video_parses_preset_flag():
     src = (SCRIPTS_DIR / "gen-video").read_text()
     assert "-r|--res" in src or "--res" in src
@@ -26,11 +24,9 @@ def test_gen_video_all_flags():
     assert "-h|--help" in src
 
 
-
 def test_generate_sh_default_steps_is_8():
     src = (SCRIPTS_DIR / "video-ai-generate.sh").read_text()
     assert "STEPS=8" in src
-
 
 
 def test_runners_sls_deploys_gen_video():

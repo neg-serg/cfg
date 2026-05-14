@@ -67,14 +67,18 @@ def _build_host(hosts_data: dict[str, Any] | None = None) -> dict[str, Any]:
     host = dict(defaults)
 
     # Resolve derived fields (matching host_model.py _add_derived_fields)
-    user = host.get("user", os.environ.get("USER", "root"))
-    home = host.get("home", f"/home/{user}")
-    uid = host.get("uid", 1000)
+    user = host.get("user") or os.environ.get("USER", "root")
+    home = host.get("home") or f"/home/{user}"
+    uid = host.get("uid") or 1000
 
-    host.setdefault("user", user)
-    host.setdefault("home", home)
-    host.setdefault("uid", uid)
+    host["user"] = user
+    host["home"] = home
+    host["uid"] = uid
     host["runtime_dir"] = f"/run/user/{host['uid']}"
+    # hostname may be a Jinja template — resolve to actual hostname
+    hostname = host.get("hostname", "")
+    if "{{" in hostname:
+        host["hostname"] = os.uname().nodename
     host["pkg_list"] = "/var/cache/salt/pacman_installed.txt"
     host["ver_dir"] = f"{home}/.cache/salt-versions"
     host["sys_ver_dir"] = "/var/cache/salt/versions"

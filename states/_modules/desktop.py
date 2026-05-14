@@ -12,9 +12,8 @@ from _yaml_out import yaml_output
 
 def _host() -> dict[str, Any]:
     try:
-        import __salt__  # type: ignore[import-untyped]
         return __salt__["common.get_host"]()
-    except (ImportError, KeyError):
+    except (NameError, KeyError):
         try:
             from _modules.common import get_host
             return get_host()
@@ -24,9 +23,8 @@ def _host() -> dict[str, Any]:
 
 def _const() -> dict[str, Any]:
     try:
-        import __salt__  # type: ignore[import-untyped]
         return __salt__["common.get_constants"]()
-    except (ImportError, KeyError):
+    except (NameError, KeyError):
         try:
             from _modules.common import get_constants
             return get_constants()

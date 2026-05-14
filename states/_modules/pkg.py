@@ -194,12 +194,14 @@ def flatpak_install(app_id: str, user: str | None = None) -> dict[str, Any]:
     _home = h.get("home") or f"/home/{u}"
     c = _const()
     safe = app_id.replace(".", "_").replace("-", "_")
+    unless_cmd = f"flatpak info --user {app_id} >/dev/null 2>&1"
     return {
         f"install_flatpak_{safe}": {
             "cmd.run": [
                 {"name": f"flatpak install -y --user flathub {app_id}"},
                 {"runas": u},
                 {"env": {"HOME": _home}},
+                {"unless": unless_cmd},
                 {"retry": {"attempts": c["retry_attempts"], "interval": c["retry_interval"]}},
                 {"require": [{"cmd": "flatpak_flathub_remote"}]},
             ]

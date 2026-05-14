@@ -593,7 +593,6 @@ def test_telfir_host_contract():
     assert feats["managed_bots"] is True
     assert feats["music_analysis"] is True
     assert feats["tidal"] is True
-    assert feats["nanoclaw"] is True
 
     # Defaults that should be preserved (not overridden by telfir)
     assert feats["steam"] is True

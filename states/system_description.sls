@@ -140,9 +140,6 @@ include:
 {% if host.features.get('llama_embed', true) %}
   - llama_embed
 {% endif %}
-{% if host.features.get('nanoclaw', false) %}
-  - nanoclaw
-{% endif %}
 {% if host.features.get('telethon_bridge', false) %}
   - telethon_bridge
 {% endif %}

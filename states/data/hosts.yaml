@@ -72,7 +72,6 @@ defaults:
     flatpak: true
     sudo_ssh_agent: false
     opencode: false
-    nanoclaw: false
     telethon_bridge: false
     managed_bots: false
     image_gen: true
@@ -119,6 +118,5 @@ hosts:
       music_analysis: true
       tidal: true
       xen_vr: false
-      nanoclaw: true
 aliases:
   cachyos: telfir

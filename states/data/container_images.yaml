@@ -83,14 +83,6 @@ proxypilot:
   digest: null
   approved_at: null
   note: 'Local image — build: podman build -t localhost/proxypilot build/pkgbuilds/proxypilot/'
-nanoclaw:
-  registry: localhost
-  image: nanoclaw-agent
-  variant: null
-  digest: null
-  approved_at: null
-  note: 'Local image — build: podman build -f build/nanoclaw/Dockerfile -t localhost/nanoclaw-agent
-    /home/neg/src/cfg'
 telethon_bridge:
   registry: localhost
   image: telethon-bridge

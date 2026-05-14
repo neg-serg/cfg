@@ -20,10 +20,9 @@
 
 {# In-place cutover: remove a native systemd unit file and run daemon-reload.
    Eliminates the 9-line duplication repeated across 10 containerized-services.
-   Usage:
-     {{ remove_native_unit('ollama') }}
-     {{ remove_native_unit('nanoclaw', unit_path=home ~ '/.config/systemd/user/nanoclaw.service', scope='user') }}
-   Emits:
+    Usage:
+      {{ remove_native_unit('ollama') }}
+    Emits:
      {name}_native_unit_absent + {name}_native_unit_daemon_reload
 #}
 {%- macro remove_native_unit(name, unit_path=None, scope='system') -%}

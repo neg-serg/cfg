@@ -237,33 +237,6 @@ proxypilot:
     container: /root/.cli-proxy-api
     mode: rw
   env_file: null
-nanoclaw:
-  port: 8318
-  health_cmd: null
-  unit: nanoclaw
-  scope: user
-  manual_start: true
-  packages: null
-  containerized: true
-  container_image: nanoclaw
-  gpu: none
-  bind_mounts:
-  - host: ~/.local/share/nanoclaw
-    container: /app
-    mode: rw
-  - host: ~/.config/nanoclaw
-    container: /config
-    mode: rw
-  - host: ~/.local/share/nanoclaw/entrypoint.sh
-    container: /app/entrypoint.sh
-    mode: ro
-  - host: ~/.local/share/nanoclaw/container-runtime-patched.ts
-    container: /app/src/container-runtime.ts
-    mode: ro
-  - host: ~/.local/share/nanoclaw/index-main-patched.ts
-    container: /app/src/index.ts
-    mode: ro
-  env_file: ~/.local/share/nanoclaw/.env
 telethon_bridge:
   unit: telethon-bridge
   scope: user

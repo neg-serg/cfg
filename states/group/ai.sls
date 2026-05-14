@@ -1,4 +1,4 @@
-{# AI group: llama_embed, ollama, nanoclaw, opencode, telethon_bridge, video_ai, image_gen #}
+{# AI group: llama_embed, ollama, opencode, telethon_bridge, video_ai, image_gen #}
 # Group: AI/ML services — agents, LLM inference, image generation, summarization
 # Usage: just apply group/ai
 {% from '_imports.jinja' import host %}
@@ -9,9 +9,6 @@ include:
 {% endif %}
 {% if host.features.get('llama_embed', true) %}
   - llama_embed
-{% endif %}
-{% if host.features.get('nanoclaw', false) %}
-  - nanoclaw
 {% endif %}
 {% if host.features.get('telethon_bridge', false) %}
   - telethon_bridge

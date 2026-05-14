@@ -105,7 +105,6 @@
       ollama: true
       llama_embed: true
       t5_summarization: true
-      nanoclaw: true
       telethon_bridge: true
       proxypilot: true
       vaultwarden: true
@@ -169,7 +168,6 @@
       flatpak: true
       sudo_ssh_agent: true
       opencode: true
-      nanoclaw: true
       telethon_bridge: true
       managed_bots: true
       video_ai: true

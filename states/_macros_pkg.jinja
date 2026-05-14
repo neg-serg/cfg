@@ -159,9 +159,10 @@ build_{{ safe }}:
 #}
 {%- macro flatpak_install(app_id, user=_user) -%}
 {%- set safe = app_id | replace('.', '_') | replace('-', '_') -%}
+{%- set proxy = 'https_proxy=socks5h://127.0.0.1:10808' -%}
 install_flatpak_{{ safe }}:
   cmd.run:
-    - name: sudo -u {{ user }} flatpak install -y --user flathub {{ app_id }}
+    - name: {{ proxy }} sudo -u {{ user }} flatpak install -y --user flathub {{ app_id }}
     - unless: sudo -u {{ user }} flatpak list --user --app --columns=application | grep -qxF '{{ app_id }}'
     - retry:
         attempts: {{ _retry_attempts }}

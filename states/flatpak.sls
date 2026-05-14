@@ -17,22 +17,20 @@ include:
 
 flatpak_flathub_remote:
   cmd.run:
-    - name: flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    - name: https_proxy=socks5h://127.0.0.1:10808 flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
     - runas: {{ user }}
     - env:
       - HOME: {{ host.home }}
-      - https_proxy: socks5h://127.0.0.1:10808
     - unless: flatpak remote-list --user 2>/dev/null | grep -q '^flathub$'
     - require:
       - cmd: install_flatpak
 
 flatpak_flathub_refs:
   cmd.run:
-    - name: flatpak update --appstream --user flathub
+    - name: https_proxy=socks5h://127.0.0.1:10808 flatpak update --appstream --user flathub
     - runas: {{ user }}
     - env:
       - HOME: {{ host.home }}
-      - https_proxy: socks5h://127.0.0.1:10808
     - require:
       - cmd: flatpak_flathub_remote
 

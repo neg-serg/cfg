@@ -524,7 +524,7 @@ test -e {{ _path }}
 {% endfor %}
 
 {% set _ct_requires = [] %}
-{% if opts.packages is defined %}
+{% if opts.packages is defined and not (opts.service is defined and opts.unit is not defined) %}
 {% do _ct_requires.append('cmd: install_' ~ name | replace('-', '_')) %}
 {% endif %}
 {% if ct.get('require') %}

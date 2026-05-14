@@ -295,6 +295,7 @@ def user_service_restart(
     onlyif: str | None = None,
     requires: list[str] | None = None,
     onchanges: list[str] | None = None,
+    watch: list[str] | None = None,
     user: str | None = None,
 ) -> dict[str, Any]:
     u = user or _host()["user"]
@@ -313,8 +314,10 @@ def user_service_restart(
         args.append({"onlyif": onlyif})
     if requires:
         args.append({"require": _parse_requires(requires)})
-    if onchanges:
-        args.append({"onchanges": [c for c in onchanges]})
+    if watch:
+        args.append({"watch": _parse_requires(watch)})
+    elif onchanges:
+        args.append({"onchanges": _parse_requires(onchanges)})
     return {name: {"cmd.run": args}}
 
 

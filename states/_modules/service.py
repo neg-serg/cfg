@@ -262,7 +262,6 @@ def remove_native_package(name: str, pkgs: list[str]) -> dict[str, Any]:
     return {f"{name}_native_package_removed": {"pkg.removed": [{"pkgs": list(pkgs)}]}}
 
 
-@yaml_output
 def ensure_running(
     name: str, service: str | None = None, watch: list[str] | None = None
 ) -> dict[str, Any]:
@@ -284,7 +283,7 @@ def ensure_running(
                         {"cmd": f"{name}_reset_failed"},
                     ]
                 },
-                *([{"watch": [{"file": w} for w in watch]}] if watch else []),
+                *([{"watch": _parse_requires(watch)}] if watch else []),
             ]
         },
     }
@@ -588,14 +587,25 @@ def render_service(
             ]
         }
 
-    # Packages (skip if simple_service handles it)
-    if "packages" in opts and not ("service" in opts and "unit" not in opts):
+    # Packages
+    if "packages" in opts:
         pkg_name = name.replace("-", "_")
         pkgs = opts["packages"]
         ret[f"install_{pkg_name}"] = {
             "cmd.run": [
                 {"name": f"paru -S --noconfirm --needed {pkgs}"},
                 {"require": [{"cmd": "pacman_db_warmup"}]},
+            ]
+        }
+
+    # Simple service fallback (service.enabled for services without custom unit)
+    if "service" in opts and "unit" not in opts:
+        svc = opts["service"]
+        pkg_name = name.replace("-", "_")
+        ret[f"{name}_enabled"] = {
+            "service.enabled": [
+                {"name": svc},
+                {"require": [{"cmd": f"install_{pkg_name}"}]},
             ]
         }
 
@@ -660,5 +670,10 @@ def render_service(
                 requires=unit_req if unit_req else None,
             )
         )
+
+    # Ensure running
+    if "ensure_running" in opts:
+        er = opts["ensure_running"]
+        ret.update(ensure_running(name, er.get("service"), watch=er.get("watch")))
 
     return ret

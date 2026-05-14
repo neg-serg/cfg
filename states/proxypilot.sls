@@ -71,4 +71,4 @@ proxypilot_config:
 {# ── Restart on config change ── #}
 {{ salt['user_service.user_service_restart']('restart_proxypilot_on_config_change', 'proxypilot-container.service',
     onlyif='systemctl --user is-active proxypilot-container.service >/dev/null 2>&1',
-    onchanges=['file: proxypilot_config']) }}
+    watch=['file: proxypilot_config']) }}

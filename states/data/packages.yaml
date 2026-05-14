@@ -4,6 +4,7 @@ base:
 - limine
 - linux
 - linux-headers
+- linux-cachyos-headers
 - linux-firmware
 - amd-ucode
 desktop:

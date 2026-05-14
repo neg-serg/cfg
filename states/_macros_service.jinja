@@ -133,8 +133,7 @@ u {{ managed_resource_value(entry.user) }} - "{{ entry.get('gecos', 'Salt manage
 {# Guard used by states/systemd_resources.sls to repair missing service accounts
    without rerunning systemd-sysusers on every apply.
 #}
-{%- macro mana
-ged_identity_guard(entry) -%}
+{%- macro managed_identity_guard(entry) -%}
 getent passwd {{ managed_resource_value(entry.user) }} >/dev/null && getent group {{ managed_resource_value(entry.group) }} >/dev/null
 {%- endmacro -%}
 
@@ -200,8 +199,7 @@ test -e {{ _path
     - makedirs: True
 {%- if mode %}
     - mode: '{{ mode }}'
-{%- end
-if %}
+{%- endif %}
 {%- if require %}
     - require:
 {%- for req in require %}
@@ -275,8 +273,7 @@ if %}
 {%- endif %}
 {%- if makedirs %}
     - makedirs: True
-{%
-- endif %}
+{%- endif %}
 {%- if require %}
     - require:
 {%- for req in require %}

@@ -17,8 +17,8 @@ _exists curl && {
 }
 _exists flatpak && {
     flatpak(){
-        if curl --socks5 127.0.0.1:10808 --max-time 1 -s https://flathub.org >/dev/null 2>&1; then
-            https_proxy=socks5://127.0.0.1:10808 command flatpak "$@"
+        if curl --socks5-hostname 127.0.0.1:10808 --max-time 1 -s https://flathub.org >/dev/null 2>&1; then
+            https_proxy=socks5h://127.0.0.1:10808 command flatpak "$@"
         else
             command flatpak "$@"
         fi

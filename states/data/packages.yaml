@@ -175,6 +175,7 @@ other:
 - asciinema
 - atop
 - avahi
+- nss-mdns
 - bandwhich
 - bat
 - beets

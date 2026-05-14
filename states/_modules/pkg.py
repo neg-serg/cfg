@@ -88,7 +88,7 @@ def _paru_install_dict(
         }
 
     if _check_all:
-        guard = "\n".join(f"grep -qxF '{pn}' {h['pkg_list']} || exit 1" for pn in pkg.split())
+        guard = " && ".join(f"grep -qxF '{pn}' {h['pkg_list']}" for pn in pkg.split())
         return {
             f"install_{name.replace('-', '_')}": {
                 "cmd.run": [
@@ -99,7 +99,7 @@ def _paru_install_dict(
                         )
                     },
                     {"shell": "/bin/bash"},
-                    {"unless": f"set -e\n{guard}"},
+                    {"unless": guard},
                     {"require": requires_list},
                 ]
             }
@@ -240,15 +240,16 @@ def flatpak_install(app_id: str, user: str | None = None) -> dict[str, Any]:
     c = _const()
     safe = app_id.replace(".", "_").replace("-", "_")
     unless_cmd = f"flatpak info --user {app_id} >/dev/null 2>&1"
+    _env = {"HOME": _home, "https_proxy": "socks5h://127.0.0.1:10808"}
     return {
         f"install_flatpak_{safe}": {
             "cmd.run": [
                 {"name": f"flatpak install -y --user flathub {app_id}"},
                 {"runas": u},
-                {"env": {"HOME": _home}},
+                {"env": _env},
                 {"unless": unless_cmd},
                 {"retry": {"attempts": c["retry_attempts"], "interval": c["retry_interval"]}},
-                {"require": [{"cmd": "flatpak_flathub_remote"}]},
+                {"require": [{"cmd": "flatpak_flathub_refs"}]},
             ]
         }
     }

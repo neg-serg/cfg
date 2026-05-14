@@ -21,8 +21,20 @@ flatpak_flathub_remote:
     - runas: {{ user }}
     - env:
       - HOME: {{ host.home }}
+      - https_proxy: socks5h://127.0.0.1:10808
+    - unless: flatpak remote-list --user 2>/dev/null | grep -q '^flathub$'
     - require:
       - cmd: install_flatpak
+
+flatpak_flathub_refs:
+  cmd.run:
+    - name: flatpak update --appstream --user flathub
+    - runas: {{ user }}
+    - env:
+      - HOME: {{ host.home }}
+      - https_proxy: socks5h://127.0.0.1:10808
+    - require:
+      - cmd: flatpak_flathub_remote
 
 {% for app_id in flatpak.apps %}
 {{ salt['pkg.flatpak_install'](app_id) }}

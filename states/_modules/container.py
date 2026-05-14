@@ -68,15 +68,16 @@ def deploy(name: str,
         return ""
 
     try:
-        from _modules.common import get_host
-        host = get_host()
-        home = host.get("home", "/root")
-        host_user = host.get("user", "root")
-        runtime_dir = host.get("runtime_dir", "/run/user/1000")
-    except Exception:
-        home = "/root"
-        host_user = "root"
-        runtime_dir = "/run/user/1000"
+        host = __salt__["common.get_host"]()
+    except (NameError, KeyError):
+        try:
+            from _modules.common import get_host
+            host = get_host()
+        except Exception:
+            host = {}
+    home = host.get("home") or "/root"
+    host_user = host.get("user") or "root"
+    runtime_dir = host.get("runtime_dir") or "/run/user/1000"
 
     quadlet_name = quadlet_unit_name if quadlet_unit_name is not None else name
 

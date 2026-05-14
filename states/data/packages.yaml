@@ -324,6 +324,7 @@ other:
 - nss-mdns
 - nuspell
 - nvtop
+- amdgpu_top
 - ollama
 - ollama-vulkan
 - onefetch

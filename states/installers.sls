@@ -16,7 +16,7 @@ include:
 {{ salt['installer.install_catalog'](tools.github_tar, ver, 'curl_extract_tar') }}
 
 {% for name, opts in tools.pip_pkg.items() %}
-{{ salt['installer.pip_pkg'](name, pkg=opts.get('pkg'), bin=opts.get('bin')) }}
+{{ salt['installer.pip_pkg'](name, pkg=opts.get('pkg'), bin=opts.get('bin'), user=user, home=home) }}
 {% endfor %}
 
 {% for name, opts in tools.cargo_pkg.items() %}
@@ -47,7 +47,7 @@ nyxt_system_cleanup:
 
 {{ salt['installer.curl_extract_tar']('hyprevents', 'https://github.com/vilari-mickopf/hyprevents/archive/refs/heads/master.tar.gz', 'hyprevents-master', binaries=['hyprevents', 'event_handler', 'event_loader'], chmod=True) }}
 
-{{ salt['installer.pip_pkg']('dr14_tmeter', pkg='git+https://github.com/simon-r/dr14_t.meter.git', env='GIT_CONFIG_GLOBAL=/dev/null') }}
+{{ salt['installer.pip_pkg']('dr14_tmeter', pkg='git+https://github.com/simon-r/dr14_t.meter.git', env='GIT_CONFIG_GLOBAL=/dev/null', user=user, home=home) }}
 
 qmk_udev_rules:
   cmd.run:

@@ -14,7 +14,7 @@
 # Service is NOT enabled at boot (manual_start) — VRAM is shared with desktop GPU.
 # Salt starts ollama temporarily for model pulls, then stops it.
 
-{{ salt['service.ensure_dir']('ollama_models_dir', host.mnt_one ~ '/ollama/models', require=['mount: mount_one']) }}
+{{ salt['service.ensure_dir']('ollama_models_dir', host.mnt_one ~ '/ollama/models') }}
 
 # In-place cutover: remove the native systemd unit file so the
 # Quadlet-generated unit is no longer shadowed by the pacman-deployed
@@ -22,7 +22,7 @@
 {{ salt['service.remove_native_unit']('ollama') }}
 
 {{ salt['container.deploy']('ollama',
-    requires=['file: ollama_models_dir', 'mount: mount_one', 'cmd: ollama_native_unit_daemon_reload']) }}
+    requires=['file: ollama_models_dir', 'cmd: ollama_native_unit_daemon_reload']) }}
 
 {% set ollama_base = '127.0.0.1:' ~ catalog.ollama.port %}
 {% set manifests = host.mnt_one ~ '/ollama/models/manifests/registry.ollama.ai' %}

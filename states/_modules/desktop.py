@@ -105,14 +105,23 @@ def hyprpm_update(
         "XDG_RUNTIME_DIR": h["runtime_dir"],
     }
 
-    cmd = f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && hyprpm update 2>/dev/null || true"
+    cmd = (
+        f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
+        f"(hyprpm update 2>/dev/null || true); "
+        f"touch /tmp/.salt_hyprpm_updated"
+    )
 
     unless_cmd = None
     if check_plugins:
+        stamp_check = (
+            'test "$(date +%Y-%m-%d)" = '
+            '"$(stat -c %y /tmp/.salt_hyprpm_updated 2>/dev/null | cut -d\' \' -f1)"'
+        )
         checks = [f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd})"]
         for plugin in check_plugins:
             checks.append(f"(hyprpm list 2>&1 | grep -q '{plugin}')")
-        unless_cmd = " && ".join(checks)
+        plugin_check = " && ".join(checks)
+        unless_cmd = f"{stamp_check} && {plugin_check}"
 
     args: list[dict[str, Any]] = [
         {"name": cmd},

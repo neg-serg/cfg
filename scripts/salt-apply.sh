@@ -261,7 +261,20 @@ except Exception:
 }
 
 ensure_daemon() {
-	daemon_running && return 0
+	# Kill stale daemon if module files changed — ensures code updates are picked up
+	if daemon_running; then
+		local newest_module
+		newest_module=$(find "${PROJECT_DIR}/states/_modules" -name '*.py' -printf '%T@\n' 2>/dev/null | sort -rn | head -1 || echo 0)
+		local daemon_mtime
+		daemon_mtime=$(stat -c '%Y' "$DAEMON_SOCK" 2>/dev/null || echo 0)
+		if [[ "${newest_module%.*}" -gt "${daemon_mtime}" ]]; then
+			pretty::info "modules updated — restarting salt-daemon..."
+			"${SUDO_CMD[@]}" pkill -9 -f 'salt-daemon.py' 2>/dev/null || true
+			sleep 1
+		else
+			return 0
+		fi
+	fi
 	[[ -x "$DAEMON_SCRIPT" ]] || return 1
 	pretty::info "starting salt-daemon in background..."
 	"${SUDO_CMD[@]}" "$DAEMON_SCRIPT" \

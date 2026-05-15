@@ -50,7 +50,7 @@ mpd_config:
     - mode: '0644'
     - makedirs: True
 
-{{ salt['user_service.user_service_enable']('mpd_enabled', user=user, start_now=['mpd.service'], check='active', onlyif='grep -qxF mpd ' ~ pkg_list, requires=['file: mpd_config', 'file: mpd_directories', 'cmd: music_mount', 'cmd: managed_service_paths_ensure']) }}
+{{ salt['user_service.user_service_enable']('mpd_enabled', user=user, start_now=['mpd.service'], check='active', onlyif='grep -qxF mpd ' ~ pkg_list, requires=['file: mpd_config', 'file: mpd_directories', 'cmd: music_mount']) }}
 
 {%- set lastfm_user = gopass_secret('lastfm/username') | trim %}
 {%- set lastfm_pass = gopass_secret('lastfm/password') | trim %}

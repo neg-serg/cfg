@@ -74,9 +74,6 @@ pull_{{ model | replace('.', '_') | replace(':', '_') | replace('-', '_') }}:
         interval: {{ retry_interval }}
     - require:
       - cmd: ollama_tmp_start
-{% if host.features.network.get('zapret2', false) %}
-      - service: zapret2_running
-{% endif %}
 {% endfor %}
 
 # Stop ollama after model pulls to free VRAM.

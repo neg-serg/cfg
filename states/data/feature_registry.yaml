@@ -323,3 +323,10 @@ features:
     gates:
     - nyxt
     - system_description
+  apply:
+    description: Salt apply execution mode controls
+    features:
+      parallel:
+        default: false
+        description: Parallel group execution for full-state apply
+        gates: []

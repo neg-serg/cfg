@@ -113,10 +113,7 @@ def hyprpm_update(
 
     unless_cmd = None
     if check_plugins:
-        stamp_check = (
-            'test "$(date +%Y-%m-%d)" = '
-            '"$(stat -c %y /tmp/.salt_hyprpm_updated 2>/dev/null | cut -d\' \' -f1)"'
-        )
+        stamp_check = 'test -f /tmp/.salt_hyprpm_updated'
         checks = [f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd})"]
         for plugin in check_plugins:
             checks.append(f"(hyprpm list 2>&1 | grep -q '{plugin}')")

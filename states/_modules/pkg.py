@@ -84,6 +84,7 @@ def _paru_install_dict(
                 "cmd.run": [
                     {"name": cmd},
                     {"shell": "/bin/bash"},
+                    {"unless": f"test -f {_ver_dir}/{name}@{version}"},
                     {"stateful": True},
                     {"require": requires_list},
                 ]
@@ -91,7 +92,11 @@ def _paru_install_dict(
         }
 
     if _check_all:
-        guard = " && ".join(f"grep -qxF '{pn}' {h['pkg_list']}" for pn in pkg.split())
+        guard = (
+            f"missing=$(comm -23 <(printf '%s\\n' {pkg} | sort -u) "
+            f"<(sort {h['pkg_list']}) 2>/dev/null); "
+            f"[ -z \"$missing\" ]"
+        )
         return {
             f"install_{name.replace('-', '_')}": {
                 "cmd.run": [

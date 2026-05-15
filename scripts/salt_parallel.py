@@ -134,9 +134,6 @@ def run_group(group: Group, log_dir: Path, sudo: list[str], sudo_pass: str) -> i
             "--local",
             "--log-level=warning",
             "--force-color",
-            "--log-file",
-            str(log_file),
-            "--log-file-level=debug",
             "state.sls",
             state_name,
         ]

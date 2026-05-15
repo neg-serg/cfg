@@ -1,11 +1,11 @@
 {# @macro_file
-   provides: [env_block, remove_native_unit, remove_native_package, managed_resource_value, managed_mode_value, managed_sysusers_line, managed_identity_guard, managed_tmpfiles_line, managed_path_guard, ensure_dir, udev_rule, ensure_running, service_stopped, service_with_healthcheck, unit_override, service_with_unit, render_service]
+   provides: [env_block, remove_native_unit, remove_native_package, managed_resource_value, managed_mode_value, managed_sysusers_line, managed_identity_guard, managed_tmpfiles_line, managed_path_guard, ensure_dir, udev_rule, ensure_running, service_stopped, unit_override, service_with_unit]
 #}
 
 {# Service-related macros: render_service, remove_native_unit, remove_native_package, env_block, ensure_dir, udev_rule, ensure_running, service_stopped, service_with_healthcheck, unit_override, service_with_unit, managed_sysusers_line, managed_tmpfiles_line, managed_identity_guard, managed_path_guard
    User-scoped macros moved to _macros_service_user.jinja #}
 
-{% from '_macros_common.jinja' import user as _user, home as _home, healthcheck_timeout as _healthcheck_timeout, host, retry_attempts as _retry_attempts, retry_interval as _retry_interval %}
+{% from '_macros_common.jinja' import user as _user, home as _home, host, retry_attempts as _retry_attempts, retry_interval as _retry_interval %}
 {% from '_macros_pkg.jinja' import paru_install, simple_service %}
 
 {# Shared env block for systemctl --user commands (daemon-reload, enable, restart, disable) #}
@@ -374,49 +374,6 @@ test -e {{ _path
    name: service_with_healthcheck
    purpose: ""
 #}
-{%- macro service_with_healthcheck(name, service, check_cmd=None, timeout=_healthcheck_timeout, requires=None, catalog=None, user_scope=False, user=_user) -%}
-{#- Resolve check_cmd from catalog when not explicitly provided -#}
-{%- if check_cmd is none and catalog is not none and service in catalog -%}
-  {%- set _entry = catalog[service] -%}
-  {%- if _entry.get('health_cmd') -%}
-    {%- set check_cmd = _entry.health_cmd -%}
-  {%- elif _entry.get('port') and _entry.get('health_path') -%}
-    {%- set _host = _entry.get('health_host', '127.0.0.1') -%}
-    {%- set check_cmd = 'curl -sf http://' ~ _host ~ ':' ~ _entry.port ~ _entry.health_path ~ ' >/dev/null 2>&1' -%}
-  {%- endif -%}
-  {%- if _entry.get('timeout') -%}
-    {%- set timeout = _entry.timeout -%}
-  {%- endif -%}
-{%- endif -%}
-{{ name }}:
-  cmd.run:
-    - name: |
-        set -euo pipefail
-        if ! systemctl {% if user_scope %}--user {% endif %}is-active --quiet {{ service }}; then
-          systemctl {% if user_scope %}--user {% endif %}daemon-reload
-          systemctl {% if user_scope %}--user {% endif %}restart {{ service }}
-        fi
-        for i in $(seq 1 {{ timeout }}); do
-          {{ check_cmd }} && exit 0
-          sleep 1
-        done
-        echo "{{ service }} failed 
-to start within {{ timeout }}s" >&2
-        exit 1
-    - shell: /bin/bash
-{%- if user_scope %}
-    - runas: {{ user }}
-    - env:
-{{ env_block() }}
-{%- endif %}
-    - unless: {{ check_cmd }}
-{%- if requires %}
-    - require:
-{%- for req in requires %}
-      - {{ req }}
-{%- endfor %}
-{%- endif %}
-{%- endmacro -%}
 
 {# Deploy systemd unit drop-in override + trigger daemon-reload on change.
    Creates parent .d/ directory automatically via makedirs.

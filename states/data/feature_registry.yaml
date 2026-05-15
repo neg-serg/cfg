@@ -188,10 +188,7 @@ features:
     gates:
     - amnezia
     - system_description
-  outline:
-    default: true
-    description: Outline VPN client (always available)
-    gates: []
+
   steam:
     default: true
     description: Steam gaming platform

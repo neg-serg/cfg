@@ -156,7 +156,7 @@
         vdirsyncer: true
       fancontrol: true
       amnezia: true
-      outline: true
+
       steam: true
       mpd: true
       ollama: true

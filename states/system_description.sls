@@ -4,7 +4,7 @@
    purpose: "System description: /etc/os-release branding and feature-gated state orchestration."
    data_files: [data/system.yaml]
    configs: [configs/os-release.j2]
-   feature_gate: [amnezia, dns.adguardhome, espanso, flatpak, floorp, image_gen, kanata, llama_embed, managed_bots, monitoring, mpd, music_analysis, nanoclaw, network.hiddify, network.zapret2, nyxt, ollama, proxypilot, services.bitcoind, services.duckdns, services.jellyfin, services.transmission, steam, t5_summarization, telethon_bridge, tidal, vaultwarden, video_ai, xen_vr]
+   feature_gate: [amnezia, dns.adguardhome, espanso, flatpak, floorp, image_gen, kanata, llama_embed, managed_bots, monitoring, mpd, music_analysis, network.hiddify, network.zapret2, nyxt, ollama, proxypilot, services.bitcoind, services.duckdns, services.jellyfin, services.transmission, steam, t5_summarization, telethon_bridge, tidal, vaultwarden, video_ai, xen_vr]
 #}
 {% from '_imports.jinja' import host, user %}
 

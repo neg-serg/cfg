@@ -78,6 +78,7 @@ dev:
 - gdb
 - meson
 - ninja
+- openblas
 - fennel
 - git
 - lua-language-server

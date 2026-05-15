@@ -99,6 +99,7 @@ $(_salt_runtime_file_roots_block "$project_dir")
 enable_fqdns_grains: False
 enable_gpu_grains: False
 grains_cache: False
+autoload_dynamic_modules: True
 file_ignore_glob:
   - '*.pyc'
   - '.venv/*'

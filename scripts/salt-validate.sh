@@ -258,8 +258,8 @@ if declare -f pretty::ok >/dev/null 2>&1; then
         pretty::ok "All ${total} states valid"
     else
         pretty::fail "${failed}/${total} states failed"
-        while IFS=$'\t' read -r _ _ _ _ _ _ exitval _ command; do
-            [[ $exitval -ne 0 && "$command" != *"Seq"* ]] || continue
+        while IFS=$'\t' read -r _ _ _ _ _ _ ev _ command; do
+            [[ $ev -ne 0 && "$command" != *"Seq"* ]] || continue
             local target="${command#validate_one }"
             target="${target% *}"
             pretty::info "  ${target}"

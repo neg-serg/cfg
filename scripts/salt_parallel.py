@@ -45,60 +45,15 @@ class Group:
     log_file: str = ""
 
 
-# Group dependency graph — derived from system_description.sls include chain
+# Group dependency graph — uses actual group state files from states/group/
 # core → packages → {desktop∥network} → {services∥ai}
 GROUPS: list[Group] = [
-    Group(name="core", states=["mounts", "cachyos", "system_description"], depends_on=[]),
-    Group(
-        name="packages",
-        states=[
-            "installers_base",
-            "installers_desktop",
-            "installers_themes",
-            "custom_pkgs",
-        ],
-        depends_on=["core"],
-    ),
-    Group(
-        name="desktop",
-        states=["audio", "fonts", "desktop", "greetd", "pacman_db_warmup", "steam"],
-        depends_on=["packages"],
-    ),
-    Group(
-        name="network",
-        states=["dns", "network", "amnezia", "zapret2", "hiddify", "ipv6"],
-        depends_on=["packages"],
-    ),
-    Group(
-        name="services",
-        states=[
-            "services",
-            "monitoring_alerts",
-            "user_services",
-            "code_rag",
-            "jellyfin",
-            "transmission",
-            "bitcoind",
-            "duckdns",
-            "vaultwarden",
-            "adguardhome",
-            "proxypilot",
-        ],
-        depends_on=["network"],
-    ),
-    Group(
-        name="ai",
-        states=[
-            "ollama",
-            "llama_embed",
-            "t5_summarization",
-            "image_generation",
-            "video_ai",
-            "telethon_bridge",
-            "managed_bots",
-        ],
-        depends_on=["services"],
-    ),
+    Group(name="core", states=["group.core"], depends_on=[]),
+    Group(name="packages", states=["group.packages"], depends_on=["core"]),
+    Group(name="desktop", states=["group.desktop"], depends_on=["packages"]),
+    Group(name="network", states=["group.network"], depends_on=["packages"]),
+    Group(name="services", states=["group.services"], depends_on=["network"]),
+    Group(name="ai", states=["group.ai"], depends_on=["services"]),
 ]
 
 
@@ -125,12 +80,17 @@ def run_group(group: Group, log_dir: Path, sudo: list[str], sudo_pass: str) -> i
     exit_codes = []
 
     for state_name in group.states:
+        # Per-group cachedir to avoid concurrent cache corruption
+        group_cache = RUNTIME_CONFIG_DIR / f".parallel_cache/{group.name}"
+        group_cache.mkdir(parents=True, exist_ok=True)
         cmd = sudo + [
             str(VENV_DIR / "bin" / "python3"),
             "-u",
             str(SALT_RUNNER),
             "--config-dir",
             str(RUNTIME_CONFIG_DIR),
+            "--cachedir",
+            str(group_cache),
             "--local",
             "--log-level=warning",
             "--force-color",

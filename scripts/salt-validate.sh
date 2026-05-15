@@ -125,9 +125,9 @@ collect_sls_files() {
 
 	sls_files=()
 	if [[ $# -eq 0 ]]; then
-		shopt -s nullglob
-		sls_files=(states/*.sls)
-		shopt -u nullglob
+		shopt -s globstar nullglob
+		sls_files=(states/**/*.sls)
+		shopt -u globstar nullglob
 		return 0
 	fi
 

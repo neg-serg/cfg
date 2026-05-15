@@ -14,15 +14,12 @@ Environment:
 from __future__ import annotations
 
 import json
-import os
 import subprocess
 import sys
 import threading
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
-
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SCRIPT_DIR.parent
@@ -169,14 +166,13 @@ def main() -> int:
 
     groups = list(GROUPS)
     completed: set[str] = set()
-    exit_codes: dict[str, int] = {}
 
     if args.dry_run:
         print(json.dumps([g.name for g in groups], indent=2))
         return 0
 
     print(f"Parallel apply: {len(groups)} groups, max {args.max_parallel} concurrent")
-    print(f"Order: core → packages → {{desktop∥network}} → {{services∥ai}}\n")
+    print("Order: core → packages → {desktop∥network} → {services∥ai}\n")
 
     while len(completed) < len(groups):
         ready = resolve_ready(groups, completed, set())

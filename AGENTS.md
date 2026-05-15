@@ -42,6 +42,9 @@ docs/
 - `just render-matrix`
 - `python3 scripts/state-profiler.py --trend`
 - `python3 scripts/state-profiler.py --compare <baseline> <candidate> --gate --min-sample-count 10`
+- `SALT_PARALLEL=1 just apply system_description` — parallel group execution (independent groups run concurrently)
+- `just apply system_description --parallel` — same, via CLI flag
+- `python3 scripts/salt_parallel.py` — standalone parallel group executor
 
 ## Code Style
 

@@ -12,8 +12,8 @@
 include:
   - bind_mounts
 
-{% set mpdris2_installed = salt['file.search'](pkg_list, '^mpdris2$', flags='m') %}
-{% set mpdas_installed = salt['file.search'](pkg_list, '^mpdas$', flags='m') %}
+{% set mpdris2_installed = salt['file.file_exists'](pkg_list) and salt['file.search'](pkg_list, '^mpdris2$', flags='m') %}
+{% set mpdas_installed = salt['file.file_exists'](pkg_list) and salt['file.search'](pkg_list, '^mpdas$', flags='m') %}
 {%- set companion_units = [] -%}
 {%- if mpdris2_installed -%}
 {%-   do companion_units.append('mpDris2.service') -%}

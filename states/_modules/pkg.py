@@ -69,6 +69,8 @@ def _paru_install_dict(
     if version:
         cmd = (
             f"set -uo pipefail\n"
+            f"if test -f {_ver_dir}/{name}@{version}; then "
+            f"echo '{{\"changed\": false, \"comment\": \"all packages already installed\"}}'; exit 0; fi\n"
             f"output=$(sudo -u {u} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg}' 2>&1 || true)\n"
             f"echo \"$output\" >&2\n"
             f"if echo \"$output\" | grep -qi 'nothing to do'; then\n"
@@ -84,7 +86,6 @@ def _paru_install_dict(
                 "cmd.run": [
                     {"name": cmd},
                     {"shell": "/bin/bash"},
-                    {"unless": f"test -f {_ver_dir}/{name}@{version}"},
                     {"stateful": True},
                     {"require": requires_list},
                 ]
@@ -92,28 +93,27 @@ def _paru_install_dict(
         }
 
     if _check_all:
-        guard = (
-            f"missing=$(comm -23 <(printf '%s\\n' {pkg} | sort -u) "
-            f"{h['pkg_list']} 2>/dev/null); "
-            f"[ -z \"$missing\" ]"
-        )
+        pkgs_sorted = sorted(pkg.split())
+        cmd_lines = [
+            "set -uo pipefail",
+            f"missing=$(comm -23 <(printf '%s\\n' {' '.join(pkgs_sorted)}) {h['pkg_list']} 2>/dev/null)",
+            'if [ -z "$missing" ]; then '
+            'echo \'{"changed": false, "comment": "all packages already installed"}\'; exit 0; fi',
+            f"output=$(sudo -u {u} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg} || true' 2>&1)",
+            'echo "$output" >&2',
+            'if echo "$output" | grep -qi \'nothing to do\'; then',
+            '  echo \'{"changed": false, "comment": "all packages already installed"}\'',
+            'else',
+            '  echo \'{"changed": true}\'',
+            'fi',
+        ]
         return {
             f"install_{name.replace('-', '_')}": {
                 "cmd.run": [
-                    {
-                        "name": (
-                            f"output=$(sudo -u {u} sh -c 'yes \"\" | "
-                            f"paru -S --noconfirm --needed {pkg} || true' 2>&1); "
-                            f'echo "$output" >&2; '
-                            f"if echo \"$output\" | grep -qi 'nothing to do'; then "
-                            f"echo '{{\"changed\": false, \"comment\": \"all packages already installed\"}}'; "
-                            f"else echo '{{\"changed\": true}}'; fi"
-                        )
-                    },
+                    {"name": "\n".join(cmd_lines)},
                     {"shell": "/bin/bash"},
-                    {"unless": guard},
-                    {"require": requires_list},
                     {"stateful": True},
+                    {"require": requires_list},
                 ]
             }
         }
@@ -123,6 +123,8 @@ def _paru_install_dict(
             "cmd.run": [
                 {
                     "name": (
+                        f"if grep -qxF '{check or pkg}' {h['pkg_list']}; then "
+                        f"echo '{{\"changed\": false, \"comment\": \"already installed\"}}'; exit 0; fi\n"
                         f"output=$(sudo -u {u} paru -S --noconfirm --needed {pkg} 2>&1); "
                         f'echo "$output"; '
                         f"if echo \"$output\" | grep -qi 'nothing to do'; then "
@@ -131,7 +133,6 @@ def _paru_install_dict(
                     )
                 },
                 {"shell": "/bin/bash"},
-                {"unless": f"grep -qxF '{check or pkg}' {h['pkg_list']}"},
                 {"require": requires_list},
                 {"stateful": True},
             ]

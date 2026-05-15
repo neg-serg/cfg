@@ -14,7 +14,7 @@ pacman_db_warmup:
     - name: |
         set -euo pipefail
         _tmp=$(mktemp)
-        pacman -Qq > "$_tmp"
+        pacman -Qq | sort -u > "$_tmp"
         if cmp -s "$_tmp" {{ pkg_list }}; then
           rm "$_tmp"
           echo "changed=no"

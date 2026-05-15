@@ -28,9 +28,6 @@ hyprpm_cache_dir:
     - user: {{ user }}
     - group: {{ user }}
     - makedirs: True
-    - recurse:
-      - user
-      - group
 
 {% for plugin in desktop.hyprland_plugins %}
 hyprpm_repo_cache_{{ plugin.id }}:

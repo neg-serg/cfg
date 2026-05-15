@@ -94,7 +94,7 @@ def _paru_install_dict(
     if _check_all:
         guard = (
             f"missing=$(comm -23 <(printf '%s\\n' {pkg} | sort -u) "
-            f"<(sort {h['pkg_list']}) 2>/dev/null); "
+            f"{h['pkg_list']} 2>/dev/null); "
             f"[ -z \"$missing\" ]"
         )
         return {

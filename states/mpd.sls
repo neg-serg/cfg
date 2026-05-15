@@ -7,7 +7,7 @@
    services: [mpdas.service]
    secrets: [lastfm/password, lastfm/username]
 #}
-{% from '_imports.jinja' import host, user, home, pkg_list, gopass_secret %}
+{% from '_imports.jinja' import host, user, home, pkg_list %}
 {% import_yaml 'data/mpd.yaml' as mpd %}
 include:
   - bind_mounts
@@ -52,8 +52,8 @@ mpd_config:
 
 {{ salt['user_service.user_service_enable']('mpd_enabled', user=user, start_now=['mpd.service'], check='active', onlyif='grep -qxF mpd ' ~ pkg_list, requires=['file: mpd_config', 'file: mpd_directories', 'cmd: music_mount']) }}
 
-{%- set lastfm_user = gopass_secret('lastfm/username') | trim %}
-{%- set lastfm_pass = gopass_secret('lastfm/password') | trim %}
+{%- set lastfm_user = salt['secrets.gopass_secret']('lastfm/username') | trim %}
+{%- set lastfm_pass = salt['secrets.gopass_secret']('lastfm/password') | trim %}
 mpdas_config:
   file.managed:
     - name: {{ home }}/.config/mpdasrc

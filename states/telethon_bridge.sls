@@ -8,21 +8,21 @@
    services: [telethon-bridge-react.path, telethon-bridge-react.service]
    secrets: [api/nanoclaw-telegram-uid, api/telegram-telethon-hash, api/telegram-telethon-id, api/telegram-uid-guest2, api/telegram-uid-levra]
 #}
-{% from '_imports.jinja' import user, home, proxypilot_key, tg_secret %}
+{% from '_imports.jinja' import user, home %}
 
 {% import_yaml 'data/versions.yaml' as ver %}
 {% import_yaml 'data/telethon_bridge.yaml' as tb %}
 {% set _tb_config_dir = home ~ '/.config/telethon-bridge' %}
 {% set _tb_state_dir = home ~ '/.local/state/telethon-bridge' %}
-{% set _proxy_key = proxypilot_key() %}
+{% set _proxy_key = salt['secrets.proxypilot_key']() %}
 {% set _tb_creds = _tb_config_dir ~ '/credentials' %}
-{% set _api_id_raw = tg_secret('api/telegram-telethon-id', 'api-id', cred_base=_tb_creds) %}
+{% set _api_id_raw = salt['secrets.tg_secret']('api/telegram-telethon-id', 'api-id', cred_base=_tb_creds) %}
 {% set _api_id = _api_id_raw if (_api_id_raw | length > 0) else '1' %}
-{% set _api_hash_raw = tg_secret('api/telegram-telethon-hash', 'api-hash', cred_base=_tb_creds) %}
+{% set _api_hash_raw = salt['secrets.tg_secret']('api/telegram-telethon-hash', 'api-hash', cred_base=_tb_creds) %}
 {% set _api_hash = _api_hash_raw if (_api_hash_raw | length > 0) else 'b6b154c370b1b2a2e8f7e0a1c1a0b0a0' %}
-{% set _telegram_uid = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
-{% set _telegram_uid_levra = tg_secret('api/telegram-uid-levra', 'telegram-uid-levra') %}
-{% set _telegram_uid_guest2 = tg_secret('api/telegram-uid-guest2', 'telegram-uid-guest2') %}
+{% set _telegram_uid = salt['secrets.tg_secret']('api/nanoclaw-telegram-uid', 'telegram-uid') %}
+{% set _telegram_uid_levra = salt['secrets.tg_secret']('api/telegram-uid-levra', 'telegram-uid-levra') %}
+{% set _telegram_uid_guest2 = salt['secrets.tg_secret']('api/telegram-uid-guest2', 'telegram-uid-guest2') %}
 
 include:
   - pacman_db_warmup

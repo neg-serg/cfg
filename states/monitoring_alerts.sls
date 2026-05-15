@@ -8,14 +8,14 @@
    secrets: [api/nanoclaw-telegram, api/nanoclaw-telegram-uid]
    feature_gate: [monitoring.alerts, monitoring.loki]
 #}
-{% from '_imports.jinja' import host, user, home, tg_secret %}
+{% from '_imports.jinja' import host, user, home %}
 
 {% import_yaml 'data/monitored_services.yaml' as monitored %}
 {% if host.features.monitoring.alerts %}
 
 # ── Secret resolution ─────────────────────────────────────────────────
-{% set _telegram_token = tg_secret('api/nanoclaw-telegram', 'telegram-token') %}
-{% set _telegram_uid = tg_secret('api/nanoclaw-telegram-uid', 'telegram-uid') %}
+{% set _telegram_token = salt['secrets.tg_secret']('api/nanoclaw-telegram', 'telegram-token') %}
+{% set _telegram_uid = salt['secrets.tg_secret']('api/nanoclaw-telegram-uid', 'telegram-uid') %}
 
 # ── Directories ──────────────────────────────────────────────────────
 {{ salt['service.ensure_dir']('salt_monitor_cache_dir', home ~ '/.cache/salt-monitor', user=user, mode='0755') }}

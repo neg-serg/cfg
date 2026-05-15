@@ -6,7 +6,7 @@
    services: [proxypilot.container]
    secrets: [api/proxypilot-management]
 #}
-{% from '_imports.jinja' import user, home, proxypilot_key, gopass_secret %}
+{% from '_imports.jinja' import user, home %}
 
 {% import_yaml 'data/free_providers.yaml' as free_providers_data %}
 
@@ -24,9 +24,9 @@
 {% set _existing_mgmt = _pp.get('remote-management', {}).get('secret-key', '') | string %}
 {% set _existing_mgmt_clean = _existing_mgmt | replace('"', '') | replace("'", '') %}
 
-{% set _proxypilot_api_key = proxypilot_key() %}
+{% set _proxypilot_api_key = salt['secrets.proxypilot_key']() %}
 {% set _mgmt_fallback = "echo '" ~ _existing_mgmt_clean ~ "'" %}
-{% set _mgmt_raw = gopass_secret('api/proxypilot-management', _mgmt_fallback) %}
+{% set _mgmt_raw = salt['secrets.gopass_secret']('api/proxypilot-management', _mgmt_fallback) %}
 {% set _proxypilot_mgmt_key = _mgmt_raw if _mgmt_raw else _existing_mgmt_clean %}
 {% if _existing_mgmt.startswith('$2') %}
 {% set _proxypilot_mgmt_key = _existing_mgmt %}
@@ -38,7 +38,7 @@
     {% set _pf_config = _pp.get('openai-compatibility', []) | selectattr('name', 'equalto', p.name) | list %}
     {% set _pf_entry = _pf_config[0] if _pf_config else {} %}
     {% set _pfkey = _pf_entry.get('api-key-entries', [{}])[0].get('api-key', '') %}
-    {% set _key = gopass_secret(p.gopass_key, "echo '" ~ _pfkey ~ "'") %}
+    {% set _key = salt['secrets.gopass_secret'](p.gopass_key, "echo '" ~ _pfkey ~ "'") %}
   {% else %}
     {% set _key = p.get('dummy_key', '') %}
   {% endif %}

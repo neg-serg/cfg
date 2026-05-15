@@ -6,7 +6,7 @@
    secrets: [host/xen-password-hash]
 #}
 
-{% from '_imports.jinja' import user, home, gopass_secret %}
+{% from '_imports.jinja' import user, home %}
 
 {% import_yaml 'data/xen.yaml' as xen %}
 
@@ -31,7 +31,7 @@ xen_user:
     - require:
       - group: xen_group
 
-{% set xen_hash = gopass_secret('host/xen-password-hash') %}
+{% set xen_hash = salt['secrets.gopass_secret']('host/xen-password-hash') %}
 ensure_xen_user_password:
   user.present:
     - name: {{ xen_user }}

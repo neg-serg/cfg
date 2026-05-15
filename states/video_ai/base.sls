@@ -14,7 +14,7 @@
 {% set output_dir = base_dir ~ '/' ~ video_ai.subdirs.output %}
 {% set images_dir = base_dir ~ '/' ~ video_ai.subdirs.images %}
 
-{{ salt['service.ensure_dir']('video_ai_base_dir', base_dir, user=user, require=['mount: mount_one']) }}
+{{ salt['service.ensure_dir']('video_ai_base_dir', base_dir, user=user) }}
 {{ salt['service.ensure_dir']('video_ai_models_dir', models_dir, user=user, require=['file: video_ai_base_dir']) }}
 {{ salt['service.ensure_dir']('video_ai_workflows_dir', workflows_dir, user=user, require=['file: video_ai_base_dir']) }}
 {{ salt['service.ensure_dir']('video_ai_output_dir', output_dir, user=user, require=['file: video_ai_base_dir']) }}

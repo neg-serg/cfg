@@ -183,7 +183,7 @@ test -e {{ _path
    mode: optional file mode (e.g. '0700'); require: optional list of state requisites.
    Usage: {{ ensure_dir('steam_library_dir', '/mnt/zero/steam/steamapps') }}
           {{ ensure_dir('ssh_dir', home ~ '/.ssh', mode='0700') }}
-          {{ ensure_dir('ollama_models_dir', '/mnt/one/ollama/models', require=['mount: mount_one']) }}
+           {{ ensure_dir('ollama_models_dir', '/mnt/one/ollama/models') }}
 #}
 
 {# @macro

@@ -10,7 +10,7 @@
 {% import_yaml 'data/amnezia.yaml' as amnezia %}
 {% set cache = host.mnt_one ~ '/pkg/cache/amnezia' %}
 
-{{ salt['service.ensure_dir']('amnezia_cache_dir', cache, require=['mount: mount_one']) }}
+{{ salt['service.ensure_dir']('amnezia_cache_dir', cache) }}
 
 {% set _amnezia_ver = ver.get('amnezia_vpn', '') %}
 {% set _amnezia_ver_marker = '/var/cache/salt/versions/amnezia_vpn@' ~ _amnezia_ver if _amnezia_ver else '' %}

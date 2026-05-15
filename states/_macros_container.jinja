@@ -62,7 +62,7 @@
 
     Usage:
       {{ container_service('ollama', catalog.ollama, image_registry,
-                           requires=['file: ollama_models_dir', 'mount: mount_one']) }}
+                           requires=['file: ollama_models_dir']) }}
       {{ container_service('telethon_bridge', catalog.telethon_bridge, image_registry,
                            user_scope=True,
                            requires=['cmd: install_python_telethon']) }}

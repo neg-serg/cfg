@@ -27,7 +27,7 @@ include:
 {{ salt['pkg.paru_install'](id, pkgs | join(' '), requires=['cmd: multilib_repo']) }}
 {% endfor %}
 
-{{ salt['service.ensure_dir']('steam_library_dir', host.mnt_zero ~ '/steam/steamapps', require=['mount: mount_zero']) }}
+{{ salt['service.ensure_dir']('steam_library_dir', host.mnt_zero ~ '/steam/steamapps') }}
 {{ salt['pkg.paru_install']('p7zip', '7zip') }}
 
 gamemode_config:

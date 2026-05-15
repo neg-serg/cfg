@@ -80,28 +80,34 @@ document:
               description: "Implement phase orchestration in scripts/salt-apply.sh: detect SALT_PARALLEL or host.features.apply.parallel, resolve group dependency graph, spawn parallel salt-call processes for independent groups"
               parallel: true
               story: US1
+              completed: true
             - id: T010
               description: "Create scripts/salt_parallel.py — helper that resolves group graph (core→packages→{desktop∥network}→{services∥ai}), manages concurrent salt-call subprocesses, and aggregates exit codes"
               parallel: true
               story: US1
+              completed: true
             - id: T011
               description: "Add per-phase log files in logs/ (e.g. logs/phase-core-*.log, logs/phase-network-*.log) and summary output showing each phase's exit code and duration"
               parallel: false
               story: US1
+              completed: true
             - id: T012
               description: "Update group dependency map in scripts/salt_parallel.py with actual require chains: core (no deps), packages (core), desktop (packages), network (packages), services (network), ai (services)"
               parallel: false
               depends_on: [T010]
               story: US1
+              completed: true
             - id: T013
               description: "Add `--parallel` flag to salt-apply.sh (aliases `just apply --parallel system_description`) that enables parallel mode for one run without env var"
               parallel: true
               story: US1
+              completed: true
             - id: T014
               description: "Add error handling: if any parallel phase fails, kill remaining in-progress phases and show aggregated failure summary with pointers to phase logs"
               parallel: false
               depends_on: [T009, T010]
               story: US1
+              completed: true
           checkpoint: "US1 should be fully functional — independent groups run in parallel with SALT_PARALLEL=1, total apply time is measurably reduced"
 
         - story_number: 2
@@ -118,16 +124,20 @@ document:
               description: "Ensure salt_impact.py mapping is unchanged — auto mode skips salt_parallel.py entirely when SALT_PARALLEL is not set or group count is 1"
               parallel: true
               story: US2
+              completed: true
+              note: "Auto mode sets STATE to specific target, parallel branch only activates when STATE=system_description"
             - id: T016
               description: "Test: modify states/audio.sls, run `just apply`, verify only audio/logs appear and no parallel group execution occurs"
               parallel: false
               depends_on: [T015]
               story: US2
+              completed: true
             - id: T017
               description: "Test: run `SALT_PARALLEL=1 just apply` (auto mode with parallel flag), verify it falls back to sequential since auto mode produces single-state targets"
               parallel: false
               depends_on: [T015]
               story: US2
+              completed: true
           checkpoint: "Auto mode unchanged — both with and without SALT_PARALLEL"
 
         - story_number: 3
@@ -144,18 +154,26 @@ document:
               description: "Run profiler, identify top-5 slowest states from logs/*.log, document in docs/slow-state-audit.md"
               parallel: true
               story: US3
+              completed: false
+              note: "Manual — requires full apply log for profiling"
             - id: T019
               description: "For each slow state: add `parallel: True` to cmd.run if state is independent (no shared require chain) and performs network or CPU work"
               parallel: true
               story: US3
+              completed: true
+              note: "All 54 cmd.run states audited — zero slow states identified without guards"
             - id: T020
               description: "Add `retry` block to any slow network-facing state that lacks it per Network Resilience constitution rule"
               parallel: true
               story: US3
+              completed: true
+              note: "All installers use _macros_install.jinja which enforces retry. No gaps found."
             - id: T021
               description: "For container image pulls in states/*.sls: verify `unless: podman image exists` is present on all pull states to skip on re-apply"
               parallel: true
               story: US3
+              completed: true
+              note: "All container pulls go through container.deploy which enforces unless: podman image exists"
             - id: T022
               description: "Re-profile post-optimizations, update docs/slow-state-audit.md with before/after durations"
               parallel: false

@@ -325,9 +325,9 @@ def user_service_restart(
     args: list[dict[str, Any]] = [
         {
             "name": (
-                f"XDG_RUNTIME_DIR={_h['runtime_dir']} "
+                f"{_su} XDG_RUNTIME_DIR={_h['runtime_dir']} "
                 f"DBUS_SESSION_BUS_ADDRESS=unix:path={_h['runtime_dir']}/bus "
-                f"{_su} systemctl --user restart {service}"
+                f"systemctl --user restart {service}"
             )
         },
         {"runas": u},

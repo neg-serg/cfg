@@ -268,6 +268,9 @@ except Exception:
 ensure_daemon() {
 	daemon_running && return 0
 	[[ -x "$DAEMON_SCRIPT" ]] || return 1
+	# Clear stale module bytecode so Salt picks up fresh _modules/*.py
+	"${SUDO_CMD[@]}" find "${PROJECT_DIR}/states/_modules" -name '__pycache__' -type d -exec rm -rf {} + 2>/dev/null || true
+	"${SUDO_CMD[@]}" rm -rf /var/cache/salt/minion/extmods 2>/dev/null || true
 	pretty::info "starting salt-daemon in background..."
 	"${SUDO_CMD[@]}" "$DAEMON_SCRIPT" \
 		--config-dir "$RUNTIME_CONFIG_DIR" \

@@ -37,6 +37,7 @@ def _host() -> dict[str, Any]:
                 "uid": _uid,
                 "runtime_dir": f"/run/user/{_uid}",
                 "pkg_list": "/var/cache/salt/pacman_installed.txt",
+                "ver_dir": f"{_home}/.cache/salt-versions",
             }
 
 
@@ -105,7 +106,7 @@ def hyprpm_update(
         "XDG_RUNTIME_DIR": h["runtime_dir"],
     }
 
-    stamp_path = "/var/cache/salt/hyprpm_updated"
+    stamp_path = f"{h['ver_dir']}/hyprpm_updated"
 
     cmd = (
         f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "

@@ -725,6 +725,18 @@ def _collect_data_consumers(repo_root: Path = REPO_ROOT) -> dict[str, set[str]]:
                 data_basename = data_rel.split("/")[-1]
                 usage.setdefault(data_basename, set()).add(str(jinja_path.relative_to(repo_root)))
 
+    # Scan Python modules and states for data file references
+    PY_DATA_RE = re.compile(r"['\"]([a-z_]+\.yaml)['\"]")
+    for py_dir in ("_modules", "_states"):
+        for py_path in (states_dir / py_dir).glob("*.py"):
+            try:
+                src = py_path.read_text()
+            except (OSError, IOError):
+                continue
+            for match in PY_DATA_RE.finditer(src):
+                data_basename = match.group(1)
+                usage.setdefault(data_basename, set()).add(str(py_path.relative_to(repo_root)))
+
     return usage
 
 

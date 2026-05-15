@@ -261,12 +261,7 @@ except Exception:
 }
 
 ensure_daemon() {
-	# Always restart daemon to pick up module code changes
-	"${SUDO_CMD[@]}" pkill -9 -f 'salt-daemon.py' 2>/dev/null || true
-	"${SUDO_CMD[@]}" rm -f "$DAEMON_SOCK"
-	sleep 0.5
-	# If old daemon survived, fall back to direct salt-call
-	daemon_running && return 1
+	daemon_running && return 0
 	[[ -x "$DAEMON_SCRIPT" ]] || return 1
 	pretty::info "starting salt-daemon in background..."
 	"${SUDO_CMD[@]}" "$DAEMON_SCRIPT" \

@@ -70,8 +70,15 @@ def _daemon_patched_module_dirs(*args, **kwargs):
     dirs = _daemon_salt_loader._module_dirs_orig(*args, **kwargs)
     if len(args) > 1 and args[1] == "modules":
         _mod_path = os.path.join(_SCRIPT_DIR, "states", "_modules")
+        _cache_path = os.path.join(
+            kwargs.get("cachedir", "/var/cache/salt"), "minion", "extmods", "modules"
+        )
+        if _cache_path in dirs:
+            dirs.remove(_cache_path)
         if _mod_path not in dirs:
-            dirs.append(_mod_path)
+            dirs.insert(0, _mod_path)
+        if _cache_path not in dirs:
+            dirs.append(_cache_path)
     return dirs
 
 

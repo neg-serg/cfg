@@ -26,8 +26,18 @@ def _patched_module_dirs(*args, **kwargs):
     if len(args) > 1 and args[1] == "modules":
         _project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         _mod_path = os.path.join(_project_dir, "states", "_modules")
+        # Remove stale cached copies so source takes precedence
+        _cache_path = os.path.join(
+            kwargs.get("cachedir", "/var/cache/salt"), "minion", "extmods", "modules"
+        )
+        if _cache_path in dirs:
+            dirs.remove(_cache_path)
+        # Insert source before any cached paths
         if _mod_path not in dirs:
-            dirs.append(_mod_path)
+            dirs.insert(0, _mod_path)
+        # Re-append cache after source (source overrides cache)
+        if _cache_path not in dirs:
+            dirs.append(_cache_path)
     return dirs
 
 

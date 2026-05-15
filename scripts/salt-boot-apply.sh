@@ -20,6 +20,11 @@ fi
 
 echo "=== Salt boot apply started at $(date -u '+%Y-%m-%dT%H:%M:%SZ') ===" | tee -a "$LOG_FILE"
 
+# Sync custom execution/states modules from _modules/ and _states/.
+# The salt-daemon handles this on its own startup, but salt-boot-apply may
+# run before the daemon is ready on first boot.  This no-ops if current.
+"$SALT_CALL" --local --config-dir="${PROJECT_DIR}/.salt_runtime" saltutil.sync_all >/dev/null 2>&1 || true
+
 # Apply core group: users, mounts, kernel modules, sysctl, hardware, etc.
 # No --failhard: apply ALL critical states even if some fail.
 # Salt is idempotent — a failed state leaves the current (working) state intact.

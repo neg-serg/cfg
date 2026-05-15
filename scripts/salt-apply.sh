@@ -39,6 +39,7 @@
 #   SALT_LOG_FILE     Override log file path
 #   AUTO_BASE         Git diff base for auto mode (default: last-applied marker or HEAD~1)
 #   SALT_AUTO_DISABLE Disable minimal-rollout, force system_description
+#   SALT_PARALLEL     Enable parallel group execution (default: 0)
 
 set -euo pipefail
 
@@ -60,6 +61,7 @@ PLAN_MODE=false
 PLAN_FILES=()
 AUDIT_MODE=false
 FORCE_MODE=false
+PARALLEL_MODE=false
 
 for arg in "$@"; do
 	case "$arg" in
@@ -67,6 +69,7 @@ for arg in "$@"; do
 	--test | --dry-run) TEST_MODE=true ;;
 	--audit) AUDIT_MODE=true ;;
 	--force | -f) FORCE_MODE=true ;;
+	--parallel) PARALLEL_MODE=true ;;
 	-*)
 		pretty::fail "Unknown flag: $arg"
 		exit 1

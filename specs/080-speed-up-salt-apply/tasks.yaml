@@ -23,12 +23,15 @@ document:
         - id: T001
           description: "Create feature branch 080-speed-up-salt-apply with spec, plan, research, data-model, quickstart artifacts in specs/080-speed-up-salt-apply/"
           parallel: false
+          completed: true
         - id: T002
           description: "Add `apply.parallel` feature flag to states/data/hosts.yaml under features.apply section"
           parallel: false
+          completed: true
         - id: T003
           description: "Add `SALT_PARALLEL` env var override in scripts/salt-apply.sh bootstrap section"
           parallel: false
+          completed: true
 
     - name: Foundational
       order: 2

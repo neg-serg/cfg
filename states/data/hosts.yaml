@@ -23,6 +23,8 @@ defaults:
   extra_kargs: []
   extra_modules: []
   features:
+    apply:
+      parallel: false
     monitoring:
       sysstat: true
       vnstat: true

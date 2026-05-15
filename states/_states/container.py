@@ -29,7 +29,7 @@ except ImportError:
 
 
 try:
-    from _modules.common import _parse_requires
+    from common import _parse_requires
 except ImportError:
 
     def _parse_requires(requires):
@@ -122,7 +122,7 @@ def managed(
 
     # Resolve host for home directory
     try:
-        from _modules.common import get_host
+        from common import get_host
 
         host = get_host()
         home = host.get("home", "/root")
@@ -215,7 +215,7 @@ def managed(
     retry_interval = 10
 
     try:
-        from _modules.common import get_constants
+        from common import get_constants
 
         c = get_constants()
         retry_attempts = c["retry_attempts"]

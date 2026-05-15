@@ -22,7 +22,7 @@ except ImportError:
             return str(obj)
 
 
-from _modules.common import _parse_requires
+from common import _parse_requires
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -79,7 +79,7 @@ def deploy(
         host = __salt__["common.get_host"]()
     except (NameError, KeyError):
         try:
-            from _modules.common import get_host
+            from common import get_host
 
             host = get_host()
         except Exception:

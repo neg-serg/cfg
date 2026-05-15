@@ -9,12 +9,12 @@ from typing import Any
 
 from _yaml_out import yaml_output
 
-from _modules.common import _parse_requires
+from common import _parse_requires
 
 
 def _const() -> dict[str, Any]:
     try:
-        from _modules.common import get_constants
+        from common import get_constants
 
         return get_constants()
     except Exception:

@@ -18,7 +18,7 @@ def _host() -> dict[str, Any]:
         return __salt__["common.get_host"]()
     except (NameError, KeyError):
         try:
-            from _modules.common import get_host
+            from common import get_host
 
             return get_host()
         except Exception:

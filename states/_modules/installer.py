@@ -12,7 +12,7 @@ from typing import Any
 
 from _yaml_out import yaml_output
 
-from _modules.common import _parse_requires
+from common import _parse_requires
 
 
 def _host() -> dict[str, Any]:
@@ -20,7 +20,7 @@ def _host() -> dict[str, Any]:
         return __salt__["common.get_host"]()
     except (NameError, KeyError):
         try:
-            from _modules.common import get_host
+            from common import get_host
 
             return get_host()
         except Exception:
@@ -47,7 +47,7 @@ def _const() -> dict[str, Any]:
         return __salt__["common.get_constants"]()
     except (NameError, KeyError):
         try:
-            from _modules.common import get_constants
+            from common import get_constants
 
             return get_constants()
         except Exception:

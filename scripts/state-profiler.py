@@ -76,15 +76,18 @@ def parse_log(path: Path) -> list[tuple[float, str]]:
 
     # Fallback: regex parse text log
     durations: list[tuple[float, str]] = []
-    with path.open() as fh:
-        for raw in fh:
-            match = NAME_RE.search(raw)
-            if not match:
-                continue
-            state_id = match.group(1).strip()
-            duration_expr = match.group(2).strip()
-            duration = _parse_duration_expr(duration_expr)
-            durations.append((duration, state_id))
+    try:
+        with path.open() as fh:
+            for raw in fh:
+                match = NAME_RE.search(raw)
+                if not match:
+                    continue
+                state_id = match.group(1).strip()
+                duration_expr = match.group(2).strip()
+                duration = _parse_duration_expr(duration_expr)
+                durations.append((duration, state_id))
+    except (OSError, PermissionError):
+        pass
     return durations
 
 

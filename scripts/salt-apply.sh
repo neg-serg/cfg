@@ -499,7 +499,8 @@ print(data['summary']['changed'])
 " 2>/dev/null || echo 0)
     else
         FAILED_COUNT=$(grep -c 'Result: False' "${LOG_FILE}" 2>/dev/null || echo 0)
-        PASSED=$(( $(grep -c 'Result: True' "${LOG_FILE}" 2>/dev/null || echo 0) ))
+        PASSED_COUNT=$(grep -c 'Result: True' "${LOG_FILE}" 2>/dev/null || echo 0)
+        PASSED=${PASSED_COUNT:-0}
         CHANGED=0
     fi
     echo ""

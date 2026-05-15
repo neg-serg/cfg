@@ -164,6 +164,27 @@ def managed_path_guard(entry: dict[str, Any]) -> str:
     return f"test -e {path}"
 
 
+def managed_sysusers_line(entry: dict[str, Any]) -> str:
+    """Render a sysusers.d line from a managed identity entry."""
+    u = managed_resource_value(entry.get("user", ""))
+    h = managed_resource_value(entry.get("home", "/"))
+    gecos = entry.get("gecos", "Salt managed service account")
+    shell = entry.get("shell", "/usr/sbin/nologin")
+    return f'u {u} - "{gecos}" {h} {shell}'
+
+
+def managed_tmpfiles_line(entry: dict[str, Any]) -> str:
+    """Render a tmpfiles.d line from a managed path entry."""
+    typ = entry.get("type", "d")
+    path = managed_resource_value(entry.get("path", ""))
+    mode = managed_mode_value(entry.get("mode", "0755"))
+    u = managed_resource_value(entry.get("user", ""))
+    g = managed_resource_value(entry.get("group", ""))
+    age = entry.get("age", "-")
+    arg = managed_resource_value(entry.get("argument", "-"))
+    return f"{typ} {path} {mode} {u} {g} {age} {arg}"
+
+
 def managed_mode_value(mode: Any) -> str:
     _mode = str(managed_resource_value(str(mode)))
     return _mode[1:] if _mode.startswith("0") else _mode

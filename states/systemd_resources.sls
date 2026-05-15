@@ -3,7 +3,6 @@
    id: systemd_resources
    purpose: "Systemd resource management: sysusers, tmpfiles, and service account provisioning."
    data_files: [data/managed_resources.yaml]
-   configs: [configs/managed-service-accounts.conf.j2, configs/managed-service-paths.conf.j2]
 #}
 # =============================================================================
 # SystemD managed resources — identity guards and path protections
@@ -24,10 +23,14 @@ managed_service_accounts_dir:
     - group: root
     - mode: '0755'
 
+{% set _sysusers_lines = ["# Managed by Salt. Do not edit manually."] %}
+{% for _name, _entry in identities|dictsort %}
+{% do _sysusers_lines.append(salt['service.managed_sysusers_line'](_entry)) %}
+{% endfor %}
+
 {{ salt['service.config_and_reload']('managed_service_accounts_conf', '/etc/sysusers.d/salt-managed-service-accounts.conf',
     'systemd-sysusers /etc/sysusers.d/salt-managed-service-accounts.conf',
-    source='salt://configs/managed-service-accounts.conf.j2', template='jinja',
-    context={'identities': identities},
+    contents=_sysusers_lines|join('\n'),
     require=['file: managed_service_accounts_dir'],
     onlyif='command -v systemd-sysusers >/dev/null 2>&1') }}
 
@@ -56,10 +59,14 @@ managed_service_paths_dir:
     - group: root
     - mode: '0755'
 
+{% set _tmpfiles_lines = ["# Managed by Salt. Do not edit manually."] %}
+{% for _name, _entry in paths|dictsort %}
+{% do _tmpfiles_lines.append(salt['service.managed_tmpfiles_line'](_entry)) %}
+{% endfor %}
+
 {{ salt['service.config_and_reload']('managed_service_paths_conf', '/etc/tmpfiles.d/salt-managed-service-paths.conf',
     'systemd-tmpfiles --create /etc/tmpfiles.d/salt-managed-service-paths.conf',
-    source='salt://configs/managed-service-paths.conf.j2', template='jinja',
-    context={'paths': paths},
+    contents=_tmpfiles_lines|join('\n'),
     require=['file: managed_service_paths_dir'],
     onlyif='command -v systemd-tmpfiles >/dev/null 2>&1') }}
 

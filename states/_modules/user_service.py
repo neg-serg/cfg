@@ -186,7 +186,7 @@ def _user_service_enable_dict(
     h = _host()
 
     if not all_units and not daemon_reload:
-        shell_cmd = 'echo "changed=no comment=\'no services specified\'"'
+        shell_cmd = 'echo \'{"changed": false, "comment": "no services specified"}\''
     else:
         _su = f"sudo -u {u}" if u != "root" else ""
         parts = ["set -euo pipefail"]
@@ -196,7 +196,7 @@ def _user_service_enable_dict(
         )
         parts.append(
             f"{_su} systemctl --user show-environment >/dev/null 2>&1 || "
-            f"{{ echo 'changed=no comment=no user session available'; exit 0; }}"
+            f"{{ echo '{{\"changed\": false, \"comment\": \"no user session available\"}}'; exit 0; }}"
         )
         parts.append("_changed=no")
         if daemon_reload:
@@ -218,9 +218,9 @@ def _user_service_enable_dict(
                 f"fi"
             )
         parts.append('if [ "$_changed" = "no" ]; then')
-        parts.append("  echo \"changed=no comment='service already enabled and active'\"")
+        parts.append("  echo '{{\"changed\": false, \"comment\": \"service already enabled and active\"}}'")
         parts.append('else')
-        parts.append('  echo "changed=yes"')
+        parts.append('  echo \'{"changed\": true}\'')
         parts.append('fi')
         shell_cmd = "\n".join(parts)
 
@@ -351,7 +351,7 @@ def user_service_disable(name: str, units: list[str], user: str | None = None) -
 
     if not units:
         return {name: {"cmd.run": [
-            {"name": 'echo "changed=no comment=\'no services specified\'"'},
+            {"name": "echo '{\"changed\": false, \"comment\": \"no services specified\"}'"},
             {"shell": "/bin/bash"},
             {"runas": u},
             {"env": _sysctl_env()},
@@ -365,7 +365,7 @@ def user_service_disable(name: str, units: list[str], user: str | None = None) -
     )
     parts.append(
         f"{_su} systemctl --user show-environment >/dev/null 2>&1 || "
-        f"{{ echo 'changed=no comment=no user session available'; exit 0; }}"
+        f"{{ echo '{{\"changed\": false, \"comment\": \"no user session available\"}}'; exit 0; }}"
     )
     parts.append("_changed=no")
     for unit in units:
@@ -377,9 +377,9 @@ def user_service_disable(name: str, units: list[str], user: str | None = None) -
             f"fi"
         )
     parts.append('if [ "$_changed" = "no" ]; then')
-    parts.append("  echo \"changed=no comment='service already disabled and inactive'\"")
+    parts.append("  echo '{{\"changed\": false, \"comment\": \"service already disabled and inactive\"}}'")
     parts.append('else')
-    parts.append('  echo "changed=yes"')
+    parts.append('  echo \'{"changed": true}\'')
     parts.append('fi')
     shell_cmd = "\n".join(parts)
 

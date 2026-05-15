@@ -72,9 +72,9 @@ def _paru_install_dict(
             f"output=$(sudo -u {u} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg}' 2>&1 || true)\n"
             f"echo \"$output\"\n"
             f"if echo \"$output\" | grep -qi 'nothing to do'; then\n"
-            f"    echo 'changed=no comment=all packages already installed'\n"
+            f"    echo '{{\"changed\": false, \"comment\": \"all packages already installed\"}}'\n"
             f"else\n"
-            f"    echo 'changed=yes'\n"
+            f"    echo '{{\"changed\": true}}'\n"
             f"    mkdir -p {_ver_dir} && rm -f {_ver_dir}/{name} {_ver_dir}/{name}@* && "
             f"touch {_ver_dir}/{name}@{version}\n"
             f"fi"
@@ -101,8 +101,8 @@ def _paru_install_dict(
                             f"paru -S --noconfirm --needed {pkg} || true' 2>&1); "
                             f'echo "$output"; '
                             f"if echo \"$output\" | grep -qi 'nothing to do'; then "
-                            f"echo 'changed=no comment=all packages already installed'; "
-                            f"else echo 'changed=yes'; fi"
+                            f"echo '{{\"changed\": false, \"comment\": \"all packages already installed\"}}'; "
+                            f"else echo '{{\"changed\": true}}'; fi"
                         )
                     },
                     {"shell": "/bin/bash"},
@@ -121,8 +121,8 @@ def _paru_install_dict(
                         f"output=$(sudo -u {u} paru -S --noconfirm --needed {pkg} 2>&1); "
                         f'echo "$output"; '
                         f"if echo \"$output\" | grep -qi 'nothing to do'; then "
-                        f"echo 'changed=no comment=all packages already installed'; "
-                        f"else echo 'changed=yes'; fi"
+                        f"echo '{{\"changed\": false, \"comment\": \"all packages already installed\"}}'; "
+                        f"else echo '{{\"changed\": true}}'; fi"
                     )
                 },
                 {"shell": "/bin/bash"},

@@ -22,6 +22,9 @@ pip_pkg:
   texicode:
     bin: txc
 cargo_pkg:
+  larql:
+    git: https://github.com/cronos3k/larql
+    bin: larql
   pzip:
     bin: pz
   proteinview:

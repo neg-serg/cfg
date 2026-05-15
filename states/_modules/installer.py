@@ -66,10 +66,11 @@ def _const() -> dict[str, Any]:
 
             return get_constants()
         except Exception:
+            h = _host()
             return {
                 "retry_attempts": 3,
                 "retry_interval": 10,
-                "ver_dir": "/root/.cache/salt-versions",
+                "ver_dir": f"{h.get('home', '/root')}/.cache/salt-versions",
                 "sys_ver_dir": "/var/cache/salt/versions",
                 "download_cache": "/var/cache/salt/downloads",
             }

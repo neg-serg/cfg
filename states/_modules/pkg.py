@@ -57,7 +57,8 @@ def _const() -> dict[str, Any]:
 
         return get_constants()
     except Exception:
-        return {"retry_attempts": 3, "retry_interval": 10, "ver_dir": "/tmp"}
+        h = _host()
+        return {"retry_attempts": 3, "retry_interval": 10, "ver_dir": f"{h.get('home', '/root')}/.cache/salt-versions"}
 
 
 def _paru_install_dict(

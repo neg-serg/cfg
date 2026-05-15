@@ -66,7 +66,13 @@ def _build_host(hosts_data: dict[str, Any] | None = None) -> dict[str, Any]:
 
     # Resolve derived fields (matching host_model.py _add_derived_fields)
     user = host.get("user") or os.environ.get("USER", "root")
-    home = host.get("home") or f"/home/{user}"
+    _cfg_home = host.get("home")
+    if _cfg_home:
+        home = _cfg_home
+    elif user == "root":
+        home = "/root"
+    else:
+        home = f"/home/{user}"
     uid = host.get("uid") or 1000
 
     host["user"] = user

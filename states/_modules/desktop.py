@@ -37,11 +37,20 @@ def _host() -> dict[str, Any]:
 
             return get_host()
         except Exception:
+            import os, pwd
+            _user = os.environ.get("SUDO_USER") or os.environ.get("USER") or "root"
+            try:
+                _pw = pwd.getpwnam(_user)
+                _home = _pw.pw_dir
+                _uid = _pw.pw_uid
+            except KeyError:
+                _home = f"/home/{_user}" if _user != "root" else "/root"
+                _uid = 0 if _user == "root" else 1000
             return {
-                "user": "root",
-                "home": "/root",
-                "uid": 1000,
-                "runtime_dir": "/run/user/1000",
+                "user": _user,
+                "home": _home,
+                "uid": _uid,
+                "runtime_dir": f"/run/user/{_uid}",
                 "pkg_list": "/var/cache/salt/pacman_installed.txt",
             }
 

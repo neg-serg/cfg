@@ -44,15 +44,18 @@ def _host() -> dict[str, Any]:
             try:
                 _pw = pwd.getpwnam(_user)
                 _home = _pw.pw_dir
+                _uid = _pw.pw_uid
             except KeyError:
                 _home = f"/home/{_user}" if _user != "root" else "/root"
+                _uid = 0 if _user == "root" else 1000
             return {
                 "user": _user,
                 "home": _home,
-                "runtime_dir": "/run/user/1000",
+                "uid": _uid,
+                "runtime_dir": f"/run/user/{_uid}",
                 "pkg_list": "/var/cache/salt/pacman_installed.txt",
                 "systemd_unit_dir": "/etc/systemd/system/",
-                "systemd_user_unit_dir": "/root/.config/systemd/user/",
+                "systemd_user_unit_dir": f"{_home}/.config/systemd/user/",
             }
 
 
@@ -204,6 +207,7 @@ def _user_service_enable_dict(
             f"export XDG_RUNTIME_DIR={h['runtime_dir']} "
             f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus"
         )
+        parts.append(f"{_su} systemctl --user show-environment >/dev/null 2>&1 || exit 0")
         if daemon_reload:
             parts.append(f"{_su} systemctl --user daemon-reload")
         for svc in svc_list:
@@ -221,8 +225,13 @@ def _user_service_enable_dict(
     unless_cmd = None
     if all_units:
         _su = f"sudo -u {u}" if u != "root" else ""
-        checks = [f"export XDG_RUNTIME_DIR={h['runtime_dir']}"]
-        checks.append(f"export DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus")
+        # unless: TRUE → skip command. Skip if DBus unavailable OR all services already enabled.
+        # DBus guard: ! (show-environment) → if bus missing, !false=true → skip.
+        checks = [
+            f"(export XDG_RUNTIME_DIR={h['runtime_dir']} "
+            f"&& export DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus "
+            f"&& ! {_su} systemctl --user show-environment >/dev/null 2>&1)",
+        ]
         for svc in svc_list:
             checks.append(f"{_su} systemctl --user is-{check} '{svc}' >/dev/null 2>&1")
         for svc in now_list:

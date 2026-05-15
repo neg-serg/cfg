@@ -49,7 +49,11 @@
 {% set host = salt['slsutil.merge'](defaults, hosts.get(current_host, {}), strategy='recurse') %}
 {# Derived fields (depend on merged values, so computed after merge) #}
 {% if not host.get('home') %}
-{%   do host.update({'home': '/home/' ~ host.user}) %}
+{%   if host.user == 'root' %}
+{%     do host.update({'home': '/root'}) %}
+{%   else %}
+{%     do host.update({'home': '/home/' ~ host.user}) %}
+{%   endif %}
 {% endif %}
 {% do host.update({'runtime_dir': '/run/user/' ~ host.uid|string}) %}
 {% do host.update({'pkg_list': '/var/cache/salt/pacman_installed.txt'}) %}

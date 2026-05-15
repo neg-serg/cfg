@@ -22,23 +22,7 @@ except ImportError:
             return str(obj)
 
 
-try:
-    from _modules.common import _parse_requires
-except ImportError:
-
-    def _parse_requires(requires):
-        if not requires:
-            return []
-        parsed = []
-        for r in requires:
-            if isinstance(r, str) and ": " in r:
-                typ, rid = r.split(": ", 1)
-                parsed.append({typ: rid})
-            elif isinstance(r, dict):
-                parsed.append(r)
-            else:
-                parsed.append(r)
-        return parsed
+from _modules.common import _parse_requires
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:

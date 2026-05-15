@@ -105,34 +105,6 @@ def hyprpm_update(
         "XDG_RUNTIME_DIR": h["runtime_dir"],
     }
 
-    cmd = (
-        f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
-        f"(hyprpm update 2>/dev/null || true); "
-        f"touch /tmp/.salt_hyprpm_updated"
-    )
-
-    unless_cmd = None
-    if check_plugins:
-        stamp_path = "/var/cache/salt/hyprpm_updated"
-        stamp_check = f'test -f {stamp_path}'
-        checks = [f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd})"]
-        for plugin in check_plugins:
-            checks.append(f"(hyprpm list 2>&1 | grep -q '{plugin}')")
-        plugin_check = " && ".join(checks)
-        unless_cmd = f"{stamp_check} && {plugin_check}"
-
-    cmd = (
-        f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
-        f"(hyprpm update 2>/dev/null || true); "
-        f"touch {stamp_path}"
-    )
-    onlyif = f"ss -xl 2>/dev/null | grep -q /run/user/{h['uid']}/hypr/"
-
-    env_entries = {
-        "HOME": h["home"],
-        "XDG_RUNTIME_DIR": h["runtime_dir"],
-    }
-
     stamp_path = "/var/cache/salt/hyprpm_updated"
 
     cmd = (
@@ -148,20 +120,17 @@ def hyprpm_update(
             checks.append(f"(hyprpm list 2>&1 | grep -q '{plugin}')")
         plugin_check = " && ".join(checks)
         unless_cmd = f"test -f {stamp_path} && {plugin_check}"
-    unless_cmd = (
-        f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
-        f"(hyprpm list 2>&1 | grep -q '{check_plugin}') || true"
-    )
 
     args: list[dict[str, Any]] = [
         {"name": cmd},
         {"runas": u},
         {"onlyif": onlyif},
-        {"unless": unless_cmd},
         {"env": env_entries},
-        {"timeout": timeout},
         {"retry": {"attempts": _const()["retry_attempts"], "interval": _const()["retry_interval"]}},
+        {"timeout": timeout},
     ]
+    if unless_cmd:
+        args.append({"unless": unless_cmd})
     if require:
         args.append({"require": _parse_requires(require)})
 

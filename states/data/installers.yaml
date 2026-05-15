@@ -23,7 +23,7 @@ pip_pkg:
     bin: txc
 cargo_pkg:
   larql:
-    git: https://github.com/cronos3k/larql
+    git: https://github.com/cronos3k/larql larql-cli
     bin: larql
   pzip:
     bin: pz

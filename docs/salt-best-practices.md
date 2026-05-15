@@ -20,13 +20,13 @@ This document is a comprehensive reference for Salt configuration management bes
 
 **This project**: 44 state files in `states/`, each covering a distinct domain. The orchestrator `states/system_description.sls` (lines 44-98) includes all domains in logical order: core, system, desktop, network, packages, applications, services.
 
-### SO-02: Macro-first for repeated patterns ✅
+### SO-02: Python execution modules for business logic ✅
 
-**Practice**: Common infrastructure patterns (package install, GitHub release download, service management) MUST use project macros from `_macros_*.jinja`. Never inline a pattern already covered by a macro.
+**Practice**: Common infrastructure patterns (package install, GitHub release download, service management) MUST use Python execution modules from `_modules/`. Never inline a pattern already covered by a module function.
 
-**Rationale**: Macros encode network resilience (retry), idempotency guards (creates/unless), consistent naming (install_*, build_*), and parallel execution. Bypassing them loses all four guarantees.
+**Rationale**: Python modules encode network resilience (retry), idempotency guards (creates/unless), consistent naming (install_*, build_*), and parallel execution. Bypassing them loses all four guarantees.
 
-**This project**: 5 macro files covering all repeating patterns:
+**This project**: 14 Python execution modules covering all repeating patterns:
 - `_macros_common.jinja` — shared constants (`retry_attempts=3`, `retry_interval=10`)
 - `_macros_github.jinja` — GitHub release downloads
 - `_macros_install.jinja` — curl, pip, cargo, zip, tar installs

@@ -1,10 +1,9 @@
 # Salt 3008+ Upgrade Guide with Git Worktrees
 
-**Date**: 2026-04-18  
-**Status**: Draft / Planning  
-**Applicable to**: Salt masterless workstation configuration (CachyOS/Arch)  
-**Current version**: Salt 3007.13  
-**Target version**: Salt 3008+ LTS (when available)
+**Date**: 2026-05-15  
+**Status**: Completed — salt>=3008 in requirements.txt, all Jinja macros ported to Python  
+**Current version**: Salt 3008+ (RC or final)
+**Previous version**: Salt 3007.13
 
 ## Executive Summary
 
@@ -295,10 +294,7 @@ Update `scripts/salt_runner.py`:
 
 ### 5.3 Compatibility Layer Review
 
-Review `scripts/salt_compat.py`:
-- Remove Python 3.13+ patches if fixed in Salt 3008
-- Update URL handling if `salt://` changes
-- Check multiprocessing compatibility
+`scripts/salt_compat.py` simplified — PEP 594 shims (`crypt`, `spwd`) removed since 3008 handles them natively. Only Python 3.14-specific patches remain (multiprocessing `fork` default + `salt.utils.url.create`).
 
 ```bash
 # Test compatibility patches

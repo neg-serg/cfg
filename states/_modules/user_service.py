@@ -186,7 +186,7 @@ def _user_service_enable_dict(
     h = _host()
 
     if not all_units and not daemon_reload:
-        shell_cmd = "/usr/bin/true"
+        shell_cmd = 'echo "changed=no comment=\'no services specified\'"'
     else:
         _su = f"sudo -u {u}" if u != "root" else ""
         parts = ["set -euo pipefail"]
@@ -194,19 +194,34 @@ def _user_service_enable_dict(
             f"export XDG_RUNTIME_DIR={h['runtime_dir']} "
             f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus"
         )
-        parts.append(f"{_su} systemctl --user show-environment >/dev/null 2>&1 || exit 0")
+        parts.append(
+            f"{_su} systemctl --user show-environment >/dev/null 2>&1 || "
+            f"{{ echo 'changed=no comment=no user session available'; exit 0; }}"
+        )
+        parts.append("_changed=no")
         if daemon_reload:
             parts.append(f"{_su} systemctl --user daemon-reload")
+            if not all_units:
+                parts.append("_changed=yes")
         for svc in svc_list:
             parts.append(
-                f"{_su} systemctl --user is-{check} '{svc}' >/dev/null 2>&1 "
-                f"|| {_su} systemctl --user enable '{svc}'"
+                f"if {_su} systemctl --user is-{check} '{svc}' >/dev/null 2>&1; then "
+                f": ; else "
+                f"{_su} systemctl --user enable '{svc}' && _changed=yes; "
+                f"fi"
             )
         for svc in now_list:
             parts.append(
-                f"{_su} systemctl --user is-active '{svc}' >/dev/null 2>&1 "
-                f"|| {_su} systemctl --user enable --now '{svc}'"
+                f"if {_su} systemctl --user is-active '{svc}' >/dev/null 2>&1; then "
+                f": ; else "
+                f"{_su} systemctl --user enable --now '{svc}' && _changed=yes; "
+                f"fi"
             )
+        parts.append('if [ "$_changed" = "no" ]; then')
+        parts.append("  echo \"changed=no comment='service already enabled and active'\"")
+        parts.append('else')
+        parts.append('  echo "changed=yes"')
+        parts.append('fi')
         shell_cmd = "\n".join(parts)
 
     unless_cmd = None
@@ -230,6 +245,7 @@ def _user_service_enable_dict(
         {"shell": "/bin/bash"},
         {"runas": u},
         {"env": _sysctl_env()},
+        {"stateful": True},
     ]
     if unless_cmd:
         args.append({"unless": unless_cmd})
@@ -332,27 +348,59 @@ def user_service_disable(name: str, units: list[str], user: str | None = None) -
     u = user or _host()["user"]
     h = _host()
     _su = f"sudo -u {u}" if u != "root" else ""
-    unless_parts = [
-        f"export XDG_RUNTIME_DIR={h['runtime_dir']}",
-        f"export DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus",
-        f"{_su} systemctl --user show-environment >/dev/null 2>&1 || exit 0",
+
+    if not units:
+        return {name: {"cmd.run": [
+            {"name": 'echo "changed=no comment=\'no services specified\'"'},
+            {"shell": "/bin/bash"},
+            {"runas": u},
+            {"env": _sysctl_env()},
+            {"stateful": True},
+        ]}}
+
+    parts = ["set -euo pipefail"]
+    parts.append(
+        f"export XDG_RUNTIME_DIR={h['runtime_dir']} "
+        f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus"
+    )
+    parts.append(
+        f"{_su} systemctl --user show-environment >/dev/null 2>&1 || "
+        f"{{ echo 'changed=no comment=no user session available'; exit 0; }}"
+    )
+    parts.append("_changed=no")
+    for unit in units:
+        parts.append(
+            f"if {_su} systemctl --user is-enabled '{unit}' >/dev/null 2>&1; then "
+            f"{_su} systemctl --user disable --now '{unit}' 2>/dev/null && _changed=yes || true; "
+            f"else "
+            f": ; "
+            f"fi"
+        )
+    parts.append('if [ "$_changed" = "no" ]; then')
+    parts.append("  echo \"changed=no comment='service already disabled and inactive'\"")
+    parts.append('else')
+    parts.append('  echo "changed=yes"')
+    parts.append('fi')
+    shell_cmd = "\n".join(parts)
+
+    unless_checks = [
+        f"(export XDG_RUNTIME_DIR={h['runtime_dir']} "
+        f"&& export DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus "
+        f"&& ! {_su} systemctl --user show-environment >/dev/null 2>&1)",
     ]
     for unit in units:
-        unless_parts.append(f"{_su} systemctl --user is-enabled '{unit}' >/dev/null 2>&1 && exit 0")
-    unless_parts.append("exit 1")
+        unless_checks.append(f"! {_su} systemctl --user is-enabled '{unit}' >/dev/null 2>&1")
+    unless_cmd = " && ".join(unless_checks)
 
     return {
         name: {
             "cmd.run": [
-                {
-                    "name": (
-                        f"XDG_RUNTIME_DIR={h['runtime_dir']} "
-                        f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus "
-                        f"{_su} systemctl --user disable --now {' '.join(units)} 2>/dev/null || true"
-                    )
-                },
+                {"name": shell_cmd},
+                {"shell": "/bin/bash"},
                 {"runas": u},
-                {"onlyif": "\n".join(unless_parts)},
+                {"env": _sysctl_env()},
+                {"stateful": True},
+                {"unless": unless_cmd},
             ]
         }
     }

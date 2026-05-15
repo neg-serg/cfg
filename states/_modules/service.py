@@ -38,7 +38,8 @@ def _host() -> dict[str, Any]:
 
             return get_host()
         except Exception:
-            import os, pwd
+            import os
+            import pwd
             _user = os.environ.get("SUDO_USER") or os.environ.get("USER") or "root"
             try:
                 _pw = pwd.getpwnam(_user)

@@ -37,7 +37,8 @@ def _host() -> dict[str, Any]:
 
             return get_host()
         except Exception:
-            import os, pwd
+            import os
+            import pwd
             _user = os.environ.get("SUDO_USER") or os.environ.get("USER") or "root"
             try:
                 _pw = pwd.getpwnam(_user)
@@ -58,7 +59,11 @@ def _const() -> dict[str, Any]:
         return get_constants()
     except Exception:
         h = _host()
-        return {"retry_attempts": 3, "retry_interval": 10, "ver_dir": f"{h.get('home', '/root')}/.cache/salt-versions"}
+        return {
+            "retry_attempts": 3,
+            "retry_interval": 10,
+            "ver_dir": f"{h.get('home', '/root')}/.cache/salt-versions",
+        }
 
 
 def _paru_install_dict(

@@ -88,6 +88,7 @@ def _user_service_file_dict(
 ) -> dict[str, Any]:
     u = user or _host()["user"]
     h = home or _host()["home"]
+    _su = f"sudo -u {u}" if u != "root" else ""
     _user_dir = _host().get("systemd_user_unit_dir", f"{h}/.config/systemd/user/")
     src = source or f"salt://units/user/{filename}"
 
@@ -111,7 +112,7 @@ def _user_service_file_dict(
                 {"name": "systemctl --user daemon-reload"},
                 {
                     "onlyif": (
-                        _user_env_prefix() + " systemctl --user show-environment >/dev/null 2>&1"
+                        _user_env_prefix() + f" {_su} systemctl --user show-environment >/dev/null 2>&1"
                     )
                 },
                 {"runas": u},
@@ -150,6 +151,7 @@ def user_unit_override(
 ) -> dict[str, Any]:
     u = user or _host()["user"]
     h = home or _host()["home"]
+    _su = f"sudo -u {u}" if u != "root" else ""
     _user_dir = _host().get("systemd_user_unit_dir", f"{h}/.config/systemd/user/")
     fargs: list[dict[str, Any]] = [
         {"name": f"{_user_dir}{service}.d/{filename}"},
@@ -171,7 +173,7 @@ def user_unit_override(
                 {"name": "systemctl --user daemon-reload"},
                 {
                     "onlyif": (
-                        _user_env_prefix() + " systemctl --user show-environment >/dev/null 2>&1"
+                        _user_env_prefix() + f" {_su} systemctl --user show-environment >/dev/null 2>&1"
                     )
                 },
                 {"runas": u},
@@ -319,12 +321,13 @@ def user_service_restart(
 ) -> dict[str, Any]:
     u = user or _host()["user"]
     _h = _host()
+    _su = f"sudo -u {u}" if u != "root" else ""
     args: list[dict[str, Any]] = [
         {
             "name": (
                 f"XDG_RUNTIME_DIR={_h['runtime_dir']} "
                 f"DBUS_SESSION_BUS_ADDRESS=unix:path={_h['runtime_dir']}/bus "
-                f"systemctl --user restart {service}"
+                f"{_su} systemctl --user restart {service}"
             )
         },
         {"runas": u},
@@ -344,12 +347,14 @@ def user_service_restart(
 def user_service_disable(name: str, units: list[str], user: str | None = None) -> dict[str, Any]:
     u = user or _host()["user"]
     h = _host()
+    _su = f"sudo -u {u}" if u != "root" else ""
     unless_parts = [
         f"export XDG_RUNTIME_DIR={h['runtime_dir']}",
         f"export DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus",
+        f"{_su} systemctl --user show-environment >/dev/null 2>&1 || exit 0",
     ]
     for unit in units:
-        unless_parts.append(f"systemctl --user is-enabled '{unit}' >/dev/null 2>&1 && exit 0")
+        unless_parts.append(f"{_su} systemctl --user is-enabled '{unit}' >/dev/null 2>&1 && exit 0")
     unless_parts.append("exit 1")
 
     return {
@@ -359,7 +364,7 @@ def user_service_disable(name: str, units: list[str], user: str | None = None) -
                     "name": (
                         f"XDG_RUNTIME_DIR={h['runtime_dir']} "
                         f"DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus "
-                        f"systemctl --user disable --now {' '.join(units)} 2>/dev/null || true"
+                        f"{_su} systemctl --user disable --now {' '.join(units)} 2>/dev/null || true"
                     )
                 },
                 {"runas": u},

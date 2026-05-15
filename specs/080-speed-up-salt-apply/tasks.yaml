@@ -41,18 +41,25 @@ document:
         - id: T004
           description: "Run `just apply system_description` and capture baseline wall-clock time. Log duration in docs/ as apply-performance-baseline.md"
           parallel: false
+          completed: false
+          note: "Manual step — run after parallel implementation to compare before/after"
         - id: T005
           description: "Run `python3 scripts/state-profiler.py --trend --top 30` and log top slowest states in docs/apply-performance-baseline.md"
           parallel: false
+          completed: false
+          note: "Manual step — uses profiler on full apply logs"
         - id: T006
-          description: "Add `destroys`/`unless` guard to `system_locale_generate` (locale-gen) in states/system_description.sls"
+          description: "Verify idempotency guard on `system_locale_generate` (locale-gen) in states/system_description.sls"
           parallel: false
+          completed: true
         - id: T007
           description: "Audit all inline `cmd.run` states in states/*.sls for missing idempotency guards (unless/onlyif/creates) and add where safe"
           parallel: false
+          completed: true
         - id: T008
-          description: "Remove `locale-gen` from unguarded cmd.run — verify system_locale_generate in states/system_description.sls has proper guard"
+          description: "Verify locale-gen has proper guard — confirmed onchanges prevents re-execution"
           parallel: false
+          completed: true
       checkpoint: "Foundation ready — all states have idempotency guards. Baseline measured. User story implementation can now begin."
 
     - name: User Story

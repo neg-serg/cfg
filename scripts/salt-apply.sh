@@ -62,6 +62,7 @@ PLAN_FILES=()
 AUDIT_MODE=false
 FORCE_MODE=false
 PARALLEL_MODE=false
+[[ -n "${SALT_PARALLEL:-}" && "$SALT_PARALLEL" != "0" ]] && PARALLEL_MODE=true
 
 for arg in "$@"; do
 	case "$arg" in
@@ -402,7 +403,12 @@ setup_config
 maintenance_lock_create
 trap maintenance_lock_remove EXIT
 
-if ensure_daemon; then
+if $PARALLEL_MODE && [[ "$STATE" == "system_description" ]]; then
+	pretty::header "Apply ${STATE} (parallel)"
+	pretty::info "Log: ${LOG_FILE}"
+	"${VENV_DIR}/bin/python3" "${SCRIPT_DIR}/salt_parallel.py" 2>&1 | tee -a "${LOG_FILE}"
+	RC="${pipestatus[1]:-$?}"
+elif ensure_daemon; then
 	run_via_daemon && RC=$? || RC=$?
 	if [[ $RC -eq 75 ]]; then
 		pretty::warn "daemon busy — falling back to direct salt-call"

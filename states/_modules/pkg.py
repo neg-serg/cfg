@@ -70,7 +70,7 @@ def _paru_install_dict(
         cmd = (
             f"set -uo pipefail\n"
             f"output=$(sudo -u {u} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg}' 2>&1 || true)\n"
-            f"echo \"$output\"\n"
+            f"echo \"$output\" >&2\n"
             f"if echo \"$output\" | grep -qi 'nothing to do'; then\n"
             f"    echo '{{\"changed\": false, \"comment\": \"all packages already installed\"}}'\n"
             f"else\n"
@@ -99,7 +99,7 @@ def _paru_install_dict(
                         "name": (
                             f"output=$(sudo -u {u} sh -c 'yes \"\" | "
                             f"paru -S --noconfirm --needed {pkg} || true' 2>&1); "
-                            f'echo "$output"; '
+                            f'echo "$output" >&2; '
                             f"if echo \"$output\" | grep -qi 'nothing to do'; then "
                             f"echo '{{\"changed\": false, \"comment\": \"all packages already installed\"}}'; "
                             f"else echo '{{\"changed\": true}}'; fi"

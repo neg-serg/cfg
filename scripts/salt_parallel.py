@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
 """Parallel Salt state group executor.
 
-Spawns concurrent salt-call processes for independent state groups.
-Resolves the group dependency graph to determine execution order.
+Spawns concurrent salt-call processes (via salt_runner.py) for independent
+state groups, respecting the group dependency graph.
 
 Usage:
     salt_parallel.py [--max-parallel N] [--dry-run]
-
-Environment:
-    SALT_PARALLEL   Set to 1 to enable parallel execution (default: 0)
 """
-
-from __future__ import annotations
 
 import json
 import subprocess
@@ -25,8 +20,19 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SCRIPT_DIR.parent
 VENV_DIR = PROJECT_DIR / ".venv"
 RUNTIME_CONFIG_DIR = PROJECT_DIR / ".salt_runtime"
+SALT_RUNNER = SCRIPT_DIR / "salt_runner.py"
 
-SALT_CALL = [str(VENV_DIR / "bin" / "salt-call"), "--config-dir", str(RUNTIME_CONFIG_DIR)]
+
+def _sudo_args() -> tuple[list[str], str]:
+    """Resolve sudo command — prefer NOPASSWD, fall back to .password file.
+    Returns (sudo_cmd_list, sudo_password_or_empty)."""
+    r = subprocess.run(["sudo", "-n", "true"], capture_output=True)
+    if r.returncode == 0:
+        return ["sudo"], ""
+    pw_file = PROJECT_DIR / ".password"
+    if pw_file.exists():
+        return ["sudo", "-S"], pw_file.read_text().strip()
+    return [], ""
 
 
 @dataclass
@@ -60,14 +66,7 @@ GROUPS: list[Group] = [
     ),
     Group(
         name="network",
-        states=[
-            "dns",
-            "network",
-            "amnezia",
-            "zapret2",
-            "hiddify",
-            "ipv6",
-        ],
+        states=["dns", "network", "amnezia", "zapret2", "hiddify", "ipv6"],
         depends_on=["packages"],
     ),
     Group(
@@ -116,31 +115,39 @@ def resolve_ready(
     return ready
 
 
-def run_group(group: Group, log_dir: Path) -> int:
-    """Execute a single group's salt-call and return exit code."""
+def run_group(group: Group, log_dir: Path, sudo: list[str], sudo_pass: str) -> int:
+    """Execute a single group's states via salt_runner.py. Return exit code."""
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     log_file = log_dir / f"phase-{group.name}-{timestamp}.log"
     group.log_file = str(log_file)
 
     start = time.monotonic()
-    salt_args = SALT_CALL + [
-        "--local",
-        "--log-level=warning",
-        "--force-color",
-        "--log-file",
-        str(log_file),
-        "--log-file-level=debug",
-        "state.sls",
-    ]
-
-    # Apply each state in the group sequentially
-    # (individual salt-call per state to isolate failures)
     exit_codes = []
+
     for state_name in group.states:
-        cmd = salt_args + [state_name]
-        result = subprocess.run(cmd, capture_output=True, text=True)
+        cmd = sudo + [
+            str(VENV_DIR / "bin" / "python3"),
+            "-u",
+            str(SALT_RUNNER),
+            "--config-dir",
+            str(RUNTIME_CONFIG_DIR),
+            "--local",
+            "--log-level=warning",
+            "--force-color",
+            "--log-file",
+            str(log_file),
+            "--log-file-level=debug",
+            "state.sls",
+            state_name,
+        ]
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            input=sudo_pass if sudo_pass else None,
+        )
+
         exit_codes.append(result.returncode)
-        # Write stdout to log
         with open(log_file, "a") as f:
             f.write(f"\n=== {state_name} exit={result.returncode} ===\n")
             f.write(result.stdout)
@@ -158,8 +165,13 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description="Parallel Salt state group executor")
     parser.add_argument("--max-parallel", type=int, default=4, help="Max concurrent groups")
-    parser.add_argument("--dry-run", action="store_true", help="Print plan but don't execute")
+    parser.add_argument("--dry-run", action="store_true", help="Print plan only")
     args = parser.parse_args()
+
+    sudo, sudo_pass = _sudo_args()
+    if not sudo:
+        print("ERROR: no NOPASSWD sudo and no .password file found")
+        return 1
 
     log_dir = PROJECT_DIR / "logs"
     log_dir.mkdir(exist_ok=True)
@@ -179,14 +191,13 @@ def main() -> int:
         if not ready:
             break
 
-        # Limit concurrency
-        threads = []
         results: dict[str, int] = {}
 
         def runner(g: Group):
-            results[g.name] = run_group(g, log_dir)
+            results[g.name] = run_group(g, log_dir, sudo, sudo_pass)
             completed.add(g.name)
 
+        threads = []
         for g in ready:
             t = threading.Thread(target=runner, args=(g,), name=g.name)
             threads.append(t)

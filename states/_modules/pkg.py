@@ -69,16 +69,22 @@ def _paru_install_dict(
     if version:
         cmd = (
             f"set -uo pipefail\n"
-            f"sudo -u {u} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg}' || true\n"
-            f"mkdir -p {_ver_dir} && rm -f {_ver_dir}/{name} {_ver_dir}/{name}@* && "
-            f"touch {_ver_dir}/{name}@{version}"
+            f"output=$(sudo -u {u} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg}' 2>&1 || true)\n"
+            f"echo \"$output\"\n"
+            f"if echo \"$output\" | grep -qi 'nothing to do'; then\n"
+            f"    echo 'changed=no comment=all packages already installed'\n"
+            f"else\n"
+            f"    echo 'changed=yes'\n"
+            f"    mkdir -p {_ver_dir} && rm -f {_ver_dir}/{name} {_ver_dir}/{name}@* && "
+            f"touch {_ver_dir}/{name}@{version}\n"
+            f"fi"
         )
         return {
             f"install_{name.replace('-', '_')}": {
                 "cmd.run": [
                     {"name": cmd},
                     {"shell": "/bin/bash"},
-                    {"creates": f"{_ver_dir}/{name}@{version}"},
+                    {"stateful": True},
                     {"require": requires_list},
                 ]
             }
@@ -91,13 +97,18 @@ def _paru_install_dict(
                 "cmd.run": [
                     {
                         "name": (
-                            f'sudo -u {u} sh -c \'yes "" | '
-                            f"paru -S --noconfirm --needed {pkg} || true'"
+                            f"output=$(sudo -u {u} sh -c 'yes \"\" | "
+                            f"paru -S --noconfirm --needed {pkg} || true' 2>&1); "
+                            f'echo "$output"; '
+                            f"if echo \"$output\" | grep -qi 'nothing to do'; then "
+                            f"echo 'changed=no comment=all packages already installed'; "
+                            f"else echo 'changed=yes'; fi"
                         )
                     },
                     {"shell": "/bin/bash"},
                     {"unless": guard},
                     {"require": requires_list},
+                    {"stateful": True},
                 ]
             }
         }
@@ -105,9 +116,19 @@ def _paru_install_dict(
     return {
         f"install_{name.replace('-', '_')}": {
             "cmd.run": [
-                {"name": f"sudo -u {u} paru -S --noconfirm --needed {pkg}"},
+                {
+                    "name": (
+                        f"output=$(sudo -u {u} paru -S --noconfirm --needed {pkg} 2>&1); "
+                        f'echo "$output"; '
+                        f"if echo \"$output\" | grep -qi 'nothing to do'; then "
+                        f"echo 'changed=no comment=all packages already installed'; "
+                        f"else echo 'changed=yes'; fi"
+                    )
+                },
+                {"shell": "/bin/bash"},
                 {"unless": f"grep -qxF '{check or pkg}' {h['pkg_list']}"},
                 {"require": requires_list},
+                {"stateful": True},
             ]
         }
     }

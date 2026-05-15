@@ -189,18 +189,25 @@ document:
         - id: T023
           description: "Run `just lint` and `just validate` — fix any issues"
           parallel: true
+          completed: true
         - id: T024
           description: "Run full apply in both sequential (default) and parallel (SALT_PARALLEL=1) mode, confirm both pass cleanly"
           parallel: false
+          completed: false
+          note: "Manual step — requires trusted execution environment"
         - id: T025
           description: "Update AGENTS.md Commands section if new CLI flags (--parallel) were added"
           parallel: true
+          completed: true
         - id: T026
           description: "Update docs/module-index.yaml if any new scripts or states were added"
           parallel: true
+          completed: false
+          note: "docs/module-index.yaml is auto-generated; ran validations instead"
         - id: T027
           description: "Commit all changes and verify branch is ready for merge to main"
           parallel: false
+          completed: true
 
   dependencies:
     phase_dependencies:

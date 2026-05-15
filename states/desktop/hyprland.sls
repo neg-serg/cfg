@@ -42,21 +42,61 @@ hyprpm_repo_cache_{{ plugin.id }}:
       - file: hyprpm_cache_dir
 {% endfor %}
 
-{{ salt['desktop.hyprpm_update']('hyprpm_headers_update',
-    check_plugins=desktop.hyprland_check_plugins,
-    require=['cmd: install_hyprland_desktop', 'file: hyprpm_cache_dir']) }}
+{% set _h = salt['desktop.hyprpm_data'](check_plugins=desktop.hyprland_check_plugins) %}
+hyprpm_headers_update:
+  cmd.run:
+    - name: |
+        {{ _h.cmd }}
+    - runas: '{{ _h.runas }}'
+    - onlyif: |
+        {{ _h.onlyif }}
+    - env:
+        HOME: '{{ _h.home }}'
+        XDG_RUNTIME_DIR: '/run/user/{{ _h.uid }}'
+    - retry:
+        attempts: 3
+        interval: 10
+    - timeout: 300
+    - require:
+      - cmd: install_hyprland_desktop
+      - file: hyprpm_cache_dir
 
 {% for plugin in desktop.hyprland_plugins %}
-{{ salt['desktop.hyprpm_add']('hyprpm_add_' ~ plugin.id,
-    plugin.repo,
-    'Repository ' ~ plugin.dir,
-    require=['cmd: install_hyprland_desktop', 'cmd: hyprpm_headers_update', 'file: hyprpm_repo_cache_' ~ plugin.id]) }}
+{% set _a = salt['desktop.hyprpm_add_data'](plugin.repo, 'Repository ' ~ plugin.dir) %}
+hyprpm_add_{{ plugin.id }}:
+  cmd.run:
+    - name: |
+        {{ _a.cmd }}
+    - runas: '{{ _a.runas }}'
+    - onlyif: |
+        {{ _a.onlyif }}
+    - env:
+        HOME: '{{ _a.home }}'
+        XDG_RUNTIME_DIR: '/run/user/{{ _a.uid }}'
+    - timeout: 300
+    - retry:
+        attempts: 3
+        interval: 10
+    - require:
+      - cmd: install_hyprland_desktop
+      - cmd: hyprpm_headers_update
+      - file: hyprpm_repo_cache_{{ plugin.id }}
 {% endfor %}
 
 {% for plugin in desktop.hyprland_plugins %}
 {% for ep in plugin.enable %}
-{{ salt['desktop.hyprpm_enable']('hyprpm_enable_' ~ ep.name | lower | replace('-', '_'),
-    ep.name,
-    require=['cmd: hyprpm_add_' ~ plugin.id]) }}
+{% set _e = salt['desktop.hyprpm_enable_data'](ep.name) %}
+hyprpm_enable_{{ ep.name | lower | replace('-', '_') }}:
+  cmd.run:
+    - name: |
+        {{ _e.cmd }}
+    - runas: '{{ _e.runas }}'
+    - onlyif: |
+        {{ _e.onlyif }}
+    - env:
+        HOME: '{{ _e.home }}'
+        XDG_RUNTIME_DIR: '/run/user/{{ _e.uid }}'
+    - require:
+      - cmd: hyprpm_add_{{ plugin.id }}
 {% endfor %}
 {% endfor %}

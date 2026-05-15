@@ -86,6 +86,99 @@ def dconf_settings(
     return {name: {"cmd.run": args}}
 
 
+def hyprpm_data(
+    check_plugins: list[str] | None = None,
+) -> dict[str, Any]:
+    """Return context dict for building hyprpm_headers_update state in SLS.
+
+    Guard (stamp + plugin check) is built into the command prefix since Salt 3008
+    ignores ``unless`` for ``Function: unknown`` states in highstate context.
+    """
+    h = _host()
+    u = h["user"]
+    sig_cmd = (
+        f"ls -d /run/user/{h['uid']}/hypr/*/.socket.sock 2>/dev/null | "
+        f"head -1 | xargs dirname | xargs basename"
+    )
+    stamp_path = f"{h['ver_dir']}/hyprpm_updated"
+    guard = ""
+    if check_plugins:
+        checks = " && ".join(
+            f"(hyprpm list 2>&1 | grep -q '{plugin}')" for plugin in check_plugins
+        )
+        guard = f"test -f {stamp_path} && {checks} && exit 0; "
+    cmd = (
+        f"{guard}"
+        f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
+        f"(hyprpm update 2>/dev/null || true); "
+        f"touch {stamp_path}"
+    )
+    return {
+        "cmd": cmd,
+        "runas": u,
+        "onlyif": f"ss -xl 2>/dev/null | grep -q /run/user/{h['uid']}/hypr/",
+        "home": h["home"],
+        "uid": h["uid"],
+        "runtime_dir": h["runtime_dir"],
+        "stamp": stamp_path,
+    }
+
+
+def hyprpm_add_data(
+    repo_url: str,
+    check_plugin: str,
+) -> dict[str, Any]:
+    """Return context dict for building hyprpm_add_* state in SLS."""
+    h = _host()
+    u = h["user"]
+    sig_cmd = (
+        f"ls -d /run/user/{h['uid']}/hypr/*/.socket.sock 2>/dev/null | "
+        f"head -1 | xargs dirname | xargs basename"
+    )
+    guard = f"(hyprpm list 2>&1 | grep -q '{check_plugin}') && exit 0; "
+    cmd = (
+        f"{guard}"
+        f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
+        f"yes | hyprpm add {repo_url} 2>/dev/null || true"
+    )
+    return {
+        "cmd": cmd,
+        "runas": u,
+        "onlyif": f"ss -xl 2>/dev/null | grep -q /run/user/{h['uid']}/hypr/",
+        "home": h["home"],
+        "uid": h["uid"],
+        "runtime_dir": h["runtime_dir"],
+    }
+
+
+def hyprpm_enable_data(
+    plugin: str,
+) -> dict[str, Any]:
+    """Return context dict for building hyprpm_enable_* state in SLS."""
+    h = _host()
+    u = h["user"]
+    sig_cmd = (
+        f"ls -d /run/user/{h['uid']}/hypr/*/.socket.sock 2>/dev/null | "
+        f"head -1 | xargs dirname | xargs basename"
+    )
+    guard = (
+        f"(hyprpm list 2>&1 | grep -A1 '{plugin}' | grep -q 'enabled:.*true') && exit 0; "
+    )
+    cmd = (
+        f"{guard}"
+        f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
+        f"hyprpm enable {plugin} 2>/dev/null || true"
+    )
+    return {
+        "cmd": cmd,
+        "runas": u,
+        "onlyif": f"ss -xl 2>/dev/null | grep -q /run/user/{h['uid']}/hypr/",
+        "home": h["home"],
+        "uid": h["uid"],
+        "runtime_dir": h["runtime_dir"],
+    }
+
+
 @yaml_output
 def hyprpm_update(
     name: str,

@@ -36,8 +36,8 @@ hyprland_plugins:
   enable:
   - name: Hypr-DarkWindow
 hyprland_check_plugins:
-- xtra-dispatchers
-- HyprGlass
+- borders-plus-plus
+- hyprglass
 - Hypr-DarkWindow
 niri_packages:
 - niri

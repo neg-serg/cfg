@@ -81,6 +81,7 @@ autoload_dynamic_modules: True
 fileserver_limit_traversal: True
 fileserver_followsymlinks: False
 process_count_max: 16
+state_max_parallel: 8
 
 # --- Grains overrides: map Arch derivatives so pkg module loads ---
 grains:

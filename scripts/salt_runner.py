@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Salt-call wrapper with compatibility shims for Python 3.13+.
+"""Salt-call wrapper with Python 3.14 compatibility patches.
 
 Usage:
   python3 scripts/salt_runner.py --config-dir=.salt_runtime --local state.sls ...

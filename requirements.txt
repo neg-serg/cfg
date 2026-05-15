@@ -1,7 +1,8 @@
 # Salt + dependencies for .venv (used by salt-apply.sh bootstrap)
 # Pin exact versions for reproducibility. Update with:
 #   pip install --upgrade <pkg> && pip show <pkg> | grep Version
-salt==3007.13
+# Use --pre flag for RC versions: pip install --pre salt>=3008,<3009
+salt>=3008,<3009
 passlib==1.7.4
 tornado==6.5.5
 jinja2==3.1.6

@@ -4,7 +4,7 @@ Auto-generated from active feature plans. Last updated: 2026-05-14
 
 ## Active Technologies
 - Jinja2 + YAML Salt states, Python 3, Bash/Zsh helper scripts
-- Salt 3006.x masterless workflow with shared `_macros_*.jinja`
+- Salt 3008+ masterless workflow with Python execution modules (`_modules/`); upgraded from 3007.13
 - Sphinx + MyST for embedded documentation; `just docs` builds static HTML site
 - `just`, `pytest`, `ruff`, `shellcheck`, `yamllint`, `salt-lint`
 - Repository artifacts under `states/`, `scripts/`, `tests/`, `docs/`, `.specify/`
@@ -49,10 +49,19 @@ docs/
 ## Code Style
 
 - Prefer explicit Salt/Jinja structure over meta-generated topology.
-- Keep macros narrow and operationally transparent.
+- All business logic lives in Python execution modules (`_modules/`), not Jinja macros.
 - Preserve state ID readability and uniqueness across includes.
 - Treat `states/**/*.sls` as the supported state tree for lint/render/index tooling.
 - Use commit subjects in `[type] short description` format for local history, for example `[feat] ...`, `[fix] ...`, `[docs] ...`, or `[chore] ...`.
+
+## Salt 3008 Features in Use
+
+- `state_max_parallel: 8` — limits concurrent parallel states to prevent resource exhaustion
+- `parallel: True` + `require` bug fixed (states no longer block each other) [#59959](https://github.com/saltstack/salt/issues/59959)
+- Linear-time dependency resolution (was quadratic) — faster state compilation for 566-state applies [#59123](https://github.com/saltstack/salt/issues/59123)
+- `file.managed` shows diff for new files in `test=True` mode [#65546](https://github.com/saltstack/salt/issues/65546)
+- Native Python 3.13+ support (PEP 594 modules no longer need mocking; `salt_compat.py` simplified)
+- `state.graph` / `state.graph_highstate` — built-in DOT dependency graph (replaces `scripts/dep-graph.py` for runtime)
 
 ## Recent Changes
 - Dynamic proxy switching for Zen Browser: Added menu script `switch-proxy` with Super+Alt+P binding for vicinae/dmenu/rofi selection, `set-zen-proxy` Python helper, integration with existing HTTP helper server (dynamic-proxy-switching)

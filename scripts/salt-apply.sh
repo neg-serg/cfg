@@ -191,7 +191,8 @@ bootstrap_salt() {
 	repair_stale_venv_entrypoints "$VENV_DIR/bin/pytest"
 	repair_stale_venv_entrypoints "$VENV_DIR/bin/salt-call"
 
-	# Python 3.14 sitecustomize: auto-apply salt_compat patches on any venv import
+	# Python 3.14 sitecustomize: auto-apply multiprocessing/URL patches on any venv import
+	# Salt 3008+ handles PEP 594 (crypt, spwd) natively; only 3.14-specific patches remain
 	local site_pkgs sitecustomize_file
 	site_pkgs=$("$VENV_DIR/bin/python3" -c "import site; print(site.getsitepackages()[0])" 2>/dev/null) || return 0
 	[[ -d "$site_pkgs" ]] || return 0

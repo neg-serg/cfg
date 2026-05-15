@@ -52,7 +52,7 @@ if os.path.isdir(_VENV_SITE):
             sys.path.insert(0, _candidate)
             break
 
-# ── Python 3.13+ compatibility shims (PEP 594 removals) ─────────────────────
+# ── Python 3.14 compatibility (fork method + URL patch) ──────────────────────
 import salt_compat
 
 salt_compat.patch()

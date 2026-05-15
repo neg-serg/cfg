@@ -1,4 +1,5 @@
 models:
+- qwen3-coder-next
 - qwen3.5:27b
 - qwen3:32b
 - llama3.3:70b-instruct-q5_K_M

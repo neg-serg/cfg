@@ -338,11 +338,9 @@ run_direct() {
 
 	local -a salt_cmd
 	salt_cmd=(
-		"${SUDO_CMD[@]}" "$VENV_DIR/bin/salt-call"
-		--local --config-dir="${RUNTIME_CONFIG_DIR}"
-		--log-level=warning --force-color
-		--log-file="${LOG_FILE}" --log-file-level=debug
-		state.sls "${SALT_STATE}"
+		"${SUDO_CMD[@]}" "$VENV_DIR/bin/python3" -u "$SALT_RUNNER"
+		--config-dir="${RUNTIME_CONFIG_DIR}"
+		--local --state-verbose=True state.sls "${SALT_STATE}"
 	)
 	$TEST_MODE && salt_cmd+=(test=True)
 

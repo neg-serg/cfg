@@ -103,6 +103,7 @@ network:
 - cloudflare-speed-cli
 - curl
 - firewalld
+- gallery-dl
 - ufw
 - networkmanager
 - networkmanager-qt

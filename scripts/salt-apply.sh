@@ -340,7 +340,7 @@ run_direct() {
 	salt_cmd=(
 		"${SUDO_CMD[@]}" "$VENV_DIR/bin/python3" -u "$SALT_RUNNER"
 		--config-dir="${RUNTIME_CONFIG_DIR}"
-		--local --state-verbose=True state.sls "${SALT_STATE}"
+		--local state.sls "${SALT_STATE}"
 	)
 	$TEST_MODE && salt_cmd+=(test=True)
 

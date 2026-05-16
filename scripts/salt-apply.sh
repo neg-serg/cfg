@@ -338,9 +338,11 @@ run_direct() {
 
 	local -a salt_cmd
 	salt_cmd=(
-		"${SUDO_CMD[@]}" "$VENV_DIR/bin/python3" -u "$SALT_RUNNER"
-		--config-dir="${RUNTIME_CONFIG_DIR}"
-		--local state.sls "${SALT_STATE}"
+		"${SUDO_CMD[@]}" "$VENV_DIR/bin/salt-call"
+		--local --config-dir="${RUNTIME_CONFIG_DIR}"
+		--log-level=warning --force-color
+		--log-file="${LOG_FILE}" --log-file-level=debug
+		state.sls "${SALT_STATE}"
 	)
 	$TEST_MODE && salt_cmd+=(test=True)
 
@@ -409,6 +411,12 @@ if $PARALLEL_MODE && [[ "$STATE" == "system_description" ]]; then
 	pretty::info "Log: ${LOG_FILE}"
 	"${VENV_DIR}/bin/python3" "${SCRIPT_DIR}/salt_parallel.py" 2>&1 | tee -a "${LOG_FILE}"
 	RC="${pipestatus[1]:-$?}"
+elif ensure_daemon; then
+	run_via_daemon && RC=$? || RC=$?
+	if [[ $RC -eq 75 ]]; then
+		pretty::warn "daemon busy — falling back to direct salt-call"
+		run_direct && RC=$? || RC=$?
+	fi
 else
 	run_direct && RC=$? || RC=$?
 fi

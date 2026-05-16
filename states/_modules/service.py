@@ -606,9 +606,18 @@ def render_service(
     if "packages" in opts:
         pkg_name = name.replace("-", "_")
         pkgs = opts["packages"]
+        pkgs_sorted = sorted(pkgs.split())
+        h = _host()
+        cmd_lines = [
+            "set -uo pipefail",
+            f"missing=$(comm -23 <(printf '%s\\n' {' '.join(pkgs_sorted)}) {h['pkg_list']} 2>/dev/null)",
+            'if [ -z "$missing" ]; then exit 0; fi',
+            f"paru -S --noconfirm --needed {pkgs}",
+        ]
         ret[f"install_{pkg_name}"] = {
             "cmd.run": [
-                {"name": f"paru -S --noconfirm --needed {pkgs}"},
+                {"name": "\n".join(cmd_lines)},
+                {"shell": "/bin/bash"},
                 {"require": [{"cmd": "pacman_db_warmup"}]},
             ]
         }

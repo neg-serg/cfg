@@ -112,7 +112,6 @@ def _paru_install_dict(
                 "cmd.run": [
                     {"name": "\n".join(cmd_lines)},
                     {"shell": "/bin/bash"},
-                    {"stateful": True},
                     {"require": requires_list},
                 ]
             }

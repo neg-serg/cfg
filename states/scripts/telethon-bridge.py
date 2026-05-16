@@ -882,6 +882,15 @@ def main():
     except KeyboardInterrupt:
         loop.run_until_complete(bridge.shutdown())
     finally:
+        # Python 3.14: cancel pending tasks before closing event loop
+        pending = asyncio.all_tasks(loop)
+        for task in pending:
+            task.cancel()
+        if pending:
+            try:
+                loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+            except Exception:
+                pass
         loop.close()
 
 

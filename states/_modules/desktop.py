@@ -108,7 +108,7 @@ def hyprpm_data(
         )
         guard = f"test -f {stamp_path} && {checks} && echo '{{\"changed\": false, \"comment\": \"up to date\"}}' && exit 0; "
     cmd = (
-        f"MARKER_V2_{guard}"
+        f"{guard}"
         f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
         f"(hyprpm update 2>/dev/null || true); "
         f"echo '{{\"changed\": true, \"comment\": \"hyprpm updated\"}}'; "

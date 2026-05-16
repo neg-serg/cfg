@@ -59,6 +59,7 @@ dxvk_resolution_fix:
     - source: salt://scripts/dxvk-resolution-fix.sh
     - shell: /bin/bash
     - runas: {{ user }}
+    - parallel: True
 {%- if host.display %}
     - env:
       - DXVK_RESOLUTION: "{{ host.display.split('@')[0] }}"

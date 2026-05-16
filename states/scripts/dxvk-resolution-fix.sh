@@ -8,12 +8,16 @@ set -euo pipefail
 RESOLUTION="${DXVK_RESOLUTION:-3840x2160}"
 
 changed=0
+pids=()
 for prefix in ~/.steam/root/steamapps/compatdata/*/pfx; do
   [ -d "$prefix" ] || continue
   if [ ! -f "$prefix/dxvk.conf" ]; then
-    WINEPREFIX="$prefix" wine reg add \
-      "HKEY_CURRENT_USER\Software\Wine\Explorer\Desktops" \
-      /v Default /d "$RESOLUTION" /f 2>/dev/null || true
+    (
+      WINEPREFIX="$prefix" wine reg add \
+        "HKEY_CURRENT_USER\Software\Wine\Explorer\Desktops" \
+        /v Default /d "$RESOLUTION" /f 2>/dev/null || true
+    ) &
+    pids+=($!)
     printf '%s\n' \
       'd3d11.allowDiscard = True' \
       'd3d11.enumerateDisplayModes = 1' \
@@ -22,4 +26,5 @@ for prefix in ~/.steam/root/steamapps/compatdata/*/pfx; do
     changed=$((changed + 1))
   fi
 done
+for pid in "${pids[@]}"; do wait "$pid" 2>/dev/null; done
 [ "$changed" -gt 0 ] && echo "Configured $changed prefix(es)" || echo "All prefixes already configured"

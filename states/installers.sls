@@ -27,7 +27,6 @@ include:
 {{ salt['installer.go_pkg'](name, pkg=opts.get('pkg'), bin=opts.get('bin')) }}
 {% endfor %}
 
-{{ salt['installer.install_catalog'](tools.curl_extract_zip, ver, 'curl_extract_zip') }}
 {{ salt['installer.install_catalog'](tools.get('curl_extract_tar', {}), ver, 'curl_extract_tar', exclude=['essentia']) }}
 
 # ── AUR package installs ────────────────────────────────────────────

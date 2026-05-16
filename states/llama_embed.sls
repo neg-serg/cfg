@@ -20,7 +20,7 @@
 {{ salt['service.ensure_dir']('llama_embed_models_dir', models_dir, user=user) }}
 
 # Model download — feeds the container via bind-mount.
-{{ salt['installer.http_file']('llama_embed_model', 'https://huggingface.co/' ~ embed.repo ~ '/resolve/main/' ~ embed.file, model_path, user=user, require=['file: llama_embed_models_dir'], parallel=False, version=embed.file, cache=False) }}
+{{ salt['installer.http_file']('llama_embed_model', 'https://huggingface.co/' ~ embed.repo ~ '/resolve/main/' ~ embed.file, model_path, user=user, require=['file: llama_embed_models_dir'], version=embed.file) }}
 
 {{ salt['service.remove_native_unit']('llama_embed') }}
 

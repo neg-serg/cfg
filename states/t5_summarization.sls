@@ -25,9 +25,9 @@
 {{ salt['pkg.paru_install']('python_transformers', 'python-transformers') }}
 
 # Download model + tokenizer files from HuggingFace (unconditional — feeds container via bind-mount)
-{{ salt['installer.huggingface_file']('t5_summarization_model', t5.hf_repo, hf_file, hf_path ~ '/' ~ hf_file, user=user, require=['file: t5_summarization_hf_dir'], parallel=False, version=hf_file, cache=False) }}
+{{ salt['installer.huggingface_file']('t5_summarization_model', t5.hf_repo, hf_file, hf_path ~ '/' ~ hf_file, user=user, require=['file: t5_summarization_hf_dir'], version=hf_file) }}
 {% for fname in t5.tokenizer_files %}
-{{ salt['installer.huggingface_file']('t5_summarization_' ~ fname | replace('.', '_'), t5.hf_repo, fname, hf_path ~ '/' ~ fname, user=user, require=['file: t5_summarization_hf_dir'], parallel=False, cache=False) }}
+{{ salt['installer.huggingface_file']('t5_summarization_' ~ fname | replace('.', '_'), t5.hf_repo, fname, hf_path ~ '/' ~ fname, user=user, require=['file: t5_summarization_hf_dir']) }}
 {% endfor %}
 
 # Convert safetensors → GGUF (requires convert_hf_to_gguf.py from llama.cpp)

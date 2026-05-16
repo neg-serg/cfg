@@ -627,6 +627,7 @@ def render_service(
                 {"name": "\n".join(cmd_lines)},
                 {"shell": "/bin/bash"},
                 {"stateful": True},
+                {"parallel": True},
                 {"unless": f"test -f {stamp} && test {stamp} -nt {h['pkg_list']}"},
                 {"require": [{"cmd": "pacman_db_warmup"}]},
             ]

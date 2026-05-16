@@ -18,7 +18,7 @@ managed_bots_deps:
   cmd.run:
     - name: pip install --break-system-packages {{ mbdata.pip_deps | join(' ') }}
     - runas: {{ user }}
-    - unless: python3 -c 'import telegram; import yaml' 2>/dev/null
+    - unless: test -f {{ home }}/.local/lib/python3.14/site-packages/telegram/__init__.py
     - parallel: true
 
 {{ salt['service.ensure_dir']('managed_bots_config_dir', home ~ '/.config/opencode', user=user) }}

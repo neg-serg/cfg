@@ -63,6 +63,10 @@ docs/
 - Native Python 3.13+ support (PEP 594 modules no longer need mocking; `salt_compat.py` simplified)
 - `state.graph` / `state.graph_highstate` — built-in DOT dependency graph (replaces `scripts/dep-graph.py` for runtime)
 
+## Salt 3008 Known Issues
+
+- **`Function: unknown` + `unless`/`onlyif` ignored in highstate**: States generated via `@yaml_output` decorator show `function: unknown` and never evaluate `unless` or `onlyif` guards in the highstate context. Workaround: embed guard logic directly into shell commands with `exit 0` prefix (see `pkg.py`, `service.py`, `desktop.py` for pattern). Standalone `state.apply` on a single SLS file does NOT have this issue.
+
 ## Recent Changes
 - Dynamic proxy switching for Zen Browser: Added menu script `switch-proxy` with Super+Alt+P binding for vicinae/dmenu/rofi selection, `set-zen-proxy` Python helper, integration with existing HTTP helper server (dynamic-proxy-switching)
 - 079-age-yubikey-cutover: Added Markdown planning artifacts, Salt/Jinja states, shell-based operator workflow, `gopass` 1.16.1, `age` 1.3.1, `yubikey-manager` 5.9.0 + `gopass`, `age`, `age-plugin-yubikey`, `yubikey-manager`, `pcsclite` / `pcscd`, systemd user services, existing Salt data/state files, existing chezmoi templates

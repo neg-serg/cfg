@@ -610,7 +610,8 @@ def render_service(
         stamp = f"{h.get('sys_ver_dir', '/var/cache/salt/versions')}/{name}_pkg@installed"
         cmd_lines = [
             "set -uo pipefail",
-            f"if test -f {stamp} && test {stamp} -nt {h['pkg_list']}; then exit 0; fi",
+            f"if test -f {stamp} && test {stamp} -nt {h['pkg_list']}; then "
+            'echo \'{"changed": false, "comment": "up to date"}\'; exit 0; fi',
             f"paru -S --noconfirm --needed {pkgs}",
             f"mkdir -p $(dirname {stamp}) && touch {stamp}",
         ]
@@ -618,6 +619,7 @@ def render_service(
             "cmd.run": [
                 {"name": "\n".join(cmd_lines)},
                 {"shell": "/bin/bash"},
+                {"stateful": True},
                 {"require": [{"cmd": "pacman_db_warmup"}]},
             ]
         }

@@ -106,11 +106,12 @@ def hyprpm_data(
         checks = " && ".join(
             f"(hyprpm list 2>&1 | grep -q '{plugin}')" for plugin in check_plugins
         )
-        guard = f"test -f {stamp_path} && {checks} && exit 0; "
+        guard = f"test -f {stamp_path} && {checks} && echo '{{\"changed\": false, \"comment\": \"up to date\"}}' && exit 0; "
     cmd = (
-        f"{guard}"
+        f"MARKER_V2_{guard}"
         f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
         f"(hyprpm update 2>/dev/null || true); "
+        f"echo '{{\"changed\": true, \"comment\": \"hyprpm updated\"}}'; "
         f"touch {stamp_path}"
     )
     return {
@@ -135,7 +136,7 @@ def hyprpm_add_data(
         f"ls -d /run/user/{h['uid']}/hypr/*/.socket.sock 2>/dev/null | "
         f"head -1 | xargs dirname | xargs basename"
     )
-    guard = f"(hyprpm list 2>&1 | grep -q '{check_plugin}') && exit 0; "
+    guard = f"(hyprpm list 2>&1 | grep -q '{check_plugin}') && echo '{{\"changed\": false, \"comment\": \"already added\"}}' && exit 0; "
     cmd = (
         f"{guard}"
         f"export HYPRLAND_INSTANCE_SIGNATURE=$({sig_cmd}) && "
@@ -162,7 +163,8 @@ def hyprpm_enable_data(
         f"head -1 | xargs dirname | xargs basename"
     )
     guard = (
-        f"(hyprpm list 2>&1 | grep -A1 '{plugin}' | grep -q 'enabled:.*true') && exit 0; "
+        f"(hyprpm list 2>&1 | grep -A1 '{plugin}' | grep -q 'enabled:.*true') && "
+        f"echo '{{\"changed\": false, \"comment\": \"already enabled\"}}' && exit 0; "
     )
     cmd = (
         f"{guard}"

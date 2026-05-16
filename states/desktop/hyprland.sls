@@ -54,6 +54,7 @@ hyprpm_headers_update:
         attempts: 3
         interval: 10
     - timeout: 300
+    - stateful: True
     - require:
       - cmd: install_hyprland_desktop
       - file: hyprpm_cache_dir
@@ -93,6 +94,7 @@ hyprpm_enable_{{ ep.name | lower | replace('-', '_') }}:
     - env:
         HOME: '{{ _e.home }}'
         XDG_RUNTIME_DIR: '/run/user/{{ _e.uid }}'
+    - stateful: True
     - require:
       - cmd: hyprpm_add_{{ plugin.id }}
 {% endfor %}

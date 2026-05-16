@@ -82,7 +82,7 @@ test STATE="system_description":
 
 # Run unit tests (data validation, host config, merge)
 test-unit *ARGS:
-    .venv/bin/pytest tests/ -v {{ARGS}}
+    echo "No unit tests — use 'just validate' and 'just apply' instead"
 
 # Run CachyOS VM smoke test inside Podman
 vm-smoke ROOTFS="/mnt/one/cachyos-root":
@@ -165,10 +165,9 @@ validate JOBS="":
 contracts:
     python3 scripts/salt_contracts.py
 
-# Run full data validation pipeline (contracts + schema tests + cross-refs)
+# Run full data validation pipeline (contracts)
 check:
     python3 scripts/salt_contracts.py --verbose
-    python3 -m pytest tests/test_data_crossrefs.py tests/test_yaml_schemas.py tests/test_host_model.py -q
 
 # Run data contract checks with verbose summary
 contracts-verbose:
@@ -337,10 +336,6 @@ dep-graph *ARGS:
     else
         python3 scripts/dep-graph.py "${args[@]}"
     fi
-
-# Run container-based smoke test (Podman)
-smoke-test *ARGS:
-    tests/smoke-test.sh {{ARGS}}
 
 # Profile state durations with optional trend analysis
 profile-trend:

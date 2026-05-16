@@ -606,13 +606,13 @@ def render_service(
     if "packages" in opts:
         pkg_name = name.replace("-", "_")
         pkgs = opts["packages"]
-        pkgs_sorted = sorted(pkgs.split())
         h = _host()
+        stamp = f"{h.get('sys_ver_dir', '/var/cache/salt/versions')}/{name}_pkg@installed"
         cmd_lines = [
             "set -uo pipefail",
-            f"missing=$(comm -23 <(printf '%s\\n' {' '.join(pkgs_sorted)}) {h['pkg_list']} 2>/dev/null)",
-            'if [ -z "$missing" ]; then exit 0; fi',
+            f"if test -f {stamp} && test {stamp} -nt {h['pkg_list']}; then exit 0; fi",
             f"paru -S --noconfirm --needed {pkgs}",
+            f"mkdir -p $(dirname {stamp}) && touch {stamp}",
         ]
         ret[f"install_{pkg_name}"] = {
             "cmd.run": [

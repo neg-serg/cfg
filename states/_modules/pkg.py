@@ -93,15 +93,13 @@ def _paru_install_dict(
         }
 
     if _check_all:
-        pkgs_sorted = sorted(pkg.split())
         cmd_lines = [
             "set -uo pipefail",
-            f"missing=$(comm -23 <(printf '%s\\n' {' '.join(pkgs_sorted)}) {h['pkg_list']} 2>/dev/null)",
-            'if [ -z "$missing" ]; then '
-            'echo \'{"changed": false, "comment": "all packages already installed"}\'; exit 0; fi',
+            f"if test -f {_ver_dir}/{name}@installed && test {_ver_dir}/{name}@installed -nt {h['pkg_list']}; then exit 0; fi",
             f"output=$(sudo -u {u} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg} || true' 2>&1)",
             'echo "$output" >&2',
             'if echo "$output" | grep -qi \'nothing to do\'; then',
+            f'  mkdir -p {_ver_dir} && touch {_ver_dir}/{name}@installed',
             '  echo \'{"changed": false, "comment": "all packages already installed"}\'',
             'else',
             '  echo \'{"changed": true}\'',
@@ -122,8 +120,7 @@ def _paru_install_dict(
             "cmd.run": [
                 {
                     "name": (
-                        f"if grep -qxF '{check or pkg}' {h['pkg_list']}; then "
-                        f"echo '{{\"changed\": false, \"comment\": \"already installed\"}}'; exit 0; fi\n"
+                        f"if grep -qxF '{check or pkg}' {h['pkg_list']}; then exit 0; fi\n"
                         f"output=$(sudo -u {u} paru -S --noconfirm --needed {pkg} 2>&1); "
                         f'echo "$output"; '
                         f"if echo \"$output\" | grep -qi 'nothing to do'; then "

@@ -7,5 +7,5 @@ Target = hyprland
 
 [Action]
 When = PostTransaction
-Exec = /usr/bin/sudo -u {{ user }} env HOME={{ home }} XDG_RUNTIME_DIR=/run/user/{{ host.uid }} /bin/sh -c 'hyprpm update && hyprpm reload'
+Exec = /usr/bin/sudo -u {{ user }} env HOME={{ home }} XDG_RUNTIME_DIR=/run/user/{{ host.uid }} /bin/sh -c 'hyprpm update && hyprpm reload && mkdir -p {{ home }}/.cache/salt-versions && touch {{ home }}/.cache/salt-versions/hyprpm_updated'
 Description = Rebuild hyprpm plugin headers for new Hyprland version

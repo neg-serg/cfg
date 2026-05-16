@@ -57,6 +57,7 @@ cachyos_mkinitcpio:
   cmd.run:
     - name: mkinitcpio -P
     - onlyif: command -v mkinitcpio >/dev/null 2>&1
+    - parallel: True
     - onchanges:
       - file: cachyos_kernel_cmdline
       - cmd: install_cachyos_kernels

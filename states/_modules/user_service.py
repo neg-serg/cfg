@@ -10,7 +10,6 @@ from __future__ import annotations
 from typing import Any
 
 from _yaml_out import yaml_output
-
 from common import _parse_requires
 
 
@@ -203,18 +202,19 @@ def _user_service_enable_dict(
             parts.append(f"{_su} systemctl --user daemon-reload")
             if not all_units:
                 parts.append("_changed=yes")
-        for svc in svc_list:
+        # Batch enable: one pre-check per group, then single bulk systemctl call
+        if svc_list:
             parts.append(
-                f"if {_su} systemctl --user is-{check} '{svc}' >/dev/null 2>&1; then "
+                f"if {_su} systemctl --user is-{check} {' '.join(svc_list)} >/dev/null 2>&1; then "
                 f": ; else "
-                f"{_su} systemctl --user enable '{svc}' && _changed=yes; "
+                f"{_su} systemctl --user enable {' '.join(svc_list)} && _changed=yes; "
                 f"fi"
             )
-        for svc in now_list:
+        if now_list:
             parts.append(
-                f"if {_su} systemctl --user is-active '{svc}' >/dev/null 2>&1; then "
+                f"if {_su} systemctl --user is-active {' '.join(now_list)} >/dev/null 2>&1; then "
                 f": ; else "
-                f"{_su} systemctl --user enable --now '{svc}' && _changed=yes; "
+                f"{_su} systemctl --user enable --now {' '.join(now_list)} && _changed=yes; "
                 f"fi"
             )
         parts.append('if [ "$_changed" = "no" ]; then')
@@ -227,17 +227,15 @@ def _user_service_enable_dict(
     unless_cmd = None
     if all_units:
         _su = f"sudo -u {u}" if u != "root" else ""
-        # unless: TRUE → skip command. Skip if DBus unavailable OR all services already enabled.
-        # DBus guard: ! (show-environment) → if bus missing, !false=true → skip.
         checks = [
             f"(export XDG_RUNTIME_DIR={h['runtime_dir']} "
             f"&& export DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus "
             f"&& ! {_su} systemctl --user show-environment >/dev/null 2>&1)",
         ]
-        for svc in svc_list:
-            checks.append(f"{_su} systemctl --user is-{check} '{svc}' >/dev/null 2>&1")
-        for svc in now_list:
-            checks.append(f"{_su} systemctl --user is-enabled '{svc}' >/dev/null 2>&1")
+        if svc_list:
+            checks.append(f"{_su} systemctl --user is-{check} {' '.join(svc_list)} >/dev/null 2>&1")
+        if now_list:
+            checks.append(f"{_su} systemctl --user is-enabled {' '.join(now_list)} >/dev/null 2>&1")
         unless_cmd = " && ".join(checks)
 
     args: list[dict[str, Any]] = [
@@ -368,18 +366,16 @@ def user_service_disable(name: str, units: list[str], user: str | None = None) -
         f"{{ echo '{{\"changed\": false, \"comment\": \"no user session available\"}}'; exit 0; }}"
     )
     parts.append("_changed=no")
-    for unit in units:
-        parts.append(
-            f"if {_su} systemctl --user is-enabled '{unit}' >/dev/null 2>&1; then "
-            f"{_su} systemctl --user disable --now '{unit}' 2>/dev/null && _changed=yes || true; "
-            f"else "
-            f": ; "
-            f"fi"
-        )
+    # Batch: one pre-check + one bulk disable call
+    parts.append(
+        f"if {_su} systemctl --user is-enabled {' '.join(units)} >/dev/null 2>&1; then "
+        f"{_su} systemctl --user disable --now {' '.join(units)} 2>/dev/null && _changed=yes || true; "
+        f"fi"
+    )
     parts.append('if [ "$_changed" = "no" ]; then')
     parts.append("  echo '{{\"changed\": false, \"comment\": \"service already disabled and inactive\"}}'")
     parts.append('else')
-    parts.append('  echo \'{"changed": true}\'')
+    parts.append('  echo \'{"changed\": true}\'')
     parts.append('fi')
     shell_cmd = "\n".join(parts)
 
@@ -387,9 +383,8 @@ def user_service_disable(name: str, units: list[str], user: str | None = None) -
         f"(export XDG_RUNTIME_DIR={h['runtime_dir']} "
         f"&& export DBUS_SESSION_BUS_ADDRESS=unix:path={h['runtime_dir']}/bus "
         f"&& ! {_su} systemctl --user show-environment >/dev/null 2>&1)",
+        f"! {_su} systemctl --user is-enabled {' '.join(units)} >/dev/null 2>&1",
     ]
-    for unit in units:
-        unless_checks.append(f"! {_su} systemctl --user is-enabled '{unit}' >/dev/null 2>&1")
     unless_cmd = " && ".join(unless_checks)
 
     return {

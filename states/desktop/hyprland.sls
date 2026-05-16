@@ -55,47 +55,83 @@ hyprpm_headers_update:
         interval: 10
     - timeout: 300
     - stateful: True
+    - unless: test -f {{ _h.stamp }}
     - require:
       - cmd: install_hyprland_desktop
       - file: hyprpm_cache_dir
 
+{# ── Hyprpm plugin add (batch) ── #}
+{% set _add_script = [] %}
 {% for plugin in desktop.hyprland_plugins %}
-{% set _a = salt['desktop.hyprpm_add_data'](plugin.repo, 'Repository ' ~ plugin.dir) %}
-hyprpm_add_{{ plugin.id }}:
+{% set _chk = 'Repository ' ~ plugin.dir %}
+{% do _add_script.append(
+  'if (hyprpm list 2>&1 | grep -q "' ~ _chk ~ '"); then '
+  'echo "[skip] ' ~ plugin.id ~ ' already added" >&2; '
+  'else '
+  'yes | hyprpm add ' ~ plugin.repo ~ ' 2>/dev/null && { echo "[ok] ' ~ plugin.id ~ ' added" >&2; _changed=yes; } || true; '
+  'fi'
+) %}
+{% endfor %}
+hyprpm_plugins_add:
   cmd.run:
     - name: |
-        {{ _a.cmd }}
-    - runas: '{{ _a.runas }}'
-    - onlyif: |
-        {{ _a.onlyif }}
+        set -euo pipefail
+        SIG=$(ls -d /run/user/{{ _h.uid }}/hypr/*/.socket.sock 2>/dev/null | head -1 | xargs dirname | xargs basename)
+        export HYPRLAND_INSTANCE_SIGNATURE=$SIG
+        _changed=no
+        {{ _add_script | join('\n        ') }}
+        if [ "$_changed" = "no" ]; then
+          echo '{"changed": false, "comment": "plugin repos already added"}'
+        else
+          echo '{"changed": true}'
+        fi
+    - runas: {{ user }}
+    - onlyif: ss -xl 2>/dev/null | grep -q /run/user/{{ _h.uid }}/hypr/
     - env:
-        HOME: '{{ _a.home }}'
-        XDG_RUNTIME_DIR: '/run/user/{{ _a.uid }}'
+        HOME: {{ _h.home }}
+        XDG_RUNTIME_DIR: /run/user/{{ _h.uid }}
     - timeout: 300
     - retry:
         attempts: 3
         interval: 10
+    - stateful: True
     - require:
       - cmd: install_hyprland_desktop
       - cmd: hyprpm_headers_update
-      - file: hyprpm_repo_cache_{{ plugin.id }}
-{% endfor %}
+      - file: hyprpm_cache_dir
 
+{# ── Hyprpm plugin enable (batch) ── #}
+{% set _enable_script = [] %}
 {% for plugin in desktop.hyprland_plugins %}
 {% for ep in plugin.enable %}
-{% set _e = salt['desktop.hyprpm_enable_data'](ep.name) %}
-hyprpm_enable_{{ ep.name | lower | replace('-', '_') }}:
+{% do _enable_script.append(
+  'if (hyprpm list 2>&1 | grep -A1 "' ~ ep.name ~ '" | grep -q "enabled:.*true"); then '
+  'echo "[skip] ' ~ ep.name ~ ' already enabled" >&2; '
+  'else '
+  'hyprpm enable ' ~ ep.name ~ ' 2>/dev/null && { echo "[ok] ' ~ ep.name ~ ' enabled" >&2; _changed=yes; } || true; '
+  'fi'
+) %}
+{% endfor %}
+{% endfor %}
+hyprpm_plugins_enable:
   cmd.run:
     - name: |
-        {{ _e.cmd }}
-    - runas: '{{ _e.runas }}'
-    - onlyif: |
-        {{ _e.onlyif }}
+        set -euo pipefail
+        SIG=$(ls -d /run/user/{{ _h.uid }}/hypr/*/.socket.sock 2>/dev/null | head -1 | xargs dirname | xargs basename)
+        export HYPRLAND_INSTANCE_SIGNATURE=$SIG
+        _changed=no
+        {{ _enable_script | join('\n        ') }}
+        if [ "$_changed" = "no" ]; then
+          echo '{"changed": false, "comment": "all plugins already enabled"}'
+        else
+          echo '{"changed": true}'
+        fi
+    - runas: {{ user }}
+    - onlyif: ss -xl 2>/dev/null | grep -q /run/user/{{ _h.uid }}/hypr/
     - env:
-        HOME: '{{ _e.home }}'
-        XDG_RUNTIME_DIR: '/run/user/{{ _e.uid }}'
+        HOME: {{ _h.home }}
+        XDG_RUNTIME_DIR: /run/user/{{ _h.uid }}
     - stateful: True
     - require:
-      - cmd: hyprpm_add_{{ plugin.id }}
-{% endfor %}
-{% endfor %}
+      - cmd: install_hyprland_desktop
+      - cmd: hyprpm_plugins_add

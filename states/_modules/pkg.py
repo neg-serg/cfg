@@ -95,7 +95,8 @@ def _paru_install_dict(
     if _check_all:
         cmd_lines = [
             "set -uo pipefail",
-            f"if test -f {_ver_dir}/{name}@installed && test {_ver_dir}/{name}@installed -nt {h['pkg_list']}; then exit 0; fi",
+            f"if test -f {_ver_dir}/{name}@installed && test {_ver_dir}/{name}@installed -nt {h['pkg_list']}; then "
+            'echo \'{"changed": false, "comment": "stamp ok, skipping"}\'; exit 0; fi',
             f"output=$(sudo -u {u} sh -c 'yes \"\" | paru -S --noconfirm --needed {pkg} || true' 2>&1)",
             'echo "$output" >&2',
             'if echo "$output" | grep -qi \'nothing to do\'; then',
@@ -110,6 +111,7 @@ def _paru_install_dict(
                 "cmd.run": [
                     {"name": "\n".join(cmd_lines)},
                     {"shell": "/bin/bash"},
+                    {"stateful": True},
                     {"require": requires_list},
                 ]
             }

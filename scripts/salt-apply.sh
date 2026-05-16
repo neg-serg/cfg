@@ -335,13 +335,12 @@ SALT_RUNNER="${SCRIPT_DIR}/salt_runner.py"
 run_direct() {
 	pretty::header "Apply ${STATE} (direct)"
 	pretty::info "Log: ${LOG_FILE}"
-	pretty::dim "Start salt-daemon for faster subsequent runs"
 
 	local -a salt_cmd
 	salt_cmd=(
-		"${SUDO_CMD[@]}" "$VENV_DIR/bin/python3" -u "$SALT_RUNNER"
-		--config-dir="${RUNTIME_CONFIG_DIR}"
-		--local --log-level=warning --force-color
+		"${SUDO_CMD[@]}" "$VENV_DIR/bin/salt-call"
+		--local --config-dir="${RUNTIME_CONFIG_DIR}"
+		--log-level=warning --force-color
 		--log-file="${LOG_FILE}" --log-file-level=debug
 		state.sls "${SALT_STATE}"
 	)
@@ -405,22 +404,13 @@ maintenance_lock_create
 trap maintenance_lock_remove EXIT
 
 # Clear stale Python bytecode cache so _modules/*.py changes take effect
-# Timeout-kill daemon to reload fresh modules (skip if daemon is busy processing)
-timeout 2 "${SUDO_CMD[@]}" pkill -f "salt-daemon\.py" 2>/dev/null || true
-sleep 0.5
-"${SUDO_CMD[@]}" rm -rf "${PROJECT_DIR}/states/_modules/__pycache__" /var/cache/salt/minion/extmods "${RUNTIME_CONFIG_DIR}/var/cache/salt/extmods" 2>/dev/null || true
+"${SUDO_CMD[@]}" rm -rf "${PROJECT_DIR}/states/_modules/__pycache__" /var/cache/salt/minion/extmods 2>/dev/null || true
 
 if $PARALLEL_MODE && [[ "$STATE" == "system_description" ]]; then
 	pretty::header "Apply ${STATE} (parallel)"
 	pretty::info "Log: ${LOG_FILE}"
 	"${VENV_DIR}/bin/python3" "${SCRIPT_DIR}/salt_parallel.py" 2>&1 | tee -a "${LOG_FILE}"
 	RC="${pipestatus[1]:-$?}"
-elif ensure_daemon; then
-	run_via_daemon && RC=$? || RC=$?
-	if [[ $RC -eq 75 ]]; then
-		pretty::warn "daemon busy — falling back to direct salt-call"
-		run_direct && RC=$? || RC=$?
-	fi
 else
 	run_direct && RC=$? || RC=$?
 fi

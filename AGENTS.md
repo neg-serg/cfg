@@ -6,8 +6,8 @@ Auto-generated from active feature plans. Last updated: 2026-05-14
 - Jinja2 + YAML Salt states, Python 3, Bash/Zsh helper scripts
 - Salt 3008+ masterless workflow with Python execution modules (`_modules/`); upgraded from 3007.13
 - Sphinx + MyST for embedded documentation; `just docs` builds static HTML site
-- `just`, `pytest`, `ruff`, `shellcheck`, `yamllint`, `salt-lint`
-- Repository artifacts under `states/`, `scripts/`, `tests/`, `docs/`, `.specify/`
+- `just`, `ruff`, `shellcheck`, `yamllint`, `salt-lint`
+- Repository artifacts under `states/`, `scripts/`, `docs/`, `.specify/`
 - Markdown documentation, shell-based operator workflow, `gopass` 1.16.x + `age` + `age-plugin-yubikey`, `chezmoi`, systemd, Arch/CachyOS package management
 - Zen Browser (`zen-browser-bin`), Surfingkeys, Hyprland/Wayfire launcher config, vicinae/dmenu/rofi
 
@@ -16,7 +16,6 @@ Auto-generated from active feature plans. Last updated: 2026-05-14
 ```text
 states/
 scripts/
-tests/
 docs/
 .specify/
 └── templates/                # YAML templates for speckit workflow artifacts
@@ -37,7 +36,6 @@ docs/
 
 - `just docs` — build the Sphinx + MyST documentation site to `docs/_build/html/`
 - `just lint`
-- `pytest tests/ -q`
 - `just validate`
 - `just render-matrix`
 - `python3 scripts/state-profiler.py --trend`
@@ -93,6 +91,12 @@ The `.specify/templates/` directory contains YAML schema templates for the speck
 - **Auto-commit**: Commit every completed change immediately without asking. Use `[scope] description` format. Small atomic commits preferred over batching.
 <!-- MANUAL ADDITIONS END -->
 
+## Testing Strategy
+
+- No unit tests. All validation is done via actual Salt state application.
+- **`just validate`** — checks all 87 `.sls` files render without errors (fast, pre-apply)
+- **VM‑based test environment** (future): lightweight QEMU + Arch Linux harness for full Salt deployment testing, independent of the host's CachyOS rootfs. Replaces `scripts/vm‑smoke.sh`.
+
 <!-- FUTURE WORK -->
-- **VM‑based test environment**: Add a lightweight virtual‑machine harness (QEMU + Arch Linux) that can be used to test full Salt deployments of containerized services and other applications, independent of the host's CachyOS‑specific rootfs requirement. This would replace the current `scripts/vm‑smoke.sh` which expects a CachyOS rootfs.
+- **VM‑based test environment**: Add a lightweight virtual‑machine harness (QEMU + Arch Linux) for full Salt deployment testing.
 <!-- END FUTURE WORK -->

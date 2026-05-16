@@ -1,0 +1,17 @@
+[Unit]
+Description=Link fmod_sink to RME AIO Pro
+After=pipewire.service pipewire-pulse.service wireplumber.service
+BindsTo=pipewire.service pipewire-pulse.service
+PartOf=pipewire.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart={{ home }}/.local/bin/fmod-link.sh
+ExecStop=/usr/bin/pw-link -d "fmod_sink:monitor_FL" "{{ rme_node }}:playback_AUX0" 2>/dev/null || true
+ExecStop=/usr/bin/pw-link -d "fmod_sink:monitor_FR" "{{ rme_node }}:playback_AUX1" 2>/dev/null || true
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=pipewire.service

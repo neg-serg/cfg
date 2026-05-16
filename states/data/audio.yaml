@@ -8,3 +8,4 @@ packages:
 - playerctl
 droidcam_modules_conf: /etc/modules-load.d/droidcam.conf
 snd_aloop_pattern: ^snd-aloop\n?
+rme_node: alsa_output.pci-0000_05_00.0.pro-output-0

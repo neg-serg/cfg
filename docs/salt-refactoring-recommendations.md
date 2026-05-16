@@ -75,7 +75,6 @@ Move a change into `avoid for now` if it is likely to:
 
 Latest verification pass on `071-salt-refactor-program`:
 
-- `pytest tests/` → `48 passed`
 - `just lint` → passed
 - `just validate` → `Validated 49 states, 0 failed`
 - `just render-matrix` → all matrix scenarios rendered successfully

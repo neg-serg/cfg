@@ -43,10 +43,8 @@ Generate a visual graph of all state dependencies (include/require/watch/onchang
 
 Podman-based test that applies states in isolation and validates outcomes.
 
-- **Command**: `just smoke-test`
 - **Image**: `archlinux:latest`
 - **Tests**: State rendering validation for all 36+ states, safe state execution, assertions
-- **Script**: `tests/smoke-test.sh`
 
 ### 5. State Profiling Trends
 
@@ -71,7 +69,6 @@ Single command to check all managed services.
 |--------|-------------|
 | `test STATE` | Dry-run a state before applying |
 | `dep-graph` | Generate state dependency graph |
-| `smoke-test` | Container-based smoke tests |
 | `profile-trend` | State duration trends across logs |
 | `profile-compare LOG1 LOG2` | Compare two apply logs |
 | `health` | Check all managed service health |

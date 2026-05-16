@@ -217,7 +217,6 @@ See CLAUDE.md "Data file package lists" and "Package descriptions" conventions.
 
 **Rationale**: Catches import errors, missing dependencies, and template rendering issues without touching the real system.
 
-**This project**: `tests/smoke-test.sh` (164 lines). Run via `just smoke-test`.
 
 ---
 

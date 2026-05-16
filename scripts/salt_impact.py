@@ -35,7 +35,6 @@ SHARED_PATHS = {
 }
 NOOP_PREFIXES = (
     "scripts/",
-    "tests/",
     "docs/",
     "dotfiles/",
     "specs/",

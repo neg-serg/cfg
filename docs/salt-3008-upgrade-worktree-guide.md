@@ -104,7 +104,6 @@ pip install -r requirements.txt
 
 # Verify tools work
 just --version
-pytest --version
 ```
 
 ### 1.3 Baseline Validation
@@ -384,7 +383,6 @@ grep -i "failed\|error" logs/system_description-*.log
 
 - [ ] All states render without errors (`just validate`)
 - [ ] Dry-run passes without changes (`just test system_description`)
-- [ ] All tests pass (`pytest tests/`)
 - [ ] Idempotency verified (`just idempotency`)
 - [ ] Performance acceptable (`just profile-compare`)
 - [ ] Documentation updated
@@ -406,7 +404,6 @@ git merge upgrade/salt-3008 --no-ff -m "[feat] upgrade to Salt 3008"
 # Run final validation
 just validate
 just test system_description
-pytest tests/ -v
 ```
 
 ### 8.3 Post-Merge Verification
@@ -503,7 +500,6 @@ just apply system_description
 ### Must-Have (Blocking)
 - [ ] All 200+ state files render without errors
 - [ ] Dry-run of `system_description` makes zero changes
-- [ ] All existing tests pass (`pytest tests/`)
 - [ ] Idempotency verified for core states
 - [ ] No regressions in critical functionality
 
@@ -558,7 +554,6 @@ just profile-compare <a> <b>   # Compare two runs
 
 # Quality checks
 just lint                      # Run all linters
-pytest tests/ -v              # Run test suite
 ```
 
 ### Appendix C: Useful Salt 3008 Resources

@@ -80,10 +80,6 @@ help:
 test STATE="system_description":
     scripts/salt-apply.sh {{STATE}} --test
 
-# Run unit tests (data validation, host config, merge)
-test-unit *ARGS:
-    echo "No unit tests — use 'just validate' and 'just apply' instead"
-
 # Run CachyOS VM smoke test inside Podman
 vm-smoke ROOTFS="/mnt/one/cachyos-root":
     sudo scripts/vm-smoke.sh {{ROOTFS}}
@@ -194,10 +190,6 @@ stats:
     echo "  .sls files:        $sls_count"
     echo "  macro .jinja files: $macro_count"
     echo "  other .jinja files: $jinja_count"
-    echo ""
-    echo "=== Tests ==="
-    test_count=$(find tests -name 'test_*.py' | wc -l)
-    echo "  test files: $test_count"
     echo ""
     python3 scripts/salt_contracts.py --summary
 

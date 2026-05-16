@@ -612,14 +612,22 @@ def render_service(
             "set -uo pipefail",
             f"if test -f {stamp} && test {stamp} -nt {h['pkg_list']}; then "
             'echo \'{"changed": false, "comment": "up to date"}\'; exit 0; fi',
-            f"paru -S --noconfirm --needed {pkgs}",
-            f"mkdir -p $(dirname {stamp}) && touch {stamp}",
+            f"output=$(paru -S --noconfirm --needed {pkgs} 2>&1 || true)",
+            'echo "$output" >&2',
+            'if echo "$output" | grep -qi \'nothing to do\'; then',
+            f'  mkdir -p $(dirname {stamp}) && touch {stamp}',
+            '  echo \'{"changed": false, "comment": "packages already installed"}\'',
+            'else',
+            f'  mkdir -p $(dirname {stamp}) && touch {stamp}',
+            '  echo \'{"changed": true}\'',
+            'fi',
         ]
         ret[f"install_{pkg_name}"] = {
             "cmd.run": [
                 {"name": "\n".join(cmd_lines)},
                 {"shell": "/bin/bash"},
                 {"stateful": True},
+                {"unless": f"test -f {stamp} && test {stamp} -nt {h['pkg_list']}"},
                 {"require": [{"cmd": "pacman_db_warmup"}]},
             ]
         }

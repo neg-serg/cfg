@@ -127,7 +127,7 @@ def _paru_install_dict(
                     "name": (
                         f"if grep -qxF '{check or pkg}' {h['pkg_list']}; then exit 0; fi\n"
                         f"output=$(sudo -u {u} paru -S --noconfirm --needed {pkg} 2>&1); "
-                        f'echo "$output"; '
+                        f'echo "$output" >&2; '
                         f"if echo \"$output\" | grep -qi 'nothing to do'; then "
                         f"echo '{{\"changed\": false, \"comment\": \"all packages already installed\"}}'; "
                         f"else echo '{{\"changed\": true}}'; fi"

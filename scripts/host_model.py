@@ -73,7 +73,7 @@ def recursive_merge(base, override):
     * Lists are replaced wholesale (not concatenated)
     * Base dict is never mutated (returns new dict)
     * New keys can be introduced at any nesting level
-
+    """
     result = base.copy()
     for k, v in override.items():
         if k in result and isinstance(result[k], dict) and isinstance(v, dict):

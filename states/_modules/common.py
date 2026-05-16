@@ -6,7 +6,7 @@ returns a dict that templates can access via salt['common.get_host']()
 or via Jinja globals injected by data_loader.
 
 Salt runtime context: importable from Salt with __salt__, __opts__, etc.
-Offline context: importable by lint-jinja.py mock and pytest directly.
+Offline context: importable by lint-jinja.py mock directly.
 """
 
 from __future__ import annotations

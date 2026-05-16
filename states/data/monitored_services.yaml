@@ -57,7 +57,7 @@ user_services:
   severity: critical
 - name: telethon-bridge
   severity: warning
-  health_cmd: curl -sf http://127.0.0.1:8319/health
+  health_cmd: curl -sf --noproxy '*' http://127.0.0.1:8319/health
   health_parse: .connected
   auto_restart: true
   optional: true

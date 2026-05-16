@@ -405,6 +405,9 @@ maintenance_lock_create
 trap maintenance_lock_remove EXIT
 
 # Clear stale Python bytecode cache so _modules/*.py changes take effect
+# Timeout-kill daemon to reload fresh modules (skip if daemon is busy processing)
+timeout 2 "${SUDO_CMD[@]}" pkill -f "salt-daemon\.py" 2>/dev/null || true
+sleep 0.5
 "${SUDO_CMD[@]}" rm -rf "${PROJECT_DIR}/states/_modules/__pycache__" /var/cache/salt/minion/extmods "${RUNTIME_CONFIG_DIR}/var/cache/salt/extmods" 2>/dev/null || true
 
 if $PARALLEL_MODE && [[ "$STATE" == "system_description" ]]; then

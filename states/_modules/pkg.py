@@ -87,6 +87,7 @@ def _paru_install_dict(
                     {"name": cmd},
                     {"shell": "/bin/bash"},
                     {"stateful": True},
+                    {"unless": f"test -f {_ver_dir}/{name}@{version}"},
                     {"require": requires_list},
                 ]
             }
@@ -112,6 +113,8 @@ def _paru_install_dict(
                     {"name": "\n".join(cmd_lines)},
                     {"shell": "/bin/bash"},
                     {"stateful": True},
+                    {"unless": f"test -f {_ver_dir}/{name}@installed && "
+                               f"test {_ver_dir}/{name}@installed -nt {h['pkg_list']}"},
                     {"require": requires_list},
                 ]
             }
@@ -131,6 +134,7 @@ def _paru_install_dict(
                     )
                 },
                 {"shell": "/bin/bash"},
+                {"unless": f"grep -qxF '{check or pkg}' {h['pkg_list']}"},
                 {"require": requires_list},
                 {"stateful": True},
             ]

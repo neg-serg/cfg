@@ -258,6 +258,7 @@ def managed(
                 "name": f"podman pull {full_image}",
                 "unless": f"podman image exists {full_image}",
                 "retry": {"attempts": retry_attempts, "interval": retry_interval},
+                "parallel": True,
             }
             if user_scope:
                 pargs["runas"] = host_user
@@ -296,6 +297,7 @@ def managed(
             {"name": f"podman pull {full_image}"},
             {"unless": f"podman image exists {full_image}"},
             {"retry": {"attempts": retry_attempts, "interval": retry_interval}},
+            {"parallel": True},
         ]
         parsed_requires = [{"file": f"{name}_container"}]
         if requires:

@@ -77,10 +77,14 @@ if [ "$count" -ge 3 ]; then
 fi
 
 export HOME={{ home }}
+# External profile scripts may not be compatible with set -u (e.g. debuginfod.sh
+# references $DEBUGINFOD_URLS without a default), so source them without -eu.
+set +eu
 # shellcheck source=/dev/null
 [ -f /etc/profile ] && . /etc/profile
 # shellcheck source=/dev/null
 [ -f "$HOME/.config/environment.d/10-user.conf" ] && . "$HOME/.config/environment.d/10-user.conf"
+set -eu
 
 export QT_QPA_PLATFORM=wayland
 {% if greetd_scale > 1 %}

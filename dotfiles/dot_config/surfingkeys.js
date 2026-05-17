@@ -247,8 +247,9 @@ api.mapkey('o', 'Focus Address Bar', function () {
       console.error(e);
     });
 });
-api.mapkey('t', 'Open new tab (default new tab page)', function () {
+api.mapkey('t', 'Open new tab and focus address bar', function () {
   api.RUNTIME('openLink', {tab: {tabbed: true, active: true}, url: 'about:newtab'});
+  fetch('http://localhost:18888/focus').catch(function () {});
 });
 
 api.unmap('b');

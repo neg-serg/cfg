@@ -247,10 +247,8 @@ api.mapkey('o', 'Focus Address Bar', function () {
       console.error(e);
     });
 });
-api.mapkey('t', 'Open new tab (surfingkeys-accessible, auto-focus address bar)', function () {
-  // Zen Browser workflow: open blank.html served locally so Surfingkeys injects on an HTTP URL,
-  // then let the page call /focus to move the address bar without relying on browser internals.
-  api.RUNTIME('openLink', {tab: {tabbed: true, active: true}, url: 'http://localhost:18888/blank.html'});
+api.mapkey('t', 'Open new tab (default new tab page)', function () {
+  api.RUNTIME('openLink', {tab: {tabbed: true, active: true}, url: 'about:newtab'});
 });
 
 api.unmap('b');

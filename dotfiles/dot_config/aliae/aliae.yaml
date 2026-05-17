@@ -358,7 +358,14 @@ alias:
   - name: hexdump
     value: hxd
   - name: se
-    value: ouch decompress --yes
+    value: |
+      for f in "$@"; do
+        local dir="${f%.*}"
+        [[ "$dir" == *.tar ]] && dir="${dir%.*}"
+        mkdir -p "$dir"
+        ouch decompress --yes --dir "$dir" "$f"
+      done
+    type: function
   - name: pk
     value: ouch compress
   - name: gzip

@@ -358,7 +358,7 @@ alias:
   - name: hexdump
     value: hxd
   - name: se
-    value: ouch decompress
+    value: ouch decompress --yes
   - name: pk
     value: ouch compress
   - name: gzip

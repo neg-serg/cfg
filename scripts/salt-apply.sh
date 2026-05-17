@@ -317,7 +317,15 @@ try:
             except json.JSONDecodeError:
                 continue
             if msg.get('type') == 'stdout':
-                print(msg.get('line', ''), file=sys.stderr)
+                line = msg.get('line', '')
+                if line.startswith('[progress]'):
+                    print('\033[2;36m' + line + '\033[0m', file=sys.stderr)
+                elif line.startswith('[running]'):
+                    print('\033[33m' + line + '\033[0m', file=sys.stderr)
+                elif line.startswith('[warning]'):
+                    print('\033[31m' + line + '\033[0m', file=sys.stderr)
+                else:
+                    print(line, file=sys.stderr)
             if msg.get('type') == 'exit':
                 rc = msg.get('code', 0)
 except ConnectionResetError:

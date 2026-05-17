@@ -186,6 +186,45 @@ class _DropNoisyDebugFilter(logging.Filter):
         return False
 
 
+_C_RESET = "\033[0m"
+_C_CYAN = "\033[36m"
+_C_CYAN_BOLD = "\033[1;36m"
+_C_YELLOW = "\033[33m"
+_C_YELLOW_BOLD = "\033[1;33m"
+_C_GREEN_BOLD = "\033[1;32m"
+_C_RED = "\033[31m"
+_C_RED_BOLD = "\033[1;31m"
+_C_GREY = "\033[90m"
+_C_DIM = "\033[2m"
+
+_C_I_PROGRESS = "\u25b6"   # ▶
+_C_I_RUNNING = "\u23f3"    # ⏳
+_C_I_WARN = "\u26a0"       # ⚠
+
+
+def _pfx_progress(count: int, latest: str) -> str:
+    return (
+        f"{_C_CYAN_BOLD}{_C_I_PROGRESS}{_C_RESET}"
+        f" {_C_GREEN_BOLD}{count}{_C_RESET}"
+        f" {_C_GREY}{latest}{_C_RESET}"
+    )
+
+
+def _pfx_running(elapsed: int, state: str) -> str:
+    return (
+        f"{_C_YELLOW}{_C_I_RUNNING}{_C_RESET}"
+        f" {_C_YELLOW}{elapsed}s{_C_RESET}"
+        f" {_C_CYAN}{state}{_C_RESET}"
+    )
+
+
+def _pfx_warning(message: str) -> str:
+    return (
+        f"{_C_YELLOW_BOLD}{_C_I_WARN}{_C_RESET}"
+        f" {_C_YELLOW}{message}{_C_RESET}"
+    )
+
+
 class _ClientProgressHandler(logging.Handler):
     def __init__(
         self,
@@ -229,13 +268,13 @@ class _ClientProgressHandler(logging.Handler):
                 return
             state_name = self._format_latest_state(self._active_state_name)
             self._active_state_reported = True
-        self._emit_line(f"[running] {elapsed}s in {state_name}")
+        self._emit_line(_pfx_running(elapsed, state_name))
 
     def emit(self, record: logging.LogRecord) -> None:
         try:
             message = record.getMessage()
             if record.levelno >= logging.WARNING:
-                self._emit_line(f"[warning] {message}")
+                self._emit_line(_pfx_warning(message))
                 return
             if record.name != "salt.state" or record.levelno != logging.INFO:
                 return
@@ -259,7 +298,7 @@ class _ClientProgressHandler(logging.Handler):
                 completed = self._completed
             if completed % self._interval != 0:
                 return
-            self._emit_line(f"[progress] {self._completed} states completed; latest: {latest}")
+            self._emit_line(_pfx_progress(self._completed, latest))
         except Exception:
             self.handleError(record)
 

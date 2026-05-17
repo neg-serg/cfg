@@ -158,7 +158,6 @@ system:
 - parted
 - strace
 - stress-ng
-- rmlint
 - sysstat
 - pacman-contrib
 - rebuild-detector
@@ -543,6 +542,8 @@ aur:
 - raysession
 - resterm-bin
 - richcolors
+- rmlint
+
 - rofi-file-browser-extended-git
 - rofi-file-browser-extended-git-debug
 - rustmission

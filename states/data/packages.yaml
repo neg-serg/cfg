@@ -85,7 +85,6 @@ dev:
 - lua53
 - patchelf
 - neovim
-- neovim-remote
 - nodejs
 - npm
 - python-pipx
@@ -103,7 +102,6 @@ network:
 - cloudflare-speed-cli
 - curl
 - firewalld
-- gallery-dl
 - ufw
 - networkmanager
 - networkmanager-qt
@@ -112,7 +110,6 @@ network:
 - openssh
 - tailscale
 - proton-vpn-cli
-- zapret2
 - wget
 - nethogs
 - network-manager-applet
@@ -131,7 +128,6 @@ media:
 - grilo-plugins
 - rygel
 - showtime
-- ytsurf
 fonts:
 - noto-fonts-cjk
 - ttf-jetbrains-mono-nerd
@@ -145,7 +141,6 @@ gaming:
 - gamescope
 - gamemode
 - nethack
-- proton-ge-custom-bin
 system:
 - bottom
 - btop
@@ -172,6 +167,7 @@ system:
 other:
 - abduco
 - age
+- albumdetails
 - android-tools
 - aria2
 - asciinema
@@ -282,6 +278,7 @@ other:
 - iftop
 - inotify-tools
 - ioping
+- iosevka-neg-fonts
 - iotop-c
 - iperf3
 - isync
@@ -320,6 +317,7 @@ other:
 - mtr
 - multipath-tools
 - ncdu
+- neg-pretty-printer
 - neomutt
 - nerdctl
 - nicotine+
@@ -369,6 +367,7 @@ other:
 - recoll
 - reptyr
 - resvg
+- richcolors
 - ripgrep
 - rlwrap
 - ruff
@@ -485,7 +484,6 @@ aur:
 - babashka-bin
 - carapace-bin
 - aliae-bin
-- albumdetails
 - claude-code
 - cmake-language-server
 - dcfldd
@@ -501,6 +499,7 @@ aur:
 - fsel-bin
 - epr-git
 - freeze-bin
+- gallery-dl
 - ghgrab-bin
 - gmap-bin
 - git-extras
@@ -511,7 +510,6 @@ aur:
 - hw-probe
 - hyprscratch
 - instagram-cli
-- iosevka-neg-fonts
 - jdupes
 - localsend-bin
 - lazytail-bin
@@ -519,8 +517,8 @@ aur:
 - massren
 - mpdris2-git
 - mpdas
-- neg-pretty-printer
 - neo-matrix
+- neovim-remote
 - newsraft
 - no-more-secrets
 - oh-my-posh
@@ -532,6 +530,7 @@ aur:
 - paru
 - paru-debug
 - pipemixer-git
+- proton-ge-custom-bin
 - pup-bin
 - python-ascii_magic
 - python-rapidgzip
@@ -541,9 +540,7 @@ aur:
 - regex-tui
 - raysession
 - resterm-bin
-- richcolors
 - rmlint
-
 - rofi-file-browser-extended-git
 - rofi-file-browser-extended-git-debug
 - rustmission
@@ -565,6 +562,8 @@ aur:
 - wlr-which-key
 - xdg-ninja
 - youtube-tui
+- ytsurf
 - bazecor
 - python-telethon
+- zapret2
 - zen-browser-bin

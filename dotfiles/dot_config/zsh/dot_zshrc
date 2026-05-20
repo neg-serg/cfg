@@ -1,3 +1,7 @@
+zi() { :; }
+zsh-defer() { shift; "$@" 2>/dev/null || :; }
+smartcache() { eval "$("$@")"; }
+
 # P10k instant prompt — must be first, renders cached prompt before plugins load
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"

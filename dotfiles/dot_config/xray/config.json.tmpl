@@ -1,0 +1,30 @@
+{
+    "inbounds": [{
+        "listen": "127.0.0.1",
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {"udp": true}
+    }],
+    "outbounds": [{
+        "protocol": "vless",
+        "settings": {
+            "vnext": [{
+                "address": {{ gopass "vpn/xray-address" | quote }},
+                "port": {{ gopass "vpn/xray-port" }},
+                "users": [{
+                    "id": {{ gopass "vpn/xray-uuid" | quote }},
+                    "encryption": "none"
+                }]
+            }]
+        },
+        "streamSettings": {
+            "network": "tcp",
+            "security": "reality",
+            "realitySettings": {
+                "serverName": {{ gopass "vpn/xray-sni" | quote }},
+                "publicKey": {{ gopass "vpn/xray-public-key" | quote }},
+                "shortId": {{ gopass "vpn/xray-short-id" | quote }}
+            }
+        }
+    }]
+}

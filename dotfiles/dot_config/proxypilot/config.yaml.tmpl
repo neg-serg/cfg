@@ -1,0 +1,10 @@
+# ProxyPilot — local AI proxy
+host: "127.0.0.1"
+port: 8317
+auth-dir: "~/.cli-proxy-api"
+api-keys:
+  - {{ gopass "proxypilot/api-key" | quote }}
+remote-management:
+  allow-remote: false
+  secret-key: {{ gopass "proxypilot/secret-key" | quote }}
+  disable-control-panel: false

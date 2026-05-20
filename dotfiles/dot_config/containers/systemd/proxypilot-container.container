@@ -1,0 +1,28 @@
+[Unit]
+Description=ProxyPilot local AI proxy (containerized)
+Documentation=https://github.com/Finesssee/ProxyPilot
+After=network-online.target
+Wants=network-online.target
+# StartLimit* keys belong in [Unit] per systemd.unit(5).
+StartLimitBurst=5
+StartLimitIntervalSec=60
+
+[Container]
+Image=localhost/proxypilot
+Pull=never
+ContainerName=proxypilot
+PublishPort=127.0.0.1:8317:8317
+Volume=/home/neg/.config/proxypilot:/config:rw
+Volume=/home/neg/.cli-proxy-api:/root/.cli-proxy-api:rw
+# ProxyPilot reads config from the bind-mounted path
+Exec=-config /config/config.yaml
+Environment=HOME=/root
+
+[Service]
+# Bounded restart policy: up to 5 failures in 60s → unit enters failed state
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=30
+
+[Install]
+WantedBy=default.target

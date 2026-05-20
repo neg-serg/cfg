@@ -1,0 +1,41 @@
+[mounts]
+	path = /home/neg/dw
+[core]
+	exportkeys = false
+	autopush = true
+	autosync = true
+[recipients]
+	hash = c431d95d1bd1c68fa86f0b9b0437b22486dcb0ece75b7a497cd74d5dc81a16b0
+[age]
+	agent-timeout = 28800
+	agent-enabled = false
+[recipients "rehearsal"]
+	hash = 6b07dd6f749ba1b8d068f5a94c6370e9ffbf1b79e1482681cd9bcd653bc9f118
+[mounts "rehearsal"]
+[recipients "rehearsal-gpg-cutover-789746"]
+	hash = 6b07dd6f749ba1b8d068f5a94c6370e9ffbf1b79e1482681cd9bcd653bc9f118
+[mounts "rehearsal-gpg-cutover-789746"]
+[recipients "rehearsal-gpg-cutover-937034"]
+	hash = d55631fb4f1dab129bc5e3e8e3e39276286d484f83c18e4aba7e9cc7791d70d8
+[mounts "rehearsal-gpg-cutover-937034"]
+[recipients "rehearsal-gpg-cutover-948018"]
+	hash = d55631fb4f1dab129bc5e3e8e3e39276286d484f83c18e4aba7e9cc7791d70d8
+[mounts "rehearsal-gpg-cutover-948018"]
+[recipients "rehearsal-gpg-cutover-1017454"]
+	hash = d55631fb4f1dab129bc5e3e8e3e39276286d484f83c18e4aba7e9cc7791d70d8
+[mounts "rehearsal-gpg-cutover-1017454"]
+[recipients "rehearsal-gpg-cutover-1022744"]
+	hash = d55631fb4f1dab129bc5e3e8e3e39276286d484f83c18e4aba7e9cc7791d70d8
+[mounts "rehearsal-gpg-cutover-1022744"]
+[recipients "rehearsal-gpg-cutover-1068354"]
+	hash = d55631fb4f1dab129bc5e3e8e3e39276286d484f83c18e4aba7e9cc7791d70d8
+[mounts "rehearsal-gpg-cutover-1068354"]
+[recipients "rehearsal-gpg-cutover-1078975"]
+	hash = d55631fb4f1dab129bc5e3e8e3e39276286d484f83c18e4aba7e9cc7791d70d8
+[mounts "rehearsal-gpg-cutover-1078975"]
+[recipients "rehearsal-gpg-cutover-1087395"]
+	hash = d55631fb4f1dab129bc5e3e8e3e39276286d484f83c18e4aba7e9cc7791d70d8
+[mounts "rehearsal-gpg-cutover-1087395"]
+[mounts "rehearsal-gpg-cutover-1151222"]
+[mounts "rehearsal-gpg-cutover-1162218"]
+[mounts "rehearsal-gpg-cutover-1188316"]

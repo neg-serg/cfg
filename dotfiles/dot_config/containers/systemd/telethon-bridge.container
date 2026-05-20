@@ -1,0 +1,25 @@
+[Unit]
+Description=Telethon Telegram bridge (containerized)
+After=default.target
+# StartLimit* keys belong in [Unit] per systemd.unit(5).
+StartLimitBurst=5
+StartLimitIntervalSec=60
+
+[Container]
+Image=localhost/telethon-bridge
+ContainerName=telethon-bridge
+Volume=/home/neg/.telethon-bridge:/data:rw
+# Process-liveness health check — Telethon bridge has no HTTP endpoint.
+HealthCmd=pgrep -f telethon-bridge || exit 1
+HealthInterval=30s
+HealthRetries=3
+HealthTimeout=10s
+Notify=healthy
+
+[Service]
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=60
+
+[Install]
+WantedBy=default.target

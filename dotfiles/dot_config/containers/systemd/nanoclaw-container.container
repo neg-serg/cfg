@@ -1,0 +1,38 @@
+[Unit]
+Description=NanoClaw AI Agent (containerized)
+Documentation=https://github.com/qwibitai/nanoclaw
+After=network-online.target proxypilot.service
+Wants=proxypilot.service
+# StartLimit* keys belong in [Unit] per systemd.unit(5).
+StartLimitBurst=5
+StartLimitIntervalSec=300
+
+[Container]
+Image=localhost/nanoclaw-agent
+Pull=never
+ContainerName=nanoclaw
+PublishPort=127.0.0.1:8318:8318
+Volume=/home/neg/.local/share/nanoclaw:/app:rw
+Volume=/home/neg/.config/nanoclaw:/config:rw
+Volume=/home/neg/.local/share/nanoclaw/entrypoint.sh:/app/entrypoint.sh:ro
+Volume=/home/neg/.local/share/nanoclaw/container-runtime-patched.ts:/app/src/container-runtime.ts:ro
+Volume=/home/neg/.local/share/nanoclaw/index-main-patched.ts:/app/src/index.ts:ro
+Volume=/run/user/1000/podman/podman.sock:/var/run/docker.sock:rw
+# NanoClaw reads .env from its working directory
+WorkingDir=/app
+Environment=NODE_ENV=production
+User=1000
+# Health check disabled — container runs as daemon waiting for IPC
+# No HTTP endpoint available
+
+[Service]
+# Resource limits (mirrors native unit)
+MemoryMax=2G
+CPUQuota=200%
+# Bounded restart policy
+Restart=on-failure
+RestartSec=10
+TimeoutStartSec=180
+
+[Install]
+WantedBy=default.target

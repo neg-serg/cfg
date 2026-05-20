@@ -475,7 +475,7 @@ other:
 - vim
 - wiremix
 aur:
-  - hermes
+  - hermes-agent
   - amdgpu-vulkan-switcher-git
 - amdvlk-bin
 - lib32-amdvlk-bin

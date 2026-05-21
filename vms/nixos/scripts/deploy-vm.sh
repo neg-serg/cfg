@@ -15,6 +15,18 @@ cyan()  { echo -e "\033[36m$*\033[0m"; }
 cyan "=== Validating age key ==="
 "$SCRIPT_DIR/decrypt-secrets.sh"
 
+# Disk space check
+cyan "=== Checking disk space ==="
+DISK_DIR="$(dirname "$DISK_IMAGE")"
+AVAIL_GB=$(df -BG "$DISK_DIR" 2>/dev/null | awk 'NR==2 {print $4}' | sed 's/G//' || echo 0)
+MIN_GB=40
+if [ "${AVAIL_GB:-0}" -lt "$MIN_GB" ]; then
+    red "ERROR: Insufficient disk space: ${AVAIL_GB}G available, ${MIN_GB}G required"
+    red "Free up space on $DISK_DIR or choose a different location"
+    exit 1
+fi
+green "Disk space OK: ${AVAIL_GB}G available"
+
 # Build NixOS system configuration
 cyan "=== Building NixOS system closure ==="
 cd "$PROJECT_DIR"

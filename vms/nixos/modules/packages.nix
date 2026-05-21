@@ -2,9 +2,6 @@
 
 let
   inherit (lib) mkIf mkMerge;
-
-  # Custom packages from vms/nixos/pkgs/
-  customPkgs = config._customPkgs or {};
 in
 {
   environment.systemPackages = with pkgs; [

@@ -18,13 +18,11 @@ in
     # Gamemode (performance tuning daemon)
     programs.gamemode.enable = true;
 
-    # MangoHud overlay
-    programs.mangohud.enable = true;
-
     environment.systemPackages = with pkgs; [
       lutris
       wine
       gamescope
+      mangohud
       nethack
     ];
 

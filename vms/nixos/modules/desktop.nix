@@ -22,7 +22,7 @@ in
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
           user = "greeter";
         };
       };
@@ -62,7 +62,8 @@ in
 
     # Input methods
     i18n.inputMethod = {
-      enabled = "fcitx5";
+      type = "fcitx5";
+      enable = true;
       fcitx5.addons = with pkgs; [ fcitx5-gtk fcitx5-mozc ];
     };
 

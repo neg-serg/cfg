@@ -8,10 +8,10 @@ rustPlatform.buildRustPackage rec {
     owner = "NotAShelf";
     repo = "tailray";
     rev = "v${version}";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-Frdo29gkUJqZ7zZFyNBvL3Gp3HRM4fapnVW5uXozgdY=";
   };
 
-  cargoHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+  cargoHash = "sha256-QTOaF59ES2vy1YhQJ3UwKXwLszXfrY6XA2arymYSGnc=";
 
   nativeBuildInputs = [ pkg-config ];
   buildInputs = [ dbus ];

@@ -8,9 +8,6 @@ in
 
   config = lib.mkIf cfg.enable {
 
-    # Disable PulseAudio
-    hardware.pulseaudio.enable = lib.mkForce false;
-
     # PipeWire server
     services.pipewire = {
       enable = true;

@@ -9,7 +9,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://github.com/Finesssee/ProxyPilot/releases/download/v${version}/proxypilot-linux-amd64";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-1hGxvJTm092gPtH9wI/DvlorH2bljnfmONJsmHSkShA=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook ];

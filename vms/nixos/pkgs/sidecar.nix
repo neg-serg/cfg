@@ -9,7 +9,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://github.com/marcus/sidecar/releases/download/v${version}/sidecar_${version}_linux_amd64.tar.gz";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-PXXRlHaresWxWgrDv1XUST7/DWEINAoGJotwp+mqJrQ=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook ];

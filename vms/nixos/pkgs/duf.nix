@@ -8,10 +8,10 @@ buildGoModule rec {
     owner = "neg-serg";
     repo = "duf";
     rev = "master";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-V+snTF7Y7dsPfn/yptCuAZ03IlVlZ7dfBW82k0CGwz4=";
   };
 
-  vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+  vendorHash = "sha256-mCOP6R072dmJBHN8c7ae8l7yN1O25FDLIgRGUSWUn2E=";
 
   ldflags = [ "-s" "-w" ];
 

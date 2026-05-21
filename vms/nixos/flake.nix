@@ -8,10 +8,12 @@
     ragenix.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs = { self, nixpkgs, disko, ragenix }: let
+    envDefault = name: default:
+      let v = builtins.getEnv name; in if v == "" then default else v;
     specialArgs = {
-      ageKeyPath = builtins.getEnv "AGE_KEY_PATH" or "/run/secrets/age-key.txt";
-      proxyHost = builtins.getEnv "PROXY_HOST" or "";
-      proxyPort = builtins.getEnv "PROXY_PORT" or "10808";
+      ageKeyPath = envDefault "AGE_KEY_PATH" "/run/secrets/age-key.txt";
+      proxyHost = envDefault "PROXY_HOST" "";
+      proxyPort = envDefault "PROXY_PORT" "10808";
     };
   in {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {

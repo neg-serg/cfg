@@ -1,15 +1,15 @@
 { lib, stdenv, fetchurl, unzip }:
 
 let
-  version = "1.0.13";
+  version = "1.1.4";
 in
 stdenv.mkDerivation {
   pname = "throne";
   inherit version;
 
   src = fetchurl {
-    url = "https://github.com/throneproj/Throne/releases/download/v${version}/Throne-${version}-linux-amd64.zip";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    url = "https://github.com/throneproj/Throne/releases/download/${version}/Throne-${version}-linux-amd64.zip";
+    hash = "sha256-8DejEUZqo4npgD3WWFsgtcqNXMkPnwSP5mBohuwxorQ=";
   };
 
   nativeBuildInputs = [ unzip ];

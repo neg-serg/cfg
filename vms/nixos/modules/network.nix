@@ -8,6 +8,10 @@ in
 
   config = lib.mkIf cfg.enable {
 
+    # Use networkd (not dhcpcd) to avoid conflict with systemd.network.enable
+    networking.useNetworkd = true;
+    networking.useDHCP = lib.mkForce false;
+
     # Firewall — iptables
     networking.firewall.enable = true;
 
@@ -27,8 +31,12 @@ in
     # DNS-over-TLS via systemd-resolved (if available)
     services.resolved = {
       enable = true;
-      dnssec = "true";
-      fallbackDns = [ "8.8.8.8" "1.1.1.1" ];
+      settings = {
+        Resolve = {
+          DNSSEC = "true";
+          FallbackDNS = [ "8.8.8.8" "1.1.1.1" ];
+        };
+      };
     };
 
     # Avahi mDNS

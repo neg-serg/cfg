@@ -2,7 +2,7 @@
 
 let
   version = "34.1.0";
-  tomlFile = ../../../build/pkgbuilds/iosevka-neg-fonts/iosevka-neg.toml;
+  tomlFile = ./iosevka-neg.toml;
 
   # Build Iosevka fonts from the custom build plan
   iosevkaFonts = stdenvNoCC.mkDerivation {
@@ -13,7 +13,7 @@ let
       owner = "be5invis";
       repo = "Iosevka";
       rev = "v${version}";
-      hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+      hash = "sha256-NOJn4890xP63YiMhuNEesyMQ+fBbi6gDp+RsbMcYh3M=";
     };
 
     nativeBuildInputs = [ nodejs ];
@@ -34,7 +34,7 @@ let
   nerdFontPatcher = fetchFromGitHub {
     owner = "ryanoasis";
     repo = "nerd-fonts";
-    rev = "v3.4.1";
+    rev = "v3.4.0";
     hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
   };
 in
@@ -67,7 +67,7 @@ for f in glob.glob('patched/*.ttf'):
         if record.nameID in (1, 3, 4, 6, 16, 21):
             s = record.toUnicode()
             if 'Nerd Font' in s:
-                s = s.replace(' Nerd Font', '')
+                s = s.replace(' Nerd Font', "")
                 record.string = s
     tt.save(f + '.tmp')
     os.rename(f + '.tmp', f)

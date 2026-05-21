@@ -8,10 +8,10 @@ rustPlatform.buildRustPackage rec {
     owner = "neg-serg";
     repo = "wl";
     rev = "main";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-mBDzV8110wdBDV/f+2FOKMZjGOkGwC0cKBudvuk/e/4=";
   };
 
-  cargoHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+  cargoHash = "sha256-6v7x7kMUxtwgU/j1qpKocgcIKH4rMjgG+9xLsFovhWY=";
 
   nativeBuildInputs = [ pkg-config wayland-protocols ];
   buildInputs = [ wayland libffi ];

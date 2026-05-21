@@ -9,7 +9,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://github.com/Mic92/ssh-to-age/releases/download/${version}/ssh-to-age.linux-amd64";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-mYCpsZyUldRG6CWiY5t3yzgdswcQ1QVCyDW4bp76+Ok=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook ];

@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     owner = "neg-serg";
     repo = "albumdetails";
     rev = "master";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-9iaSyNqc/hXKc4iiDB6C7+2CMvKLWCRycsv6qVBD4wk=";
   };
 
   buildInputs = [ taglib ];

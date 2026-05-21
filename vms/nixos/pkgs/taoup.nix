@@ -1,4 +1,4 @@
-{ lib, ruby, fetchFromGitHub }:
+{ lib, stdenv, ruby, fetchFromGitHub }:
 
 stdenv.mkDerivation rec {
   pname = "taoup";
@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     owner = "globalcitizen";
     repo = "taoup";
     rev = "v${version}";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-9J46fKyeSZW71r67R8y9KVPeCH8fn27hOk/XpusqGmk=";
   };
 
   buildInputs = [ ruby ];

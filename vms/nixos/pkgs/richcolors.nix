@@ -8,7 +8,7 @@ python3.pkgs.buildPythonApplication {
     owner = "Rizen54";
     repo = "richcolors";
     rev = "main";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-lzqNDnMFVGgXlshq20Uca86ctRn1p6VFsAc0QCe7fnU=";
   };
 
   format = "other";

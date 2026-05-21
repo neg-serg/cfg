@@ -38,9 +38,9 @@
     "virtio_scsi" "virtio_blk" "virtio_net" "vfat"
   ];
 
-  # Network
+  # Network (uses networkd with DHCP)
   systemd.network.enable = true;
-  networking.useDHCP = true;
+  networking.useNetworkd = true;
 
   # QEMU guest agent
   services.qemuGuest.enable = true;

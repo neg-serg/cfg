@@ -1,30 +1,22 @@
-{ callPackage }:
+{ config, pkgs, lib, ... }:
 
-# Custom package derivations — equivalents of build/pkgbuilds/* PKGBUILDs
-# Each .nix file below is a Nix derivation for one custom package.
-# Uncomment each file as it is created (Phase 3 — US1).
-
+let
+  customOverlay = final: prev: {
+    proxypilot      = final.callPackage ./proxypilot.nix {};
+    neg-pretty-printer = final.callPackage ./neg-pretty-printer.nix {};
+    ssh-to-age      = final.callPackage ./ssh-to-age.nix {};
+    raise           = final.callPackage ./raise.nix {};
+    richcolors      = final.callPackage ./richcolors.nix {};
+    albumdetails    = final.callPackage ./albumdetails.nix {};
+    taoup           = final.callPackage ./taoup.nix {};
+    sidecar         = final.callPackage ./sidecar.nix {};
+    tailray         = final.callPackage ./tailray.nix {};
+    throne          = final.callPackage ./throne.nix {};
+    duf             = final.callPackage ./duf.nix {};
+    wl              = final.callPackage ./wl.nix {};
+    iosevka-neg-fonts = final.callPackage ./iosevka-neg-fonts.nix {};
+  };
+in
 {
-  # Python packages
-  proxypilot      = callPackage ./proxypilot.nix {};
-  neg-pretty-printer = callPackage ./neg-pretty-printer.nix {};
-
-  # Rust binaries
-  ssh-to-age      = callPackage ./ssh-to-age.nix {};
-
-  # Custom tools
-  raise           = callPackage ./raise.nix {};
-  richcolors      = callPackage ./richcolors.nix {};
-  albumdetails    = callPackage ./albumdetails.nix {};
-  taoup           = callPackage ./taoup.nix {};
-  sidecar         = callPackage ./sidecar.nix {};
-  tailray         = callPackage ./tailray.nix {};
-  throne          = callPackage ./throne.nix {};
-
-  # Forked packages
-  duf             = callPackage ./duf.nix {};
-  wl              = callPackage ./wl.nix {};
-
-  # Fonts
-  iosevka-neg-fonts = callPackage ./iosevka-neg-fonts.nix {};
+  nixpkgs.overlays = [ customOverlay ];
 }

@@ -162,6 +162,7 @@ system:
 - rsync
 - samba
 - slirp4netns
+- skopeo
 - system-config-printer
 - zram-generator
 other:

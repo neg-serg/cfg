@@ -106,9 +106,13 @@ log() {
     echo "[$(date '+%H:%M:%S')] $*"
 }
 
-# ── Check if in maintenance mode ────────────────────────────────────
+# ── Check if in maintenance mode (stale after 600s) ─────────────────
 in_maintenance() {
-    [[ -f "$MAINTENANCE_LOCK" ]]
+    [[ -f "$MAINTENANCE_LOCK" ]] || return 1
+    local mtime
+    mtime=$(stat -c %Y "$MAINTENANCE_LOCK" 2>/dev/null || stat -f %m "$MAINTENANCE_LOCK" 2>/dev/null)
+    [[ -n "$mtime" ]] && (( EPOCHSECONDS - mtime > 600 )) && return 1
+    return 0
 }
 
 # ── Check if in boot grace period ───────────────────────────────────

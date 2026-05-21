@@ -63,6 +63,7 @@ salt_runtime_write_minion_config() {
 pki_dir: ${runtime_dir}/pki/minion
 log_file: ${runtime_dir}/var/log/salt/minion
 cachedir: ${runtime_dir}/var/cache/salt
+minion_data_cache: True
 minion_pillar_cache: True
 pillar_cache: True
 pillar_cache_backend: disk

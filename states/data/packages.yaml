@@ -477,94 +477,94 @@ other:
 aur:
   - hermes-agent
   - amdgpu-vulkan-switcher-git
-- amdvlk-bin
-- lib32-amdvlk-bin
-- act-bin
-- optiscaler-universal
-- advancecomp
-- babashka-bin
-- carapace-bin
-- aliae-bin
-- claude-code
-- cmake-language-server
-- dcfldd
-- ddccontrol
-- dool
-- dualsensectl
-- eilmeldung-bin
-- flclashx-bin
-- v2raya-bin
-- v2rayn-bin
-- v2ray
-- vicinae-bin
-- fsel-bin
-- epr-git
-- freeze-bin
-- gallery-dl
-- ghgrab-bin
-- gmap-bin
-- git-extras
-- google-chrome
-- gowall-bin
-- hishtory-bin
-- hxd
-- hw-probe
-- hyprscratch
-- instagram-cli
-- jdupes
-- localsend-bin
-- lazytail-bin
-- lutgen-bin
-- massren
-- mpdris2-git
-- mpdas
-- neo-matrix
-- neovim-remote
-- newsraft
-- no-more-secrets
-- oh-my-posh
-- otter-launcher
-- oports-git
-- oyo
-- par
-- patool
-- paru
-- paru-debug
-- pipemixer-git
-- proton-ge-custom-bin
-- pup-bin
-- python-ascii_magic
-- python-rapidgzip
-- quickshell
-- reddix-bin
-- repeater-bin
-- regex-tui
-- raysession
-- resterm-bin
-- rmlint
-- rofi-file-browser-extended-git
-- rofi-file-browser-extended-git-debug
-- rustmission
-- scc
-- songfetch
-- simutil-bin
-- sing-box-bin
-- strace-tui-bin
-- systemd-manager-tui
-- tanin-git
-- tessen
-- tmmpr
-- ttfautohint
-- unflac
-- watchtower-bin
-- witr-bin
-- wget2
-- wlogout
-- wlr-which-key
-- xdg-ninja
-- youtube-tui
-- ytsurf
-- bazecor
-- python-telethon
-- zapret2
-- zen-browser-bin
+  - amdvlk-bin
+  - lib32-amdvlk-bin
+  - act-bin
+  - optiscaler-universal
+  - advancecomp
+  - babashka-bin
+  - carapace-bin
+  - aliae-bin
+  - claude-code
+  - cmake-language-server
+  - dcfldd
+  - ddccontrol
+  - dool
+  - dualsensectl
+  - eilmeldung-bin
+  - flclashx-bin
+  - v2raya-bin
+  - v2rayn-bin
+  - v2ray
+  - vicinae-bin
+  - fsel-bin
+  - epr-git
+  - freeze-bin
+  - gallery-dl
+  - ghgrab-bin
+  - gmap-bin
+  - git-extras
+  - google-chrome
+  - gowall-bin
+  - hishtory-bin
+  - hxd
+  - hw-probe
+  - hyprscratch
+  - instagram-cli
+  - jdupes
+  - localsend-bin
+  - lazytail-bin
+  - lutgen-bin
+  - massren
+  - mpdris2-git
+  - mpdas
+  - neo-matrix
+  - neovim-remote
+  - newsraft
+  - no-more-secrets
+  - oh-my-posh
+  - otter-launcher
+  - oports-git
+  - oyo
+  - par
+  - patool
+  - paru
+  - paru-debug
+  - pipemixer-git
+  - proton-ge-custom-bin
+  - pup-bin
+  - python-ascii_magic
+  - python-rapidgzip
+  - quickshell
+  - reddix-bin
+  - repeater-bin
+  - regex-tui
+  - raysession
+  - resterm-bin
+  - rmlint
+  - rofi-file-browser-extended-git
+  - rofi-file-browser-extended-git-debug
+  - rustmission
+  - scc
+  - songfetch
+  - simutil-bin
+  - sing-box-bin
+  - strace-tui-bin
+  - systemd-manager-tui
+  - tanin-git
+  - tessen
+  - tmmpr
+  - ttfautohint
+  - unflac
+  - watchtower-bin
+  - witr-bin
+  - wget2
+  - wlogout
+  - wlr-which-key
+  - xdg-ninja
+  - youtube-tui
+  - ytsurf
+  - bazecor
+  - python-telethon
+  - zapret2
+  - zen-browser-bin

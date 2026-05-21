@@ -14,6 +14,10 @@
 {% set _uid_levra = salt['secrets.tg_secret']('api/telegram-uid-levra', 'telegram-uid-levra') %}
 {% set _uid_nanoclaw = salt['secrets.tg_secret']('api/nanoclaw-telegram-uid', 'telegram-uid') %}
 
+{% set _owner_uids = [] %}
+{% if _uid_levra %}{% do _owner_uids.append(_uid_levra | int) %}{% endif %}
+{% if _uid_nanoclaw %}{% do _owner_uids.append(_uid_nanoclaw | int) %}{% endif %}
+
 managed_bots_deps:
   cmd.run:
     - name: pip install --break-system-packages {{ mbdata.pip_deps | join(' ') }}
@@ -32,8 +36,8 @@ managed_bots_config:
     - user: {{ user }}
     - context:
         telegram_token: {{ _telegram_token | tojson }}
-        owner_uids: [{{ _uid_levra }}, {{ _uid_nanoclaw }}]
-        allowlist_uids: {{ mbdata.allowlist_uids }}
+        owner_uids: {{ _owner_uids | tojson }}
+        allowlist_uids: {{ mbdata.allowlist_uids | tojson }}
 
 managed_bots_script:
   file.managed:

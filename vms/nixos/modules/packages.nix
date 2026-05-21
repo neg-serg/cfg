@@ -511,5 +511,55 @@ in
     raysession
     rmlint
     sing-box
-  ];
+  
+    # ── Added missing packages (nixpkgs 25.05) ──
+    gh
+    networkmanagerapplet
+    noto-fonts-cjk-sans
+    hunspellDicts.ru-ru
+    iftop
+    inotify-tools
+    iotop
+    perf
+    stress-ng
+    perlPackages.ImageExifTool
+    tesseract4
+    tesseract
+    transmission_4-qt
+    nerd-fonts.jetbrains-mono
+    qemu
+    qemu_kvm
+    simple-scan
+    sushi
+    swww
+    unar
+    tumbler
+    v2raya
+    sing-box
+    wget2
+    wlogout
+    wlr-which-key
+    xdg-ninja
+    scc
+    par
+    jdupes
+    neovim-remote
+    zapret
+    snapcast
+    localsend
+    bucklespring
+    hw-probe
+    proton-ge-bin
+    google-chrome
+    claude-code
+    gallery-dl
+    oh-my-posh
+    git-extras
+    rmlint
+    babashka
+    carapace
+    bucklespring
+    python3Packages.telethon
+    cmake-language-server
+];
 }

@@ -5,10 +5,11 @@ python3.pkgs.buildPythonPackage rec {
   version = "0.1.0";
 
   # Source is local repo directory
-  src = ../../../pretty-printer;
+  src = ./pretty-printer;
 
   format = "pyproject";
 
+  nativeBuildInputs = with python3.pkgs; [ setuptools ];
   propagatedBuildInputs = with python3.pkgs; [ colored ];
 
   meta = with lib; {

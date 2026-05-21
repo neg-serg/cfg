@@ -12,7 +12,7 @@ let
       owner = "be5invis";
       repo = "Iosevka";
       rev = "v${version}";
-      hash = "sha256-NOJn4890xP63YiMhuNEesyMQ+fBbi6gDp+RsbMcYh3M=";
+      hash = "sha256-vdjf2MkKP9DHl/hrz9xJMWMuT2AsonRdt14xQTSsVmU=";
     };
 
     nativeBuildInputs = [ nodejs ];

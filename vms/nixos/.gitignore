@@ -1,0 +1,10 @@
+# Plaintext secrets — never commit
+secrets/secrets-plain.yaml
+
+# Benchmark output — large JSON files
+benchmarks/*.json
+!benchmarks/schema.json
+
+# Nix build artifacts
+result
+result-*

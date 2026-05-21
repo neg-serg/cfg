@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "TimingReport",
+  "description": "Structured deployment benchmark output — compatible with state-profiler.py --compare",
+  "type": "object",
+  "properties": {
+    "deployment_type": {
+      "type": "string",
+      "enum": ["fresh", "nochange"],
+      "description": "Type of deployment measured"
+    },
+    "total_wall_time_seconds": {
+      "type": "number",
+      "description": "Total wall clock time in seconds",
+      "minimum": 0
+    },
+    "phases": {
+      "type": "object",
+      "properties": {
+        "evaluation": {
+          "type": "number",
+          "description": "Time spent evaluating Nix expressions",
+          "minimum": 0
+        },
+        "download": {
+          "type": "number",
+          "description": "Time spent downloading from binary caches or sources",
+          "minimum": 0
+        },
+        "build": {
+          "type": "number",
+          "description": "Time spent building derivations",
+          "minimum": 0
+        },
+        "activation": {
+          "type": "number",
+          "description": "Time spent activating the new system closure (switching, restarting services)",
+          "minimum": 0
+        }
+      },
+      "required": ["evaluation", "download", "build", "activation"]
+    },
+    "rebuild_count": {
+      "type": "integer",
+      "description": "Number of derivations rebuilt (should be 0 for no-change)",
+      "minimum": 0
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of measurement"
+    }
+  },
+  "required": ["deployment_type", "total_wall_time_seconds", "phases", "rebuild_count", "timestamp"]
+}

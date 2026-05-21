@@ -1,63 +1,42 @@
 {
-  description = "NixOS VM with Determinate Nix";
+  description = "NixOS VM with Determinate Nix — full workstation equivalent to Salt config";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+    ragenix.url = "github:yaxitech/ragenix";
+    ragenix.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = { self, nixpkgs, disko }: {
+  outputs = { self, nixpkgs, disko, ragenix }: let
+    specialArgs = {
+      ageKeyPath = builtins.getEnv "AGE_KEY_PATH" or "/run/secrets/age-key.txt";
+      proxyHost = builtins.getEnv "PROXY_HOST" or "";
+      proxyPort = builtins.getEnv "PROXY_PORT" or "10808";
+    };
+  in {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
+      specialArgs = specialArgs // { inherit ragenix; };
       modules = [
         disko.nixosModules.disko
         ./disk-config.nix
-        ({ pkgs, ... }: {
-          system.stateVersion = "25.05";
-          networking.hostName = "nixos";
+        ragenix.nixosModules.age
+        ./age.secrets.nix
 
-          # SSH
-          services.openssh.enable = true;
-          services.openssh.settings.PasswordAuthentication = false;
-          users.users.root.openssh.authorizedKeys.keys = [
-            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEx7F9KuTtPsLj9UVtUQ9ZrXUebjCMKuKZcyZWzg2RHf serg.zorg@gmail.com"
-          ];
-          users.users.nixos = {
-            isNormalUser = true;
-            extraGroups = [ "wheel" ];
-            openssh.authorizedKeys.keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEx7F9KuTtPsLj9UVtUQ9ZrXUebjCMKuKZcyZWzg2RHf serg.zorg@gmail.com"
-            ];
-          };
+        ./modules/defaults.nix
+        ./modules/base.nix
+        ./modules/packages.nix
+        ./modules/desktop.nix
+        ./modules/audio.nix
+        ./modules/network.nix
+        ./modules/containers.nix
+        ./modules/ai.nix
+        ./modules/monitoring.nix
+        ./modules/steam.nix
+        ./modules/dev.nix
+        ./modules/proxy.nix
 
-          # Boot
-          boot.loader.systemd-boot.enable = true;
-          boot.initrd.availableKernelModules = [ "virtio_scsi" "virtio_blk" "virtio_net" "vfat" ];
-
-          # Network
-          systemd.network.enable = true;
-          networking.useDHCP = true;
-
-          # QEMU guest
-          services.qemuGuest.enable = true;
-
-          # Determinate Nix configuration
-          nix.settings = {
-            experimental-features = [ "nix-command" "flakes" ];
-            substituters = [ "https://install.determinate.systems" ];
-            trusted-public-keys = [
-              "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-              "install.determinate.systems:2/bvnFWPrR6uxEXpB7XqOSykYemH8e8WoMWvoLLXpF4="
-            ];
-            http-connections = 25;
-            accept-flake-config = true;
-          };
-
-          # Persist flake config to /etc/nixos
-          environment.etc."nixos/flake.nix".source = ./flake.nix;
-          environment.etc."nixos/disk-config.nix".source = ./disk-config.nix;
-
-          users.users.root.hashedPassword = "!";
-        })
+        ./pkgs/default.nix
       ];
     };
   };

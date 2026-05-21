@@ -549,7 +549,6 @@ in
     localsend
     bucklespring
     hw-probe
-    proton-ge-bin
     google-chrome
     claude-code
     gallery-dl

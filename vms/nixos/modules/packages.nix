@@ -519,6 +519,18 @@ in
     buildah
     mako
     wireguard-tools
+    television
+    showtime
+    cups-pk-helper
+    goimapnotify
+    iotop-c
+    malcontent
+    media-player-info
+    snapshot
+    tecla
+    libsForQt5.qt5ct
+    jupyter
+    texlive.combined.scheme-basic
     # ── Added missing packages (nixpkgs 25.05) ──
     gh
     networkmanagerapplet

@@ -8,7 +8,6 @@ in
 
     # ── base (8) ──────────────────────────────────────
     linux-firmware
-    amd-ucode
     # base-devel → no direct equivalent; stdenv + build essentials below
     # limine → use systemd-boot (in VM)
     # linux, linux-headers → nixpkgs provides kernel automatically
@@ -75,20 +74,19 @@ in
     meson
     ninja
     openblas
-    fennel
+    luaPackages.fennel
     git
     lua-language-server
     lua5_3
     patchelf
     neovim
     nodejs
-    npm
+
     pipx
     (python3.withPackages (ps: with ps; [
       pyperclip textual poetry orjson numpy
     ]))
     ruby
-    jupyterlab
     subversion
     uv
     vale
@@ -107,7 +105,6 @@ in
     curl
     firewalld
     networkmanager
-    networkmanager-qt
     bluez
     nmap
     openssh
@@ -136,7 +133,6 @@ in
     rygel
 
     # ── fonts (2) ──────────────────────────────────────
-    noto-fonts-cjk
     jetbrains-mono
 
     # ── gaming (9, VM: skip GPU/vulkan/xorg) ───────────
@@ -179,7 +175,6 @@ in
     bat
     beets
     blender
-    bluez-utils
     borgbackup
     bpftrace
     carla
@@ -211,13 +206,11 @@ in
     doggo
     dos2unix
     dust
-    edk2-ovmf
     efibootmgr
     elfutils
     enca
     entr
     erdtree
-    etckeeper
     expect
     fastfetch
     fclones
@@ -231,10 +224,9 @@ in
     fzf
     genact
     geoip
-    geoip-database
     gist
     git-crypt
-    git-delta
+    delta  # git-delta — nixpkgs name is 'delta'
     git-filter-repo
     gh
     gitleaks
@@ -250,11 +242,10 @@ in
     gvfs
     hashcat
     helix
-    helvum
     hexyl
     himalaya
     htmlq
-    httplz
+    httpie
     hunspellDicts.ru-ru
     hwinfo
     hyperfine
@@ -292,7 +283,7 @@ in
     miller
     minicom
     moreutils
-    mpc_cli
+    mpc
     mpd
     (python3.withPackages (ps: with ps; [ mutagen ]))
     mtr
@@ -301,9 +292,7 @@ in
     neomutt
     nerdctl
     nicotine-plus
-    nm-connection-editor
     nuspell
-    nvtop
     amdgpu_top
     ollama
     onefetch
@@ -312,7 +301,6 @@ in
     openrgb
     optipng
     ouch
-    pandoc-cli
     parallel
     pastel
     pbzip2
@@ -367,20 +355,17 @@ in
     tealdeer
     telegram-desktop
     tesseract
-    tesseract-data-eng
-    tesseract-data-rus
     testdisk
     texliveBasic
     tig
     tmux
     toilet
     traceroute
-    transmission
+    transmission_4
     tree
     tree-sitter
     ttyd
     tumbler
-    turbostat
     udiskie
     ugrep
     unar
@@ -424,12 +409,6 @@ in
     nano
     orca
     papers
-    plasma-desktop
-    plasma-workspace
-    polkit-kde-agent
-    breeze
-    breeze-icons
-    konsole
     uwsm
     vim
     wiremix
@@ -448,13 +427,11 @@ in
     hw-probe
     jdupes
     localsend
-    neo-matrix
     neovim-remote
     newsraft
     oh-my-posh
     par
     patool
-    proton-ge-custom-bin
     python3Packages.ascii-magic
     python3Packages.rapidgzip
     scc
@@ -464,8 +441,6 @@ in
     wlogout
     wlr-which-key
     xdg-ninja
-    youtube
-    zen-browser
 
     # ── AUR: no nixpkgs equivalent → custom or skipped ─
     # amdgpu-vulkan-switcher-git → not in nixpkgs (GPU-specific)

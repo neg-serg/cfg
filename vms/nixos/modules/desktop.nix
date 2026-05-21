@@ -40,12 +40,11 @@ in
 
     # Fonts (from data/fonts.yaml + additional)
     fonts.packages = with pkgs; [
-      noto-fonts-cjk
       jetbrains-mono
       nerd-fonts.jetbrains-mono
       nerd-fonts.symbols-only
       iosevka-neg-fonts  # custom
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       dejavu_fonts
       liberation_ttf
     ];

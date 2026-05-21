@@ -25,7 +25,6 @@ in
       alsa-utils
       playerctl
       pavucontrol
-      helvum  # PipeWire patchbay
       qpwgraph  # PipeWire graph
       carla  # Audio plugin host
       lsp-plugins

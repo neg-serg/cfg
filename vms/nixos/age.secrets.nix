@@ -1,7 +1,7 @@
 { config, lib, ... }:
 
 let
-  secretsFile = ../secrets/secrets.yaml.age;
+  secretsFile = ./secrets/secrets.yaml.age;
 in
 {
   age.secrets = {

@@ -37,13 +37,12 @@ in
       valgrind
       openblas
       nodejs
-      npm
       python3
       pipx
       uv
       ruby
       lua5_3
-      fennel
+      luaPackages.fennel
 
       # Language servers
       lua-language-server
@@ -70,7 +69,7 @@ in
       just
       direnv
       pre-commit
-      git-delta
+      delta
       difftastic
       tig
       ripgrep

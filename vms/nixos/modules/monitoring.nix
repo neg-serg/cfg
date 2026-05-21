@@ -10,8 +10,8 @@ in
     environment.systemPackages = with pkgs; [
       grafana
       loki
-      promtail
-      alertmanager
+      grafana-alloy
+      prometheus-alertmanager
       vnstat
       sysstat
     ];

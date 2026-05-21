@@ -45,6 +45,9 @@
   # QEMU guest agent
   services.qemuGuest.enable = true;
 
+  # Allow unfree packages (Steam, etc.)
+  nixpkgs.config.allowUnfree = true;
+
   # Nix settings — Determinate Nix cache
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];

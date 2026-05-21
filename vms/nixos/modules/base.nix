@@ -47,6 +47,7 @@
 
   # Allow unfree packages (Steam, etc.)
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.doCheckByDefault = false;
 
   # Nix settings — Determinate Nix cache
   nix.settings = {

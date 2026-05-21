@@ -43,6 +43,7 @@ in
       jetbrains-mono
       nerd-fonts.jetbrains-mono
       nerd-fonts.symbols-only
+      iosevka-neg-fonts
       noto-fonts-color-emoji
       dejavu_fonts
       liberation_ttf

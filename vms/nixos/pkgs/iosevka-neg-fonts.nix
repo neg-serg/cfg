@@ -1,4 +1,4 @@
-{ lib, stdenvNoCC, buildNpmPackage, fetchFromGitHub, nerd-font-patcher, fontforge, python3, ttfautohint-nox }:
+{ lib, stdenvNoCC, buildNpmPackage, fetchFromGitHub, nerd-font-patcher, python3, ttfautohint-nox }:
 
 let
   version = "34.1.0";
@@ -38,7 +38,7 @@ let
     installPhase = ''
       runHook preInstall
       mkdir -p $out/share/fonts
-      cp dist/IosevkaNeg/TTF/*.ttf $out/share/fonts/
+      cp dist/Iosevkaneg/TTF/*.ttf $out/share/fonts/
       runHook postInstall
     '';
 
@@ -58,12 +58,12 @@ stdenvNoCC.mkDerivation {
 
   dontUnpack = true;
 
-  nativeBuildInputs = [ fontforge python3 nerd-font-patcher ];
+  nativeBuildInputs = [ python3 nerd-font-patcher ];
 
   buildPhase = ''
     mkdir -p patched
     for ttf in ${iosevkaRaw}/share/fonts/*.ttf; do
-      fontforge -script ${nerd-font-patcher}/bin/font-patcher \
+      ${nerd-font-patcher}/bin/nerd-font-patcher \
         --complete --outputdir patched "$ttf"
     done
   '';

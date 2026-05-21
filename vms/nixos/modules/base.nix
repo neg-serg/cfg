@@ -66,6 +66,15 @@
     accept-flake-config = true;
   };
 
+  # PC/SC daemon for YubiKey smart card access
+  services.pcscd.enable = true;
+
+  # Gopass/age/YubiKey paths matching Salt config
+  environment.variables = {
+    PASSWORD_STORE_DIR = "/home/nixos/.local/share/pass";
+    GNUPGHOME = "/home/nixos/.local/share/gnupg";
+  };
+
   # Persist flake config to /etc/nixos
   environment.etc."nixos/flake.nix".source = ../flake.nix;
   environment.etc."nixos/disk-config.nix".source = ../disk-config.nix;

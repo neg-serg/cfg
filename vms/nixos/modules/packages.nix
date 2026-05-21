@@ -165,6 +165,7 @@ in
     # ── other (309) ────────────────────────────────────
     abduco
     age
+    age-plugin-yubikey
     android-tools
     aria2
     asciinema

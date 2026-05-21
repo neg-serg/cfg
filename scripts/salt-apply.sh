@@ -229,17 +229,21 @@ repair_runtime_permissions() {
 	find "${RUNTIME_CONFIG_DIR}" -type f -exec chmod u+rw {} +
 }
 
-# ── Sudo: prefer NOPASSWD, fall back to .password file ────────────────────────
+# ── Sudo: prefer NOPASSWD, fall back to askpass, then .password file ──────────
 get_sudo() {
 	if sudo -n true 2>/dev/null; then
 		SUDO_CMD=(sudo)
 		SUDO_PASS=""
+	elif [[ -x "${SCRIPT_DIR}/salt-askpass.sh" ]] && SUDO_ASKPASS="${SCRIPT_DIR}/salt-askpass.sh" sudo -A true 2>/dev/null; then
+		SUDO_CMD=(sudo -A)
+		SUDO_PASS=""
+		export SUDO_ASKPASS="${SCRIPT_DIR}/salt-askpass.sh"
 	elif [[ -f "${PROJECT_DIR}/.password" ]]; then
 		SUDO_CMD=(sudo -S)
 		SUDO_PASS=$(<"${PROJECT_DIR}/.password")
 	else
-		pretty::fail "no NOPASSWD sudo and no .password file found"
-		pretty::info "either configure NOPASSWD or create .password"
+		pretty::fail "no NOPASSWD sudo, askpass, or .password file found"
+		pretty::info "configure NOPASSWD, populate gopass host/sudo-password, or create .password"
 		exit 1
 	fi
 }
@@ -347,12 +351,13 @@ run_direct() {
 	$TEST_MODE && salt_cmd+=(test=True)
 
 	# Let Salt stream native highstate output directly to the terminal
-	# while tee also appends it to the log file for post-run inspection.
+	# while tee also appends sanitized output to the log file.
+	local sanitize_py="${SCRIPT_DIR}/salt-log-sanitize.py"
 	if [[ -n "${SUDO_PASS:-}" ]]; then
-		echo "$SUDO_PASS" | "${salt_cmd[@]}" 2>&1 | tee -a "${LOG_FILE}"
+		echo "$SUDO_PASS" | "${salt_cmd[@]}" 2>&1 | tee >("${VENV_DIR}/bin/python3" "${sanitize_py}" >> "${LOG_FILE}")
 		local rc="${pipestatus[2]}"
 	else
-		"${salt_cmd[@]}" 2>&1 | tee -a "${LOG_FILE}"
+		"${salt_cmd[@]}" 2>&1 | tee >("${VENV_DIR}/bin/python3" "${sanitize_py}" >> "${LOG_FILE}")
 		local rc="${pipestatus[1]}"
 	fi
 
@@ -409,7 +414,7 @@ trap maintenance_lock_remove EXIT
 if $PARALLEL_MODE && [[ "$STATE" == "system_description" ]]; then
 	pretty::header "Apply ${STATE} (parallel)"
 	pretty::info "Log: ${LOG_FILE}"
-	"${VENV_DIR}/bin/python3" "${SCRIPT_DIR}/salt_parallel.py" 2>&1 | tee -a "${LOG_FILE}"
+	"${VENV_DIR}/bin/python3" "${SCRIPT_DIR}/salt_parallel.py" 2>&1 | tee >("${VENV_DIR}/bin/python3" "${SCRIPT_DIR}/salt-log-sanitize.py" >> "${LOG_FILE}")
 	RC="${pipestatus[1]:-$?}"
 elif ensure_daemon; then
 	run_via_daemon && RC=$? || RC=$?

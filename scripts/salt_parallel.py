@@ -9,6 +9,7 @@ Usage:
 """
 
 import json
+import re
 import subprocess
 import sys
 import threading
@@ -22,13 +23,28 @@ VENV_DIR = PROJECT_DIR / ".venv"
 RUNTIME_CONFIG_DIR = PROJECT_DIR / ".salt_runtime"
 SALT_RUNNER = SCRIPT_DIR / "salt_runner.py"
 
+_API_KEY_RE = re.compile(r"(?:csk|sk)-[a-z0-9]{30,}")
+
+
+def _sanitize(text: str) -> str:
+    return _API_KEY_RE.sub("[REDACTED]", text)
+
 
 def _sudo_args() -> tuple[list[str], str]:
-    """Resolve sudo command — prefer NOPASSWD, fall back to .password file.
+    """Resolve sudo command — prefer NOPASSWD, fall back to askpass, then .password.
     Returns (sudo_cmd_list, sudo_password_or_empty)."""
     r = subprocess.run(["sudo", "-n", "true"], capture_output=True)
     if r.returncode == 0:
         return ["sudo"], ""
+
+    askpass = SCRIPT_DIR / "salt-askpass.sh"
+    if askpass.exists():
+        import os
+        os.environ["SUDO_ASKPASS"] = str(askpass)
+        r = subprocess.run(["sudo", "-A", "true"], capture_output=True)
+        if r.returncode == 0:
+            return ["sudo", "-A"], ""
+
     pw_file = PROJECT_DIR / ".password"
     if pw_file.exists():
         return ["sudo", "-S"], pw_file.read_text().strip()
@@ -107,9 +123,9 @@ def run_group(group: Group, log_dir: Path, sudo: list[str], sudo_pass: str) -> i
         exit_codes.append(result.returncode)
         with open(log_file, "a") as f:
             f.write(f"\n=== {state_name} exit={result.returncode} ===\n")
-            f.write(result.stdout)
+            f.write(_sanitize(result.stdout))
             if result.stderr:
-                f.write(result.stderr)
+                f.write(_sanitize(result.stderr))
 
     duration = int((time.monotonic() - start) * 1000)
     group.duration_ms = duration

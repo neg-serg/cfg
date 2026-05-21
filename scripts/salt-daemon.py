@@ -34,6 +34,7 @@ import json
 import logging
 import os
 import queue
+import re
 import signal
 import socket
 import struct
@@ -44,6 +45,12 @@ import time
 # ── Salt venv path setup ─────────────────────────────────────────────────────
 # Ensure the venv site-packages is on the path when run with system python3.
 _SCRIPT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+_API_KEY_RE = re.compile(r"(?:csk|sk)-[a-z0-9]{30,}")
+
+
+def _sanitize_output(text: str) -> str:
+    return _API_KEY_RE.sub("[REDACTED]", text)
 _VENV_SITE = os.path.join(_SCRIPT_DIR, ".venv", "lib")
 if os.path.isdir(_VENV_SITE):
     for _entry in sorted(os.listdir(_VENV_SITE)):
@@ -366,9 +373,9 @@ def _write_result_json(result: dict, log_file: str | None, state: str) -> None:
             {
                 "id": entry.get("__id__", entry.get("name", "unknown")),
                 "fun": entry.get("fun", "unknown"),
-                "name": entry.get("name", ""),
+                "name": _sanitize_output(str(entry.get("name", ""))),
                 "result": entry.get("result"),
-                "comment": entry.get("comment", ""),
+                "comment": _sanitize_output(str(entry.get("comment", ""))),
                 "duration_ms": entry.get("duration", 0),
                 "changed": bool(entry.get("changes")),
             }
@@ -587,11 +594,11 @@ def run_state(
                 sys.stdout = old_stdout
             formatted_output = captured.getvalue()
 
-        # Write to log file
+        # Write sanitized output to log file (no API keys on disk)
         if log_file and formatted_output:
             try:
                 with open(log_file, "a", encoding="utf-8") as f:
-                    f.write(formatted_output)
+                    f.write(_sanitize_output(formatted_output))
             except OSError as exc:
                 log.warning("Cannot write output to log file %s: %s", log_file, exc)
 

@@ -513,6 +513,12 @@ in
     rmlint
     sing-box
   
+    xray
+    niri
+    waybar
+    buildah
+    mako
+    wireguard-tools
     # ── Added missing packages (nixpkgs 25.05) ──
     gh
     networkmanagerapplet

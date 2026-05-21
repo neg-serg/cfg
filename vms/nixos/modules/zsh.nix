@@ -25,6 +25,12 @@
   users.defaultUserShell = pkgs.zsh;
   users.users.nixos.shell = pkgs.zsh;
 
+  # Zoxide (smart cd) — shell integration
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   environment.systemPackages = with pkgs; [
     # Shell tools already in packages.nix
     # Additional shell enhancements

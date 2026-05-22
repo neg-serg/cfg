@@ -95,24 +95,27 @@
     "d /home/nixos/.local/share/gnupg 0700 nixos users -"
   ];
 
-  # Swap (VM-compatible: systemd oneshot; disko partition on bare metal)
-  systemd.services.create-swap = {
-    description = "Create and activate swapfile";
-    wantedBy = [ "multi-user.target" ];
-    before = [ "swap.target" ];
+  # Swap (4GB swapfile created in initrd before nix-store tmpfs eats all RAM)
+  boot.initrd.systemd.services.create-swap = {
+    description = "Create swapfile before main root mounts";
+    wantedBy = [ "initrd.target" ];
+    after = [ "initrd-root-device.target" ];
+    before = [ "sysroot.mount" ];
+    unitConfig.DefaultDependencies = false;
     path = with pkgs; [ util-linux ];
     script = ''
-      if [ ! -f /swapfile ]; then
-        truncate -s 8G /swapfile
-        chmod 600 /swapfile
-        mkswap /swapfile
+      if [ ! -f /sysroot/swapfile ]; then
+        dd if=/dev/zero of=/sysroot/swapfile bs=1M count=4096 status=none
+        chmod 600 /sysroot/swapfile
+        mkswap /sysroot/swapfile
       fi
-      swapon /swapfile || true
     '';
     serviceConfig.Type = "oneshot";
-    serviceConfig.RemainAfterExit = true;
-    unitConfig.ConditionPathExists = "!/swapfile";
   };
+
+  swapDevices = [
+    { device = "/swapfile"; }
+  ];
 
   # Sysctl tuning (from Salt sysctl-custom.conf)
   boot.kernel.sysctl = {

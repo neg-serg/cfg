@@ -5,7 +5,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-RAM="${1:-16384}"
+RAM="${1:-24576}"
 CPUS="${2:-8}"
 SSH_PORT="${3:-2222}"
 DISK="${DISK_IMAGE:-/tmp/nixos-vm.qcow2}"

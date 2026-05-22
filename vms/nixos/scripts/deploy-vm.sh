@@ -189,23 +189,15 @@ if [ -z "$VM_RUNNER" ]; then
     exit 1
 fi
 
-# Launch VM with SSH key injection, port forward, and 9p share for /nix/store
-cyan "  Launching QEMU (${VM_RAM}M RAM, ${VM_CPUS} CPUs)..."
+# Launch VM with proper RAM, CPU, and SSH port forward
+# The VM runner already shares /nix/store via 9p and handles kernel/initrd
+cyan "  Launching QEMU (${VM_RAM}M RAM, ${VM_CPUS} CPUs, SSH port ${SSH_PORT})..."
 
-QEMU_OPTS="-m ${VM_RAM} -smp ${VM_CPUS} \
-    -net user,hostfwd=tcp:${SSH_PORT}-:22 \
-    -net nic,model=virtio \
-    -drive file=${DISK_IMAGE},if=virtio,format=qcow2 \
-    -virtfs local,path=/nix/store,mount_tag=nixstore,security_model=none,readonly=on"
+export QEMU_OPTS="-m ${VM_RAM} -smp ${VM_CPUS}"
+export QEMU_NET_OPTS="hostfwd=tcp:${SSH_PORT}-:22"
 
-# Inject SSH key via kernel cmdline or initrd
-# The VM runner uses its own QEMU invocation — we need to run it differently
-# Instead, use the VM runner but add our SSH key to the system config
-SSH_KEY_DIR=$(mktemp -d /tmp/nixos-ssh-XXXXXX)
-echo "$SSH_PUBKEY" > "$SSH_KEY_DIR/authorized_keys"
-
-# Run VM in background with logging
-$VM_RUNNER/bin/run-nixos-vm &
+# Run VM in background, capture serial console to log
+$VM_RUNNER/bin/run-nixos-vm > /tmp/nixos-vm-boot.log 2>&1 &
 QEMU_PID=$!
 echo "$QEMU_PID" > /tmp/nixos-vm-pid
 

@@ -9,8 +9,6 @@ in
   config = lib.mkIf cfg.enable {
 
     # Use networkd (not dhcpcd) to avoid conflict with systemd.network.enable
-    networking.useNetworkd = true;
-    networking.useDHCP = lib.mkForce false;
 
     # Firewall — iptables
     networking.firewall.enable = true;

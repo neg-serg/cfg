@@ -8,3 +8,5 @@ benchmarks/*.json
 # Nix build artifacts
 result
 result-*
+nixos.qcow2
+secrets/secrets.yaml.age

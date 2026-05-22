@@ -5,9 +5,9 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 VM_NAME="${VM_NAME:-nixos}"
 DISK_IMAGE="${DISK_IMAGE:-/tmp/nixos-vm.qcow2}"
-DISK_SIZE="${DISK_SIZE:-40G}"
-VM_RAM="${VM_RAM:-4096}"
-VM_CPUS="${VM_CPUS:-4}"
+DISK_SIZE="${DISK_SIZE:-60G}"
+VM_RAM="${VM_RAM:-8192}"
+VM_CPUS="${VM_CPUS:-8}"
 SSH_PORT="${SSH_PORT:-2222}"
 SSH_KEY="${SSH_KEY:-${HOME}/.ssh/id_ed25519}"
 SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -p ${SSH_PORT}"
@@ -55,9 +55,9 @@ if [ -z "$GOPASS_REPO" ]; then
     cyan "  Set GOPASS_REPO=git@github.com:user/pass.git to enable."
 fi
 
-"$SCRIPT_DIR/decrypt-secrets.sh" 2>/dev/null || {
-    red "Age key validation failed. Set AGE_KEY to your age private key."
-    exit 1
+"$SCRIPT_DIR/decrypt-secrets.sh" 2>/dev/null && green "  Age key OK" || {
+    cyan "  Age key validation failed — secrets won't be available in VM"
+    cyan "  Set AGE_KEY to your age private key to enable."
 }
 green "  Prerequisites OK"
 
@@ -194,7 +194,7 @@ fi
 cyan "  Launching QEMU (${VM_RAM}M RAM, ${VM_CPUS} CPUs, SSH port ${SSH_PORT})..."
 
 export QEMU_OPTS="-m ${VM_RAM} -smp ${VM_CPUS}"
-export QEMU_NET_OPTS="hostfwd=tcp:${SSH_PORT}-:22"
+export QEMU_NET_OPTS="hostfwd=tcp::${SSH_PORT}-:22"
 
 # Run VM in background, capture serial console to log
 $VM_RUNNER/bin/run-nixos-vm > /tmp/nixos-vm-boot.log 2>&1 &

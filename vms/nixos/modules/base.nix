@@ -34,6 +34,7 @@
 
   # Boot
   boot.loader.systemd-boot.enable = true;
+  boot.kernelParams = [ "quiet" ];
   boot.initrd.availableKernelModules = [
     "virtio_scsi" "virtio_blk" "virtio_net" "vfat"
   ];
@@ -44,6 +45,9 @@
 
   # QEMU guest agent
   services.qemuGuest.enable = true;
+
+  # VM disk size — 50G for closure (~30G) + swapfile (8G) + headroom
+  virtualisation.diskSize = 51200;
 
   # Allow unfree packages (Steam, etc.)
   nixpkgs.config.allowUnfree = true;
@@ -89,6 +93,11 @@
     "d /home/nixos/dw 0755 nixos users -"
     "d /home/nixos/.local/share/pass 0700 nixos users -"
     "d /home/nixos/.local/share/gnupg 0700 nixos users -"
+  ];
+
+  # Swap file (8G) — for VM testing; disko swap partition used in production
+  swapDevices = [
+    { device = "/swapfile"; size = 8192; }
   ];
 
   # Sysctl tuning (from Salt sysctl-custom.conf)

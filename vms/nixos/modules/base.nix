@@ -36,7 +36,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.kernelParams = [ "quiet" ];
   boot.initrd.availableKernelModules = [
-    "virtio_scsi" "virtio_blk" "virtio_net" "vfat"
+    "virtio_scsi" "virtio_blk" "virtio_net" "vfat" "zstd"
   ];
 
   # Network (uses networkd with DHCP)
@@ -95,10 +95,24 @@
     "d /home/nixos/.local/share/gnupg 0700 nixos users -"
   ];
 
-  # Swap file (8G) — for VM testing; disko swap partition used in production
-  swapDevices = [
-    { device = "/swapfile"; size = 8192; }
-  ];
+  # Swap (VM-compatible: systemd oneshot; disko partition on bare metal)
+  systemd.services.create-swap = {
+    description = "Create and activate swapfile";
+    wantedBy = [ "multi-user.target" ];
+    before = [ "swap.target" ];
+    path = with pkgs; [ util-linux ];
+    script = ''
+      if [ ! -f /swapfile ]; then
+        truncate -s 8G /swapfile
+        chmod 600 /swapfile
+        mkswap /swapfile
+      fi
+      swapon /swapfile || true
+    '';
+    serviceConfig.Type = "oneshot";
+    serviceConfig.RemainAfterExit = true;
+    unitConfig.ConditionPathExists = "!/swapfile";
+  };
 
   # Sysctl tuning (from Salt sysctl-custom.conf)
   boot.kernel.sysctl = {

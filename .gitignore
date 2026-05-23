@@ -62,6 +62,12 @@ docs/data-files/
 # OpenCode session files
 session-*.md
 
+# Nix build artifacts
+result
+result-man
+result-*
+nixos.qcow2
+
 # Cloned repos (not submodules)
 ProteinView/
 sqlit/

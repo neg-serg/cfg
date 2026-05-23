@@ -44,13 +44,13 @@ in
         shadow { enabled = false }
       }
 
-      exec-once = qs -p ${config.users.users.nixos.home}/.config/quickshell/greeter/greeter.qml
+      exec-once = qs -p ${config.users.users.neg.home}/.config/quickshell/greeter/greeter.qml
     '';
 
     # Greeter wrapper: Hyprland + quickshell, fallback to agreety
     environment.etc."greetd/greeter-wrapper".source = pkgs.writeShellScript "greetd-greeter-wrapper" ''
       set -eu
-      export HOME=${config.users.users.nixos.home}
+      export HOME=${config.users.users.neg.home}
       export QT_QPA_PLATFORM=wayland
       export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 
@@ -107,7 +107,7 @@ in
       settings = {
         default_session = {
           command = "/etc/greetd/greeter-wrapper";
-          user = "nixos";
+          user = "neg";
         };
       };
     };

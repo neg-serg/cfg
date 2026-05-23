@@ -119,7 +119,7 @@ if [[ "$HEADLESS" == "1" ]]; then
     cyan "  Launching QEMU headless (${VM_RAM}M RAM, ${VM_CPUS} CPUs)..."
     $VM_RUNNER/bin/run-nixos-vm > "$VM_BOOT_LOG" 2>&1 &
 else
-    export QEMU_OPTS="-m ${VM_RAM} -smp ${VM_CPUS} -device virtio-vga-gl -display gtk,gl=on,grab-on-hover=on"
+    export QEMU_OPTS="-m ${VM_RAM} -smp ${VM_CPUS} -vga virtio -display gtk,gl=off,grab-on-hover=on"
     export QEMU_NET_OPTS="hostfwd=tcp::${SSH_PORT}-:22"
     cyan "  Launching QEMU with virgl GPU (${VM_RAM}M RAM, ${VM_CPUS} CPUs)..."
     $VM_RUNNER/bin/run-nixos-vm > "$VM_BOOT_LOG" 2>&1 &
@@ -163,7 +163,7 @@ set -euo pipefail
 red()   { echo -e "\033[31m$*\033[0m" >&2; }
 green() { echo -e "\033[32m$*\033[0m"; }
 cyan()  { echo -e "\033[36m$*\033[0m"; }
-HOME_DIR=/home/nixos
+HOME_DIR=/home/neg
 PROV_HEADER
 
 # ── Chezmoi from local dotfiles ──
@@ -176,10 +176,16 @@ cyan "── Setting up chezmoi from local dotfiles ──"
 mkdir -p "\$HOME_DIR/.local/share"
 if [ -f /tmp/dotfiles.tar.gz ]; then
     tar xzf /tmp/dotfiles.tar.gz -C "\$HOME_DIR/.local/share/"
-    chown -R nixos:users "\$HOME_DIR/.local/share/dotfiles"
-    chezmoi init --apply "\$HOME_DIR/.local/share/dotfiles" 2>&1 || {
+    chown -R neg:users "\$HOME_DIR/.local/share/dotfiles"
+    chezmoi init --apply --source "\$HOME_DIR/.local/share/dotfiles" --destination "\$HOME_DIR" 2>&1 || {
         red "  chezmoi init had warnings — continuing anyway"
     }
+    # Copy quickshell greeter directly (chezmoi may fail on gopass templates)
+    if [ -d "\$HOME_DIR/.local/share/dotfiles/dot_config/quickshell" ]; then
+        mkdir -p "\$HOME_DIR/.config/quickshell"
+        cp -r "\$HOME_DIR/.local/share/dotfiles/dot_config/quickshell/"* "\$HOME_DIR/.config/quickshell/"
+        chown -R neg:users "\$HOME_DIR/.config/quickshell"
+    fi
     green "  chezmoi dotfiles applied from local source"
 else
     red "  dotfiles tarball not found — skipped"
@@ -204,7 +210,7 @@ cyan "── Setting up gopass password store ──"
 if [ -f /tmp/gopass.tar.gz ]; then
     mkdir -p "\$HOME_DIR/.local/share"
     tar xzf /tmp/gopass.tar.gz -C "\$HOME_DIR/.local/share/"
-    chown -R nixos:users "\$HOME_DIR/.local/share/pass"
+    chown -R neg:users "\$HOME_DIR/.local/share/pass"
     gopass setup --crypto age 2>/dev/null || true
     green "  gopass store deployed"
 else

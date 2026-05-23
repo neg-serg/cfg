@@ -22,6 +22,15 @@
     ];
   };
 
+  users.users.neg = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ];
+    home = "/home/neg";
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEx7F9KuTtPsLj9UVtUQ9ZrXUebjCMKuKZcyZWzg2RHf serg.zorg@gmail.com"
+    ];
+  };
+
   # Locale
   i18n.defaultLocale = "en_US.UTF-8";
   time.timeZone = "Europe/Moscow";
@@ -75,24 +84,27 @@
 
   # Environment matching Salt/chezmoi conventions
   environment.variables = {
-    PASSWORD_STORE_DIR = "/home/nixos/.local/share/pass";
-    GNUPGHOME = "/home/nixos/.local/share/gnupg";
-    XDG_MUSIC_DIR = "/home/nixos/music";
-    XDG_PICTURES_DIR = "/home/nixos/pic";
-    XDG_VIDEOS_DIR = "/home/nixos/vid";
-    XDG_DOCUMENTS_DIR = "/home/nixos/doc";
-    XDG_DOWNLOAD_DIR = "/home/nixos/dw";
+    PASSWORD_STORE_DIR = "/home/neg/.local/share/pass";
+    GNUPGHOME = "/home/neg/.local/share/gnupg";
   };
 
-  # Create custom XDG and secrets directories
+  environment.sessionVariables = {
+    XDG_MUSIC_DIR = "/home/neg/music";
+    XDG_PICTURES_DIR = "/home/neg/pic";
+    XDG_VIDEOS_DIR = "/home/neg/vid";
+    XDG_DOCUMENTS_DIR = "/home/neg/doc";
+    XDG_DOWNLOAD_DIR = "/home/neg/dw";
+  };
+
+  # Create custom XDG and secrets directories for neg user
   systemd.tmpfiles.rules = [
-    "d /home/nixos/music 0755 nixos users -"
-    "d /home/nixos/pic 0755 nixos users -"
-    "d /home/nixos/vid 0755 nixos users -"
-    "d /home/nixos/doc 0755 nixos users -"
-    "d /home/nixos/dw 0755 nixos users -"
-    "d /home/nixos/.local/share/pass 0700 nixos users -"
-    "d /home/nixos/.local/share/gnupg 0700 nixos users -"
+    "d /home/neg/music 0755 neg users -"
+    "d /home/neg/pic 0755 neg users -"
+    "d /home/neg/vid 0755 neg users -"
+    "d /home/neg/doc 0755 neg users -"
+    "d /home/neg/dw 0755 neg users -"
+    "d /home/neg/.local/share/pass 0700 neg users -"
+    "d /home/neg/.local/share/gnupg 0700 neg users -"
   ];
 
   # Swap (4GB swapfile created in initrd before nix-store tmpfs eats all RAM)

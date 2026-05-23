@@ -48,8 +48,8 @@ if [[ $HEADLESS -eq 1 ]]; then
 else
   # virgl GPU: virtio-gpu with OpenGL acceleration
   QEMU_ARGS+=(
-    -device virtio-vga-gl
-    -display gtk,gl=on,grab-on-hover=on
+    -vga virtio
+    -display gtk,gl=off,grab-on-hover=on
     -append "init=$TOPL/init regInfo=$REGINFO $PARAMS console=tty0"
   )
 fi

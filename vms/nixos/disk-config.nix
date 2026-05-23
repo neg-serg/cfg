@@ -1,8 +1,9 @@
 {
   disko.devices = {
     disk.sda = {
-      device = "/dev/sda";
+      device = "/dev/vda";
       type = "disk";
+      imageSize = "60G";
       content = {
         type = "gpt";
         partitions = {

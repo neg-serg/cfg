@@ -8,7 +8,7 @@ PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 RAM="${1:-24576}"
 CPUS="${2:-8}"
 SSH_PORT="${3:-2222}"
-DISK="${DISK_IMAGE:-/tmp/nixos-vm.qcow2}"
+DISK="${DISK_IMAGE:-${PROJECT_DIR}/nixos.qcow2}"
 
 TOPL=$(nix build "path:${PROJECT_DIR}#nixosConfigurations.nixos.config.system.build.toplevel" \
   --print-out-paths --no-link --no-warn-dirty 2>/dev/null | tail -1)

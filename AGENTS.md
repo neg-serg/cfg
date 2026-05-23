@@ -95,8 +95,8 @@ The `.specify/templates/` directory contains YAML schema templates for the speck
 
 - No unit tests. All validation is done via actual Salt state application.
 - **`just validate`** — checks all 87 `.sls` files render without errors (fast, pre-apply)
-- **VM‑based test environment** (future): lightweight QEMU + Arch Linux harness for full Salt deployment testing, independent of the host's CachyOS rootfs. Replaces `scripts/vm‑smoke.sh`.
+- **VM‑based test environment**: QEMU + Arch Linux harness for full Salt deployment testing via `scripts/test-kvm-deploy.sh`, independent of the host's CachyOS rootfs.
 
 <!-- FUTURE WORK -->
-- **VM‑based test environment**: Add a lightweight virtual‑machine harness (QEMU + Arch Linux) for full Salt deployment testing.
+- **NixOS VM ↔ Salt cross‑validation**: Add automated CI that verifies the NixOS VM configuration stays equivalent to Salt states (package list diff, sysctl comparison, service parity).
 <!-- END FUTURE WORK -->

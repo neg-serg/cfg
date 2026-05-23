@@ -9,4 +9,3 @@ benchmarks/*.json
 result
 result-*
 nixos.qcow2
-secrets/secrets.yaml.age

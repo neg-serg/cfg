@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 VM_NAME="${VM_NAME:-nixos}"
-DISK_IMAGE="${DISK_IMAGE:-/tmp/nixos-vm.qcow2}"
+DISK_IMAGE="${DISK_IMAGE:-${PROJECT_DIR}/nixos.qcow2}"
 DISK_SIZE="${DISK_SIZE:-60G}"
 VM_RAM="${VM_RAM:-24576}"
 VM_CPUS="${VM_CPUS:-8}"
@@ -81,8 +81,14 @@ green "  System closure: $CLOSURE"
 cyan "── Step 3/8: Preparing disk image ──"
 
 if [ ! -f "$DISK_IMAGE" ]; then
-    qemu-img create -f qcow2 "$DISK_IMAGE" "$DISK_SIZE" >/dev/null
-    green "  Created qcow2: $DISK_IMAGE ($DISK_SIZE)"
+    DISKO_IMG=$(nix build "path:${PROJECT_DIR}#nixosConfigurations.nixos.config.system.build.diskoImages" --print-out-paths --no-link 2>/dev/null | tail -1)
+    if [ -z "$DISKO_IMG" ] || [ ! -d "$DISKO_IMG" ]; then
+        red "Disko image build failed"
+        exit 1
+    fi
+    # Convert raw → qcow2 (compressed, empty space is sparse)
+    qemu-img convert -f raw -O qcow2 -c "$DISKO_IMG/sda.raw" "$DISK_IMAGE"
+    green "  Created partitioned qcow2: $DISK_IMAGE"
 else
     green "  Using existing: $DISK_IMAGE"
 fi

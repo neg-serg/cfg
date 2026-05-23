@@ -102,6 +102,48 @@ in
       };
     };
 
+    systemd.services."loki" = {
+      enable = true;
+      description = "Grafana Loki log aggregation (container)";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStartPre = "${pkgs.podman}/bin/podman pull grafana/loki:latest";
+        ExecStart = "${pkgs.podman}/bin/podman run --rm --name loki -p 3100:3100 -v /var/lib/loki:/loki grafana/loki:latest";
+        ExecStop = "${pkgs.podman}/bin/podman stop loki";
+        Restart = "always";
+        RestartSec = 10;
+      };
+    };
+
+    systemd.services."grafana" = {
+      enable = true;
+      description = "Grafana dashboards (container)";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStartPre = "${pkgs.podman}/bin/podman pull grafana/grafana:latest";
+        ExecStart = "${pkgs.podman}/bin/podman run --rm --name grafana -p 3030:3000 -v /var/lib/grafana:/var/lib/grafana grafana/grafana:latest";
+        ExecStop = "${pkgs.podman}/bin/podman stop grafana";
+        Restart = "always";
+        RestartSec = 10;
+      };
+    };
+
+    systemd.services."nanoclaw" = {
+      enable = true;
+      description = "Nanoclaw Telegram bridge (container)";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStartPre = "${pkgs.podman}/bin/podman pull ghcr.io/neg-serg/nanoclaw:latest";
+        ExecStart = "${pkgs.podman}/bin/podman run --rm --name nanoclaw ghcr.io/neg-serg/nanoclaw:latest";
+        ExecStop = "${pkgs.podman}/bin/podman stop nanoclaw";
+        Restart = "always";
+        RestartSec = 10;
+      };
+    };
+
     environment.systemPackages = with pkgs; [
       podman
       podman-compose

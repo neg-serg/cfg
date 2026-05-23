@@ -586,5 +586,7 @@ in
     python3Packages.ascii-magic
     python3Packages.rapidgzip
     zen-browser
+    quickshell
+    vicinae-bin
 ];
 }

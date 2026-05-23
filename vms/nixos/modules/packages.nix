@@ -585,5 +585,6 @@ in
     pandoc
     python3Packages.ascii-magic
     python3Packages.rapidgzip
+    zen-browser
 ];
 }

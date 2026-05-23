@@ -588,5 +588,29 @@ in
     zen-browser
     quickshell
     vicinae-bin
+    bazecor
+    dool
+    epr
+    freeze
+    fsel
+    ghgrab
+    gmap
+    gowall
+    hishtory
+    lutgen
+    massren
+    mpdas
+    mpdris2
+    patool
+    pup
+    reddix
+    regex-tui
+    resterm
+    rustmission
+    systemd-manager-tui
+    tessen
+    v2rayn
+    witr
+    youtube-tui
 ];
 }

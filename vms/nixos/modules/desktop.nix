@@ -17,16 +17,8 @@ in
     # Niri scrolling-tiling compositor (secondary option)
     # programs.niri.enable = true;
 
-    # Greetd display manager with Hyprland session
-    services.greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
-          user = "greeter";
-        };
-      };
-    };
+    # Greetd display manager (configured in greetd-greeter.nix)
+    # services.greetd — see modules/greetd-greeter.nix
 
     # XDG Desktop Portal
     xdg.portal = {

@@ -28,6 +28,7 @@
         ./modules/defaults.nix
         ./modules/base.nix
         ./modules/zsh.nix
+        ./modules/greetd-greeter.nix
         ./modules/packages.nix
         ./modules/desktop.nix
         ./modules/audio.nix

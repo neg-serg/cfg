@@ -3,19 +3,18 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(cd "$PROJECT_DIR/../.." && pwd)"
 VM_NAME="${VM_NAME:-nixos}"
 DISK_IMAGE="${DISK_IMAGE:-${PROJECT_DIR}/nixos.qcow2}"
-DISK_SIZE="${DISK_SIZE:-60G}"
 VM_RAM="${VM_RAM:-24576}"
 VM_CPUS="${VM_CPUS:-8}"
 SSH_PORT="${SSH_PORT:-2222}"
 SSH_KEY="${SSH_KEY:-${HOME}/.ssh/id_ed25519}"
 SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -p ${SSH_PORT}"
-
-# Chezmoi and gopass repo URLs (set these or pass via env)
-CHEZMOI_REPO="${CHEZMOI_REPO:-}"
-GOPASS_REPO="${GOPASS_REPO:-}"
+DOTFILES_DIR="${DOTFILES_DIR:-${REPO_ROOT}/dotfiles}"
 AGE_KEY="${AGE_KEY:-${AGE_KEY_PATH:-${HOME}/.config/age/keys.txt}}"
+GOPASS_DIR="${GOPASS_DIR:-${HOME}/.local/share/pass}"
+HEADLESS="${HEADLESS:-0}"
 
 red()   { echo -e "\033[31m$*\033[0m" >&2; }
 green() { echo -e "\033[32m$*\033[0m"; }
@@ -23,195 +22,114 @@ cyan()  { echo -e "\033[36m$*\033[0m"; }
 bold()  { echo -e "\033[1m$*\033[0m"; }
 
 cleanup() {
-    if [ -n "${VM_PID:-}" ]; then
-        kill "$VM_PID" 2>/dev/null || true
-        wait "$VM_PID" 2>/dev/null || true
-    fi
-    if [ -n "${QEMU_PID:-}" ]; then
-        kill "$QEMU_PID" 2>/dev/null || true
-        wait "$QEMU_PID" 2>/dev/null || true
-    fi
+    kill "${QEMU_PID:-}" 2>/dev/null || true
+    wait "${QEMU_PID:-}" 2>/dev/null || true
 }
 trap cleanup EXIT
 
 # ─── Step 1: Prerequisites ───────────────────────────────────────────────
-echo ""
 bold "╔══════════════════════════════════════════════╗"
-bold "║  Determinate Nix VM — Full Deployment       ║"
+bold "║  NixOS VM — Full Automated Deployment       ║"
 bold "╚══════════════════════════════════════════════╝"
 echo ""
 
-cyan "── Step 1/8: Checking prerequisites ──"
+cyan "── Step 1/7: Checking prerequisites ──"
 
-command -v nix >/dev/null 2>&1 || { red "nix not found. Install Determinate Nix first."; exit 1; }
-command -v qemu-system-x86_64 >/dev/null 2>&1 || { red "qemu not found. Install qemu-desktop."; exit 1; }
+command -v nix >/dev/null 2>&1 || { red "nix not found"; exit 1; }
+command -v qemu-system-x86_64 >/dev/null 2>&1 || { red "qemu not found"; exit 1; }
 
-if [ -z "$CHEZMOI_REPO" ]; then
-    cyan "  CHEZMOI_REPO not set — dotfiles will NOT be auto-applied."
-    cyan "  Set CHEZMOI_REPO=git@github.com:user/dotfiles.git to enable."
+# Dotfiles
+if [ -d "$DOTFILES_DIR" ]; then
+    green "  Dotfiles: $DOTFILES_DIR"
+else
+    cyan "  Dotfiles not found at $DOTFILES_DIR — skipping chezmoi"
+    DOTFILES_DIR=""
 fi
-if [ -z "$GOPASS_REPO" ]; then
-    cyan "  GOPASS_REPO not set — password store will NOT be auto-cloned."
-    cyan "  Set GOPASS_REPO=git@github.com:user/pass.git to enable."
+
+# Age key
+if [ -f "$AGE_KEY" ]; then
+    green "  Age key: $AGE_KEY"
+else
+    cyan "  Age key not found — secrets won't be available in VM"
+    AGE_KEY=""
 fi
 
-"$SCRIPT_DIR/decrypt-secrets.sh" 2>/dev/null && green "  Age key OK" || {
-    cyan "  Age key validation failed — secrets won't be available in VM"
-    cyan "  Set AGE_KEY to your age private key to enable."
-}
+# Gopass
+if [ -d "$GOPASS_DIR/.git" ]; then
+    green "  Gopass: $GOPASS_DIR"
+else
+    cyan "  Gopass store not found — skipping password store"
+    GOPASS_DIR=""
+fi
+
 green "  Prerequisites OK"
 
 # ─── Step 2: Build system closure ─────────────────────────────────────────
-cyan "── Step 2/8: Building NixOS system closure ──"
+cyan "── Step 2/7: Building NixOS system closure ──"
 cd "$PROJECT_DIR"
 
-nix flake check --no-build 2>/dev/null || {
-    red "Flake check failed"
-    exit 1
-}
+nix flake check --no-build 2>/dev/null || { red "Flake check failed"; exit 1; }
 
-CLOSURE=$(nix build "path:${PROJECT_DIR}#nixosConfigurations.nixos.config.system.build.toplevel" --print-out-paths --no-link 2>/dev/null | tail -1)
+CLOSURE=$(nix build "path:${PROJECT_DIR}#nixosConfigurations.nixos.config.system.build.toplevel" \
+  --print-out-paths --no-link 2>/dev/null | tail -1)
 if [ -z "$CLOSURE" ] || [ ! -d "$CLOSURE" ]; then
     red "System build failed"
     exit 1
 fi
 green "  System closure: $CLOSURE"
 
-# ─── Step 3: Create disk image ────────────────────────────────────────────
-cyan "── Step 3/8: Preparing disk image ──"
+# ─── Step 3: Prepare disk ─────────────────────────────────────────────────
+cyan "── Step 3/7: Preparing disk image ──"
 
 if [ ! -f "$DISK_IMAGE" ]; then
-    DISKO_IMG=$(nix build "path:${PROJECT_DIR}#nixosConfigurations.nixos.config.system.build.diskoImages" --print-out-paths --no-link 2>/dev/null | tail -1)
+    DISKO_IMG=$(nix build "path:${PROJECT_DIR}#nixosConfigurations.nixos.config.system.build.diskoImages" \
+      --print-out-paths --no-link 2>/dev/null | tail -1)
     if [ -z "$DISKO_IMG" ] || [ ! -d "$DISKO_IMG" ]; then
         red "Disko image build failed"
         exit 1
     fi
-    # Convert raw → qcow2 (compressed, empty space is sparse)
     qemu-img convert -f raw -O qcow2 -c "$DISKO_IMG/sda.raw" "$DISK_IMAGE"
     green "  Created partitioned qcow2: $DISK_IMAGE"
 else
     green "  Using existing: $DISK_IMAGE"
 fi
 
-# ─── Step 4: Generate SSH key for VM access ───────────────────────────────
-cyan "── Step 4/8: Setting up SSH access ──"
+# ─── Step 4: Build VM runner ──────────────────────────────────────────────
+cyan "── Step 4/7: Building VM runner ──"
 
-if [ ! -f "${SSH_KEY}.pub" ]; then
-    cyan "  Generating temporary SSH key..."
-    ssh-keygen -t ed25519 -f /tmp/nixos-deploy-key -N "" -q
-    SSH_KEY=/tmp/nixos-deploy-key
-fi
-SSH_PUBKEY=$(cat "${SSH_KEY}.pub")
-green "  SSH key ready"
-
-# ─── Step 5: Build provisioning script ────────────────────────────────────
-cyan "── Step 5/8: Preparing provisioning script ──"
-
-PROVISION_SCRIPT=$(mktemp /tmp/nixos-provision-XXXXXX.sh)
-chmod +x "$PROVISION_SCRIPT"
-
-cat > "$PROVISION_SCRIPT" << PROVISION_EOF
-#!/usr/bin/env bash
-set -euo pipefail
-
-echo ""
-echo "╔══════════════════════════════════════════════╗"
-echo "║  VM Provisioning — Post-Boot Setup           ║"
-echo "╚══════════════════════════════════════════════╝"
-echo ""
-
-red()   { echo -e "\033[31m\$*\033[0m" >&2; }
-green() { echo -e "\033[32m\$*\033[0m"; }
-cyan()  { echo -e "\033[36m\$*\033[0m"; }
-
-# ── Chezmoi ──
-CHEZMOI_REPO="${CHEZMOI_REPO}"
-if [ -n "\$CHEZMOI_REPO" ]; then
-    cyan "── Setting up chezmoi dotfiles ──"
-    
-    # Generate chezmoi config from age key
-    if [ -f "\${AGE_KEY:-/run/secrets/age-key.txt}" ]; then
-        export AGE_KEY="\${AGE_KEY:-/run/secrets/age-key.txt}"
-    fi
-    
-    chezmoi init --apply "\$CHEZMOI_REPO" 2>&1 || {
-        red "  chezmoi init failed — continuing anyway"
-        red "  Manual: chezmoi init \$CHEZMOI_REPO && chezmoi apply"
-    }
-    green "  chezmoi dotfiles applied"
-else
-    cyan "  CHEZMOI_REPO not set — skipping dotfiles"
-fi
-
-# ── Gopass ──
-GOPASS_REPO="${GOPASS_REPO}"
-if [ -n "\$GOPASS_REPO" ]; then
-    cyan "── Setting up gopass password store ──"
-    
-    gopass setup --crypto age 2>/dev/null || true
-    gopass clone "\$GOPASS_REPO" 2>&1 || {
-        red "  gopass clone failed — continuing anyway"
-        red "  Manual: gopass clone \$GOPASS_REPO"
-    }
-    green "  gopass password store ready"
-else
-    cyan "  GOPASS_REPO not set — skipping password store"
-fi
-
-# ── Verification ──
-cyan "── Verification ──"
-echo "  System: \$(uname -r)"
-echo "  Hostname: \$(hostname)"
-echo "  Shell: \$(basename \$SHELL)"
-echo "  chezmoi: \$(chezmoi --version 2>/dev/null | head -1 || echo 'not found')"
-echo "  gopass: \$(gopass --version 2>/dev/null | head -1 || echo 'not found')"
-echo "  age: \$(age --version 2>/dev/null | head -1 || echo 'not found')"
-echo "  zsh: \$(zsh --version 2>/dev/null || echo 'not found')"
-
-# Check custom packages (non-fatal)
-for tool in proxypilot ssh-to-age raise richcolors albumdetails taoup sidecar tailray throne duf wl; do
-    which "\$tool" >/dev/null 2>&1 && echo "  ✅ \$tool" || echo "  ❌ \$tool"
-done
-
-echo ""
-green "╔══════════════════════════════════════════════╗"
-green "║  Provisioning complete!                     ║"
-green "╚══════════════════════════════════════════════╝"
-PROVISION_EOF
-
-green "  Provisioning script: $PROVISION_SCRIPT"
-
-# ─── Step 6: Boot VM ──────────────────────────────────────────────────────
-cyan "── Step 6/8: Booting VM ──"
-
-# Kill any existing VM with this name
-kill "$(cat /tmp/nixos-vm-pid 2>/dev/null)" 2>/dev/null || true
-rm -f /tmp/nixos-vm-pid
-
-# Build VM runner with our system
-VM_RUNNER=$(nix build "path:${PROJECT_DIR}#nixosConfigurations.nixos.config.system.build.vm" --print-out-paths --no-link 2>/dev/null | tail -1)
+VM_RUNNER=$(nix build "path:${PROJECT_DIR}#nixosConfigurations.nixos.config.system.build.vm" \
+  --print-out-paths --no-link 2>/dev/null | tail -1)
 if [ -z "$VM_RUNNER" ]; then
     red "VM runner build failed"
     exit 1
 fi
+green "  VM runner: $VM_RUNNER"
 
-# Launch VM with proper RAM, CPU, and SSH port forward
-# The VM runner already shares /nix/store via 9p and handles kernel/initrd
-cyan "  Launching QEMU (${VM_RAM}M RAM, ${VM_CPUS} CPUs, SSH port ${SSH_PORT})..."
+# ─── Step 5: Boot VM ──────────────────────────────────────────────────────
+cyan "── Step 5/7: Booting VM ──"
 
-export QEMU_OPTS="-m ${VM_RAM} -smp ${VM_CPUS}"
-export QEMU_NET_OPTS="hostfwd=tcp::${SSH_PORT}-:22"
+kill "$(cat /tmp/nixos-vm-pid 2>/dev/null)" 2>/dev/null || true
+rm -f /tmp/nixos-vm-pid
 
-# Run VM in background, capture serial console to log
-$VM_RUNNER/bin/run-nixos-vm > /tmp/nixos-vm-boot.log 2>&1 &
+VM_BOOT_LOG=/tmp/nixos-vm-boot.log
+
+if [[ "$HEADLESS" == "1" ]]; then
+    export QEMU_OPTS="-m ${VM_RAM} -smp ${VM_CPUS}"
+    export QEMU_NET_OPTS="hostfwd=tcp::${SSH_PORT}-:22"
+    cyan "  Launching QEMU headless (${VM_RAM}M RAM, ${VM_CPUS} CPUs)..."
+    $VM_RUNNER/bin/run-nixos-vm > "$VM_BOOT_LOG" 2>&1 &
+else
+    export QEMU_OPTS="-m ${VM_RAM} -smp ${VM_CPUS} -device virtio-vga-gl -display gtk,gl=on,grab-on-hover=on"
+    export QEMU_NET_OPTS="hostfwd=tcp::${SSH_PORT}-:22"
+    cyan "  Launching QEMU with virgl GPU (${VM_RAM}M RAM, ${VM_CPUS} CPUs)..."
+    $VM_RUNNER/bin/run-nixos-vm > "$VM_BOOT_LOG" 2>&1 &
+fi
+
 QEMU_PID=$!
 echo "$QEMU_PID" > /tmp/nixos-vm-pid
 
-cyan "  VM PID: $QEMU_PID"
-cyan "  Waiting for boot..."
-
-# ─── Step 7: Wait for SSH ─────────────────────────────────────────────────
-cyan "── Step 7/8: Waiting for SSH (max 120s) ──"
+# Wait for SSH
+cyan "── Step 6/7: Waiting for SSH (max 120s) ──"
 
 SSH_HOST="root@localhost"
 ELAPSED=0
@@ -220,46 +138,134 @@ while [ $ELAPSED -lt 120 ]; do
         green "  SSH connected after ${ELAPSED}s"
         break
     fi
-    sleep 5
-    ELAPSED=$((ELAPSED + 5))
+    sleep 3
+    ELAPSED=$((ELAPSED + 3))
     echo -n "."
 done
 echo ""
 
 if [ $ELAPSED -ge 120 ]; then
-    red "SSH timeout — VM may have boot issues"
-    red "Check: ps $QEMU_PID"
-    # Try to get VM console output
-    cyan "VM console (last 20 lines):"
-    grep -v "iPXE\|SeaBIOS\|Booting\|Probing\|mce:" /tmp/nixos-vm-boot.log 2>/dev/null | tail -20 || true
+    red "SSH timeout — check $VM_BOOT_LOG"
+    grep -v "iPXE\|SeaBIOS\|Booting\|Probing\|mce:" "$VM_BOOT_LOG" 2>/dev/null | tail -20 || true
     exit 1
 fi
 
-# ─── Step 8: Provision VM ─────────────────────────────────────────────────
-cyan "── Step 8/8: Provisioning VM ──"
+# ─── Step 7: Provision ────────────────────────────────────────────────────
+cyan "── Step 7/7: Provisioning VM ──"
 
-# Copy and run the provision script inside the VM
-scp $SSH_OPTS -i "$SSH_KEY" "$PROVISION_SCRIPT" "$SSH_HOST:/tmp/provision.sh" 2>/dev/null
+PROV_SCRIPT=$(mktemp /tmp/nixos-provision-XXXXXX.sh)
+chmod +x "$PROV_SCRIPT"
 
+# Build the provision script with actual values embedded
+cat > "$PROV_SCRIPT" << 'PROV_HEADER'
+#!/usr/bin/env bash
+set -euo pipefail
+red()   { echo -e "\033[31m$*\033[0m" >&2; }
+green() { echo -e "\033[32m$*\033[0m"; }
+cyan()  { echo -e "\033[36m$*\033[0m"; }
+HOME_DIR=/home/nixos
+PROV_HEADER
+
+# ── Chezmoi from local dotfiles ──
+if [ -n "$DOTFILES_DIR" ] && [ -d "$DOTFILES_DIR" ]; then
+    DOT_TARBALL=/tmp/nixos-dotfiles.tar.gz
+    tar czf "$DOT_TARBALL" -C "$(dirname "$DOTFILES_DIR")" "$(basename "$DOTFILES_DIR")"
+    
+    cat >> "$PROV_SCRIPT" << PROV_CHEZMOI
+cyan "── Setting up chezmoi from local dotfiles ──"
+mkdir -p "\$HOME_DIR/.local/share"
+if [ -f /tmp/dotfiles.tar.gz ]; then
+    tar xzf /tmp/dotfiles.tar.gz -C "\$HOME_DIR/.local/share/"
+    chown -R nixos:users "\$HOME_DIR/.local/share/dotfiles"
+    chezmoi init --apply "\$HOME_DIR/.local/share/dotfiles" 2>&1 || {
+        red "  chezmoi init had warnings — continuing anyway"
+    }
+    green "  chezmoi dotfiles applied from local source"
+else
+    red "  dotfiles tarball not found — skipped"
+fi
+PROV_CHEZMOI
+
+    scp $SSH_OPTS -i "$SSH_KEY" "$DOT_TARBALL" "$SSH_HOST:/tmp/dotfiles.tar.gz" 2>/dev/null
+    rm -f "$DOT_TARBALL"
+else
+    cat >> "$PROV_SCRIPT" << 'PROV_NO_CHEZMOI'
+cyan "── No dotfiles source — skipping chezmoi ──"
+PROV_NO_CHEZMOI
+fi
+
+# ── Gopass from local store ──
+if [ -n "$GOPASS_DIR" ] && [ -d "$GOPASS_DIR/.git" ]; then
+    PASS_TARBALL=/tmp/nixos-gopass.tar.gz
+    tar czf "$PASS_TARBALL" -C "$(dirname "$GOPASS_DIR")" "$(basename "$GOPASS_DIR")"
+    
+    cat >> "$PROV_SCRIPT" << PROV_GOPASS
+cyan "── Setting up gopass password store ──"
+if [ -f /tmp/gopass.tar.gz ]; then
+    mkdir -p "\$HOME_DIR/.local/share"
+    tar xzf /tmp/gopass.tar.gz -C "\$HOME_DIR/.local/share/"
+    chown -R nixos:users "\$HOME_DIR/.local/share/pass"
+    gopass setup --crypto age 2>/dev/null || true
+    green "  gopass store deployed"
+else
+    cyan "  gopass tarball not found — skipped"
+fi
+PROV_GOPASS
+
+    scp $SSH_OPTS -i "$SSH_KEY" "$PASS_TARBALL" "$SSH_HOST:/tmp/gopass.tar.gz" 2>/dev/null
+    rm -f "$PASS_TARBALL"
+else
+    cat >> "$PROV_SCRIPT" << 'PROV_NO_GOPASS'
+cyan "── No gopass store — skipping password store ──"
+PROV_NO_GOPASS
+fi
+
+# ── Verification ──
+cat >> "$PROV_SCRIPT" << 'PROV_VERIFY'
+cyan "── Verification ──"
+echo "  System:   $(uname -r)"
+echo "  Hostname: $(hostname)"
+echo "  Shell:    $(basename $SHELL 2>/dev/null || echo 'n/a')"
+
+for tool in chezmoi gopass age zsh vicinae zen-browser quickshell; do
+    which "$tool" >/dev/null 2>&1 && echo "  ✅ $tool" || echo "  ⚠️  $tool (not found)"
+done
+
+# GPU check
+if command -v glxinfo >/dev/null 2>&1; then
+    glxinfo -B 2>/dev/null | grep -E "Device|OpenGL.renderer|OpenGL.version" | head -5 || echo "  ℹ️  GPU: no display available"
+elif [ -e /dev/dri/renderD128 ]; then
+    echo "  ✅ GPU: /dev/dri/renderD128 present"
+else
+    echo "  ⚠️  GPU: no render node found"
+fi
+
+echo ""
+[[ "$HEADLESS" != "1" ]] && echo "  🖥  greetd + quickshell greeter should be visible in QEMU window"
+green "╔══════════════════════════════════════════════╗"
+green "║  Provisioning complete!                     ║"
+green "╚══════════════════════════════════════════════╝"
+PROV_VERIFY
+
+# Copy and run provision script
+scp $SSH_OPTS -i "$SSH_KEY" "$PROV_SCRIPT" "$SSH_HOST:/tmp/provision.sh" 2>/dev/null
 ssh $SSH_OPTS -i "$SSH_KEY" -t "$SSH_HOST" "bash /tmp/provision.sh" 2>&1 || {
     red "Provisioning had errors — check output above"
 }
+rm -f "$PROV_SCRIPT"
 
-# ─── Final report ──────────────────────────────────────────────────────────
+# ─── Done ──────────────────────────────────────────────────────────────────
 echo ""
 bold "╔══════════════════════════════════════════════╗"
 bold "║  Deployment Complete                         ║"
 bold "╠══════════════════════════════════════════════╣"
-bold "║  SSH:  ssh -p ${SSH_PORT} root@localhost       ║"
-bold "║  SSH key: ${SSH_KEY}                          ║"
-bold "║  VM PID: ${QEMU_PID}                         ║"
+bold "║  SSH:   ssh -p ${SSH_PORT} root@localhost       ║"
+[[ "$HEADLESS" != "1" ]] && bold "║  GUI:   QEMU window (greetd + quickshell)    ║"
 bold "║  Stop:  kill ${QEMU_PID}                     ║"
 bold "╚══════════════════════════════════════════════╝"
 echo ""
 
-# Keep VM running unless told otherwise
 if [ "${KEEP_RUNNING:-1}" = "1" ]; then
     cyan "VM is running. Press Ctrl-C to stop."
-    cyan "SSH: ssh -p ${SSH_PORT} root@localhost"
     wait "$QEMU_PID" 2>/dev/null || true
 fi

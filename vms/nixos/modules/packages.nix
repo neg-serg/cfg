@@ -576,8 +576,14 @@ in
     rmlint
     babashka
     carapace
-    bucklespring
     python3Packages.telethon
     cmake-language-server
+    fortune-mod
+    helvum
+    nvtop
+    openbsd-netcat
+    pandoc
+    python3Packages.ascii-magic
+    python3Packages.rapidgzip
 ];
 }

@@ -16,6 +16,7 @@ let
     wl              = final.callPackage ./wl.nix {};
     iosevka-neg-fonts = final.callPackage ./iosevka-neg-fonts.nix {};
     vicinae-bin     = final.callPackage ./vicinae-bin.nix {};
+    zen-browser     = final.callPackage ./zen-browser.nix {};
   };
 in
 {

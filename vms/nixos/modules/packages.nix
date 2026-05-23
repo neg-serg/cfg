@@ -580,8 +580,7 @@ in
     cmake-language-server
     fortune
     crosspipe  # helvum removed from nixpkgs
-    nvtop
-    openbsd-netcat
+    netcat-openbsd
     pandoc
     python3Packages.ascii-magic
     python3Packages.rapidgzip

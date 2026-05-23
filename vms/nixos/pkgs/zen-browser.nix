@@ -7,7 +7,7 @@
 }:
 
 let
-  version = "1.11.6b";
+  version = "1.19.13b";
   libs = [
     alsa-lib at-spi2-core cairo cups dbus fontconfig freetype
     glib gtk3 libdrm libglvnd libnotify libxkbcommon mesa
@@ -20,20 +20,20 @@ stdenv.mkDerivation {
   inherit version;
 
   src = fetchurl {
-    url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-specific.tar.xz";
-    hash = "sha256-0000000000000000000000000000000000000000000=";
+    url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
+    hash = "sha256-38ef+0RMbb+TWmD2/0xcsZBWe6om+DyOnPhFdXHh2QA=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
 
   buildInputs = libs;
 
-  sourceRoot = ".";
+  sourceRoot = "zen";
 
   installPhase = ''
-    mkdir -p $out/{bin,lib/zen-browser}
-    cp -r ./* $out/lib/zen-browser/
-    makeWrapper $out/lib/zen-browser/zen $out/bin/zen-browser \
+    mkdir -p $out/{bin,opt/zen-browser}
+    cp -r ./* $out/opt/zen-browser/
+    makeWrapper $out/opt/zen-browser/zen $out/bin/zen-browser \
       --prefix PATH : ${xrandr}/bin
     ln -sf $out/bin/zen-browser $out/bin/zen
   '';

@@ -10,7 +10,7 @@ stdenv.mkDerivation {
   inherit version;
 
   src = fetchurl {
-    url = "https://github.com/vicinaehq/vicinae/releases/download/v${version}-3/vicinae-x86_64-v${version}-3.tgz";
+    url = "https://github.com/vicinaehq/vicinae/releases/download/v${version}/vicinae-x86_64-v${version}.tgz";
     hash = "sha256-0000000000000000000000000000000000000000000=";
   };
 

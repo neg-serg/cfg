@@ -1,5 +1,5 @@
-{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper
-, qt6, qt6Packages
+{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper, qt6, qt6Packages
+, kdePackages, minizip, libqalculate, icu
 }:
 
 let
@@ -10,11 +10,13 @@ stdenv.mkDerivation {
   inherit version;
 
   src = fetchurl {
-    url = "https://github.com/vicinaehq/vicinae/releases/download/v${version}/vicinae-x86_64-v${version}.tgz";
-    hash = "sha256-0000000000000000000000000000000000000000000=";
+    url = "https://github.com/vicinaehq/vicinae/releases/download/v${version}/vicinae-linux-x86_64-v${version}.tar.gz";
+    hash = "sha256-0ZCZoJRQcYT8+TiOhe90g5qZ/DZmtBvWzDvxFuGwHKk=";
   };
 
-  nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
+  nativeBuildInputs = [ autoPatchelfHook makeWrapper qt6.wrapQtAppsHook ];
+
+  autoPatchelfIgnoreMissingDeps = [ "libicuuc.so.78" ];
 
   buildInputs = with qt6; [
     qtbase
@@ -22,15 +24,19 @@ stdenv.mkDerivation {
     qtsvg
   ] ++ [
     qt6Packages.qtkeychain
+    kdePackages.syntax-highlighting
+    kdePackages.layer-shell-qt
+    minizip
+    libqalculate
+    icu
   ];
 
   sourceRoot = ".";
 
   installPhase = ''
-    mkdir -p $out/bin
-    cp -r usr/* $out/
-    wrapProgram $out/bin/vicinae \
-      --prefix LD_LIBRARY_PATH : ${qt6.qtbase}/lib:${qt6.qtdeclarative}/lib:${qt6.qtsvg}/lib
+    mkdir -p $out
+    cp -r ./* $out/
+    wrapQtApp $out/bin/vicinae
   '';
 
   meta = with lib; {

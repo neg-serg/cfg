@@ -578,7 +578,7 @@ in
     carapace
     python3Packages.telethon
     cmake-language-server
-    fortune-mod
+    fortune
     helvum
     nvtop
     openbsd-netcat

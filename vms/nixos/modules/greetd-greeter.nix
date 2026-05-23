@@ -52,6 +52,9 @@ in
       set -eu
       export HOME=${config.users.users.neg.home}
       export XDG_RUNTIME_DIR=/run/user/$(id -u neg)
+      mkdir -p "$XDG_RUNTIME_DIR" 2>/dev/null || true
+      chown neg:users "$XDG_RUNTIME_DIR" 2>/dev/null || true
+      chmod 700 "$XDG_RUNTIME_DIR" 2>/dev/null || true
       export QT_QPA_PLATFORM=wayland
       export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 
@@ -98,7 +101,7 @@ in
 
     services.greetd = {
       enable = true;
-      restart = false;
+      restart = true;
       settings = {
         default_session = {
           command = "/etc/greetd/greeter-wrapper";

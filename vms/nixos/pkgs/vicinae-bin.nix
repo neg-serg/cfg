@@ -1,5 +1,5 @@
 { lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper
-, qt6
+, qt6, qt6Packages
 }:
 
 let
@@ -20,7 +20,8 @@ stdenv.mkDerivation {
     qtbase
     qtdeclarative
     qtsvg
-    qtkeychain
+  ] ++ [
+    qt6Packages.qtkeychain
   ];
 
   sourceRoot = ".";

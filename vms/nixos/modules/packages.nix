@@ -550,7 +550,7 @@ in
     qemu_kvm
     simple-scan
     sushi
-    swww
+    awww  # renamed from swww
     unar
     tumbler
     v2raya

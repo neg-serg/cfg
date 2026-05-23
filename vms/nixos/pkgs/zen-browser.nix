@@ -1,11 +1,19 @@
 { lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper
 , alsa-lib, at-spi2-core, cairo, cups, dbus, fontconfig, freetype
 , glib, gtk3, libdrm, libglvnd, libnotify, libxkbcommon, mesa
-, nss, pango, pipewire, xorg
+, nss, pango, pipewire
+, libx11, libxcomposite, libxdamage, libxext, libxfixes, libxrandr, libxrender
+, xrandr
 }:
 
 let
   version = "1.11.6b";
+  libs = [
+    alsa-lib at-spi2-core cairo cups dbus fontconfig freetype
+    glib gtk3 libdrm libglvnd libnotify libxkbcommon mesa
+    nss pango pipewire
+    libx11 libxcomposite libxdamage libxext libxfixes libxrandr libxrender
+  ];
 in
 stdenv.mkDerivation {
   pname = "zen-browser";
@@ -18,13 +26,7 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
 
-  buildInputs = [
-    alsa-lib at-spi2-core cairo cups dbus fontconfig freetype
-    glib gtk3 libdrm libglvnd libnotify libxkbcommon mesa
-    nss pango pipewire
-    xorg.libX11 xorg.libXcomposite xorg.libXdamage xorg.libXext
-    xorg.libXfixes xorg.libXrandr xorg.libXrender
-  ];
+  buildInputs = libs;
 
   sourceRoot = ".";
 
@@ -32,8 +34,7 @@ stdenv.mkDerivation {
     mkdir -p $out/{bin,lib/zen-browser}
     cp -r ./* $out/lib/zen-browser/
     makeWrapper $out/lib/zen-browser/zen $out/bin/zen-browser \
-      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath buildInputs} \
-      --prefix PATH : ${xorg.xrandr}/bin
+      --prefix PATH : ${xrandr}/bin
     ln -sf $out/bin/zen-browser $out/bin/zen
   '';
 

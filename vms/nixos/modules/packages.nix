@@ -579,7 +579,7 @@ in
     python3Packages.telethon
     cmake-language-server
     fortune
-    helvum
+    crosspipe  # helvum removed from nixpkgs
     nvtop
     openbsd-netcat
     pandoc

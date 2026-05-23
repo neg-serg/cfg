@@ -36,7 +36,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.kernelParams = [ "quiet" ];
   boot.initrd.availableKernelModules = [
-    "virtio_scsi" "virtio_blk" "virtio_net" "vfat" "zstd"
+    "virtio_scsi" "virtio_blk" "virtio_net" "vfat" "zstd" "virtio-gpu"
   ];
 
   # Network (uses networkd with DHCP)

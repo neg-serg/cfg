@@ -5,13 +5,11 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
-    # GPU acceleration (virgl/virtio)
+    # GPU acceleration (virgl/virtio) — kernel module is in base.nix
     hardware.graphics = {
       enable = true;
       extraPackages = with pkgs; [ mesa ];
     };
-
-    boot.initrd.availableKernelModules = [ "virtio-gpu" ];
 
     # Hyprland greeter config — minimal for VM (no monitor-specific settings)
     environment.etc."greetd/hyprland-greeter.conf".text = ''

@@ -50,6 +50,7 @@ else
   QEMU_ARGS+=(
     -device virtio-vga-gl
     -display egl-headless,rendernode=/dev/dri/renderD128
+    -spice addr=127.0.0.1,port=5900,disable-ticketing=on
     -append "init=$TOPL/init regInfo=$REGINFO $PARAMS console=tty0"
   )
 fi

@@ -119,9 +119,9 @@ if [[ "$HEADLESS" == "1" ]]; then
     cyan "  Launching QEMU headless (${VM_RAM}M RAM, ${VM_CPUS} CPUs)..."
     $VM_RUNNER/bin/run-nixos-vm > "$VM_BOOT_LOG" 2>&1 &
 else
-    export QEMU_OPTS="-m ${VM_RAM} -smp ${VM_CPUS} -device virtio-vga-gl -display egl-headless,rendernode=/dev/dri/renderD128"
+    export QEMU_OPTS="-m ${VM_RAM} -smp ${VM_CPUS} -device virtio-vga-gl -display egl-headless,rendernode=/dev/dri/renderD128 -spice addr=127.0.0.1,port=5900,disable-ticketing=on"
     export QEMU_NET_OPTS="hostfwd=tcp::${SSH_PORT}-:22"
-    cyan "  Launching QEMU with virgl GPU (${VM_RAM}M RAM, ${VM_CPUS} CPUs)..."
+    cyan "  Launching QEMU with virgl GPU + SPICE (${VM_RAM}M RAM, ${VM_CPUS} CPUs)..."
     LD_LIBRARY_PATH=/usr/lib $VM_RUNNER/bin/run-nixos-vm > "$VM_BOOT_LOG" 2>&1 &
 fi
 

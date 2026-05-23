@@ -51,6 +51,7 @@ in
     environment.etc."greetd/greeter-wrapper".source = pkgs.writeShellScript "greetd-greeter-wrapper" ''
       set -eu
       export HOME=${config.users.users.neg.home}
+      export XDG_RUNTIME_DIR=/run/user/$(id -u neg)
       export QT_QPA_PLATFORM=wayland
       export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 

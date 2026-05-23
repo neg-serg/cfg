@@ -77,15 +77,9 @@ in
         exec "$AGREETY" --cmd "$SESSION_WRAPPER"
       fi
 
-      # Check required files
-      if [ ! -x "$HYPRLAND" ] || [ ! -x "$QS" ]; then
-        echo "greeter: missing binaries, falling back to agreety" >&2
-        exec "$AGREETY" --cmd "$SESSION_WRAPPER"
-      fi
-
-      if [ ! -f "$GREETER_QML" ]; then
-        echo "greeter: QML config not found at $GREETER_QML, falling back to agreety" >&2
-        echo "greeter: deploy dotfiles with chezmoi to enable graphical greeter" >&2
+      # Check if we have GPU/drm for Hyprland
+      if [ ! -e /dev/dri/card0 ] || [ ! -f "$GREETER_QML" ]; then
+        echo "greeter: no GPU or no QML config, falling back to agreety" >&2
         exec "$AGREETY" --cmd "$SESSION_WRAPPER"
       fi
 

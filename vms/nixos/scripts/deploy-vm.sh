@@ -224,11 +224,21 @@ if [ -f /tmp/gopass.tar.gz ] && [ -f "$HOME_DIR/.config/age/key.txt" ]; then
 
     # Init gopass with existing store — non-interactive
     mkdir -p "$HOME_DIR/.config/gopass"
-    export PASSWORD_STORE_DIR="$HOME_DIR/.local/share/pass"
-    export GNUPGHOME="$HOME_DIR/.gnupg"
 
-    # Configure gopass to use age for the store
-    gopass setup --crypto age --storage gitfs 2>/dev/null || true
+    # Configure gopass manually (no gopass setup — that's interactive)
+    cat > "$HOME_DIR/.config/gopass/config" << GOPASS_CFG
+autoclip = false
+autosync = false
+cliptimeout = 45
+crypto = age
+exportkeys = false
+noconfirm = true
+nopager = true
+notifications = false
+path = $HOME_DIR/.local/share/pass
+safecontent = true
+usesymbols = false
+GOPASS_CFG
 
     # Set age identity path
     echo "$HOME_DIR/.config/age/key.txt" > "$HOME_DIR/.config/gopass/age-identities" 2>/dev/null

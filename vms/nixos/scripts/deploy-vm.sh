@@ -19,6 +19,7 @@ VM_CPUS="${VM_CPUS:-4}"
 SSH_PORT="${SSH_PORT:-2222}"
 SSH_KEY="${SSH_KEY:-${HOME}/.ssh/id_ed25519}"
 SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -p ${SSH_PORT}"
+SCP_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -P ${SSH_PORT}"
 DOTFILES_DIR="${DOTFILES_DIR:-${REPO_ROOT}/dotfiles}"
 AGE_KEY_PATH="${AGE_KEY_PATH:-${HOME}/.config/age/key.txt}"
 GOPASS_DIR="${GOPASS_DIR:-${HOME}/.local/share/pass}"
@@ -181,7 +182,7 @@ PROV_HEADER
 
 # ── Age key ──
 if [ -n "$AGE_KEY_PATH" ] && [ -f "$AGE_KEY_PATH" ]; then
-    scp $SSH_OPTS -i "$SSH_KEY" "$AGE_KEY_PATH" "$SSH_HOST:/tmp/age-key.txt" 2>/dev/null
+    scp $SCP_OPTS -i "$SSH_KEY" "$AGE_KEY_PATH" "$SSH_HOST:/tmp/age-key.txt" 2>/dev/null
     cat >> "$PROV_SCRIPT" << 'PROV_AGE'
 cyan "── Setting up age key ──"
 mkdir -p "$HOME_DIR/.config/age"
@@ -211,7 +212,7 @@ else
 fi
 PROV_CHEZMOI
 
-    scp $SSH_OPTS -i "$SSH_KEY" "$DOT_TARBALL" "$SSH_HOST:/tmp/dotfiles.tar.gz" 2>/dev/null
+    scp $SCP_OPTS -i "$SSH_KEY" "$DOT_TARBALL" "$SSH_HOST:/tmp/dotfiles.tar.gz" 2>/dev/null
     rm -f "$DOT_TARBALL"
 fi
 
@@ -231,7 +232,7 @@ if [ -f /tmp/gopass.tar.gz ]; then
 fi
 PROV_GOPASS
 
-    scp $SSH_OPTS -i "$SSH_KEY" "$PASS_TARBALL" "$SSH_HOST:/tmp/gopass.tar.gz" 2>/dev/null
+    scp $SCP_OPTS -i "$SSH_KEY" "$PASS_TARBALL" "$SSH_HOST:/tmp/gopass.tar.gz" 2>/dev/null
     rm -f "$PASS_TARBALL"
 fi
 
@@ -265,7 +266,7 @@ green "╚═══════════════════════�
 PROV_VERIFY
 
 # Copy and run provision script
-scp $SSH_OPTS -i "$SSH_KEY" "$PROV_SCRIPT" "$SSH_HOST:/tmp/provision.sh" 2>/dev/null
+scp $SCP_OPTS -i "$SSH_KEY" "$PROV_SCRIPT" "$SSH_HOST:/tmp/provision.sh" 2>/dev/null
 ssh $SSH_OPTS -i "$SSH_KEY" -t "$SSH_HOST" "bash /tmp/provision.sh" 2>&1 || {
     red "Provisioning had warnings — check output above"
 }

@@ -19,8 +19,8 @@ in
       extraPackages = with pkgs; [ mesa ];
     };
 
-    # Greetd
-    services.greetd = {
+    # Greetd (disabled when autoLogin, only for fallback greeter)
+    services.greetd = lib.mkIf (!cfg.autoLogin) {
       enable = true;
       restart = true;
       settings = {
@@ -28,11 +28,28 @@ in
           command = "/etc/greetd/session-wrapper";
           user = "neg";
         };
-      } // lib.optionalAttrs cfg.autoLogin {
-        initial_session = {
-          command = "${pkgs.hyprland}/bin/Hyprland";
-          user = "neg";
-        };
+      };
+    };
+
+    # Auto-login: Hyprland as system service on tty1
+    systemd.services.hyprland-autologin = lib.mkIf cfg.autoLogin {
+      description = "Hyprland compositor (auto-login)";
+      after = [ "systemd-user-sessions.service" ];
+      wants = [ "dev-dri-device\x2dcard0.device" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "simple";
+        User = "neg";
+        Group = "users";
+        PAMName = "login";
+        ExecStart = "${pkgs.hyprland}/bin/Hyprland";
+        Environment = [
+          "XDG_RUNTIME_DIR=/run/user/1000"
+          "WLR_NO_HARDWARE_CURSORS=1"
+          "WLR_RENDERER_ALLOW_SOFTWARE=1"
+          "XDG_SESSION_TYPE=wayland"
+          "DISPLAY="
+        ];
       };
     };
 
@@ -44,16 +61,21 @@ in
       exec ${pkgs.hyprland}/bin/Hyprland "$@"
     '';
 
-    # Minimal Hyprland config for VM
-    environment.etc."greetd/hyprland-greeter.conf".text = ''
-      monitor = Unknown-1, preferred, auto, 1
+    # Minimal Hyprland config for VM (avoids custom dotfiles issues)
+    environment.etc."hypr/hyprland.conf".source = pkgs.writeText "hyprland-vm.conf" ''
+      monitor = , preferred, auto, 1
       input { kb_layout = us,ru; kb_options = grp:alt_shift_toggle }
       cursor { no_hardware_cursors = true }
       misc { disable_hyprland_logo = true; force_default_wallpaper = 0 }
       animations { enabled = false }
       decoration { blur { enabled = false }; shadow { enabled = false } }
-      exec-once = ${pkgs.kitty}/bin/kitty
+      exec-once = kitty
     '';
+
+    # Symlink VM config to user home
+    systemd.tmpfiles.rules = [
+      "L+ /home/neg/.config/hypr/hyprland.conf - - - - /etc/hypr/hyprland.conf"
+    ];
 
     # Desktop portal
     xdg.portal = {

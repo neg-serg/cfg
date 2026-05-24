@@ -208,7 +208,9 @@ if [ -n "$GOPASS_DIR" ] && [ -d "$GOPASS_DIR/.git" ]; then
     GPG_TARBALL=""
     if [ -d "${HOME}/.local/share/gnupg" ]; then
         GPG_TARBALL=/tmp/nixos-gnupg.tar.gz
-        tar czf "$GPG_TARBALL" -C "$(dirname "${HOME}/.local/share/gnupg")" "$(basename "${HOME}/.local/share/gnupg")" 2>/dev/null
+        # Extract to .local/share/gnupg (matching GNUPGHOME convention)
+        tar czf "$GPG_TARBALL" -C "$(dirname "${HOME}/.local/share/gnupg")" \
+            "$(basename "${HOME}/.local/share/gnupg")" 2>/dev/null
     fi
 
     cat >> "$PROV_SCRIPT" << 'PROV_GOPASS'
@@ -218,11 +220,12 @@ if [ -f /tmp/gopass.tar.gz ] && [ -f "$HOME_DIR/.config/age/key.txt" ]; then
     tar xzf /tmp/gopass.tar.gz -C "$HOME_DIR/.local/share/" 2>/dev/null || true
     chown -R neg:users "$HOME_DIR/.local/share/pass" 2>/dev/null || true
 
-    # Copy GPG keys if available
+    # Copy GPG keys if available (matching GNUPGHOME=/home/neg/.local/share/gnupg)
     if [ -f /tmp/gnupg.tar.gz ]; then
-        tar xzf /tmp/gnupg.tar.gz -C "$HOME_DIR/"
-        chown -R neg:users "$HOME_DIR/.gnupg"
-        chmod 700 "$HOME_DIR/.gnupg"
+        mkdir -p "$HOME_DIR/.local/share" 2>/dev/null || true
+        tar xzf /tmp/gnupg.tar.gz -C "$HOME_DIR/.local/share/" 2>/dev/null || true
+        chown -R neg:users "$HOME_DIR/.local/share/gnupg" 2>/dev/null || true
+        chmod 700 "$HOME_DIR/.local/share/gnupg" 2>/dev/null || true
         green "  GPG keys deployed"
     fi
 

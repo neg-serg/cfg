@@ -115,7 +115,7 @@ in
 
     # Basic desktop packages (kitty terminal for the VM)
     environment.systemPackages = with pkgs; [
-      kitty wiremix
+      kitty wiremix vulkan-loader vulkan-tools mesa
     ];
   };
 }

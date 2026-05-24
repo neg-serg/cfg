@@ -47,8 +47,12 @@
     settings.PasswordAuthentication = false;
   };
 
-  # Boot — systemd-boot for UEFI (bump vm 1)
-  boot.loader.systemd-boot.enable = true;
+  # Boot — systemd-boot for UEFI
+  # VM: grub instead (no /boot mount needed), or use --no-install-bootloader
+  boot.loader.systemd-boot.enable = lib.mkDefault true;
+  boot.loader.efi.canTouchEfiVariables = lib.mkDefault false;
+  # Prevent bootloader errors when /boot isn't mounted (e.g. in VM)
+  boot.loader.efi.efiSysMountPoint = lib.mkDefault "/boot";
   boot.kernelParams = [ "quiet" "console=ttyS0,115200n8" ];
   boot.initrd.availableKernelModules = [
     "virtio_scsi" "virtio_blk" "virtio_net" "vfat" "zstd" "virtio-gpu"

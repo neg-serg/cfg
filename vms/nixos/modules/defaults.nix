@@ -6,7 +6,7 @@
   _desktop.enable = lib.mkDefault true;
   _audio.enable = lib.mkDefault true;
   _network.enable = lib.mkDefault true;
-  _containers.enable = lib.mkDefault true;
+  _containers.enable = lib.mkDefault false;
   _ai.enable = lib.mkDefault true;
   _monitoring.enable = lib.mkDefault true;
   _steam.enable = lib.mkDefault true;
@@ -16,8 +16,8 @@
   # Phase 1 migration modules
   _flatpak.enable = lib.mkDefault true;
   _mpd.enable = lib.mkDefault true;
-  _proxypilot.enable = lib.mkDefault true;
+  _proxypilot.enable = lib.mkDefault false;
   _espanso.enable = lib.mkDefault true;
   _userServices.enable = lib.mkDefault true;
-  _installers.enable = lib.mkDefault true;
+  _installers.enable = lib.mkDefault false;
 }

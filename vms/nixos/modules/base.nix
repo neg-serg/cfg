@@ -108,27 +108,11 @@
     "d /home/neg/.local/share/gnupg 0700 neg users -"
   ];
 
-  # Swap (4GB swapfile created in initrd before nix-store tmpfs eats all RAM)
-  boot.initrd.systemd.services.create-swap = {
-    description = "Create swapfile before main root mounts";
-    wantedBy = [ "initrd.target" ];
-    after = [ "initrd-root-device.target" ];
-    before = [ "sysroot.mount" ];
-    unitConfig.DefaultDependencies = false;
-    path = with pkgs; [ util-linux ];
-    script = ''
-      if [ ! -f /sysroot/swapfile ]; then
-        dd if=/dev/zero of=/sysroot/swapfile bs=1M count=4096 status=none
-        chmod 600 /sysroot/swapfile
-        mkswap /sysroot/swapfile
-      fi
-    '';
-    serviceConfig.Type = "oneshot";
-  };
-
-  swapDevices = [
-    { device = "/swapfile"; }
-  ];
+  # Swap (4GB swapfile on root)
+  swapDevices = [{
+    device = "/swapfile";
+    size = 4096;
+  }];
 
   # Sysctl tuning (from Salt sysctl-custom.conf)
   boot.kernel.sysctl = {

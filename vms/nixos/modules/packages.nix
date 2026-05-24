@@ -267,6 +267,7 @@ in
     kitty
     kmon
     lbzip2
+    lazygit
     less
     libnotify
     liquidctl

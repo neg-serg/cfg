@@ -42,7 +42,7 @@
     settings.PasswordAuthentication = false;
   };
 
-  # Boot
+  # Boot — systemd-boot for UEFI (bump vm 1)
   boot.loader.systemd-boot.enable = true;
   boot.kernelParams = [ "quiet" "console=ttyS0,115200n8" ];
   boot.initrd.availableKernelModules = [

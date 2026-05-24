@@ -49,23 +49,25 @@ in
         Restart = "on-failure";
         RestartSec = 5;
         ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p /home/neg/.config";
-        ExecStart = "${pkgs.writeShellScript "mpdas-wrapper" ''
-          set -euo pipefail
-          CONFIG_FILE="/home/neg/.config/mpdasrc"
-          if [ -f "/run/secrets/lastfm-username" ] && [ -f "/run/secrets/lastfm-password" ]; then
-            USERNAME="$(cat /run/secrets/lastfm-username | tr -d '\''\n'\'')"
-            PASSWORD="$(cat /run/secrets/lastfm-password | tr -d '\''\n'\'')"
-            cat > "$CONFIG_FILE" << EOF
+        ExecStart = let
+          script = pkgs.writeShellScript "mpdas-wrapper" ''
+            set -euo pipefail
+            CONFIG_FILE="/home/neg/.config/mpdasrc"
+            if [ -f "/run/secrets/lastfm-username" ] && [ -f "/run/secrets/lastfm-password" ]; then
+              USERNAME="$(cat /run/secrets/lastfm-username)"
+              PASSWORD="$(cat /run/secrets/lastfm-password)"
+              cat > "$CONFIG_FILE" << EOF
         host = localhost
         port = 6600
         service = lastfm
         username = $USERNAME
         password = $PASSWORD
 EOF
-            chmod 0600 "$CONFIG_FILE"
-          fi
-          exec ${pkgs.mpdas}/bin/mpdas
-        ''}";
+              chmod 0600 "$CONFIG_FILE"
+            fi
+            exec ${pkgs.mpdas}/bin/mpdas
+          '';
+        in "${script}";
       };
     };
 
@@ -88,8 +90,8 @@ EOF
     environment.systemPackages = with pkgs; [
       mpc          # MPD client
       mpdas        # Last.fm scrobbler
-      mpdris2      # MPRIS bridge (mpDris2)
-      wiremix      # MPD visualizer (from custom pkgs)
+      mpdris2      # MPRIS bridge
+      wiremix      # MPD visualizer
     ];
   };
 }

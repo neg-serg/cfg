@@ -26,6 +26,7 @@
     isNormalUser = true;
     extraGroups = [ "wheel" "video" "render" ];
     home = "/home/neg";
+    initialPassword = "nixos";
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEx7F9KuTtPsLj9UVtUQ9ZrXUebjCMKuKZcyZWzg2RHf serg.zorg@gmail.com"
     ];
@@ -43,7 +44,7 @@
 
   # Boot
   boot.loader.systemd-boot.enable = true;
-  boot.kernelParams = [ "quiet" ];
+  boot.kernelParams = [ "quiet" "console=ttyS0,115200n8" ];
   boot.initrd.availableKernelModules = [
     "virtio_scsi" "virtio_blk" "virtio_net" "vfat" "zstd" "virtio-gpu"
   ];

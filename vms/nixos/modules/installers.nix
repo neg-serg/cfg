@@ -19,6 +19,7 @@ in
         Type = "oneshot";
         RemainAfterExit = true;
         User = "neg";
+        ExecStart = "${pkgs.bash}/bin/bash /dev/null";
       };
       script = let
         pipxTools = [
@@ -41,6 +42,7 @@ in
         Type = "oneshot";
         RemainAfterExit = true;
         User = "neg";
+        ExecStart = "${pkgs.bash}/bin/bash /dev/null";
       };
       script = let
         cargoTools = [

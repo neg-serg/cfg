@@ -32,6 +32,11 @@
     ];
   };
 
+  # Passwordless sudo for neg (needed for nixos-rebuild switch in VM)
+  security.sudo.extraRules = [
+    { users = [ "neg" ]; groups = [ "wheel" ]; commands = [ { command = "ALL"; options = [ "NOPASSWD" ]; } ]; }
+  ];
+
   # Locale
   i18n.defaultLocale = "en_US.UTF-8";
   time.timeZone = "Europe/Moscow";

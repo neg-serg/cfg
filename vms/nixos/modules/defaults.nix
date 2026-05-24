@@ -20,4 +20,7 @@
   _espanso.enable = lib.mkDefault true;
   _userServices.enable = lib.mkDefault true;
   _installers.enable = lib.mkDefault false;
+
+  # VM testing: auto-login for SPICE testing (skip greeter)
+  _desktop.autoLogin = lib.mkDefault true;
 }

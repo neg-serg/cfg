@@ -13,71 +13,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # GPU acceleration (virgl/virtio) — kernel module is in base.nix
+    # GPU acceleration
     hardware.graphics = {
       enable = true;
       extraPackages = with pkgs; [ mesa ];
     };
-
-    # Greeter wrapper: Hyprland + quickshell, fallback to agreety
-    environment.etc."greetd/greeter-wrapper".source = pkgs.writeShellScript "greetd-greeter-wrapper" ''
-      set -eu
-      export HOME=${config.users.users.neg.home}
-      export XDG_RUNTIME_DIR=/run/user/$(id -u neg)
-      mkdir -p "$XDG_RUNTIME_DIR" 2>/dev/null || true
-      chown neg:users "$XDG_RUNTIME_DIR" 2>/dev/null || true
-      chmod 700 "$XDG_RUNTIME_DIR" 2>/dev/null || true
-      export QT_QPA_PLATFORM=wayland
-      export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-
-      CRASH_FILE=/tmp/greetd-crash-count
-      AGREETY=${pkgs.greetd}/bin/agreety
-      HYPRLAND=${pkgs.hyprland}/bin/Hyprland
-      QS=${pkgs.quickshell}/bin/qs
-      GREETER_CONF=/etc/greetd/hyprland-greeter.conf
-      GREETER_QML=$HOME/.config/quickshell/greeter/greeter.qml
-      SESSION_WRAPPER=/etc/greetd/session-wrapper
-
-      if [ -f "$CRASH_FILE" ] && [ $(($(date +%s) - $(stat -c %Y "$CRASH_FILE"))) -lt 30 ]; then
-        count=$(cat "$CRASH_FILE")
-      else
-        count=0
-      fi
-      count=$((count + 1))
-      echo "$count" > "$CRASH_FILE"
-
-      if [ "$count" -ge 3 ]; then
-        echo 0 > "$CRASH_FILE"
-        exec "$AGREETY" --cmd "$SESSION_WRAPPER"
-      fi
-
-      if [ ! -e /dev/dri/card0 ] || [ ! -f "$GREETER_QML" ]; then
-        exec "$AGREETY" --cmd "$SESSION_WRAPPER"
-      fi
-
-      exec "$HYPRLAND" --config "$GREETER_CONF"
-    '';
-
-    # Session wrapper: launches user's Hyprland
-    environment.etc."greetd/session-wrapper".source = pkgs.writeShellScript "greetd-session-wrapper" ''
-      set -eu
-      export HOME="$1"
-      shift
-      exec ${pkgs.hyprland}/bin/Hyprland "$@"
-    '';
-
-    # Hyprland greeter config
-    environment.etc."greetd/hyprland-greeter.conf".text = ''
-      monitorv2 {
-        output = Unknown-1; mode = preferred; position = 0x0; scale = 1
-      }
-      input { kb_layout = us,ru; kb_options = grp:alt_shift_toggle }
-      cursor { no_hardware_cursors = true }
-      misc { disable_hyprland_logo = true; force_default_wallpaper = 0; disable_autoreload = true }
-      animations { enabled = false }
-      decoration { blur { enabled = false }; shadow { enabled = false } }
-      exec-once = qs -p ${config.users.users.neg.home}/.config/quickshell/greeter/greeter.qml
-    '';
 
     # Greetd
     services.greetd = {
@@ -85,7 +25,7 @@ in
       restart = true;
       settings = {
         default_session = {
-          command = "/etc/greetd/greeter-wrapper";
+          command = "/etc/greetd/session-wrapper";
           user = "neg";
         };
       } // lib.optionalAttrs cfg.autoLogin {
@@ -96,12 +36,30 @@ in
       };
     };
 
+    # Session wrapper
+    environment.etc."greetd/session-wrapper".source = pkgs.writeShellScript "greetd-session-wrapper" ''
+      set -eu
+      export HOME="$1"
+      shift
+      exec ${pkgs.hyprland}/bin/Hyprland "$@"
+    '';
+
+    # Minimal Hyprland config for VM
+    environment.etc."greetd/hyprland-greeter.conf".text = ''
+      monitor = Unknown-1, preferred, auto, 1
+      input { kb_layout = us,ru; kb_options = grp:alt_shift_toggle }
+      cursor { no_hardware_cursors = true }
+      misc { disable_hyprland_logo = true; force_default_wallpaper = 0 }
+      animations { enabled = false }
+      decoration { blur { enabled = false }; shadow { enabled = false } }
+      exec-once = ${pkgs.kitty}/bin/kitty
+    '';
+
     # Desktop portal
     xdg.portal = {
       enable = true;
       extraPortals = with pkgs; [
-        xdg-desktop-portal-hyprland
-        xdg-desktop-portal-gtk
+        xdg-desktop-portal-hyprland xdg-desktop-portal-gtk
       ];
       config.common.default = [ "hyprland" "gtk" ];
     };
@@ -109,14 +67,14 @@ in
     # Fonts
     fonts.packages = with pkgs; [
       jetbrains-mono nerd-fonts.jetbrains-mono nerd-fonts.symbols-only
-      iosevka-neg-fonts noto-fonts-color-emoji dejavu_fonts liberation_ttf
+      iosevka-neg-fonts noto-fonts-color-emoji
     ];
     fonts.fontconfig = {
       enable = true;
       defaultFonts = {
-        monospace = [ "JetBrains Mono" "IosevkaNeg" ];
-        sansSerif = [ "Noto Sans" "DejaVu Sans" ];
-        serif = [ "Noto Serif" "DejaVu Serif" ];
+        monospace = [ "JetBrains Mono" ];
+        sansSerif = [ "Noto Sans" ];
+        serif = [ "Noto Serif" ];
       };
     };
 
@@ -131,10 +89,11 @@ in
     services.gvfs.enable = true;
     services.upower.enable = true;
     powerManagement.enable = true;
-
-    # Qt theme
     qt = { enable = true; platformTheme = "gtk2"; style = "gtk2"; };
 
-    environment.systemPackages = with pkgs; [ wiremix ];
+    # Basic desktop packages (kitty terminal for the VM)
+    environment.systemPackages = with pkgs; [
+      kitty wiremix
+    ];
   };
 }

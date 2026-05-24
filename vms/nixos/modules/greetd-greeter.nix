@@ -34,14 +34,14 @@ in
     # Auto-login: Hyprland as system service on tty1
     systemd.services.hyprland-autologin = lib.mkIf cfg.autoLogin {
       description = "Hyprland compositor (auto-login)";
-      after = [ "systemd-user-sessions.service" ];
-      wants = [ "dev-dri-device\x2dcard0.device" ];
+      after = [ "systemd-user-sessions.service" "user-runtime-dir@1000.service" ];
+      wants = [ "user-runtime-dir@1000.service" "dev-dri-device\x2dcard0.device" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Type = "simple";
         User = "neg";
         Group = "users";
-        PAMName = "login";
+        ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p /run/user/1000";
         ExecStart = "${pkgs.hyprland}/bin/Hyprland";
         Environment = [
           "XDG_RUNTIME_DIR=/run/user/1000"

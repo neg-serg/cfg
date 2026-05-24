@@ -98,9 +98,22 @@
   };
 
   # Create custom XDG and secrets directories for neg user
-  system.activationScripts.fixHomeConfigPermissions = ''
-    chown -R neg:users /home/neg/.config 2>/dev/null || true
-  '';
+  systemd.services.fixHomeConfigPermissions = {
+    description = "Fix /home/neg/.config ownership";
+    after = [ "systemd-tmpfiles-setup.service" ];
+    before = [ "systemd-user-sessions.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      chown -R neg:users /home/neg/.config 2>/dev/null || true
+      mkdir -p /home/neg/.config/age
+      chmod 700 /home/neg/.config/age
+      chown neg:users /home/neg/.config/age
+    '';
+  };
 
   systemd.tmpfiles.rules = [
     "d /home/neg/music 0755 neg users -"
@@ -110,10 +123,6 @@
     "d /home/neg/dw 0755 neg users -"
     "d /home/neg/.local/share/pass 0700 neg users -"
     "d /home/neg/.local/share/gnupg 0700 neg users -"
-    "d /home/neg/.config/age 0700 neg users -"
-    "d /home/neg/.config/espanso 0755 neg users -"
-    "d /home/neg/.config/proxypilot 0700 neg users -"
-    "z /home/neg/.config 0755 neg users -"
   ];
 
   # Swap (4GB swapfile on root)

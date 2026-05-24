@@ -106,6 +106,10 @@
     "d /home/neg/dw 0755 neg users -"
     "d /home/neg/.local/share/pass 0700 neg users -"
     "d /home/neg/.local/share/gnupg 0700 neg users -"
+    "d /home/neg/.config/age 0700 neg users -"
+    "d /home/neg/.config/espanso 0755 neg users -"
+    "d /home/neg/.config/proxypilot 0700 neg users -"
+    "z /home/neg/.config 0755 neg users -"
   ];
 
   # Swap (4GB swapfile on root)

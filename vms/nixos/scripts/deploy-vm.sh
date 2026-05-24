@@ -32,8 +32,10 @@ cyan()  { echo -e "\033[36m$*\033[0m"; }
 bold()  { echo -e "\033[1m$*\033[0m"; }
 
 cleanup() {
-    kill "${QEMU_PID:-}" 2>/dev/null || true
-    wait "${QEMU_PID:-}" 2>/dev/null || true
+    if [ "${KEEP_RUNNING:-1}" != "0" ]; then
+        kill "${QEMU_PID:-}" 2>/dev/null || true
+        wait "${QEMU_PID:-}" 2>/dev/null || true
+    fi
 }
 trap cleanup EXIT
 

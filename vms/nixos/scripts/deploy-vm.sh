@@ -180,6 +180,9 @@ red()   { echo -e "\033[31m$*" >&2; }
 green() { echo -e "\033[32m$*"; }
 cyan()  { echo -e "\033[36m$*"; }
 HOME_DIR=/home/neg
+
+# Fix permissions first (systemd service may not have run yet)
+sudo chown -R neg:users "$HOME_DIR/.config" "$HOME_DIR/.local" 2>/dev/null || true
 PROV_HEADER
 
 # ── Age key ──

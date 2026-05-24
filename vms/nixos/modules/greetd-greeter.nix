@@ -83,26 +83,17 @@ in
     services.greetd = {
       enable = true;
       restart = true;
-      settings.default_session = {
-        command = "/etc/greetd/greeter-wrapper";
-        user = "neg";
+      settings = {
+        default_session = {
+          command = "/etc/greetd/greeter-wrapper";
+          user = "neg";
+        };
+      } // lib.optionalAttrs cfg.autoLogin {
+        initial_session = {
+          command = "${pkgs.hyprland}/bin/Hyprland";
+          user = "neg";
+        };
       };
-    };
-
-    # Auto-login (skips greeter, starts Hyprland directly)
-    systemd.services."greetd-autologin" = lib.mkIf cfg.autoLogin {
-      description = "Auto-login neg user into Hyprland";
-      after = [ "greetd.service" "graphical.target" ];
-      wantedBy = [ "graphical.target" ];
-      serviceConfig = {
-        Type = "simple";
-        User = "neg";
-        Environment = "XDG_RUNTIME_DIR=/run/user/1000";
-      };
-      script = ''
-        sleep 5
-        ${pkgs.hyprland}/bin/Hyprland
-      '';
     };
 
     # Desktop portal

@@ -200,6 +200,13 @@ if [ -n "$GOPASS_DIR" ] && [ -d "$GOPASS_DIR/.git" ]; then
     PASS_TARBALL=/tmp/nixos-gopass.tar.gz
     tar czf "$PASS_TARBALL" -C "$(dirname "$GOPASS_DIR")" "$(basename "$GOPASS_DIR")" 2>/dev/null
 
+    # Also copy GPG keys if available (gopass may use gpg for some secrets)
+    GPG_TARBALL=""
+    if [ -d "${HOME}/.gnupg" ]; then
+        GPG_TARBALL=/tmp/nixos-gnupg.tar.gz
+        tar czf "$GPG_TARBALL" -C "$(dirname "${HOME}/.gnupg")" "$(basename "${HOME}/.gnupg")" 2>/dev/null
+    fi
+
     cat >> "$PROV_SCRIPT" << 'PROV_GOPASS'
 cyan "── Setting up gopass password store ──"
 if [ -f /tmp/gopass.tar.gz ] && [ -f "$HOME_DIR/.config/age/key.txt" ]; then
@@ -207,18 +214,24 @@ if [ -f /tmp/gopass.tar.gz ] && [ -f "$HOME_DIR/.config/age/key.txt" ]; then
     tar xzf /tmp/gopass.tar.gz -C "$HOME_DIR/.local/share/"
     chown -R neg:users "$HOME_DIR/.local/share/pass"
 
-    # Init gopass with existing store and age key — non-interactive
+    # Copy GPG keys if available
+    if [ -f /tmp/gnupg.tar.gz ]; then
+        tar xzf /tmp/gnupg.tar.gz -C "$HOME_DIR/"
+        chown -R neg:users "$HOME_DIR/.gnupg"
+        chmod 700 "$HOME_DIR/.gnupg"
+        green "  GPG keys deployed"
+    fi
+
+    # Init gopass with existing store — non-interactive
+    mkdir -p "$HOME_DIR/.config/gopass"
     export PASSWORD_STORE_DIR="$HOME_DIR/.local/share/pass"
-    export GOPASS_HOME="$HOME_DIR/.config/gopass"
-    export AGE_KEY_FILE="$HOME_DIR/.config/age/key.txt"
+    export GNUPGHOME="$HOME_DIR/.gnupg"
 
-    gopass init --crypto age --storage gitfs --path "$PASSWORD_STORE_DIR" 2>/dev/null || true
-    gopass git init 2>/dev/null || true
+    # Configure gopass to use age for the store
+    gopass setup --crypto age --storage gitfs 2>/dev/null || true
 
-    # Import the age identity for decryption
-    cat > "$HOME_DIR/.config/gopass/age-identities" << IDENTITIES
-$HOME_DIR/.config/age/key.txt
-IDENTITIES
+    # Set age identity path
+    echo "$HOME_DIR/.config/age/key.txt" > "$HOME_DIR/.config/gopass/age-identities" 2>/dev/null
 
     green "  gopass store deployed from host"
 fi
@@ -226,6 +239,10 @@ PROV_GOPASS
 
     scp $SCP_OPTS -i "$SSH_KEY" "$PASS_TARBALL" "$SSH_HOST:/tmp/gopass.tar.gz" 2>/dev/null
     rm -f "$PASS_TARBALL"
+    if [ -n "$GPG_TARBALL" ]; then
+        scp $SCP_OPTS -i "$SSH_KEY" "$GPG_TARBALL" "$SSH_HOST:/tmp/gnupg.tar.gz" 2>/dev/null
+        rm -f "$GPG_TARBALL"
+    fi
 fi
 
 # ── Chezmoi from local dotfiles (runs AFTER gopass is ready) ──
@@ -240,8 +257,14 @@ if [ -f /tmp/dotfiles.tar.gz ]; then
     tar xzf /tmp/dotfiles.tar.gz -C "$HOME_DIR/.local/share/"
     chown -R neg:users "$HOME_DIR/.local/share/dotfiles"
 
-    # chezmoi with gopass support — templates can now resolve gopass secrets
+    # Link chezmoi source directory
+    ln -sfn "$HOME_DIR/.local/share/dotfiles" "$HOME_DIR/.local/share/chezmoi" 2>/dev/null || true
+
+    # chezmoi with gopass + gpg support
     export PASSWORD_STORE_DIR="$HOME_DIR/.local/share/pass"
+    export GNUPGHOME="$HOME_DIR/.gnupg"
+
+    # Apply dotfiles — skip template errors for non-critical files
     chezmoi init --apply --source "$HOME_DIR/.local/share/dotfiles" \
         --destination "$HOME_DIR" 2>&1 || true
     green "  chezmoi dotfiles applied with gopass secrets"

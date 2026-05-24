@@ -40,6 +40,14 @@
         ./modules/dev.nix
         ./modules/proxy.nix
 
+        # Phase 1 — Migration from Salt
+        ./modules/flatpak.nix
+        ./modules/mpd.nix
+        ./modules/proxypilot-service.nix
+        ./modules/espanso.nix
+        ./modules/user-services.nix
+        ./modules/installers.nix
+
         ./pkgs/default.nix
       ];
     };

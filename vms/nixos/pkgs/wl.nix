@@ -1,4 +1,4 @@
-{ lib, rustPlatform, fetchFromGitHub, pkg-config, wayland, libffi, wayland-protocols }:
+{ lib, rustPlatform, fetchFromGitHub, pkg-config, wayland, libffi, wayland-protocols, shaderc }:
 
 rustPlatform.buildRustPackage rec {
   pname = "wl";
@@ -13,7 +13,7 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-6v7x7kMUxtwgU/j1qpKocgcIKH4rMjgG+9xLsFovhWY=";
 
-  nativeBuildInputs = [ pkg-config wayland-protocols ];
+  nativeBuildInputs = [ pkg-config wayland-protocols shaderc ];
   buildInputs = [ wayland libffi ];
 
   meta = with lib; {

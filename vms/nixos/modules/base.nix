@@ -98,6 +98,10 @@
   };
 
   # Create custom XDG and secrets directories for neg user
+  system.activationScripts.fixHomeConfigPermissions = ''
+    chown -R neg:users /home/neg/.config 2>/dev/null || true
+  '';
+
   systemd.tmpfiles.rules = [
     "d /home/neg/music 0755 neg users -"
     "d /home/neg/pic 0755 neg users -"

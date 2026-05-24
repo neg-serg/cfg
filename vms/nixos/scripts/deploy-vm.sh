@@ -202,9 +202,9 @@ if [ -n "$GOPASS_DIR" ] && [ -d "$GOPASS_DIR/.git" ]; then
 
     # Also copy GPG keys if available (gopass may use gpg for some secrets)
     GPG_TARBALL=""
-    if [ -d "${HOME}/.gnupg" ]; then
+    if [ -d "${HOME}/.local/share/gnupg" ]; then
         GPG_TARBALL=/tmp/nixos-gnupg.tar.gz
-        tar czf "$GPG_TARBALL" -C "$(dirname "${HOME}/.gnupg")" "$(basename "${HOME}/.gnupg")" 2>/dev/null
+        tar czf "$GPG_TARBALL" -C "$(dirname "${HOME}/.local/share/gnupg")" "$(basename "${HOME}/.local/share/gnupg")" 2>/dev/null
     fi
 
     cat >> "$PROV_SCRIPT" << 'PROV_GOPASS'
@@ -268,6 +268,17 @@ if [ -f /tmp/dotfiles.tar.gz ]; then
     chezmoi init --apply --source "$HOME_DIR/.local/share/dotfiles" \
         --destination "$HOME_DIR" 2>&1 || true
     green "  chezmoi dotfiles applied with gopass secrets"
+
+    # Copy critical configs directly (bypass gopass/gpg templates)
+    if [ -d "$HOME_DIR/.local/share/dotfiles/dot_config/quickshell" ]; then
+        cp -r "$HOME_DIR/.local/share/dotfiles/dot_config/quickshell" "$HOME_DIR/.config/" 2>/dev/null
+        chown -R neg:users "$HOME_DIR/.config/quickshell"
+    fi
+    if [ -d "$HOME_DIR/.local/share/dotfiles/dot_config/hypr" ]; then
+        cp -r "$HOME_DIR/.local/share/dotfiles/dot_config/hypr" "$HOME_DIR/.config/" 2>/dev/null
+        chown -R neg:users "$HOME_DIR/.config/hypr"
+    fi
+    green "  critical configs copied directly"
 else
     cyan "  dotfiles tarball not found — skipped"
 fi
@@ -299,6 +310,12 @@ fi
 for svc in sshd greetd flatpak-system-helper mpd; do
     systemctl is-active "$svc" >/dev/null 2>&1 && echo "  ✅ $svc" || echo "  ⚠️  $svc inactive"
 done
+
+# Restart greetd to pick up quickshell config
+if [ -f "$HOME_DIR/.config/quickshell/greeter/greeter.qml" ]; then
+    sudo systemctl restart greetd 2>/dev/null || true
+    echo "  ✅ greetd restarted for quickshell greeter"
+fi
 
 echo ""
 green "╔══════════════════════════════════════════════╗"

@@ -12,19 +12,14 @@ in
       enable = true;
       user = "neg";
       group = "users";
-      musicDirectory = "/home/neg/music";
-      playlistDirectory = "/home/neg/.config/mpd/playlists";
       dbFile = "/home/neg/.local/share/mpd/database";
-      network = {
-        listenAddress = "127.0.0.1";
-        port = 6600;
-      };
+      network.listenAddress = "127.0.0.1";
+      network.port = 6600;
       settings = {
+        music_directory = "/home/neg/music";
+        playlist_directory = "/home/neg/.config/mpd/playlists";
         audio_output = [
-          {
-            name = "PipeWire";
-            type = "pipewire";
-          }
+          { name = "PipeWire"; type = "pipewire"; }
           {
             name = "fifo";
             type = "fifo";
@@ -43,7 +38,6 @@ in
     ];
 
     # mpdas — Last.fm scrobbler for MPD
-    # Config is generated at runtime from age secrets (lastfm username/password)
     systemd.services.mpdas = {
       description = "MPD Audio Scrobbler (Last.fm)";
       after = [ "mpd.service" "network.target" ];
@@ -59,8 +53,8 @@ in
           set -euo pipefail
           CONFIG_FILE="/home/neg/.config/mpdasrc"
           if [ -f "/run/secrets/lastfm-username" ] && [ -f "/run/secrets/lastfm-password" ]; then
-            USERNAME="$(cat /run/secrets/lastfm-username | tr -d '\n')"
-            PASSWORD="$(cat /run/secrets/lastfm-password | tr -d '\n')"
+            USERNAME="$(cat /run/secrets/lastfm-username | tr -d '\''\n'\'')"
+            PASSWORD="$(cat /run/secrets/lastfm-password | tr -d '\''\n'\'')"
             cat > "$CONFIG_FILE" << EOF
         host = localhost
         port = 6600

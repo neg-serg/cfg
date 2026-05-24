@@ -175,7 +175,7 @@ chmod +x "$PROV_SCRIPT"
 
 cat > "$PROV_SCRIPT" << 'PROV_HEADER'
 #!/usr/bin/env bash
-set -euo pipefail
+set -uo pipefail
 red()   { echo -e "\033[31m$*" >&2; }
 green() { echo -e "\033[32m$*"; }
 cyan()  { echo -e "\033[36m$*"; }
@@ -183,6 +183,7 @@ HOME_DIR=/home/neg
 
 # Fix permissions first (systemd service may not have run yet)
 sudo chown -R neg:users "$HOME_DIR/.config" "$HOME_DIR/.local" 2>/dev/null || true
+mkdir -p "$HOME_DIR/.config/age" "$HOME_DIR/.config/gopass" "$HOME_DIR/.local/share" 2>/dev/null || true
 PROV_HEADER
 
 # ── Age key ──
@@ -214,8 +215,8 @@ if [ -n "$GOPASS_DIR" ] && [ -d "$GOPASS_DIR/.git" ]; then
 cyan "── Setting up gopass password store ──"
 if [ -f /tmp/gopass.tar.gz ] && [ -f "$HOME_DIR/.config/age/key.txt" ]; then
     mkdir -p "$HOME_DIR/.local/share"
-    tar xzf /tmp/gopass.tar.gz -C "$HOME_DIR/.local/share/"
-    chown -R neg:users "$HOME_DIR/.local/share/pass"
+    tar xzf /tmp/gopass.tar.gz -C "$HOME_DIR/.local/share/" 2>/dev/null || true
+    chown -R neg:users "$HOME_DIR/.local/share/pass" 2>/dev/null || true
 
     # Copy GPG keys if available
     if [ -f /tmp/gnupg.tar.gz ]; then
@@ -229,7 +230,7 @@ if [ -f /tmp/gopass.tar.gz ] && [ -f "$HOME_DIR/.config/age/key.txt" ]; then
     mkdir -p "$HOME_DIR/.config/gopass"
 
     # Configure gopass manually (no gopass setup — that's interactive)
-    cat > "$HOME_DIR/.config/gopass/config" << GOPASS_CFG
+    cat > "$HOME_DIR/.config/gopass/config" << GOPASS_CFG || true
 autoclip = false
 autosync = false
 cliptimeout = 45
@@ -244,7 +245,7 @@ usesymbols = false
 GOPASS_CFG
 
     # Set age identity path
-    echo "$HOME_DIR/.config/age/key.txt" > "$HOME_DIR/.config/gopass/age-identities" 2>/dev/null
+    echo "$HOME_DIR/.config/age/key.txt" > "$HOME_DIR/.config/gopass/age-identities" 2>/dev/null || true
 
     green "  gopass store deployed from host"
 fi

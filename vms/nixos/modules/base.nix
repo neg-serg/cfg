@@ -109,6 +109,7 @@
     };
     script = ''
       chown -R neg:users /home/neg/.config 2>/dev/null || true
+      chown neg:users /home/neg/.local /home/neg/.local/share 2>/dev/null || true
       mkdir -p /home/neg/.config/age
       chmod 700 /home/neg/.config/age
       chown neg:users /home/neg/.config/age
@@ -123,6 +124,8 @@
     "d /home/neg/dw 0755 neg users -"
     "d /home/neg/.local/share/pass 0700 neg users -"
     "d /home/neg/.local/share/gnupg 0700 neg users -"
+    "z /home/neg/.local 0755 neg users -"
+    "z /home/neg/.local/share 0755 neg users -"
   ];
 
   # Swap (4GB swapfile on root)

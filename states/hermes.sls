@@ -35,3 +35,9 @@ hermes_gateway_service:
     - runas: {{ user }}
     - require:
       - file: hermes_home_dirs
+
+hermes_httpx_socks:
+  cmd.run:
+    - name: /opt/hermes-agent/venv/bin/python -m pip install httpx-socks
+    - unless: /opt/hermes-agent/venv/bin/python -c 'import httpx_socks' 2>/dev/null
+    - runas: root

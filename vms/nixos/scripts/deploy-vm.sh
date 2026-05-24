@@ -195,7 +195,40 @@ green "  Age key deployed"
 PROV_AGE
 fi
 
-# ── Chezmoi from local dotfiles ──
+# ── Gopass (must come BEFORE chezmoi) ──
+if [ -n "$GOPASS_DIR" ] && [ -d "$GOPASS_DIR/.git" ]; then
+    PASS_TARBALL=/tmp/nixos-gopass.tar.gz
+    tar czf "$PASS_TARBALL" -C "$(dirname "$GOPASS_DIR")" "$(basename "$GOPASS_DIR")" 2>/dev/null
+
+    cat >> "$PROV_SCRIPT" << 'PROV_GOPASS'
+cyan "── Setting up gopass password store ──"
+if [ -f /tmp/gopass.tar.gz ] && [ -f "$HOME_DIR/.config/age/key.txt" ]; then
+    mkdir -p "$HOME_DIR/.local/share"
+    tar xzf /tmp/gopass.tar.gz -C "$HOME_DIR/.local/share/"
+    chown -R neg:users "$HOME_DIR/.local/share/pass"
+
+    # Init gopass with existing store and age key — non-interactive
+    export PASSWORD_STORE_DIR="$HOME_DIR/.local/share/pass"
+    export GOPASS_HOME="$HOME_DIR/.config/gopass"
+    export AGE_KEY_FILE="$HOME_DIR/.config/age/key.txt"
+
+    gopass init --crypto age --storage gitfs --path "$PASSWORD_STORE_DIR" 2>/dev/null || true
+    gopass git init 2>/dev/null || true
+
+    # Import the age identity for decryption
+    cat > "$HOME_DIR/.config/gopass/age-identities" << IDENTITIES
+$HOME_DIR/.config/age/key.txt
+IDENTITIES
+
+    green "  gopass store deployed from host"
+fi
+PROV_GOPASS
+
+    scp $SCP_OPTS -i "$SSH_KEY" "$PASS_TARBALL" "$SSH_HOST:/tmp/gopass.tar.gz" 2>/dev/null
+    rm -f "$PASS_TARBALL"
+fi
+
+# ── Chezmoi from local dotfiles (runs AFTER gopass is ready) ──
 if [ -n "$DOTFILES_DIR" ] && [ -d "$DOTFILES_DIR" ]; then
     DOT_TARBALL=/tmp/nixos-dotfiles.tar.gz
     tar czf "$DOT_TARBALL" -C "$(dirname "$DOTFILES_DIR")" "$(basename "$DOTFILES_DIR")" 2>/dev/null
@@ -206,9 +239,12 @@ if [ -f /tmp/dotfiles.tar.gz ]; then
     mkdir -p "$HOME_DIR/.local/share"
     tar xzf /tmp/dotfiles.tar.gz -C "$HOME_DIR/.local/share/"
     chown -R neg:users "$HOME_DIR/.local/share/dotfiles"
+
+    # chezmoi with gopass support — templates can now resolve gopass secrets
+    export PASSWORD_STORE_DIR="$HOME_DIR/.local/share/pass"
     chezmoi init --apply --source "$HOME_DIR/.local/share/dotfiles" \
         --destination "$HOME_DIR" 2>&1 || true
-    green "  chezmoi dotfiles applied"
+    green "  chezmoi dotfiles applied with gopass secrets"
 else
     cyan "  dotfiles tarball not found — skipped"
 fi
@@ -216,26 +252,6 @@ PROV_CHEZMOI
 
     scp $SCP_OPTS -i "$SSH_KEY" "$DOT_TARBALL" "$SSH_HOST:/tmp/dotfiles.tar.gz" 2>/dev/null
     rm -f "$DOT_TARBALL"
-fi
-
-# ── Gopass ──
-if [ -n "$GOPASS_DIR" ] && [ -d "$GOPASS_DIR/.git" ]; then
-    PASS_TARBALL=/tmp/nixos-gopass.tar.gz
-    tar czf "$PASS_TARBALL" -C "$(dirname "$GOPASS_DIR")" "$(basename "$GOPASS_DIR")" 2>/dev/null
-
-    cat >> "$PROV_SCRIPT" << 'PROV_GOPASS'
-cyan "── Setting up gopass password store ──"
-if [ -f /tmp/gopass.tar.gz ]; then
-    mkdir -p "$HOME_DIR/.local/share"
-    tar xzf /tmp/gopass.tar.gz -C "$HOME_DIR/.local/share/"
-    chown -R neg:users "$HOME_DIR/.local/share/pass"
-    gopass setup --crypto age 2>/dev/null || true
-    green "  gopass store deployed"
-fi
-PROV_GOPASS
-
-    scp $SCP_OPTS -i "$SSH_KEY" "$PASS_TARBALL" "$SSH_HOST:/tmp/gopass.tar.gz" 2>/dev/null
-    rm -f "$PASS_TARBALL"
 fi
 
 # ── Verification ──

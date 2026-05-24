@@ -13,7 +13,7 @@ in
     # linux, linux-headers → nixpkgs provides kernel automatically
 
     # ── desktop (64) ──────────────────────────────────
-    broot
+    broot                          # Tree-based file explorer
     chromium
     epiphany
     firefox
@@ -26,24 +26,24 @@ in
     gnome-color-manager
     gnome-connections
     gnome-console
-    dunst
-    grim
-    hypridle
-    hyprland
-    hyprlock
-    hyprpicker
+    dunst                          # Notification daemon
+    grim                           # Wayland screenshot tool
+    hypridle                       # Hyprland idle daemon
+    hyprland                       # Dynamic tiling Wayland compositor
+    hyprlock                       # Hyprland screen locker
+    hyprpicker                     # Hyprland color picker
     xdg-desktop-portal-hyprland
-    eza
+    eza                            # Modern ls replacement
     matugen
     rmpc
-    rofi
+    rofi                           # Application launcher (X11/Wayland)
     loupe
-    satty
-    slurp
-    swayimg
-    wl-clipboard
-    wlr-randr
-    yazi
+    satty                          # Screenshot annotation tool
+    slurp                          # Wayland region selector
+    swayimg                        # Wayland image viewer
+    wl-clipboard                   # Wayland clipboard tools (wl-copy, wl-paste)
+    wlr-randr                      # Wayland output management CLI
+    yazi                           # Terminal file manager
     # ark, gnome-contacts, gnome-control-center, gnome-disk-utility,
     # gnome-font-viewer, gnome-keyring, gnome-logs, gnome-maps, gnome-menus,
     # gnome-music, gnome-remote-desktop, gnome-session, gnome-settings-daemon,
@@ -62,56 +62,59 @@ in
     # satty → (already above)
     # television → terminal file manager: nixpkgs has 'television'
     swayosd
-    wofi
+    wofi                           # Wayland launcher menu (like rofi)
     xdg-user-dirs-gtk
     xdg-utils
     yelp
 
     # ── dev (25) ───────────────────────────────────────
-    clang
-    cmake
-    gdb
-    meson
-    ninja
+    cargo          # Rust package manager — builds rustc too
+    clang                          # C/C++/ObjC compiler (LLVM)
+    cmake                          # Cross-platform build system
+    difftastic      # Structural diff tool (understands syntax, not just lines)
+    go             # Go programming language (golang compiler + tools)
+    gdb                            # GNU debugger
+    meson                          # Fast build system (Python/Ninja)
+    ninja                          # Small build system (used by Meson)
     openblas
-    luaPackages.fennel
-    git
-    lua-language-server
-    lua5_3
-    patchelf
-    neovim
-    nodejs
+    luaPackages.fennel             # Lisp that compiles to Lua (luaPackages)
+    git                            # Distributed version control system
+    lua-language-server            # Lua language server (LSP)
+    lua5_3                         # Lua 5.3 programming language
+    patchelf                       # ELF binary patching tool
+    neovim                         # Modern Vim fork
+    nodejs                         # JavaScript runtime (Node.js)
 
-    pipx
+    pipx                           # Install Python tools in isolated environments
     (python3.withPackages (ps: with ps; [
       pyperclip textual poetry orjson numpy
     ]))
-    ruby
-    subversion
-    uv
-    vale
+    ruby                           # Ruby programming language
+    subversion                     # Apache Subversion (SVN) VCS
+    uv                             # Python package manager (Rust, pip replacement)
+    vale                           # Prose linter (documentation style)
     # Additional common build tools (arch base-devel equivalent)
-    gnumake
+    gnumake                        # GNU Make build system
     binutils
-    gcc
-    pkg-config
-    autoconf
-    automake
-    libtool
-    flex
-    bison
+    gcc                            # GNU C/C++ compiler
+    pkg-config                     # Library dependency resolver
+    autoconf                       # GNU Autoconf — portable configure scripts
+    automake                       # GNU Automake — Makefile generator
+    libtool                        # GNU Libtool — library support tool
+    flex                           # Lexical analyzer generator (lex replacement)
+    bison                          # Parser generator (yacc replacement)
 
     # ── network (14) ───────────────────────────────────
-    curl
-    firewalld
-    networkmanager
-    bluez
-    nmap
-    openssh
-    tailscale
-    wget
+    curl                           # HTTP client and data transfer tool
+    firewalld                      # Firewall management daemon
+    networkmanager                 # Network management daemon
+    bluez                          # Bluetooth protocol stack + tools
+    nmap                           # Network scanner and discovery tool
+    openssh                        # SSH client and server
+    tailscale                      # Mesh VPN
+    wget                           # HTTP download tool
     nethogs
-    networkmanagerapplet
+    networkmanagerapplet           # NetworkManager tray applet
     # cloudflare-speed-cli → nixpkgs: cloudflare-warp?
     # ufw → use firewalld above
     # proton-vpn-cli → custom/aur; omit for now
@@ -122,13 +125,13 @@ in
     pavucontrol
 
     # ── media (10) ─────────────────────────────────────
-    ffmpeg
+    ffmpeg                         # Multimedia converter/processor
     ffmpegthumbnailer
     gst_all_1.gst-libav
     gst_all_1.gst-plugins-bad
     gst_all_1.gst-plugins-ugly
-    imagemagick
-    mpv
+    imagemagick                    # Image manipulation suite
+    mpv                            # Media player
     grilo-plugins
     rygel
 
@@ -143,19 +146,19 @@ in
     nethack
 
     # ── system (23) ────────────────────────────────────
-    bottom
-    btop
-    htop
+    bottom                         # Graphical system monitor (btm)
+    btop                           # Resource monitor
+    htop                           # Interactive process viewer
     lsof
     lvm2
     parted
-    strace
-    sysstat
+    strace                         # System call tracer
+    sysstat                        # System performance monitoring (sar, iostat)
     cups
     rsync
     samba
-    slirp4netns
-    skopeo
+    slirp4netns                    # User-mode networking for containers
+    skopeo                         # Container image inspection tool
     system-config-printer
     zram-generator
     # xorg-server, xorg-xinit, xf86-video-amdgpu/ati → VM: not needed
@@ -163,20 +166,20 @@ in
     # gdm → use greetd
 
     # ── other (309) ────────────────────────────────────
-    abduco
-    age
-    age-plugin-yubikey
+    abduco          # Terminal session manager (like screen/tmux, but minimal)
+    age             # Simple, modern file encryption tool
+    age-plugin-yubikey # age plugin for YubiKey-backed encryption
     android-tools
     aria2
     asciinema
     atop
-    avahi
-    nssmdns
-    bandwhich
-    bat
+    avahi                          # mDNS/DNS-SD (zeroconf) daemon
+    nssmdns                        # mDNS hostname resolution via nsswitch
+    bandwhich                      # Bandwidth utilization TUI
+    bat                            # cat replacement with syntax highlighting
     beets
     blender
-    borgbackup
+    borgbackup                     # Deduplicating backup tool
     bpftrace
     carla
     cava
@@ -184,27 +187,27 @@ in
     yubikey-manager
     cdparanoia
     chafa
-    chezmoi
-    choose
+    chezmoi                        # Dotfile manager (declarative)
+    choose                         # cut and awk replacement
     chromaprint
-    cliphist
+    cliphist                       # Wayland clipboard manager
     convmv
     corectrl
     dosbox
     cowsay
     cpufetch
-    ctop
-    curlie
+    ctop                           # Container metrics TUI
+    curlie                         # curl wrapper (httpie output)
     dash
     ddrescue
     dhcpcd
     diff-so-fancy
-    difftastic
+    difftastic                     # Structural diff tool
     direnv
     distrobox
-    dive
-    dnsmasq
-    doggo
+    dive                           # Docker image layer analysis TUI
+    dnsmasq                        # Lightweight DNS/DHCP/TFTP server
+    doggo                          # Modern DNS client
     dos2unix
     dust
     efibootmgr
@@ -213,68 +216,70 @@ in
     entr
     erdtree
     expect
-    fastfetch
+    fastfetch                      # Neofetch replacement
     fclones
-    fd
+    fd                             # Fast file search replacement
     figlet
-    fio
+    fio                            # Flexible I/O tester/benchmark
     fortune
     fping
     freerdp
     fwupd
-    fzf
+    fzf                            # Fuzzy finder for the terminal
     genact
     geoip
-    gist
-    git-crypt
+    gist                           # GitHub Gist CLI tool
+    git-crypt                      # Transparent git file encryption
     delta  # git-delta — nixpkgs name is 'delta'
-    git-filter-repo
-    gh
-    gitleaks
-    git-lfs
-    ghostty
+    difftastic      # Structural diff tool (understands syntax)
+    docker          # Container runtime (CLI + daemon)
+    git-filter-repo                # Git repository rewriting tool
+    gh                             # GitHub CLI (pull requests, issues, etc)
+    gitleaks                       # Git secret scanner (pre-commit hooks)
+    git-lfs                        # Git Large File Storage extension
+    ghostty                        # GPU-accelerated terminal emulator
     glow
     goaccess
-    gopass
-    yq-go
+    gopass                         # Password manager with git/age backend
+    yq-go                          # YAML/JSON/XML processor
     gptfdisk
     graphviz
-    grex
+    grex                           # Regex generator from examples
     gvfs
     hashcat
-    helix
+    helix                          # Modal text editor
     hexyl
     himalaya
-    htmlq
-    httpie
+    htmlq                          # HTML query tool (like jq for HTML)
+    httpie                         # User-friendly HTTP client
     hunspellDicts.ru-ru
     hwinfo
-    hyperfine
+    hyperfine                      # Command-line benchmarking tool
     id3v2
     iftop
     inotify-tools
     ioping
     iotop
-    iperf3
+    iperf3                         # Network bandwidth measurement tool
     isync
-    iwd
-    jc
+    iwd                            # Wi-Fi daemon (iNet Wireless Daemon)
+    jc                             # JSON convert output of CLI tools
     jpegoptim
-    jq
-    jujutsu
-    just
+    jq                             # JSON query processor
+    jujutsu                        # Git-compatible VCS (jj), simpler than git
+    just                           # Command runner (like make, simpler)
     kexec-tools
-    kitty
-    kmon
+    kitty                          # GPU-accelerated terminal emulator
+    kmon                           # Kernel module manager TUI
     lbzip2
-    lazygit
+    lazygit                        # Terminal Git UI
     less
     libnotify
     liquidctl
     lldb
     lm_sensors
-    lnav
-    lolcat
+    lnav                           # Log file navigator
+    lolcat                         # Rainbow text colorizer
     lowdown
     lshw
     lsp-plugins
@@ -282,29 +287,29 @@ in
     mediainfo
     libmediaart
     memtester
-    miller
+    miller                         # CSV/JSON/TSV data processor (mlr)
     minicom
     moreutils
-    mpc
-    mpd
+    mpc                            # MPD client (Music Player Daemon)
+    mpd                            # Music Player Daemon (server)
     (python3.withPackages (ps: with ps; [ mutagen ]))
-    mtr
+    mtr                            # Network diagnostic (traceroute + ping)
     multipath-tools
     ncdu
     neomutt
-    nerdctl
+    nerdctl                        # Docker-compatible CLI for containerd
     nicotine-plus
     nuspell
     amdgpu_top
     ollama
-    onefetch
+    onefetch                       # Git repository summary tool
     libressl.nc
     openocd
     openrgb
     optipng
-    ouch
+    ouch                           # Compression/decompression CLI
     parallel
-    pastel
+    pastel                         # Color manipulation tool
     pbzip2
     pcmanfm
     pcsc-tools
@@ -315,9 +320,9 @@ in
     pigz
     plocate
     pngquant
-    podman
-    powertop
-    pre-commit
+    podman                         # Daemonless container engine
+    powertop                       # Power consumption diagnosis tool
+    pre-commit                     # Git pre-commit hook framework
     (python3.withPackages (ps: with ps; [ faker internetarchive ]))
     prettyping
     progress
@@ -327,96 +332,96 @@ in
     qpwgraph
     qrencode
     rawtherapee
-    rclone
+    rclone                         # Cloud storage sync
     recoll
     reptyr
     resvg
-    ripgrep
+    ripgrep                        # Ultra-fast grep replacement
     rlwrap
-    ruff
+    ruff                           # Python linter/formatter (Rust)
     sad
     sbctl
     schedtool
     scour
-    shellcheck
-    shfmt
-    smartmontools
+    shellcheck                     # Shell script static analyzer
+    shfmt                          # Shell script formatter
+    smartmontools                  # S.M.A.R.T. disk monitoring tools
     sops
-    socat
+    socat                          # Multipurpose socket relay tool
     sonic-visualiser
     sox
     sshfs
     sshpass
     streamlink
-    s-tui
+    s-tui                          # Terminal CPU stress + monitor
     sudo
     swappy
     tabiew
-    taplo
-    tcpdump
-    tealdeer
+    taplo                          # TOML formatter/linter
+    tcpdump                        # Packet capture/analysis CLI
+    tealdeer                       # Fast tldr client (man page examples)
     telegram-desktop
     tesseract
     testdisk
     texliveBasic
-    tig
+    tig                            # Text-mode Git repository browser
     tmux
     toilet
     traceroute
     transmission_4
     tree
-    tree-sitter
+    tree-sitter                    # Parser generator for syntax highlighting
     ttyd
     tumbler
     udiskie
     ugrep
     unar
-    unbound
+    unbound                        # Recursive DNS resolver
     unzip
     cpio
-    upower
+    upower                         # Power management abstraction layer
     urlscan
     urlwatch
-    valgrind
+    valgrind                       # Memory debugger/profiler
     vdirsyncer
     virt-manager
     virt-viewer
     viu
-    vnstat
+    vnstat                         # Network traffic monitor
     w3m
-    waypipe
-    wayvnc
-    wev
-    wf-recorder
+    waypipe                        # Wayland remote display (like SSH -X)
+    wayvnc                         # VNC server for Wayland
+    wev                            # Wayland event viewer
+    wf-recorder                    # Wayland screen recorder
     which
-    whois
+    whois                          # Domain/WHOIS lookup client
     wireshark-cli
-    wtype
+    wtype                          # Wayland keystroke injector
     xfsprogs
-    xh
-    yamllint
+    xh                             # HTTP client like httpie
+    yamllint                       # YAML file linter
     ydotool
-    yt-dlp
+    yt-dlp                         # YouTube/video downloader
     zathura
     zbar
-    zellij
+    zellij                         # Terminal multiplexer
     zk
     zmap
-    zoxide
+    zoxide                         # Smarter cd command (frecency-based)
     zsh
-    handlr-regex
+    handlr-regex                   # Default application handler
     i3status
     i3
-    inxi
+    inxi                           # System information script
     nano
     orca
     papers
-    uwsm
+    uwsm                           # Universal Wayland Session Manager
     vim
-    wiremix
+    wiremix                        # MPD visualizer with PipeWire
 
     # ── AUR equivalents in nixpkgs ─────────────────────
-    act
+    act                            # Run GitHub Actions locally
     advancecomp
     claude-code
     cmake-language-server
@@ -436,11 +441,11 @@ in
     patool
     python3Packages.ascii-magic
     python3Packages.rapidgzip
-    scc
+    scc                            # Code line counter (like cloc)
     ttfautohint
     unflac
     wget2
-    wlogout
+    wlogout                        # Wayland logout screen
     wlr-which-key
     xdg-ninja
 
@@ -515,7 +520,7 @@ in
     sing-box
   
     xray
-    niri
+    niri                           # Scrolling-tiling Wayland compositor
     waybar
     buildah
     mako
@@ -533,15 +538,15 @@ in
     jupyter
     texlive.combined.scheme-basic
     # ── Added missing packages (nixpkgs 25.05) ──
-    gh
-    networkmanagerapplet
+    gh                             # GitHub CLI (pull requests, issues, etc)
+    networkmanagerapplet           # NetworkManager tray applet
     noto-fonts-cjk-sans
     hunspellDicts.ru-ru
     iftop
     inotify-tools
     iotop
     perf
-    stress-ng
+    stress-ng                      # CPU/memory/IO stress testing tool
     perlPackages.ImageExifTool
     tesseract4
     tesseract
@@ -557,10 +562,10 @@ in
     v2raya
     sing-box
     wget2
-    wlogout
+    wlogout                        # Wayland logout screen
     wlr-which-key
     xdg-ninja
-    scc
+    scc                            # Code line counter (like cloc)
     par
     jdupes
     neovim-remote
@@ -599,8 +604,8 @@ in
     hishtory
     lutgen
     massren
-    mpdas
-    mpdris2
+    mpdas                          # Last.fm scrobbler for MPD
+    mpdris2                        # MPRIS bridge for MPD
     patool
     pup
     reddix

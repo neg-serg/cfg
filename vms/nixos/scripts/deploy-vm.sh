@@ -287,20 +287,24 @@ if [ -f /tmp/dotfiles.tar.gz ]; then
     green "  chezmoi dotfiles applied with gopass secrets"
 
     # Copy critical configs directly (bypass gopass/gpg templates)
-    for cfg_dir in quickshell hypr zsh bash kitty nvim foot ghostty wezterm; do
-        if [ -d "$HOME_DIR/.local/share/dotfiles/dot_config/$cfg_dir" ]; then
-            cp -r "$HOME_DIR/.local/share/dotfiles/dot_config/$cfg_dir" "$HOME_DIR/.config/" 2>/dev/null || true
-        fi
-    done
+    # First, copy ALL config dirs from dotfiles
+    if [ -d "$HOME_DIR/.local/share/dotfiles/dot_config" ]; then
+        for cfg_dir in "$HOME_DIR/.local/share/dotfiles/dot_config"/*/; do
+            dirname="$(basename "$cfg_dir")"
+            target="$HOME_DIR/.config/$dirname"
+            if [ ! -d "$target" ]; then
+                cp -r "$cfg_dir" "$target" 2>/dev/null || true
+            fi
+        done
+    fi
     # Also copy dotfiles at home root (.zshrc, .zshenv, .bashrc, etc)
     for f in "$HOME_DIR/.local/share/dotfiles"/dot_*; do
+        [ -f "$f" ] || continue
         target_name=".$(basename "$f" | sed 's/^dot_//')"
-        if [ -f "$f" ]; then
-            cp "$f" "$HOME_DIR/$target_name" 2>/dev/null || true
-        fi
+        [ ! -f "$HOME_DIR/$target_name" ] && cp "$f" "$HOME_DIR/$target_name" 2>/dev/null || true
     done
-    chown -R neg:users "$HOME_DIR/.config" "$HOME_DIR/.zshrc" "$HOME_DIR/.zshenv" "$HOME_DIR/.bashrc" 2>/dev/null || true
-    green "  critical configs copied directly"
+    chown -R neg:users "$HOME_DIR/.config" 2>/dev/null || true
+    green "  $(find "$HOME_DIR/.config" -maxdepth 1 -type d | wc -l) config dirs deployed"
 else
     cyan "  dotfiles tarball not found — skipped"
 fi

@@ -1,0 +1,18 @@
+[Unit]
+Description=Game Audio Bridge (Stereo Null Sink -> RME AIO Pro)
+After=pipewire.service pipewire-pulse.service wireplumber.service
+BindsTo=pipewire.service pipewire-pulse.service
+PartOf=pipewire.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart={{ home }}/.local/bin/game-audio-bridge
+ExecStop=-/usr/bin/pw-link -d "game_output:monitor_FL" "{{ rme_node }}:playback_AUX0" 2>/dev/null || true
+ExecStop=-/usr/bin/pw-link -d "game_output:monitor_FR" "{{ rme_node }}:playback_AUX1" 2>/dev/null || true
+ExecStop=-/usr/bin/pactl set-default-sink "{{ rme_node }}" 2>/dev/null || true
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=pipewire.service

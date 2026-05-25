@@ -1,4 +1,4 @@
-{ lib, stdenvNoCC, fetchurl, autoPatchelfHook, }:
+{ lib, stdenvNoCC, fetchurl, }:
 
 stdenvNoCC.mkDerivation rec {
   pname = "reddix";  version = "0.2.9";
@@ -7,15 +7,13 @@ stdenvNoCC.mkDerivation rec {
     sha256 = "sha256-XRGV/mcpv+fUGwx8mq0S4eEcHrlTLWjZcEhh1BMXkgE=";
   };
   sourceRoot = "reddix-x86_64-unknown-linux-gnu";
-  nativeBuildInputs = [ autoPatchelfHook ];
-  dontStrip = true;
   installPhase = ''
     mkdir -p $out/bin
     cp reddix $out/bin/
     chmod +x $out/bin/reddix
   '';
   meta = with lib; {
-    description = "Reddix — Reddit TUI client (Rust)";
+    description = "Reddix — Reddit TUI client (Rust, dynamic)";
     homepage = "https://github.com/ck-zhang/reddix";
     license = licenses.mit;  platforms = [ "x86_64-linux" ];
   };

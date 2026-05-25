@@ -13,3 +13,6 @@
 .config/zen-browser/user.js
 .config/zen-browser/userChrome.css
 .config/zen-browser/themes/
+
+# ProxyPilot config: fully managed by Salt (j2 template + gopass secrets)
+.config/proxypilot/config.yaml

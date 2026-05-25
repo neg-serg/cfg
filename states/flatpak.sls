@@ -27,11 +27,10 @@ include:
 #   2. Uncomment the app loop at the bottom
 #   3. Ensure SOCKS5 proxy is running on 127.0.0.1:10808
 
-{# Flatpak runtime package — disabled for now via onlyif:false #}
-install_flatpak:
-  cmd.run:
-    - name: /bin/true
-    - onlyif: false
+{# Flatpak runtime package — disabled for now #}
+install_flatpak_disabled:
+  test.succeed_without_changes:
+    - comment: "Flatpak installation is disabled (see comment block below)"
 
 {# Flatpak install of apps — disabled #}
 {% for app_id in flatpak.apps %}

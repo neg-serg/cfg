@@ -47,6 +47,7 @@ in
           "WLR_NO_HARDWARE_CURSORS=1"
           "WLR_RENDERER_ALLOW_SOFTWARE=1"
           "XDG_SESSION_TYPE=wayland"
+          "WAYLAND_DISPLAY=wayland-1"
           "DISPLAY="
         ];
       };
@@ -68,7 +69,7 @@ in
       misc { disable_hyprland_logo = true; force_default_wallpaper = 0 }
       animations { enabled = false }
       decoration { blur { enabled = false }; shadow { enabled = false } }
-      exec-once = kitty
+      exec-once = foot
     '';
 
     # Symlink VM config to user home

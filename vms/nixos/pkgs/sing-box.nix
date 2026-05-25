@@ -1,10 +1,4 @@
-{
-  lib,
-  stdenvNoCC,
-  fetchurl,
-  unzip,
-  autoPatchelfHook,
-}:
+{ lib, stdenvNoCC, fetchurl, autoPatchelfHook, }:
 
 stdenvNoCC.mkDerivation rec {
   pname = "sing-box";
@@ -12,17 +6,16 @@ stdenvNoCC.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/SagerNet/sing-box/releases/download/v${version}/sing-box-${version}-linux-amd64.tar.gz";
-    sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    sha256 = "sha256-FUBTOts98k9a1fFLXHyj28JAGxChwesnj8rcraR+xsQ=";
   };
 
-  sourceRoot = ".";
+  sourceRoot = "sing-box-${version}-linux-amd64";
   nativeBuildInputs = [ autoPatchelfHook ];
-
-  buildInputs = [ unzip ];
 
   installPhase = ''
     mkdir -p $out/bin
-    mv sing-box $out/bin/
+    cp sing-box $out/bin/sing-box
+    chmod +x $out/bin/sing-box
   '';
 
   meta = with lib; {

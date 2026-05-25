@@ -644,4 +644,12 @@ in
     # tesseract-data-rus                     # Tesseract Russian language data
     # transmission (check)
     # turbostat                              # Intel CPU turbo/energy status monitor
-
+    # fortune-mod (not found in nixpkgs)
+    # graphviz (not found in nixpkgs)
+    # hyprpolkitagent (not in nixpkgs)
+    # libpulseaudio (not in nixpkgs)
+    # nvtop (not in nixpkgs)
+    # pass (use gopass instead)
+    # perl-Image-ExifTool (not in nixpkgs)
+    # tesseract (not found in nixpkgs)
+    # transmission (not found in nixpkgs)

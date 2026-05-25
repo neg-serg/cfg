@@ -17,6 +17,8 @@ let
     iosevka-neg-fonts = final.callPackage ./iosevka-neg-fonts.nix {};
     vicinae-bin     = final.callPackage ./vicinae-bin.nix {};
     zen-browser     = final.callPackage ./zen-browser.nix {};
+    geoip-database = final.callPackage ./geoip-database.nix {};
+    fortune-mod     = prev.fortune-mod;
   };
 in
 {

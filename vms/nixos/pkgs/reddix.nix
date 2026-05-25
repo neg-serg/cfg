@@ -8,9 +8,10 @@ stdenvNoCC.mkDerivation rec {
   };
   sourceRoot = "reddix-x86_64-unknown-linux-gnu";
   nativeBuildInputs = [ autoPatchelfHook ];
+  dontStrip = true;
   installPhase = ''
     mkdir -p $out/bin
-    cp reddix $out/bin/reddix
+    cp reddix $out/bin/
     chmod +x $out/bin/reddix
   '';
   meta = with lib; {

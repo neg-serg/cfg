@@ -6,11 +6,11 @@ stdenvNoCC.mkDerivation rec {
     url = "https://github.com/ck-zhang/reddix/releases/download/v${version}/reddix-x86_64-unknown-linux-gnu.tar.xz";
     sha256 = "sha256-XRGV/mcpv+fUGwx8mq0S4eEcHrlTLWjZcEhh1BMXkgE=";
   };
-  sourceRoot = "reddix-x86_64-unknown-linux-gnu";
+  sourceRoot = ".";
   nativeBuildInputs = [ autoPatchelfHook ];
   installPhase = ''
     mkdir -p $out/bin
-    cp reddix $out/bin/
+    [ -f reddix ] && cp reddix $out/bin/ || cp reddix-x86_64-unknown-linux-gnu/reddix $out/bin/
     chmod +x $out/bin/reddix
   '';
   meta = with lib; {

@@ -168,7 +168,7 @@ system:
 other:
 - abduco
 - age                            # Simple modern file encryption (Go)
-- albumdetails
+- albumdetails                   # Music album metadata viewer CLI
 - android-tools
 - aria2                          # Download utility supporting multiple protocols
 - asciinema
@@ -279,7 +279,7 @@ other:
 - iftop                          # Network bandwidth by connection (top-like)
 - inotify-tools                  # File event monitoring CLI tools (inotify)
 - ioping
-- iosevka-neg-fonts
+- iosevka-neg-fonts              # Custom Iosevka font variant (Nergo)
 - iotop-c
 - iperf3                         # Network bandwidth measurement tool
 - isync
@@ -327,7 +327,7 @@ other:
 - nuspell
 - nvtop
 - amdgpu_top
-- ollama
+- ollama                         # Local LLM runner (llama.cpp wrapper, Go)
 - ollama-vulkan
 - onefetch                       # Git repository summary tool (Rust)
 - openbsd-netcat
@@ -368,7 +368,7 @@ other:
 - recoll
 - reptyr
 - resvg
-- richcolors
+- richcolors                     # Terminal true-color generator (256-colors)
 - ripgrep                        # Ultra-fast grep replacement (Rust)
 - rlwrap
 - ruff                           # Python linter and formatter (Rust)
@@ -470,13 +470,13 @@ other:
 - snapshot
 - ssh-to-age                     # Convert SSH keys to age keys
 - ssh-to-age-debug
-- taoup
+- taoup                          # Terminal-based ASCII/Unicode art generator
 - tecla
 - uwsm                           # Universal Wayland Session Manager
 - vim                            # Classic modal text editor
 - wiremix                        # MPD visualizer with PipeWire support
 aur:
-  - hermes-agent
+  - hermes-agent                   # Hermes AI agent (Nous Research assistant)
   - amdgpu-vulkan-switcher-git
   - amdvlk-bin
   - lib32-amdvlk-bin
@@ -489,7 +489,7 @@ aur:
   - claude-code
   - cmake-language-server
   - dcfldd
-  - ddccontrol
+  - ddccontrol                     # DDC/CI monitor control (brightness, input, etc.)
   - dool
   - dualsensectl                   # DualSense controller CLI tool
   - eilmeldung-bin
@@ -497,7 +497,7 @@ aur:
   - v2raya-bin
   - v2rayn-bin
   - v2ray
-  - vicinae-bin
+  - vicinae-bin                    # Qt6 launcher/dashboard (prebuilt binary)
   - fsel-bin
   - epr-git
   - freeze-bin
@@ -510,24 +510,24 @@ aur:
   - hishtory-bin
   - hxd
   - hw-probe                       # Hardware probe and upload to linux-hardware.org
-  - hyprscratch
-  - instagram-cli
+  - hyprscratch                    # Hyprland scratchpad manager (Rust)
+  - instagram-cli                  # Instagram CLI viewer/downloader (Rust)
   - jdupes
   - localsend-bin
   - lazytail-bin
   - lutgen-bin
-  - massren
+  - massren                        # Mass file renamer (Rust)
   - mpdris2-git
   - mpdas                          # Last.fm scrobbler for MPD
-  - neo-matrix
+  - neo-matrix                     # Matrix digital rain screensaver (C, neofetch-like)
   - neovim-remote
   - newsraft
   - no-more-secrets
   - oh-my-posh
-  - otter-launcher
+  - otter-launcher                 # Application launcher (Qt, Otter Browser companion)
   - oports-git
   - oyo
-  - par
+  - par                            # Paragraph reformatter (text formatting CLI)
   - patool
   - paru
   - paru-debug
@@ -539,22 +539,22 @@ aur:
   - quickshell                     # QtQuick-based Wayland shell environment
   - reddix-bin
   - repeater-bin
-  - regex-tui
+  - regex-tui                      # Regex tester/editor (TUI, Rust)
   - raysession                     # JACK audio session manager
   - resterm-bin
   - rmlint                         # Duplicate file finder (C)
   - rofi-file-browser-extended-git
   - rofi-file-browser-extended-git-debug
-  - rustmission
+  - rustmission                    # Rust BitTorrent client (TUI)
   - scc                            # Code line counter like cloc (Go)
-  - songfetch
+  - songfetch                      # Song info fetcher (MPD/Last.fm, Rust)
   - simutil-bin
   - sing-box-bin
   - strace-tui-bin
   - systemd-manager-tui
   - tanin-git
   - tessen                         # 2FA/HOTP/TOTP CLI (Python)
-  - tmmpr
+  - tmmpr                          # Twitch/Trovo/YouTube chat reader (TUI)
   - ttfautohint
   - unflac
   - watchtower-bin
@@ -562,10 +562,10 @@ aur:
   - wget2
   - wlogout                        # Wayland logout screen
   - wlr-which-key
-  - xdg-ninja
+  - xdg-ninja                      # Fix XDG base directory compliance for apps
   - youtube-tui
   - ytsurf                         # CLI YouTube player/downloader
-  - bazecor
+  - bazecor                        # Dygma Raise keyboard configurator (GUI)
   - python-telethon
   - zapret2                        # DPI bypass tool (discord, youtube, etc.)
   - zen-browser-bin                # Zen Browser (Firefox fork, prebuilt binary)

@@ -532,6 +532,7 @@ aur:
   - paru
   - paru-debug
   - pipemixer-git
+  - pixora-icons-git                 # 16-bit pixel art style icons theme
   - proton-ge-custom-bin
   - pup-bin
   - python-ascii_magic

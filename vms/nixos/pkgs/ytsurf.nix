@@ -6,7 +6,7 @@ stdenvNoCC.mkDerivation rec {
   pname = "ytsurf";  version = "3.1.7";
   src = fetchurl {
     url = "https://github.com/Stan-breaks/ytsurf/archive/refs/tags/v${version}.tar.gz";
-    sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    sha256 = "sha256-umHon8Z0jIIwMN7IQG5MJSKqK7KU22ChQeU7lea7DiI=";
   };
   installPhase = ''
     mkdir -p $out/bin

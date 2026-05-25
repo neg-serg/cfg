@@ -113,6 +113,7 @@ in
     nmap                           # Network scanner and discovery tool
     openssh                        # SSH client and server
     tailscale                      # Mesh VPN
+    syncthing                      # P2P file synchronization daemon
     wget                           # HTTP download tool
     nethogs                        # Network bandwidth by process (top-like)
     networkmanagerapplet           # NetworkManager tray applet

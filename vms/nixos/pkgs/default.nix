@@ -27,6 +27,8 @@ let
     sing-box             = final.callPackage ./sing-box.nix {};
     turbostat            = final.callPackage ./turbostat.nix {};
     xray                 = final.callPackage ./xray.nix {};
+    hermes-agent         = final.callPackage ./hermes-agent.nix {};
+    v2raya               = final.callPackage ./v2raya.nix {};
     ytsurf               = final.callPackage ./ytsurf.nix {};
     zapret2              = final.callPackage ./zapret2.nix {};
   };

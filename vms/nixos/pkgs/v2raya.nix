@@ -4,7 +4,7 @@ stdenvNoCC.mkDerivation rec {
   pname = "v2raya";  version = "2.2.7.5";
   src = fetchurl {
     url = "https://github.com/v2rayA/v2rayA/releases/download/v${version}/v2raya_linux_x64_${version}";
-    sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    sha256 = "sha256-M7wfTu4PIbBqjhOTswZoO2ISM8MSPyup1/QFDOfVXTM=";
   };
   dontUnpack = true;
   nativeBuildInputs = [ autoPatchelfHook ];

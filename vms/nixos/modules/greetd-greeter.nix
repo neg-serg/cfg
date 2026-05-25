@@ -70,6 +70,7 @@ in
       animations { enabled = false }
       decoration { blur { enabled = false }; shadow { enabled = false } }
       exec-once = foot
+      exec-always = env WAYLAND_DISPLAY=wayland-1 foot --server 2>/dev/null || true
     '';
 
     # Symlink VM config to user home

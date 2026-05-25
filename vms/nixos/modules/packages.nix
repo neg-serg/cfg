@@ -353,8 +353,7 @@ in
     sox                            # Sound eXchange (audio CLI tool)
     sshfs                          # FUSE-based SSH filesystem
     sshpass
-    streamlink
-    s-tui                          # Terminal CPU stress + monitor
+    # streamlink (check nixpkgs)
     sudo
     swappy                         # Wayland screenshot editor (Rust)
     tabiew
@@ -374,7 +373,7 @@ in
     ttyd
     tumbler
     udiskie
-    ugrep                          # Ultra-fast grep with TUI (C++)
+    # ugrep (check nixpkgs)
     # unar (not in nixpkgs)
     unzip
     cpio
@@ -647,4 +646,7 @@ in
     # perl-Image-ExifTool (in python section)
     # tesseract (in python section)
     # transmission (in python section)
+    # restic (check nixpkgs)
+    # s-tui (overlay needed)
+    # go-yq (overlay needed)    # hermes-agent (overlay)    # pandoc-cli (overlay)    # proxypilot (custom overlay needed)
 

@@ -18,9 +18,9 @@ in
     epiphany                       # GNOME web browser (WebKit)
     firefox                        # Web browser
     gimp                           # GNU Image Manipulation Program
-    gnome-backgrounds
-    gnome-calculator
-    gnome-calendar
+    gnome-backgrounds              # GNOME wallpapers
+    gnome-calculator               # GNOME calculator app
+    gnome-calendar                 # GNOME calendar app
     gnome-characters
     gnome-clocks
     gnome-color-manager
@@ -32,12 +32,12 @@ in
     hyprland                       # Dynamic tiling Wayland compositor
     hyprlock                       # Hyprland screen locker
     hyprpicker                     # Hyprland color picker
-    xdg-desktop-portal-hyprland
+    xdg-desktop-portal-hyprland    # XDG desktop portal backend for Hyprland
     eza                            # Modern ls replacement
-    matugen
-    rmpc
+    matugen                        # Material You color generator
+    rmpc                           # Terminal MPD client (Rust/NCurses)
     rofi                           # Application launcher (X11/Wayland)
-    loupe
+    loupe                          # GNOME image viewer
     satty                          # Screenshot annotation tool
     slurp                          # Wayland region selector
     swayimg                        # Wayland image viewer
@@ -53,18 +53,18 @@ in
     # → Minimal VM: omit full GNOME desktop; Hyprland-only target
     gnome-control-center
     gnome-disk-utility
-    gnome-keyring
-    gnome-system-monitor
-    gnome-text-editor
-    gnome-tweaks
-    nautilus
+    gnome-keyring                  # GNOME Keyring (secrets storage)
+    gnome-system-monitor           # GNOME task manager
+    gnome-text-editor              # GNOME text editor
+    gnome-tweaks                   # GNOME advanced settings
+    nautilus                       # GNOME file manager
     # cosmic-greeter → replaced by greetd (DESKTOP module)
     # satty → (already above)
     # television → terminal file manager: nixpkgs has 'television'
-    swayosd
+    swayosd                        # OSD overlay for Wayland (volume/brightness)
     wofi                           # Wayland launcher menu (like rofi)
     xdg-user-dirs-gtk
-    xdg-utils
+    xdg-utils                      # XDG desktop integration utilities
     yelp
 
     # ── dev (25) ───────────────────────────────────────
@@ -174,7 +174,7 @@ in
     android-tools
     aria2                          # Download utility supporting multiple protocols
     asciinema
-    atop
+    atop                           # System resource monitor (advanced top)
     avahi                          # mDNS/DNS-SD (zeroconf) daemon
     nssmdns                        # mDNS hostname resolution via nsswitch
     bandwhich                      # Bandwidth utilization TUI
@@ -185,7 +185,7 @@ in
     bpftrace
     carla                          # Audio plugin host (LV2/VST2/DSSI)
     cava                           # Console audio visualizer
-    ccid
+    ccid                           # Chip/Smart Card interface driver (PC/SC)
     yubikey-manager
     cdparanoia                     # CD audio ripping tool
     chafa                          # Terminal image viewer/probe
@@ -215,13 +215,13 @@ in
     efibootmgr
     elfutils
     enca
-    entr
+    entr                           # Run command when file changes
     erdtree
     expect
     fastfetch                      # Neofetch replacement
-    fclones
+    fclones                        # Duplicate file finder and cleaner (Rust)
     fd                             # Fast file search replacement
-    figlet
+    figlet                         # ASCII art text banner generator
     fio                            # Flexible I/O tester/benchmark
     fortune
     fping
@@ -247,26 +247,26 @@ in
     gptfdisk
     graphviz
     grex                           # Regex generator from examples
-    gvfs
+    gvfs                           # GNOME virtual filesystem
     hashcat
     helix                          # Modal text editor
-    hexyl
+    hexyl                          # Hex viewer with colored output (Rust)
     himalaya                       # Email CLI client (Rust)
     htmlq                          # HTML query tool (like jq for HTML)
     httpie                         # User-friendly HTTP client
     hunspellDicts.ru-ru
-    hwinfo
+    hwinfo                         # Hardware information probe
     hyperfine                      # Command-line benchmarking tool
     id3v2
     iftop                          # Network bandwidth by connection (top-like)
-    inotify-tools
+    inotify-tools                  # File event monitoring CLI tools (inotify)
     ioping
     iotop
     iperf3                         # Network bandwidth measurement tool
     isync
     iwd                            # Wi-Fi daemon (iNet Wireless Daemon)
     jc                             # JSON convert output of CLI tools
-    jpegoptim
+    jpegoptim                      # JPEG image optimizer
     jq                             # JSON query processor
     jujutsu                        # Git-compatible VCS (jj), simpler than git
     just                           # Command runner (like make, simpler)
@@ -278,7 +278,7 @@ in
     less
     libnotify
     liquidctl
-    lldb
+    lldb                           # LLVM debugger
     lm_sensors
     lnav                           # Log file navigator
     lolcat                         # Rainbow text colorizer
@@ -286,18 +286,18 @@ in
     lshw
     lsp-plugins
     man-pages
-    mediainfo
+    mediainfo                      # Media file metadata viewer
     libmediaart
     memtester
     miller                         # CSV/JSON/TSV data processor (mlr)
-    minicom
+    minicom                        # Serial communication terminal
     moreutils
     mpc                            # MPD client (Music Player Daemon)
     mpd                            # Music Player Daemon (server)
     (python3.withPackages (ps: with ps; [ mutagen ]))
     mtr                            # Network diagnostic (traceroute + ping)
     multipath-tools
-    ncdu
+    ncdu                           # NCurses disk usage analyzer
     neomutt                        # Mutt email client fork with modern features
     nerdctl                        # Docker-compatible CLI for containerd
     nicotine-plus
@@ -321,15 +321,15 @@ in
     picard
     pigz
     plocate
-    pngquant
+    pngquant                       # PNG image compressor
     podman                         # Daemonless container engine
     powertop                       # Power consumption diagnosis tool
     pre-commit                     # Git pre-commit hook framework
     (python3.withPackages (ps: with ps; [ faker internetarchive ]))
     prettyping
-    progress
-    pv
-    pwgen
+    progress                       # Progress viewer for coreutils (C)
+    pv                             # Pipe viewer (progress monitor)
+    pwgen                          # Password generator
     qemu
     qpwgraph
     qrencode
@@ -351,32 +351,32 @@ in
     sops
     socat                          # Multipurpose socket relay tool
     sonic-visualiser
-    sox
-    sshfs
+    sox                            # Sound eXchange (audio CLI tool)
+    sshfs                          # FUSE-based SSH filesystem
     sshpass
     streamlink
     s-tui                          # Terminal CPU stress + monitor
     sudo
-    swappy
+    swappy                         # Wayland screenshot editor (Rust)
     tabiew
     taplo                          # TOML formatter/linter
     tcpdump                        # Packet capture/analysis CLI
     tealdeer                       # Fast tldr client (man page examples)
-    telegram-desktop
+    telegram-desktop               # Telegram messenger desktop client
     tesseract
     testdisk
     texliveBasic
     tig                            # Text-mode Git repository browser
     tmux
-    toilet
+    toilet                         # ASCII art text banner (FIGlet alternative)
     traceroute
     transmission_4
-    tree
+    tree                           # Directory tree viewer
     tree-sitter                    # Parser generator for syntax highlighting
     ttyd
     tumbler
     udiskie
-    ugrep
+    ugrep                          # Ultra-fast grep with TUI (C++)
     unar
     unbound                        # Recursive DNS resolver
     unzip
@@ -386,8 +386,8 @@ in
     urlwatch
     valgrind                       # Memory debugger/profiler
     vdirsyncer                     # CalDAV/CardDAV sync tool
-    virt-manager
-    virt-viewer
+    virt-manager                   # Virtual machine manager (libvirt GUI)
+    virt-viewer                    # SPICE/VNC viewer for VMs
     viu
     vnstat                         # Network traffic monitor
     w3m
@@ -404,7 +404,7 @@ in
     yamllint                       # YAML file linter
     ydotool
     yt-dlp                         # YouTube/video downloader
-    zathura
+    zathura                        # Minimal document viewer (PDF/EPUB/DJVU)
     zbar
     zellij                         # Terminal multiplexer
     zk
@@ -415,11 +415,11 @@ in
     i3status
     i3
     inxi                           # System information script
-    nano
+    nano                           # Simple terminal text editor
     orca
     papers
     uwsm                           # Universal Wayland Session Manager
-    vim
+    vim                            # Classic modal text editor
     wiremix                        # MPD visualizer with PipeWire
 
     # ── AUR equivalents in nixpkgs ─────────────────────
@@ -429,11 +429,11 @@ in
     cmake-language-server
     dcfldd
     ddccontrol
-    dualsensectl
-    gallery-dl
+    dualsensectl                   # DualSense controller CLI tool
+    gallery-dl                     # Image gallery downloader (Python)
     git-extras
     google-chrome
-    hw-probe
+    hw-probe                       # Hardware probe and upload to linux-hardware.org
     jdupes
     localsend
     neovim-remote
@@ -515,24 +515,24 @@ in
     # ── Additional nixpkgs AUR matches ─────────────────
     babashka
     carapace
-    v2raya
+    v2raya                         # V2Ray web GUI client
     v2ray
-    raysession
-    rmlint
-    sing-box
+    raysession                     # JACK audio session manager
+    rmlint                         # Duplicate file finder (C)
+    sing-box                       # Universal proxy platform (Go)
   
-    xray
+    xray                           # Proxy/VPN tool (Xray-core)
     niri                           # Scrolling-tiling Wayland compositor
     waybar
     buildah
-    mako
-    wireguard-tools
-    television
+    mako                           # Wayland notification daemon
+    wireguard-tools                # WireGuard VPN CLI tools
+    television                     # Terminal television (TUI tool?)
     showtime
     cups-pk-helper
     goimapnotify
     iotop-c
-    malcontent
+    malcontent                     # Parental controls for Linux
     media-player-info
     snapshot
     tecla
@@ -545,7 +545,7 @@ in
     noto-fonts-cjk-sans
     hunspellDicts.ru-ru
     iftop                          # Network bandwidth by connection (top-like)
-    inotify-tools
+    inotify-tools                  # File event monitoring CLI tools (inotify)
     iotop
     perf
     stress-ng                      # CPU/memory/IO stress testing tool
@@ -556,13 +556,13 @@ in
     nerd-fonts.jetbrains-mono
     qemu
     qemu_kvm
-    simple-scan
-    sushi
+    simple-scan                    # Document scanner GUI
+    sushi                          # GNOME file previewer (quick preview)
     awww  # renamed from swww
     unar
     tumbler
-    v2raya
-    sing-box
+    v2raya                         # V2Ray web GUI client
+    sing-box                       # Universal proxy platform (Go)
     wget2
     wlogout                        # Wayland logout screen
     wlr-which-key
@@ -572,16 +572,16 @@ in
     jdupes
     neovim-remote
     zapret
-    snapcast
+    snapcast                       # Synchronous multi-room audio player
     localsend
     bucklespring                   # Keyboard sound effects (IBM Model M)
-    hw-probe
+    hw-probe                       # Hardware probe and upload to linux-hardware.org
     google-chrome
     claude-code
-    gallery-dl
+    gallery-dl                     # Image gallery downloader (Python)
     oh-my-posh
     git-extras
-    rmlint
+    rmlint                         # Duplicate file finder (C)
     babashka
     carapace
     python3Packages.telethon
@@ -593,7 +593,7 @@ in
     python3Packages.ascii-magic
     python3Packages.rapidgzip
     zen-browser                    # Privacy-focused Firefox fork
-    quickshell
+    quickshell                     # QtQuick-based Wayland shell environment
     vicinae-bin
     bazecor
     dool
@@ -609,7 +609,7 @@ in
     mpdas                          # Last.fm scrobbler for MPD
     mpdris2                        # MPRIS bridge for MPD
     patool
-    pup
+    pup                            # HTML parser CLI (jq for HTML, Go)
     reddix
     regex-tui
     resterm
@@ -617,7 +617,7 @@ in
     systemd-manager-tui
     tessen                         # 2FA/HOTP/TOTP CLI (Python)
     v2rayn
-    witr
+    witr                           # WireGuard interactive TUI configurator
     youtube-tui
 ];
 }

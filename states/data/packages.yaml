@@ -1,7 +1,7 @@
 base:
 - base
 - base-devel
-- limine
+- limine                         # Limine bootloader
 - linux
 - linux-headers
 - linux-cachyos-headers
@@ -13,9 +13,9 @@ desktop:
 - epiphany                       # GNOME web browser (WebKit)
 - firefox                        # Web browser
 - gimp                           # GNU Image Manipulation Program
-- gnome-backgrounds
-- gnome-calculator
-- gnome-calendar
+- gnome-backgrounds              # GNOME wallpapers
+- gnome-calculator               # GNOME calculator app
+- gnome-calendar                 # GNOME calendar app
 - gnome-characters
 - gnome-clocks
 - gnome-color-manager
@@ -30,47 +30,47 @@ desktop:
 - hyprpicker                     # Hyprland color picker
 - hyprpolkitagent
 - eza                            # Modern ls replacement (Rust)
-- matugen
-- rmpc
+- matugen                        # Material You color generator
+- rmpc                           # Terminal MPD client (Rust/NCurses)
 - rofi                           # Application launcher for X11 and Wayland
-- loupe
+- loupe                          # GNOME image viewer
 - satty                          # Screenshot annotation tool (Rust)
 - slurp                          # Wayland region selector
 - swayimg                        # Wayland image viewer
-- television
+- television                     # Terminal television (TUI tool?)
 - wl-clipboard                   # Wayland clipboard tools wl-copy wl-paste
 - wlr-randr                      # Wayland output management CLI
-- xdg-desktop-portal-hyprland
+- xdg-desktop-portal-hyprland    # XDG desktop portal backend for Hyprland
 - yazi                           # Terminal file manager (Rust)
 - ark
 - gnome-contacts
 - gnome-control-center
 - gnome-disk-utility
 - gnome-font-viewer
-- gnome-keyring
-- gnome-logs
-- gnome-maps
+- gnome-keyring                  # GNOME Keyring (secrets storage)
+- gnome-logs                     # GNOME system log viewer
+- gnome-maps                     # GNOME maps app
 - gnome-menus
-- gnome-music
+- gnome-music                    # GNOME music player
 - gnome-remote-desktop
-- gnome-session
+- gnome-session                  # GNOME desktop session
 - gnome-settings-daemon
 - gnome-shell
-- gnome-software
-- gnome-system-monitor
-- gnome-text-editor
+- gnome-software                 # GNOME software center
+- gnome-system-monitor           # GNOME task manager
+- gnome-text-editor              # GNOME text editor
 - gnome-tour
-- gnome-tweaks
+- gnome-tweaks                   # GNOME advanced settings
 - gnome-user-docs
 - gnome-user-share
-- gnome-weather
-- nautilus
-- simple-scan
-- sushi
-- swayosd
+- gnome-weather                  # GNOME weather app
+- nautilus                       # GNOME file manager
+- simple-scan                    # Document scanner GUI
+- sushi                          # GNOME file previewer (quick preview)
+- swayosd                        # OSD overlay for Wayland (volume/brightness)
 - wofi                           # Wayland launcher menu like rofi
 - xdg-user-dirs-gtk
-- xdg-utils
+- xdg-utils                      # XDG desktop integration utilities
 - yelp
 dev:
 - clang                          # C/C++/ObjC compiler (LLVM)
@@ -172,7 +172,7 @@ other:
 - android-tools
 - aria2                          # Download utility supporting multiple protocols
 - asciinema
-- atop
+- atop                           # System resource monitor (advanced top)
 - avahi                          # mDNS/DNS-SD zeroconf daemon
 - nss-mdns
 - bandwhich                      # Bandwidth utilization TUI (Rust)
@@ -186,7 +186,7 @@ other:
 - bucklespring                   # Keyboard sound effects (IBM Model M)
 - carla                          # Audio plugin host (LV2/VST2/DSSI)
 - cava                           # Console audio visualizer
-- ccid
+- ccid                           # Chip/Smart Card interface driver (PC/SC)
 - yubikey-manager
 - cdparanoia                     # CD audio ripping tool
 - chafa                          # Terminal image viewer/probe
@@ -219,14 +219,14 @@ other:
 - efibootmgr
 - elfutils
 - enca
-- entr
+- entr                           # Run command when file changes
 - erdtree
 - etckeeper
 - expect
 - fastfetch                      # Neofetch replacement (C)
-- fclones
+- fclones                        # Duplicate file finder and cleaner (Rust)
 - fd                             # Fast file search replacement (Rust)
-- figlet
+- figlet                         # ASCII art text banner generator
 - fio                            # Flexible I/O tester/benchmark
 - fortune-mod
 - fping
@@ -255,7 +255,7 @@ other:
 - grafana
 - graphviz
 - grex                           # Regex generator from examples (Rust)
-- gvfs
+- gvfs                           # GNOME virtual filesystem
 - gvfs-mtp
 - gvfs-smb
 - gvfs-afc
@@ -268,16 +268,16 @@ other:
 - hashcat
 - helix                          # Modal text editor (Rust)
 - helvum
-- hexyl
+- hexyl                          # Hex viewer with colored output (Rust)
 - himalaya                       # Email CLI client (Rust)
 - htmlq                          # HTML query tool like jq for HTML (Rust)
 - httpie                         # HTTP client with user-friendly output (Python)
 - hunspell-ru
-- hwinfo
+- hwinfo                         # Hardware information probe
 - hyperfine                      # Command-line benchmarking tool (Rust)
 - id3v2
 - iftop                          # Network bandwidth by connection (top-like)
-- inotify-tools
+- inotify-tools                  # File event monitoring CLI tools (inotify)
 - ioping
 - iosevka-neg-fonts
 - iotop-c
@@ -285,7 +285,7 @@ other:
 - isync
 - iwd                            # Wi-Fi daemon (iNet Wireless Daemon)
 - jc                             # Convert CLI tool output to JSON (Python)
-- jpegoptim
+- jpegoptim                      # JPEG image optimizer
 - jq                             # JSON query processor (C)
 - jujutsu                        # Git-compatible VCS (jj), simpler than git
 - just                           # Command runner like make, simpler (Rust)
@@ -298,7 +298,7 @@ other:
 - less
 - libnotify
 - liquidctl
-- lldb
+- lldb                           # LLVM debugger
 - lm_sensors
 - lnav                           # Log file navigator (C++)
 - lolcat                         # Rainbow text colorizer
@@ -306,18 +306,18 @@ other:
 - lshw
 - lsp-plugins
 - man-pages
-- mediainfo
+- mediainfo                      # Media file metadata viewer
 - media-player-info
 - memtester
 - miller                         # CSV/JSON/TSV data processor mlr (Go)
-- minicom
+- minicom                        # Serial communication terminal
 - moreutils
 - mpc                            # MPD client (Music Player Daemon)
 - mpd                            # Music Player Daemon (server)
 - python-mutagen
 - mtr                            # Network diagnostic (traceroute + ping)
 - multipath-tools
-- ncdu
+- ncdu                           # NCurses disk usage analyzer
 - neg-pretty-printer
 - neomutt                        # Mutt email client fork with modern features
 - nerdctl                        # Docker-compatible CLI for containerd (Go)
@@ -347,16 +347,16 @@ other:
 - picard
 - pigz
 - plocate
-- pngquant
+- pngquant                       # PNG image compressor
 - podman                         # Daemonless container engine (Go)
 - powertop                       # Power consumption diagnosis tool
 - pre-commit                     # Git pre-commit hook framework (Python)
 - python-faker
 - python-internetarchive
 - prettyping
-- progress
-- pv
-- pwgen
+- progress                       # Progress viewer for coreutils (C)
+- pv                             # Pipe viewer (progress monitor)
+- pwgen                          # Password generator
 - qemu-desktop
 - qpwgraph
 - qrencode
@@ -382,19 +382,19 @@ other:
 - sops
 - socat                          # Multipurpose socket relay tool
 - sonic-visualiser
-- sox
-- sshfs
+- sox                            # Sound eXchange (audio CLI tool)
+- sshfs                          # FUSE-based SSH filesystem
 - sshpass
 - streamlink
 - s-tui                          # Terminal CPU stress test and monitor (Python)
 - sudo
-- swappy
+- swappy                         # Wayland screenshot editor (Rust)
 - systemd-resolvconf
 - tabiew
 - taplo-cli
 - tcpdump                        # Packet capture and analysis CLI
 - tealdeer                       # Fast tldr client (man examples)
-- telegram-desktop
+- telegram-desktop               # Telegram messenger desktop client
 - tesseract
 - tesseract-data-eng
 - tesseract-data-rus
@@ -402,16 +402,16 @@ other:
 - texlive-basic
 - tig                            # Text-mode Git repository browser (ncurses)
 - tmux
-- toilet
+- toilet                         # ASCII art text banner (FIGlet alternative)
 - traceroute
 - transmission-cli
-- tree
+- tree                           # Directory tree viewer
 - tree-sitter-cli
 - ttyd
 - tumbler
 - turbostat
 - udiskie
-- ugrep
+- ugrep                          # Ultra-fast grep with TUI (C++)
 - unarchiver
 - unbound                        # Recursive DNS resolver (C)
 - unzip
@@ -421,8 +421,8 @@ other:
 - urlwatch
 - valgrind                       # Memory debugger and profiler
 - vdirsyncer                     # CalDAV/CardDAV sync tool
-- virt-manager
-- virt-viewer
+- virt-manager                   # Virtual machine manager (libvirt GUI)
+- virt-viewer                    # SPICE/VNC viewer for VMs
 - viu
 - vnstat                         # Network traffic monitor
 - w3m
@@ -439,7 +439,7 @@ other:
 - yamllint                       # YAML file linter
 - ydotool
 - yt-dlp                         # YouTube/video downloader
-- zathura
+- zathura                        # Minimal document viewer (PDF/EPUB/DJVU)
 - zathura-pdf-poppler
 - zbar
 - zellij                         # Terminal multiplexer (Rust)
@@ -451,10 +451,10 @@ other:
 - i3status
 - i3-wm
 - inxi                           # System information script
-- kate
+- kate                           # KDE advanced text editor
 - libpulse
-- malcontent
-- nano
+- malcontent                     # Parental controls for Linux
+- nano                           # Simple terminal text editor
 - orca
 - papers
 - pass
@@ -464,16 +464,16 @@ other:
 - breeze
 - breeze-icons
 - konsole                        # KDE terminal emulator
-- proxypilot
+- proxypilot                     # Proxy management tool (Go)
 - proxypilot-debug
 - qt6-wayland
 - snapshot
-- ssh-to-age
+- ssh-to-age                     # Convert SSH keys to age keys
 - ssh-to-age-debug
 - taoup
 - tecla
 - uwsm                           # Universal Wayland Session Manager
-- vim
+- vim                            # Classic modal text editor
 - wiremix                        # MPD visualizer with PipeWire support
 aur:
   - hermes-agent
@@ -491,7 +491,7 @@ aur:
   - dcfldd
   - ddccontrol
   - dool
-  - dualsensectl
+  - dualsensectl                   # DualSense controller CLI tool
   - eilmeldung-bin
   - flclashx-bin
   - v2raya-bin
@@ -501,7 +501,7 @@ aur:
   - fsel-bin
   - epr-git
   - freeze-bin
-  - gallery-dl
+  - gallery-dl                     # Image gallery downloader (Python)
   - ghgrab-bin
   - gmap-bin
   - git-extras
@@ -509,7 +509,7 @@ aur:
   - gowall-bin
   - hishtory-bin
   - hxd
-  - hw-probe
+  - hw-probe                       # Hardware probe and upload to linux-hardware.org
   - hyprscratch
   - instagram-cli
   - jdupes
@@ -536,13 +536,13 @@ aur:
   - pup-bin
   - python-ascii_magic
   - python-rapidgzip
-  - quickshell
+  - quickshell                     # QtQuick-based Wayland shell environment
   - reddix-bin
   - repeater-bin
   - regex-tui
-  - raysession
+  - raysession                     # JACK audio session manager
   - resterm-bin
-  - rmlint
+  - rmlint                         # Duplicate file finder (C)
   - rofi-file-browser-extended-git
   - rofi-file-browser-extended-git-debug
   - rustmission
@@ -567,5 +567,5 @@ aur:
   - ytsurf                         # CLI YouTube player/downloader
   - bazecor
   - python-telethon
-  - zapret2
-  - zen-browser-bin
+  - zapret2                        # DPI bypass tool (discord, youtube, etc.)
+  - zen-browser-bin                # Zen Browser (Firefox fork, prebuilt binary)

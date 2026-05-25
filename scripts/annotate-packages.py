@@ -2,7 +2,7 @@
 """
 Annotate package lists with descriptions in Salt (YAML), NixOS (Nix), and Guix (Scheme).
 
-Reads package names from each config file and adds inline # comments with descriptions.
+Reads package names from each config file and adds inline comments with descriptions.
 Skips packages that already have comments.
 
 Usage:
@@ -17,12 +17,13 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 
+# ─── Package descriptions ───
 DESC = {
     # ── core utils ──
     "eza": "Modern ls replacement (Rust)",
     "fd": "Fast file search replacement (Rust)",
-    "bat": "cat replacement with syntax highlighting (Rust)",
     "ripgrep": "Ultra-fast grep replacement (Rust)",
+    "bat": "cat replacement with syntax highlighting (Rust)",
     "delta": "Git diff viewer with syntax highlighting",
     "git-delta": "Git diff viewer with syntax highlighting",
     "difftastic": "Structural diff tool (understands syntax)",
@@ -36,58 +37,61 @@ DESC = {
     "gopass": "Password manager with git/age backend (Go)",
     "age": "Simple modern file encryption (Go)",
     "broot": "Tree-based file explorer (Rust)",
-    "duf": "Disk usage/free utility (Go)",
-    "doggo": "Modern DNS client (Go)",
-    "xh": "HTTP client like httpie (Rust)",
-    "httpie": "User-friendly HTTP client (Python)",
-    "curlie": "curl wrapper with httpie-style output (Go)",
-    "bandwhich": "Terminal bandwidth utilization tool (Rust)",
     "btop": "Resource monitor (C++)",
+    "htop": "Interactive process viewer",
     "fastfetch": "Neofetch replacement (C)",
     "helix": "Modal text editor (Rust)",
     "neovim": "Modern Vim fork (Lua-first)",
-    "nvim": "Modern Vim fork (Neovim binary)",
     "lazygit": "Terminal Git UI (Go)",
-    "ouch": "Compression/decompression CLI (Rust)",
+    "ouch": "Compression and decompression CLI (Rust)",
     "onefetch": "Git repository summary tool (Rust)",
     "pastel": "Color manipulation tool (Rust)",
-    "cargo": "Rust package manager includes rustc",
+    "cargo": "Rust package manager (includes rustc)",
+    "rust": "Rust programming language (cargo + rustc)",
     "go": "Go programming language compiler + tools",
     "docker": "Container runtime CLI + daemon",
+    "podman": "Daemonless container engine (Go)",
+    "nerdctl": "Docker-compatible CLI for containerd (Go)",
     "zellij": "Terminal multiplexer (Rust)",
     "taplo": "TOML formatter and linter (Rust)",
     "watchexec": "File watcher that runs commands (Rust)",
     "jq": "JSON query processor (C)",
-    "jc": "Convert CLI tool output to JSON (Python)",
     "yq-go": "YAML/JSON/XML processor (Go)",
-    "miller": "CSV/JSON/TSV data processor mlr (Go)",
+    "miller": "CSV/JSON/TSV data processor (Go)",
     "scc": "Code line counter like cloc (Go)",
     "shfmt": "Shell script formatter (Go)",
     "shellcheck": "Shell script static analyzer (Haskell)",
     "pre-commit": "Git pre-commit hook framework (Python)",
     "ruff": "Python linter and formatter (Rust)",
     "handlr-regex": "Default application handler (Rust)",
+    "handlr": "Default application handler (Rust)",
     "uwsm": "Universal Wayland Session Manager",
     "cliphist": "Wayland clipboard manager (Go)",
-    "wl-clipboard": "Wayland clipboard tools wl-copy wl-paste",
+    "wl-clipboard": "Wayland clipboard tools (wl-copy, wl-paste)",
     "wev": "Wayland event viewer",
     "wtype": "Wayland keystroke injector",
     "grim": "Wayland screenshot tool",
     "slurp": "Wayland region selector",
     "swayimg": "Wayland image viewer",
+    "swappy": "Wayland screenshot editor (Rust)",
     "satty": "Screenshot annotation tool (Rust)",
     "wf-recorder": "Wayland screen recorder",
     "wlogout": "Wayland logout screen",
     "wofi": "Wayland launcher menu like rofi",
-    "rofi": "Application launcher for X11 and Wayland",
+    "rofi": "Application launcher (X11/Wayland)",
     "dunst": "Notification daemon",
+    "mako": "Wayland notification daemon",
     "waypipe": "Wayland remote display like SSH -X",
-    "wayvnc": "VNC server for Wayland compositors",
+    "wayvnc": "VNC server for Wayland",
     "wlr-randr": "Wayland output management CLI",
     "hypridle": "Hyprland idle daemon",
     "hyprlock": "Hyprland screen locker",
     "hyprpicker": "Hyprland color picker",
     "hyprland": "Dynamic tiling Wayland compositor",
+    "hyprcursor": "Hyprland cursor theme support",
+    "greetd": "Login greeter daemon (display manager)",
+    "tuigreet": "TUI greeter for greetd",
+    "quickshell": "QtQuick-based Wayland shell environment",
     "niri": "Scrolling-tiling Wayland compositor",
     "ghostty": "GPU-accelerated terminal emulator",
     "kitty": "GPU-accelerated terminal emulator",
@@ -95,18 +99,18 @@ DESC = {
     "wezterm": "GPU-accelerated terminal emulator",
     "foot": "Wayland-native terminal emulator",
     "konsole": "KDE terminal emulator",
+    "kate": "KDE advanced text editor",
     "mpv": "Media player (C)",
     "ffmpeg": "Multimedia converter and processor",
-    "ffmpegthumbnailer": "Video thumbnail generator",
     "yt-dlp": "YouTube/video downloader",
     "imagemagick": "Image manipulation suite",
+    "imv": "Image viewer for Wayland/X11",
+    "feh": "Image viewer and wallpaper setter",
     "rclone": "Cloud storage sync (Go)",
     "borgbackup": "Deduplicating backup tool (Python/C)",
     "borg": "Deduplicating backup tool (Python/C)",
     "restic": "Fast backup program (Go)",
-    "podman": "Daemonless container engine (Go)",
     "skopeo": "Container image inspection tool (Go)",
-    "nerdctl": "Docker-compatible CLI for containerd (Go)",
     "slirp4netns": "User-mode networking for containers",
     "tailscale": "Mesh VPN (Go)",
     "unbound": "Recursive DNS resolver (C)",
@@ -119,21 +123,21 @@ DESC = {
     "lnav": "Log file navigator (C++)",
     "ctop": "Container metrics TUI (Go)",
     "dive": "Docker image layer analysis TUI (Go)",
-    "s-tui": "Terminal CPU stress test and monitor (Python)",
+    "s-tui": "Terminal CPU stress + monitor (Python)",
     "bottom": "Graphical system monitor btm (Rust)",
     "gping": "Ping with graph display (Rust)",
     "procs": "ps replacement (Rust)",
     "mpc": "MPD client (Music Player Daemon)",
     "mpd": "Music Player Daemon (server)",
     "mpdas": "Last.fm scrobbler for MPD",
-    "mpdris2": "MPRIS bridge for MPD",
-    "wiremix": "MPD visualizer with PipeWire support",
     "patchelf": "ELF binary patching tool",
     "strace": "System call tracer",
     "valgrind": "Memory debugger and profiler",
     "gdb": "GNU debugger",
+    "lldb": "LLVM debugger",
     "clang": "C/C++/ObjC compiler (LLVM)",
     "gcc": "GNU C/C++ compiler",
+    "gcc-toolchain": "GNU C/C++ compiler and toolchain",
     "cmake": "Cross-platform build system",
     "meson": "Fast build system (Python/Ninja)",
     "ninja": "Small build system used by Meson",
@@ -145,7 +149,6 @@ DESC = {
     "pkg-config": "Library dependency resolver",
     "bison": "Parser generator (yacc replacement)",
     "flex": "Lexical analyzer generator (lex replacement)",
-    "m4": "GNU M4 macro processor",
     "openssh": "SSH client and server",
     "openssl": "SSL/TLS cryptography library plus CLI",
     "curl": "HTTP client and data transfer tool",
@@ -153,13 +156,13 @@ DESC = {
     "nmap": "Network scanner and discovery tool",
     "tcpdump": "Packet capture and analysis CLI",
     "socat": "Multipurpose socket relay tool",
+    "iperf": "Network bandwidth measurement tool",
     "iperf3": "Network bandwidth measurement tool",
     "mtr": "Network diagnostic (traceroute + ping)",
     "whois": "Domain and WHOIS lookup client",
     "networkmanagerapplet": "NetworkManager tray applet",
-    "firewalld": "Firewall management daemon (firewall-cmd)",
+    "firewalld": "Firewall management daemon",
     "bluez": "Bluetooth protocol stack and tools",
-    "bluez-utils": "Bluetooth protocol stack and tools",
     "upower": "Power management abstraction layer",
     "powertop": "Power consumption diagnosis tool",
     "inxi": "System information script",
@@ -167,24 +170,25 @@ DESC = {
     "stress-ng": "CPU/memory/IO stress testing tool",
     "hyperfine": "Command-line benchmarking tool (Rust)",
     "sysstat": "System performance monitoring (sar, iostat)",
-    "vnstat": "Network traffic monitor",
-    "vnstatd": "Network traffic monitor daemon",
-    "htop": "Interactive process viewer",
+    "vnstat": "Network traffic monitor daemon and CLI",
+    "lnav": "Log file navigator (C++)",
     "iftop": "Network bandwidth by connection (top-like)",
     "nethogs": "Network bandwidth by process (top-like)",
-    "lolcat": "Rainbow text colorizer",
+    "lolcat": "Rainbow text colorizer (Ruby)",
     "pciutils": "PCI bus utilities (lspci)",
     "usbutils": "USB device utilities (lsusb)",
     "smartmontools": "S.M.A.R.T. disk monitoring tools",
     "nodejs": "JavaScript runtime (Node.js)",
+    "node": "JavaScript runtime (Node.js)",
     "ruby": "Ruby programming language",
+    "python": "Python 3 programming language",
+    "python-pip": "Python package installer (pip)",
     "python3": "Python 3 programming language",
-    "uv": "Fast Python package manager (Rust)",
-    "vale": "Prose linter (documentation style)",
+    "uv": "Fast Python/Rust package manager (Rust)",
+    "vale": "Prose linter (documentation style checker)",
     "lua-language-server": "Lua language server (LSP)",
     "lua5_3": "Lua 5.3 programming language",
-    "lua53": "Lua 5.3 programming language",
-    "fennel": "Lisp that compiles to Lua (luaPackages)",
+    "fennel": "Lisp that compiles to Lua",
     "pipx": "Install Python tools in isolated environments",
     "git": "Distributed version control system",
     "tig": "Text-mode Git repository browser (ncurses)",
@@ -198,53 +202,151 @@ DESC = {
     "act": "Run GitHub Actions locally (Go)",
     "tree-sitter": "Parser generator for syntax highlighting",
     "yamllint": "YAML file linter",
+    "python-yamllint": "YAML file linter",
     "choose": "cut and awk replacement (Rust)",
     "grex": "Regex generator from examples (Rust)",
     "htmlq": "HTML query tool like jq for HTML (Rust)",
-    "procs": "ps replacement (Rust)",
     "dog": "DNS lookup tool (Rust)",
-    "curlie": "curl with httpie-style output (Go)",
-    "bandwhich": "Bandwidth utilization TUI (Rust)",
-    "httpie": "HTTP client with user-friendly output (Python)",
+    "doggo": "Modern DNS client (Go)",
+    "xh": "HTTP client like httpie (Rust)",
+    "httpie": "User-friendly HTTP client (Python)",
     "websocat": "WebSocket client and server (Rust)",
-    "nmh": "Mail handling system (classic nmh)",
-    "notmuch": "Email system (fast mail indexer)",
     "himalaya": "Email CLI client (Rust)",
-    "mbsync": "Mailbox synchronizer (IMAP/Maildir)",
-    "msmtp": "SMTP mail client",
-    "vdirsyncer": "CalDAV/CardDAV sync tool",
-    "khal": "CalDAV calendar CLI client (Python)",
-    "tessen": "2FA/HOTP/TOTP CLI (Python)",
-    "imapnotify": "IMAP idle push notification",
     "neomutt": "Mutt email client fork with modern features",
     "mutt": "Email client (text-based)",
+    "notmuch": "Fast email indexer and search",
+    "mbsync": "Mailbox synchronizer (IMAP/Maildir) aka isync",
+    "msmtp": "SMTP mail client",
+    "vdirsyncer": "CalDAV/CardDAV sync tool (Python)",
+    "khal": "CalDAV calendar CLI client (Python)",
+    "tessen": "2FA/HOTP/TOTP CLI tool (Python)",
+    "imapnotify": "IMAP idle push notification",
     "bucklespring": "Keyboard sound effects (IBM Model M)",
     "cava": "Console audio visualizer",
     "cdparanoia": "CD audio ripping tool",
-    "chafa": "Terminal image viewer/probe",
+    "chafa": "Terminal image viewer and probe",
     "chromaprint": "Acoustic fingerprinting library + CLI",
-    "aria2": "Download utility supporting multiple protocols",
+    "aria2": "Download utility (multi-protocol)",
+    "atop": "System resource monitor (advanced top)",
+    "entr": "Run command when file changes",
+    "fclones": "Duplicate file finder and cleaner (Rust)",
+    "figlet": "ASCII art text banner generator",
+    "hexyl": "Hex viewer with colored output (Rust)",
+    "hwinfo": "Hardware information probe",
+    "inotify-tools": "File event monitoring CLI tools (inotify)",
+    "jpegoptim": "JPEG image optimizer",
+    "mandoc": "Man page formatter/reader (BSD)",
+    "mediainfo": "Media file metadata viewer",
+    "minicom": "Serial communication terminal",
+    "nano": "Simple terminal text editor",
+    "ncdu": "NCurses disk usage analyzer",
+    "pngquant": "PNG image compressor",
+    "progress": "Progress viewer for coreutils (C)",
+    "pv": "Pipe viewer (progress monitor)",
+    "pwgen": "Password generator",
+    "sox": "Sound eXchange (audio CLI tool)",
+    "sshfs": "FUSE-based SSH filesystem",
+    "toilet": "ASCII art text banner (FIGlet alternative)",
+    "tree": "Directory tree viewer",
+    "ugrep": "Ultra-fast grep with TUI (C++)",
+    "vim": "Classic modal text editor",
+    "zathura": "Minimal document viewer (PDF/EPUB/DJVU)",
     "blender": "3D creation suite",
-    "carla": "Audio plugin host (LV2/VST2/DSSI)",
     "cowsay": "ASCII art cow speech bubble",
     "chromium": "Web browser (open-source Chrome)",
-    "epiphany": "GNOME web browser (WebKit)",
+    "icecat": "GNU IceCat (free software Firefox fork)",
+    "ungoogled-chromium-wayland": "Chromium without Google services (Wayland)",
     "firefox": "Web browser",
     "zen-browser": "Privacy-focused Firefox fork",
-    "floorp": "Firefox fork with extra features",
     "gimp": "GNU Image Manipulation Program",
+    "obs": "Open Broadcaster Studio (streaming/recording)",
     "lutris": "Game launcher (Wine/libretro/native)",
     "wine": "Windows compatibility layer",
+    "wine-staging": "Wine with staging patches",
     "gamescope": "Micro-compositor for gaming (Valve)",
     "gamemode": "Game performance optimization daemon",
+    "mangohud": "Game overlay (FPS, temps, etc.)",
     "nethack": "Classic roguelike dungeon crawler",
-    "steam": "Steam gaming platform (via nonguix/unfree)",
-    "amdgpu-vulkan-switcher": "AMD GPU Vulkan driver switcher",
-    "amd-ucode": "AMD CPU microcode updates",
-    "vitunes": "Music player with vi-style keybindings",
-    "ytfzf": "YouTube search and player from terminal",
-    "ytsurf": "CLI YouTube player/downloader",
+    "steam": "Steam gaming platform",
+    "proton-ge-custom": "Proton GE (Wine fork for Steam)",
+    "protontricks": "Winetricks for Proton",
+    "qbittorrent": "BitTorrent client (Qt)",
+    "libreoffice": "Office suite",
+    "keepassxc": "Password manager (Qt, KeePass compatible)",
+    "kdenlive": "Video editor (KDE)",
+    "audacity": "Audio editor",
+    "nextcloud-client": "Nextcloud sync client",
+    "telegram-desktop": "Telegram messenger desktop client",
+    "icedove": "Email client (Thunderbird fork)",
+    "virt-manager": "Virtual machine manager (libvirt GUI)",
+    "virt-viewer": "SPICE/VNC viewer for VMs",
+    "dualsensectl": "DualSense controller CLI tool",
+    "hw-probe": "Hardware probe and upload to linux-hardware.org",
+    "raysession": "JACK audio session manager",
+    "rmlint": "Duplicate file finder (C)",
+    "tor": "Tor anonymous network daemon",
+    "torsocks": "Tor SOCKS proxy wrapper",
+    "wireguard-tools": "WireGuard VPN CLI tools",
+    "openvpn": "OpenVPN client/server",
+    "v4l-utils": "Video4Linux utilities (webcam control)",
+    "wireplumber": "PipeWire session manager (replaces wireplumber)",
+    "playerctl": "Media player controller (MPRIS CLI)",
+    "brightnessctl": "Backlight/brightness control CLI",
+    "gallery-dl": "Image gallery downloader (Python)",
+    "syncthing": "P2P file synchronization daemon (Go)",
+    "flatpak": "Sandboxed application manager",
+    "xrandr": "X11 RandR display configuration tool",
+    "xdg-utils": "XDG desktop integration utilities",
+    "xdg-desktop-portal-hyprland": "XDG desktop portal backend for Hyprland",
+    "xdg-desktop-portal-gtk": "XDG desktop portal backend for GTK",
+    "ccid": "Chip/Smart Card interface driver (PC/SC)",
+    "python-yubikey-manager": "YubiKey configuration tool (Python)",
+    "python-debugpy": "Python debugger adapter (DAP protocol)",
+    "ssh-to-age": "Convert SSH keys to age keys",
+    "pup": "HTML parser CLI (jq for HTML, Go)",
+    "witr": "WireGuard interactive TUI configurator",
+    "math": "Mathematics / calculator (often calc or qalc)",
+    "virtio-win": "VirtIO Windows drivers for QEMU guests",
+    "malcontent": "Parental controls for Linux",
+    "snapcast": "Synchronous multi-room audio player",
+    "limine": "Limine bootloader",
+    "vicinae": "Qt6 launcher/dashboard",
+    "xray": "Proxy/VPN tool (Xray-core)",
+    "v2raya": "V2Ray web GUI client",
+    "sing-box": "Universal proxy platform (Go)",
+    "zapret2": "DPI bypass tool (discord, youtube, etc.)",
+    "kanata": "Keyboard remapper daemon (Rust)",
+    "proxypilot": "Proxy management tool (Go)",
+    "zen-browser-bin": "Zen Browser (Firefox fork, prebuilt binary)",
+    "nautilus": "GNOME file manager",
+    "simple-scan": "Document scanner GUI",
+    "sushi": "GNOME file previewer (quick preview)",
+    "loupe": "GNOME image viewer",
+    "gnome-calculator": "GNOME calculator app",
+    "gnome-calendar": "GNOME calendar app",
+    "gnome-logs": "GNOME system log viewer",
+    "gnome-maps": "GNOME maps app",
+    "gnome-music": "GNOME music player",
+    "gnome-software": "GNOME software center",
+    "gnome-system-monitor": "GNOME task manager",
+    "gnome-text-editor": "GNOME text editor",
+    "gnome-tweaks": "GNOME advanced settings",
+    "gnome-weather": "GNOME weather app",
+    "gnome-backgrounds": "GNOME wallpapers",
+    "gnome-keyring": "GNOME Keyring (secrets storage)",
+    "gnome-session": "GNOME desktop session",
+    "gvfs": "GNOME virtual filesystem",
+    "swayosd": "OSD overlay for Wayland (volume/brightness)",
+    "matugen": "Material You color generator",
+    "rmpc": "Terminal MPD client (Rust/NCurses)",
+    "television": "Terminal television (TUI tool?)",
+    "wlogout": "Wayland logout/reboot/shutdown screen",
+    "swaylock": "Wayland screen locker",
+    "kmon": "Kernel module manager TUI",
 }
+
+# ── Configs that store package names as "quoted strings" (Guix)
+GUIX_STRING_PKGS = True
 
 def annotate_nixos():
     """Annotate NixOS packages.nix"""
@@ -259,21 +361,15 @@ def annotate_nixos():
     for line in lines:
         m = re.match(r'^(\s*)([\w.\-]+)\s*(#.*)?$', line)
         if m and not line.strip().startswith("#") and not line.strip().startswith("}") and not line.strip().startswith("]"):
-            indent = m.group(1)
-            pkg = m.group(2).strip()
+            indent = m.group(1); pkg = m.group(2).strip()
             existing = (m.group(3) or "").strip("# ").strip()
-            
             if len(existing) > 5:
-                new_lines.append(line)
-                continue
+                new_lines.append(line); continue
             if "(" in pkg:
-                new_lines.append(line)
-                continue
-            
+                new_lines.append(line); continue
             desc = DESC.get(pkg)
             if desc:
-                new_lines.append(f"{indent}{pkg:30} # {desc}")
-                changed += 1
+                new_lines.append(f"{indent}{pkg:30} # {desc}"); changed += 1
             else:
                 new_lines.append(line)
         else:
@@ -290,25 +386,18 @@ def annotate_salt():
         content = f.read()
     
     lines = content.split("\n")
-    new_lines = []
-    changed = 0
-    current_category = ""
+    new_lines = []; changed = 0
     
     for line in lines:
         m = re.match(r'^(\s*-\s*)([\w.\-]+)(\s*#.*)?$', line)
         if m:
-            indent = m.group(1)
-            pkg = m.group(2).strip()
+            indent = m.group(1); pkg = m.group(2).strip()
             existing = (m.group(3) or "").strip("# ").strip()
-            
             if len(existing) > 5:
-                new_lines.append(line)
-                continue
-            
+                new_lines.append(line); continue
             desc = DESC.get(pkg)
             if desc:
-                new_lines.append(f"{indent}{pkg:30} # {desc}")
-                changed += 1
+                new_lines.append(f"{indent}{pkg:30} # {desc}"); changed += 1
             else:
                 new_lines.append(line)
         else:
@@ -319,59 +408,49 @@ def annotate_salt():
     print(f"Salt: annotated {changed} packages")
 
 def annotate_guix():
-    """Annotate Guix config — packages in specifications and plain lists."""
+    """Annotate Guix system-config.scm — handles both string and symbol packages."""
     path = REPO / "guix/system-config.scm"
     with open(path) as f:
         content = f.read()
     
     lines = content.split("\n")
-    new_lines = []
-    changed = 0
+    new_lines = []; changed = 0
     
     for line in lines:
-        # Match Guix package references: symbol, string, or (list ...) member
-        # Plain package names in lists:   zsh git neovim tmux bat
-        # String packages:                \"albumdetails\" \"ananicy-cpp\"
-        m = re.match(r'^(\s*)([\w.\-]+)\s*(;.*)?$', line)
-        m_str = re.match(r'^(\s*)"([\w.\-]+)"\s*(;.*)?$', line)
+        # Match: "package-name" (string in specifications->packages list)
+        m_str = re.match(r'^(\s*)"([\w.\-]+)"(\s*;.*)?$', line)
+        # Match: package-name (symbol in a list)
+        m_sym = re.match(r'^(\s*)([\w][\w.\-]*[\w])\s*(;.*)?$', line)
         
-        pkg = None
-        indent = None
-        existing = None
+        pkg = None; indent = None; existing = None
         
-        if m and not line.strip().startswith(";"):
-            pkg = m.group(2).strip()
-            indent = m.group(1)
-            existing = (m.group(3) or "").lstrip("; ").strip()
-            
-            # Skip Scheme keywords and module names
-            if pkg in ["specifications->packages", "specifications", "packages", "system",
-                       "operating", "services", "users", "cons", "list", "append",
-                       "file", "plain", "local", "string"]:
-                new_lines.append(line)
-                continue
-            if pkg.startswith("(") or pkg.startswith("#") or pkg == "|":
-                new_lines.append(line)
-                continue
-        
-        # Handle "quoted" package names in lists
         if m_str:
-            pkg = m_str.group(2).strip()
-            indent = m_str.group(1)
+            pkg = m_str.group(2); indent = m_str.group(1)
             existing = (m_str.group(3) or "").lstrip("; ").strip()
+        elif m_sym and not line.strip().startswith(";") and not line.strip().startswith("("):
+            pkg = m_sym.group(2); indent = m_sym.group(1)
+            existing = (m_sym.group(3) or "").lstrip("; ").strip()
+            # Skip Scheme keywords
+            if pkg in ["specifications->packages", "packages", "system", "list",
+                       "cons", "append", "operating", "services", "users",
+                       "plain-file", "local-file", "string-append", "file-append",
+                       "or", "getenv", "package-version", "base-packages",
+                       "base-pam-services", "kernel"]:
+                pkg = None
+            if pkg and (pkg[0].isdigit() or pkg.startswith("#") or pkg.startswith(":") or pkg.startswith("'")):
+                pkg = None
         
         if pkg and len(existing) < 5:
             desc = DESC.get(pkg)
             if desc:
+                prefix = f'"{pkg}"' if m_str else pkg
+                padding = 28 - len(pkg)
                 if m_str:
-                    new_lines.append(f'{indent}"{pkg}"{" " * (28 - len(pkg))} ; {desc}')
-                else:
-                    new_lines.append(f"{indent}{pkg:30} ; {desc}")
+                    padding = 28 - len(pkg) - 2  # account for quotes
+                new_lines.append(f'{indent}{" " if m_str else ""}{prefix}{" " * max(1, padding)} ; {desc}')
                 changed += 1
             else:
                 new_lines.append(line)
-        elif pkg:
-            new_lines.append(line)
         else:
             new_lines.append(line)
     

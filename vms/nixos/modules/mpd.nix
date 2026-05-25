@@ -17,7 +17,7 @@ in
         playlist_directory = "/home/neg/.config/mpd/playlists";
         db_file = "/home/neg/.local/share/mpd/database";
         bind_to_address = "127.0.0.1";
-        port = "6600";
+        port = 6600;
         audio_output = [
           { name = "PipeWire"; type = "pipewire"; }
           {

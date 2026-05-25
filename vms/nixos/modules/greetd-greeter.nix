@@ -41,7 +41,6 @@ in
         Type = "simple";
         User = "neg";
         Group = "users";
-        ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p /run/user/1000";
         ExecStart = "${pkgs.hyprland}/bin/Hyprland";
         Environment = [
           "XDG_RUNTIME_DIR=/run/user/1000"

@@ -307,17 +307,73 @@ DESC = {
     "witr": "WireGuard interactive TUI configurator",
     "math": "Mathematics / calculator (often calc or qalc)",
     "virtio-win": "VirtIO Windows drivers for QEMU guests",
-    "malcontent": "Parental controls for Linux",
-    "snapcast": "Synchronous multi-room audio player",
     "limine": "Limine bootloader",
-    "vicinae": "Qt6 launcher/dashboard",
-    "xray": "Proxy/VPN tool (Xray-core)",
-    "v2raya": "V2Ray web GUI client",
-    "sing-box": "Universal proxy platform (Go)",
-    "zapret2": "DPI bypass tool (discord, youtube, etc.)",
+    "vicinae": "Qt6 launcher/dashboard (custom fork)",
+    "vicinae-bin": "Qt6 launcher/dashboard (prebuilt binary)",
+    "xray": "Proxy/VPN tool (Xray-core, v2fly)",
+    "v2raya": "V2Ray web GUI client (alternative to V2Ray)",
+    "v2rayn": "V2Ray Windows GUI client",
+    "sing-box": "Universal proxy platform (Go, SagerNet)",
+    "zapret2": "DPI bypass tool (discord, youtube, tiktok, etc)",
     "kanata": "Keyboard remapper daemon (Rust)",
-    "proxypilot": "Proxy management tool (Go)",
-    "zen-browser-bin": "Zen Browser (Firefox fork, prebuilt binary)",
+    "proxypilot": "Proxy management/provisioning tool (Go)",
+    "zen-browser-bin": "Zen Browser (Firefox fork, privacy-focused)",
+    "zen-browser": "Zen Browser (Firefox fork, privacy-focused)",
+    "floorp": "Firefox-based browser (Japanese, extra features)",
+    "albumdetails": "Music album metadata viewer CLI",
+    "ananicy-cpp": "Auto-Nice daemon (C++, process priority management)",
+    "bazecor": "Dygma Raise keyboard configurator (GUI)",
+    "clipcat": "Clipboard manager for Wayland (Rust)",
+    "ddccontrol": "DDC/CI monitor control (brightness, input, etc.)",
+    "epr": "Terminal EPUB reader (Rust)",
+    "flclashx": "FlClashX proxy client (Flutter GUI)",
+    "font-iosevkaterm-nerd-fonts": "IosevkaTerm Nerd Font patched",
+    "font-iosevka-nerd-fonts": "Iosevka Nerd Font patched",
+    "font-material-design-icons": "Material Design Icons font",
+    "ght": "GitHub CLI extensions manager (Rust)",
+    "goverlay": "GUI overlay manager for MangoHud/Goverlay",
+    "hermes-agent": "Hermes AI agent (Nous Research assistant)",
+    "hishtory": "Sync shell history across machines (end-to-end encrypted)",
+    "instagram-cli": "Instagram CLI viewer/downloader (Rust)",
+    "jetm-kernel-settings": "Custom kernel settings/tuning (JetM)",
+    "libjodycode": "Library for file operations (used by jdupes, etc.)",
+    "massren": "Mass file renamer (Rust)",
+    "neo-matrix": "Matrix digital rain screensaver (C, neofetch-like)",
+    "ollama": "Local LLM runner (llama.cpp wrapper, Go)",
+    "opensoundmeter": "Audio level/spectrum analyzer (like SPL meter)",
+    "oports": "Port scanner/analyzer CLI tool",
+    "optiscaler": "FSR/DLSS upscaler switcher (Windows compatibility)",
+    "otter-launcher": "Application launcher (Qt, Otter Browser companion)",
+    "par": "Paragraph reformatter (text formatting CLI)",
+    "powerlevel10k": "Zsh theme with performance (custom theme)",
+    "proteinview": "Protein structure viewer (molecular graphics)",
+    "proton-ge-custom": "Proton GE (community Wine fork for Steam)",
+    "protontricks": "Winetricks wrapper for Proton/Steam Play",
+    "python-uv-dynamic-versioning": "Python version management via uv (dynamic)",
+    "pzip": "Parallel compression tool (pigz-like, custom)",
+    "regex-tui": "Regex tester/editor (TUI, Rust)",
+    "richcolors": "Terminal true-color generator (256-colors)",
+    "roomeqwizard": "Room EQ Wizard (audio measurement/equalization)",
+    "rsmetrx": "Rust SMetrics (network metrics collection)",
+    "rustmission": "Rust BitTorrent client (TUI)",
+    "sidecar": "Sidecar proxy (network tool, Tailscale sidecar)",
+    "slsa-verifier": "SLSA provenance verifier (supply-chain security)",
+    "songfetch": "Song info fetcher (MPD/Last.fm, Rust)",
+    "spdlog": "Fast C++ logging library",
+    "tailray": "Tailscale IP/host manager (TUI, Rust)",
+    "tanin": "TUI audio visualizer (Rust)",
+    "taoup": "Terminal-based ASCII/Unicode art generator",
+    "tmmpr": "Twitch/Trovo/YouTube chat reader (TUI)",
+    "ytsurf": "YouTube CLI player/search (Rust)",
+    "pup": "HTML parser CLI (jq for HTML, Go)",
+    "witr": "WireGuard interactive TUI configurator",
+    "xdg-ninja": "Fix XDG base directory compliance for apps",
+    "iosevka-neg-fonts": "Custom Iosevka font variant (Nergo)",
+    "wiremix": "MPD visualizer with PipeWire support",
+    "proxypilot": "ProxyPilot LLM API proxy (Go)",
+    "game-devices-udev": "Udev rules for gaming devices (controllers, wheels)",
+    "opencode": "OpenCode AI coding assistant (CLI)",
+    "hyprscratch": "Hyprland scratchpad manager (Rust)",
     "nautilus": "GNOME file manager",
     "simple-scan": "Document scanner GUI",
     "sushi": "GNOME file previewer (quick preview)",
@@ -408,7 +464,7 @@ def annotate_salt():
     print(f"Salt: annotated {changed} packages")
 
 def annotate_guix():
-    """Annotate Guix system-config.scm — handles both string and symbol packages."""
+    """Annotate Guix system-config.scm — handles both string/symbol packages and inline custom lists."""
     path = REPO / "guix/system-config.scm"
     with open(path) as f:
         content = f.read()
@@ -421,21 +477,29 @@ def annotate_guix():
         m_str = re.match(r'^(\s*)"([\w.\-]+)"(\s*;.*)?$', line)
         # Match: package-name (symbol in a list)
         m_sym = re.match(r'^(\s*)([\w][\w.\-]*[\w])\s*(;.*)?$', line)
+        # Match: inline string listing: "pkg1" "pkg2" "pkg3"  ; comment
+        m_inline_str = re.match(r'^(\s*)((?:"[\w.\-]+"\s+)+)\s*(;.*)?$', line)
         
-        pkg = None; indent = None; existing = None
+        pkg = None; indent = None; existing = None; matched = False
         
         if m_str:
             pkg = m_str.group(2); indent = m_str.group(1)
-            existing = (m_str.group(3) or "").lstrip("; ").strip()
+            existing = (m_str.group(3) or "").lstrip("; ").strip(); matched = True
         elif m_sym and not line.strip().startswith(";") and not line.strip().startswith("("):
             pkg = m_sym.group(2); indent = m_sym.group(1)
-            existing = (m_sym.group(3) or "").lstrip("; ").strip()
+            existing = (m_sym.group(3) or "").lstrip("; ").strip(); matched = True
             # Skip Scheme keywords
-            if pkg in ["specifications->packages", "packages", "system", "list",
-                       "cons", "append", "operating", "services", "users",
-                       "plain-file", "local-file", "string-append", "file-append",
-                       "or", "getenv", "package-version", "base-packages",
-                       "base-pam-services", "kernel"]:
+            skip = ["specifications->packages", "packages", "system", "list",
+                    "cons", "append", "operating", "services", "users",
+                    "plain-file", "local-file", "string-append", "file-append",
+                    "or", "getenv", "package-version", "base-packages",
+                    "base-pam-services", "kernel", "lambda", "let", "let*", "svc",
+                    "t", "memq", "remove", "modify-services", "login-service-type",
+                    "login-configuration", "name", "group", "supplementary-groups",
+                    "shell", "comment", "home-directory", "uid", "password",
+                    "inherit", "super", "if", "map", "car", "cdr", "cons*",
+                    "null?", "list?", "defined?", "eq?", "equal?", "and", "or"]
+            if pkg in skip:
                 pkg = None
             if pkg and (pkg[0].isdigit() or pkg.startswith("#") or pkg.startswith(":") or pkg.startswith("'")):
                 pkg = None
@@ -443,14 +507,15 @@ def annotate_guix():
         if pkg and len(existing) < 5:
             desc = DESC.get(pkg)
             if desc:
-                prefix = f'"{pkg}"' if m_str else pkg
-                padding = 28 - len(pkg)
                 if m_str:
-                    padding = 28 - len(pkg) - 2  # account for quotes
-                new_lines.append(f'{indent}{" " if m_str else ""}{prefix}{" " * max(1, padding)} ; {desc}')
+                    new_lines.append(f'{indent}"{pkg}"{" " * (28 - len(pkg))} ; {desc}')
+                else:
+                    new_lines.append(f"{indent}{pkg:30} ; {desc}")
                 changed += 1
             else:
                 new_lines.append(line)
+        elif matched:
+            new_lines.append(line)
         else:
             new_lines.append(line)
     

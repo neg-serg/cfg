@@ -22,38 +22,9 @@ Rectangle {
     property bool isLoading: Services.Weather.isLoading
 
     readonly property var _cur: weatherData && weatherData.current ? weatherData.current : null
-    readonly property real _tempC: _cur && typeof _cur.temperature_2m === 'number' ? _cur.temperature_2m : NaN
     readonly property int _wcode: _cur && typeof _cur.weather_code === 'number' ? _cur.weather_code : -1
     readonly property string _wicon: _wcode >= 0 ? WeatherIcons.materialSymbolForCode(_wcode) : "cloud"
     readonly property bool _useF: Settings.settings.useFahrenheit || false
-
-    readonly property color _bgTop: cardGradientStop(_tempC, true)
-    readonly property color _bgBot: cardGradientStop(_tempC, false)
-    readonly property color _textColor: Theme.textOn(_bgTop)
-
-    function cardGradientStop(celsius, isTop) {
-        if (isNaN(celsius)) return isTop ? "#1E1E24" : "#141418";
-        var t = Math.max(-25, Math.min(45, celsius));
-        if (t < -5)  return isTop ? "#162436" : "#0C1620";
-        if (t < 5)   return isTop ? "#1A2834" : "#0E1820";
-        if (t < 15)  return isTop ? "#1E2830" : "#10181C";
-        if (t < 25)  return isTop ? "#20201E" : "#141412";
-        if (t < 33)  return isTop ? "#221E16" : "#16140E";
-        return isTop ? "#241A18" : "#161010";
-    }
-
-    function temperatureColor(celsius) {
-        if (isNaN(celsius)) return Theme.textPrimary;
-        var t = Math.max(-25, Math.min(45, celsius));
-        if (t < -10) return "#5BA0D0";
-        if (t < 0)   return "#7BB8E0";
-        if (t < 10)  return "#A0CCE8";
-        if (t < 20)  return "#C8D8E0";
-        if (t < 25)  return "#E8C878";
-        if (t < 30)  return "#E8A840";
-        if (t < 35)  return "#E86038";
-        return "#E03828";
-    }
 
     Connections { target: Services.Weather; function onWeatherDataChanged() { weatherRoot.weatherData = Services.Weather.weatherData } }
     Component.onCompleted: { if (isVisible) Services.Weather.start() }
@@ -71,31 +42,18 @@ Rectangle {
     Rectangle {
         id: card
         anchors.fill: parent
-        color: "transparent"
+        color: Color.withAlpha(Theme.accentDarkStrong, Theme.weatherCardOpacity)
         border.color: Theme.borderSubtle
         border.width: Theme.uiBorderWidth
         radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
         clip: true
-
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: weatherRoot._bgTop }
-            GradientStop { position: 1.0; color: weatherRoot._bgBot }
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            radius: card.radius
-            color: Color.withAlpha("#000000", 0.08)
-        }
 
         Canvas {
             id: weatherDecor
             anchors.fill: parent
             z: 0
             property int wcode: weatherRoot._wcode
-            property color accent: weatherRoot.temperatureColor(weatherRoot._tempC)
             onWcodeChanged: requestPaint()
-            onAccentChanged: requestPaint()
 
             onPaint: {
                 var ctx = getContext("2d");
@@ -122,13 +80,13 @@ Rectangle {
 
             function drawSunRays(ctx, w, h) {
                 var cx = w * 0.75, cy = h * 0.32;
-                ctx.strokeStyle = accent;
+                ctx.strokeStyle = Theme.accentPrimary;
                 for (var i = 0; i < 14; i++) {
                     var angle = (i / 14) * Math.PI * 2 - Math.PI * 0.2;
                     var innerR = 24;
                     var outerR = innerR + 18 + (i % 3) * 16;
-                    var opacity = 0.3 + (i % 3) * 0.25;
-                    ctx.globalAlpha = 0.07 * opacity * 2;
+                    var op = 0.3 + (i % 3) * 0.25;
+                    ctx.globalAlpha = 0.07 * op * 2;
                     ctx.lineWidth = 1.5;
                     ctx.beginPath();
                     ctx.moveTo(cx + Math.cos(angle) * innerR, cy + Math.sin(angle) * innerR);
@@ -232,19 +190,20 @@ Rectangle {
                     visible: !isLoading
                     icon: weatherRoot._wicon
                     size: Math.round(Theme.uiIconSizeLarge * 1.1 * Theme.scale(Screen))
-                    color: weatherRoot.temperatureColor(weatherRoot._tempC)
+                    color: Theme.accentPrimary
                     Layout.alignment: Qt.AlignVCenter
                 }
 
                 Text {
-                    text: weatherRoot._tempC !== weatherRoot._tempC ? ((weatherRoot._useF) ? "--°F" : "--°C")
-                        : (weatherRoot._useF ? Math.round(weatherRoot._tempC * 9/5 + 32) + "°F" : Math.round(weatherRoot._tempC) + "°C")
+                    text: weatherData && weatherData.current
+                        ? (_useF ? Math.round(weatherData.current.temperature_2m * 9/5 + 32) + "°F" : Math.round(weatherData.current.temperature_2m) + "°C")
+                        : (_useF ? "--°F" : "--°C")
                     font.family: Theme.fontFamily
                     font.pixelSize: Math.round(Theme.fontSizeHeader * Theme.weatherHeaderScale * 1.15 * Theme.scale(Screen))
                     font.bold: true
-                    color: weatherRoot.temperatureColor(weatherRoot._tempC)
+                    color: Theme.textOn(card.color)
                     Layout.alignment: Qt.AlignVCenter
-                    Component.onCompleted: weatherRoot.warnContrast(weatherRoot._bgTop, color, 'weather.temp')
+                    Component.onCompleted: weatherRoot.warnContrast(card.color, color, 'weather.temp')
                 }
 
                 ColumnLayout {
@@ -252,11 +211,11 @@ Rectangle {
                     Layout.alignment: Qt.AlignVCenter
 
                     Text {
-                        text: city.length > 18 ? city.slice(0, 17) + "…" : city
+                        text: city.length > 18 ? city.slice(0, 17) + "\u2026" : city
                         font.family: Theme.fontFamily
                         font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
                         font.bold: true
-                        color: weatherRoot._textColor
+                        color: Theme.textOn(card.color)
                         elide: Text.ElideRight
                     }
                     Text {
@@ -283,13 +242,13 @@ Rectangle {
                         icon: "navigation"
                         rotationAngle: WeatherIcons.windRotation(weatherRoot._cur ? weatherRoot._cur.wind_direction_10m : 0)
                         size: Math.round(Theme.fontSizeSmall * 0.85 * Theme.scale(Screen))
-                        color: weatherRoot._textColor
+                        color: Theme.textOn(card.color)
                     }
                     Text {
                         text: WeatherIcons.formatWindFull(weatherRoot._cur.wind_speed_10m, weatherRoot._cur.wind_direction_10m)
                         font.family: Theme.fontFamily
                         font.pixelSize: Math.round(Theme.fontSizeSmall * 0.85 * Theme.scale(Screen))
-                        color: weatherRoot._textColor
+                        color: Theme.textOn(card.color)
                     }
                 }
 
@@ -299,13 +258,13 @@ Rectangle {
                     MaterialIcon {
                         icon: "water_drop"
                         size: Math.round(Theme.fontSizeSmall * 0.85 * Theme.scale(Screen))
-                        color: weatherRoot._textColor
+                        color: Theme.textOn(card.color)
                     }
                     Text {
                         text: Math.round(weatherRoot._cur.relative_humidity_2m) + "%"
                         font.family: Theme.fontFamily
                         font.pixelSize: Math.round(Theme.fontSizeSmall * 0.85 * Theme.scale(Screen))
-                        color: weatherRoot._textColor
+                        color: Theme.textOn(card.color)
                     }
                 }
 
@@ -313,14 +272,14 @@ Rectangle {
                     spacing: 4
                     MoonPhaseIcon {
                         size: Math.round(Theme.fontSizeSmall * 0.85 * Theme.scale(Screen))
-                        moonColor: weatherRoot._textColor
-                        rimColor: Color.withAlpha(weatherRoot._textColor, 0.5)
+                        moonColor: Theme.textOn(card.color)
+                        rimColor: Color.withAlpha(Theme.textOn(card.color), 0.5)
                     }
                     Text {
                         text: WeatherIcons.moonName(new Date())
                         font.family: Theme.fontFamily
                         font.pixelSize: Math.round(Theme.fontSizeSmall * 0.85 * Theme.scale(Screen))
-                        color: weatherRoot._textColor
+                        color: Theme.textOn(card.color)
                     }
                 }
 
@@ -344,7 +303,7 @@ Rectangle {
                             text: weatherData.daily.time[index] ? Qt.formatDateTime(new Date(weatherData.daily.time[index]), "ddd") : ""
                             font.family: Theme.fontFamily
                             font.pixelSize: Math.round(Theme.fontSizeCaption * Theme.scale(Screen))
-                            color: weatherRoot._textColor
+                            color: Theme.textOn(card.color)
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }
@@ -353,33 +312,29 @@ Rectangle {
                             icon: weatherData.daily.weathercode && weatherData.daily.weathercode[index] !== undefined
                                 ? WeatherIcons.materialSymbolForCode(weatherData.daily.weathercode[index]) : "cloud"
                             size: Math.round(Theme.panelPillIconSize * 0.9 * Theme.scale(Screen))
-                            color: weatherRoot._textColor
+                            color: Theme.accentPrimary
                             Layout.alignment: Qt.AlignHCenter
                         }
 
                         Text {
                             text: weatherData && weatherData.daily && weatherData.daily.temperature_2m_max
-                                ? (weatherRoot._useF
-                                    ? Math.round(weatherData.daily.temperature_2m_max[index] * 9/5 + 32) + "°"
-                                    : Math.round(weatherData.daily.temperature_2m_max[index]) + "°")
+                                ? (_useF ? Math.round(weatherData.daily.temperature_2m_max[index] * 9/5 + 32) + "°" : Math.round(weatherData.daily.temperature_2m_max[index]) + "°")
                                 : "--°"
                             font.family: Theme.fontFamily
                             font.pixelSize: Math.round(Theme.fontSizeCaption * Theme.scale(Screen))
                             font.bold: true
-                            color: weatherRoot._textColor
+                            color: Theme.textPrimary
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }
 
                         Text {
                             text: weatherData && weatherData.daily && weatherData.daily.temperature_2m_min
-                                ? (weatherRoot._useF
-                                    ? Math.round(weatherData.daily.temperature_2m_min[index] * 9/5 + 32) + "°"
-                                    : Math.round(weatherData.daily.temperature_2m_min[index]) + "°")
+                                ? (_useF ? Math.round(weatherData.daily.temperature_2m_min[index] * 9/5 + 32) + "°" : Math.round(weatherData.daily.temperature_2m_min[index]) + "°")
                                 : "--°"
                             font.family: Theme.fontFamily
                             font.pixelSize: Math.round(Theme.fontSizeCaption * 0.85 * Theme.scale(Screen))
-                            color: Color.withAlpha(weatherRoot._textColor, 0.65)
+                            color: Color.withAlpha(Theme.textPrimary, 0.65)
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }

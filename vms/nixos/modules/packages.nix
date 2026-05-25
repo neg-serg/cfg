@@ -456,7 +456,6 @@ in
     # aliae-bin → not available
     # eilmeldung-bin → not available
     # flclashx-bin → not available
-    # v2raya-bin → 'v2raya' (available)
     # v2rayn-bin → not available
     # v2ray → 'v2ray' (available)
     # fsel-bin → not available
@@ -502,22 +501,19 @@ in
     # watchtower-bin → not available
     # witr-bin → not available
     # youtube-tui → not available
-    # ytsurf → not available
+        ytsurf                    # custom overlay
     # bazecor → not available
     # python-telethon → 'python3Packages.telethon' available
-    # zapret2 → custom (network module)
+        zapret2                   # custom overlay
     # vicinae-bin → external (custom build)
 
     # ── Additional nixpkgs AUR matches ─────────────────
     babashka
     carapace
-    v2raya                         # V2Ray web GUI client
     v2ray
     raysession                     # JACK audio session manager
     rmlint                         # Duplicate file finder (C)
     sing-box                       # Universal proxy platform (Go)
-  
-    xray                           # Proxy/VPN tool (Xray-core)
     niri                           # Scrolling-tiling Wayland compositor
     waybar
     buildah
@@ -555,7 +551,6 @@ in
     sushi                          # GNOME file previewer (quick preview)
     awww  # renamed from swww
     # unar (not in nixpkgs)
-    v2raya                         # V2Ray web GUI client
     sing-box                       # Universal proxy platform (Go)
     wget2
     wlogout                        # Wayland logout screen
@@ -648,5 +643,4 @@ in
     # transmission (in python section)
     # restic (check nixpkgs)
     # s-tui (overlay needed)
-    # go-yq (overlay needed)    # hermes-agent (overlay)    # pandoc-cli (overlay)    # proxypilot (custom overlay needed)
 

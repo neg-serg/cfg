@@ -35,6 +35,12 @@
   # Seatd — allows Hyprland to access /dev/dri/card0 and /dev/input/* through seat
   services.seatd.enable = true;
 
+  # Syncthing — P2P file synchronization
+  services.syncthing = {
+    enable = true;
+    user = "neg";
+  };
+
   # Passwordless sudo for neg (needed for nixos-rebuild switch in VM)
   security.sudo.extraRules = [
     { users = [ "neg" ]; groups = [ "wheel" ]; commands = [ { command = "ALL"; options = [ "NOPASSWD" ]; } ]; }

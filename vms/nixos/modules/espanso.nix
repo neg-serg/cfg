@@ -7,10 +7,9 @@ in
   options._espanso.enable = lib.mkEnableOption "Espanso text expander service";
 
   config = lib.mkIf cfg.enable {
-    # Espanso — NixOS built-in module
+    # Espanso text expander — use NixOS built-in module
     services.espanso = {
       enable = true;
-      package = pkgs.espanso-wayland;
     };
 
     # Configuration file is managed by chezmoi (dotfiles/dot_config/espanso/)

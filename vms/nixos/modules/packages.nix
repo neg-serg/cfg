@@ -68,7 +68,8 @@ in
     yelp
 
     # ── dev (25) ───────────────────────────────────────
-    cargo          # Rust package manager — builds rustc too
+    cargo          # Rust package manager (includes rustc)
+    rustc          # Rust compiler
     clang                          # C/C++/ObjC compiler (LLVM)
     cmake                          # Cross-platform build system
     difftastic      # Structural diff tool (understands syntax, not just lines)

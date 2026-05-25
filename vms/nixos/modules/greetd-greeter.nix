@@ -69,8 +69,8 @@ in
       misc { disable_hyprland_logo = true; force_default_wallpaper = 0 }
       animations { enabled = false }
       decoration { blur { enabled = false }; shadow { enabled = false } }
-      exec-once = foot
-      exec-always = env WAYLAND_DISPLAY=wayland-1 foot --server 2>/dev/null || true
+      exec-once = kitty
+      
     '';
 
     # Symlink VM config to user home
@@ -116,7 +116,7 @@ in
 
     # Basic desktop packages (kitty terminal for the VM)
     environment.systemPackages = with pkgs; [
-      kitty foot wiremix vulkan-loader vulkan-tools mesa
+      kitty wiremix vulkan-loader vulkan-tools mesa
     ];
   };
 }

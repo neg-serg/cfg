@@ -26,19 +26,8 @@ in
   options._flatpak.enable = lib.mkEnableOption "Flatpak sandboxed apps with flathub remote";
 
   config = lib.mkIf cfg.enable {
-    # Flatpak daemon + flathub remote (added automatically by the flatpak module)
-    services.flatpak = {
-      enable = true;
-      uninstallUnmanaged = true;
-      update.auto = {
-        enable = true;
-        onCalendar = "weekly";
-      };
-      remotes = [{
-        name = "flathub";
-        location = "https://flathub.org/repo/flathub.flatpakrepo";
-      }];
-    };
+    # Flatpak daemon + flathub remote
+    services.flatpak.enable = true;
 
     # Install flatpak apps as user (neg)
     systemd.services.flatpak-install-apps = {

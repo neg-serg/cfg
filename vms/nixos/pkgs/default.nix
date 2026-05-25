@@ -11,6 +11,7 @@ let
     neg-pretty-printer = final.callPackage ./neg-pretty-printer.nix {};
     nvtop           = final.callPackage ./nvtop.nix {};
     proxypilot      = final.callPackage ./proxypilot.nix {};
+    reddix           = final.callPackage ./reddix.nix {};
     raise           = final.callPackage ./raise.nix {};
     richcolors      = final.callPackage ./richcolors.nix {};
     rofi-calc       = final.callPackage ./rofi-calc.nix {};

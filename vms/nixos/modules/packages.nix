@@ -505,6 +505,7 @@ in
     # bazecor → not available
     # python-telethon → 'python3Packages.telethon' available
         zapret2                   # custom overlay
+        xray                      # custom overlay
     # vicinae-bin → external (custom build)
 
     # ── Additional nixpkgs AUR matches ─────────────────
@@ -643,4 +644,3 @@ in
     # transmission (in python section)
     # restic (check nixpkgs)
     # s-tui (overlay needed)
-

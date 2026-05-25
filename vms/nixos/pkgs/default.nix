@@ -26,6 +26,7 @@ let
     helvum               = final.callPackage ./helvum.nix {};
     sing-box             = final.callPackage ./sing-box.nix {};
     turbostat            = final.callPackage ./turbostat.nix {};
+    xray                 = final.callPackage ./xray.nix {};
     ytsurf               = final.callPackage ./ytsurf.nix {};
     zapret2              = final.callPackage ./zapret2.nix {};
   };

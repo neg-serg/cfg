@@ -204,7 +204,6 @@ in
     ddrescue
     dhcpcd
     diff-so-fancy
-    difftastic                     # Structural diff tool
     direnv
     distrobox
     dive                           # Docker image layer analysis TUI
@@ -233,7 +232,6 @@ in
     gist                           # GitHub Gist CLI tool
     git-crypt                      # Transparent git file encryption
     delta  # git-delta — nixpkgs name is 'delta'
-    difftastic      # Structural diff tool (understands syntax)
     docker          # Container runtime (CLI + daemon)
     git-filter-repo                # Git repository rewriting tool
     gh                             # GitHub CLI (pull requests, issues, etc)
@@ -503,10 +501,9 @@ in
     # youtube-tui → not available
         ytsurf                    # custom overlay
     # bazecor → not available
-    # python-telethon → 'python3Packages.telethon' available
-        zapret2                   # custom overlay
         xray                      # custom overlay
-    # vicinae-bin → external (custom build)
+        v2raya                    # custom overlay
+        zapret2                   # custom overlay
 
     # ── Additional nixpkgs AUR matches ─────────────────
     babashka
@@ -533,18 +530,13 @@ in
     jupyter
     texlive.combined.scheme-basic
     # ── Added missing packages (nixpkgs 25.05) ──
-    gh                             # GitHub CLI (pull requests, issues, etc)
-    networkmanagerapplet           # NetworkManager tray applet
     noto-fonts-cjk-sans
     hunspellDicts.ru-ru
-    iftop                          # Network bandwidth by connection (top-like)
-    inotify-tools                  # File event monitoring CLI tools (inotify)
     iotop
     perf
     stress-ng                      # CPU/memory/IO stress testing tool
     perlPackages.ImageExifTool
     tesseract4
-    tesseract                                # not found in nixpkgs
     nerd-fonts.jetbrains-mono
     qemu
     qemu_kvm
@@ -552,26 +544,18 @@ in
     sushi                          # GNOME file previewer (quick preview)
     awww  # renamed from swww
     # unar (not in nixpkgs)
-    sing-box                       # Universal proxy platform (Go)
     wget2
-    wlogout                        # Wayland logout screen
     wlr-which-key
-    xdg-ninja                      # Fix XDG base directory compliance for apps
-    scc                            # Code line counter (like cloc)
-    par                            # Paragraph reformatter (text formatting CLI)
     jdupes
     neovim-remote
     zapret
     snapcast                       # Synchronous multi-room audio player
     localsend
     bucklespring                   # Keyboard sound effects (IBM Model M)
-    hw-probe                       # Hardware probe and upload to linux-hardware.org
     google-chrome
     claude-code
-    gallery-dl                     # Image gallery downloader (Python)
     oh-my-posh
     git-extras
-    rmlint                         # Duplicate file finder (C)
     babashka
     carapace
     python3Packages.telethon

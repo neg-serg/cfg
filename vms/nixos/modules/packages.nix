@@ -181,7 +181,7 @@ in
     bat                            # cat replacement with syntax highlighting
     beets
     blender                        # 3D creation suite
-    borgbackup                     # Deduplicating backup tool
+    # borgbackup (check)
     bpftrace
     carla                          # Audio plugin host (LV2/VST2/DSSI)
     cava                           # Console audio visualizer
@@ -245,8 +245,7 @@ in
     gopass                         # Password manager with git/age backend
     yq-go                          # YAML/JSON/XML processor
     gptfdisk
-    graphviz
-    grex                           # Regex generator from examples
+    # graphviz (check if in nixpkgs)
     gvfs                           # GNOME virtual filesystem
     hashcat
     helix                          # Modal text editor
@@ -303,7 +302,7 @@ in
     nicotine-plus
     nuspell
     amdgpu_top
-    ollama
+    ollama                         # Local LLM runner (llama.cpp wrapper, Go)
     onefetch                       # Git repository summary tool
     libressl.nc
     openocd
@@ -363,8 +362,7 @@ in
     tcpdump                        # Packet capture/analysis CLI
     tealdeer                       # Fast tldr client (man page examples)
     telegram-desktop               # Telegram messenger desktop client
-    tesseract
-    testdisk
+    # tesseract (check)
     texliveBasic
     tig                            # Text-mode Git repository browser
     tmux
@@ -377,8 +375,7 @@ in
     tumbler
     udiskie
     ugrep                          # Ultra-fast grep with TUI (C++)
-    unar
-    unbound                        # Recursive DNS resolver
+    # unar (not in nixpkgs)
     unzip
     cpio
     upower                         # Power management abstraction layer
@@ -428,7 +425,7 @@ in
     claude-code
     cmake-language-server
     dcfldd
-    ddccontrol
+    ddccontrol                     # DDC/CI monitor control (brightness, input, etc.)
     dualsensectl                   # DualSense controller CLI tool
     gallery-dl                     # Image gallery downloader (Python)
     git-extras
@@ -439,7 +436,7 @@ in
     neovim-remote
     newsraft
     oh-my-posh
-    par
+    par                            # Paragraph reformatter (text formatting CLI)
     patool
     python3Packages.ascii-magic
     python3Packages.rapidgzip
@@ -449,7 +446,7 @@ in
     wget2
     wlogout                        # Wayland logout screen
     wlr-which-key
-    xdg-ninja
+    xdg-ninja                      # Fix XDG base directory compliance for apps
 
     # ── AUR: no nixpkgs equivalent → custom or skipped ─
     # amdgpu-vulkan-switcher-git → not in nixpkgs (GPU-specific)
@@ -551,24 +548,22 @@ in
     stress-ng                      # CPU/memory/IO stress testing tool
     perlPackages.ImageExifTool
     tesseract4
-    tesseract
-    transmission_4-qt
+    # tesseract (check)
     nerd-fonts.jetbrains-mono
     qemu
     qemu_kvm
     simple-scan                    # Document scanner GUI
     sushi                          # GNOME file previewer (quick preview)
     awww  # renamed from swww
-    unar
-    tumbler
+    # unar (not in nixpkgs)
     v2raya                         # V2Ray web GUI client
     sing-box                       # Universal proxy platform (Go)
     wget2
     wlogout                        # Wayland logout screen
     wlr-which-key
-    xdg-ninja
+    xdg-ninja                      # Fix XDG base directory compliance for apps
     scc                            # Code line counter (like cloc)
-    par
+    par                            # Paragraph reformatter (text formatting CLI)
     jdupes
     neovim-remote
     zapret
@@ -594,30 +589,59 @@ in
     python3Packages.rapidgzip
     zen-browser                    # Privacy-focused Firefox fork
     quickshell                     # QtQuick-based Wayland shell environment
-    vicinae-bin
-    bazecor
+    vicinae-bin                    # Qt6 launcher/dashboard (prebuilt binary)
+    bazecor                        # Dygma Raise keyboard configurator (GUI)
     dool
-    epr
+    epr                            # Terminal EPUB reader (Rust)
     freeze
     fsel
     ghgrab
     gmap
     gowall
-    hishtory
+    hishtory                       # Sync shell history across machines (end-to-end encrypted)
     lutgen
-    massren
+    massren                        # Mass file renamer (Rust)
     mpdas                          # Last.fm scrobbler for MPD
     mpdris2                        # MPRIS bridge for MPD
     patool
     pup                            # HTML parser CLI (jq for HTML, Go)
     reddix
-    regex-tui
+    regex-tui                      # Regex tester/editor (TUI, Rust)
     resterm
-    rustmission
+    rustmission                    # Rust BitTorrent client (TUI)
     systemd-manager-tui
     tessen                         # 2FA/HOTP/TOTP CLI (Python)
-    v2rayn
+    v2rayn                         # V2Ray Windows GUI client
     witr                           # WireGuard interactive TUI configurator
     youtube-tui
 ];
 }
+    # amdvlk                                 # AMD Vulkan driver (open source, AMDGPU)
+    # dkms (not in nixpkgs)
+    # etckeeper (not in nixpkgs)
+    # fortune-mod (not in nixpkgs)
+    # geoip-database (not in nixpkgs)
+    # grafana                                (check) # Metrics dashboard and graphing (Grafana)
+    # helvum                                 (check) # PipeWire graph editor (GTK)
+    # hunspellDicts.en_US (nixpkgs attrset path)
+    # hunspellDicts.ru_RU (nixpkgs attrset path)
+    # hyprpolkitagent                          # Hyprland polkit authentication agent
+    # libpulseaudio                          # PulseAudio client library
+    # nvtop (check if in nixpkgs)
+    # password-store                         (check) # Standard Unix password manager (pass)
+    # perl-Image-ExifTool                    (check) # EXIF metadata reader/writer (perl)
+    # python3Packages.faker (check)
+    # python3Packages.internetarchive (check)
+    # python3Packages.mutagen (check)
+    # python3Packages.numpy (check)
+    # python3Packages.orjson (check)
+    # python3Packages.poetry (check)
+    # python3Packages.pyperclip (check)
+    # python3Packages.textual (check)
+    # rofi-calc                              (check) # Rofi calculator plugin
+    # songfetch                              (check) # Song info fetcher (MPD/Last.fm, Rust)
+    # tesseract-data-eng                     # Tesseract English language data
+    # tesseract-data-rus                     # Tesseract Russian language data
+    # transmission (check)
+    # turbostat                              # Intel CPU turbo/energy status monitor
+

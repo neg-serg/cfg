@@ -39,6 +39,7 @@
   services.syncthing = {
     enable = true;
     user = "neg";
+    dataDir = "/home/neg/.local/share/syncthing";
   };
 
   # Passwordless sudo for neg (needed for nixos-rebuild switch in VM)

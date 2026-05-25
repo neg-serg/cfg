@@ -287,10 +287,12 @@ if [ -f /tmp/dotfiles.tar.gz ]; then
     green "  chezmoi dotfiles applied with gopass secrets"
 
     # Copy critical configs directly (bypass gopass/gpg templates)
-    # First, copy ALL config dirs from dotfiles
+    # Copy ALL config dirs from dotfiles, but exclude hypr (use system config)
     if [ -d "$HOME_DIR/.local/share/dotfiles/dot_config" ]; then
         for cfg_dir in "$HOME_DIR/.local/share/dotfiles/dot_config"/*/; do
             dirname="$(basename "$cfg_dir")"
+            # Skip hypr — system provides /etc/hypr/hyprland.conf symlinked
+            [ "$dirname" = "hypr" ] && continue
             target="$HOME_DIR/.config/$dirname"
             if [ ! -d "$target" ]; then
                 cp -r "$cfg_dir" "$target" 2>/dev/null || true

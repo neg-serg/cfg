@@ -23,6 +23,14 @@ let
     vicinae-bin     = final.callPackage ./vicinae-bin.nix {};
     wl              = final.callPackage ./wl.nix {};
     zen-browser     = final.callPackage ./zen-browser.nix {};
+    helvum               = final.callPackage ./helvum.nix {};
+    hermes-agent         = final.callPackage ./hermes-agent.nix {};
+    sing-box             = final.callPackage ./sing-box.nix {};
+    turbostat            = final.callPackage ./turbostat.nix {};
+    v2raya               = final.callPackage ./v2raya.nix {};
+    xray                 = final.callPackage ./xray.nix {};
+    ytsurf               = final.callPackage ./ytsurf.nix {};
+    zapret2              = final.callPackage ./zapret2.nix {};
   };
 in
 {

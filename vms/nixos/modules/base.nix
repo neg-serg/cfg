@@ -24,13 +24,16 @@
 
   users.users.neg = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "video" "render" ];
+    extraGroups = [ "wheel" "video" "render" "input" "seat" "audio" "networkmanager" ];
     home = "/home/neg";
     initialPassword = "nixos";
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEx7F9KuTtPsLj9UVtUQ9ZrXUebjCMKuKZcyZWzg2RHf serg.zorg@gmail.com"
     ];
   };
+
+  # Seatd — allows Hyprland to access /dev/dri/card0 and /dev/input/* through seat
+  services.seatd.enable = true;
 
   # Passwordless sudo for neg (needed for nixos-rebuild switch in VM)
   security.sudo.extraRules = [

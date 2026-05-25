@@ -6,13 +6,13 @@ base:
 - linux-headers
 - linux-cachyos-headers
 - linux-firmware
-- amd-ucode
+- amd-ucode                      # AMD CPU microcode updates
 desktop:
-- broot
-- chromium
-- epiphany
-- firefox
-- gimp
+- broot                          # Tree-based file explorer (Rust)
+- chromium                       # Web browser (open-source Chrome)
+- epiphany                       # GNOME web browser (WebKit)
+- firefox                        # Web browser
+- gimp                           # GNU Image Manipulation Program
 - gnome-backgrounds
 - gnome-calculator
 - gnome-calendar
@@ -22,26 +22,26 @@ desktop:
 - gnome-connections
 - gnome-console
 - cosmic-greeter
-- dunst
-- grim
-- hypridle
-- hyprland
-- hyprlock
-- hyprpicker
+- dunst                          # Notification daemon
+- grim                           # Wayland screenshot tool
+- hypridle                       # Hyprland idle daemon
+- hyprland                       # Dynamic tiling Wayland compositor
+- hyprlock                       # Hyprland screen locker
+- hyprpicker                     # Hyprland color picker
 - hyprpolkitagent
-- eza
+- eza                            # Modern ls replacement (Rust)
 - matugen
 - rmpc
-- rofi
+- rofi                           # Application launcher for X11 and Wayland
 - loupe
-- satty
-- slurp
-- swayimg
+- satty                          # Screenshot annotation tool (Rust)
+- slurp                          # Wayland region selector
+- swayimg                        # Wayland image viewer
 - television
-- wl-clipboard
-- wlr-randr
+- wl-clipboard                   # Wayland clipboard tools wl-copy wl-paste
+- wlr-randr                      # Wayland output management CLI
 - xdg-desktop-portal-hyprland
-- yazi
+- yazi                           # Terminal file manager (Rust)
 - ark
 - gnome-contacts
 - gnome-control-center
@@ -68,24 +68,24 @@ desktop:
 - simple-scan
 - sushi
 - swayosd
-- wofi
+- wofi                           # Wayland launcher menu like rofi
 - xdg-user-dirs-gtk
 - xdg-utils
 - yelp
 dev:
-- clang
-- cmake
-- gdb
-- meson
-- ninja
+- clang                          # C/C++/ObjC compiler (LLVM)
+- cmake                          # Cross-platform build system
+- gdb                            # GNU debugger
+- meson                          # Fast build system (Python/Ninja)
+- ninja                          # Small build system used by Meson
 - openblas
-- fennel
-- git
-- lua-language-server
-- lua53
-- patchelf
-- neovim
-- nodejs
+- fennel                         # Lisp that compiles to Lua (luaPackages)
+- git                            # Distributed version control system
+- lua-language-server            # Lua language server (LSP)
+- lua53                          # Lua 5.3 programming language
+- patchelf                       # ELF binary patching tool
+- neovim                         # Modern Vim fork (Lua-first)
+- nodejs                         # JavaScript runtime (Node.js)
 - npm
 - python-pipx
 - python-pyperclip
@@ -93,38 +93,38 @@ dev:
 - python-poetry
 - python-orjson
 - python-numpy
-- ruby
+- ruby                           # Ruby programming language
 - jupyterlab
-- subversion
-- uv
-- vale
+- subversion                     # Apache Subversion VCS
+- uv                             # Fast Python package manager (Rust)
+- vale                           # Prose linter (documentation style)
 network:
 - cloudflare-speed-cli
-- curl
-- firewalld
+- curl                           # HTTP client and data transfer tool
+- firewalld                      # Firewall management daemon (firewall-cmd)
 - ufw
-- networkmanager
+- networkmanager                 # Network management daemon
 - networkmanager-qt
-- bluez
-- nmap
-- openssh
-- tailscale
+- bluez                          # Bluetooth protocol stack and tools
+- nmap                           # Network scanner and discovery tool
+- openssh                        # SSH client and server
+- tailscale                      # Mesh VPN (Go)
 - proton-vpn-cli
-- wget
-- nethogs
+- wget                           # HTTP download tool
+- nethogs                        # Network bandwidth by process (top-like)
 - network-manager-applet
 audio:
 - pipewire
 - gst-plugin-pipewire
 - pavucontrol
 media:
-- ffmpeg
-- ffmpegthumbnailer
+- ffmpeg                         # Multimedia converter and processor
+- ffmpegthumbnailer              # Video thumbnail generator
 - gst-libav
 - gst-plugins-bad
 - gst-plugins-ugly
-- imagemagick
-- mpv
+- imagemagick                    # Image manipulation suite
+- mpv                            # Media player (C)
 - grilo-plugins
 - rygel
 - showtime
@@ -132,28 +132,28 @@ fonts:
 - noto-fonts-cjk
 - ttf-jetbrains-mono-nerd
 gaming:
-- lutris
-- wine
+- lutris                         # Game launcher (Wine/libretro/native)
+- wine                           # Windows compatibility layer
 - xorg-server
 - xorg-xinit
 - xf86-video-amdgpu
 - xf86-video-ati
-- gamescope
-- gamemode
-- nethack
+- gamescope                      # Micro-compositor for gaming (Valve)
+- gamemode                       # Game performance optimization daemon
+- nethack                        # Classic roguelike dungeon crawler
 system:
-- bottom
-- btop
+- bottom                         # Graphical system monitor btm (Rust)
+- btop                           # Resource monitor (C++)
 - xorg-server
 - xorg-xinit
 - xf86-video-amdgpu
-- htop
+- htop                           # Interactive process viewer
 - lsof
 - lvm2
 - parted
-- strace
-- stress-ng
-- sysstat
+- strace                         # System call tracer
+- stress-ng                      # CPU/memory/IO stress testing tool
+- sysstat                        # System performance monitoring (sar, iostat)
 - pacman-contrib
 - rebuild-detector
 - cups
@@ -161,58 +161,58 @@ system:
 - gdm
 - rsync
 - samba
-- slirp4netns
-- skopeo
+- slirp4netns                    # User-mode networking for containers
+- skopeo                         # Container image inspection tool (Go)
 - system-config-printer
 - zram-generator
 other:
 - abduco
-- age
+- age                            # Simple modern file encryption (Go)
 - albumdetails
 - android-tools
-- aria2
+- aria2                          # Download utility supporting multiple protocols
 - asciinema
 - atop
-- avahi
+- avahi                          # mDNS/DNS-SD zeroconf daemon
 - nss-mdns
-- bandwhich
-- bat
+- bandwhich                      # Bandwidth utilization TUI (Rust)
+- bat                            # cat replacement with syntax highlighting (Rust)
 - beets
-- blender
+- blender                        # 3D creation suite
 - lib32-vulkan-radeon
-- bluez-utils
-- borg
+- bluez-utils                    # Bluetooth protocol stack and tools
+- borg                           # Deduplicating backup tool (Python/C)
 - bpftrace
-- bucklespring
-- carla
-- cava
+- bucklespring                   # Keyboard sound effects (IBM Model M)
+- carla                          # Audio plugin host (LV2/VST2/DSSI)
+- cava                           # Console audio visualizer
 - ccid
 - yubikey-manager
-- cdparanoia
-- chafa
-- chezmoi
-- choose
-- chromaprint
-- cliphist
+- cdparanoia                     # CD audio ripping tool
+- chafa                          # Terminal image viewer/probe
+- chezmoi                        # Dotfile manager (declarative, Go)
+- choose                         # cut and awk replacement (Rust)
+- chromaprint                    # Acoustic fingerprinting library + CLI
+- cliphist                       # Wayland clipboard manager (Go)
 - convmv
 - corectrl
 - dosbox
-- cowsay
+- cowsay                         # ASCII art cow speech bubble
 - cpufetch
 - cpupower
-- ctop
-- curlie
+- ctop                           # Container metrics TUI (Go)
+- curlie                         # curl with httpie-style output (Go)
 - dash
 - ddrescue
 - dhcpcd
 - diff-so-fancy
-- difftastic
+- difftastic                     # Structural diff tool (understands syntax)
 - direnv
 - distrobox
-- dive
+- dive                           # Docker image layer analysis TUI (Go)
 - dkms
-- dnsmasq
-- doggo
+- dnsmasq                        # Lightweight DNS/DHCP/TFTP server
+- doggo                          # Modern DNS client (Go)
 - dos2unix
 - dust
 - edk2-ovmf
@@ -223,38 +223,38 @@ other:
 - erdtree
 - etckeeper
 - expect
-- fastfetch
+- fastfetch                      # Neofetch replacement (C)
 - fclones
-- fd
+- fd                             # Fast file search replacement (Rust)
 - figlet
-- fio
+- fio                            # Flexible I/O tester/benchmark
 - fortune-mod
 - fping
 - freerdp
 - fwupd
-- fzf
+- fzf                            # Fuzzy finder for terminal
 - genact
 - geoip
 - geoip-database
-- gist
-- git-crypt
-- git-delta
-- git-filter-repo
+- gist                           # GitHub Gist CLI tool
+- git-crypt                      # Transparent git file encryption
+- git-delta                      # Git diff viewer with syntax highlighting
+- git-filter-repo                # Git repository history rewriting tool
 - github-cli
-- gitleaks
+- gitleaks                       # Git secret scanner
 - gitlogue
-- git-lfs
-- ghostty
+- git-lfs                        # Git Large File Storage extension
+- ghostty                        # GPU-accelerated terminal emulator
 - ghostty-shell-integration
 - glow
 - goaccess
 - goimapnotify
-- gopass
+- gopass                         # Password manager with git/age backend (Go)
 - go-yq
 - gptfdisk
 - grafana
 - graphviz
-- grex
+- grex                           # Regex generator from examples (Rust)
 - gvfs
 - gvfs-mtp
 - gvfs-smb
@@ -266,32 +266,32 @@ other:
 - gvfs-onedrive
 - gvfs-wsdd
 - hashcat
-- helix
+- helix                          # Modal text editor (Rust)
 - helvum
 - hexyl
-- himalaya
-- htmlq
-- httpie
+- himalaya                       # Email CLI client (Rust)
+- htmlq                          # HTML query tool like jq for HTML (Rust)
+- httpie                         # HTTP client with user-friendly output (Python)
 - hunspell-ru
 - hwinfo
-- hyperfine
+- hyperfine                      # Command-line benchmarking tool (Rust)
 - id3v2
-- iftop
+- iftop                          # Network bandwidth by connection (top-like)
 - inotify-tools
 - ioping
 - iosevka-neg-fonts
 - iotop-c
-- iperf3
+- iperf3                         # Network bandwidth measurement tool
 - isync
-- iwd
-- jc
+- iwd                            # Wi-Fi daemon (iNet Wireless Daemon)
+- jc                             # Convert CLI tool output to JSON (Python)
 - jpegoptim
-- jq
-- jujutsu
-- just
+- jq                             # JSON query processor (C)
+- jujutsu                        # Git-compatible VCS (jj), simpler than git
+- just                           # Command runner like make, simpler (Rust)
 - kexec-tools
-- kitty
-- kmon
+- kitty                          # GPU-accelerated terminal emulator
+- kmon                           # Kernel module manager TUI (Rust)
 - kvantum
 - kvantum-qt5
 - lbzip2
@@ -300,8 +300,8 @@ other:
 - liquidctl
 - lldb
 - lm_sensors
-- lnav
-- lolcat
+- lnav                           # Log file navigator (C++)
+- lolcat                         # Rainbow text colorizer
 - lowdown
 - lshw
 - lsp-plugins
@@ -309,18 +309,18 @@ other:
 - mediainfo
 - media-player-info
 - memtester
-- miller
+- miller                         # CSV/JSON/TSV data processor mlr (Go)
 - minicom
 - moreutils
-- mpc
-- mpd
+- mpc                            # MPD client (Music Player Daemon)
+- mpd                            # Music Player Daemon (server)
 - python-mutagen
-- mtr
+- mtr                            # Network diagnostic (traceroute + ping)
 - multipath-tools
 - ncdu
 - neg-pretty-printer
-- neomutt
-- nerdctl
+- neomutt                        # Mutt email client fork with modern features
+- nerdctl                        # Docker-compatible CLI for containerd (Go)
 - nicotine+
 - nm-connection-editor
 - nss-mdns
@@ -329,15 +329,15 @@ other:
 - amdgpu_top
 - ollama
 - ollama-vulkan
-- onefetch
+- onefetch                       # Git repository summary tool (Rust)
 - openbsd-netcat
 - openocd
 - openrgb
 - optipng
-- ouch
+- ouch                           # Compression/decompression CLI (Rust)
 - pandoc-cli
 - parallel
-- pastel
+- pastel                         # Color manipulation tool (Rust)
 - pbzip2
 - pcmanfm
 - pcsc-tools
@@ -348,9 +348,9 @@ other:
 - pigz
 - plocate
 - pngquant
-- podman
-- powertop
-- pre-commit
+- podman                         # Daemonless container engine (Go)
+- powertop                       # Power consumption diagnosis tool
+- pre-commit                     # Git pre-commit hook framework (Python)
 - python-faker
 - python-internetarchive
 - prettyping
@@ -364,43 +364,43 @@ other:
 - qt5-wayland
 - qt6ct
 - rawtherapee
-- rclone
+- rclone                         # Cloud storage sync (Go)
 - recoll
 - reptyr
 - resvg
 - richcolors
-- ripgrep
+- ripgrep                        # Ultra-fast grep replacement (Rust)
 - rlwrap
-- ruff
+- ruff                           # Python linter and formatter (Rust)
 - sad
 - sbctl
 - schedtool
 - scour
-- shellcheck
-- shfmt
-- smartmontools
+- shellcheck                     # Shell script static analyzer (Haskell)
+- shfmt                          # Shell script formatter (Go)
+- smartmontools                  # S.M.A.R.T. disk monitoring tools
 - sops
-- socat
+- socat                          # Multipurpose socket relay tool
 - sonic-visualiser
 - sox
 - sshfs
 - sshpass
 - streamlink
-- s-tui
+- s-tui                          # Terminal CPU stress test and monitor (Python)
 - sudo
 - swappy
 - systemd-resolvconf
 - tabiew
 - taplo-cli
-- tcpdump
-- tealdeer
+- tcpdump                        # Packet capture and analysis CLI
+- tealdeer                       # Fast tldr client (man examples)
 - telegram-desktop
 - tesseract
 - tesseract-data-eng
 - tesseract-data-rus
 - testdisk
 - texlive-basic
-- tig
+- tig                            # Text-mode Git repository browser (ncurses)
 - tmux
 - toilet
 - traceroute
@@ -413,44 +413,44 @@ other:
 - udiskie
 - ugrep
 - unarchiver
-- unbound
+- unbound                        # Recursive DNS resolver (C)
 - unzip
 - cpio
-- upower
+- upower                         # Power management abstraction layer
 - urlscan
 - urlwatch
-- valgrind
-- vdirsyncer
+- valgrind                       # Memory debugger and profiler
+- vdirsyncer                     # CalDAV/CardDAV sync tool
 - virt-manager
 - virt-viewer
 - viu
-- vnstat
+- vnstat                         # Network traffic monitor
 - w3m
-- waypipe
-- wayvnc
-- wev
-- wf-recorder
+- waypipe                        # Wayland remote display like SSH -X
+- wayvnc                         # VNC server for Wayland compositors
+- wev                            # Wayland event viewer
+- wf-recorder                    # Wayland screen recorder
 - which
-- whois
+- whois                          # Domain and WHOIS lookup client
 - wireshark-cli
-- wtype
+- wtype                          # Wayland keystroke injector
 - xfsprogs
-- xh
-- yamllint
+- xh                             # HTTP client like httpie (Rust)
+- yamllint                       # YAML file linter
 - ydotool
-- yt-dlp
+- yt-dlp                         # YouTube/video downloader
 - zathura
 - zathura-pdf-poppler
 - zbar
-- zellij
+- zellij                         # Terminal multiplexer (Rust)
 - zk
 - zmap
-- zoxide
+- zoxide                         # Smarter cd command (frecency-based)
 - zsh
-- handlr-regex
+- handlr-regex                   # Default application handler (Rust)
 - i3status
 - i3-wm
-- inxi
+- inxi                           # System information script
 - kate
 - libpulse
 - malcontent
@@ -463,7 +463,7 @@ other:
 - polkit-kde-agent
 - breeze
 - breeze-icons
-- konsole
+- konsole                        # KDE terminal emulator
 - proxypilot
 - proxypilot-debug
 - qt6-wayland
@@ -472,9 +472,9 @@ other:
 - ssh-to-age-debug
 - taoup
 - tecla
-- uwsm
+- uwsm                           # Universal Wayland Session Manager
 - vim
-- wiremix
+- wiremix                        # MPD visualizer with PipeWire support
 aur:
   - hermes-agent
   - amdgpu-vulkan-switcher-git
@@ -518,7 +518,7 @@ aur:
   - lutgen-bin
   - massren
   - mpdris2-git
-  - mpdas
+  - mpdas                          # Last.fm scrobbler for MPD
   - neo-matrix
   - neovim-remote
   - newsraft
@@ -546,25 +546,25 @@ aur:
   - rofi-file-browser-extended-git
   - rofi-file-browser-extended-git-debug
   - rustmission
-  - scc
+  - scc                            # Code line counter like cloc (Go)
   - songfetch
   - simutil-bin
   - sing-box-bin
   - strace-tui-bin
   - systemd-manager-tui
   - tanin-git
-  - tessen
+  - tessen                         # 2FA/HOTP/TOTP CLI (Python)
   - tmmpr
   - ttfautohint
   - unflac
   - watchtower-bin
   - witr-bin
   - wget2
-  - wlogout
+  - wlogout                        # Wayland logout screen
   - wlr-which-key
   - xdg-ninja
   - youtube-tui
-  - ytsurf
+  - ytsurf                         # CLI YouTube player/downloader
   - bazecor
   - python-telethon
   - zapret2

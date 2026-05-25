@@ -14,10 +14,10 @@ in
 
     # ── desktop (64) ──────────────────────────────────
     broot                          # Tree-based file explorer
-    chromium
-    epiphany
-    firefox
-    gimp
+    chromium                       # Web browser (open-source Chrome)
+    epiphany                       # GNOME web browser (WebKit)
+    firefox                        # Web browser
+    gimp                           # GNU Image Manipulation Program
     gnome-backgrounds
     gnome-calculator
     gnome-calendar
@@ -113,7 +113,7 @@ in
     openssh                        # SSH client and server
     tailscale                      # Mesh VPN
     wget                           # HTTP download tool
-    nethogs
+    nethogs                        # Network bandwidth by process (top-like)
     networkmanagerapplet           # NetworkManager tray applet
     # cloudflare-speed-cli → nixpkgs: cloudflare-warp?
     # ufw → use firewalld above
@@ -126,7 +126,7 @@ in
 
     # ── media (10) ─────────────────────────────────────
     ffmpeg                         # Multimedia converter/processor
-    ffmpegthumbnailer
+    ffmpegthumbnailer              # Video thumbnail generator
     gst_all_1.gst-libav
     gst_all_1.gst-plugins-bad
     gst_all_1.gst-plugins-ugly
@@ -139,11 +139,11 @@ in
     jetbrains-mono
 
     # ── gaming (9, VM: skip GPU/vulkan/xorg) ───────────
-    lutris
-    wine
-    gamescope
-    gamemode
-    nethack
+    lutris                         # Game launcher (Wine/libretro/native)
+    wine                           # Windows compatibility layer
+    gamescope                      # Micro-compositor for gaming (Valve)
+    gamemode                       # Game performance optimization daemon
+    nethack                        # Classic roguelike dungeon crawler
 
     # ── system (23) ────────────────────────────────────
     bottom                         # Graphical system monitor (btm)
@@ -170,7 +170,7 @@ in
     age             # Simple, modern file encryption tool
     age-plugin-yubikey # age plugin for YubiKey-backed encryption
     android-tools
-    aria2
+    aria2                          # Download utility supporting multiple protocols
     asciinema
     atop
     avahi                          # mDNS/DNS-SD (zeroconf) daemon
@@ -178,23 +178,23 @@ in
     bandwhich                      # Bandwidth utilization TUI
     bat                            # cat replacement with syntax highlighting
     beets
-    blender
+    blender                        # 3D creation suite
     borgbackup                     # Deduplicating backup tool
     bpftrace
-    carla
-    cava
+    carla                          # Audio plugin host (LV2/VST2/DSSI)
+    cava                           # Console audio visualizer
     ccid
     yubikey-manager
-    cdparanoia
-    chafa
+    cdparanoia                     # CD audio ripping tool
+    chafa                          # Terminal image viewer/probe
     chezmoi                        # Dotfile manager (declarative)
     choose                         # cut and awk replacement
-    chromaprint
+    chromaprint                    # Acoustic fingerprinting library + CLI
     cliphist                       # Wayland clipboard manager
     convmv
     corectrl
     dosbox
-    cowsay
+    cowsay                         # ASCII art cow speech bubble
     cpufetch
     ctop                           # Container metrics TUI
     curlie                         # curl wrapper (httpie output)
@@ -249,14 +249,14 @@ in
     hashcat
     helix                          # Modal text editor
     hexyl
-    himalaya
+    himalaya                       # Email CLI client (Rust)
     htmlq                          # HTML query tool (like jq for HTML)
     httpie                         # User-friendly HTTP client
     hunspellDicts.ru-ru
     hwinfo
     hyperfine                      # Command-line benchmarking tool
     id3v2
-    iftop
+    iftop                          # Network bandwidth by connection (top-like)
     inotify-tools
     ioping
     iotop
@@ -296,7 +296,7 @@ in
     mtr                            # Network diagnostic (traceroute + ping)
     multipath-tools
     ncdu
-    neomutt
+    neomutt                        # Mutt email client fork with modern features
     nerdctl                        # Docker-compatible CLI for containerd
     nicotine-plus
     nuspell
@@ -383,7 +383,7 @@ in
     urlscan
     urlwatch
     valgrind                       # Memory debugger/profiler
-    vdirsyncer
+    vdirsyncer                     # CalDAV/CardDAV sync tool
     virt-manager
     virt-viewer
     viu
@@ -542,7 +542,7 @@ in
     networkmanagerapplet           # NetworkManager tray applet
     noto-fonts-cjk-sans
     hunspellDicts.ru-ru
-    iftop
+    iftop                          # Network bandwidth by connection (top-like)
     inotify-tools
     iotop
     perf
@@ -572,7 +572,7 @@ in
     zapret
     snapcast
     localsend
-    bucklespring
+    bucklespring                   # Keyboard sound effects (IBM Model M)
     hw-probe
     google-chrome
     claude-code
@@ -590,7 +590,7 @@ in
     pandoc
     python3Packages.ascii-magic
     python3Packages.rapidgzip
-    zen-browser
+    zen-browser                    # Privacy-focused Firefox fork
     quickshell
     vicinae-bin
     bazecor
@@ -613,7 +613,7 @@ in
     resterm
     rustmission
     systemd-manager-tui
-    tessen
+    tessen                         # 2FA/HOTP/TOTP CLI (Python)
     v2rayn
     witr
     youtube-tui

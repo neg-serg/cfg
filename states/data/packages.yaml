@@ -538,6 +538,7 @@ aur:
   - python-ascii_magic
   - python-rapidgzip
   - quickshell                     # QtQuick-based Wayland shell environment
+  - quickshell-overview-git        # Hyprland workspace overview (Quickshell)
   - reddix-bin
   - repeater-bin
   - regex-tui                      # Regex tester/editor (TUI, Rust)

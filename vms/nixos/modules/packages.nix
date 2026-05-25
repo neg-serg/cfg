@@ -568,6 +568,8 @@ in
     python3Packages.rapidgzip
     zen-browser                    # Privacy-focused Firefox fork
     quickshell                     # QtQuick-based Wayland shell environment
+    qt6.qtwayland                 # Qt6 Wayland platform plugin (required by quickshell-overview)
+    # quickshell-overview-git → QML-only (files managed via dotfiles/quickshell/overview/)
     vicinae-bin                    # Qt6 launcher/dashboard (prebuilt binary)
     bazecor                        # Dygma Raise keyboard configurator (GUI)
     dool

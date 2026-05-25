@@ -137,11 +137,8 @@
     "z /home/neg/.local/share 0755 neg users -"
   ];
 
-  # Swap (4GB swapfile on root)
-  swapDevices = [{
-    device = "/swapfile";
-    size = 4096;
-  }];
+  # Swap (4GB swapfile on root) — already created by VM runner
+  swapDevices = [ { device = "/swapfile"; size = 4096; } ];
 
   # Sysctl tuning (from Salt sysctl-custom.conf)
   boot.kernel.sysctl = {

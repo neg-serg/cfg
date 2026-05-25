@@ -245,7 +245,7 @@ in
     gopass                         # Password manager with git/age backend
     yq-go                          # YAML/JSON/XML processor
     gptfdisk
-    # graphviz (check if in nixpkgs)
+    graphviz                                 # not found in nixpkgs
     gvfs                           # GNOME virtual filesystem
     hashcat
     helix                          # Modal text editor
@@ -362,7 +362,7 @@ in
     tcpdump                        # Packet capture/analysis CLI
     tealdeer                       # Fast tldr client (man page examples)
     telegram-desktop               # Telegram messenger desktop client
-    # tesseract (check)
+    tesseract                                # not found in nixpkgs
     texliveBasic
     tig                            # Text-mode Git repository browser
     tmux
@@ -548,7 +548,7 @@ in
     stress-ng                      # CPU/memory/IO stress testing tool
     perlPackages.ImageExifTool
     tesseract4
-    # tesseract (check)
+    tesseract                                # not found in nixpkgs
     nerd-fonts.jetbrains-mono
     qemu
     qemu_kvm
@@ -619,17 +619,11 @@ in
     # amdvlk                                 # AMD Vulkan driver (open source, AMDGPU)
     # dkms (not in nixpkgs)
     # etckeeper (not in nixpkgs)
-    # fortune-mod (not in nixpkgs)
-    # geoip-database (not in nixpkgs)
-    # grafana                                (check) # Metrics dashboard and graphing (Grafana)
-    # helvum                                 (check) # PipeWire graph editor (GTK)
-    # hunspellDicts.en_US (nixpkgs attrset path)
-    # hunspellDicts.ru_RU (nixpkgs attrset path)
-    # hyprpolkitagent                          # Hyprland polkit authentication agent
-    # libpulseaudio                          # PulseAudio client library
-    # nvtop (check if in nixpkgs)
-    # password-store                         (check) # Standard Unix password manager (pass)
-    # perl-Image-ExifTool                    (check) # EXIF metadata reader/writer (perl)
+    # overlay packages moved to main list below
+    # (python section only)
+    # fortune-mod overlay
+    # hyprpolkitagent overlay
+    # libpulseaudio overlay
     # python3Packages.faker (check)
     # python3Packages.internetarchive (check)
     # python3Packages.mutagen (check)
@@ -642,14 +636,14 @@ in
     # songfetch                              (check) # Song info fetcher (MPD/Last.fm, Rust)
     # tesseract-data-eng                     # Tesseract English language data
     # tesseract-data-rus                     # Tesseract Russian language data
-    # transmission (check)
+    # transmission (in python section)
     # turbostat                              # Intel CPU turbo/energy status monitor
-    # fortune-mod (not found in nixpkgs)
-    # graphviz (not found in nixpkgs)
-    # hyprpolkitagent (not in nixpkgs)
-    # libpulseaudio (not in nixpkgs)
-    # nvtop (not in nixpkgs)
-    # pass (use gopass instead)
-    # perl-Image-ExifTool (not in nixpkgs)
-    # tesseract (not found in nixpkgs)
-    # transmission (not found in nixpkgs)
+    # fortune-mod (in python section)
+    # graphviz (in python section)
+    # hyprpolkitagent (in python section)
+    # libpulseaudio (in python section)
+    # nvtop (in python section)
+    # pass (in python section)
+    # perl-Image-ExifTool (in python section)
+    # tesseract (in python section)
+    # transmission (in python section)

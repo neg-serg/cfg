@@ -1,38 +1,85 @@
 #!/usr/bin/env bash
+# Game Audio Bridge: link stereo null sink to RME AIO Pro output pair
+# Debug: set GAME_AUDIO_BRIDGE_DEBUG=1 for verbose logging
 set -euo pipefail
 
 NULL_SINK="game_output"
 TARGET_LEFT=0
 TARGET_RIGHT=1
-RME_NICK="RME AIO Pro"
+LINK_TIMEOUT=20   # seconds to wait for ports to appear
+LOG_PREFIX="game-audio-bridge"
 
+log() { echo "$LOG_PREFIX: $*" >&2; }
+debug() { [[ -n "${GAME_AUDIO_BRIDGE_DEBUG:-}" ]] && log "DEBUG: $*"; }
+
+# Find RME sink node name via pw-dump (reliable JSON, no awk hacks)
 find_rme_sink() {
-    pw-cli list-objects Node 2>/dev/null | awk -v nick="$RME_NICK" '
-        /^id/ { node = "" }
-        /node.name/ && /alsa_output/ { node = $3; gsub("\"", "", node) }
-        index($0, "node.nick = \"" nick "\"") && node != "" { print node; exit }
-    '
+    pw-dump 2>/dev/null | python3 -c "
+import json, sys
+for obj in json.load(sys.stdin):
+    props = obj.get('info', {}).get('props', {})
+    nick = props.get('node.nick', '')
+    name = props.get('node.name', '')
+    if nick == 'RME AIO Pro' and 'alsa_output' in name:
+        print(name)
+        break
+"
 }
 
+# Wait for RME sink
+log "Waiting for RME AIO Pro sink..."
 RME_OUT=""
 for i in $(seq 1 30); do
     RME_OUT="$(find_rme_sink)"
     [[ -n "$RME_OUT" ]] && break
-    sleep 0.5
+    sleep 1
 done
-[[ -n "$RME_OUT" ]] || { echo "game-audio-bridge: RME sink not found" >&2; exit 1; }
+[[ -n "$RME_OUT" ]] || { log "ERROR: RME sink not found after 30s"; exit 1; }
+log "RME sink: $RME_OUT"
 
-# Wait for game_output null-sink to appear (created by pipewire.conf.d)
-for i in $(seq 1 10); do
+# Wait for game_output null-sink and its monitor ports
+log "Waiting for $NULL_SINK null-sink..."
+for i in $(seq 1 "$LINK_TIMEOUT"); do
     if pactl list short sinks 2>/dev/null | grep -q "$NULL_SINK"; then
+        # Verify monitor ports exist
+        if pw-link -o 2>/dev/null | grep -q "${NULL_SINK}:monitor_FL" && \
+           pw-link -o 2>/dev/null | grep -q "${NULL_SINK}:monitor_FR"; then
+            log "$NULL_SINK ready with monitor ports"
+            break
+        fi
+    fi
+    sleep 1
+done
+
+# Link game_output -> RME pro-output (with retries)
+link_port() {
+    local src="$1" dst="$2" label="$3"
+    for attempt in $(seq 1 5); do
+        if pw-link "$src" "$dst" 2>/dev/null; then
+            debug "Linked: $src -> $dst"
+            return 0
+        fi
+        log "Retry $attempt: $label ($src -> $dst)"
+        sleep 1
+    done
+    log "WARNING: Failed to link $label after 5 attempts"
+    return 1
+}
+
+link_port "${NULL_SINK}:monitor_FL" "${RME_OUT}:playback_AUX${TARGET_LEFT}" "left"
+link_port "${NULL_SINK}:monitor_FR" "${RME_OUT}:playback_AUX${TARGET_RIGHT}" "right"
+
+# Set game_output as default sink
+log "Setting default sink to $NULL_SINK..."
+for i in $(seq 1 5); do
+    if pactl set-default-sink "$NULL_SINK" 2>/dev/null; then
+        log "Default sink set to $NULL_SINK"
         break
     fi
-    sleep 0.5
+    sleep 1
 done
 
-# Link game_output -> RME pro-output
-pw-link "${NULL_SINK}:monitor_FL" "${RME_OUT}:playback_AUX${TARGET_LEFT}" 2>/dev/null || true
-pw-link "${NULL_SINK}:monitor_FR" "${RME_OUT}:playback_AUX${TARGET_RIGHT}" 2>/dev/null || true
-
-# Set game_output as default for PulseAudio clients (FMOD-friendly 16-bit stereo)
-pactl set-default-sink "$NULL_SINK" 2>/dev/null || true
+# Verify final state
+CURRENT_DEFAULT=$(pactl info 2>/dev/null | awk '/Default Sink:/ {print $NF}')
+log "Default sink: $CURRENT_DEFAULT"
+log "Bridge complete"

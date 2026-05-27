@@ -144,7 +144,7 @@ in
     jetbrains-mono
 
     # ── gaming (9, VM: skip GPU/vulkan/xorg) ───────────
-    lutris                         # Game launcher (Wine/libretro/native)
+    #lutris                         # broken in nixpkgs-unstable 2026-05 (openldap)
     wine                           # Windows compatibility layer
     gamescope                      # Micro-compositor for gaming (Valve)
     gamemode                       # Game performance optimization daemon

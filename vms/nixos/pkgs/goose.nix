@@ -1,6 +1,4 @@
-{
-  lib, stdenvNoCC, fetchurl, autoPatchelfHook,
-}:
+{ lib, stdenvNoCC, fetchurl, autoPatchelfHook, gcc-unwrapped }:
 
 stdenvNoCC.mkDerivation rec {
   pname = "goose";
@@ -12,6 +10,7 @@ stdenvNoCC.mkDerivation rec {
   };
 
   nativeBuildInputs = [ autoPatchelfHook ];
+  buildInputs = [ gcc-unwrapped.lib ];
 
   sourceRoot = ".";
 

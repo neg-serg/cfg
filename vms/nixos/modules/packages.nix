@@ -67,6 +67,8 @@ in
     xdg-utils                      # XDG desktop integration utilities
     yelp
 
+    themix-theme-oomox              # Oomox GTK theme generator (parity with host)
+
     # ── dev (25) ───────────────────────────────────────
     cargo          # Rust package manager (includes rustc)
     rustc          # Rust compiler

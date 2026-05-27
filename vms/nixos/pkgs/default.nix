@@ -21,6 +21,7 @@ let
     tailray         = final.callPackage ./tailray.nix {};
     taoup           = final.callPackage ./taoup.nix {};
     throne          = final.callPackage ./throne.nix {};
+    themix-theme-oomox = final.callPackage ./themix-theme-oomox.nix {};
     vicinae-bin     = final.callPackage ./vicinae-bin.nix {};
     wl              = final.callPackage ./wl.nix {};
     zen-browser     = final.callPackage ./zen-browser.nix {};

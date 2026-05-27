@@ -12,6 +12,7 @@
       system = "x86_64-linux";
       modules = [
         ./pkgs/default.nix
+        disko.nixosModules.disko
         ./disk-config.nix
         ambxst.nixosModules.default
 

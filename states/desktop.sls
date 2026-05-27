@@ -2,7 +2,7 @@
 {#- @state
    id: desktop
    purpose: "Desktop environment: top-level include for compositor, packages, portal, and user session."
-   includes: [desktop.hyprland, desktop.packages, desktop.portal, desktop.system, desktop.user, desktop.vm_win11]
+   includes: [desktop.hyprland, desktop.packages, desktop.portal, desktop.system, desktop.user, desktop.nothing_kde_widgets, desktop.vm_win11]
 #}
 # =============================================================================
 # Desktop environment — top-level include for system, packages, portal, hyprland, user
@@ -16,4 +16,5 @@ include:
   - desktop.portal
   - desktop.hyprland
   - desktop.user
+  - desktop.nothing_kde_widgets
   - desktop.vm_win11

@@ -1,5 +1,5 @@
 {
-  description = "NixOS VM with Determinate Nix — full workstation equivalent to Salt config";
+  description = "NixOS VM with Determinate Nix";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     disko.url = "github:nix-community/disko";
@@ -20,10 +20,11 @@
       system = "x86_64-linux";
       specialArgs = specialArgs // { inherit ragenix; };
       modules = [
+        ./pkgs/default.nix
         disko.nixosModules.disko
         ./disk-config.nix
-        ragenix.nixosModules.age
-        ./age.secrets.nix
+        # ragenix.nixosModules.age  # disabled — needs age key at build time
+        # ./age.secrets.nix         # disabled — needs age key at build time
 
         ./modules/defaults.nix
         ./modules/base.nix
@@ -38,17 +39,13 @@
         ./modules/monitoring.nix
         ./modules/steam.nix
         ./modules/dev.nix
-        ./modules/proxy.nix
-
-        # Phase 1 — Migration from Salt
+        ./modules/installers.nix
+        ./modules/espanso.nix
         ./modules/flatpak.nix
         ./modules/mpd.nix
+        ./modules/proxy.nix
         ./modules/proxypilot-service.nix
-        ./modules/espanso.nix
         ./modules/user-services.nix
-        ./modules/installers.nix
-
-        ./pkgs/default.nix
       ];
     };
   };

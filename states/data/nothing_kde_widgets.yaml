@@ -2,7 +2,7 @@
 # Widget list and repo info for Salt deployment
 repo_url: https://github.com/jaxparrow07/nothing-kde-widgets.git
 repo_branch: main
-clone_dest: "{{ salt['grains.get']('home') }}/src/1st-level/nothing-kde-widgets"
+clone_dir: src/1st-level/nothing-kde-widgets
 widgets:
   - battery
   - clock-analog

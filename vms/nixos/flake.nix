@@ -1,51 +1,44 @@
 {
-  description = "NixOS VM with Determinate Nix";
+  description = "NixOS VM — minimal boot test";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-    ragenix.url = "github:yaxitech/ragenix";
-    ragenix.inputs.nixpkgs.follows = "nixpkgs";
+    ambxst.url = "github:Axenide/Ambxst";
+    ambxst.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = { self, nixpkgs, disko, ragenix }: let
-    envDefault = name: default:
-      let v = builtins.getEnv name; in if v == "" then default else v;
-    specialArgs = {
-      ageKeyPath = envDefault "AGE_KEY_PATH" "/run/secrets/age-key.txt";
-      proxyHost = envDefault "PROXY_HOST" "";
-      proxyPort = envDefault "PROXY_PORT" "10808";
-    };
-  in {
+  outputs = { self, nixpkgs, disko, ambxst }: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = specialArgs // { inherit ragenix; };
       modules = [
         ./pkgs/default.nix
-        disko.nixosModules.disko
         ./disk-config.nix
-        # ragenix.nixosModules.age  # disabled — needs age key at build time
-        # ./age.secrets.nix         # disabled — needs age key at build time
+        ambxst.nixosModules.default
+
+        ({ pkgs, ... }: {
+          system.stateVersion = "25.05";
+          networking.hostName = "nixos";
+          services.openssh.enable = true;
+          services.openssh.settings.PasswordAuthentication = false;
+          users.users.root.openssh.authorizedKeys.keys = [
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEx7F9KuTtPsLj9UVtUQ9ZrXUebjCMKuKZcyZWzg2RHf serg.zorg@gmail.com"
+          ];
+          users.users.nixos = {
+            isNormalUser = true;
+            extraGroups = [ "wheel" ];
+            openssh.authorizedKeys.keys = [
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEx7F9KuTtPsLj9UVtUQ9ZrXUebjCMKuKZcyZWzg2RHf serg.zorg@gmail.com"
+            ];
+          };
+          environment.systemPackages = with pkgs; [ git vim tmux ];
+          programs.ambxst.enable = true;
+        })
 
         ./modules/defaults.nix
         ./modules/base.nix
         ./modules/zsh.nix
-        ./modules/greetd-greeter.nix
         ./modules/packages.nix
-        ./modules/desktop.nix
-        ./modules/audio.nix
         ./modules/network.nix
-        ./modules/containers.nix
-        ./modules/ai.nix
-        ./modules/monitoring.nix
-        ./modules/steam.nix
-        ./modules/dev.nix
-        ./modules/installers.nix
-        ./modules/espanso.nix
-        ./modules/flatpak.nix
-        ./modules/mpd.nix
-        ./modules/proxy.nix
-        #./modules/proxypilot-service.nix  # disabled — proxypilot binary hash may need update
-        ./modules/user-services.nix
       ];
     };
   };

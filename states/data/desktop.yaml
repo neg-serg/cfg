@@ -56,7 +56,26 @@ desktop_packages:
   google_chrome: google-chrome
   zen_browser: zen-browser-bin
   wlr_which_key: wlr-which-key
+  oomox: themix-full-git
 system_packages:
   swtpm: swtpm
   pcsclite: pcsclite
   libvirt: libvirt
+oomox_themes:
+  Flight-Dark-GTK:
+    hidpi: true
+    palette:
+      BG: "2e2e2e"
+      FG: "dcdcdc"
+      HDR_BG: "1e1e1e"
+      HDR_FG: "dcdcdc"
+      SEL_BG: "3584e4"
+      SEL_FG: "ffffff"
+      TXT_BG: "3c3c3c"
+      TXT_FG: "dcdcdc"
+      BTN_BG: "3c3c3c"
+      BTN_FG: "dcdcdc"
+      HDR_BTN_BG: "3c3c3c"
+      HDR_BTN_FG: "dcdcdc"
+      WM_BORDER_FOCUS: "3584e4"
+      WM_BORDER_UNFOCUS: "2e2e2e"

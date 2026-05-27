@@ -394,3 +394,57 @@ def browser_extensions(
     }
 
     return out
+
+
+@yaml_output
+def generate_oomox_theme(
+    name: str,
+    theme_name: str,
+    palette: dict[str, str],
+    output_dir: str | None = None,
+    hidpi: bool = False,
+    require: list[str] | None = None,
+) -> dict[str, Any]:
+    """Generate a GTK theme via oomox-cli from a palette dict.
+
+    Args:
+        name: Salt state ID base.
+        theme_name: Output theme name (e.g. 'Flight-Dark-GTK').
+        palette: Dict of color variables (BG, FG, BTN_BG, etc.).
+        output_dir: Target directory (default: ~/.themes/).
+        hidpi: If True, generate HiDPI GTK2 assets.
+        require: List of state requirements.
+    """
+    h = _host()
+    u = h["user"]
+    out_dir = output_dir or f"{h['home']}/.themes"
+    dest = f"{out_dir}/{theme_name}"
+    hidpi_flag = "--hidpi True" if hidpi else ""
+
+    palette_lines = [f"{k}={v}" for k, v in palette.items()]
+    palette_content = "\n".join(palette_lines)
+    palette_b64 = __import__("base64").b64encode(palette_content.encode()).decode()
+    palette_path = f"/tmp/oomox_palette_{name}"
+
+    write_palette = (
+        f'echo "{palette_b64}" | base64 -d > {palette_path}'
+    )
+    generate_cmd = (
+        f"{write_palette} && "
+        f"oomox-cli -o '{theme_name}' -t '{out_dir}' {hidpi_flag} '{palette_path}' && "
+        f"rm -f {palette_path}"
+    )
+
+    unless_test = f"test -d {dest} && test -f {dest}/index.theme"
+
+    args: list[dict[str, Any]] = [
+        {"name": generate_cmd},
+        {"shell": "/bin/bash"},
+        {"runas": u},
+        {"unless": unless_test},
+        {"env": {"HOME": h["home"], "XDG_RUNTIME_DIR": h["runtime_dir"]}},
+    ]
+    if require:
+        args.append({"require": _parse_requires(require)})
+
+    return {name: {"cmd.run": args}}

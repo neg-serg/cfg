@@ -8,7 +8,7 @@ stdenvNoCC.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/aaif-goose/goose/releases/download/v${version}/goose-x86_64-unknown-linux-gnu.tar.gz";
-    sha256 = "sha256-BYYTxCFZDS4D7ODjVE3i1SgG/rAMHAChACHBeXGpwN4=";
+    sha256 = "sha256-sz9PaPC8qomPQreuVfe/eQM16VbsDsM0LF77ZsVXpAU=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook ];

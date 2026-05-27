@@ -38,6 +38,7 @@ desktop:
 - slurp                          # Wayland region selector
 - swayimg                        # Wayland image viewer
 - television                     # Terminal television (TUI tool?)
+- wl                             # Wayland wallpaper daemon (Vulkan, fork of swww)
 - wl-clipboard                   # Wayland clipboard tools wl-copy wl-paste
 - wlr-randr                      # Wayland output management CLI
 - xdg-desktop-portal-hyprland    # XDG desktop portal backend for Hyprland

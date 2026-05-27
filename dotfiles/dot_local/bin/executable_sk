@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# sk: konachan.net random wallpaper downloader
+# Wrapper for ~/.local/share/konachan-walls/run.sh
+exec ~/.local/share/konachan-walls/run.sh "$@"

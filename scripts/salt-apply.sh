@@ -43,7 +43,7 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="${0:A:h}"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Early pretty loading for auto-mode messages and general output
 # shellcheck disable=SC1091

@@ -44,7 +44,7 @@
         ./modules/flatpak.nix
         ./modules/mpd.nix
         ./modules/proxy.nix
-        ./modules/proxypilot-service.nix
+        #./modules/proxypilot-service.nix  # disabled — proxypilot binary hash may need update
         ./modules/user-services.nix
       ];
     };

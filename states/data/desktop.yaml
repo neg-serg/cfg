@@ -49,6 +49,7 @@ portal_package: xdg-desktop-portal-termfilechooser-hunkyburrito-git
 portal_service: xdg-desktop-portal.service
 faillock_deny: '10'
 desktop_packages:
+  goose: goose-desktop-bin
   rsync: rsync
   localsend: localsend-bin
   chromium: chromium

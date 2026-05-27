@@ -80,6 +80,7 @@ in
     openblas
     luaPackages.fennel             # Lisp that compiles to Lua (luaPackages)
     git                            # Distributed version control system
+    goose                          # Open-source extensible AI agent (block/goose)
     lua-language-server            # Lua language server (LSP)
     lua5_3                         # Lua 5.3 programming language
     patchelf                       # ELF binary patching tool

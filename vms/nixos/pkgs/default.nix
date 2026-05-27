@@ -24,6 +24,7 @@ let
     vicinae-bin     = final.callPackage ./vicinae-bin.nix {};
     wl              = final.callPackage ./wl.nix {};
     zen-browser     = final.callPackage ./zen-browser.nix {};
+    goose             = final.callPackage ./goose.nix {};
     helvum               = final.callPackage ./helvum.nix {};
     sing-box             = final.callPackage ./sing-box.nix {};
     turbostat            = final.callPackage ./turbostat.nix {};

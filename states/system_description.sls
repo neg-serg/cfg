@@ -76,6 +76,7 @@ include:
   - network
   - packages
   - quickshell
+  - ambxst
   - installers
   - installers_mpv
   - installers_desktop

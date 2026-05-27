@@ -13,6 +13,7 @@ include:
 
 {{ salt['pkg.paru_install']('hyprland_desktop', desktop.hyprland_packages | join(' ')) }}
 {{ salt['pkg.paru_install']('screenshot_tools', desktop.screenshot_packages | join(' ')) }}
+{{ salt['pkg.paru_install']('ambxst_deps', desktop.ambxst_packages | join(' ')) }}
 
 {% for name, pkg in desktop.desktop_packages.items() %}
 {{ salt['pkg.paru_install'](name, pkg) }}

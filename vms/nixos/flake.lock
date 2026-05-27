@@ -1,47 +1,5 @@
 {
   "nodes": {
-    "ambxst": {
-      "inputs": {
-        "axctl": "axctl",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1779243039,
-        "narHash": "sha256-0mL7cGtrW57K9DGCWGO0lyV5ZSPo6cEz9Lrri+/15kE=",
-        "owner": "Axenide",
-        "repo": "Ambxst",
-        "rev": "989d923ff324693a2aadae12770a7bce6679d992",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Axenide",
-        "repo": "Ambxst",
-        "type": "github"
-      }
-    },
-    "axctl": {
-      "inputs": {
-        "nixpkgs": [
-          "ambxst",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1779243005,
-        "narHash": "sha256-oDJEY0yeMUDFvCUTKW69/lzoVk6cuRPscT0myeKnvec=",
-        "owner": "Axenide",
-        "repo": "axctl",
-        "rev": "e8ac14221379cc5a5c8565c510123e1c0b7dff01",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Axenide",
-        "repo": "axctl",
-        "type": "github"
-      }
-    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -64,23 +22,22 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1767313136,
-        "narHash": "sha256-16KkgfdYqjaeRGBaYsNrhPRRENs0qzkQVUooNHtoy2w=",
+        "lastModified": 1779560665,
+        "narHash": "sha256-tpyBcxPpcQb8ukyNF7DoCwfSY3VPsxHoYwj00Cayv5o=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ac62194c3917d5f474c1a844b6fd6da2db95077d",
+        "rev": "64c08a7ca051951c8eae34e3e3cb1e202fe36786",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-25.05",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
     },
     "root": {
       "inputs": {
-        "ambxst": "ambxst",
         "disko": "disko",
         "nixpkgs": "nixpkgs"
       }

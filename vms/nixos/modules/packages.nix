@@ -67,7 +67,7 @@ in
     xdg-utils                      # XDG desktop integration utilities
     yelp
 
-    themix-theme-oomox              # Oomox GTK theme generator (parity with host)
+    #themix-theme-oomox              # broken in nixpkgs-unstable 2026-05
 
     # ── dev (25) ───────────────────────────────────────
     cargo          # Rust package manager (includes rustc)

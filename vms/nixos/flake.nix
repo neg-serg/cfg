@@ -1,21 +1,16 @@
 {
-  description = "NixOS VM — minimal boot test";
+  description = "NixOS VM — bare minimum";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-    ambxst.url = "github:Axenide/Ambxst";
-    ambxst.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = { self, nixpkgs, disko, ambxst }: {
+  outputs = { self, nixpkgs, disko }: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        ./pkgs/default.nix
         disko.nixosModules.disko
         ./disk-config.nix
-        ambxst.nixosModules.default
-
         ({ pkgs, ... }: {
           system.stateVersion = "25.05";
           networking.hostName = "nixos";
@@ -24,22 +19,8 @@
           users.users.root.openssh.authorizedKeys.keys = [
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEx7F9KuTtPsLj9UVtUQ9ZrXUebjCMKuKZcyZWzg2RHf serg.zorg@gmail.com"
           ];
-          users.users.nixos = {
-            isNormalUser = true;
-            extraGroups = [ "wheel" ];
-            openssh.authorizedKeys.keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEx7F9KuTtPsLj9UVtUQ9ZrXUebjCMKuKZcyZWzg2RHf serg.zorg@gmail.com"
-            ];
-          };
           environment.systemPackages = with pkgs; [ git vim tmux ];
-          programs.ambxst.enable = true;
         })
-
-        ./modules/defaults.nix
-        ./modules/base.nix
-        ./modules/zsh.nix
-        ./modules/packages.nix
-        ./modules/network.nix
       ];
     };
   };

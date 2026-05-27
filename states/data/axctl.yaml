@@ -1,0 +1,4 @@
+version: v0.0.19
+download_url: https://github.com/Axenide/axctl/releases/download/v0.0.19/axctl_linux_amd64
+bin_dir: /usr/local/bin
+bin_path: /usr/local/bin/axctl

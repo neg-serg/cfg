@@ -77,6 +77,7 @@ include:
   - packages
   - quickshell
   - ambxst
+  - axctl
   - installers
   - installers_mpv
   - installers_desktop

@@ -6,8 +6,8 @@ Leaked keys (cleaned from logs, need revocation and replacement).
 
 | Provider   | Gopass path     | Leaked key pattern         | Status |
 |------------|-----------------|---------------------------|--------|
-| Cerebras   | `api/cerebras`  | `csk-62w5cypk4vc...`      | Needs rotation |
-| DeepSeek   | `api/deepseek`  | `sk-3fffa79edcca...`      | Needs rotation |
+| Cerebras   | `api/cerebras`  | `csk-***`                | Needs rotation |
+| DeepSeek   | `api/deepseek`  | `sk-***`                 | Needs rotation |
 
 ## Steps
 

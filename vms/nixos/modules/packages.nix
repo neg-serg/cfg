@@ -89,7 +89,7 @@ in
     neovim                         # Modern Vim fork
     nodejs                         # JavaScript runtime (Node.js)
 
-    pipx                           # Install Python tools in isolated environments
+    #pipx                           # broken in nixpkgs-unstable 2026-05
     (python3.withPackages (ps: with ps; [
       pyperclip textual poetry orjson numpy
     ]))

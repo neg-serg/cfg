@@ -46,6 +46,13 @@ _catalog/
 tt
 *.tmp
 *.swp
+*.bak
+*.bak[0-9]*
+*.backup.*
+*~
+# Prevent plaintext configs with secrets from being committed
+dotfiles/dot_config/proxypilot/config.yaml
+dotfiles/dot_config/xray/config.json
 .DS_Store
 Thumbs.db
 .vscode/

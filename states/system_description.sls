@@ -75,6 +75,7 @@ include:
   - dns
   - network
   - packages
+  - quickshell
   - installers
   - installers_mpv
   - installers_desktop

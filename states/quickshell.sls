@@ -3,7 +3,6 @@
    id: quickshell
    purpose: "Patch quickshell-overview-git system files to fix missing colLayer2Border property and add defensive applyAlpha guard."
    data_files: [data/packages.yaml]
-   includes: [packages]
 #}
 {% from '_imports.jinja' import host %}
 
@@ -16,8 +15,7 @@ quickshell_fix_colLayer2Border:
     - repl: |-
         \1        property color colLayer2Border: ColorUtils.mix(root.m3colors.m3outlineVariant, colLayer2, 0.4)\n\2
     - show_changes: true
-    - require:
-      - pkg: pkg_aur_quickshell-overview-git
+    - onlyif: test -f /etc/xdg/quickshell/overview/common/Appearance.qml
 
 {# ── Patch 2: Defensive guard in ColorUtils.applyAlpha ── #}
 quickshell_fix_applyAlpha:
@@ -28,5 +26,4 @@ quickshell_fix_applyAlpha:
     - repl: |-
         \1        if (!color || color === '') return Qt.rgba(0, 0, 0, 0);\n\2
     - show_changes: true
-    - require:
-      - pkg: pkg_aur_quickshell-overview-git
+    - onlyif: test -f /etc/xdg/quickshell/overview/common/functions/ColorUtils.qml

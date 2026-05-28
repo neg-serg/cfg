@@ -1,6 +1,6 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{ lib, rustPlatform, fetchFromGitHub }:
 
-buildGoModule rec {
+rustPlatform.buildRustPackage rec {
   pname = "grex";
   version = "1.4.5";
 
@@ -11,7 +11,7 @@ buildGoModule rec {
     hash = "sha256-Ut2H2H66XN1+wHpYivnuhil21lbd7bwIcIcMyIimdis=";
   };
 
-  vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";  # FIXME: build to get
+  cargoHash = "sha256-OsK6X7qwMMQ1FK3JE98J2u6pn6AixE8izFmxUVDs5GM=";
 
   meta = with lib; {
     description = "Command-line tool for generating regular expressions from user-provided test cases";

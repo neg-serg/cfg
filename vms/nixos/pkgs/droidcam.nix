@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/dev47apps/droidcam/releases/download/v${version}/droidcam_${version}.zip";
-    hash = "";
+    hash = "sha256-5IwUXE/tWIOIPI3ruSBkskZ57ybFkFQn1YEZqmyeWP4=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper unzip ];

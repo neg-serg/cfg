@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton${version}/GE-Proton${version}.tar.gz";
-    hash = "";
+    hash = "sha256-as6rNd/+EwV/ItKhH+ZAh/Sc3HE4kBdgNk1EBtrk66c=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

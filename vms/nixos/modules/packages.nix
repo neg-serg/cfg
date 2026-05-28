@@ -645,9 +645,9 @@ in
     #instagram-cli                   # Instagram CLI tool
     ##kanata                          # Keyboard remapper
     #lazytail                        # Lazy log tail viewer
-    #neo-matrix                      # Digital rain from The Matrix
-    ##no-more-secrets                  # Sneakers decrypting text effect (nms)
-    #opencode                        # Open-source AI coding CLI
+    neo-matrix                      # Digital rain from The Matrix
+    no-more-secrets                 # Sneakers decrypting text effect (nms)
+    opencode                        # Open-source AI coding CLI
     #oports-git                      # Open port scanner
     #otter-launcher                  # Otter application launcher
     #oyo                             # Oyo utility tool
@@ -658,7 +658,7 @@ in
     #strace-tui                      # TUI frontend for strace
     #tdl                             # Telegram downloader
     ##yandex-browser  # FIXME: unfree, deb download                  # Yandex Browser (unfree)
-    ##bottles  # FIXME: AppImage not available for download                         # Wine prefix manager (AppImage)
+    ##bottles  # FIXME: broken in nixpkgs-unstable (fhsenv-rootfs build failure)  # Wine prefix manager
     #cloudflare-speedtest            # Cloudflare speed test CLI
     #droidcam                        # Android phone as webcam
     #goverlay                        # MangoHud/vkBasalt config GUI

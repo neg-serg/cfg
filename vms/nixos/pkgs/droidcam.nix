@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper }:
+{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper, unzip }:
 
 stdenv.mkDerivation rec {
   pname = "droidcam";

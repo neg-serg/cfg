@@ -12,7 +12,7 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ cmake pkg-config ];
-  buildInputs = [ hyprland pango cairo libdrm ];
+  buildInputs = [ rofi pango cairo libdrm ];
 
   meta = with lib; {
     description = "Extended file browser for rofi";

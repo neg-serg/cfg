@@ -29,7 +29,7 @@ in
     dunst                          # Notification daemon
     grim                           # Wayland screenshot tool
     hypridle                       # Hyprland idle daemon
-    hyprland                       # Dynamic tiling Wayland compositor
+    #hyprland                       # Dynamic tiling Wayland compositor
     hyprlock                       # Hyprland screen locker
     hyprpicker                     # Hyprland color picker
     xdg-desktop-portal-hyprland    # XDG desktop portal backend for Hyprland
@@ -456,7 +456,7 @@ in
     # carapace-bin → 'carapace'
     # aliae-bin → not available
     # eilmeldung-bin → not available
-    # flclashx-bin → not available
+    ## flclashx-bin → not available
     # v2rayn-bin → not available
     # v2ray → 'v2ray' (available)
     # fsel-bin → not available
@@ -474,7 +474,7 @@ in
     # massren → not available
     # mpdris2-git → not available
     # mpdas → not available
-    # no-more-secrets → not available
+    ## no-more-secrets → not available
     # otter-launcher → not available
     # oports-git → not available
     # oyo → not available
@@ -529,7 +529,7 @@ in
     media-player-info
     snapshot
     tecla
-    libsForQt5.qt5ct
+    libsForQt5.qt5ct  # FIXME: check if exists
     jupyter
     texlive.combined.scheme-basic
     # ── Added missing packages (nixpkgs 25.05) ──
@@ -601,12 +601,12 @@ in
 
     # ── Parity push: packages from CachyOS now in nixpkgs ──
     python3Packages.pip             # Python package installer (pip)
-    pipx                            # Run Python applications in isolated environments
+    #pipx                            # Run Python applications in isolated environments
     python3Packages.pysocks          # SOCKS proxy client for Python
     python3Packages.transformers     # HuggingFace Transformers (ML models)
     btrfs-progs                     # Btrfs filesystem utilities
     dosfstools                      # DOS/FAT filesystem utilities
-    etckeeper                       # Version control for /etc directory
+    #etckeeper  # FIXME: not in nixpkgs                       # Version control for /etc directory
     gst_all_1.gst-libav             # GStreamer libav plugin
     gst_all_1.gst-plugins-ugly      # GStreamer ugly plugins
     unbound                         # Validating recursive DNS resolver
@@ -621,85 +621,85 @@ in
     libvirt                         # Virtualization API and management tools
     cage                            # Kiosk compositor for Wayland
     networkmanagerapplet            # NetworkManager system tray applet
-    easyeffects                     # Audio effects for PipeWire
-    xwaylandvideobridge             # XWayland to Wayland video bridge
-    libsForQt5.kate                 # KDE advanced text editor
-    libsForQt5.konsole              # KDE terminal emulator
-    libsForQt5.ark                  # KDE archive manager
+    #easyeffects  # FIXME: may need pipewire enabled                     # Audio effects for PipeWire
+    #xwaylandvideobridge  # FIXME: removed from nixpkgs (KDE5 EOL)             # XWayland to Wayland video bridge
+    kdePackages.kate                 # KDE advanced text editor
+    kdePackages.konsole              # KDE terminal emulator
+    kdePackages.ark                  # KDE archive manager
     nicotine-plus                   # Graphical Soulseek client
     grex                            # Regex generator from test cases
     cdrtools                        # CD/DVD/BluRay recording tools
     qemu_kvm                        # QEMU with KVM acceleration
-    cpupower                        # Linux kernel CPU frequency management
+    linuxKernel.packages.linux_6_12.cpupower                        # Linux kernel CPU frequency management
     lshw                            # Hardware lister (detailed system info)
-    sc3-plugins                     # SuperCollider plugins
+    #sc3-plugins  # FIXME: part of supercollider                     # SuperCollider plugins
 
-    # ── Parity push: custom overlay packages ──
-    #aliae-bin  # FIXME: no GitHub releases                       # Cross-shell aliases manager
-    antigravity-tools-bin           # Antigravity tools collection
-    eilmeldung-bin                  # Eilmeldung notification tool
-    flclashx-bin                    # FlClashX proxy client
-    gitlogue                        # Git history analysis tool
-    hxd                             # Hex dump tool
-    hyprscratch                     # Hyprland scratchpad tool
-    instagram-cli                   # Instagram CLI tool
-    kanata                          # Keyboard remapper
-    lazytail                        # Lazy log tail viewer
-    neo-matrix                      # Digital rain from The Matrix
-    no-more-secrets                  # Sneakers decrypting text effect (nms)
-    opencode                        # Open-source AI coding CLI
-    oports-git                      # Open port scanner
-    otter-launcher                  # Otter application launcher
-    oyo                             # Oyo utility tool
-    pipemixer                       # PipeWire audio mixer
-    qman                            # Quick man page viewer
-    rofi-file-browser-extended      # Extended file browser for rofi
-    s-tui                           # CPU stress and monitoring TUI
-    strace-tui                      # TUI frontend for strace
-    tdl                             # Telegram downloader
-    #yandex-browser  # FIXME: unfree, deb download                  # Yandex Browser (unfree)
-    #bottles  # FIXME: AppImage not available for download                         # Wine prefix manager (AppImage)
-    cloudflare-speedtest            # Cloudflare speed test CLI
-    droidcam                        # Android phone as webcam
-    goverlay                        # MangoHud/vkBasalt config GUI
-    hyprquickframe                  # Hyprland quick frame capture
-    opensoundmeter                   # Audio measurement tool
-    proton-ge-custom                # Custom Proton-GE build
-    protonup-rs                     # Proton-GE installer (Rust)
-    steam                           # Steam gaming platform (unfree)
-    # unar (unarchiver) — not in nixpkgs; use 'lsar' from 'unar' package
+    ## ── Parity push: custom overlay packages ──
+    ##aliae-bin  # FIXME: no GitHub releases                       # Cross-shell aliases manager
+    #antigravity-tools-bin           # Antigravity tools collection
+    #eilmeldung-bin                  # Eilmeldung notification tool
+    ##flclashx-bin                    # FlClashX proxy client
+    #gitlogue                        # Git history analysis tool
+    ##hxd                             # Hex dump tool
+    ##hyprscratch                     # Hyprland scratchpad tool
+    #instagram-cli                   # Instagram CLI tool
+    ##kanata                          # Keyboard remapper
+    #lazytail                        # Lazy log tail viewer
+    #neo-matrix                      # Digital rain from The Matrix
+    ##no-more-secrets                  # Sneakers decrypting text effect (nms)
+    #opencode                        # Open-source AI coding CLI
+    #oports-git                      # Open port scanner
+    #otter-launcher                  # Otter application launcher
+    #oyo                             # Oyo utility tool
+    #pipemixer                       # PipeWire audio mixer
+    #qman                            # Quick man page viewer
+    #rofi-file-browser-extended      # Extended file browser for rofi
+    ##s-tui                           # CPU stress and monitoring TUI
+    #strace-tui                      # TUI frontend for strace
+    #tdl                             # Telegram downloader
+    ##yandex-browser  # FIXME: unfree, deb download                  # Yandex Browser (unfree)
+    ##bottles  # FIXME: AppImage not available for download                         # Wine prefix manager (AppImage)
+    #cloudflare-speedtest            # Cloudflare speed test CLI
+    #droidcam                        # Android phone as webcam
+    #goverlay                        # MangoHud/vkBasalt config GUI
+    #hyprquickframe                  # Hyprland quick frame capture
+    ##opensoundmeter                   # Audio measurement tool
+    ##proton-ge-custom                # Custom Proton-GE build
+    #protonup-rs                     # Proton-GE installer (Rust)
+    #steam                           # Steam gaming platform (unfree)
+    ## unar (unarchiver) — not in nixpkgs; use 'lsar' from 'unar' package
 ];
 }
-    # amdvlk                                 # AMD Vulkan driver (open source, AMDGPU)
-    # dkms (not in nixpkgs)
-    # etckeeper (not in nixpkgs)
-    # overlay packages moved to main list below
-    # (python section only)
-    # fortune-mod overlay
-    # hyprpolkitagent overlay
-    # libpulseaudio overlay
-    # python3Packages.faker (check)
-    # python3Packages.internetarchive (check)
-    # python3Packages.mutagen (check)
-    # python3Packages.numpy (check)
-    # python3Packages.orjson (check)
-    # python3Packages.poetry (check)
-    # python3Packages.pyperclip (check)
-    # python3Packages.textual (check)
-    # rofi-calc                              (check) # Rofi calculator plugin
-    # songfetch                              (check) # Song info fetcher (MPD/Last.fm, Rust)
-    # tesseract-data-eng                     # Tesseract English language data
-    # tesseract-data-rus                     # Tesseract Russian language data
-    # transmission (in python section)
-    # turbostat                              # Intel CPU turbo/energy status monitor
-    # fortune-mod (in python section)
-    # graphviz (in python section)
-    # hyprpolkitagent (in python section)
-    # libpulseaudio (in python section)
-    # nvtop (in python section)
-    # pass (in python section)
-    # perl-Image-ExifTool (in python section)
-    # tesseract (in python section)
-    # transmission (in python section)
-    # restic (check nixpkgs)
-    # s-tui (overlay needed)
+    ## amdvlk                                 # AMD Vulkan driver (open source, AMDGPU)
+    ## dkms (not in nixpkgs)
+    ## etckeeper (not in nixpkgs)
+    ## overlay packages moved to main list below
+    ## (python section only)
+    ## fortune-mod overlay
+    ## hyprpolkitagent overlay
+    ## libpulseaudio overlay
+    ## python3Packages.faker (check)
+    ## python3Packages.internetarchive (check)
+    ## python3Packages.mutagen (check)
+    ## python3Packages.numpy (check)
+    ## python3Packages.orjson (check)
+    ## python3Packages.poetry (check)
+    ## python3Packages.pyperclip (check)
+    ## python3Packages.textual (check)
+    ## rofi-calc                              (check) # Rofi calculator plugin
+    ## songfetch                              (check) # Song info fetcher (MPD/Last.fm, Rust)
+    ## tesseract-data-eng                     # Tesseract English language data
+    ## tesseract-data-rus                     # Tesseract Russian language data
+    ## transmission (in python section)
+    ## turbostat                              # Intel CPU turbo/energy status monitor
+    ## fortune-mod (in python section)
+    ## graphviz (in python section)
+    ## hyprpolkitagent (in python section)
+    ## libpulseaudio (in python section)
+    ## nvtop (in python section)
+    ## pass (in python section)
+    ## perl-Image-ExifTool (in python section)
+    ## tesseract (in python section)
+    ## transmission (in python section)
+    ## restic (check nixpkgs)
+    ## s-tui (overlay needed)

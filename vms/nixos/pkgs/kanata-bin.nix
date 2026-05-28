@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper }:
+{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper, gcc }:
 
 stdenv.mkDerivation rec {
   pname = "kanata-bin";
@@ -12,6 +12,7 @@ stdenv.mkDerivation rec {
   dontUnpack = true;
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
+  buildInputs = [ gcc.cc.lib ];
 
   installPhase = ''
     install -Dm755 $src $out/bin/kanata

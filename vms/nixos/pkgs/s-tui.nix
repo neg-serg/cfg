@@ -14,9 +14,10 @@ stdenv.mkDerivation rec {
   propagatedBuildInputs = [];
 
   installPhase = ''
-    mkdir -p $out/bin
-    cp -r . $out/share/s-tui
-    makeWrapper ${"${out}/share/s-tui/s-tui"} $out/bin/s-tui
+    mkdir -p $out/bin $out/share/s-tui
+    cp -r . $out/share/s-tui/
+    ln -s $out/share/s-tui/s-tui $out/bin/s-tui
+    chmod +x $out/share/s-tui/s-tui
   '';
 
   meta = with lib; {

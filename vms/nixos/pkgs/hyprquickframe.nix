@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     owner = "Ronin-CK";
     repo = "HyprQuickFrame";
     rev = "61fe0ef";  # r92.g61fe0ef
-    hash = "";
+    hash = "sha256-JwqbPTtyvH+7zCmh9VUX/sSbxuYuo1QftXB0pwcSIac=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

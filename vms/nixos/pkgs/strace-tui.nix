@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     owner = "Rodrigodd";
     repo = "strace-tui";
     rev = "v${version}";
-    hash = "";
+    hash = "sha256-VHBXZ1b5emqroFI5OswxXXq1BFNbm6iJlAAso93+Nr4=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

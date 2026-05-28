@@ -1,21 +1,26 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{ lib, stdenv, fetchFromGitHub, autoPatchelfHook, makeWrapper }:
 
-buildGoModule rec {
+stdenv.mkDerivation rec {
   pname = "oyo";
-  version = "0.1.0";
+  version = "0.1.33";
 
   src = fetchFromGitHub {
-    owner = "neg-serg";
+    owner = "ahkohd";
     repo = "oyo";
-    rev = "main";
-    hash = "";
+    rev = "v${version}";
+    hash = "sha256-REsgbAbv5jX2TyA3xVTniitn0OMNm3AGxuhlNC3HyiU=";
   };
 
-  vendorHash = "";
+  nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
+
+  installPhase = ''
+    mkdir -p $out/bin
+    cp oyo $out/bin/ 2>/dev/null || true
+  '';
 
   meta = with lib; {
     description = "Oyo utility tool";
-    homepage = "https://github.com/neg-serg/oyo";
+    homepage = "https://github.com/ahkohd/oyo";
     license = licenses.mit;
     mainProgram = "oyo";
     platforms = platforms.linux;

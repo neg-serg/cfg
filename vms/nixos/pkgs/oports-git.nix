@@ -8,7 +8,7 @@ buildGoModule rec {
     owner = "sdushantha";
     repo = "oports";
     rev = "a454b10";  # r10.a454b10
-    hash = "";
+    hash = "sha256-l4w+sHtAvOozpVAoLOJ0QnvsJl7Do9y63OVjj2OAiUk=";
   };
 
   vendorHash = "";

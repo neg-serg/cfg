@@ -8,7 +8,7 @@ buildGoModule rec {
     owner = "unhappychoice";
     repo = "gitlogue";
     rev = "v${version}";
-    hash = "";
+    hash = "sha256-w+5X3NhHCLDXRGQx2JxpIayekMk242uia1bJSRjDDAE=";
   };
 
   vendorHash = "";

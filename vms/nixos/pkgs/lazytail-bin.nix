@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     owner = "raaymax";
     repo = "lazytail";
     rev = "v${version}";
-    hash = "";
+    hash = "sha256-BjQ7YkGttRK5EhApoJXw3FDNyH9okD721ZmW4T2U07U=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

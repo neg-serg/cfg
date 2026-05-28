@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     owner = "auyer";
     repo = "Protonup-rs";
     rev = "v${version}";
-    hash = "";
+    hash = "sha256-ODoVlYTYfxAOBfIMoQuXJMyisBSSKijuuctXacAK3jg=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

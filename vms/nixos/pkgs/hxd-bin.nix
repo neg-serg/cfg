@@ -7,8 +7,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "kiedtl";
     repo = "huxdemp";
-    rev = "v${version}";
-    hash = "";
+    rev = "1.0.0";
+    hash = "sha256-PIbnSTp1Lxa1cVfLJrJh4e+JPzPsfy2VpdJuy5X5tyQ=";
   };
 
   installPhase = ''

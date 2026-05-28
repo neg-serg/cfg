@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     owner = "pluralplay";
     repo = "FlClashX";
     rev = "v${version}";
-    hash = "";
+    hash = "sha256-Gw/h+vgdOlqEnq1w4abs32BrYgn0kbsWDA1fYrA1q9g=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

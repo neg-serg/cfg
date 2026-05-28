@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     owner = "kavehtehrani";
     repo = "cloudflare-speed-cli";
     rev = "v${version}";
-    hash = "";
+    hash = "sha256-ye2/r5/NN/pU5JchI4KYH/sB8iLU0FIhxPKcGqwqv7E=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

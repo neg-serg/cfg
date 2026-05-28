@@ -2,13 +2,13 @@
 
 buildGoModule rec {
   pname = "qman";
-  version = "1.0.0";
+  version = "1.5.1";
 
   src = fetchFromGitHub {
     owner = "plp13";
     repo = "qman";
     rev = "v${version}";
-    hash = "";
+    hash = "sha256-z3ILbbwcCYZT8qabVaGnMCyZRag8djEI32i6G7cLL2A=";
   };
 
   vendorHash = "";

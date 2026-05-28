@@ -7,8 +7,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "supreme-gg-gg";
     repo = "instagram-cli";
-    rev = "v${version}";
-    hash = "";
+    rev = "ts-v1.5.0";
+    hash = "sha256-BRikrRDA8p6IoFmTNyWFsV8i2XdRy+iOGVdDLj0FDd4=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

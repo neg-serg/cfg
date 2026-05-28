@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     owner = "lbjlaq";
     repo = "Antigravity-Manager";
     rev = "v${version}";
-    hash = "";
+    hash = "sha256-IPwsLZL0pYkwexpSzyz4jvNPdQBxpQIcFWwaJtvg01o=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

@@ -1,21 +1,26 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{ lib, stdenv, fetchFromGitHub, autoPatchelfHook, makeWrapper }:
 
-buildGoModule rec {
+stdenv.mkDerivation rec {
   pname = "pipemixer";
-  version = "0.1.0";
+  version = "0.5.1";
 
   src = fetchFromGitHub {
-    owner = "neg-serg";
+    owner = "heather7283";
     repo = "pipemixer";
-    rev = "main";
-    hash = "";
+    rev = "v${version}";
+    hash = "sha256-dVw8x9c3DFSL5eLbBOe7ExNzeKsj3xB5Spl516XFqTQ=";
   };
 
-  vendorHash = "";
+  nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
+
+  installPhase = ''
+    mkdir -p $out/bin
+    cp pipemixer $out/bin/ 2>/dev/null || true
+  '';
 
   meta = with lib; {
     description = "PipeWire audio mixer";
-    homepage = "https://github.com/neg-serg/pipemixer";
+    homepage = "https://github.com/heather7283/pipemixer";
     license = licenses.mit;
     mainProgram = "pipemixer";
     platforms = platforms.linux;

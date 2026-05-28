@@ -7,8 +7,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "christo-auer";
     repo = "eilmeldung";
-    rev = "v${version}";
-    hash = "";
+    rev = "1.5.3";
+    hash = "sha256-2Qkxmw8T9ijnMio1hu66HWTRcGBxkv5l0V4RY7EDFZg=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

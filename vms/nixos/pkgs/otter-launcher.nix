@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     owner = "kuokuo123";
     repo = "otter-launcher";
     rev = "v${version}";
-    hash = "";
+    hash = "sha256-TGbz1FU7oZetH0bUeowrsueXodTEyKs3iaiXniOBesk=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

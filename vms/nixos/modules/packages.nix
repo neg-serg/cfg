@@ -598,6 +598,67 @@ in
     v2rayn                         # V2Ray Windows GUI client
     witr                           # WireGuard interactive TUI configurator
     youtube-tui
+
+    # ── Parity push: packages from CachyOS now in nixpkgs ──
+    python3Packages.pip             # Python package installer (pip)
+    pipx                            # Run Python applications in isolated environments
+    python3Packages.pysocks          # SOCKS proxy client for Python
+    python3Packages.transformers     # HuggingFace Transformers (ML models)
+    btrfs-progs                     # Btrfs filesystem utilities
+    dosfstools                      # DOS/FAT filesystem utilities
+    etckeeper                       # Version control for /etc directory
+    gst_all_1.gst-libav             # GStreamer libav plugin
+    gst_all_1.gst-plugins-ugly      # GStreamer ugly plugins
+    unbound                         # Validating recursive DNS resolver
+    streamlink                      # Extract streams from various services
+    testdisk                        # Data recovery utilities
+    sbcl                            # Steel Bank Common Lisp
+    supercollider                   # Audio synthesis engine and programming language
+    transmission_4                  # BitTorrent client (CLI + daemon)
+    ugrep                           # Ultra-fast grep with interactive query UI
+    pass                            # Password store (Unix password manager)
+    grafana                         # Analytics and monitoring dashboard
+    libvirt                         # Virtualization API and management tools
+    cage                            # Kiosk compositor for Wayland
+    networkmanagerapplet            # NetworkManager system tray applet
+    easyeffects                     # Audio effects for PipeWire
+    xwaylandvideobridge             # XWayland to Wayland video bridge
+    libsForQt5.kate                 # KDE advanced text editor
+    libsForQt5.konsole              # KDE terminal emulator
+    libsForQt5.ark                  # KDE archive manager
+    nicotine-plus                   # Graphical Soulseek client
+    grex                            # Regex generator from test cases
+    cdrtools                        # CD/DVD/BluRay recording tools
+    qemu_kvm                        # QEMU with KVM acceleration
+    cpupower                        # Linux kernel CPU frequency management
+    lshw                            # Hardware lister (detailed system info)
+    sc3-plugins                     # SuperCollider plugins
+
+    # ── Parity push: custom overlay packages ──
+    aliae-bin                       # Cross-shell aliases manager
+    antigravity-tools-bin           # Antigravity tools collection
+    eilmeldung-bin                  # Eilmeldung notification tool
+    flclashx-bin                    # FlClashX proxy client
+    gitlogue                        # Git history analysis tool
+    hxd                             # Hex dump tool
+    hyprscratch                     # Hyprland scratchpad tool
+    instagram-cli                   # Instagram CLI tool
+    kanata                          # Keyboard remapper
+    lazytail                        # Lazy log tail viewer
+    neo-matrix                      # Digital rain from The Matrix
+    no-more-secrets                  # Sneakers decrypting text effect (nms)
+    opencode                        # Open-source AI coding CLI
+    oports-git                      # Open port scanner
+    otter-launcher                  # Otter application launcher
+    oyo                             # Oyo utility tool
+    pipemixer                       # PipeWire audio mixer
+    qman                            # Quick man page viewer
+    rofi-file-browser-extended      # Extended file browser for rofi
+    s-tui                           # CPU stress and monitoring TUI
+    strace-tui                      # TUI frontend for strace
+    tdl                             # Telegram downloader
+    yandex-browser                  # Yandex Browser (unfree)
+    # unar (unarchiver) — not in nixpkgs; use 'lsar' from 'unar' package
 ];
 }
     # amdvlk                                 # AMD Vulkan driver (open source, AMDGPU)

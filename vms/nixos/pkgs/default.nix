@@ -33,6 +33,32 @@ let
     v2raya               = final.callPackage ./v2raya.nix {};
     ytsurf               = final.callPackage ./ytsurf.nix {};
     zapret2              = final.callPackage ./zapret2.nix {};
+
+    # ── Parity push: new overlays ──
+    aliae-bin            = final.callPackage ./aliae-bin.nix {};
+    antigravity-tools-bin = final.callPackage ./antigravity-tools-bin.nix {};
+    eilmeldung-bin       = final.callPackage ./eilmeldung-bin.nix {};
+    flclashx-bin         = final.callPackage ./flclashx-bin.nix {};
+    gitlogue             = final.callPackage ./gitlogue.nix {};
+    grex                 = final.callPackage ./grex.nix {};
+    hxd                  = final.callPackage ./hxd-bin.nix {};
+    hyprscratch          = final.callPackage ./hyprscratch.nix {};
+    instagram-cli         = final.callPackage ./instagram-cli.nix {};
+    kanata               = final.callPackage ./kanata-bin.nix {};
+    lazytail             = final.callPackage ./lazytail-bin.nix {};
+    neo-matrix           = final.callPackage ./neo-matrix-bin.nix {};
+    no-more-secrets       = final.callPackage ./no-more-secrets.nix {};
+    opencode             = final.callPackage ./opencode.nix {};
+    oports-git           = final.callPackage ./oports-git.nix {};
+    otter-launcher       = final.callPackage ./otter-launcher.nix {};
+    oyo                  = final.callPackage ./oyo.nix {};
+    pipemixer            = final.callPackage ./pipemixer.nix {};
+    qman                 = final.callPackage ./qman.nix {};
+    rofi-file-browser-extended = final.callPackage ./rofi-file-browser-extended.nix {};
+    s-tui                = final.callPackage ./s-tui.nix {};
+    strace-tui           = final.callPackage ./strace-tui.nix {};
+    tdl                  = final.callPackage ./tdl-bin.nix {};
+    yandex-browser       = final.callPackage ./yandex-browser-bin.nix {};
   };
 in
 {

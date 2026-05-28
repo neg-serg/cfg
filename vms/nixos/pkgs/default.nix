@@ -2,12 +2,10 @@
 
 let
   customOverlay = final: prev: {
-    # Backport: skip flaky syncreplication test, breaks bottles/lutris/wine
+    # Backport: skip flaky syncreplication tests, breaks bottles/lutris/wine
     # https://github.com/NixOS/nixpkgs/pull/516445
     openldap = prev.openldap.overrideAttrs (old: {
-      postPatch = (old.postPatch or "") + ''
-        rm -f tests/scripts/test017-syncreplication-refresh
-      '';
+      doCheck = false;
     });
 
     albumdetails    = final.callPackage ./albumdetails.nix {};

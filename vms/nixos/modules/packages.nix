@@ -658,7 +658,7 @@ in
     #strace-tui                      # TUI frontend for strace
     #tdl                             # Telegram downloader
     ##yandex-browser  # FIXME: unfree, deb download                  # Yandex Browser (unfree)
-    ##bottles  # FIXME: broken in nixpkgs-unstable (fhsenv-rootfs build failure)  # Wine prefix manager
+    bottles  # Wine prefix manager (nixpkgs, openldap backport applied)
     #cloudflare-speedtest            # Cloudflare speed test CLI
     #droidcam                        # Android phone as webcam
     #goverlay                        # MangoHud/vkBasalt config GUI

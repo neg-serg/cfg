@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, makeWrapper }:
+{ lib, stdenv, fetchFromGitHub, makeWrapper, ncurses }:
 
 stdenv.mkDerivation rec {
   pname = "no-more-secrets";
@@ -12,6 +12,7 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ makeWrapper ];
+  buildInputs = [ ncurses ];
 
   buildPhase = ''
     make nms

@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper, libGL }:
+{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper, libGL, ncurses }:
 
 stdenv.mkDerivation rec {
   pname = "neo-matrix";
@@ -10,7 +10,7 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
-  buildInputs = [ libGL ];
+  buildInputs = [ libGL ncurses ];
 
   installPhase = ''
     mkdir -p $out/bin

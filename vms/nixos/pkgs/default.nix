@@ -47,7 +47,7 @@ let
     #kanata               = final.callPackage ./kanata-bin.nix {};
     lazytail             = final.callPackage ./lazytail-bin.nix {};
     neo-matrix           = final.callPackage ./neo-matrix-bin.nix {};
-    #no-more-secrets       = final.callPackage ./no-more-secrets.nix {};
+    no-more-secrets       = final.callPackage ./no-more-secrets.nix {};
     opencode             = final.callPackage ./opencode.nix {};
     oports-git           = final.callPackage ./oports-git.nix {};
     otter-launcher       = final.callPackage ./otter-launcher.nix {};
@@ -61,7 +61,7 @@ let
     yandex-browser       = final.callPackage ./yandex-browser-bin.nix {};
 
     # ── Parity push: final batch ──
-    bottles              = final.callPackage ./bottles.nix {};
+    bottles              = final.bottles;  # from nixpkgs (AppImage no longer published)
     cloudflare-speedtest = final.callPackage ./cloudflare-speed-cli.nix {};
     droidcam             = final.callPackage ./droidcam.nix {};
     goverlay             = final.callPackage ./goverlay.nix {};

@@ -1,21 +1,21 @@
-{ lib, stdenv, fetchFromGitHub, autoPatchelfHook, makeWrapper }:
+{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper }:
 
 stdenv.mkDerivation rec {
   pname = "opencode";
-  version = "1.15.7";
+  version = "1.15.11";
 
-  src = fetchFromGitHub {
-    owner = "anomalyco";
-    repo = "opencode";
-    rev = "v${version}";
-    hash = "sha256-fk8GDVE+bQfOkZCQ1YEc3V7YIXDHfNC/srcZs/MrE38=";
+  src = fetchurl {
+    url = "https://github.com/anomalyco/opencode/releases/download/v${version}/opencode-linux-x64.tar.gz";
+    hash = "";  # will be filled by build
   };
+
+  sourceRoot = ".";
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
 
   installPhase = ''
     mkdir -p $out/bin
-    cp opencode $out/bin/ 2>/dev/null || cp target/release/opencode $out/bin/ 2>/dev/null || true
+    cp opencode $out/bin/
   '';
 
   meta = with lib; {

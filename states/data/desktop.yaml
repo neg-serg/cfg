@@ -124,6 +124,7 @@ desktop_packages:
   rsync: rsync
   localsend: localsend-bin
   chromium: chromium
+  chawan: chawan
   google_chrome: google-chrome
   zen_browser: zen-browser-bin
   wlr_which_key: wlr-which-key

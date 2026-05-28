@@ -15,6 +15,7 @@ in
     # ── desktop (64) ──────────────────────────────────
     broot                          # Tree-based file explorer
     chromium                       # Web browser (open-source Chrome)
+    chawan                         # Terminal web browser and pager
     epiphany                       # GNOME web browser (WebKit)
     firefox                        # Web browser
     gimp                           # GNU Image Manipulation Program

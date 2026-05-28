@@ -1,6 +1,6 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{ lib, stdenv, fetchFromGitHub, makeWrapper }:
 
-buildGoModule rec {
+stdenv.mkDerivation rec {
   pname = "no-more-secrets";
   version = "1.0.1";
 
@@ -8,10 +8,21 @@ buildGoModule rec {
     owner = "bartobri";
     repo = "no-more-secrets";
     rev = "v${version}";
-    hash = "";
+    hash = "sha256-QVCEpplsZCSQ+Fq1LBtCuPBvnzgLsmLcSrxR+e4nA5I=";
   };
 
-  vendorHash = "";
+  nativeBuildInputs = [ makeWrapper ];
+
+  buildPhase = ''
+    make nms
+    make sneakers
+  '';
+
+  installPhase = ''
+    mkdir -p $out/bin
+    cp nms $out/bin/
+    cp sneakers $out/bin/
+  '';
 
   meta = with lib; {
     description = "Recreation of the 'decrypting text' effect from the 1992 movie Sneakers";

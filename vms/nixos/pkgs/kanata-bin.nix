@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/jtroo/kanata/releases/download/v${version}/kanata";
-    hash = "";
+    hash = "sha256-A/LciI/Hgx1Q9V/B/13LH8EBVhaoVSnLuTbDu8SvEyY=";
   };
 
   dontUnpack = true;

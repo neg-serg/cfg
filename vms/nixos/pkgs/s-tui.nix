@@ -5,8 +5,8 @@ stdenv.mkDerivation rec {
   version = "1.1.6";
 
   src = fetchurl {
-    url = "https://github.com/amanusk/s-tui/releases/download/v${version}/s-tui-${version}.tar.gz";
-    hash = "";
+    url = "https://github.com/amanusk/s-tui/archive/refs/tags/v${version}.tar.gz";
+    hash = "sha256-maiQVnOkJ+vOT3fZTHbNWdSz8Np0wBjny0lRxyglu+c=";
   };
 
   nativeBuildInputs = [ makeWrapper ];

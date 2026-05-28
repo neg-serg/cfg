@@ -8,10 +8,10 @@ buildGoModule rec {
     owner = "pemistahl";
     repo = "grex";
     rev = "v${version}";
-    hash = "";
+    hash = "sha256-W8fsnqR+Y6nRj1hYBWH/nMnRQkiWMN5ZhSGPP00OPdI=";
   };
 
-  vendorHash = "";
+  vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";  # FIXME: build to get
 
   meta = with lib; {
     description = "Command-line tool for generating regular expressions from user-provided test cases";

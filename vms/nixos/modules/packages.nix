@@ -30,7 +30,7 @@ in
     dunst                          # Notification daemon
     grim                           # Wayland screenshot tool
     hypridle                       # Hyprland idle daemon
-    #hyprland                       # Dynamic tiling Wayland compositor
+    hyprland                       # Dynamic tiling Wayland compositor
     hyprlock                       # Hyprland screen locker
     hyprpicker                     # Hyprland color picker
     xdg-desktop-portal-hyprland    # XDG desktop portal backend for Hyprland
@@ -530,7 +530,7 @@ in
     media-player-info
     snapshot
     tecla
-    libsForQt5.qt5ct  # FIXME: check if exists
+    libsForQt5.qt5ct
     jupyter
     texlive.combined.scheme-basic
     # ── Added missing packages (nixpkgs 25.05) ──
@@ -622,7 +622,7 @@ in
     libvirt                         # Virtualization API and management tools
     cage                            # Kiosk compositor for Wayland
     networkmanagerapplet            # NetworkManager system tray applet
-    #easyeffects  # FIXME: may need pipewire enabled                     # Audio effects for PipeWire
+    easyeffects
     #xwaylandvideobridge  # FIXME: removed from nixpkgs (KDE5 EOL)             # XWayland to Wayland video bridge
     kdePackages.kate                 # KDE advanced text editor
     kdePackages.konsole              # KDE terminal emulator
@@ -644,7 +644,7 @@ in
     ##hxd                             # Hex dump tool
     ##hyprscratch                     # Hyprland scratchpad tool
     #instagram-cli                   # Instagram CLI tool
-    ##kanata                          # Keyboard remapper
+    kanata                          # Keyboard remapper
     #lazytail                        # Lazy log tail viewer
     neo-matrix                      # Digital rain from The Matrix
     no-more-secrets                 # Sneakers decrypting text effect (nms)
@@ -655,7 +655,7 @@ in
     #pipemixer                       # PipeWire audio mixer
     #qman                            # Quick man page viewer
     #rofi-file-browser-extended      # Extended file browser for rofi
-    ##s-tui                           # CPU stress and monitoring TUI
+    s-tui                           # CPU stress and monitoring TUI
     #strace-tui                      # TUI frontend for strace
     #tdl                             # Telegram downloader
     ##yandex-browser  # FIXME: unfree, deb download                  # Yandex Browser (unfree)
@@ -703,4 +703,3 @@ in
     ## tesseract (in python section)
     ## transmission (in python section)
     ## restic (check nixpkgs)
-    ## s-tui (overlay needed)

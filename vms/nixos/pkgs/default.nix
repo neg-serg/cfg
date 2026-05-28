@@ -50,7 +50,7 @@ let
     #hxd                  = final.callPackage ./hxd-bin.nix {};
     #hyprscratch          = final.callPackage ./hyprscratch.nix {};
     instagram-cli         = final.callPackage ./instagram-cli.nix {};
-    #kanata               = final.callPackage ./kanata-bin.nix {};
+    kanata               = final.callPackage ./kanata-bin.nix {};
     lazytail             = final.callPackage ./lazytail-bin.nix {};
     neo-matrix           = final.callPackage ./neo-matrix-bin.nix {};
     no-more-secrets       = final.callPackage ./no-more-secrets.nix {};
@@ -61,7 +61,7 @@ let
     pipemixer            = final.callPackage ./pipemixer.nix {};
     qman                 = final.callPackage ./qman.nix {};
     rofi-file-browser-extended = final.callPackage ./rofi-file-browser-extended.nix {};
-    #s-tui                = final.callPackage ./s-tui.nix {};
+    s-tui                = final.callPackage ./s-tui.nix {};
     strace-tui           = final.callPackage ./strace-tui.nix {};
     tdl                  = final.callPackage ./tdl-bin.nix {};
     yandex-browser       = final.callPackage ./yandex-browser-bin.nix {};

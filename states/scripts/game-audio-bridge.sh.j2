@@ -54,6 +54,9 @@ done
 # Link game_output -> RME pro-output (with retries)
 link_port() {
     local src="$1" dst="$2" label="$3"
+    # Disconnect any existing link first (idempotent)
+    pw-link -d "$src" "$dst" 2>/dev/null || true
+    sleep 0.2  # let pipewire settle after disconnect
     for attempt in $(seq 1 5); do
         if pw-link "$src" "$dst" 2>/dev/null; then
             debug "Linked: $src -> $dst"
@@ -66,8 +69,8 @@ link_port() {
     return 1
 }
 
-link_port "${NULL_SINK}:monitor_FL" "${RME_OUT}:playback_AUX${TARGET_LEFT}" "left"
-link_port "${NULL_SINK}:monitor_FR" "${RME_OUT}:playback_AUX${TARGET_RIGHT}" "right"
+link_port "${NULL_SINK}:monitor_FL" "${RME_OUT}:playback_AUX${TARGET_LEFT}" "left" || true
+link_port "${NULL_SINK}:monitor_FR" "${RME_OUT}:playback_AUX${TARGET_RIGHT}" "right" || true
 
 # Set game_output as default sink
 log "Setting default sink to $NULL_SINK..."

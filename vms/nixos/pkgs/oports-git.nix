@@ -1,17 +1,21 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{ lib, stdenv, fetchFromGitHub }:
 
-buildGoModule rec {
+stdenv.mkDerivation rec {
   pname = "oports";
   version = "0.1.0";
 
   src = fetchFromGitHub {
     owner = "sdushantha";
     repo = "oports";
-    rev = "a454b10";  # r10.a454b10
+    rev = "a454b10";
     hash = "sha256-l4w+sHtAvOozpVAoLOJ0QnvsJl7Do9y63OVjj2OAiUk=";
   };
 
-  vendorHash = "";
+  buildPhase = "make";
+  installPhase = ''
+    mkdir -p $out/bin
+    cp oports $out/bin/
+  '';
 
   meta = with lib; {
     description = "List open ports";

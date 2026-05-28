@@ -1,6 +1,6 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{ lib, rustPlatform, fetchFromGitHub }:
 
-buildGoModule rec {
+rustPlatform.buildRustPackage rec {
   pname = "gitlogue";
   version = "0.9.0";
 
@@ -11,7 +11,7 @@ buildGoModule rec {
     hash = "sha256-w+5X3NhHCLDXRGQx2JxpIayekMk242uia1bJSRjDDAE=";
   };
 
-  vendorHash = "";
+  cargoHash = "sha256-Ne0dMpQJ2W/JgCXijosqXBr8B6C1XgK4KnOjByckcms=";
 
   meta = with lib; {
     description = "Git log viewer with rich output";

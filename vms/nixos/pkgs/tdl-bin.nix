@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/iyear/tdl/releases/download/v${version}/tdl_Linux_64bit.tar.gz";
-    hash = "";  # FIXME: nix-prefetch-url to fill
+    hash = "sha256-9p/gbBf3TDCjuJS1vgXFehsIL1azRsmUAlojAbJppxg=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

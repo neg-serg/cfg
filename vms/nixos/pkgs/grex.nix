@@ -8,7 +8,7 @@ buildGoModule rec {
     owner = "pemistahl";
     repo = "grex";
     rev = "v${version}";
-    hash = "sha256-W8fsnqR+Y6nRj1hYBWH/nMnRQkiWMN5ZhSGPP00OPdI=";
+    hash = "sha256-Ut2H2H66XN1+wHpYivnuhil21lbd7bwIcIcMyIimdis=";
   };
 
   vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";  # FIXME: build to get

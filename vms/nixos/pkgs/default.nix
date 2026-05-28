@@ -61,7 +61,7 @@ let
     yandex-browser       = final.callPackage ./yandex-browser-bin.nix {};
 
     # ── Parity push: final batch ──
-    bottles              = final.bottles;  # from nixpkgs (AppImage no longer published)
+    bottles              = prev.bottles;  # from nixpkgs (AppImage no longer published)
     cloudflare-speedtest = final.callPackage ./cloudflare-speed-cli.nix {};
     droidcam             = final.callPackage ./droidcam.nix {};
     goverlay             = final.callPackage ./goverlay.nix {};

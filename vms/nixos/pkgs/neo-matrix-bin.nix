@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper, libGL, ncurses }:
+{ lib, stdenv, fetchurl, makeWrapper, libGL, ncurses }:
 
 stdenv.mkDerivation rec {
   pname = "neo-matrix";
@@ -9,17 +9,12 @@ stdenv.mkDerivation rec {
     hash = "sha256-pV5O1e/QpK8kjRYBinqq07YX7x06wF0pKiWKOKr0ank=";
   };
 
-  nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
+  nativeBuildInputs = [ makeWrapper ];
   buildInputs = [ libGL ncurses ];
 
   installPhase = ''
     mkdir -p $out/bin
-    find . -name neo-matrix -type f -executable -exec cp {} $out/bin/ \;
-    # Fallback: build from source if no binary in release
-    if [ ! -f $out/bin/neo-matrix ]; then
-      make -j$NIX_BUILD_CORES
-      cp neo-matrix $out/bin/
-    fi
+    cp src/neo $out/bin/neo-matrix
     wrapProgram $out/bin/neo-matrix --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ libGL ]}
   '';
 

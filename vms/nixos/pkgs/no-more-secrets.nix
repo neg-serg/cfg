@@ -21,8 +21,8 @@ stdenv.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out/bin
-    cp nms $out/bin/
-    cp sneakers $out/bin/
+    cp bin/nms $out/bin/
+    cp bin/sneakers $out/bin/
   '';
 
   meta = with lib; {

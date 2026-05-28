@@ -1,24 +1,24 @@
-{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper }:
+{ lib, stdenv, fetchFromGitHub }:
 
 stdenv.mkDerivation rec {
-  pname = "hxd-bin";
-  version = "0.1.0";
+  pname = "hxd";
+  version = "1.0.0";
 
-  src = fetchurl {
-    url = "https://github.com/neg-serg/hxd/releases/download/v${version}/hxd-x86_64-unknown-linux-gnu.tar.gz";
+  src = fetchFromGitHub {
+    owner = "kiedtl";
+    repo = "huxdemp";
+    rev = "v${version}";
     hash = "";
   };
 
-  nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
-  sourceRoot = ".";
-
   installPhase = ''
-    install -Dm755 hxd $out/bin/hxd
+    mkdir -p $out/bin
+    cp hxd $out/bin/ 2>/dev/null || cp target/release/hxd $out/bin/
   '';
 
   meta = with lib; {
-    description = "Hex dump tool";
-    homepage = "https://github.com/neg-serg/hxd";
+    description = "Hex dump tool (huxdemp)";
+    homepage = "https://github.com/kiedtl/huxdemp";
     license = licenses.mit;
     mainProgram = "hxd";
     platforms = platforms.linux;

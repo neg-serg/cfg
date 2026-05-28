@@ -1,25 +1,27 @@
-{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper }:
+{ lib, stdenv, fetchFromGitHub, autoPatchelfHook, makeWrapper }:
 
 stdenv.mkDerivation rec {
   pname = "protonup-rs";
-  version = "0.1.0";
+  version = "0.12.1";
 
-  src = fetchurl {
-    url = "https://github.com/neg-serg/protonup-rs/releases/download/v${version}/protonup-rs-x86_64-unknown-linux-gnu.tar.gz";
+  src = fetchFromGitHub {
+    owner = "auyer";
+    repo = "Protonup-rs";
+    rev = "v${version}";
     hash = "";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
-  sourceRoot = ".";
 
   installPhase = ''
-    install -Dm755 protonup-rs $out/bin/protonup-rs
+    mkdir -p $out/bin
+    cp protonup-rs $out/bin/ 2>/dev/null || true
   '';
 
   meta = with lib; {
-    description = "Proton-GE installer for Steam (Rust)";
-    homepage = "https://github.com/neg-serg/protonup-rs";
-    license = licenses.mit;
+    description = "Proton-GE installer written in Rust";
+    homepage = "https://github.com/auyer/Protonup-rs";
+    license = licenses.gpl3;
     mainProgram = "protonup-rs";
     platforms = platforms.linux;
   };

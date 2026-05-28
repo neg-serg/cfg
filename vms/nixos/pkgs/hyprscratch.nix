@@ -1,26 +1,23 @@
-{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper }:
+{ lib, stdenv, fetchFromGitHub, cmake, pkg-config, hyprland }:
 
 stdenv.mkDerivation rec {
-  pname = "oports-git";
-  version = "0.1.0";
+  pname = "hyprscratch";
+  version = "0.6.4";
 
-  src = fetchurl {
-    url = "https://github.com/neg-serg/oports/releases/download/v${version}/oports-x86_64-unknown-linux-gnu.tar.gz";
+  src = fetchFromGitHub {
+    owner = "sashetophizika";
+    repo = "hyprscratch";
+    rev = "v${version}";
     hash = "";
   };
 
-  nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
-  sourceRoot = ".";
-
-  installPhase = ''
-    install -Dm755 oports $out/bin/oports
-  '';
+  nativeBuildInputs = [ cmake pkg-config ];
+  buildInputs = [ hyprland ];
 
   meta = with lib; {
-    description = "Open port scanner";
-    homepage = "https://github.com/neg-serg/oports";
+    description = "Hyprland scratchpad utility";
+    homepage = "https://github.com/sashetophizika/hyprscratch";
     license = licenses.mit;
-    mainProgram = "oports";
     platforms = platforms.linux;
   };
 }

@@ -2,22 +2,21 @@
 
 buildGoModule rec {
   pname = "gitlogue";
-  version = "0.1.0";
+  version = "0.9.0";
 
   src = fetchFromGitHub {
-    owner = "neg-serg";
+    owner = "unhappychoice";
     repo = "gitlogue";
-    rev = "main";
+    rev = "v${version}";
     hash = "";
   };
 
   vendorHash = "";
 
   meta = with lib; {
-    description = "Git history analysis tool";
-    homepage = "https://github.com/neg-serg/gitlogue";
+    description = "Git log viewer with rich output";
+    homepage = "https://github.com/unhappychoice/gitlogue";
     license = licenses.mit;
     mainProgram = "gitlogue";
-    platforms = platforms.linux;
   };
 }

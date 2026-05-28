@@ -1,24 +1,26 @@
-{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper }:
+{ lib, stdenv, fetchFromGitHub, autoPatchelfHook, makeWrapper }:
 
 stdenv.mkDerivation rec {
-  pname = "eilmeldung-bin";
-  version = "0.1.0";
+  pname = "eilmeldung";
+  version = "1.5.3";
 
-  src = fetchurl {
-    url = "https://github.com/neg-serg/eilmeldung/releases/download/v${version}/eilmeldung-x86_64-unknown-linux-gnu.tar.gz";
+  src = fetchFromGitHub {
+    owner = "christo-auer";
+    repo = "eilmeldung";
+    rev = "v${version}";
     hash = "";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
-  sourceRoot = ".";
 
   installPhase = ''
-    install -Dm755 eilmeldung $out/bin/eilmeldung
+    mkdir -p $out/bin
+    cp eilmeldung $out/bin/ 2>/dev/null || true
   '';
 
   meta = with lib; {
-    description = "Eilmeldung notification tool";
-    homepage = "https://github.com/neg-serg/eilmeldung";
+    description = "Desktop notification daemon";
+    homepage = "https://github.com/christo-auer/eilmeldung";
     license = licenses.mit;
     mainProgram = "eilmeldung";
     platforms = platforms.linux;

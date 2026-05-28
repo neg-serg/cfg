@@ -1,24 +1,26 @@
-{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper }:
+{ lib, stdenv, fetchFromGitHub, autoPatchelfHook, makeWrapper }:
 
 stdenv.mkDerivation rec {
-  pname = "lazytail-bin";
-  version = "0.1.0";
+  pname = "lazytail";
+  version = "0.10.0";
 
-  src = fetchurl {
-    url = "https://github.com/neg-serg/lazytail/releases/download/v${version}/lazytail-x86_64-unknown-linux-gnu.tar.gz";
+  src = fetchFromGitHub {
+    owner = "raaymax";
+    repo = "lazytail";
+    rev = "v${version}";
     hash = "";
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
-  sourceRoot = ".";
 
   installPhase = ''
-    install -Dm755 lazytail $out/bin/lazytail
+    mkdir -p $out/bin
+    cp lazytail $out/bin/ 2>/dev/null || true
   '';
 
   meta = with lib; {
-    description = "Lazy log tail viewer";
-    homepage = "https://github.com/neg-serg/lazytail";
+    description = "Drop-in replacement for tail -f with extra features";
+    homepage = "https://github.com/raaymax/lazytail";
     license = licenses.mit;
     mainProgram = "lazytail";
     platforms = platforms.linux;

@@ -2,22 +2,21 @@
 
 buildGoModule rec {
   pname = "qman";
-  version = "0.1.0";
+  version = "1.0.0";
 
   src = fetchFromGitHub {
-    owner = "neg-serg";
+    owner = "plp13";
     repo = "qman";
-    rev = "main";
+    rev = "v${version}";
     hash = "";
   };
 
   vendorHash = "";
 
   meta = with lib; {
-    description = "Quick man page viewer";
-    homepage = "https://github.com/neg-serg/qman";
+    description = "Quick man page viewer (TUI)";
+    homepage = "https://github.com/plp13/qman";
     license = licenses.mit;
     mainProgram = "qman";
-    platforms = platforms.linux;
   };
 }

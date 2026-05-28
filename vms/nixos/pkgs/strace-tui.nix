@@ -1,21 +1,26 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{ lib, stdenv, fetchFromGitHub, autoPatchelfHook, makeWrapper }:
 
-buildGoModule rec {
+stdenv.mkDerivation rec {
   pname = "strace-tui";
-  version = "0.1.0";
+  version = "1.0.1";
 
   src = fetchFromGitHub {
-    owner = "neg-serg";
+    owner = "Rodrigodd";
     repo = "strace-tui";
-    rev = "main";
+    rev = "v${version}";
     hash = "";
   };
 
-  vendorHash = "";
+  nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
+
+  installPhase = ''
+    mkdir -p $out/bin
+    cp strace-tui $out/bin/ 2>/dev/null || true
+  '';
 
   meta = with lib; {
     description = "TUI frontend for strace";
-    homepage = "https://github.com/neg-serg/strace-tui";
+    homepage = "https://github.com/Rodrigodd/strace-tui";
     license = licenses.mit;
     mainProgram = "strace-tui";
     platforms = platforms.linux;

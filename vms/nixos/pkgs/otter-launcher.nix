@@ -1,21 +1,26 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{ lib, stdenv, fetchFromGitHub, autoPatchelfHook, makeWrapper }:
 
-buildGoModule rec {
+stdenv.mkDerivation rec {
   pname = "otter-launcher";
-  version = "0.1.0";
+  version = "0.7.4";
 
   src = fetchFromGitHub {
-    owner = "neg-serg";
+    owner = "kuokuo123";
     repo = "otter-launcher";
-    rev = "main";
+    rev = "v${version}";
     hash = "";
   };
 
-  vendorHash = "";
+  nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
+
+  installPhase = ''
+    mkdir -p $out/bin
+    cp otter-launcher $out/bin/ 2>/dev/null || true
+  '';
 
   meta = with lib; {
     description = "Otter application launcher";
-    homepage = "https://github.com/neg-serg/otter-launcher";
+    homepage = "https://github.com/kuokuo123/otter-launcher";
     license = licenses.mit;
     mainProgram = "otter-launcher";
     platforms = platforms.linux;

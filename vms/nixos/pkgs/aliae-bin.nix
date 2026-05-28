@@ -1,27 +1,24 @@
-{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper }:
+{ lib, stdenv, fetchFromGitHub }:
 
 stdenv.mkDerivation rec {
-  pname = "aliae-bin";
-  version = "0.19.0";
+  pname = "aliae";
+  version = "0.26.6";
 
-  src = fetchurl {
-    url = "https://github.com/aliae/aliae/releases/download/v${version}/aliae-x86_64-unknown-linux-gnu.tar.gz";
-    hash = "";  # Fill after first build attempt
+  src = fetchFromGitHub {
+    owner = "aliae";
+    repo = "aliae";
+    rev = "v${version}";
+    hash = "";
   };
 
-  nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
-  buildInputs = [];
-
-  sourceRoot = ".";
-
   installPhase = ''
-    install -Dm755 aliae $out/bin/aliae
-    wrapProgram $out/bin/aliae --prefix PATH : ${lib.makeBinPath []}
+    mkdir -p $out/bin
+    cp aliae $out/bin/ 2>/dev/null || cp target/release/aliae $out/bin/
   '';
 
   meta = with lib; {
-    description = "Cross-shell aliases manager";
-    homepage = "https://github.com/aliae/aliae";
+    description = "Cross shell aliases manager";
+    homepage = "https://aliae.dev";
     license = licenses.mit;
     mainProgram = "aliae";
     platforms = platforms.linux;

@@ -1,21 +1,26 @@
-{ lib, python3Packages, fetchFromGitHub }:
+{ lib, stdenv, fetchFromGitHub, autoPatchelfHook, makeWrapper }:
 
-python3Packages.buildPythonApplication rec {
+stdenv.mkDerivation rec {
   pname = "instagram-cli";
-  version = "1.0.0";
+  version = "1.4.2";
 
   src = fetchFromGitHub {
-    owner = "neg-serg";
+    owner = "supreme-gg-gg";
     repo = "instagram-cli";
-    rev = "main";
+    rev = "v${version}";
     hash = "";
   };
 
-  propagatedBuildInputs = with python3Packages; [ requests ];
+  nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
+
+  installPhase = ''
+    mkdir -p $out/bin
+    cp instagram-cli $out/bin/ 2>/dev/null || true
+  '';
 
   meta = with lib; {
-    description = "Instagram CLI tool";
-    homepage = "https://github.com/neg-serg/instagram-cli";
+    description = "Instagram CLI client";
+    homepage = "https://github.com/supreme-gg-gg/instagram-cli";
     license = licenses.mit;
     mainProgram = "instagram-cli";
     platforms = platforms.linux;

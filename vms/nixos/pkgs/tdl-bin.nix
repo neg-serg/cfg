@@ -2,11 +2,11 @@
 
 stdenv.mkDerivation rec {
   pname = "tdl-bin";
-  version = "0.18.0";
+  version = "0.20.3";
 
   src = fetchurl {
-    url = "https://github.com/iyear/tdl/releases/download/v${version}/tdl_Linux_x86_64.tar.gz";
-    hash = "";
+    url = "https://github.com/iyear/tdl/releases/download/v${version}/tdl_Linux_64bit.tar.gz";
+    hash = "";  # FIXME: nix-prefetch-url to fill
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

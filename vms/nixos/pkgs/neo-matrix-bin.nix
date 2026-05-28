@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/st3w/neo/releases/download/v${version}/neo-matrix-linux-x86_64.tar.gz";
-    hash = "";
+    hash = "";  # FIXME: needs nix-prefetch-url, GitHub API shows neo-0.6.1.tar.gz as main asset
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/bottlesdevs/Bottles/releases/download/${version}/bottles-${version}-x86_64.AppImage";
-    hash = "";
+    hash = "";  # FIXME: latest tag is 63.2, update version above
   };
 
   nativeBuildInputs = [ autoPatchelfHook makeWrapper ];

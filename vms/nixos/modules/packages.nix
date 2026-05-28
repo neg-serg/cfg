@@ -658,6 +658,15 @@ in
     strace-tui                      # TUI frontend for strace
     tdl                             # Telegram downloader
     yandex-browser                  # Yandex Browser (unfree)
+    bottles                         # Wine prefix manager (AppImage)
+    cloudflare-speedtest            # Cloudflare speed test CLI
+    droidcam                        # Android phone as webcam
+    goverlay                        # MangoHud/vkBasalt config GUI
+    hyprquickframe                  # Hyprland quick frame capture
+    opensoundmeter                   # Audio measurement tool
+    proton-ge-custom                # Custom Proton-GE build
+    protonup-rs                     # Proton-GE installer (Rust)
+    steam                           # Steam gaming platform (unfree)
     # unar (unarchiver) — not in nixpkgs; use 'lsar' from 'unar' package
 ];
 }

@@ -59,6 +59,16 @@ let
     strace-tui           = final.callPackage ./strace-tui.nix {};
     tdl                  = final.callPackage ./tdl-bin.nix {};
     yandex-browser       = final.callPackage ./yandex-browser-bin.nix {};
+
+    # ── Parity push: final batch ──
+    bottles              = final.callPackage ./bottles.nix {};
+    cloudflare-speedtest = final.callPackage ./cloudflare-speed-cli.nix {};
+    droidcam             = final.callPackage ./droidcam.nix {};
+    goverlay             = final.callPackage ./goverlay.nix {};
+    hyprquickframe       = final.callPackage ./hyprquickframe.nix {};
+    opensoundmeter        = final.callPackage ./opensoundmeter.nix {};
+    proton-ge-custom     = final.callPackage ./proton-ge-custom.nix {};
+    protonup-rs          = final.callPackage ./protonup-rs.nix {};
   };
 in
 {

@@ -635,7 +635,7 @@ in
     sc3-plugins                     # SuperCollider plugins
 
     # ── Parity push: custom overlay packages ──
-    aliae-bin                       # Cross-shell aliases manager
+    #aliae-bin  # FIXME: no GitHub releases                       # Cross-shell aliases manager
     antigravity-tools-bin           # Antigravity tools collection
     eilmeldung-bin                  # Eilmeldung notification tool
     flclashx-bin                    # FlClashX proxy client
@@ -657,8 +657,8 @@ in
     s-tui                           # CPU stress and monitoring TUI
     strace-tui                      # TUI frontend for strace
     tdl                             # Telegram downloader
-    yandex-browser                  # Yandex Browser (unfree)
-    bottles                         # Wine prefix manager (AppImage)
+    #yandex-browser  # FIXME: unfree, deb download                  # Yandex Browser (unfree)
+    #bottles  # FIXME: AppImage not available for download                         # Wine prefix manager (AppImage)
     cloudflare-speedtest            # Cloudflare speed test CLI
     droidcam                        # Android phone as webcam
     goverlay                        # MangoHud/vkBasalt config GUI

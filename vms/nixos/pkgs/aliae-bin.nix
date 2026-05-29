@@ -1,6 +1,6 @@
-{ lib, stdenv, fetchFromGitHub }:
+{ lib, rustPlatform, fetchFromGitHub }:
 
-stdenv.mkDerivation rec {
+rustPlatform.buildRustPackage rec {
   pname = "aliae";
   version = "0.26.6";
 
@@ -11,16 +11,12 @@ stdenv.mkDerivation rec {
     hash = "";
   };
 
-  installPhase = ''
-    mkdir -p $out/bin
-    cp aliae $out/bin/ 2>/dev/null || cp target/release/aliae $out/bin/
-  '';
+  cargoHash = "";
 
   meta = with lib; {
-    description = "Cross shell aliases manager";
+    description = "Cross-shell aliases manager";
     homepage = "https://aliae.dev";
     license = licenses.mit;
-    mainProgram = "aliae";
     platforms = platforms.linux;
   };
 }

@@ -455,7 +455,7 @@ in
     # optiscaler-universal → not available
     # babashka-bin → available as 'babashka'
     # carapace-bin → 'carapace'
-    # aliae-bin → not available
+
     # eilmeldung-bin → not available
     ## flclashx-bin → not available
     # v2rayn-bin → not available
@@ -607,7 +607,7 @@ in
     python3Packages.transformers     # HuggingFace Transformers (ML models)
     btrfs-progs                     # Btrfs filesystem utilities
     dosfstools                      # DOS/FAT filesystem utilities
-    #etckeeper  # FIXME: not in nixpkgs                       # Version control for /etc directory
+    etckeeper                       # Version control for /etc directory
     gst_all_1.gst-libav             # GStreamer libav plugin
     gst_all_1.gst-plugins-ugly      # GStreamer ugly plugins
     unbound                         # Validating recursive DNS resolver
@@ -623,7 +623,7 @@ in
     cage                            # Kiosk compositor for Wayland
     networkmanagerapplet            # NetworkManager system tray applet
     easyeffects
-    #xwaylandvideobridge  # FIXME: removed from nixpkgs (KDE5 EOL)             # XWayland to Wayland video bridge
+    #xwaylandvideobridge  # removed from nixpkgs (KDE5 EOL, 2026)
     kdePackages.kate                 # KDE advanced text editor
     kdePackages.konsole              # KDE terminal emulator
     kdePackages.ark                  # KDE archive manager
@@ -633,10 +633,10 @@ in
     qemu_kvm                        # QEMU with KVM acceleration
     linuxKernel.packages.linux_6_12.cpupower                        # Linux kernel CPU frequency management
     lshw                            # Hardware lister (detailed system info)
-    #sc3-plugins  # FIXME: part of supercollider                     # SuperCollider plugins
+    #sc3-plugins  # bundled with supercollider (above)
 
     ## ── Parity push: custom overlay packages ──
-    ##aliae-bin  # FIXME: no GitHub releases                       # Cross-shell aliases manager
+    #aliae-bin  # no GitHub releases (404 on latest)
     #antigravity-tools-bin           # Antigravity tools collection
     #eilmeldung-bin                  # Eilmeldung notification tool
     ##flclashx-bin                    # FlClashX proxy client
@@ -658,7 +658,7 @@ in
     s-tui                           # CPU stress and monitoring TUI
     #strace-tui                      # TUI frontend for strace
     #tdl                             # Telegram downloader
-    ##yandex-browser  # FIXME: unfree, deb download                  # Yandex Browser (unfree)
+    #yandex-browser  # unfree (deb download), skip
     bottles  # Wine prefix manager (nixpkgs, openldap backport applied)
     #cloudflare-speedtest            # Cloudflare speed test CLI
     #droidcam                        # Android phone as webcam
@@ -673,7 +673,6 @@ in
 }
     ## amdvlk                                 # AMD Vulkan driver (open source, AMDGPU)
     ## dkms (not in nixpkgs)
-    ## etckeeper (not in nixpkgs)
     ## overlay packages moved to main list below
     ## (python section only)
     ## fortune-mod overlay

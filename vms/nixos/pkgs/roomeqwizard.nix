@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://www.roomeqwizard.com/REW_linux_${version}.zip";
-    hash = "";
+    hash = lib.fakeSha256;  # FIXME: build once to get real hash
   };
 
   nativeBuildInputs = [ makeWrapper ];

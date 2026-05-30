@@ -5,7 +5,4 @@ smartcache() { eval "$("$@")"; }
 
 export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 
-GUIX_PROFILE="$HOME/.guix-profile"
-if [ -f "$GUIX_PROFILE/etc/profile" ]; then
-  source "$GUIX_PROFILE/etc/profile"
-fi
+# Guix profile removed

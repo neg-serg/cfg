@@ -464,64 +464,7 @@ def annotate_salt():
     print(f"Salt: annotated {changed} packages")
 
 def annotate_guix():
-    """Annotate Guix system-config.scm — handles both string/symbol packages and inline custom lists."""
-    path = REPO / "guix/system-config.scm"
-    with open(path) as f:
-        content = f.read()
-    
-    lines = content.split("\n")
-    new_lines = []; changed = 0
-    
-    for line in lines:
-        # Match: "package-name" (string in specifications->packages list)
-        m_str = re.match(r'^(\s*)"([\w.\-]+)"(\s*;.*)?$', line)
-        # Match: package-name (symbol in a list)
-        m_sym = re.match(r'^(\s*)([\w][\w.\-]*[\w])\s*(;.*)?$', line)
-        # Match: inline string listing: "pkg1" "pkg2" "pkg3"  ; comment
-        m_inline_str = re.match(r'^(\s*)((?:"[\w.\-]+"\s+)+)\s*(;.*)?$', line)
-        
-        pkg = None; indent = None; existing = None; matched = False
-        
-        if m_str:
-            pkg = m_str.group(2); indent = m_str.group(1)
-            existing = (m_str.group(3) or "").lstrip("; ").strip(); matched = True
-        elif m_sym and not line.strip().startswith(";") and not line.strip().startswith("("):
-            pkg = m_sym.group(2); indent = m_sym.group(1)
-            existing = (m_sym.group(3) or "").lstrip("; ").strip(); matched = True
-            # Skip Scheme keywords
-            skip = ["specifications->packages", "packages", "system", "list",
-                    "cons", "append", "operating", "services", "users",
-                    "plain-file", "local-file", "string-append", "file-append",
-                    "or", "getenv", "package-version", "base-packages",
-                    "base-pam-services", "kernel", "lambda", "let", "let*", "svc",
-                    "t", "memq", "remove", "modify-services", "login-service-type",
-                    "login-configuration", "name", "group", "supplementary-groups",
-                    "shell", "comment", "home-directory", "uid", "password",
-                    "inherit", "super", "if", "map", "car", "cdr", "cons*",
-                    "null?", "list?", "defined?", "eq?", "equal?", "and", "or"]
-            if pkg in skip:
-                pkg = None
-            if pkg and (pkg[0].isdigit() or pkg.startswith("#") or pkg.startswith(":") or pkg.startswith("'")):
-                pkg = None
-        
-        if pkg and len(existing) < 5:
-            desc = DESC.get(pkg)
-            if desc:
-                if m_str:
-                    new_lines.append(f'{indent}"{pkg}"{" " * (28 - len(pkg))} ; {desc}')
-                else:
-                    new_lines.append(f"{indent}{pkg:30} ; {desc}")
-                changed += 1
-            else:
-                new_lines.append(line)
-        elif matched:
-            new_lines.append(line)
-        else:
-            new_lines.append(line)
-    
-    with open(path, "w") as f:
-        f.write("\n".join(new_lines))
-    print(f"Guix: annotated {changed} packages")
+    print("Guix: skipped (no guix/ directory)")
 
 def main():
     parser = argparse.ArgumentParser()

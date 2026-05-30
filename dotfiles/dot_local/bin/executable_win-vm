@@ -382,6 +382,17 @@ cmd_console() {
     require_defined
     if [[ "$VM_GRAPHICS" == "none" && -e /dev/shm/looking-glass ]]; then
         cmd_looking_glass
+        return
+    fi
+    local uri
+    uri=$(${VIRSH[@]} domdisplay "$VM_NAME" 2>/dev/null) || {
+        exec virt-viewer --connect "$VM_URI" "$VM_NAME"
+        return
+    }
+    if command -v spicy >/dev/null 2>&1; then
+        exec spicy --uri "$uri"
+    elif command -v remote-viewer >/dev/null 2>&1; then
+        exec remote-viewer "$uri"
     else
         exec virt-viewer --connect "$VM_URI" "$VM_NAME"
     fi

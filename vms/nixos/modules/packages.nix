@@ -608,7 +608,7 @@ in
     python3Packages.transformers     # HuggingFace Transformers (ML models)
     btrfs-progs                     # Btrfs filesystem utilities
     dosfstools                      # DOS/FAT filesystem utilities
-    etckeeper                       # Version control for /etc directory
+    #etckeeper                       # Version control for /etc directory (not in nixpkgs)
     gst_all_1.gst-libav             # GStreamer libav plugin
     gst_all_1.gst-plugins-ugly      # GStreamer ugly plugins
     unbound                         # Validating recursive DNS resolver
@@ -635,7 +635,7 @@ in
     linuxKernel.packages.linux_6_12.cpupower                        # Linux kernel CPU frequency management
     lshw                            # Hardware lister (detailed system info)
     #sc3-plugins  # bundled with supercollider (above)
-    scx                             # sched_ext schedulers (userspace tools)
+    scx.full                        # sched_ext schedulers (userspace tools, full bundle)
     ghc                             # Glasgow Haskell Compiler
     overskride                      # Bluetooth management GUI
     xdg-desktop-portal-termfilechooser     # Terminal file chooser for XDG desktop portal
@@ -669,7 +669,7 @@ in
     #cloudflare-speedtest            # Cloudflare speed test CLI
     #droidcam                        # Android phone as webcam
     #goverlay                        # MangoHud/vkBasalt config GUI
-    roomeqwizard                    # Room EQ Wizard (Java, acoustics measurement)
+    #roomeqwizard                    # Room EQ Wizard (Java, needs hash filled in overlay)
     #hyprquickframe                  # Hyprland quick frame capture
     ##opensoundmeter                   # Audio measurement tool
     ##proton-ge-custom                # Custom Proton-GE build

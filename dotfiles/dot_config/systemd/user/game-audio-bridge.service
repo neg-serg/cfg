@@ -1,5 +1,5 @@
 [Unit]
-Description=Game Audio Bridge (Stereo Null Sink -> RME AIO Pro)
+Description=Game Audio: set game_output as default sink
 After=pipewire.service pipewire-pulse.service wireplumber.service
 BindsTo=pipewire.service pipewire-pulse.service
 PartOf=pipewire.service
@@ -8,8 +8,6 @@ PartOf=pipewire.service
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/home/neg/.local/bin/game-audio-bridge
-ExecStop=-/usr/bin/pw-link -d "game_output:monitor_FL" "alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX0" 2>/dev/null || true
-ExecStop=-/usr/bin/pw-link -d "game_output:monitor_FR" "alsa_output.pci-0000_05_00.0.pro-output-0:playback_AUX1" 2>/dev/null || true
 ExecStop=-/usr/bin/pactl set-default-sink "alsa_output.pci-0000_05_00.0.pro-output-0" 2>/dev/null || true
 Restart=on-failure
 RestartSec=5

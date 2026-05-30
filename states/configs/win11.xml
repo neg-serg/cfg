@@ -189,7 +189,7 @@
       </backend>
     </tpm>
     <graphics type='spice'>
-      <listen type='none'/>
+      <listen type='socket'/>
       <image compression='off'/>
     </graphics>
     <sound model='ich9'>

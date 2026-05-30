@@ -604,6 +604,7 @@ in
     python3Packages.pip             # Python package installer (pip)
     #pipx                            # Run Python applications in isolated environments
     python3Packages.pysocks          # SOCKS proxy client for Python
+    python3Packages.python-socks     # SOCKS proxy (modern replacement for pysocks)
     python3Packages.transformers     # HuggingFace Transformers (ML models)
     btrfs-progs                     # Btrfs filesystem utilities
     dosfstools                      # DOS/FAT filesystem utilities
@@ -634,6 +635,11 @@ in
     linuxKernel.packages.linux_6_12.cpupower                        # Linux kernel CPU frequency management
     lshw                            # Hardware lister (detailed system info)
     #sc3-plugins  # bundled with supercollider (above)
+    scx                             # sched_ext schedulers (userspace tools)
+    ghc                             # Glasgow Haskell Compiler
+    overskride                      # Bluetooth management GUI
+    xdg-desktop-portal-termfilechooser     # Terminal file chooser for XDG desktop portal
+    zathuraPkgs.zathura_pdf_poppler # PDF plugin for zathura
 
     ## ── Parity push: custom overlay packages ──
     #aliae-bin  # no GitHub releases (404 on latest)
@@ -663,6 +669,7 @@ in
     #cloudflare-speedtest            # Cloudflare speed test CLI
     #droidcam                        # Android phone as webcam
     #goverlay                        # MangoHud/vkBasalt config GUI
+    roomeqwizard                    # Room EQ Wizard (Java, acoustics measurement)
     #hyprquickframe                  # Hyprland quick frame capture
     ##opensoundmeter                   # Audio measurement tool
     ##proton-ge-custom                # Custom Proton-GE build

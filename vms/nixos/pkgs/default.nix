@@ -75,6 +75,7 @@ let
     #opensoundmeter        = final.callPackage ./opensoundmeter.nix {};
     #proton-ge-custom     = final.callPackage ./proton-ge-custom.nix {};
     protonup-rs          = final.callPackage ./protonup-rs.nix {};
+    roomeqwizard         = final.callPackage ./roomeqwizard.nix {};
   };
 in
 {

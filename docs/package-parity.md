@@ -7,7 +7,7 @@ Generated: 2026-05-28
 
 | VM | Present | Missing | Coverage |
 |---|---|---|---|
-| NixOS | 301 | 77 | 301/378 (79%) |
+| NixOS | 309 | 69 | 309/378 (82%) |
 | Guix | 16 | 362 | 16/378 (4%) |
 
 ## Desktop/GNOME (35)
@@ -124,7 +124,7 @@ Generated: 2026-05-28
 | `python-pipx` | ✗ | ✗ |
 | `python-poetry` | ✓ | ✗ |
 | `python-pyperclip` | ✓ | ✗ |
-| `python-python-socks` | ✗ | ✗ |
+| `python-python-socks` | ✓ | ✗ |
 | `python-rapidgzip` | ✓ | ✗ |
 | `python-telethon` | ✓ | ✗ |
 | `python-textual` | ✓ | ✗ |
@@ -142,7 +142,7 @@ Generated: 2026-05-28
 |---|---|---|
 | `antigravity-tools-bin` | ✗ | ✗ |
 | `epr-git` | ✓ | ✗ |
-| `ghc` | ✗ | ✗ |
+| `ghc` | ✓ | ✗ |
 | `ghgrab-bin` | ✓ | ✗ |
 | `gist` | ✓ | ✗ |
 | `git-filter-repo` | ✓ | ✗ |
@@ -159,7 +159,7 @@ Generated: 2026-05-28
 | `tanin-git` | ✗ | ✗ |
 | `themix-full-git` | ✓ | ✗ |
 | `tig` | ✓ | ✗ |
-| `xdg-desktop-portal-termfilechooser-hunkyburrito-git` | ✗ | ✗ |
+| `xdg-desktop-portal-termfilechooser-hunkyburrito-git` | ✓ | ✗ |
 
 ## Network/VPN (19)
 
@@ -314,7 +314,7 @@ Generated: 2026-05-28
 |---|---|---|
 | `lowdown` | ✓ | ✗ |
 | `texlive-basic` | ✓ | ✗ |
-| `zathura-pdf-poppler` | ✗ | ✗ |
+| `zathura-pdf-poppler` | ✓ | ✗ |
 
 ## Android/Mobile (3)
 
@@ -411,7 +411,7 @@ Generated: 2026-05-28
 | `openrgb` | ✓ | ✗ |
 | `optiscaler-universal` | ✗ | ✗ |
 | `otter-launcher` | ✗ | ✗ |
-| `overskride-bin` | ✗ | ✗ |
+| `overskride-bin` | ✓ | ✗ |
 | `oyo` | ✗ | ✗ |
 | `par` | ✓ | ✗ |
 | `pass` | ✗ | ✓ |
@@ -433,7 +433,7 @@ Generated: 2026-05-28
 | `richcolors` | ✓ | ✗ |
 | `rlwrap` | ✓ | ✗ |
 | `rmlint` | ✓ | ✗ |
-| `roomeqwizard` | ✗ | ✗ |
+| `roomeqwizard` | ✓ | ✗ |
 | `s-tui` | ✗ | ✗ |
 | `sad` | ✓ | ✗ |
 | `samba` | ✓ | ✗ |
@@ -477,7 +477,7 @@ Generated: 2026-05-28
 | `wget2` | ✓ | ✗ |
 | `witr-bin` | ✓ | ✗ |
 | `xh` | ✓ | ✗ |
-| `xwaylandvideobridge` | ✗ | ✗ |
+| `xwaylandvideobridge` | ✗ | ✗ |  <!-- removed from nixpkgs (KDE5 EOL) -->
 | `youtube-tui` | ✓ | ✗ |
 | `ytsurf` | ✓ | ✗ |
 | `zk` | ✓ | ✗ |

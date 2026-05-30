@@ -15,6 +15,7 @@
           system.stateVersion = "25.05";
           nixpkgs.config.allowUnfree = true;
           networking.hostName = "nixos";
+          boot.loader.systemd-boot.enable = true;
           services.openssh.enable = true;
           services.openssh.settings.PasswordAuthentication = false;
           users.users.root.openssh.authorizedKeys.keys = [

@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchurl, autoPatchelfHook, makeWrapper }:
+{ lib, stdenv, fetchurl, makeWrapper, python3 }:
 
 stdenv.mkDerivation rec {
   pname = "s-tui";
@@ -9,15 +9,17 @@ stdenv.mkDerivation rec {
     hash = "sha256-maiQVnOkJ+vOT3fZTHbNWdSz8Np0wBjny0lRxyglu+c=";
   };
 
+  dontBuild = true;
+
   nativeBuildInputs = [ makeWrapper ];
   
-  propagatedBuildInputs = [];
+  buildInputs = [ python3 ];
 
   installPhase = ''
     mkdir -p $out/bin $out/share/s-tui
     cp -r . $out/share/s-tui/
-    ln -s $out/share/s-tui/s-tui $out/bin/s-tui
-    chmod +x $out/share/s-tui/s-tui
+    makeWrapper ${python3}/bin/python3 $out/bin/s-tui \
+      --add-flags "$out/share/s-tui/s_tui/s_tui.py"
   '';
 
   meta = with lib; {

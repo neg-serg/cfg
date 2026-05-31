@@ -20,6 +20,3 @@ rme:
       left: 6
       right: 7
       label: "Headphones"
-bridge:
-  null_sink: "game_stereo"
-  target: "an"

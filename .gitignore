@@ -53,6 +53,7 @@ tt
 # Prevent plaintext configs with secrets from being committed
 dotfiles/dot_config/proxypilot/config.yaml
 dotfiles/dot_config/xray/config.json
+scripts/awg-tunnel.conf
 .DS_Store
 Thumbs.db
 .vscode/

@@ -7,9 +7,9 @@ Skips packages that already have comments.
 
 Usage:
   python3 scripts/annotate-packages.py              # all three configs
-  python3 scripts/annotate-packages.py --nixos       # NixOS only
   python3 scripts/annotate-packages.py --salt        # Salt only
-  python3 scripts/annotate-packages.py --guix        # Guix only
+  python3 scripts/annotate-packages.py --salt        # Salt only
+  #python3 scripts/annotate-packages.py --guix        # removed
 """
 
 import re, argparse
@@ -404,37 +404,6 @@ DESC = {
 # ── Configs that store package names as "quoted strings" (Guix)
 GUIX_STRING_PKGS = True
 
-def annotate_nixos():
-    """Annotate NixOS packages.nix"""
-    path = REPO / "vms/nixos/modules/packages.nix"
-    with open(path) as f:
-        content = f.read()
-    
-    lines = content.split("\n")
-    new_lines = []
-    changed = 0
-    
-    for line in lines:
-        m = re.match(r'^(\s*)([\w.\-]+)\s*(#.*)?$', line)
-        if m and not line.strip().startswith("#") and not line.strip().startswith("}") and not line.strip().startswith("]"):
-            indent = m.group(1); pkg = m.group(2).strip()
-            existing = (m.group(3) or "").strip("# ").strip()
-            if len(existing) > 5:
-                new_lines.append(line); continue
-            if "(" in pkg:
-                new_lines.append(line); continue
-            desc = DESC.get(pkg)
-            if desc:
-                new_lines.append(f"{indent}{pkg:30} # {desc}"); changed += 1
-            else:
-                new_lines.append(line)
-        else:
-            new_lines.append(line)
-    
-    with open(path, "w") as f:
-        f.write("\n".join(new_lines))
-    print(f"NixOS: annotated {changed} packages")
-
 def annotate_salt():
     """Annotate Salt packages.yaml"""
     path = REPO / "states/data/packages.yaml"
@@ -463,26 +432,15 @@ def annotate_salt():
         f.write("\n".join(new_lines))
     print(f"Salt: annotated {changed} packages")
 
-def annotate_guix():
-    print("Guix: skipped (no guix/ directory)")
-
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--nixos", action="store_true")
     parser.add_argument("--salt", action="store_true")
-    parser.add_argument("--guix", action="store_true")
     args = parser.parse_args()
     
-    do_all = not (args.nixos or args.salt or args.guix)
-    
-    if do_all or args.nixos:
-        annotate_nixos()
-    if do_all or args.salt:
+    if args.salt or True:
         annotate_salt()
-    if do_all or args.guix:
-        annotate_guix()
     
-    print("Done! Run 'just validate' or 'nix flake check' to verify")
+    print("Done! Run 'just validate' to verify")
 
 if __name__ == "__main__":
     main()

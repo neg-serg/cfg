@@ -5,4 +5,4 @@ smartcache() { eval "$("$@")"; }
 
 export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 
-# Guix profile removed
+

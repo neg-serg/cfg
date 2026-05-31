@@ -140,6 +140,8 @@ Item {
     property string currentRoute: "unknown"
     onCurrentRouteChanged: routeRefresh.restart()
     readonly property string routeDisplayName: routeNames[currentRoute] || currentRoute || "Unknown"
+    readonly property var routeShortLabels: ({"aes": "AES", "phones": "HP", "spdif": "SPDIF", "an": "AN"})
+    readonly property string routeShortLabel: routeShortLabels[currentRoute] || "?"
 
     Process {
         id: loadRoutesProc

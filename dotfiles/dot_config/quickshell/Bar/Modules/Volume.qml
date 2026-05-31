@@ -11,7 +11,7 @@ LocalMods.AudioEndpointTile {
     iconLow: "volume_down"
     iconHigh: (Services.Audio && Services.Audio.currentRoute === "phones") ? "headphones" : "volume_up"
     labelSuffix: "%"
-    labelText: (Services.Audio && Services.Audio.isProAudioSink) ? ((Services.Audio.currentRoute === "aes") ? "AES" : (Services.Audio.currentRoute === "phones") ? "HP" : (Services.Audio.currentRoute === "spdif") ? "SPDIF" : (Services.Audio.currentRoute === "an") ? "AN" : "?") : ""
+    labelText: (Services.Audio && Services.Audio.isProAudioSink) ? (Services.Audio.routeShortLabel || "?") : ""
     levelProperty: "volume"
     mutedProperty: "muted"
     changeMethod: "changeVolume"
@@ -19,7 +19,7 @@ LocalMods.AudioEndpointTile {
     offReminderStateKey: "audioOffReminderLastShownAt"
     toggleOnClick: false
     tooltipTitle: "Output"
-    tooltipValue: (Services.Audio && Services.Audio.isProAudioSink) ? ((Services.Audio.currentRoute === "aes") ? "AES" : (Services.Audio.currentRoute === "phones") ? "HP" : (Services.Audio.currentRoute === "spdif") ? "SPDIF" : (Services.Audio.currentRoute === "an") ? "AN" : "?") : ""
+    tooltipValue: (Services.Audio && Services.Audio.isProAudioSink) ? (Services.Audio.routeShortLabel || "?") : ""
     tooltipHints: [
         "Mirror: " + (Services.Audio ? Services.Audio.routeDisplayName : "?"),
         "Left click to toggle AES / Analog.",

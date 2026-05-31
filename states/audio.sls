@@ -5,7 +5,7 @@
    includes: [pacman_db_warmup]
    data_files: [data/audio.yaml]
    configs: [configs/pipewire-game-output.conf]
-   scripts: [scripts/game-audio-bridge.sh.j2]
+   scripts: [scripts/game-audio-bridge.sh]
    services: [game-audio-bridge.service]
 #}
 {% from '_imports.jinja' import user, home %}
@@ -38,13 +38,10 @@ game_output_sink_config:
 game_audio_bridge_script:
   file.managed:
     - name: {{ home }}/.local/bin/game-audio-bridge
-    - source: salt://scripts/game-audio-bridge.sh.j2
-    - template: jinja
+    - source: salt://scripts/game-audio-bridge.sh
     - user: {{ user }}
     - group: {{ user }}
     - mode: '0755'
-    - context:
-        rme_node: {{ audio.rme_node }}
 
 {{ salt['user_service.user_service_file'](
     'game_audio_bridge_service',

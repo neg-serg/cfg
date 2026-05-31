@@ -17,6 +17,6 @@
 # ProxyPilot config: fully managed by Salt (j2 template + gopass secrets)
 .config/proxypilot/config.yaml
 
-# Game Audio Bridge: managed by Salt (states/scripts/game-audio-bridge.sh.j2)
+# Game Audio Bridge: managed by Salt (states/scripts/game-audio-bridge.sh)
 .local/bin/game-audio-bridge
 .config/systemd/user/game-audio-bridge.service

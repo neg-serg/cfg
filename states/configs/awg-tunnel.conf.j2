@@ -1,0 +1,26 @@
+{# AWG tunnel config — secrets resolved from gopass at render time #}
+{% set priv = salt['secrets.get'](awg.gopass.private_key, 'echo missing-private-key') %}
+{% set psk = salt['secrets.get'](awg.gopass.preshared_key, 'echo missing-preshared-key') %}
+[Interface]
+Address = {{ awg.address }}
+{% if awg.dns %}DNS = {{ awg.dns | join(', ') }}{% endif %}
+PrivateKey = {{ priv }}
+Jc = {{ awg.obfuscation.jc }}
+Jmin = {{ awg.obfuscation.jmin }}
+Jmax = {{ awg.obfuscation.jmax }}
+S1 = {{ awg.obfuscation.s1 }}
+S2 = {{ awg.obfuscation.s2 }}
+S3 = {{ awg.obfuscation.s3 }}
+S4 = {{ awg.obfuscation.s4 }}
+H1 = {{ awg.obfuscation.h1 }}
+H2 = {{ awg.obfuscation.h2 }}
+H3 = {{ awg.obfuscation.h3 }}
+H4 = {{ awg.obfuscation.h4 }}
+I1 = {{ awg.obfuscation.i1 }}
+
+[Peer]
+PublicKey = {{ awg.peer.public_key }}
+PresharedKey = {{ psk }}
+AllowedIPs = {{ awg.peer.allowed_ips | join(', ') }}
+Endpoint = {{ awg.peer.endpoint }}
+PersistentKeepalive = {{ awg.peer.persistent_keepalive }}

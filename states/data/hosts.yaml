@@ -55,6 +55,7 @@ defaults:
       wifi: false
       vpn_split_router: false
       vpn_hybrid: false
+      awg_tunnel: false
       ipv6: false
       ipv6_6to4: false
       ipv6_tunnel: false
@@ -113,6 +114,7 @@ hosts:
         tailscale: false
         zapret2: false
         ipv6: true
+        awg_tunnel: true
       floorp: false
       opencode: true
       telethon_bridge: true

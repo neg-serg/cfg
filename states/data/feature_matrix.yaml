@@ -148,6 +148,7 @@
         wifi: true
         vpn_split_router: true
         vpn_hybrid: true
+        awg_tunnel: true
         ipv6: true
         ipv6_6to4: true
         ipv6_tunnel: true

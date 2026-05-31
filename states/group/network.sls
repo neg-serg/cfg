@@ -2,8 +2,8 @@
 {#- @state
    id: group.network
    purpose: "Network group: VPN, firewall, DNS, IPv6 tunnels, and routing."
-   includes: [amnezia, dns, hiddify, ipv6, ipv6_6to4, ipv6_tunnel, network, zapret2]
-   feature_gate: [amnezia, network.hiddify, network.ipv6, network.ipv6_6to4, network.ipv6_tunnel, network.zapret2]
+    includes: [amnezia, dns, hiddify, ipv6, ipv6_6to4, ipv6_tunnel, network, network.awg_tunnel, zapret2]
+    feature_gate: [amnezia, network.hiddify, network.ipv6, network.ipv6_6to4, network.ipv6_tunnel, network.zapret2, network.awg_tunnel]
 #}
 # Group: network and DNS
 # Usage: just apply group/network
@@ -30,4 +30,7 @@ include:
 {% endif %}
 {% if host.features.network.get('hiddify', false) %}
   - hiddify
+{% endif %}
+{% if host.features.network.get('awg_tunnel', false) %}
+  - network.awg_tunnel
 {% endif %}

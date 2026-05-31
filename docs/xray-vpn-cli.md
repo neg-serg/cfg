@@ -310,6 +310,76 @@ Test with `scripts/check-vpn-status.sh`.
 
 If the AmneziaVPN profile changes, rerun the importer command to regenerate `~/.config/sing-box-tun/config.json` before starting or restarting any VPN client.
 
+## AWG Tunnel (AmneziaWG)
+
+A standalone AmneziaWG obfuscated tunnel managed via `awg-tunnel.service`. Unlike the Xray‑based VPN, this creates a full WireGuard‑compatible interface with Anti‑DPI obfuscation (Jc, S1‑S4, H1‑H4, I1 init‑packet obfuscation).
+
+### Packages
+
+```bash
+sudo pacman -S amneziawg-dkms amneziawg-tools
+```
+
+### Secrets
+
+WireGuard keys are stored in gopass:
+```bash
+gopass show -o vpn/awg-tunnel/private-key
+gopass show -o vpn/awg-tunnel/preshared-key
+```
+
+The Salt state (`network.awg_tunnel`) resolves them at render time via `secrets.get`.
+
+### Managing the tunnel
+
+```bash
+# Enable + start (Salt-managed)
+sudo systemctl enable --now awg-tunnel
+
+# Manual start/stop
+sudo awg-quick up /etc/wireguard/awg-tunnel.conf
+sudo awg-quick down awg-tunnel
+
+# Status
+sudo awg show awg-tunnel
+```
+
+### SOCKS5 proxy
+
+A stdlib‑only Python SOCKS5 proxy (`socks5-forward`) is deployed to `~/.local/bin/socks5-forward`. It runs on `127.0.0.1:10810` (port 10808 is reserved for Xray, 10809 for Xray alternate).
+
+```bash
+# Start the SOCKS5 proxy (when tunnel is up)
+~/.local/bin/socks5-forward 127.0.0.1 10810 &
+
+# Test
+curl --socks5 127.0.0.1:10810 https://ifconfig.me
+
+# Use in session
+export ALL_PROXY=socks5://127.0.0.1:10810
+```
+
+### Enabling via Salt
+
+1. **Enable flag** in `states/data/hosts.yaml`:
+   ```yaml
+   features:
+     network:
+       awg_tunnel: true
+   ```
+
+2. **Apply**:
+   ```bash
+   sudo salt-call --local state.apply network
+   ```
+
+This installs packages, generates `/etc/wireguard/awg-tunnel.conf` from the J2 template (secrets from gopass), deploys the systemd unit, and enables the service.
+
+### Configuration reference
+
+File: `states/data/awg_tunnel.yaml` — all non‑secret parameters (endpoint, obfuscation seeds, MTU, DNS).
+Template: `states/configs/awg-tunnel.conf.j2` — Jinja2 template that renders the AWG config with secrets from gopass.
+
 ## Troubleshooting
 
 ### SOCKS5 Proxy Issues

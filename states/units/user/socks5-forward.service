@@ -1,0 +1,13 @@
+[Unit]
+Description=SOCKS5 forwarder (AWG tunnel)
+After=awg-tunnel.service
+Wants=awg-tunnel.service
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/socks5-forward 127.0.0.1 10810
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

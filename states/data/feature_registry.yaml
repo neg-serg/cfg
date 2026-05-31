@@ -148,6 +148,11 @@ features:
         description: Hybrid VPN (Xray + sing-box TUN)
         gates:
         - network
+      awg_tunnel:
+        default: false
+        description: AmneziaWG obfuscated tunnel with SOCKS5 proxy
+        gates:
+        - network
       ipv6:
         default: false
         description: IPv6 diagnostics

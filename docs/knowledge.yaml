@@ -64,6 +64,20 @@ categories:
           - "tailscale status"
         key_files: ["/etc/default/tailscaled"]
 
+      awg-tunnel-setup:
+        title: "AWG Tunnel Setup"
+        summary: "Setup and operation guide for the AmneziaWG obfuscated tunnel. Covers package installation (amneziawg-dkms + amneziawg-tools from CachyOS repos), gopass-backed secret storage for WireGuard keys, systemd service lifecycle (awg-tunnel.service), and the stdlib-only SOCKS5 proxy (socks5-forward on 127.0.0.1:10810) for per-application VPN routing."
+        audience: ["operator"]
+        prerequisites: ["amneziawg-dkms", "amneziawg-tools", "gopass"]
+        related_entities: ["state:network.awg_tunnel", "service:awg-tunnel"]
+        related_docs: ["vpn-policy", "vpn-quickstart", "xray-vpn-cli"]
+        tags: ["vpn", "awg", "amneziawg", "socks5", "tunnel", "obfuscation"]
+        key_commands:
+          - "sudo systemctl start awg-tunnel"
+          - "curl --socks5 127.0.0.1:10810 https://ifconfig.me"
+          - "sudo awg show awg-tunnel"
+        key_files: ["/etc/wireguard/awg-tunnel.conf"]
+
       sonobus-setup:
         title: "SonoBus Setup"
         summary: "Setup guide for SonoBus, a high-quality low-latency peer-to-peer audio streaming application for remote music collaboration. Covers JACK/PipeWire configuration, network buffer tuning, and session management."
@@ -148,7 +162,7 @@ categories:
 
       hdspe-post-install:
         title: "HDSPe Post-Install"
-        summary: "Post-installation configuration for RME HDSPe AIO audio interface on Linux. Covers alsa-firmware loading, hdspe driver parameters, PipeWire/JACK routing profiles, and persistent mixer settings via hdspmixer/hdspconf."
+        summary: "Post-installation configuration for RME HDSPe AIO audio interface on Linux. Covers alsa-firmware loading, hdspe driver parameters, PipeWire/JACK routing profiles (pw-route an/aes/spdif/phones via routing.yaml), and persistent mixer settings via hdspmixer/hdspconf."
         audience: ["operator"]
         prerequisites: ["rme-hdspe", "alsa-firmware", "pipewire"]
         related_entities: ["state:audio"]
@@ -157,7 +171,8 @@ categories:
         key_commands:
           - "hdspmixer"
           - "hdspconf"
-        key_files: ["/etc/modprobe.d/hdspe.conf"]
+          - "pw-route aes"
+        key_files: ["/etc/modprobe.d/hdspe.conf", "~/.config/audio/routing.yaml"]
 
       notebooklm-setup:
         title: "NotebookLM Setup"

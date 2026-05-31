@@ -111,6 +111,8 @@ network:
 - openssh                        # SSH client and server
 - tailscale                      # Mesh VPN (Go)
 - proton-vpn-cli
+- amneziawg-dkms                 # AmneziaWG kernel module (DKMS)
+- amneziawg-tools                # AmneziaWG userspace tools (awg, awg-quick)
 - wget                           # HTTP download tool
 - nethogs                        # Network bandwidth by process (top-like)
 - network-manager-applet

@@ -5,12 +5,12 @@ Total: **429** not yet installed
 Total: **428** not yet installed
 
 ## A (16)
-- [x] `abduco` — stone package ✅
+- [x] `abduco` — stone ✅
 - [ ] `act-bin` — AUR binary
-- [x] `advancecomp` — stone package ✅
-- [ ] `adw-gtk-theme` — flatpak (pending install)
-- [x] `age` — stone package (Go) ✅
-- [x] `albumdetails` — stone package ✅
+- [x] `advancecomp` — stone ✅
+- [ ] `adw-gtk-theme` — flatpak (skip for now)
+- [x] `age` — stone (Go) ✅
+- [x] `albumdetails` — stone ✅
 - [ ] `albumdetails-debug` — AUR debug
 - [ ] `aliae-bin` — AUR binary
 - [ ] `amd-ucode` — system, N/A
@@ -19,8 +19,8 @@ Total: **428** not yet installed
 - [ ] `amneziawg-dkms` — kernel module
 - [ ] `amneziawg-tools` — WireGuard fork
 - [ ] `antigravity-tools-bin` — AUR binary
-- [ ] `aria2` — API conflict with nettle, needs patching
-- [x] `atop` — stone package ✅
+- [x] `aria2` — stone (patched nettle API) ✅
+- [x] `atop` — stone ✅
 
 ## B (13)
 - [ ] `babashka-bin`

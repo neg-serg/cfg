@@ -23,6 +23,7 @@ builddeps   :
     - pkgconfig(gnutls)
     - gettext-devel
 setup       : |
+    sed -i 's/hash->digest(ctx_.\+, getDigestLength(), md);/hash->digest(ctx_.get(), md);/' src/LibnettleMessageDigestImpl.cc
     autoreconf -fi
     %configure --without-libcares --without-sqlite3 --without-libuv --enable-bittorrent --enable-metalink
 build       : |

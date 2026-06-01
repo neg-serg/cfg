@@ -1,0 +1,19 @@
+name        : tokei
+version     : "14.0.0"
+release     : 1
+homepage    : https://github.com/XAMPPRocky/tokei
+upstreams   :
+    - https://github.com/XAMPPRocky/tokei/archive/refs/tags/v14.0.0.tar.gz : 4e561dbb83ef1b46359714fc623fd45eddfb14821ece63a219470500fdd1cd26
+summary     : Count lines of code quickly
+description : |
+    Tokei is a program that displays statistics about your code.
+license     : Apache-2.0
+builddeps   :
+    - binary(cargo)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install     : |
+    %cargo_install

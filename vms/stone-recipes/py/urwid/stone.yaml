@@ -1,0 +1,22 @@
+name: python-urwid
+version: "4.0.1"
+release: 1
+homepage: https://pypi.org/project/urwid
+upstreams:
+  - https://pypi.debian.net/urwid/urwid-4.0.1.tar.gz : cb4016cabcc1918eca58b542d02e15d6da91878f98382e00a2145186ddf77653
+summary: A full-featured console (xterm et al.) user interface library
+description: |
+  urwid is a console user interface library for Python with support for
+  standard and curses-like widgets.
+license:
+  - LGPL-2.1-or-later
+builddeps:
+  - python(setuptools)
+  - python(setuptools-scm)
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

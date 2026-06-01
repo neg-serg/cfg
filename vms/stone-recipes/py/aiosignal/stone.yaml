@@ -1,0 +1,21 @@
+name: python-aiosignal
+version: "1.4.0"
+release: 1
+homepage: https://pypi.org/project/aiosignal
+upstreams:
+  - https://pypi.debian.net/aiosignal/aiosignal-1.4.0.tar.gz : f47eecd9468083c2029cc99945502cb7708b082c232f9aca65da147157b251c7
+summary: Signals for asyncio
+description: |
+  Signals for asyncio.
+license:
+  - Apache-2.0
+builddeps:
+  - python(setuptools)
+  - python-devel
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

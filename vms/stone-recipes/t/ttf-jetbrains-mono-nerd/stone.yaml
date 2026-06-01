@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : ttf-jetbrains-mono-nerd
+version     : "3.4.0"
+release     : 1
+homepage    : https://github.com/ryanoasis/nerd-fonts
+upstreams   :
+    - http://127.0.0.1:8765/JetBrainsMono-fixed.tar.xz : 6469ec53ceafa0b19d0cd47bd33eb4a9aba4e1318d8ece599bf48b4af6bcfc34
+summary     : JetBrains Mono font patched with Nerd Font glyphs
+description : |
+    JetBrains Mono typeface patched with Nerd Fonts icon glyphs.
+    A font for developers with support for popular icon sets.
+license     :
+    - OFL-1.1
+install     : |
+    install -dm00755 %(installroot)%(datadir)/fonts/TTF/
+    find %(workdir) -name "*.ttf" -exec install -Dm00644 {} %(installroot)%(datadir)/fonts/TTF/ \;

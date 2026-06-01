@@ -1,0 +1,27 @@
+name: python-propcache
+version: "0.5.2"
+release: 1
+homepage: https://pypi.org/project/propcache
+upstreams:
+  - https://pypi.debian.net/propcache/propcache-0.5.2.tar.gz : 01c4fc7480cd0598bb4b57022df55b9ca296da7fc5a8760bd8451a7e63a7d427
+summary: Property caching for Python
+description: |
+  Property caching for Python.
+license:
+  - Apache-2.0
+builddeps:
+  - python-setuptools
+  - python-devel
+  - cython
+  - python-build
+  - python-installer
+  - python-pip
+networking: true
+rundeps:
+  - python-libs
+build: |
+  pip install --no-build-isolation expandvars
+  python -m build --wheel --no-isolation
+install: |
+  %pyproject_install
+  %python_compile

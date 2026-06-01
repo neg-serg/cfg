@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : otf-font-awesome
+version     : "7.2.0"
+release     : 1
+homepage    : https://fontawesome.com
+upstreams   :
+    - https://github.com/FortAwesome/Font-Awesome/releases/download/7.2.0/fontawesome-free-7.2.0-desktop.zip : 5717251cdd7b3f3df989f9fada0ca65b6609045c04a0c1bd78fb27acb3bf84cb
+summary     : Font Awesome icon font (OTF)
+description : |
+    Font Awesome Free is the industry-standard icon font
+    used by millions of developers worldwide.
+license     :
+    - OFL-1.1
+    - MIT
+install     : |
+    install -dm00755 %(installroot)%(datadir)/fonts/OTF/
+    find %(workdir) -name "*.otf" -exec install -Dm00644 {} %(installroot)%(datadir)/fonts/OTF/ \;

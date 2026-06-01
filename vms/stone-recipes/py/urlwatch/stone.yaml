@@ -1,0 +1,20 @@
+name: python-urlwatch
+version: "2.29"
+release: 1
+homepage: https://pypi.org/project/urlwatch
+upstreams:
+  - https://pypi.debian.net/urlwatch/urlwatch-2.29.tar.gz : f317ca8b123b15af510ec9e08bf885d8a8b574f502253e5ded200d757366da98
+summary: urlwatch monitors webpages for you
+description: |
+  urlwatch is a tool that monitors webpages for changes and sends notifications.
+license:
+  - BSD-3-Clause
+builddeps:
+  - python(setuptools)
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

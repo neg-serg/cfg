@@ -1,0 +1,20 @@
+name        : python-jsonpointer
+version     : "3.1.1"
+release     : 1
+homepage    : https://pypi.org/project/jsonpointer
+upstreams   :
+    - https://pypi.debian.net/jsonpointer/jsonpointer-3.1.1.tar.gz : 0b801c7db33a904024f6004d526dcc53bbb8a4a0f4e32bfd10beadf60adf1900
+summary     : Identify specific nodes in a JSON document (RFC 6901)
+description : |
+    Identify specific nodes in a JSON document (RFC 6901)
+license     :
+    - BSD
+builddeps   :
+    - python(setuptools)
+rundeps     :
+    - python-libs
+build       : |
+    %python_setup
+install     : |
+    %python_install
+    %python_compile

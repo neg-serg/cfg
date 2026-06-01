@@ -1,0 +1,20 @@
+name        : htmlq
+version     : "0.4.0"
+release     : 1
+homepage    : https://github.com/mgdm/htmlq
+upstreams   :
+    - https://github.com/mgdm/htmlq/archive/refs/tags/v0.4.0.tar.gz : c2954c0fcb3ada664b14834646aa0a2c4268683cc51fd60d47a71a9f7e77d4b9
+summary     : HTML query tool using CSS selectors
+description : |
+    htmlq is a command-line tool that uses CSS selectors to extract
+    content from HTML files.
+license     : MIT
+builddeps   :
+    - binary(cargo)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install     : |
+    %cargo_install

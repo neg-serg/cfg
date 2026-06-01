@@ -1,0 +1,22 @@
+name: python-vdirsyncer
+version: "0.20.0"
+release: 1
+homepage: https://pypi.org/project/vdirsyncer
+upstreams:
+  - https://pypi.debian.net/vdirsyncer/vdirsyncer-0.20.0.tar.gz : feb1a533500a95c14fd155733a1056fe359192553d82c07c6ba04fcbfc40b12d
+summary: Synchronize calendars and contacts
+description: |
+  Vdirsyncer synchronizes your calendars and contacts between a variety of
+  servers and the local filesystem.
+license:
+  - BSD-3-Clause
+builddeps:
+  - python(setuptools)
+  - python(setuptools-scm)
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

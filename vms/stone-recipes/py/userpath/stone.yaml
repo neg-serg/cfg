@@ -1,0 +1,21 @@
+name        : python-userpath
+version     : "1.9.2"
+release     : 1
+homepage    : https://pypi.org/project/userpath
+upstreams   :
+    - https://pypi.debian.net/userpath/userpath-1.9.2.tar.gz : 6c52288dab069257cc831846d15d48133522455d4677ee69a9781f11dbefd815
+summary     : Cross-platform tool for adding locations to the user PATH
+description : |
+    Cross-platform tool for adding locations to the user PATH
+license     :
+    - MIT
+builddeps   :
+    - python(hatchling)
+rundeps     :
+    - python-libs
+    - python-click
+build       : |
+    %pyproject_build
+install     : |
+    %pyproject_install
+    %python_compile

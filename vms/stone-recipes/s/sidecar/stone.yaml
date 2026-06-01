@@ -3,7 +3,7 @@ version     : "1.0.0"
 release     : 1
 homepage    : https://github.com/mitsuhiko/sidecar
 upstreams   :
-    - https://github.com/mitsuhiko/sidecar/archive/refs/tags/1.0.0.tar.gz
+    - https://github.com/mitsuhiko/sidecar/archive/refs/tags/1.0.0.tar.gz : UNKNOWN
 summary     : Sidecar process manager
 description : |
     Sidecar manages sidecar processes for applications.

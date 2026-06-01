@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : inter-font
+version     : "4.1"
+release     : 1
+homepage    : https://github.com/rsms/inter
+upstreams   :
+    - https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip : 9883fdd4a49d4fb66bd8177ba6625ef9a64aa45899767dde3d36aa425756b11e
+summary     : Inter typeface family
+description : |
+    Inter is a typeface carefully crafted & designed for computer screens.
+    It features a tall x-height to aid readability of mixed-case content.
+license     :
+    - OFL-1.1
+install     : |
+    install -dm00755 %(installroot)%(datadir)/fonts/TTF/
+    find %(workdir) -name "*.ttf" -exec install -Dm00644 {} %(installroot)%(datadir)/fonts/TTF/ \;

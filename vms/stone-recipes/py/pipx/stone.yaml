@@ -1,0 +1,23 @@
+name        : python-pipx
+version     : "1.13.0"
+release     : 1
+homepage    : https://pypi.org/project/pipx
+upstreams   :
+    - https://pypi.debian.net/pipx/pipx-1.13.0.tar.gz : d754c19d070893aab5d1ddb3d622ef57ec082b79f53c2664183165dbd2868c0e
+summary     : Install and Run Python Applications in Isolated Environments
+description : |
+    Install and Run Python Applications in Isolated Environments
+license     :
+    - MIT
+builddeps   :
+    - python-hatchling
+    - python-hatch-vcs
+rundeps     :
+    - python-libs
+    - python-argcomplete
+    - python-userpath
+build       : |
+    %pyproject_build
+install     : |
+    %pyproject_install
+    %python_compile

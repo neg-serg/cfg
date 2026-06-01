@@ -1,0 +1,21 @@
+name: python-multidict
+version: "6.7.1"
+release: 1
+homepage: https://pypi.org/project/multidict
+upstreams:
+  - https://pypi.debian.net/multidict/multidict-6.7.1.tar.gz : ec6652a1bee61c53a3e5776b6049172c53b6aaba34f18c9ad04f82712bac623d
+summary: Multidict implementation
+description: |
+  Multidict is a dict-like collection with multiple values per key.
+license:
+  - Apache-2.0
+builddeps:
+  - python(setuptools)
+  - python-devel
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

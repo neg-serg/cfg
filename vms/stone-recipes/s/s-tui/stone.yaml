@@ -1,20 +1,20 @@
-name        : s-tui
-version     : "1.1.4"
-release     : 1
-homepage    : https://github.com/amanusk/s-tui
-upstreams   :
-    - https://github.com/amanusk/s-tui/archive/refs/tags/v1.1.4.tar.gz : aeebcf7b04beb8526c98d675ae2b2f106fd1e00343b0c37c78b4a84c31561d0b
-summary     : Stress Terminal UI
-description : |
-    s-tui is a terminal UI for stress-testing and monitoring your CPU.
-license     :
-    - GPL-2.0-or-later
-builddeps   :
-    - binary(python3)
-    - python(setuptools)
-setup       : |
-    %python_setup
-build       : |
-    echo "built in setup"
-install       : |
-    %python_install
+name: s-tui
+version: "1.4.0"
+release: 1
+homepage: https://pypi.org/project/s-tui
+upstreams:
+  - https://pypi.debian.net/s-tui/s_tui-1.4.0.tar.gz : 5153f1def01bf1eae62aaf37fe9562a804d09232644d1e2482c7d52e18c6653a
+summary: Stress Terminal UI stress test and monitoring tool
+description: |
+  s-tui is a terminal UI for stress-testing and monitoring your CPU.
+license:
+  - GPL-2.0-only
+builddeps:
+  - python(setuptools)
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

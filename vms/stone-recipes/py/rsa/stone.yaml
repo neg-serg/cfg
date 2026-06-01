@@ -1,0 +1,21 @@
+name        : python-rsa
+version     : "4.9.1"
+release     : 1
+homepage    : https://pypi.org/project/rsa
+upstreams   :
+    - https://pypi.debian.net/rsa/rsa-4.9.1.tar.gz : e7bdbfdb5497da4c07dfd35530e1a902659db6ff241e39d9953cad06ebd0ae75
+summary     : Pure-Python RSA implementation
+description : |
+    Pure-Python RSA implementation
+license     :
+    - Apache-2.0
+builddeps   :
+    - python-poetry-core
+rundeps     :
+    - python-libs
+    - python-pyasn1
+build       : |
+    %pyproject_build
+install     : |
+    %pyproject_install
+    %python_compile

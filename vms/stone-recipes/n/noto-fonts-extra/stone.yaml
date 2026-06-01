@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : noto-fonts-extra
+version     : "1.0"
+release     : 1
+homepage    : https://fonts.google.com/noto
+upstreams   :
+    - https://github.com/notofonts/NotoNaskhArabic/archive/refs/heads/main.tar.gz : f826dc84ce19414dcaa22a27d0fc70b991b073d6b0c88a80e2a39918100253b4
+    - https://github.com/notofonts/NotoSansDevanagari/archive/refs/heads/main.tar.gz : d709f8b85ab1238f8fa6d2af3e288f9fc5aaf6e8c5511e0cb9327577075a9463
+    - https://github.com/notofonts/NotoSansHebrew/archive/refs/heads/main.tar.gz : 17de11d5fc2fb5ddd20779434ec36b0a6dee13b8f4657d4c056dfb7d3bfaa503
+    - https://github.com/notofonts/NotoSansThai/archive/refs/heads/main.tar.gz : 61de5953cfa5a6d071b624fb0ee0803270a96afcd1f35041faa297ef8f617129
+    - https://github.com/notofonts/NotoSansArmenian/archive/refs/heads/main.tar.gz : 7e6cced676eb85cdb521111b8f2a19ee7e686ddecf7c701f9c7da23ddb88bee0
+    - https://github.com/notofonts/NotoSansGeorgian/archive/refs/heads/main.tar.gz : 9b8cc93a2a943546b2425953803fcb9e60ce5e265a40466f1c319b0bc548f2d3
+    - https://github.com/notofonts/NotoSansBengali/archive/refs/heads/main.tar.gz : db04c3560604c1fe2aaf33dbedcb92222ad9585afc04505c5830d5e62be8a16a
+summary     : Google Noto fonts (extra scripts)
+description : |
+    Google Noto fonts for additional scripts including
+    Arabic, Devanagari, Hebrew, Thai, Armenian, Georgian, Bengali, and more.
+license     :
+    - OFL-1.1
+install     : |
+    install -dm00755 %(installroot)%(datadir)/fonts/TTF/
+    find %(workdir) -name "*.ttf" -exec install -Dm00644 {} %(installroot)%(datadir)/fonts/TTF/ \;

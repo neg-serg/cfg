@@ -1,7 +1,7 @@
 name        : satty
 version     : "0.20.1"
 release     : 1
-homepage    : https://github.com/gabm/satty
+homepage    : https://github.com/Satty-org/Satty
 upstreams   :
     - https://github.com/gabm/satty/archive/refs/tags/v0.20.1.tar.gz : 86e85e8abdcfee925f0b95d424bd9eed9ad78aeb537707132e77ccb63133ac97
 summary     : Modern screenshot annotation tool
@@ -15,6 +15,7 @@ builddeps   :
     - libepoxy-devel
     - pkgconfig(gdk-pixbuf-2.0)
     - pkgconfig(gtk4)
+    - pkgconfig(libadwaita-1)
 networking  : true
 setup       : |
     %cargo_fetch

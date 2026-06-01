@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : ttf-ibm-plex
+version     : "2.0.0"
+release     : 1
+homepage    : https://github.com/IBM/plex
+upstreams   :
+    - https://github.com/IBM/plex/releases/download/%40ibm/plex-sans%401.1.0/ibm-plex-sans.zip : fb365d910566e6d199cc2c15579a7dd9a267128e18431a394ed81f1970c69200
+    - https://github.com/IBM/plex/releases/download/%40ibm/plex-serif%402.0.0/ibm-plex-serif.zip : c006b095c47b919c6c8d78319e9e628745033f5db94507c1c9dfe4b35dd51f1e
+    - https://github.com/IBM/plex/releases/download/%40ibm/plex-mono%401.1.0/ibm-plex-mono.zip : 4bfc936d0e1fd19db6327a3786eabdbc3dc0d464500576f6458f6706df68d26c
+    - https://github.com/IBM/plex/releases/download/%40ibm/plex-sans-condensed%402.0.0/ibm-plex-sans-condensed.zip : f86ba73abbeed7cf7690ead863192a87211dfc2b0cef0ac6bf4700533ec5ab9e
+summary     : IBM Plex font family (Sans, Serif, Mono, Sans Condensed)
+description : |
+    IBM Plex is an international typeface family designed by IBM.
+    Includes Sans, Serif, Mono, and Sans Condensed subfamilies.
+license     :
+    - OFL-1.1
+install     : |
+    install -dm00755 %(installroot)%(datadir)/fonts/TTF/
+    find %(workdir) -name "*.ttf" -exec install -Dm00644 {} %(installroot)%(datadir)/fonts/TTF/ \;

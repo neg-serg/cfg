@@ -19,6 +19,8 @@ builddeps   :
     - binary(gcc)
     - binary(pkg-config)
     - pkgconfig(openssl)
+    - pkgconfig(mpv)
+    - pkgconfig(xcb)
 networking  : true
 setup       : |
     %cargo_fetch

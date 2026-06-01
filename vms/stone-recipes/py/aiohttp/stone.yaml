@@ -1,0 +1,24 @@
+name: python-aiohttp
+version: "3.13.5"
+release: 1
+homepage: https://pypi.org/project/aiohttp
+upstreams:
+  - https://pypi.debian.net/aiohttp/aiohttp-3.13.5.tar.gz : 9d98cc980ecc96be6eb4c1994ce35d28d8b1f5e5208a23b421187d1209dbb7d1
+summary: Async http client/server framework (asyncio)
+description: |
+  Async http client/server framework (asyncio).
+license:
+  - Apache-2.0
+builddeps:
+  - python(setuptools)
+  - python-pkgconfig
+  - pkgconf
+  - python-devel
+networking: true
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

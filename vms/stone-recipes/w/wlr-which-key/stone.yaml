@@ -19,7 +19,9 @@ builddeps   :
     - binary(gcc)
     - binary(pkg-config)
     - pkgconfig(pango)
+    - pkgconfig(pangocairo)
     - pkgconfig(cairo-gobject)
+    - pkgconfig(xkbcommon)
 networking  : true
 setup       : |
     %cargo_fetch

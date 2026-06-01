@@ -1,0 +1,125 @@
+name: neg-pretty-printer
+version: "0.1.0"
+release: 1
+homepage: https://github.com/neg-serg/cfg
+summary: Custom pretty-printer utilities for scripts (colors, file info)
+description: |
+  Custom pretty-printer utilities providing color helpers, file info printing,
+  and a ppinfo CLI command.
+license:
+  - MIT
+builddeps:
+  - binary(python3)
+  - python(setuptools)
+  - python(pip)
+  - python(build)
+build: |
+  mkdir -p neg_pretty_printer pretty_printer
+  cat > setup.py << 'PYEOF'
+  from setuptools import setup, find_packages
+  setup(
+      name="neg-pretty-printer",
+      version="0.1.0",
+      description="Custom pretty-printer utilities for scripts (colors, file info)",
+      license="MIT",
+      python_requires=">=3.9",
+      install_requires=[],
+      packages=find_packages(),
+      entry_points={"console_scripts": ["ppinfo=neg_pretty_printer.cli:main"]},
+  )
+  PYEOF
+  cat > neg_pretty_printer/__init__.py << 'SRCEOF'
+  from __future__ import annotations
+  import os, re, subprocess
+  try:
+      import colored
+  except Exception:
+      class _NoColor:
+          @staticmethod
+          def fg(_color): return ""
+      colored = _NoColor()
+  class PrettyPrinter:
+      darkblue = colored.fg(238)
+      darkwhite = colored.fg(7)
+      almostgray = colored.fg(243)
+      nicecyan = colored.fg(24)
+      default = colored.fg(0)
+      @classmethod
+      def fg(cls, color): return colored.fg(color)
+      @classmethod
+      def _wrap(cls, out): return cls.darkblue + "\u27ee" + cls.darkwhite + out + cls.darkblue + "\u27ef"
+      @classmethod
+      def wrap(cls, text, delim="", postfix=""):
+          if delim: delim = cls.nicecyan + delim
+          if postfix: postfix = cls.almostgray + postfix
+          return cls._wrap(text + delim + postfix)
+      @classmethod
+      def size(cls, size, unit=None, pref="", wrap_=True):
+          def nop(o): return o
+          if pref is None: pref = ""
+          elif not pref: pref = "sz"
+          if pref: pref = pref + cls.almostgray + ":"
+          do_wrap = cls.wrap if wrap_ else nop
+          if unit is None: return do_wrap(cls.darkwhite + pref + cls.darkwhite + str(size))
+          return do_wrap(cls.darkwhite + pref + cls.darkwhite + str(size) + cls.almostgray + unit)
+      @classmethod
+      def filelen(cls, length): return cls.wrap(cls.darkwhite + "len" + cls.almostgray + "=" + cls.darkwhite + str(length))
+      @classmethod
+      def newfile(cls, filename): return cls.wrap(filename)
+      @classmethod
+      def dir(cls, filename): return cls.wrap(filename)
+      @classmethod
+      def prefix(cls): return cls.wrap(colored.fg(25) + "\u276f")
+      @classmethod
+      def delim(cls): return cls.nicecyan + cls.default
+      @classmethod
+      def fancy_file(cls, filename):
+          filename = re.sub("~", colored.fg(2) + "~" + colored.fg(7), filename)
+          home = os.environ.get("HOME", os.path.expanduser("~"))
+          filename = re.sub(re.escape(home), colored.fg(2) + "~" + colored.fg(7), filename)
+          filename = re.sub("([/\u00b7])", colored.fg(4) + r"\1" + colored.fg(7), filename)
+          filename = re.sub(r"(-\[)([0-9]+)(x)([0-9A-Z]+)(\]-)",
+              colored.fg(4)+r"\1"+colored.fg(7)+r"\2"+colored.fg(6)+r"\3"+colored.fg(7)+r"\4"+colored.fg(4)+r"\5"+colored.fg(7), filename)
+          return cls.wrap(filename)
+  class FileInfoPrinter:
+      @staticmethod
+      def wccount(filename):
+          out = subprocess.Popen(["wc","-l",filename],stdout=subprocess.PIPE,stderr=subprocess.DEVNULL).communicate()[0]
+          return int(out.partition(b" ")[0])
+      @staticmethod
+      def nonexistsfile(filename):
+          print(PrettyPrinter.prefix()+PrettyPrinter.fancy_file(filename)+PrettyPrinter.delim()+PrettyPrinter.newfile(filename))
+      @staticmethod
+      def existsfile(filename):
+          print(PrettyPrinter.prefix()+PrettyPrinter.fancy_file(filename)+PrettyPrinter.delim()+
+                PrettyPrinter.size(os.stat(filename).st_size)+PrettyPrinter.delim()+PrettyPrinter.filelen(FileInfoPrinter.wccount(filename)))
+      @staticmethod
+      def currentdir(filename):
+          print(PrettyPrinter.prefix()+PrettyPrinter.wrap("current dir")+PrettyPrinter.delim()+PrettyPrinter.dir(filename))
+      @staticmethod
+      def dir(filename):
+          print(PrettyPrinter.prefix()+PrettyPrinter.fancy_file(filename)+PrettyPrinter.delim()+PrettyPrinter.dir(filename))
+  SRCEOF
+  cat > neg_pretty_printer/cli.py << 'CLIEOF'
+  from __future__ import annotations
+  import argparse, os
+  from . import FileInfoPrinter
+  def main():
+      p = argparse.ArgumentParser(prog="ppinfo", description="Pretty print file info")
+      p.add_argument("paths", nargs="*", help="Files or directories to print info for")
+      args = p.parse_args()
+      if not args.paths:
+          FileInfoPrinter.currentdir(os.getcwd())
+          return
+      for path in args.paths:
+          if os.path.isdir(path): FileInfoPrinter.dir(path)
+          elif os.path.exists(path): FileInfoPrinter.existsfile(path)
+          else: FileInfoPrinter.nonexistsfile(path)
+  CLIEOF
+  cat > pretty_printer/__init__.py << 'EMPTYEOF'
+  from neg_pretty_printer import PrettyPrinter, FileInfoPrinter
+  EMPTYEOF
+  python3 setup.py build
+install: |
+  python3 setup.py install --root=%(installroot) --prefix=%(prefix)
+  %python_compile

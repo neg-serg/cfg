@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : ttf-material-design-icons-extended
+version     : "7.4.47"
+release     : 1
+homepage    : https://materialdesignicons.com/
+upstreams   :
+    - http://127.0.0.1:8765/mdi-font-v2.tar.gz : 90bc13cc2f196e526c7751ea4c34f4679846717290af407f46ee609ea69201b1
+summary     : Material Design Icons extended icon font
+description : |
+    Extended Material Design Icons font from materialdesignicons.com
+    with thousands of community-contributed icons.
+license     :
+    - OFL-1.1
+install     : |
+    install -dm00755 %(installroot)%(datadir)/fonts/TTF/
+    find %(workdir) -name "*.ttf" -exec install -Dm00644 {} %(installroot)%(datadir)/fonts/TTF/ \;

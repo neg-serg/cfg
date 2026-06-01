@@ -1,0 +1,20 @@
+name        : python-pre-commit
+version     : "4.6.0"
+release     : 1
+homepage    : https://pypi.org/project/pre-commit
+upstreams   :
+    - https://pypi.debian.net/pre-commit/pre_commit-4.6.0.tar.gz : 718d2208cef53fdc38206e40524a6d4d9576d103eb16f0fec11c875e7716e9d9
+summary     : A framework for managing and maintaining multi-language pre-commit hooks.
+description : |
+    A framework for managing and maintaining multi-language pre-commit hooks.
+license     :
+    - MIT
+builddeps   :
+    - python(setuptools)
+rundeps     :
+    - python-libs
+build       : |
+    %python_setup
+install     : |
+    %python_install
+    %python_compile

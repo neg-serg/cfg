@@ -1,0 +1,20 @@
+name        : ruff
+version     : "0.15.15"
+release     : 1
+homepage    : https://github.com/astral-sh/ruff
+upstreams   :
+    - https://github.com/astral-sh/ruff/archive/refs/tags/0.15.15.tar.gz : c3feaeb38f401ae1361fa182876385c398a674ccf8739651c70c34dc8b181946
+summary     : An extremely fast Python linter
+description : |
+    Ruff is an extremely fast Python linter and formatter, written in Rust.
+license     : MIT
+builddeps   :
+    - binary(cargo)
+    - binary(make)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install     : |
+    %cargo_install

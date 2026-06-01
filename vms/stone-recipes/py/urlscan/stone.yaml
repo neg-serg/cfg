@@ -1,0 +1,23 @@
+name: python-urlscan
+version: "1.0.8"
+release: 1
+homepage: https://pypi.org/project/urlscan
+upstreams:
+  - https://pypi.debian.net/urlscan/urlscan-1.0.8.tar.gz : 15c1dc59a2c0c9d697acec1e4823f4a801aa79c176eff603c93d79b413003757
+summary: View/select the URLs in an email message or file
+description: |
+  urlscan is a small program that extracts URLs from email messages or files
+  and presents them in a list for interactive selection.
+license:
+  - GPL-2.0-only
+builddeps:
+  - python-hatchling
+  - python-hatch-vcs
+rundeps:
+  - python-libs
+networking: true
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

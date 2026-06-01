@@ -1,0 +1,21 @@
+name: python-aiohappyeyeballs
+version: "2.6.2"
+release: 1
+homepage: https://pypi.org/project/aiohappyeyeballs
+upstreams:
+  - https://pypi.debian.net/aiohappyeyeballs/aiohappyeyeballs-2.6.2.tar.gz : e202810ee718bd01fc6ef49e8ea53d023d5cb6b581076d7925aa499fa55dbe64
+summary: Happy Eyeballs for asyncio
+description: |
+  Happy Eyeballs for asyncio.
+license:
+  - PSF-2.0
+builddeps:
+  - python-poetry-core
+  - python-devel
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

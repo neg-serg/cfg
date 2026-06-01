@@ -1,0 +1,20 @@
+name: python-wcwidth
+version: "0.7.0"
+release: 1
+homepage: https://pypi.org/project/wcwidth
+upstreams:
+  - https://pypi.debian.net/wcwidth/wcwidth-0.7.0.tar.gz : 90e3a7ea092341c44b99562e75d09e4d5160fe7a3974c6fb842a101a95e7eed0
+summary: Measures the displayed width of unicode strings in a terminal
+description: |
+  Measures the number of columns needed to represent a unicode string in a terminal.
+license:
+  - MIT
+builddeps:
+  - python-hatchling
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

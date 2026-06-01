@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : iosevka-neg-fonts
+version     : "3.4.0"
+release     : 1
+homepage    : https://github.com/ryanoasis/nerd-fonts
+upstreams   :
+    - http://127.0.0.1:8765/Iosevka-fixed.tar.xz : 767b99d88b3fda13178cff033fc328de822f5c2bfe284adfe6f36edcd89890d0
+summary     : Iosevka font patched with Nerd Font glyphs
+description : |
+    Iosevka typeface patched with Nerd Fonts icon glyphs.
+    Iosevka is a slender monospace sans-serif font.
+license     :
+    - OFL-1.1
+install     : |
+    install -dm00755 %(installroot)%(datadir)/fonts/TTF/
+    find %(workdir) -name "*.ttf" -exec install -Dm00644 {} %(installroot)%(datadir)/fonts/TTF/ \;

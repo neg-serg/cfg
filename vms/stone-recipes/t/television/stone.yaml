@@ -3,7 +3,7 @@ version     : "0.15.7"
 release     : 1
 homepage    : https://github.com/alexpasmantier/television
 upstreams   :
-    - https://github.com/alexpasmantier/television/archive/refs/tags/v0.15.7.tar.gz : d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed
+    - https://github.com/alexpasmantier/television/archive/refs/tags/0.15.7.tar.gz : e30bc41b074565093099d4a4403465f3f6d3e852af22ab423348b9dbe211d8c1
 summary     : A very fast, portable and hackable fuzzy finder for the terminal
 description : |
     A very fast, portable and hackable fuzzy finder for the terminal.
@@ -17,4 +17,4 @@ setup       : |
 build       : |
     %cargo_build
 install     : |
-    %cargo_install
+    cargo install --path . --root %(installroot)/usr

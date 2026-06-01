@@ -1,0 +1,19 @@
+name        : pastel
+version     : "0.12.0"
+release     : 1
+homepage    : https://github.com/sharkdp/pastel
+upstreams   :
+    - https://github.com/sharkdp/pastel/archive/refs/tags/v0.12.0.tar.gz : 2903853f24d742fe955edd9bea17947eb8f3f44000a8ac528d16f2ea1e52b78b
+summary     : A command-line tool to generate, analyze, convert and manipulate colors
+description : |
+    pastel is a command-line tool to generate, analyze, convert and manipulate colors.
+license     : Apache-2.0
+builddeps   :
+    - binary(cargo)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install     : |
+    %cargo_install

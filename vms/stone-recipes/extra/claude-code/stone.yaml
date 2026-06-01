@@ -1,0 +1,14 @@
+name: claude-code
+version: "2.1.159"
+release: 1
+homepage: https://github.com/anthropics/claude-code
+upstreams:
+  - https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.159.tgz : 9f6df0edefe055b2c77e9e3b019586c291a1a894d2abaaf3e22614a50d617cf0
+summary: Claude Code CLI - AI assistant for your terminal
+description: |
+  Claude Code is Anthropic's official CLI for Claude AI. It can understand
+  codebases, edit files, run terminal commands, and handle entire workflows.
+license:
+  - MIT
+install: |
+  %install_bin claude

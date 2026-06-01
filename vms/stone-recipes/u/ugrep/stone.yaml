@@ -1,0 +1,22 @@
+name        : ugrep
+version     : "7.8.2"
+release     : 1
+homepage    : https://github.com/Genivia/ugrep
+upstreams   :
+    - https://github.com/Genivia/ugrep/archive/refs/tags/v7.8.2.tar.gz : f991cc6c61dbc5af5a3b3939083e917df4113509549670fb400d121f639f69f6
+summary     : A ultra fast grep with interactive query UI
+description : |
+    A ultra fast grep with interactive query UI and fuzzy search.
+license     :
+    - BSD-3-Clause
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - binary(pkg-config)
+    - pkgconfig(pcre2)
+setup       : |
+    %configure
+build       : |
+    %make
+install     : |
+    %make_install

@@ -1,0 +1,17 @@
+name        : memtester
+version     : "4.6.0"
+release     : 1
+homepage    : https://pyropus.ca/software/memtester/
+upstreams   :
+    - https://deb.debian.org/debian/pool/main/m/memtester/memtester_4.6.0.orig.tar.gz : c9fe4eb7e80c8cef5202f9065c4c0682f5616647c0455e916a5700f98e3dbb2e
+summary     : Memory tester
+description : |
+    memtester is a utility for testing RAM for faults.
+license     : GPL-2.0-only
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+build       : |
+    %make INSTALLPATH=%(prefix)
+install     : |
+    make INSTALLPATH=%(installroot)%(prefix) install

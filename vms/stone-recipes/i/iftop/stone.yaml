@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : iftop
+version     : "1.0pre4"
+release     : 1
+homepage    : https://www.ex-parrot.com/~pdw/iftop/
+upstreams   :
+    - https://www.ex-parrot.com/~pdw/iftop/download/iftop-1.0pre4.tar.gz : f733eeea371a7577f8fe353d86dd88d16f5b2a2e702bd96f5ffb2c197d9b4f97
+summary     : Display bandwidth usage on an interface
+description : |
+    iftop listens to network traffic on a named interface and displays a table
+    of current bandwidth usage by pairs of hosts.
+license     :
+    - GPL-2.0-only
+builddeps   :
+    - binary(clang)
+    - binary(make)
+    - pkgconfig(libpcap)
+    - pkgconfig(ncurses)
+setup       : |
+    CFLAGS="-O2 -g -pipe" LDFLAGS="-Wl,--as-needed" ./configure CC=clang --prefix=/usr
+build       : |
+    make -j$(nproc) CC=clang CFLAGS="-O2 -g -pipe" LDFLAGS="-Wl,--as-needed -Wl,--allow-multiple-definition"
+install     : |
+    make install DESTDIR=%(installroot)

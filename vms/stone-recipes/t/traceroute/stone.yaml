@@ -1,0 +1,18 @@
+name        : traceroute
+version     : "2.1.6"
+release     : 1
+homepage    : https://traceroute.sourceforge.net
+upstreams   :
+    - https://sourceforge.net/projects/traceroute/files/traceroute/traceroute-2.1.6/traceroute-2.1.6.tar.gz : 9ccef9cdb9d7a98ff7fbf93f79ebd0e48881664b525c4b232a0fcec7dcb9db5e
+summary     : A network diagnostic tool
+description : |
+    Traces the route taken by packets across an IP network.
+license     :
+    - GPL-2.0-or-later
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+build       : |
+    %make
+install     : |
+    %make_install

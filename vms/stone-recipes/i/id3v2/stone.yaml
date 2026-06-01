@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : id3v2
+version     : "0.1.12"
+release     : 1
+homepage    : https://sourceforge.net/projects/id3v2/
+upstreams   :
+    - https://sourceforge.net/projects/id3v2/files/id3v2/0.1.12/id3v2-0.1.12.tar.gz : 8105fad3189dbb0e4cb381862b4fa18744233c3bbe6def6f81ff64f5101722bf
+summary     : Utility to edit id3v2 tags
+description : |
+    A command-line tool to edit ID3v2 tags in MP3 files.
+license     :
+    - LGPL-2.1-only
+builddeps   :
+    - binary(clang)
+    - binary(make)
+setup       : |
+    %configure CC=clang
+build       : |
+    %make CC=clang
+install     : |
+    %make_install

@@ -1,0 +1,22 @@
+name        : uwsm
+version     : "0.26.4"
+release     : 1
+homepage    : https://github.com/Vladimir-csp/uwsm
+upstreams   :
+    - https://github.com/Vladimir-csp/uwsm/archive/refs/tags/v0.26.4.tar.gz : b7eeb03ab3950db933d3561d229ee9da55235f7f9ff5e481d6e90b3288f52954
+summary     : Universal Wayland session manager
+description : |
+    A standalone Wayland session manager.
+license     :
+    - MIT
+builddeps   :
+    - binary(meson)
+    - binary(scdoc)
+    - binary(python3)
+    - binary(ninja)
+setup       : |
+    %meson
+build       : |
+    %meson_build
+install     : |
+    %meson_install

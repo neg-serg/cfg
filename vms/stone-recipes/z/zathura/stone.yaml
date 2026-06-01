@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : zathura
+version     : "2026.05.20"
+release     : 1
+homepage    : https://github.com/pwmt/zathura
+upstreams   :
+    - https://github.com/pwmt/zathura/archive/refs/tags/2026.05.20.tar.gz: 505171977ecb6b5baca8b85ecae8e91112b3718068c42a26c1af58226ded3387
+summary     : Minimalistic document viewer
+description : |
+    A highly customizable and functional document viewer with plugin support.
+license     :
+    - Zlib
+builddeps   :
+    - binary(meson)
+    - binary(gcc)
+    - pkgconfig(girara-gtk3)
+setup       : |
+    %meson
+build       : |
+    %meson_build
+install       : |
+    %meson_install

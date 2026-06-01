@@ -1,0 +1,17 @@
+name: git-extras
+version: "7.5.0"
+release: 1
+homepage: https://github.com/tj/git-extras
+upstreams:
+  - https://github.com/tj/git-extras/archive/refs/tags/7.5.0.tar.gz : bcfe0eabdccc806e53a10130fed6fb02373720ddeb670eecc5cc84d041d79880
+summary: Little git extras
+description: |
+  Little git extras - git utilities and commands.
+license:
+  - MIT
+builddeps:
+  - binary(make)
+build: |
+  %make PREFIX=%(prefix)
+install: |
+  %make_install PREFIX=%(prefix)

@@ -1,0 +1,24 @@
+name: goaccess
+version: "1.10.2"
+release: 1
+homepage: https://goaccess.io
+upstreams:
+  - https://tar.goaccess.io/goaccess-1.10.2.tar.gz : b9b7484a413279863c7d92dc7dd4c19dcb55c0a2d138735efc18570bcc4eaa0e
+summary: Real-time web log analyzer
+description: |
+  GoAccess is a real-time web log analyzer and interactive viewer that runs in a terminal.
+license:
+  - MIT
+builddeps:
+  - binary(make)
+  - binary(gcc)
+  - openssl-devel
+  - ncurses-devel
+  - gettext-devel
+  - binary(tar)
+setup: |
+  %configure
+build: |
+  %make
+install: |
+  %make_install

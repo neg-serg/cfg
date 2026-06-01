@@ -1,0 +1,23 @@
+name        : songfetch
+version     : "1.0.3"
+release     : 1
+homepage    : https://github.com/ekrlstd/songfetch
+upstreams   :
+    - https://github.com/ekrlstd/songfetch/archive/refs/tags/v1.0.3.tar.gz : 1de83af13b8a16a9281eb5d3952e3d5885e1ac54de49d7801747e8e9cb148828
+summary     : Fetch and display currently playing song
+description : |
+    A CLI tool that fetches and displays the currently playing song.
+license     :
+    - GPL-2.0-only
+builddeps   :
+    - binary(python3)
+    - python-pip
+    - python(setuptools)
+    - python-installer
+networking  : true
+setup       : |
+    python3 -m pip install . --prefix=%(prefix) --root=%(installroot) --no-compile --no-build-isolation 2>&1
+build       : |
+    echo "no build needed"
+install       : |
+    echo "installed in setup"

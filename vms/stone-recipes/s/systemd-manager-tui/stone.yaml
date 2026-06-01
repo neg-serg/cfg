@@ -1,0 +1,20 @@
+name        : systemd-manager-tui
+version     : "2.0.2"
+release     : 1
+homepage    : https://github.com/matheus-git/systemd-manager-tui
+upstreams   :
+    - https://github.com/matheus-git/systemd-manager-tui/archive/refs/tags/v2.0.2.tar.gz : c0ff99871653ab136846a6106ea5d6d81eb17e0dfeda74359f1e9511a580b92e
+summary     : TUI for managing systemd services
+description : |
+    A terminal user interface for managing systemd services.
+license     :
+    - MIT
+builddeps   :
+    - binary(cargo)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install       : |
+    %cargo_install

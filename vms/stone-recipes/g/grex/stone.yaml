@@ -1,0 +1,20 @@
+name: grex
+version: "1.4.6"
+release: 1
+homepage: https://github.com/pemistahl/grex
+upstreams:
+  - https://github.com/pemistahl/grex/archive/refs/tags/v1.4.6.tar.gz : 2ab9cb4c3d921711f23ea33a9e60dc11e9eaab450b16d1f2247bea2276822433
+summary: Generate regular expressions from test cases
+description: |
+  A command-line tool and library for generating regular expressions from user-provided test cases.
+license:
+  - Apache-2.0
+builddeps:
+  - binary(cargo)
+networking: true
+setup: |
+  %cargo_fetch
+build: |
+  %cargo_build
+install: |
+  %cargo_install

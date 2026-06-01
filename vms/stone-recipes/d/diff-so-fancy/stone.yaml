@@ -1,0 +1,17 @@
+name        : diff-so-fancy
+version     : "1.4.10"
+release     : 1
+homepage    : https://github.com/so-fancy/diff-so-fancy
+upstreams   :
+    - https://github.com/so-fancy/diff-so-fancy/archive/refs/tags/v1.4.10.tar.gz : 9df1e7b5c47f1f70ea5d23b18a5994c431548029448465256a93b3b7cfeb0b4a
+summary     : Good-lookin diffs with diff-highlight and more
+description : |
+    diff-so-fancy is a Perl script that makes diffs human-readable instead
+    of machine-readable. It improves diff output with better colors and
+    formatting.
+license     : MIT
+builddeps   :
+    - binary(perl)
+install     : |
+    %install_exe diff-so-fancy "%(installroot)%(prefix)/bin/diff-so-fancy"
+    install -Dm00644 lib/DiffHighlight.pm "%(installroot)%(prefix)/bin/lib/DiffHighlight.pm"

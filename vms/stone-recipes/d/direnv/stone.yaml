@@ -1,0 +1,19 @@
+name        : direnv
+version     : "2.37.1"
+release     : 1
+homepage    : https://github.com/direnv/direnv
+upstreams   :
+    - https://github.com/direnv/direnv/archive/refs/tags/v2.37.1.tar.gz : 4142fbb661f3218913fac08d327c415e87b3e66bd0953185294ff8f3228ead24
+summary     : Environment variable loader for your shell
+description : |
+    direnv is an environment variable loader for your shell. It loads and
+    unloads environment variables based on the current directory.
+license     : MIT
+builddeps   :
+    - binary(go)
+    - binary(make)
+networking  : true
+build       : |
+    make
+install     : |
+    %install_bin direnv

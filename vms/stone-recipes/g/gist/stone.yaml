@@ -1,0 +1,20 @@
+name: gist
+version: "1.2.6"
+release: 1
+homepage: https://github.com/babarot/gist
+upstreams:
+  - https://github.com/babarot/gist/archive/refs/tags/v1.2.6.tar.gz : 9e9deb557b0f971a5ea1e207a01e1112a32908524239d6edb3f5c72b360d9629
+summary: A command-line tool for managing GitHub Gist
+description: |
+  A command-line tool for managing GitHub Gist.
+license:
+  - MIT
+builddeps:
+  - binary(go)
+networking: true
+setup: |
+  go mod download
+build: |
+  go build -o gist .
+install: |
+  %install_bin gist

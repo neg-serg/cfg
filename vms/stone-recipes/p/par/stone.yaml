@@ -1,0 +1,21 @@
+name: par
+version: "1.53.0"
+release: 1
+homepage: https://github.com/maverickirl/par
+upstreams:
+  - https://github.com/maverickirl/par/archive/refs/tags/1.53.0.tar.gz : SKIP
+summary: par
+description: |
+  par for AerynOS.
+license:
+  - GPL-2.0-only
+builddeps:
+  - binary(make)
+  - binary(gcc)
+networking: true
+setup: |
+  %configure
+build: |
+  %make
+install: |
+  %make_install

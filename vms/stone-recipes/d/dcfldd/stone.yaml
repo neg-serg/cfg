@@ -1,0 +1,24 @@
+name        : dcfldd
+version     : "1.9.3"
+release     : 1
+homepage    : https://github.com/Resurrecting-Open-Source-Projects/dcfldd
+upstreams   :
+    - https://github.com/Resurrecting-Open-Source-Projects/dcfldd/archive/refs/tags/v1.9.3.tar.gz : e5813e97bbc8f498f034f5e05178489c1be86de015e8da838de59f90f68491e7
+summary     : Enhanced version of dd with forensic features
+description : |
+    dcfldd is an enhanced version of GNU dd with features useful for forensics
+    and security. It includes on-the-fly hashing, status output, and flexible
+    disk wiping capabilities.
+license     : GPL-2.0-only
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - binary(autoconf)
+    - binary(automake)
+setup       : |
+    autoreconf -fi
+    %configure
+build       : |
+    %make
+install     : |
+    %make_install

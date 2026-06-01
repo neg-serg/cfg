@@ -1,0 +1,18 @@
+name        : vale
+version     : "3.9.4"
+release     : 1
+homepage    : https://github.com/errata-ai/vale
+upstreams   :
+    - https://github.com/errata-ai/vale/archive/refs/tags/v3.9.4.tar.gz : 47b852a6cf88207af2899fd868004eab6b6bb8390d3bb56f452b92e1833dcc35
+summary     : A prose linter for natural language
+description : |
+    A prose linter for natural language.
+license     :
+    - MIT
+builddeps   :
+    - binary(go)
+networking  : true
+build       : |
+    go build -o vale ./cmd/vale/
+install     : |
+    %install_bin vale

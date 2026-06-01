@@ -1,0 +1,18 @@
+name        : reptyr
+version     : "0.10.0"
+release     : 1
+homepage    : https://github.com/nelhage/reptyr
+upstreams   :
+    - https://github.com/nelhage/reptyr/archive/refs/tags/reptyr-0.10.0.tar.gz : c6ffbc34a511ac00d072219bda30699e51f2f4eb483cbae9e32e981d49e8b380
+summary     : Reparent running program to new terminal
+description : |
+    reptyr changes the controlling terminal of a running process.
+license     :
+    - MIT
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+build       : |
+    %make
+install       : |
+    %make_install

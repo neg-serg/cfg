@@ -1,0 +1,24 @@
+name        : moreutils
+version     : "0.73"
+release     : 1
+homepage    : https://git.joeyh.name/git/moreutils.git/
+upstreams   :
+    - https://github.com/madx/moreutils/archive/refs/heads/master.tar.gz : ad8b76e3cb724ae50b79e20956397ae8c165d2b2c391e13036b7563d27e9a8ce
+summary     : Additional Unix utilities
+description : |
+    moreutils is a collection of additional Unix utilities.
+license     : GPL-2.0-only
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+build       : |
+    make isutf8 ifdata ifne pee sponge mispipe lckdo parallel CFLAGS="-O2 -g -Wall"
+install     : |
+    install -Dm755 isutf8 %(installroot)%(prefix)/bin/isutf8
+    install -Dm755 ifdata %(installroot)%(prefix)/bin/ifdata
+    install -Dm755 ifne %(installroot)%(prefix)/bin/ifne
+    install -Dm755 pee %(installroot)%(prefix)/bin/pee
+    install -Dm755 sponge %(installroot)%(prefix)/bin/sponge
+    install -Dm755 mispipe %(installroot)%(prefix)/bin/mispipe
+    install -Dm755 lckdo %(installroot)%(prefix)/bin/lckdo
+    install -Dm755 parallel %(installroot)%(prefix)/bin/parallel

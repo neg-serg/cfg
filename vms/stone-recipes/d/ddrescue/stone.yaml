@@ -1,0 +1,21 @@
+name        : ddrescue
+version     : "1.30"
+release     : 1
+homepage    : https://www.gnu.org/software/ddrescue/
+upstreams   :
+    - https://ftp.gnu.org/gnu/ddrescue/ddrescue-1.30.tar.lz : 2264622d309d6c87a1cfc19148292b8859a688e9bc02d4702f5cd4f288745542
+summary     : GNU data recovery tool
+description : |
+    GNU ddrescue is a data recovery tool. It copies data from one file or block
+    device to another, trying to rescue the good data first in case of read errors.
+license     : GPL-2.0-or-later
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - binary(lzip)
+setup       : |
+    %configure
+build       : |
+    %make
+install     : |
+    %make_install

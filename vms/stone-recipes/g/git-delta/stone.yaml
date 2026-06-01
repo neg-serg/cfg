@@ -1,0 +1,21 @@
+name: git-delta
+version: "0.19.2"
+release: 1
+homepage: https://github.com/dandavison/delta
+upstreams:
+  - https://github.com/dandavison/delta/archive/refs/tags/0.19.2.tar.gz : f59b86f8c8dda4d76a3ba34b8553777a20c3b461646917d8e480fac6531bba9f
+summary: A syntax-highlighting pager for git
+description: |
+  A syntax-highlighting pager for git, diff, and grep output.
+license:
+  - MIT
+builddeps:
+  - binary(cargo)
+networking: true
+setup: |
+  %cargo_fetch
+build: |
+  %cargo_build
+install: |
+  install -Dm00755 target/x86_64-unknown-linux-gnu/release/delta %(installroot)/usr/bin/delta
+  ln -sf delta %(installroot)/usr/bin/git-delta

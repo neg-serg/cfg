@@ -1,0 +1,24 @@
+name        : nvtop
+version     : "3.3.2"
+release     : 1
+homepage    : https://github.com/Syllo/nvtop
+upstreams   :
+    - https://github.com/Syllo/nvtop/archive/refs/tags/3.3.2.tar.gz : 48a295f3b3a917cc851d1aa8b185c09fde3a1b1e741fc57d7fa96b3671271630
+summary     : GPU process monitoring tool
+description : |
+    nvtop is a htop-like task viewer for GPUs. It supports NVIDIA,
+    AMD, and Intel GPUs, showing GPU usage, memory, and processes.
+license     : GPL-3.0-only
+builddeps   :
+    - binary(cmake)
+    - binary(gcc)
+    - binary(g++)
+    - ncurses-devel
+    - libdrm-devel
+    - systemd-devel
+setup       : |
+    %cmake
+build       : |
+    %cmake_build
+install     : |
+    %cmake_install

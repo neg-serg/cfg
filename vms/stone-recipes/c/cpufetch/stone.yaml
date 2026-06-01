@@ -1,0 +1,20 @@
+name: cpufetch
+version: "1.06"
+release: 1
+homepage: https://github.com/Dr-Noob/cpufetch
+upstreams:
+  - https://github.com/Dr-Noob/cpufetch/archive/refs/tags/v1.06.tar.gz : b8ec1339cf3a3bb9325cde7fb0748dd609043e8d2938c292956da7e457bdb7d9
+summary: Simple yet fancy CPU architecture fetching tool
+description: |
+  Simple yet fancy CPU architecture fetching tool
+license:
+  - MIT
+builddeps:
+  - binary(make)
+  - binary(gcc)
+setup: |
+  sed -i "s/cpufetch-git/cpufetch/g" Makefile
+build: |
+  %make GIT_VERSION=%(version)
+install: |
+  %make_install PREFIX=%(prefix)

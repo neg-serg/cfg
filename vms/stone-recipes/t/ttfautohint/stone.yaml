@@ -1,0 +1,23 @@
+name        : ttfautohint
+version     : "1.8.4"
+release     : 1
+homepage    : https://www.freetype.org/ttfautohint
+upstreams   :
+    - https://download.savannah.gnu.org/releases/freetype/ttfautohint-1.8.4.tar.gz : 8a876117fa6ebfd2ffe1b3682a9a98c802c0f47189f57d3db4b99774206832e1
+summary     : A font hinter
+description : |
+    A tool for hinting TrueType fonts.
+license     :
+    - GPL-2.0-or-later
+    - FTL
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - pkgconfig(freetype2)
+    - pkgconfig(harfbuzz)
+setup       : |
+    %configure --without-qt
+build       : |
+    %make
+install     : |
+    %make_install

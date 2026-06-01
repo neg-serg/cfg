@@ -1,0 +1,31 @@
+name        : neovim
+version     : "0.12.2"
+release     : 1
+homepage    : https://github.com/neovim/neovim
+upstreams   :
+    - https://github.com/neovim/neovim/archive/refs/tags/v0.12.2.tar.gz : ef9f58da7d687ed4d1dad9715542bf0dabdeedbfe8089e2ce17fff21b920a268
+summary     : Modern, extensible text editor
+description : |
+    Neovim is a hyper-extensible text editor based on Vim.
+    It provides a modern, efficient editing experience with
+    powerful plugin support.
+license     : Apache-2.0
+builddeps   :
+    - binary(cmake)
+    - binary(gcc)
+    - binary(g++)
+    - binary(ninja)
+    - gettext-devel
+    - libtermkey-devel
+    - libvterm-devel
+    - luajit-devel
+    - msgpack-devel
+    - tree-sitter-devel
+    - unibilium-devel
+networking  : true
+setup       : |
+    %cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_LTO=OFF
+build       : |
+    %cmake_build
+install     : |
+    %cmake_install

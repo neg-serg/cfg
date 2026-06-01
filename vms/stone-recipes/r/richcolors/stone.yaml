@@ -1,0 +1,20 @@
+name        : richcolors
+version     : "0.1.0"
+release     : 1
+homepage    : https://github.com/s-atrn/richcolors
+upstreams   :
+    - https://github.com/s-atrn/richcolors/archive/HEAD.tar.gz : 2a6a0d243cc743659ba7c69f1e9dc0ee465170b4f4f393200cd0b1c406b50969
+summary     : Rich colors for terminal output
+description : |
+    A tool for displaying and testing rich terminal colors.
+license     :
+    - MIT
+builddeps   :
+    - binary(cargo)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install     : |
+    %cargo_install

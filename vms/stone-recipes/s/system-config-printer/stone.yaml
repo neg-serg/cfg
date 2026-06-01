@@ -1,0 +1,20 @@
+name        : system-config-printer
+version     : "1.5.18"
+release     : 1
+homepage    : https://github.com/OpenPrinting/system-config-printer
+upstreams   :
+    - https://github.com/OpenPrinting/system-config-printer/releases/download/v1.5.18/system-config-printer-1.5.18.tar.gz : 811ad6ac010e5c0b938d38b499e7f6e9e95941716b072335a5c99b2a962e9578
+summary     : Printer configuration GUI tool
+description : |
+    A GUI tool for configuring printers on the desktop.
+license     :
+    - GPL-2.0-or-later
+builddeps   :
+    - binary(python3)
+    - binary(meson)
+setup       : |
+    %meson
+build       : |
+    %meson_build
+install       : |
+    %meson_install

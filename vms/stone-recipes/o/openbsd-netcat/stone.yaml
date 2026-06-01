@@ -1,0 +1,20 @@
+name: openbsd-netcat
+version: "1.226"
+release: 1
+homepage: https://tracker.debian.org/pkg/netcat-openbsd
+upstreams:
+  - https://github.com/networkeperience/netcat-openbsd/archive/refs/tags/v1.226.tar.gz : FIXME
+summary: TCP/IP swiss army knife (OpenBSD variant)
+description: |
+  A simple Unix utility which reads and writes data across network
+  connections using TCP or UDP protocol.
+license:
+  - https://github.com/networkeperience/netcat-openbsd/archive/refs/tags/v1.226.tar.gz : FIXME
+builddeps:
+  - https://github.com/networkeperience/netcat-openbsd/archive/refs/tags/v1.226.tar.gz : FIXME
+  - https://github.com/networkeperience/netcat-openbsd/archive/refs/tags/v1.226.tar.gz : FIXME
+build: |
+  %make
+install: |
+  install -D -m 0755 nc "%(installroot)/%(prefix)/bin/nc"
+  install -D -m 0755 nc "%(installroot)/%(prefix)/bin/netcat-openbsd"

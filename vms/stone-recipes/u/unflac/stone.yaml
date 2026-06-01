@@ -1,0 +1,20 @@
+name        : unflac
+version     : 1.3.0
+release     : 1
+homepage    : https://github.com/kholia/unflac
+upstreams   :
+    - https://github.com/kholia/unflac/archive/refs/tags/v1.3.0.tar.gz : 9c37ce8b2d22764e19a9bbc069a8b9a1228ab2f25f6d97cf9f92df3390215053
+summary     : A FLAC file decoder
+description : |
+    A simple FLAC file decoder.
+license     :
+    - MIT
+builddeps   :
+    - binary(cargo)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install      : |
+    %cargo_install

@@ -1,0 +1,20 @@
+name        : tmmpr
+version     : "0.1.1"
+release     : 1
+homepage    : https://github.com/tanciaku/tmmpr
+upstreams   :
+    - https://github.com/tanciaku/tmmpr/archive/refs/tags/v0.1.1.tar.gz : e15eb43872484147c2c9b54f618c8fb8a96d0d013e120d06e9d80a25ea0d42ec
+summary     : Terminal mind mapper
+description : |
+    A terminal-based mind mapping tool.
+license     :
+    - MIT
+builddeps   :
+    - binary(cargo)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install     : |
+    %cargo_install

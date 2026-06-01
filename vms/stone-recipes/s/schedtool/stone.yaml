@@ -1,0 +1,18 @@
+name        : schedtool
+version     : "1.3.5"
+release     : 1
+homepage    : https://github.com/freequa/schedtool
+upstreams   :
+    - https://github.com/freequa/schedtool/archive/refs/tags/v1.3.5.tar.gz
+summary     : Query and set CPU scheduler parameters
+description : |
+    schedtool queries and sets CPU scheduler parameters for processes.
+license     :
+    - GPL-2.0-or-later
+builddeps   :
+    - binary(gcc)
+    - binary(make)
+build       : |
+    %make
+install     : |
+    %make_install

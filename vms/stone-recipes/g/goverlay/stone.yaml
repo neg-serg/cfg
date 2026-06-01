@@ -1,0 +1,18 @@
+name: goverlay
+version: "1.8.2"
+release: 1
+homepage: https://github.com/benjamimgois/goverlay
+upstreams:
+  - https://github.com/benjamimgois/goverlay/archive/refs/tags/1.8.2.tar.gz : e5663202f22dfa57310fd86d3ba8fe7e497e3859ef630318424f982a02cdc05f
+summary: GUI for managing Linux gaming overlays
+description: |
+  Goverlay is an easy graphical interface to configure linux gaming applications and overlays like MangoHud and vkBasalt.
+license:
+  - GPL-3.0-only
+builddeps:
+  - binary(go)
+networking: true
+build: |
+  go build -o goverlay .
+install: |
+  %install_bin goverlay

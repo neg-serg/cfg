@@ -1,0 +1,19 @@
+name        : massren
+version     : "1.2.1"
+release     : 1
+homepage    : https://github.com/laurent22/massren
+upstreams   :
+    - https://github.com/laurent22/massren/archive/refs/tags/v1.2.1.tar.gz : 4eec32fb5c901469aab62b891c9c13a3a2cb08c3a15182f68782be602c34a2ff
+summary     : Mass file rename tool
+description : |
+    massren is a mass file rename tool written in Go.
+license     : MIT
+builddeps   :
+    - binary(go)
+networking  : true
+build       : |
+    go mod init massren
+    go mod tidy
+    go build -o massren .
+install     : |
+    %install_bin massren

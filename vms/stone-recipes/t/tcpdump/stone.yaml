@@ -1,0 +1,21 @@
+name        : tcpdump
+version     : "4.99.5"
+release     : 1
+homepage    : https://www.tcpdump.org
+upstreams   :
+    - https://www.tcpdump.org/release/tcpdump-4.99.5.tar.gz : 8c75856e00addeeadf70dad67c9ff3dd368536b2b8563abf6854d7c764cd3adb
+summary     : A command-line packet analyzer
+description : |
+    A powerful command-line packet analyzer.
+license     :
+    - BSD-3-Clause
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - pkgconfig(libpcap)
+setup       : |
+    %configure
+build       : |
+    %make
+install     : |
+    %make_install

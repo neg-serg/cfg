@@ -1,0 +1,26 @@
+name        : nmap
+version     : "7.99"
+release     : 1
+homepage    : https://nmap.org
+upstreams   :
+    - https://nmap.org/dist/nmap-7.99.tar.bz2 : df512492ffd108e53a27a06f26d8635bbe89e0e569455dc8ffef058c035d51b2
+summary     : Network exploration tool and security scanner
+description : |
+    Nmap (Network Mapper) is a utility for network discovery and
+    security auditing. It uses raw IP packets to determine what hosts
+    are available on the network, what services they offer, what
+    operating systems they are running, and more.
+license     : NPSL
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - binary(g++)
+    - openssl-devel
+    - libpcap-devel
+    - lua-devel
+setup       : |
+    %configure --without-zenmap --with-pcap=%(prefix)
+build       : |
+    %make
+install     : |
+    %make_install

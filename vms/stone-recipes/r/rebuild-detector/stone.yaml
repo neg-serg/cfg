@@ -1,0 +1,19 @@
+name        : rebuild-detector
+version     : "4.4.5"
+release     : 1
+homepage    : https://github.com/max-baz/rebuild-detector
+upstreams   :
+    - https://github.com/max-baz/rebuild-detector/archive/refs/tags/4.4.5.tar.gz : 6999f6ce7e448603506d45e3b4e4e22497ff605c19385146eaad2b8c1730928b
+summary     : Detects when packages need rebuilding
+description : |
+    Detects when software needs to be rebuilt due to library updates.
+license     :
+    - GPL-2.0-or-later
+builddeps   :
+    - binary(install)
+build       : |
+    echo "no build needed"
+install       : |
+    install -Dm755 -t "%(installroot)%(bindir)/" checkrebuild
+    install -Dm644 -t "%(installroot)%(datadir)/licenses/%(name)" LICENSE
+    install -Dm644 -t "%(installroot)%(datadir)/libalpm/hooks" rebuild-detector.hook

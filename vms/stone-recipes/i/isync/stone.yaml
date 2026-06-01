@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : isync
+version     : "1.5.1"
+release     : 1
+homepage    : https://isync.sourceforge.io/
+upstreams   :
+    - https://sourceforge.net/projects/isync/files/isync/1.5.1/isync-1.5.1.tar.gz : 28cc90288036aa5b6f5307bfc7178a397799003b96f7fd6e4bd2478265bb22fa
+summary     : IMAP and MailDir mailbox synchronizer
+description : |
+    isync (mbsync) is a command line application which synchronizes mailboxes.
+license     :
+    - GPL-2.0-only
+builddeps   :
+    - binary(clang)
+    - binary(make)
+    - pkgconfig(openssl)
+    - pkgconfig(zlib)
+    - cyrus-sasl-devel
+setup       : |
+    %configure CC=clang
+build       : |
+    %make CC=clang
+install     : |
+    %make_install

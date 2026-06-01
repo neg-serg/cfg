@@ -1,0 +1,26 @@
+name: optipng
+version: 0.7.8
+release: 1
+homepage: https://optipng.sourceforge.net
+upstreams:
+  - https://downloads.sourceforge.net/project/optipng/OptiPNG/optipng-0.7.8/optipng-0.7.8.tar.gz : 25a3bd68481f21502ccaa0f4c13f84dcf6b20338e4c4e8c51f2cefbd8513398c
+summary: PNG optimizer that recompresses image files
+description: |
+  OptiPNG is a PNG optimizer that recompresses image files to a smaller size
+  without losing any information.
+license:
+  - Zlib
+builddeps:
+  - binary(make)
+  - binary(clang)
+  - binutils
+  - libpng-devel
+  - zlib-devel
+setup: |
+  unset LDFLAGS CFLAGS
+  CC=clang LD=clang ./configure --with-system-libpng
+build: |
+  unset LDFLAGS CFLAGS
+  CC=clang LD=clang make -C src
+install: |
+  make -C src install DESTDIR=%(installroot) prefix=/usr

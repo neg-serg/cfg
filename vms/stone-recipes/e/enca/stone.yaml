@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : enca
+version     : "1.22"
+release     : 1
+homepage    : https://github.com/nijel/enca
+upstreams   :
+    - https://github.com/nijel/enca/archive/refs/tags/1.22.tar.gz : dc097f4f273d1258f311c69184577d2c21a4bc3a886091e733d7130056006ae6
+summary     : Extremely Naive Charset Analyser
+description : |
+    Enca is an Extremely Naive Charset Analyser. It detects the character
+    set and encoding of text files and can also convert them to other encodings.
+license     :
+    - GPL-2.0-or-later
+builddeps   :
+    - binary(clang)
+    - binary(make)
+    - binary(pkg-config)
+    - pkgconfig(zlib)
+setup       : |
+    rm -f /usr/bin/gcc
+    export CC=clang
+    export CXX=clang++
+    autoreconf -fi
+    %configure --disable-rpath --disable-dependency-tracking
+build       : |
+    %make
+install     : |
+    %make_install

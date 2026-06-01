@@ -1,0 +1,26 @@
+name        : qt5ct
+version     : "0.0.git"
+release     : 1
+homepage    : https://github.com/desktop-app/qt5ct
+upstreams   :
+    - https://github.com/desktop-app/qt5ct/archive/HEAD.tar.gz : c0142e810932db975ae35dc8ec8b15f7222dc19f7d64b3481a51e032b6f38f3f
+summary     : Qt5 Configuration Tool
+description : |
+    Qt5 Configuration Tool allows users to configure Qt5 settings
+    (theme, font, icons, etc.) under a desktop environment without
+    Qt integration.
+license     :
+    - BSD-2-Clause
+builddeps   :
+    - binary(qmake)
+    - binary(gcc)
+    - binary(g++)
+    - qt5-base-devel
+    - qt5-svg-devel
+    - qt5-tools-devel
+setup       : |
+    qmake qt5ct.pro
+build       : |
+    %make
+install       : |
+    %make_install INSTALL_ROOT=%(installroot)

@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : xdg-ninja
+version     : "0.1.0"
+release     : 1
+homepage    : https://github.com/b3nj5m1n/xdg-ninja
+upstreams   :
+    - https://github.com/b3nj5m1n/xdg-ninja/archive/refs/heads/master.tar.gz: ecd0230a70502493d3db04471b531b1ad1bfebf8c9ff0e68ec46b7b00d66d679
+summary     : Fix common XDG directory issues
+description : |
+    A shell script that checks for common XDG directory configuration issues.
+license     :
+    - MIT
+install     : |
+    install -Dm00755 -t %(installroot)/usr/bin xdg-ninja.sh
+    mkdir -p %(installroot)/usr/share/xdg-ninja
+    cp -r scripts %(installroot)/usr/share/xdg-ninja/

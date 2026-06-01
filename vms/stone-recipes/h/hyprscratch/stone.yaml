@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : hyprscratch
+version     : "0.6.4"
+release     : 1
+homepage    : https://github.com/sashetophizika/hyprscratch
+upstreams   :
+    - https://github.com/sashetophizika/hyprscratch/archive/refs/tags/v0.6.4.tar.gz : 74ea0f334a567a0a7545aea7abc2b63b20f389f6cdc7ade9b9517615bad952b3
+summary     : Improved scratchpad functionality for Hyprland
+description : |
+    Hyprscratch makes scratchpads in Hyprland painless in a well-integrated and flexible way.
+license     :
+    - MIT
+builddeps   :
+    - binary(cargo)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install     : |
+    %cargo_install

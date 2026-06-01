@@ -1,0 +1,20 @@
+name        : scour
+version     : "0.38.2"
+release     : 1
+homepage    : https://github.com/scour-project/scour
+upstreams   :
+    - https://github.com/scour-project/scour/archive/refs/tags/v0.38.2.tar.gz : 26166de53d9da3eccc52570bf8c2853e60efefd9e90e26fdfc7124fe0bd873af
+summary     : SVG scrubber/optimizer
+description : |
+    Scour optimizes SVG files for size and cleanliness.
+license     :
+    - Apache-2.0
+builddeps   :
+    - binary(python3)
+    - python(setuptools)
+setup       : |
+    %python_setup
+build       : |
+    echo "built in setup"
+install       : |
+    %python_install

@@ -1,0 +1,17 @@
+name        : raise
+version     : "1.0"
+release     : 1
+homepage    : https://github.com/nicknamenamenick/raise
+upstreams   :
+    - https://github.com/nicknamenamenick/raise/archive/refs/tags/v1.0.tar.gz
+summary     : Utility to raise windows
+description : |
+    A simple command-line utility to raise (focus) windows by title or class.
+license     :
+    - MIT
+builddeps   :
+    - binary(gcc)
+build       : |
+    gcc -o raise raise.c -lX11
+install     : |
+    %install_bin raise

@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : iperf3
+version     : "3.21"
+release     : 1
+homepage    : https://github.com/esnet/iperf
+upstreams   :
+    - https://github.com/esnet/iperf/archive/refs/tags/3.21.tar.gz : dd289b6700d3bc33eda7fa3ce6db217d6ca42239edbcb2e7f152bf7bf5c8a5aa
+summary     : TCP UDP and SCTP network bandwidth measurement tool
+description : |
+    iperf3 is a tool for active measurements of the maximum achievable bandwidth
+    on IP networks.
+license     :
+    - BSD-3-Clause
+builddeps   :
+    - binary(clang)
+    - binary(make)
+    - pkgconfig(openssl)
+setup       : |
+    %configure CC=clang
+build       : |
+    %make CC=clang
+install     : |
+    %make_install

@@ -1,0 +1,20 @@
+name: ollama
+version: "0.6.8"
+release: 1
+homepage: https://ollama.ai
+upstreams:
+  - https://github.com/ollama/ollama/archive/refs/tags/v0.6.8.tar.gz : 46e3953373be41fae1699eaca97eb0e5f35b9a83d9652f38901938c1a988634d
+summary: Get up and running with large language models locally
+description: |
+  Ollama allows you to run large language models locally on your machine.
+license:
+  - MIT
+builddeps:
+  - binary(go)
+networking: true
+setup: |
+  go mod download
+build: |
+  go build -o ollama .
+install: |
+  %install_bin ollama

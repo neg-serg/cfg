@@ -1,0 +1,21 @@
+name: pwgen
+version: "2.08"
+release: 1
+homepage: https://github.com/tytso/pwgen
+upstreams:
+  - https://github.com/tytso/pwgen/archive/refs/tags/v2.08.tar.gz : 8d6e94f28655e61d6126290e3eafad4d17d7fba0d0d354239522a740a270bb2f
+summary: pwgen
+description: |
+  pwgen for AerynOS.
+license:
+  - GPL-2.0-only
+builddeps:
+  - binary(make)
+  - binary(gcc)
+networking: true
+setup: |
+  ./configure
+build: |
+  make
+install: |
+  make install DESTDIR=%(installroot)

@@ -1,0 +1,20 @@
+name: goimapnotify
+version: "0.0.1"
+release: 1
+homepage: https://gitlab.com/shackra/goimapnotify
+upstreams:
+  - https://gitlab.com/shackra/goimapnotify/-/archive/master/goimapnotify-master.tar.gz : e53bac2c91226920bfc9b7ab80485eda7e8b1a77ed878f08cd51bb1df9ab867e
+summary: IMAP IDLE mail notification tool
+description: |
+  A tool to watch IMAP mailboxes and notify on new mail, written in Go.
+license:
+  - MIT
+builddeps:
+  - binary(go)
+networking: true
+setup: |
+  go mod download
+build: |
+  go build -o goimapnotify ./cmd/goimapnotify/
+install: |
+  %install_bin goimapnotify

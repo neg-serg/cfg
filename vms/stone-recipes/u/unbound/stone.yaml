@@ -1,0 +1,22 @@
+name        : unbound
+version     : "1.22.0"
+release     : 1
+homepage    : https://nlnetlabs.nl/projects/unbound/about
+upstreams   :
+    - https://github.com/NLnetLabs/unbound/archive/refs/tags/release-1.22.0.tar.gz : 4e32a36d57cda666b1c8ee02185ba73462330452162d1b9c31a5b91a853ba946
+summary     : A validating, recursive, caching DNS resolver
+description : |
+    A validating, recursive, and caching DNS resolver.
+license     :
+    - BSD-3-Clause
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - pkgconfig(libssl)
+    - pkgconfig(libevent)
+setup       : |
+    %configure --with-libevent
+build       : |
+    %make
+install     : |
+    %make_install

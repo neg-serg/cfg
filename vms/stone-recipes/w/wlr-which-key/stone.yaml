@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : wlr-which-key
+version     : "1.3.0"
+release     : 1
+homepage    : https://github.com/MaxVerevkin/wlr-which-key
+upstreams   :
+    - https://github.com/MaxVerevkin/wlr-which-key/archive/refs/tags/v1.3.0.tar.gz: 50fc06f60e67dc678ffe7bb167d662910d98085e185d2030c09ebd5793bf2794
+summary     : Keybinding display for wlroots compositors
+description : |
+    A keybinding display for wlroots-based Wayland compositors.
+license     :
+    - GPL-3.0-only
+builddeps   :
+    - binary(cargo)
+    - binary(python3)
+    - binary(make)
+    - binary(gcc)
+    - binary(pkg-config)
+    - pkgconfig(pango)
+    - pkgconfig(cairo-gobject)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install     : |
+    %cargo_install

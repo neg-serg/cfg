@@ -1,0 +1,18 @@
+name        : dive
+version     : "0.13.1"
+release     : 1
+homepage    : https://github.com/wagoodman/dive
+upstreams   :
+    - https://github.com/wagoodman/dive/archive/refs/tags/v0.13.1.tar.gz : 2a9666e9c3fddd5e2e5bad81dccda520b8102e7cea34e2888f264b4eb0506852
+summary     : Tool for exploring a Docker image layer contents
+description : |
+    Dive is a tool for exploring a Docker image, layer contents, and
+    discovering ways to shrink the size of your Docker/OCI image.
+license     : Apache-2.0
+builddeps   :
+    - binary(go)
+networking  : true
+build       : |
+    go build -o dive-bin .
+install     : |
+    install -Dm00755 dive-bin %(installroot)%(bindir)/dive

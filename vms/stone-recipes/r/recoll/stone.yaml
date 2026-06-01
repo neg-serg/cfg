@@ -1,0 +1,22 @@
+name        : recoll
+version     : "1.40.2"
+release     : 1
+homepage    : https://www.recoll.org
+upstreams   :
+    - https://github.com/skuzm/recoll/archive/refs/tags/recoll-1.40.2.tar.gz
+summary     : Desktop full-text search tool
+description : |
+    Recoll is a desktop full-text search tool with a Qt GUI.
+license     :
+    - GPL-2.0-or-later
+builddeps   :
+    - binary(cmake)
+    - binary(gcc)
+    - binary(g++)
+    - qt5-qtbase-devel
+setup       : |
+    %cmake
+build       : |
+    %cmake_build
+install     : |
+    %cmake_install

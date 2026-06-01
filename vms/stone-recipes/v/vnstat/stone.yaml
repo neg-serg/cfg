@@ -1,0 +1,21 @@
+name        : vnstat
+version     : "2.12"
+release     : 1
+homepage    : https://humdi.net/vnstat
+upstreams   :
+    - https://github.com/vergoh/vnstat/archive/refs/tags/v2.12.tar.gz : b3fa3741a9780b085019c99855c93efe6bd11adf4cc85b3b0b2d3beef5db9523
+summary     : A network traffic monitor
+description : |
+    A network traffic monitor for Linux.
+license     :
+    - GPL-2.0-or-later
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - pkgconfig(sqlite3)
+setup       : |
+    %configure
+build       : |
+    %make
+install     : |
+    %make_install

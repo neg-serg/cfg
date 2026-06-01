@@ -1,0 +1,22 @@
+name        : lbzip2
+version     : "2.5"
+release     : 1
+homepage    : https://github.com/kjn/lbzip2
+upstreams   :
+    - https://github.com/kjn/lbzip2/archive/refs/heads/master.tar.gz : ab8b7accac397d038de79d4f706cbfc3f03dd9605b536004d025bfd40248ec2a
+summary     : Parallel bzip2 compression utility
+description : |
+    lbzip2 is a parallel, multi-threaded bzip2 compression utility.
+license     : GPL-3.0-only
+builddeps   :
+    - binary(cmake)
+    - binary(gcc)
+    - binary(g++)
+setup       : |
+    %cmake
+build       : |
+    %cmake_build
+install     : |
+    install -Dm755 aerynos-builddir/lbzip2 %(installroot)%(prefix)/bin/lbzip2
+    install -Dm755 aerynos-builddir/lbunzip2 %(installroot)%(prefix)/bin/lbunzip2 || true
+    install -Dm755 aerynos-builddir/lbzcat %(installroot)%(prefix)/bin/lbzcat || true

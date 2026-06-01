@@ -1,0 +1,21 @@
+name        : tealdeer
+version     : "1.7.0"
+release     : 1
+homepage    : https://github.com/dbrgn/tealdeer
+upstreams   :
+    - https://github.com/dbrgn/tealdeer/archive/refs/tags/v1.7.0.tar.gz : 940fe96a44571f395ac8349e5cba7ddb9231ce526bee07a9eb68f02c32f7da7b
+summary     : A fast tldr client
+description : |
+    A fast tldr client implemented in Rust.
+license     :
+    - Apache-2.0
+    - MIT
+builddeps   :
+    - binary(cargo)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install     : |
+    %cargo_install tldr

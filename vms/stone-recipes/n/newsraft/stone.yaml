@@ -1,0 +1,23 @@
+name        : newsraft
+version     : "0.36"
+release     : 1
+homepage    : https://github.com/newsraft/newsraft
+upstreams   :
+    - https://github.com/newsraft/newsraft/archive/refs/tags/newsraft-0.36.tar.gz : d51a8ee34cf13375d546a18ebc9db572eaaa1b118ece94a4254a2d22bfb1dffa
+summary     : Feed reader for terminals
+description : |
+    newsraft is a terminal feed reader that supports Atom, JSON Feed,
+    and RSS formats. It provides a clean, keyboard-driven interface
+    for reading news feeds.
+license     : ISC
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - ncurses-devel
+    - curl-devel
+    - expat-devel
+    - sqlite-devel
+build       : |
+    %make
+install     : |
+    %make_install

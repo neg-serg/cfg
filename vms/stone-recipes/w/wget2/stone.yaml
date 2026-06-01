@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : wget2
+version     : "2.2.1"
+release     : 1
+homepage    : https://github.com/rockdaboot/wget2
+upstreams   :
+    - https://github.com/rockdaboot/wget2/archive/refs/tags/v2.2.1.tar.gz: 007d198eb01db829a631bce743ee023fe7896dc8f61f9d245edcabd79c282281
+summary     : Advanced file download utility
+description : |
+    Wget2 is a modern successor to wget with HTTP/2 and multi-threaded downloads.
+license     :
+    - GPL-3.0-or-later
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - binary(autoreconf)
+    - pkgconfig(openssl)
+    - pkgconfig(libpcre2-8)
+    - pkgconfig(zlib)
+setup       : |
+    autoreconf -fi
+    %configure
+build       : |
+    %make
+install       : |
+    %make_install

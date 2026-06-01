@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : waypipe
+version     : "0.11.0"
+release     : 1
+homepage    : https://gitlab.freedesktop.org/mstoeckl/waypipe
+upstreams   :
+    - https://gitlab.freedesktop.org/mstoeckl/waypipe/-/archive/v0.11.0/waypipe-v0.11.0.tar.gz: dc4741bd4435666b4b45ef9b8354c9f742e9c2c5fb99bb49b2ac4f32a371bcd7
+summary     : Network proxy for Wayland
+description : |
+    A proxy for Wayland protocol applications. Like SSH X forwarding, but for Wayland.
+license     :
+    - MIT
+builddeps   :
+    - binary(meson)
+    - binary(gcc)
+    - pkgconfig(wayland-client)
+setup       : |
+    %meson
+build       : |
+    %meson_build
+install       : |
+    %meson_install

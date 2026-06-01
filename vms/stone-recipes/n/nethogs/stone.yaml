@@ -1,0 +1,20 @@
+name        : nethogs
+version     : "0.8.8"
+release     : 1
+homepage    : https://github.com/raboof/nethogs
+upstreams   :
+    - https://github.com/raboof/nethogs/archive/refs/tags/v0.8.8.tar.gz : 111ade20cc545e8dfd7ce4e293bd6b31cd1678a989b6a730bd2fa2acc6254818
+summary     : Net top tool for monitoring network traffic per process
+description : |
+    NetHogs is a small 'net top' tool that displays network traffic
+    usage per process, instead of per protocol or per interface.
+license     : GPL-2.0-only
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - ncurses-devel
+    - libpcap-devel
+build       : |
+    %make
+install     : |
+    %make_install PREFIX=%(prefix)

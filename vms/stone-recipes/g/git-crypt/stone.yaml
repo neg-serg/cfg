@@ -1,0 +1,19 @@
+name: git-crypt
+version: "0.8.0"
+release: 1
+homepage: https://github.com/AGWA/git-crypt
+upstreams:
+  - https://github.com/AGWA/git-crypt/archive/refs/tags/0.8.0.tar.gz : 786199c24f8b79a54d62b98c24b1113606c4ebd83125e642b228704686305e69
+summary: Transparent file encryption in git
+description: |
+  git-crypt enables transparent encryption and decryption of files in a git repository.
+license:
+  - GPL-3.0-only
+builddeps:
+  - binary(make)
+  - binary(gcc)
+  - openssl-devel
+build: |
+  %make PREFIX=%(prefix)
+install: |
+  %make_install PREFIX=%(prefix)

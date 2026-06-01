@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : himalaya
+version     : "1.2.0"
+release     : 1
+homepage    : https://github.com/pimalaya/himalaya
+upstreams   :
+    - https://github.com/pimalaya/himalaya/archive/refs/tags/v1.2.0.tar.gz : 3d04afdf6f753219c2203feb8094a2ec82c77bab7f9acbe1811773e2a4562877
+summary     : CLI to manage emails
+description : |
+    CLI to manage emails, with IMAP, SMTP, JMAP, and Maildir support.
+license     :
+    - AGPL-3.0-only
+builddeps   :
+    - binary(cargo)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install     : |
+    %cargo_install

@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : zathura-pdf-poppler
+version     : "2026.05.10"
+release     : 1
+homepage    : https://github.com/pwmt/zathura-pdf-poppler
+upstreams   :
+    - https://github.com/pwmt/zathura-pdf-poppler/archive/refs/tags/2026.05.10.tar.gz: b7851748c9212083f3314f8c1f0a7ab57b64519bacc5ae9cde8b48c853cafa0b
+summary     : PDF plugin for zathura
+description : |
+    A PDF plugin for the zathura document viewer using the poppler library.
+license     :
+    - Zlib
+builddeps   :
+    - binary(meson)
+    - binary(gcc)
+    - pkgconfig(girara-gtk3)
+    - pkgconfig(poppler)
+setup       : |
+    %meson
+build       : |
+    %meson_build
+install       : |
+    %meson_install

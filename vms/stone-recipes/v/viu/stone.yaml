@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : viu
+version     : "1.5.0"
+release     : 1
+homepage    : https://github.com/atanunq/viu
+upstreams   :
+    - https://github.com/atanunq/viu/archive/refs/tags/v1.5.0.tar.gz : 9682be1561f7a128436bd2e45d1f8f7146ca1dd7f528a69bd3c171e4e855474b
+summary     : (TODO)
+description : |
+    UPDATE DESCRIPTION
+license     :
+    - MIT
+
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install     : |
+    %cargo_install
+check       : |
+    %cargo_test

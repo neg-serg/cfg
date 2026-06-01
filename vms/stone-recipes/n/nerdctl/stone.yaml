@@ -1,0 +1,18 @@
+name        : nerdctl
+version     : "2.3.1"
+release     : 1
+homepage    : https://github.com/containerd/nerdctl
+upstreams   :
+    - https://github.com/containerd/nerdctl/archive/refs/tags/v2.3.1.tar.gz : f9c66b5a62f3a4967e246f10b06892ef9d08e3b2bfddd2be0b7346c8c47c05b5
+summary     : Docker-compatible CLI for containerd
+description : |
+    nerdctl is a Docker-compatible CLI for containerd.
+    It provides the same user experience as docker.
+license     : Apache-2.0
+builddeps   :
+    - binary(go)
+networking  : true
+build       : |
+    go build -o nerdctl ./cmd/nerdctl
+install     : |
+    %install_bin nerdctl

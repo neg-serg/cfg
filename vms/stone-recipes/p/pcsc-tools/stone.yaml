@@ -1,0 +1,21 @@
+name: pcsc-tools
+version: "1.7.0"
+release: 1
+homepage: https://ludovicrousseau.blogspot.com/p/pcsc-tools.html
+upstreams:
+  - https://github.com/LudovicRousseau/pcsc-tools/archive/refs/tags/1.7.0.tar.gz : 50992ceafd06a0566d2f513ef6de5a58822e3cd18a7608622a862e1817266041
+summary: pcsc-tools
+description: |
+  pcsc-tools for AerynOS.
+license:
+  - GPL-2.0-only
+builddeps:
+  - binary(make)
+  - binary(gcc)
+  - pcsclite-devel
+networking: true
+
+build: |
+  make
+install: |
+  make install DESTDIR=%(installroot) PREFIX=%(prefix)

@@ -1,0 +1,19 @@
+name        : dos2unix
+version     : "7.3"
+release     : 1
+homepage    : https://waterlan.home.xs4all.nl/dos2unix.html
+upstreams   :
+    - https://waterlan.home.xs4all.nl/dos2unix/dos2unix-7.3.tar.gz : 8175f7552a72edaaa8918fdee68ce2cbc982dc25452f33d4dc611d769f4944d1
+summary     : Convert text files between DOS and Unix line endings
+description : |
+    dos2unix converts plain text files from DOS format (CR+LF line endings)
+    to Unix format (LF line endings) and vice versa.
+license     : BSD-2-Clause
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - gettext-devel
+build       : |
+    %make PREFIX=%(prefix)
+install     : |
+    %make_install PREFIX=%(prefix)

@@ -1,0 +1,26 @@
+name        : swayimg
+version     : "2.0"
+release     : 1
+homepage    : https://github.com/artemsen/swayimg
+upstreams   :
+    - https://github.com/artemsen/swayimg/archive/refs/tags/v2.0.tar.gz : afcf69d9c69d826e010065dd08732fc5b0c0402c26f98d977f27b77ebd2bdee1
+summary     : Image viewer for wlroots-based compositors
+description : |
+    Swayimg is a lightweight image viewer for Wayland compositors.
+license     :
+    - MIT
+builddeps   :
+    - binary(meson)
+    - binary(gcc)
+    - pkgconfig(wayland-client)
+    - pkgconfig(wayland-protocols)
+    - pkgconfig(cairo)
+    - pkgconfig(json-c)
+    - libxkbcommon-devel
+    - wayland-protocols-devel
+setup       : |
+    %meson
+build       : |
+    %meson_build
+install       : |
+    %meson_install

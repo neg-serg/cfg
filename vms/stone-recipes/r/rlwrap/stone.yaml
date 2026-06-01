@@ -1,0 +1,23 @@
+name        : rlwrap
+version     : "0.48"
+release     : 1
+homepage    : https://github.com/hanslub42/rlwrap
+upstreams   :
+    - https://github.com/hanslub42/rlwrap/archive/refs/tags/v0.48.tar.gz : b2721b1c0147aaafc98e6a31d875316ba032ad336bec7f2a8bc538f9e3c6db60
+summary     : Readline wrapper
+description : |
+    rlwrap adds readline editing, history and completion to any command.
+license     :
+    - GPL-2.0-or-later
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - ncurses-devel
+    - readline-devel
+setup       : |
+    autoreconf -fi
+    %configure --without-libptytty
+build       : |
+    %make
+install       : |
+    %make_install

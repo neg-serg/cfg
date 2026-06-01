@@ -1,0 +1,24 @@
+name: oh-my-posh
+version: "29.14.0"
+release: 1
+homepage: https://ohmyposh.dev
+upstreams:
+  - https://github.com/JanDeDobbeleer/oh-my-posh/archive/refs/tags/v29.14.0.tar.gz : 67fcbeed224efe8682ec144b9ba0e6bef1d8ff65f77c6fbbc4340d9b9017359b
+summary: A prompt theme engine for any shell
+description: |
+  Oh My Posh is a prompt theme engine for any shell.
+license:
+  - MIT
+builddeps:
+  - binary(go)
+networking: true
+setup: |
+  cd src
+  go mod download
+build: |
+  cd src
+  go build -o oh-my-posh .
+install: |
+  cd src
+  ls -la oh-my-posh 2>/dev/null || ls -la
+  install -Dm00755 -t %(installroot)/%(prefix)/bin oh-my-posh

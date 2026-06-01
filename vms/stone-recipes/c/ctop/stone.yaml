@@ -1,0 +1,18 @@
+name: ctop
+version: "0.7.7"
+release: 1
+homepage: https://github.com/bcicen/ctop
+upstreams:
+  - https://github.com/bcicen/ctop/archive/refs/tags/v0.7.7.tar.gz : 0db439f2030af73ad5345884b08a33a762c3b41b30604223dd0ebddde72d2741
+summary: Top-like interface for container metrics
+description: |
+  Top-like interface for container metrics
+license:
+  - MIT
+builddeps:
+  - binary(go)
+networking: true
+build: |
+  go build -o ctop .
+install: |
+  %install_bin ctop

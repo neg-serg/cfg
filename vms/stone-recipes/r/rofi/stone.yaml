@@ -1,0 +1,31 @@
+name        : rofi
+version     : "1.7.7"
+release     : 1
+homepage    : https://github.com/davatorium/rofi
+upstreams   :
+    - https://github.com/davatorium/rofi/releases/download/1.7.7/rofi-1.7.7.tar.gz : dee37e89378dbb7f51b76dc63e5103dac0090e0670ea8e5058b925ac0e7e9c68
+summary     : Window switcher and application launcher
+description : |
+    Rofi is a window switcher, application launcher, ssh and dmenu replacement.
+license     :
+    - MIT
+builddeps   :
+    - binary(meson)
+    - binary(gcc)
+    - pkgconfig(glib-2.0)
+    - pkgconfig(cairo)
+    - pkgconfig(pango)
+    - pkgconfig(gdk-pixbuf-2.0)
+    - pkgconfig(libstartup-notification-1)
+    - pkgconfig(xkbregistry)
+    - pkgconfig(libxkbcommon)
+    - pkgconfig(xcb-xkb)
+    - flex
+    - bison
+    - libx11-devel
+setup       : |
+    %meson
+build       : |
+    %meson_build
+install       : |
+    %meson_install

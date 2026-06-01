@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : libjodycode
+version     : "3.1"
+release     : 4
+homepage    : https://codeberg.org/jbruchon/libjodycode
+upstreams   :
+    - https://codeberg.org/jbruchon/libjodycode/archive/v3.1.tar.gz : 837b660c305215f0cbd68b002e831f29fe1a1d823cace74d75203111eb433bbd
+summary     : Shared library for jdupes and related tools
+description : |
+    Shared code used by jdupes and other projects.
+license     :
+    - MIT
+builddeps   :
+    - binary(clang)
+    - binary(make)
+build       : |
+    make -j$(nproc) CC=clang PREFIX=/usr
+install     : |
+    make install PREFIX=/usr DESTDIR=%(installroot)
+    install -Dm00644 libjodycode.h %(installroot)/usr/include/libjodycode.h
+patterns:
+    - include: usr/include/**
+    - include: usr/lib/**
+    - include: usr/share/**

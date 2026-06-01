@@ -1,0 +1,56 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : fortune-mod
+version     : "3.26.1"
+release     : 3
+homepage    : https://github.com/shlomif/fortune-mod
+upstreams   :
+    - https://github.com/shlomif/fortune-mod/archive/refs/tags/fortune-mod-3.26.1.tar.gz : dfb3347044d7ee9862513c5ac83fa4b851cf64849e0fd7202849ccce6d0e306b
+summary     : The Fortune Cookie Program
+description : |
+    fortune-mod displays random epigrams from a database of quotations.
+license     :
+    - BSD-4-Clause
+builddeps   :
+    - binary(gcc)
+    - binary(make)
+    - binutils
+setup       : |
+    cd fortune-mod
+    mkdir -p rinutils
+    echo '#pragma once' > rinutils/count.h
+    echo '#define COUNT(arr) (sizeof(arr) / sizeof(arr[0]))' >> rinutils/count.h
+    echo '#define LAST(arr) (arr)[COUNT(arr) - 1]' >> rinutils/count.h
+    echo '#pragma once' > rinutils/unused.h
+    echo '#define GCC_UNUSED __attribute__((unused))' >> rinutils/unused.h
+    echo '#pragma once' > config.h
+    echo '#define VERSION "3.26.1"' >> config.h
+    echo '#define FORTUNE_LOCAL_OFFENSIVE_FORTUNES_DIR "/usr/local/share/games/fortunes/off"' >> config.h
+    echo '#define FORTUNE_LOCAL_INOFFENSIVE_FORTUNES_DIR "/usr/local/share/games/fortunes"' >> config.h
+    echo '#define FORTUNE_SYSTEM_OFFENSIVE_FORTUNES_DIR "/usr/share/games/fortunes/off"' >> config.h
+    echo '#define FORTUNE_SYSTEM_INOFFENSIVE_FORTUNES_DIR "/usr/share/games/fortunes"' >> config.h
+build       : |
+    cd fortune-mod
+    gcc -O2 -I. -Iutil -Irinutils -o fortune.bin fortune/fortune.c -D_GNU_SOURCE
+    gcc -O2 -I. -Iutil -Irinutils -o strfile util/strfile.c
+    gcc -O2 -I. -Iutil -Irinutils -o unstr util/unstr.c
+    gcc -O2 -I. -Iutil -Irinutils -o rot util/rot.c
+    # Compile fortune databases
+    mkdir -p datfiles_compiled
+    for f in datfiles/*; do
+        [ -f "$f" ] && cp "$f" datfiles_compiled/
+    done
+    cd datfiles_compiled
+    for f in *; do
+        [ -f "$f" ] && ../strfile -r "$f" 2>/dev/null || true
+    done
+    cd ..
+install     : |
+    cd fortune-mod
+    install -Dm00755 fortune.bin %(installroot)/usr/games/fortune
+    install -Dm00755 strfile %(installroot)/usr/bin/strfile
+    install -Dm00755 unstr %(installroot)/usr/bin/unstr
+    install -Dm00755 rot %(installroot)/usr/bin/rot
+    mkdir -p %(installroot)/usr/share/games/fortunes
+    cp datfiles_compiled/* %(installroot)/usr/share/games/fortunes/

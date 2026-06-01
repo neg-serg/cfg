@@ -1,0 +1,22 @@
+name        : sysstat
+version     : "12.7.6"
+release     : 1
+homepage    : https://github.com/sysstat/sysstat
+upstreams   :
+    - https://github.com/sysstat/sysstat/archive/refs/tags/v12.7.6.tar.gz : dc77a08871f8e8813448ea31048833d4acbab7276dd9a456cd2526c008bd5301
+summary     : System performance monitoring tools
+description : |
+    Sysstat provides sar, iostat, mpstat, and other system monitoring tools.
+license     :
+    - GPL-2.0-or-later
+builddeps   :
+    - binary(gcc)
+    - binary(make)
+    - linux-headers
+setup       : |
+    CC=gcc; export CC
+    %configure
+build       : |
+    CC=gcc %make
+install       : |
+    %make_install

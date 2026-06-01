@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : zmap
+version     : "4.4.0"
+release     : 1
+homepage    : https://github.com/zmap/zmap
+upstreams   :
+    - https://github.com/zmap/zmap/archive/refs/tags/v4.4.0.tar.gz: be4521fdac10eddc9ba046399149064ca23d4630b7987301abdee9e0044b8d5c
+summary     : Fast network scanner
+description : |
+    Zmap is a fast network scanner designed for Internet-wide network surveys.
+license     :
+    - Apache-2.0
+builddeps   :
+    - binary(cmake)
+    - binary(gcc)
+    - binary(make)
+    - pkgconfig(json-c)
+    - pkgconfig(libpcap)
+    - pkgconfig(gmp)
+setup       : mkdir -p build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=%(prefix)
+build       : cd build && %make
+install     : cd build && %make_install

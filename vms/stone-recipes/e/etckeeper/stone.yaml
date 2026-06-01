@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : etckeeper
+version     : "1.18.20"
+release     : 1
+homepage    : https://etckeeper.branchable.com/
+upstreams   :
+    - https://salsa.debian.org/api/v4/projects/58186/repository/archive.tar.gz?sha=debian/1.18.20-1 : 4ff708a3cc11fa59775efd2ef904be996e48fbdf7a0bb4b58677faed9e6e7711
+summary     : Collection of tools to let /etc be stored in a git repository
+description : |
+    etckeeper is a collection of tools to let /etc be stored in a git,
+    mercurial, or bazaar repository. It hooks into package managers to
+    automatically commit changes to /etc during upgrades.
+license     :
+    - GPL-2.0-only
+builddeps   :
+    - binary(make)
+build       : |
+    %make PREFIX=%(prefix)
+install     : |
+    %make_install PREFIX=%(prefix) DESTDIR=%(installroot)

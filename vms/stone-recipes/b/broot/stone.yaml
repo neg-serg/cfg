@@ -1,0 +1,21 @@
+name        : broot
+version     : 1.56.4
+release     : 1
+homepage    : https://github.com/Canop/broot
+upstreams   :
+    - https://github.com/Canop/broot/archive/refs/tags/v1.56.4.tar.gz : ec49422f335965ee0338cd630869eb1fc6d974d43648bd483c802fd7e9aea99b
+summary     : A new way to see and navigate directory trees
+description : |
+    Broot lets you explore directory trees and launch commands.
+    It aims to empower you in new ways, without overriding your shell.
+license     :
+    - MIT
+builddeps   :
+    - binary(cargo)
+networking  : true
+setup       : |
+    %cargo_fetch
+build       : |
+    %cargo_build
+install     : |
+    %cargo_install

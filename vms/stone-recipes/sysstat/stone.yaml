@@ -1,0 +1,22 @@
+name        : sysstat
+version     : 12.7.9
+release     : 1
+homepage    : https://github.com/sysstat/sysstat
+upstreams   :
+    - https://github.com/sysstat/sysstat/archive/refs/tags/v12.7.9.tar.gz : e48fc69401135dc08d2cd4ff58dbdbfce9b7485f76fc9049d97848e313c08dda
+summary     : System performance monitoring tools
+description : |
+    Sysstat is a collection of performance monitoring tools for Linux
+license     : GPL-2.0-or-later
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - binary(sed)
+environment : |
+    unset DFLAGS
+setup       : |
+    %configure --disable-pcp --disable-systemd
+build       : |
+    %make
+install     : |
+    %make_install

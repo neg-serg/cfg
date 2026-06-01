@@ -1,5 +1,5 @@
 name: progress
-version: 0.17
+version: "0.17"
 release: 1
 homepage: https://github.com/Xfennec/progress
 upstreams:
@@ -14,9 +14,8 @@ builddeps:
   - binary(gcc)
   - binutils
   - ncurses-devel
-setup: |
-  apt-get install -y pkgconf 2>/dev/null || true
-  which pkg-config || which pkgconf
+  - binary(pkgconf)
+  - binary(which)
 build: |
   make
 install: |

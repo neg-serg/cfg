@@ -1,0 +1,32 @@
+name        : iverilog
+version     : 12.0
+release     : 1
+homepage    : https://github.com/steveicarus/iverilog
+upstreams   :
+    - https://github.com/steveicarus/iverilog/archive/refs/tags/v12_0.tar.gz : a68cb1ef7c017ef090ebedb2bc3e39ef90ecc70a3400afb4aa94303bc3beaa7d
+summary     : Icarus Verilog compiler and simulator
+description : |
+    Icarus Verilog is a Verilog simulation and synthesis tool.
+license     : GPL-2.0-or-later
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - binary(g++)
+    - binary(autoreconf)
+    - binary(bison)
+    - binary(flex)
+    - binary(gperf)
+    - binutils
+    - ncurses-devel
+    - readline-devel
+    - zlib-devel
+environment : |
+    export CFLAGS="-O2 -pipe"
+    export CXXFLAGS="-O2 -pipe"
+setup       : |
+    autoreconf -fi
+    ./configure --prefix=%(prefix)
+build       : |
+    %make
+install     : |
+    %make_install

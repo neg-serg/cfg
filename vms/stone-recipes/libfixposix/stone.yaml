@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : libfixposix
+version     : "0.5.1"
+release     : 1
+homepage    : https://github.com/sionescu/libfixposix
+upstreams   :
+    - https://github.com/sionescu/libfixposix/archive/refs/tags/v0.5.1.tar.gz : 5d9d3d321d4c7302040389c43f966a70d180abb58d1d7df370f39e0d402d50d4
+summary     : Thin wrapper over POSIX syscalls
+description : |
+    libfixposix provides thin wrappers over POSIX syscalls that fix
+    inconsistencies and provide safer interfaces.
+license     :
+    - BSL-1.0
+builddeps   :
+    - binary(autoreconf)
+    - binary(gcc)
+    - binary(make)
+setup       : |
+    autoreconf -fi
+    %configure
+build       : |
+    %make
+install     : |
+    %make_install

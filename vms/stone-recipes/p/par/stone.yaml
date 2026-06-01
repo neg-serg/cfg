@@ -1,21 +1,19 @@
 name: par
 version: "1.53.0"
 release: 1
-homepage: https://github.com/maverickirl/par
+homepage: http://www.nicemice.net/par/
 upstreams:
-  - https://github.com/maverickirl/par/archive/refs/tags/1.53.0.tar.gz : SKIP
-summary: par
+  - https://deb.debian.org/debian/pool/main/p/par/par_1.53.0.orig.tar.gz : c809c620eb82b589553ac54b9898c8da55196d262339d13c046f2be44ac47804
+summary: Paragraph reformatter
 description: |
-  par for AerynOS.
+  par is a paragraph reformatter, vaguely similar to fmt, but with more capabilities.
 license:
   - GPL-2.0-only
 builddeps:
   - binary(make)
   - binary(gcc)
-networking: true
-setup: |
-  %configure
 build: |
+  cp protoMakefile Makefile
   %make
 install: |
-  %make_install
+  install -Dm0755 par "%(installroot)/%(prefix)/bin/par"

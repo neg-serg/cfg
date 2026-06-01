@@ -1,0 +1,15 @@
+name        : raise
+version     : 2.0.0
+release     : 1
+homepage    : https://crates.io/crates/raise
+summary     : raise CLI tool
+description : |
+    raise CLI tool installed from crates.io
+license     : MIT
+builddeps   :
+    - binary(cargo)
+networking   : true
+build       : |
+    cargo install raise --version 2.0.0 --root %(installroot)%(prefix)
+install     : |
+    %install_bin %(installroot)%(bindir)/raise

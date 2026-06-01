@@ -1,0 +1,20 @@
+name        : bucklespring
+version     : "1.5.1"
+release     : 1
+homepage    : https://github.com/zevv/bucklespring
+upstreams   :
+    - https://github.com/zevv/bucklespring/archive/refs/tags/v1.5.1.tar.gz : 8d75d9809aa1f45b6f613bd6547f52a4ba9b207119775e48497c1a17fe98d541
+summary     : IBM Model M keyboard sound effect
+description : |
+    Bucklespring produces the sound of an IBM Model M keyboard when you type.
+license     :
+    - GPL-2.0-only
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - pkgconfig(sdl2)
+    - pkgconfig(openal)
+build       : |
+    %make
+install     : |
+    %make_install DESTDIR=%(installroot) PREFIX=%(prefix)

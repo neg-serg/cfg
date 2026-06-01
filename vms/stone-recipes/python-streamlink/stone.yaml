@@ -1,0 +1,23 @@
+name        : python-streamlink
+version     : 8.4.0
+release     : 1
+homepage    : https://streamlink.github.io/
+upstreams   :
+    - https://files.pythonhosted.org/packages/source/s/streamlink/streamlink-8.4.0.tar.gz : f477e9493336bcb7c3a2b10eea72a60ae9a7f49e968ada0d4d01bff78eac44bb
+summary     : Python streamlink
+description : |
+    CLI utility that pipes video streams into a video player
+license     : BSD-2-Clause
+builddeps   :
+    - binary(python3)
+    - python-build
+    - python-wheel
+    - python-installer
+rundeps     :
+    - python-libs
+networking  : true
+build       : |
+    %pyproject_build
+install     : |
+    %pyproject_install
+    %python_compile

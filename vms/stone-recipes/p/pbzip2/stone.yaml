@@ -12,9 +12,10 @@ license:
 builddeps:
   - binary(make)
   - binary(gcc)
+  - binary(g++)
   - binutils
   - bzip2-devel
 build: |
-  make
+  make CXXFLAGS="$(CXXFLAGS) -std=gnu++03"
 install: |
   make install PREFIX=%(prefix) DESTDIR=%(installroot)

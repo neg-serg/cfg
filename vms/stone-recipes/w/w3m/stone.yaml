@@ -6,7 +6,7 @@ version     : "0.5.3+git20230121"
 release     : 1
 homepage    : https://github.com/tats/w3m
 upstreams   :
-    - https://github.com/tats/w3m/archive/refs/tags/v0.5.3%2Bgit20230121.tar.gz: fdc7d55d3c0104db26aa9759db34f37e5eee03f44c868796e3bbfb8935c96e39
+    - https://github.com/tats/w3m/archive/refs/tags/v0.5.3%%2Bgit20230121.tar.gz: fdc7d55d3c0104db26aa9759db34f37e5eee03f44c868796e3bbfb8935c96e39
 summary     : Text-based web browser
 description : |
     A text-based web browser with support for tables, frames, and SSL.

@@ -4,21 +4,24 @@ release: 1
 homepage: https://plocate.sesse.net
 upstreams:
   - https://plocate.sesse.net/download/plocate-1.1.24.tar.gz : e55a757af1d7efb15ea674993224da4f0258479f8f720bd3dae0925d27dc04a2
-summary: plocate
+summary: File locate utility
 description: |
-  plocate for AerynOS.
+  plocate is a modern locate/updatedb implementation.
 license:
   - GPL-2.0-only
 builddeps:
-  - binary(cmake)
+  - binary(meson)
   - binary(gcc)
   - binary(g++)
+  - binary(pkgconf)
   - zlib-devel
   - xxhash-devel
+  - zstd-devel
+  - liburing-devel
 networking: true
 setup: |
-  %cmake
+  meson setup build --prefix=%(prefix)
 build: |
-  %cmake_build
+  meson compile -C build
 install: |
-  %cmake_install
+  meson install -C build --destdir %(installroot)

@@ -1,0 +1,19 @@
+name: opencode
+version: "1.15.13"
+release: 1
+homepage: https://opencode.ai
+upstreams: []
+summary: AI-powered coding assistant CLI
+description: |
+  opencode is an AI-powered coding assistant that runs in the terminal.
+license:
+  - Apache-2.0
+builddeps:
+  - binary(curl)
+  - binary(tar)
+networking: true
+build: |
+  curl -sL https://github.com/anomalyco/opencode/releases/download/v1.15.13/opencode-linux-x64.tar.gz -o /tmp/opencode.tar.gz
+  tar xzf /tmp/opencode.tar.gz
+install: |
+  install -Dm0755 opencode "%(installroot)/%(prefix)/bin/opencode"

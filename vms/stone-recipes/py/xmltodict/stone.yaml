@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : python-xmltodict
+version     : "0.14.2"
+release     : 1
+homepage    : https://pypi.org/project/xmltodict
+upstreams   :
+    - https://files.pythonhosted.org/packages/source/x/xmltodict/xmltodict-0.14.2.tar.gz : 201e7c28bb210e374999d1dde6382923ab0ed1a8a5faeece48ab525b7810a553
+summary     : XML to dict converter
+description : |
+    xmltodict is a Python module that makes working with XML feel like
+    you are working with JSON.
+license     :
+    - MIT
+builddeps   :
+    - python(setuptools)
+    - python(setuptools-scm)
+rundeps     :
+    - python-libs
+build       : |
+    %pyproject_build
+install     : |
+    %pyproject_install
+    %python_compile

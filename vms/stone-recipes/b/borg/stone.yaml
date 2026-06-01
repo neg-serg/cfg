@@ -1,0 +1,28 @@
+name        : borg
+version     : "1.2.5"
+release     : 1
+homepage    : https://github.com/borgbackup/borg
+upstreams   :
+    - https://pypi.debian.net/borgbackup/borgbackup-1.2.5.tar.gz : 72580779459ba72ea7e7d2e2a2ebd4f377c403236dd0ea148606036e4b631876
+summary     : Deduplicating backup program with compression and encryption
+description : |
+    BorgBackup is a deduplicating backup program with compression and encryption.
+license     :
+    - BSD-3-Clause
+builddeps   :
+    - python(setuptools)
+    - python-devel
+    - binary(gcc)
+    - pkgconfig(libcrypto)
+    - python(pkgconfig)
+    - python(setuptools-scm)
+rundeps     :
+    - python-libs
+    - python-packaging
+networking  : true
+build       : |
+    export BORG_OPENSSL_PREFIX=%(prefix)
+    %python_setup
+install     : |
+    %python_install
+    %python_compile

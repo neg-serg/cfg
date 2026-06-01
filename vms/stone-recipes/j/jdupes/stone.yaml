@@ -3,7 +3,7 @@
 
 name        : jdupes
 version     : "1.31.1"
-release     : 1
+release     : 2
 homepage    : https://codeberg.org/jbruchon/jdupes
 upstreams   :
     - https://codeberg.org/jbruchon/jdupes/archive/v1.31.1.tar.gz : c80d4c1deb03cc891a7e938f886952cfc480b8a0bc48baf21b312d350b62d8e3
@@ -25,3 +25,4 @@ build       : |
     make -j$(nproc) CC=clang CFLAGS="-I. -Ilibjodycode_src" LDFLAGS="-Llibjodycode_src"
 install     : |
     make install PREFIX=/usr DESTDIR=%(installroot)
+    %make_install -C libjodycode_src PREFIX=/usr

@@ -1,0 +1,14 @@
+name        : tabiew
+version     : 0.13.1
+release     : 1
+homepage    : https://crates.io/crates/tabiew
+summary     : TUI for viewing tabular data
+description : |
+    A lightweight TUI to view and query tabular data files
+license     : MIT
+builddeps   :
+    - binary(cargo)
+    - binary(perl)
+networking  : true
+build       : |
+    cargo install tabiew --version 0.13.1 --root %(installroot)%(prefix)

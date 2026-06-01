@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 name        : hyprpicker
-version     : "0.4.7"
+version     : 0.4.7
 release     : 1
 homepage    : https://github.com/hyprwm/hyprpicker
 upstreams   :
@@ -16,7 +16,14 @@ builddeps   :
     - binary(cmake)
     - binary(clang)
     - pkgconfig(wayland-client)
+    - pkgconfig(wayland-protocols)
     - pkgconfig(xkbcommon)
+    - pkgconfig(cairo)
+    - pkgconfig(pango)
+    - pkgconfig(pangocairo)
+    - pkgconfig(libjpeg)
+    - pkgconfig(hyprutils)
+    - pkgconfig(hyprwayland-scanner)
 setup       : |
     %cmake
 build       : |

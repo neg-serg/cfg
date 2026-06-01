@@ -18,6 +18,7 @@ builddeps   :
     - binary(xgettext)
     - binary(make)
     - binary(gcc)
+    - pkgconfig(libcrypt)
 setup       : |
     %make
 build       : |

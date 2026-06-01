@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : python-jc
+version     : "1.25.6"
+release     : 1
+homepage    : https://pypi.org/project/jc
+upstreams   :
+    - https://pypi.debian.net/jc/jc-1.25.6.tar.gz : 27f58befc7ae0a4c63322926c5f1ec892e3eac4a065eff3b07cfe420a6924a07
+summary     : JSON CLI output utility
+description : |
+    JC is a tool that converts the output of CLI tools to JSON.
+license     :
+    - MIT
+builddeps   :
+    - python(setuptools)
+    - python(setuptools-scm)
+rundeps     :
+    - python-libs
+    - python-pygments
+    - python-ruamel-yaml
+    - python-xmltodict
+build       : |
+    %pyproject_build
+install     : |
+    %pyproject_install
+    %python_compile

@@ -1,0 +1,25 @@
+name        : python-udiskie
+version     : 2.6.2
+release     : 1
+homepage    : https://github.com/coldfix/udiskie
+upstreams   :
+    - https://files.pythonhosted.org/packages/source/u/udiskie/udiskie-2.6.2.tar.gz : 26fd27d492304346916f0d799f581ac493727e17684407551cd0a41403c915f5
+summary     : Removable disk automounter
+description : |
+    Removable disk automounter using udisks
+license     : MIT
+builddeps   :
+    - binary(python3)
+    - python-build
+    - python-wheel
+    - python-installer
+    - python-setuptools
+    - gettext-devel
+rundeps     :
+    - python-libs
+networking  : true
+build       : |
+    %pyproject_build
+install     : |
+    %pyproject_install
+    %python_compile

@@ -1,0 +1,23 @@
+name        : lua-language-server
+version     : "3.18.2"
+release     : 1
+homepage    : https://github.com/LuaLS/lua-language-server
+upstreams   :
+    - https://github.com/LuaLS/lua-language-server/archive/refs/tags/3.18.2.tar.gz : fa561fad84fe44f6e0fda2eabef6b133464a324a67a57a7d5a9a89dcb7722519
+summary     : Lua language server
+description : |
+    Lua language server providing linting, completion, and type checking.
+license     : MIT
+builddeps   :
+    - binary(cmake)
+    - binary(gcc)
+    - binary(g++)
+    - binary(make)
+    - binary(git)
+setup       : |
+    git submodule update --init --recursive
+    %cmake
+build       : |
+    %cmake_build
+install     : |
+    %cmake_install

@@ -3,7 +3,7 @@ version: "2.15"
 release: 1
 homepage: https://github.com/fenrus75/powertop
 upstreams:
-  - https://github.com/fenrus75/powertop/archive/refs/tags/v2.15.tar.gz : skip
+  - https://github.com/fenrus75/powertop/releases/download/v2.15/powertop.tar.gz : e9590b82dee773b468b2eff4321a766c8bb04c45ccfa02b3127ee5af3359726b
 summary: Power consumption monitoring tool
 description: |
   PowerTOP is a Linux tool to diagnose power consumption and power management.
@@ -13,14 +13,13 @@ builddeps:
   - binary(make)
   - binary(gcc)
   - binary(g++)
-  - autoconf
-  - automake
-  - libtool
   - elfutils-devel
   - ncurses-devel
   - pciutils-devel
+  - gettext-devel
 setup: |
-  ./autogen.sh
+  cd powertop
+  autoreconf -fi 2>/dev/null || autoreconf -i
   %configure
 build: |
   %make

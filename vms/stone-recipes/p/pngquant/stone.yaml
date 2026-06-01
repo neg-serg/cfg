@@ -4,19 +4,24 @@ release: 1
 homepage: https://pngquant.org
 upstreams:
   - https://github.com/kornelski/pngquant/archive/refs/tags/3.0.3.tar.gz : ddd8889a9c269ba454d0c5e4f7167948d55d77c4570b23f671809fd3a68b6822
-summary: pngquant
+summary: PNG compressor
 description: |
-  pngquant for AerynOS.
+  pngquant is a command-line utility for lossy compression of PNG images.
 license:
   - GPL-3.0-only
 builddeps:
-  - binary(make)
-  - binary(gcc)
-  - libpng-devel
-  - zlib-devel
+  - binary(cargo)
+  - binary(curl)
+  - binary(tar)
 networking: true
-
+setup: |
+  mkdir -p lib/imagequant-sys
+  curl -sL https://static.crates.io/crates/imagequant-sys/imagequant-sys-4.0.3.crate | tar xz --strip=1 -C lib/imagequant-sys
+  cargo fetch -v
 build: |
-  make
+  cargo build -v -j "%(jobs)" --release
 install: |
-  install -Dm0755 pngquant %(installroot)/%(prefix)/bin/pngquant
+  cargo_install(){
+      install -Dm0755 target/release/%(name) "%(installroot)/%(prefix)/bin/%(name)"
+  }
+  cargo_install

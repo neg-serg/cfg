@@ -1,0 +1,38 @@
+name        : neovim
+version     : "0.12.2"
+release     : 1
+homepage    : https://github.com/neovim/neovim
+upstreams   :
+    - https://github.com/neovim/neovim/archive/refs/tags/v0.12.2.tar.gz : ef9f58da7d687ed4d1dad9715542bf0dabdeedbfe8089e2ce17fff21b920a268
+summary     : Modern Vim-based text editor
+description : |
+    Neovim is a modern fork of Vim with advanced features
+    such as Lua scripting, built-in LSP, and tree-sitter support.
+license     : Apache-2.0
+builddeps   :
+    - binary(cmake)
+    - binary(gcc)
+    - binary(make)
+    - pkgconfig(libuv)
+    - pkgconfig(luajit)
+    - pkgconfig(tree-sitter)
+    - name(unibilium-devel)
+networking  : true
+setup       : |
+    export CMAKE_C_COMPILER="${CC}" CMAKE_CXX_COMPILER="${CXX}"
+    # Build bundled deps first (using system libuv, luajit, treesitter, unibilium)
+    cmake -S cmake.deps -B .deps \
+        -G "Unix Makefiles" \
+        -DCMAKE_C_COMPILER="${CC}" \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DUSE_BUNDLED_LIBUV=OFF \
+        -DUSE_BUNDLED_LUAJIT=OFF \
+        -DUSE_BUNDLED_UNIBILIUM=OFF \
+        -DUSE_BUNDLED_TS=OFF
+    cmake --build .deps -j "%(jobs)"
+    # Configure main neovim
+    %cmake -DCMAKE_PREFIX_PATH="${PWD}/.deps/usr" -DENABLE_LIBINTL=OFF
+build       : |
+    %cmake_build
+install     : |
+    %cmake_install

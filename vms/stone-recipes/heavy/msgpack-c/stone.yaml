@@ -1,0 +1,19 @@
+name        : msgpack-c
+version     : "7.0.0"
+release     : 1
+homepage    : https://github.com/msgpack/msgpack-c
+upstreams   :
+    - https://github.com/msgpack/msgpack-c/archive/refs/tags/c-7.0.0.tar.gz : 32a815a282f7cd2cd1bf832ea9c3becd7ccd0fa50ca76b79ae241eddd560b11b
+summary     : MessagePack implementation for C
+description : |
+    A C library for the MessagePack serialization format
+license     : BSL-1.0
+builddeps   :
+    - binary(cmake)
+    - binary(gcc)
+setup       : |
+    %cmake -DBUILD_SHARED_LIBS=ON -DMSGPACK_BUILD_TESTS=OFF -DMSGPACK_BUILD_EXAMPLES=OFF
+build       : |
+    %cmake_build
+install     : |
+    %cmake_install

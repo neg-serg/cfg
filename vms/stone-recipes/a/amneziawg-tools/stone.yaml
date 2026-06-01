@@ -1,0 +1,21 @@
+name        : amneziawg-tools
+version     : "1.0.20260223"
+release     : 1
+homepage    : https://github.com/amnezia-vpn/amneziawg-tools
+upstreams   :
+    - https://github.com/amnezia-vpn/amneziawg-tools/archive/refs/tags/v1.0.20260223.tar.gz : ab09cfafe6c1e9a6260964a8ba5cb2d657cc23862eb0c29253305e532ac40a16
+summary     : AmneziaWG userspace tools for configuring WireGuard interfaces
+description : |
+    AmneziaWG is an extended version of WireGuard with additional
+    encryption protocols. This package provides the userspace tools
+    (awg, awg-quick) for configuring AmneziaWG interfaces.
+license     :
+    - GPL-2.0-only
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - binary(pkg-config)
+build       : |
+    make -C src
+install     : |
+    make -C src install DESTDIR=%(installroot) PREFIX=%(prefix) WITH_BASHCOMPLETION=no WITH_WGQUICK=no WITH_SYSTEMDUNITS=no

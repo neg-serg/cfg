@@ -1,22 +1,20 @@
-name        : nethack
-version     : "3.6.3"
-release     : 1
-homepage    : https://github.com/NetHack/NetHack
-upstreams   :
-    - https://github.com/NetHack/NetHack/archive/refs/tags/v3.6.3.757eca7.tar.gz : 65fcdd703adf03f405f19b4d688a43524fc3661e2b9cd1017dbf8356a54a4d93
-summary     : A dungeon exploration game
-description : |
-    NetHack is a single-player dungeon exploration game that is a
-    descendant of the game Hack, which is itself a descendant of Rogue.
-    It is a complex and challenging game with many features.
-license     : NetHack General Public License
-builddeps   :
-    - binary(make)
-    - binary(gcc)
-    - ncurses-devel
-setup       : |
-    cd sys/unix && ./setup.sh hints/linux
-build       : |
-    %make
-install     : |
-    %make_install PREFIX=%(prefix) HACKDIR=%(prefix)/lib/nethackdir
+name: nethack
+version: "3.6.3"
+release: 1
+homepage: https://github.com/NetHack/NetHack
+upstreams:
+  - https://github.com/NetHack/NetHack/archive/refs/tags/v3.6.3.757eca7.tar.gz : 65fcdd703adf03f405f19b4d688a43524fc3661e2b9cd1017dbf8356a54a4d93
+summary: A dungeon exploration game
+description: |
+  NetHack is a single-player dungeon exploration game.
+license: NetHack General Public License
+builddeps:
+  - binary(make)
+  - binary(gcc)
+  - ncurses-devel
+setup: |
+  cd sys/unix && ./setup.sh hints/linux
+build: |
+  make CFLAGS="-I$(pwd)/include -std=gnu23 -Wno-implicit-int -Wno-deprecated-non-prototype -Wno-error"
+install: |
+  make install PREFIX=%(prefix) HACKDIR=%(prefix)/lib/nethackdir DESTDIR=%(installroot)

@@ -1,0 +1,14 @@
+name: strace-tui
+version: "1.0.1"
+release: 1
+homepage: https://github.com/Rodrigodd/strace-tui
+upstreams:
+  - https://github.com/Rodrigodd/strace-tui/releases/download/v1.0.1/strace-tui-x86_64-unknown-linux-gnu.tar.gz : b7579e37a0e01c5ea77584292f7af284b1c0e0bf199981665828237f0f27a42c
+summary: TUI for visualizing and exploring strace output
+description: |
+  A terminal user interface for visualizing and exploring strace output.
+license:
+  - MIT
+install: |
+  bsdtar xf /mason/sourcedir/strace-tui-x86_64-unknown-linux-gnu.tar.gz -C .
+  %install_bin strace-tui

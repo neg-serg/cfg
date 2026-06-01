@@ -1,0 +1,13 @@
+name: v2raya
+version: "2.2.7.5"
+release: 1
+homepage: https://github.com/v2rayA/v2rayA
+upstreams:
+  - file:///home/neg/stone-recipes/aur-bin/v2raya/v2raya-2.2.7.5.tar.gz : 22e9edcf189c375baac76d59353b2a329fd0552fe083c393ba7b5bf9b90b2011
+summary: Web GUI client of Project V
+description: |
+  A web GUI client of Project V which supports VMess, VLESS, SS, SSR, Trojan, Tuic and Juicity protocols.
+license:
+  - AGPL-3.0
+install: |
+  %install_bin v2raya

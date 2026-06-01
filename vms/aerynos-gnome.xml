@@ -6,9 +6,10 @@
       <libosinfo:os id="http://archlinux.org/archlinux/rolling"/>
     </libosinfo:libosinfo>
   </metadata>
-  <memory unit='KiB'>8388608</memory>
-  <currentMemory unit='KiB'>8388608</currentMemory>
-  <vcpu placement='static'>4</vcpu>
+  <memory unit='KiB'>16777216</memory>
+  <currentMemory unit='KiB'>16777216</currentMemory>
+  <vcpu placement='static'>24</vcpu>
+  <iothreads>1</iothreads>
   <resource>
     <partition>/machine</partition>
   </resource>
@@ -27,7 +28,38 @@
     <apic/>
     <smm state='on'/>
   </features>
-  <cpu mode='host-passthrough' check='none' migratable='on'/>
+  <cpu mode='host-passthrough' check='none' migratable='on'>
+    <topology sockets='1' dies='1' cores='24' threads='1'/>
+    <vcpus>
+      <vcpu id='0' cpuset='0'/>
+      <vcpu id='1' cpuset='1'/>
+      <vcpu id='2' cpuset='2'/>
+      <vcpu id='3' cpuset='3'/>
+      <vcpu id='4' cpuset='4'/>
+      <vcpu id='5' cpuset='5'/>
+      <vcpu id='6' cpuset='6'/>
+      <vcpu id='7' cpuset='7'/>
+      <vcpu id='8' cpuset='8'/>
+      <vcpu id='9' cpuset='9'/>
+      <vcpu id='10' cpuset='10'/>
+      <vcpu id='11' cpuset='11'/>
+      <vcpu id='12' cpuset='12'/>
+      <vcpu id='13' cpuset='13'/>
+      <vcpu id='14' cpuset='14'/>
+      <vcpu id='15' cpuset='15'/>
+      <vcpu id='16' cpuset='16'/>
+      <vcpu id='17' cpuset='17'/>
+      <vcpu id='18' cpuset='18'/>
+      <vcpu id='19' cpuset='19'/>
+      <vcpu id='20' cpuset='20'/>
+      <vcpu id='21' cpuset='21'/>
+      <vcpu id='22' cpuset='22'/>
+      <vcpu id='23' cpuset='23'/>
+    </vcpus>
+    <numa>
+      <cell id='0' cpus='0-23' memory='16777216' unit='KiB'/>
+    </numa>
+  </cpu>
   <clock offset='utc'>
     <timer name='rtc' tickpolicy='catchup'/>
     <timer name='pit' tickpolicy='delay'/>
@@ -43,7 +75,7 @@
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
-      <driver name='qemu' type='qcow2' cache='writeback' io='threads'/>
+      <driver name='qemu' type='qcow2' cache='writeback' io='threads' iothread='1'/>
       <source file='/mnt/one/vms/aerynos-gnome.qcow2'/>
       <backingStore/>
       <target dev='vda' bus='virtio'/>
@@ -185,9 +217,7 @@
     <watchdog model='i6300esb' action='reset'>
       <address type='pci' domain='0x0000' bus='0x10' slot='0x01' function='0x0'/>
     </watchdog>
-    <memballoon model='virtio'>
-      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
-    </memballoon>
+    <memballoon model='none'/>
     <rng model='virtio'>
       <backend model='random'>/dev/urandom</backend>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>

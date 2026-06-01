@@ -1,0 +1,24 @@
+name: python-git-filter-repo
+version: "2.47.0"
+release: 1
+homepage: https://pypi.org/project/git-filter-repo/
+upstreams:
+  - https://files.pythonhosted.org/packages/b9/bb/7a283f568af6b0528ade65e8ace84bd6ba46003e429101bcd62c232d01a5/git_filter_repo-2.47.0.tar.gz : 411b27e68a080c07a69c233cb526dbc2d848b09a72f10477f4444dd0822cf290
+summary: Quickly rewrite git repository history
+description: |
+  Quickly rewrite git repository history
+license:
+  - MIT
+builddeps:
+  - python(setuptools)
+  - python(setuptools-scm)
+  - python(wheel)
+  - binary(python3)
+rundeps:
+  - python-libs
+  - binary(git)
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

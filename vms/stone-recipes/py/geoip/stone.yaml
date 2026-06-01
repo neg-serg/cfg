@@ -1,0 +1,23 @@
+name: python-geoip
+version: "1.3.2"
+release: 1
+homepage: https://pypi.org/project/geoip/
+upstreams:
+  - https://files.pythonhosted.org/packages/f2/7b/a463b7c3df8ef4b9c92906da29ddc9e464d4045f00c475ad31cdb9a97aae/GeoIP-1.3.2.tar.gz : a890da6a21574050692198f14b07aa4268a01371278dfc24f71cd9bc87ebf0e6
+summary: MaxMind GeoIP Legacy Database - Python API
+description: |
+  MaxMind GeoIP Legacy Database - Python API
+license:
+  - LGPL-2.1-or-later
+builddeps:
+  - binary(GeoIP)
+  - binary(python3)
+  - python(setuptools)
+rundeps:
+  - python-libs
+  - binary(GeoIP)
+build: |
+  %python_setup
+install: |
+  %python_install
+  %python_compile

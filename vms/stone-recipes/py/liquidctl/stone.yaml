@@ -1,0 +1,23 @@
+name: python-liquidctl
+version: "1.16.0"
+release: 1
+homepage: https://github.com/liquidctl/liquidctl
+upstreams:
+  - https://files.pythonhosted.org/packages/7f/9c/11f37716eeeccc72a781c80e76021a33cafa35578627263199ea62b2eb2d/liquidctl-1.16.0.tar.gz : b631a9f9c17980304c482ba72599b4089cc168d8c2edfdf65b0daa85cc614f8f
+summary: Cross-platform tool and drivers for liquid coolers and other devices
+description: |
+  Cross-platform tool and drivers for liquid coolers and other devices
+license:
+  - GPL-3.0-or-later
+builddeps:
+  - python(setuptools)
+  - python(setuptools-scm)
+  - python(wheel)
+  - binary(python3)
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

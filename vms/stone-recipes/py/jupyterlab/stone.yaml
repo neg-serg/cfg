@@ -1,0 +1,29 @@
+name: python-jupyterlab
+version: "4.5.7"
+release: 1
+homepage: https://pypi.org/project/jupyterlab/
+upstreams:
+  - "https://files.pythonhosted.org/packages/2b/22/8440ec827762146e7cdecf04335bd348795899d29dc6ae82238707353a2c/jupyterlab-4.5.7.tar.gz" : 55a9822c4754da305f41e113452c68383e214dcf96de760146af89ce5d5117b0
+summary: JupyterLab computational environment
+description: |
+  JupyterLab computational environment
+license:
+  - BSD-3-Clause
+builddeps:
+  - python(hatchling)
+  - binary(node)
+  - binary(python3)
+  - binary(pip)
+rundeps:
+  - python-libs
+networking: true
+environment: |
+  export PIP_NO_INPUT=1
+  export PIP_DISABLE_PIP_VERSION_CHECK=1
+setup: |
+  pip3 install hatch-jupyter-builder
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

@@ -1,10 +1,10 @@
 # AerynOS Package Migration — Full Report
 
 - **Total host packages:** 603
-- **Installed via moss:** 168
-- **Remaining:** 435
+- **Installed via moss:** 178
+- **Remaining:** 425
 
-## Already installed via moss (168)
+## Already installed via moss (178)
 - `alsa-utils`
 - `amdgpu_top`
 - `android-tools`
@@ -15,6 +15,7 @@
 - `breeze`
 - `btop`
 - `btrfs-progs`
+- `carapace`
 - `cava`
 - `ccid`
 - `chezmoi`
@@ -86,11 +87,13 @@
 - `jujutsu`
 - `just`
 - `kate`
+- `kf6-networkmanager-qt`
 - `kitty`
 - `konsole`
 - `kvantum`
 - `less`
 - `libvirt`
+- `linux-desktop`
 - `linux-firmware`
 - `linux-headers`
 - `lldb`
@@ -173,18 +176,28 @@
 - `zellij`
 - `zoxide`
 - `zsh`
+- `carapace`
+- `kf6-networkmanager-qt`
+- `linux-desktop`
+- `man-db`
+- `python-poetry-core`
+- `quickshell`
+- `sccache`
+- `virt-manager`
+- `wl-clipboard-rs`
+- `yq`
 
-## Can install from moss with corrected names (10)
-- `carapace-bin` → `moss install carapace`
-- `go-yq` → `moss install yq`
-- `linux` → `moss install linux-desktop`
-- `man-pages` → `moss install man-db`
-- `networkmanager-qt` → `moss install kf6-networkmanager-qt`
-- `python-poetry` → `moss install python-poetry-core`
-- `quickshell-git` → `moss install quickshell`
-- `scc` → `moss install sccache`
-- `virt-viewer` → `moss install virt-manager`
-- `wl-clipboard` → `moss install wl-clipboard-rs`
+## Can install from moss with corrected names (10) ✅
+- [x] `carapace-bin` → `carapace`
+- [x] `go-yq` → `yq`
+- [x] `linux` → `linux-desktop`
+- [x] `man-pages` → `man-db`
+- [x] `networkmanager-qt` → `kf6-networkmanager-qt`
+- [x] `python-poetry` → `python-poetry-core`
+- [x] `quickshell-git` → `quickshell`
+- [x] `scc` → `sccache`
+- [x] `virt-viewer` → `virt-manager`
+- [x] `wl-clipboard` → `wl-clipboard-rs`
 
 ## Flatpak candidates (20)
 - [ ] `flatpak install flathub <id>` — `blender`

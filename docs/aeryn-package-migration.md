@@ -1,13 +1,10 @@
-# AerynOS Package Migration Status
+# AerynOS Package Migration — Full Report
 
-- Host (CachyOS) packages total: **603**
-- Installed via moss: **168**
-- Not found in moss: **435**
+- **Total host packages:** 603
+- **Installed via moss:** 168
+- **Remaining:** 435
 
----
-
-## Installed via moss (168)
-
+## Already installed via moss (168)
 - `alsa-utils`
 - `amdgpu_top`
 - `android-tools`
@@ -177,455 +174,462 @@
 - `zoxide`
 - `zsh`
 
----
+## Can install from moss with corrected names (10)
+- `carapace-bin` → `moss install carapace`
+- `go-yq` → `moss install yq`
+- `linux` → `moss install linux-desktop`
+- `man-pages` → `moss install man-db`
+- `networkmanager-qt` → `moss install kf6-networkmanager-qt`
+- `python-poetry` → `moss install python-poetry-core`
+- `quickshell-git` → `moss install quickshell`
+- `scc` → `moss install sccache`
+- `virt-viewer` → `moss install virt-manager`
+- `wl-clipboard` → `moss install wl-clipboard-rs`
 
-## Not found in moss
+## Flatpak candidates (20)
+- [ ] `flatpak install flathub <id>` — `blender`
+- [ ] `flatpak install flathub <id>` — `bottles`
+- [ ] `flatpak install flathub <id>` — `chromium`
+- [ ] `flatpak install flathub <id>` — `epiphany`
+- [ ] `flatpak install flathub <id>` — `gimp`
+- [ ] `flatpak install flathub <id>` — `gnome-color-manager`
+- [ ] `flatpak install flathub <id>` — `gnome-connections`
+- [ ] `flatpak install flathub <id>` — `gnome-logs`
+- [ ] `flatpak install flathub <id>` — `gnome-maps`
+- [ ] `flatpak install flathub <id>` — `gnome-music`
+- [ ] `flatpak install flathub <id>` — `google-chrome`
+- [ ] `flatpak install flathub <id>` — `gopass`
+- [ ] `flatpak install flathub <id>` — `localsend-bin`
+- [ ] `flatpak install flathub <id>` — `lutris`
+- [ ] `flatpak install flathub <id>` — `obsidian`
+- [ ] `flatpak install flathub <id>` — `rawtherapee`
+- [ ] `flatpak install flathub <id>` — `simple-scan`
+- [ ] `flatpak install flathub <id>` — `telegram-desktop`
+- [ ] `flatpak install flathub <id>` — `yandex-browser`
+- [ ] `flatpak install flathub <id>` — `zen-browser-bin`
 
-### Flatpak (18)
-- [ ] `blender`
-- [ ] `bottles`
-- [ ] `chromium`
-- [ ] `epiphany`
-- [ ] `gimp`
-- [ ] `gnome-color-manager`
-- [ ] `gnome-connections`
-- [ ] `gnome-maps`
-- [ ] `gnome-music`
-- [ ] `google-chrome`
-- [ ] `gopass`
-- [ ] `localsend-bin`
-- [ ] `lutris`
-- [ ] `rawtherapee`
-- [ ] `simple-scan`
-- [ ] `telegram-desktop`
-- [ ] `yandex-browser`
-- [ ] `zen-browser-bin`
+## Cargo / pip / go / uv candidates (40)
+- [ ] `cargo install age` or `pipx install age` — `age`
+- [ ] `cargo install broot` or `pipx install broot` — `broot`
+- [ ] `cargo install choose` or `pipx install choose` — `choose`
+- [ ] `cargo install curlie` or `pipx install curlie` — `curlie`
+- [ ] `cargo install difftastic` or `pipx install difftastic` — `difftastic`
+- [ ] `cargo install direnv` or `pipx install direnv` — `direnv`
+- [ ] `cargo install doggo` or `pipx install doggo` — `doggo`
+- [ ] `cargo install dust` or `pipx install dust` — `dust`
+- [ ] `cargo install erdtree` or `pipx install erdtree` — `erdtree`
+- [ ] `cargo install fclones` or `pipx install fclones` — `fclones`
+- [ ] `cargo install fd` or `pipx install fd` — `fd`
+- [ ] `cargo install fzf` or `pipx install fzf` — `fzf`
+- [ ] `cargo install gallery-dl` or `pipx install gallery-dl` — `gallery-dl`
+- [ ] `cargo install git-delta` or `pipx install git-delta` — `git-delta`
+- [ ] `cargo install glow` or `pipx install glow` — `glow`
+- [ ] `cargo install grex` or `pipx install grex` — `grex`
+- [ ] `cargo install htmlq` or `pipx install htmlq` — `htmlq`
+- [ ] `cargo install jc` or `pipx install jc` — `jc`
+- [ ] `cargo install lowdown` or `pipx install lowdown` — `lowdown`
+- [ ] `cargo install massren` or `pipx install massren` — `massren`
+- [ ] `cargo install ncdu` or `pipx install ncdu` — `ncdu`
+- [ ] `cargo install onefetch` or `pipx install onefetch` — `onefetch`
+- [ ] `cargo install ouch` or `pipx install ouch` — `ouch`
+- [ ] `cargo install pastel` or `pipx install pastel` — `pastel`
+- [ ] `cargo install ripgrep` or `pipx install ripgrep` — `ripgrep`
+- [ ] `cargo install ruff` or `pipx install ruff` — `ruff`
+- [ ] `cargo install sad` or `pipx install sad` — `sad`
+- [ ] `cargo install scc` or `pipx install scc` — `scc`
+- [ ] `cargo install shellcheck` or `pipx install shellcheck` — `shellcheck`
+- [ ] `cargo install shfmt` or `pipx install shfmt` — `shfmt`
+- [ ] `cargo install streamlink` or `pipx install streamlink` — `streamlink`
+- [ ] `cargo install taplo-cli` or `pipx install taplo-cli` — `taplo-cli`
+- [ ] `cargo install tealdeer` or `pipx install tealdeer` — `tealdeer`
+- [ ] `cargo install television` or `pipx install television` — `television`
+- [ ] `cargo install tig` or `pipx install tig` — `tig`
+- [ ] `cargo install tree-sitter-cli` or `pipx install tree-sitter-cli` — `tree-sitter-cli`
+- [ ] `cargo install ugrep` or `pipx install ugrep` — `ugrep`
+- [ ] `cargo install xh` or `pipx install xh` — `xh`
+- [ ] `cargo install yamllint` or `pipx install yamllint` — `yamllint`
+- [ ] `cargo install zoxide` or `pipx install zoxide` — `zoxide`
 
-### Cargo / pip / go (38)
-- [ ] `age`
-- [ ] `broot`
-- [ ] `choose`
-- [ ] `curlie`
-- [ ] `difftastic`
-- [ ] `direnv`
-- [ ] `doggo`
-- [ ] `dust`
-- [ ] `erdtree`
-- [ ] `fclones`
-- [ ] `gallery-dl`
-- [ ] `git-delta`
-- [ ] `glow`
-- [ ] `grex`
-- [ ] `htmlq`
-- [ ] `jc`
-- [ ] `lowdown`
-- [ ] `massren`
-- [ ] `ncdu`
-- [ ] `onefetch`
-- [ ] `ouch`
-- [ ] `pastel`
-- [ ] `pup-bin`
-- [ ] `ruff`
-- [ ] `sad`
-- [ ] `scc`
-- [ ] `shellcheck`
-- [ ] `shfmt`
-- [ ] `streamlink`
-- [ ] `taplo-cli`
-- [ ] `tealdeer`
-- [ ] `television`
-- [ ] `tig`
-- [ ] `tree-sitter-cli`
-- [ ] `ugrep`
-- [ ] `viu`
-- [ ] `xh`
-- [ ] `yamllint`
+## AUR packages (need manual porting) (60)
+- `act-bin`
+- `albumdetails-debug`
+- `aliae-bin`
+- `amdgpu-vulkan-switcher-git`
+- `amdvlk-bin`
+- `antigravity-tools-bin`
+- `babashka-bin`
+- `carapace-bin`
+- `duf-debug`
+- `eilmeldung-bin`
+- `epr-git`
+- `flclashx-bin`
+- `freeze-bin`
+- `fsel-bin`
+- `ghgrab-bin`
+- `gmap-bin`
+- `goose-desktop-bin`
+- `gowall-bin`
+- `hishtory-bin`
+- `hyprquickframe-git`
+- `kanata-bin`
+- `lazytail-bin`
+- `lib32-amdvlk-bin`
+- `localsend-bin`
+- `lutgen-bin`
+- `mpdris2-git`
+- `oports-git`
+- `overskride-bin`
+- `paru-debug`
+- `pipemixer-git`
+- `pixora-icons-git`
+- `proton-ge-custom-bin`
+- `protonup-rs-bin`
+- `proxypilot-debug`
+- `pup-bin`
+- `quickshell-git`
+- `quickshell-overview-git`
+- `raise-debug`
+- `reddix-bin`
+- `repeater-bin`
+- `resterm-bin`
+- `rofi-file-browser-extended-git`
+- `rofi-file-browser-extended-git-debug`
+- `sidecar-debug`
+- `simutil-bin`
+- `sing-box-bin`
+- `ssh-to-age-debug`
+- `strace-tui-bin`
+- `tailray-debug`
+- `tanin-git`
+- `tdl-bin`
+- `themix-full-git`
+- `v2raya-bin`
+- `v2rayn-bin`
+- `vicinae-bin`
+- `watchtower-bin`
+- `witr-bin`
+- `wl-debug`
+- `xdg-desktop-portal-termfilechooser-hunkyburrito-git`
+- `zen-browser-bin`
 
-### AUR packages (need manual porting) (60)
-- [ ] `act-bin`
-- [ ] `albumdetails-debug`
-- [ ] `aliae-bin`
-- [ ] `amdgpu-vulkan-switcher-git`
-- [ ] `amdvlk-bin`
-- [ ] `antigravity-tools-bin`
-- [ ] `babashka-bin`
-- [ ] `carapace-bin`
-- [ ] `duf-debug`
-- [ ] `eilmeldung-bin`
-- [ ] `epr-git`
-- [ ] `flclashx-bin`
-- [ ] `freeze-bin`
-- [ ] `fsel-bin`
-- [ ] `ghgrab-bin`
-- [ ] `gmap-bin`
-- [ ] `goose-desktop-bin`
-- [ ] `gowall-bin`
-- [ ] `hishtory-bin`
-- [ ] `hyprquickframe-git`
-- [ ] `kanata-bin`
-- [ ] `lazytail-bin`
-- [ ] `lib32-amdvlk-bin`
-- [ ] `localsend-bin`
-- [ ] `lutgen-bin`
-- [ ] `mpdris2-git`
-- [ ] `oports-git`
-- [ ] `overskride-bin`
-- [ ] `paru-debug`
-- [ ] `pipemixer-git`
-- [ ] `pixora-icons-git`
-- [ ] `proton-ge-custom-bin`
-- [ ] `protonup-rs-bin`
-- [ ] `proxypilot-debug`
-- [ ] `pup-bin`
-- [ ] `quickshell-git`
-- [ ] `quickshell-overview-git`
-- [ ] `raise-debug`
-- [ ] `reddix-bin`
-- [ ] `repeater-bin`
-- [ ] `resterm-bin`
-- [ ] `rofi-file-browser-extended-git`
-- [ ] `rofi-file-browser-extended-git-debug`
-- [ ] `sidecar-debug`
-- [ ] `simutil-bin`
-- [ ] `sing-box-bin`
-- [ ] `ssh-to-age-debug`
-- [ ] `strace-tui-bin`
-- [ ] `tailray-debug`
-- [ ] `tanin-git`
-- [ ] `tdl-bin`
-- [ ] `themix-full-git`
-- [ ] `v2raya-bin`
-- [ ] `v2rayn-bin`
-- [ ] `vicinae-bin`
-- [ ] `watchtower-bin`
-- [ ] `witr-bin`
-- [ ] `wl-debug`
-- [ ] `xdg-desktop-portal-termfilechooser-hunkyburrito-git`
-- [ ] `zen-browser-bin`
+## System packages (N/A on AerynOS) (32)
+- `amd-ucode`
+- `base`
+- `base-devel`
+- `cachyos-settings`
+- `dkms`
+- `efibootmgr`
+- `kexec-tools`
+- `lib32-amdvlk-bin`
+- `lib32-libpulse`
+- `lib32-pipewire-jack`
+- `lib32-vulkan-radeon`
+- `limine`
+- `linux`
+- `linux-cachyos`
+- `linux-cachyos-eevdf`
+- `linux-cachyos-eevdf-headers`
+- `linux-cachyos-hardened`
+- `linux-cachyos-hardened-headers`
+- `linux-cachyos-headers`
+- `linux-cachyos-lts`
+- `linux-cachyos-lts-headers`
+- `pacman-contrib`
+- `pipewire-alsa`
+- `pipewire-audio`
+- `pipewire-jack`
+- `pipewire-pulse`
+- `sbctl`
+- `systemd-resolvconf`
+- `xf86-video-amdgpu`
+- `xf86-video-ati`
+- `xorg-server`
+- `xorg-xinit`
 
-### System packages (not applicable on AerynOS) (30)
-- [ ] `amd-ucode`
-- [ ] `base`
-- [ ] `base-devel`
-- [ ] `cachyos-settings`
-- [ ] `dkms`
-- [ ] `efibootmgr`
-- [ ] `kexec-tools`
-- [ ] `lib32-amdvlk-bin`
-- [ ] `lib32-libpulse`
-- [ ] `lib32-pipewire-jack`
-- [ ] `lib32-vulkan-radeon`
-- [ ] `limine`
-- [ ] `linux`
-- [ ] `linux-cachyos`
-- [ ] `linux-cachyos-eevdf`
-- [ ] `linux-cachyos-eevdf-headers`
-- [ ] `linux-cachyos-hardened`
-- [ ] `linux-cachyos-hardened-headers`
-- [ ] `linux-cachyos-headers`
-- [ ] `linux-cachyos-lts`
-- [ ] `linux-cachyos-lts-headers`
-- [ ] `pipewire-alsa`
-- [ ] `pipewire-audio`
-- [ ] `pipewire-jack`
-- [ ] `pipewire-pulse`
-- [ ] `sbctl`
-- [ ] `systemd-resolvconf`
-- [ ] `xf86-video-amdgpu`
-- [ ] `xf86-video-ati`
-- [ ] `xorg-server`
+## Other / needs research (285)
+- `abduco`
+- `advancecomp`
+- `adw-gtk-theme`
+- `albumdetails`
+- `amneziawg-dkms`
+- `amneziawg-tools`
+- `aria2`
+- `atop`
+- `bandwhich`
+- `bazecor`
+- `beets`
+- `bluez-utils`
+- `borg`
+- `bpftrace`
+- `bucklespring`
+- `cage`
+- `carla`
+- `cdrtools`
+- `claude-code`
+- `cliphist`
+- `cloud-image-utils`
+- `cloudflare-speed-cli`
+- `cmake-language-server`
+- `convmv`
+- `corectrl`
+- `cowsay`
+- `cpufetch`
+- `ctop`
+- `dcfldd`
+- `ddccontrol`
+- `ddrescue`
+- `dhcpcd`
+- `diff-so-fancy`
+- `dive`
+- `dool`
+- `dos2unix`
+- `dosbox`
+- `droidcam`
+- `dualsensectl`
+- `duf`
+- `enca`
+- `entr`
+- `etckeeper`
+- `fennel`
+- `figlet`
+- `fio`
+- `firewalld`
+- `fortune-mod`
+- `fping`
+- `fwupd`
+- `genact`
+- `geoip`
+- `geoip-database`
+- `ghc`
+- `ghostty-shell-integration`
+- `gist`
+- `git-crypt`
+- `git-extras`
+- `git-filter-repo`
+- `gitleaks`
+- `gitlogue`
+- `gnome-tour`
+- `gnome-user-docs`
+- `gnome-user-share`
+- `goaccess`
+- `goimapnotify`
+- `goverlay`
+- `gptfdisk`
+- `grafana`
+- `gst-libav`
+- `gst-plugins-ugly`
+- `gtk-engine-murrine`
+- `gtk-engines`
+- `gvfs-dnssd`
+- `gvfs-onedrive`
+- `gvfs-wsdd`
+- `handlr-regex`
+- `hashcat`
+- `haskell-tidal`
+- `helvum`
+- `hermes-agent`
+- `himalaya`
+- `httpie`
+- `hunspell-ru`
+- `hw-probe`
+- `hwinfo`
+- `hxd`
+- `hyprpicker`
+- `hyprscratch`
+- `i3-wm`
+- `i3status`
+- `id3v2`
+- `iftop`
+- `instagram-cli`
+- `inter-font`
+- `ioping`
+- `iosevka-neg-fonts`
+- `iotop-c`
+- `iperf3`
+- `isync`
+- `jdupes`
+- `jpegoptim`
+- `jupyterlab`
+- `kmon`
+- `kvantum-qt5`
+- `lbzip2`
+- `libfixposix`
+- `libguestfs`
+- `liquidctl`
+- `lnav`
+- `lshw`
+- `lua-language-server`
+- `lua53`
+- `malcontent`
+- `mandoc`
+- `mediainfo`
+- `memtester`
+- `miller`
+- `minicom`
+- `moreutils`
+- `mpd`
+- `mpdas`
+- `multipath-tools`
+- `neg-pretty-printer`
+- `neo-matrix`
+- `neomutt`
+- `neovim`
+- `neovim-remote`
+- `nerdctl`
+- `nethack`
+- `nethogs`
+- `newsraft`
+- `nicotine+`
+- `nmap`
+- `no-more-secrets`
+- `noto-fonts`
+- `noto-fonts-cjk`
+- `noto-fonts-emoji`
+- `noto-fonts-extra`
+- `nss-mdns`
+- `nuspell`
+- `nvtop`
+- `oh-my-posh`
+- `ollama`
+- `ollama-vulkan`
+- `openbsd-netcat`
+- `opencode`
+- `openocd`
+- `openrgb`
+- `opensoundmeter`
+- `optipng`
+- `optiscaler-universal`
+- `orca`
+- `otf-font-awesome`
+- `otter-launcher`
+- `oyo`
+- `pandoc-cli`
+- `par`
+- `paru`
+- `pass`
+- `patchage`
+- `patool`
+- `pbzip2`
+- `pcmanfm`
+- `pcsc-tools`
+- `perl-image-exiftool`
+- `pgcli`
+- `picard`
+- `pigz`
+- `plocate`
+- `pngquant`
+- `powertop`
+- `pre-commit`
+- `prettyping`
+- `progress`
+- `proton-vpn-cli`
+- `proxypilot`
+- `pwgen`
+- `python-annoy`
+- `python-ascii_magic`
+- `python-faker`
+- `python-internetarchive`
+- `python-mutagen`
+- `python-pipx`
+- `python-pyperclip`
+- `python-python-socks`
+- `python-rapidgzip`
+- `python-telethon`
+- `python-textual`
+- `python-transformers`
+- `qman`
+- `qt5ct`
+- `raise`
+- `raysession`
+- `realtime-privileges`
+- `rebuild-detector`
+- `recoll`
+- `regex-tui`
+- `reptyr`
+- `resvg`
+- `richcolors`
+- `rlwrap`
+- `rmlint`
+- `rmpc`
+- `rofi`
+- `roomeqwizard`
+- `rustmission`
+- `rygel`
+- `s-tui`
+- `satty`
+- `sbcl`
+- `sc3-plugins`
+- `schedtool`
+- `scour`
+- `sidecar`
+- `slirp4netns`
+- `songfetch`
+- `sonic-visualiser`
+- `sops`
+- `sox`
+- `ssh-to-age`
+- `sshpass`
+- `stress-ng`
+- `subversion`
+- `supercollider`
+- `swappy`
+- `swayimg`
+- `sysstat`
+- `system-config-printer`
+- `systemd-manager-tui`
+- `tabiew`
+- `tailray`
+- `taoup`
+- `tcpdump`
+- `tessen`
+- `tesseract`
+- `tesseract-data-eng`
+- `tesseract-data-rus`
+- `testdisk`
+- `texlive-basic`
+- `throne`
+- `tmmpr`
+- `toilet`
+- `traceroute`
+- `transmission-cli`
+- `ttf-gost`
+- `ttf-ibm-plex`
+- `ttf-jetbrains-mono-nerd`
+- `ttf-material-design-icons-extended`
+- `ttf-material-symbols-variable`
+- `ttfautohint`
+- `tumbler`
+- `udiskie`
+- `ufw`
+- `unarchiver`
+- `unbound`
+- `unflac`
+- `urlscan`
+- `urlwatch`
+- `uwsm`
+- `vale`
+- `vdirsyncer`
+- `viu`
+- `vnstat`
+- `w3m`
+- `waypipe`
+- `wayvnc`
+- `wget2`
+- `whois`
+- `wiremix`
+- `wl`
+- `wlogout`
+- `wlr-randr`
+- `wlr-which-key`
+- `wofi`
+- `wtype`
+- `wxwidgets-gtk3`
+- `xdg-ninja`
+- `youtube-tui`
+- `ytsurf`
+- `zapret2`
+- `zathura`
+- `zathura-pdf-poppler`
+- `zk`
+- `zmap`
 
-### Other / needs research (293)
-- [ ] `abduco`
-- [ ] `advancecomp`
-- [ ] `adw-gtk-theme`
-- [ ] `albumdetails`
-- [ ] `amneziawg-dkms`
-- [ ] `amneziawg-tools`
-- [ ] `aria2`
-- [ ] `atop`
-- [ ] `bandwhich`
-- [ ] `bazecor`
-- [ ] `beets`
-- [ ] `bluez-utils`
-- [ ] `borg`
-- [ ] `bpftrace`
-- [ ] `bucklespring`
-- [ ] `cage`
-- [ ] `carla`
-- [ ] `cdrtools`
-- [ ] `claude-code`
-- [ ] `cliphist`
-- [ ] `cloud-image-utils`
-- [ ] `cloudflare-speed-cli`
-- [ ] `cmake-language-server`
-- [ ] `convmv`
-- [ ] `corectrl`
-- [ ] `cowsay`
-- [ ] `cpufetch`
-- [ ] `ctop`
-- [ ] `dcfldd`
-- [ ] `ddccontrol`
-- [ ] `ddrescue`
-- [ ] `dhcpcd`
-- [ ] `diff-so-fancy`
-- [ ] `dive`
-- [ ] `dool`
-- [ ] `dos2unix`
-- [ ] `dosbox`
-- [ ] `droidcam`
-- [ ] `dualsensectl`
-- [ ] `duf`
-- [ ] `enca`
-- [ ] `entr`
-- [ ] `etckeeper`
-- [ ] `fennel`
-- [ ] `figlet`
-- [ ] `fio`
-- [ ] `firewalld`
-- [ ] `fortune-mod`
-- [ ] `fping`
-- [ ] `fwupd`
-- [ ] `genact`
-- [ ] `geoip`
-- [ ] `geoip-database`
-- [ ] `ghc`
-- [ ] `ghostty-shell-integration`
-- [ ] `gist`
-- [ ] `git-crypt`
-- [ ] `git-extras`
-- [ ] `git-filter-repo`
-- [ ] `gitleaks`
-- [ ] `gitlogue`
-- [ ] `gnome-logs`
-- [ ] `gnome-tour`
-- [ ] `gnome-user-docs`
-- [ ] `gnome-user-share`
-- [ ] `go-yq`
-- [ ] `goaccess`
-- [ ] `goimapnotify`
-- [ ] `goverlay`
-- [ ] `gptfdisk`
-- [ ] `grafana`
-- [ ] `gst-libav`
-- [ ] `gst-plugins-ugly`
-- [ ] `gtk-engine-murrine`
-- [ ] `gtk-engines`
-- [ ] `gvfs-dnssd`
-- [ ] `gvfs-onedrive`
-- [ ] `gvfs-wsdd`
-- [ ] `handlr-regex`
-- [ ] `hashcat`
-- [ ] `haskell-tidal`
-- [ ] `helvum`
-- [ ] `hermes-agent`
-- [ ] `himalaya`
-- [ ] `httpie`
-- [ ] `hunspell-ru`
-- [ ] `hw-probe`
-- [ ] `hwinfo`
-- [ ] `hxd`
-- [ ] `hyprpicker`
-- [ ] `hyprscratch`
-- [ ] `i3-wm`
-- [ ] `i3status`
-- [ ] `id3v2`
-- [ ] `iftop`
-- [ ] `instagram-cli`
-- [ ] `inter-font`
-- [ ] `ioping`
-- [ ] `iosevka-neg-fonts`
-- [ ] `iotop-c`
-- [ ] `iperf3`
-- [ ] `isync`
-- [ ] `jdupes`
-- [ ] `jpegoptim`
-- [ ] `jupyterlab`
-- [ ] `kmon`
-- [ ] `kvantum-qt5`
-- [ ] `lbzip2`
-- [ ] `libfixposix`
-- [ ] `libguestfs`
-- [ ] `liquidctl`
-- [ ] `lnav`
-- [ ] `lshw`
-- [ ] `lua-language-server`
-- [ ] `lua53`
-- [ ] `malcontent`
-- [ ] `man-pages`
-- [ ] `mandoc`
-- [ ] `mediainfo`
-- [ ] `memtester`
-- [ ] `miller`
-- [ ] `minicom`
-- [ ] `moreutils`
-- [ ] `mpd`
-- [ ] `mpdas`
-- [ ] `multipath-tools`
-- [ ] `neg-pretty-printer`
-- [ ] `neo-matrix`
-- [ ] `neomutt`
-- [ ] `neovim`
-- [ ] `neovim-remote`
-- [ ] `nerdctl`
-- [ ] `nethack`
-- [ ] `nethogs`
-- [ ] `networkmanager-qt`
-- [ ] `newsraft`
-- [ ] `nicotine+`
-- [ ] `nmap`
-- [ ] `no-more-secrets`
-- [ ] `noto-fonts`
-- [ ] `noto-fonts-cjk`
-- [ ] `noto-fonts-emoji`
-- [ ] `noto-fonts-extra`
-- [ ] `nss-mdns`
-- [ ] `nuspell`
-- [ ] `nvtop`
-- [ ] `oh-my-posh`
-- [ ] `ollama`
-- [ ] `ollama-vulkan`
-- [ ] `openbsd-netcat`
-- [ ] `opencode`
-- [ ] `openocd`
-- [ ] `openrgb`
-- [ ] `opensoundmeter`
-- [ ] `optipng`
-- [ ] `optiscaler-universal`
-- [ ] `orca`
-- [ ] `otf-font-awesome`
-- [ ] `otter-launcher`
-- [ ] `oyo`
-- [ ] `pacman-contrib`
-- [ ] `pandoc-cli`
-- [ ] `par`
-- [ ] `paru`
-- [ ] `pass`
-- [ ] `patchage`
-- [ ] `patool`
-- [ ] `pbzip2`
-- [ ] `pcmanfm`
-- [ ] `pcsc-tools`
-- [ ] `perl-image-exiftool`
-- [ ] `pgcli`
-- [ ] `picard`
-- [ ] `pigz`
-- [ ] `plocate`
-- [ ] `pngquant`
-- [ ] `powertop`
-- [ ] `pre-commit`
-- [ ] `prettyping`
-- [ ] `progress`
-- [ ] `proton-vpn-cli`
-- [ ] `proxypilot`
-- [ ] `pwgen`
-- [ ] `python-annoy`
-- [ ] `python-ascii_magic`
-- [ ] `python-faker`
-- [ ] `python-internetarchive`
-- [ ] `python-mutagen`
-- [ ] `python-pipx`
-- [ ] `python-poetry`
-- [ ] `python-pyperclip`
-- [ ] `python-python-socks`
-- [ ] `python-rapidgzip`
-- [ ] `python-telethon`
-- [ ] `python-textual`
-- [ ] `python-transformers`
-- [ ] `qman`
-- [ ] `qt5ct`
-- [ ] `raise`
-- [ ] `raysession`
-- [ ] `realtime-privileges`
-- [ ] `rebuild-detector`
-- [ ] `recoll`
-- [ ] `regex-tui`
-- [ ] `reptyr`
-- [ ] `resvg`
-- [ ] `richcolors`
-- [ ] `rlwrap`
-- [ ] `rmlint`
-- [ ] `rmpc`
-- [ ] `rofi`
-- [ ] `roomeqwizard`
-- [ ] `rustmission`
-- [ ] `rygel`
-- [ ] `s-tui`
-- [ ] `satty`
-- [ ] `sbcl`
-- [ ] `sc3-plugins`
-- [ ] `schedtool`
-- [ ] `scour`
-- [ ] `sidecar`
-- [ ] `slirp4netns`
-- [ ] `songfetch`
-- [ ] `sonic-visualiser`
-- [ ] `sops`
-- [ ] `sox`
-- [ ] `ssh-to-age`
-- [ ] `sshpass`
-- [ ] `stress-ng`
-- [ ] `subversion`
-- [ ] `supercollider`
-- [ ] `swappy`
-- [ ] `swayimg`
-- [ ] `sysstat`
-- [ ] `system-config-printer`
-- [ ] `systemd-manager-tui`
-- [ ] `tabiew`
-- [ ] `tailray`
-- [ ] `taoup`
-- [ ] `tcpdump`
-- [ ] `tessen`
-- [ ] `tesseract`
-- [ ] `tesseract-data-eng`
-- [ ] `tesseract-data-rus`
-- [ ] `testdisk`
-- [ ] `texlive-basic`
-- [ ] `throne`
-- [ ] `tmmpr`
-- [ ] `toilet`
-- [ ] `traceroute`
-- [ ] `transmission-cli`
-- [ ] `ttf-gost`
-- [ ] `ttf-ibm-plex`
-- [ ] `ttf-jetbrains-mono-nerd`
-- [ ] `ttf-material-design-icons-extended`
-- [ ] `ttf-material-symbols-variable`
-- [ ] `ttfautohint`
-- [ ] `tumbler`
-- [ ] `udiskie`
-- [ ] `ufw`
-- [ ] `unarchiver`
-- [ ] `unbound`
-- [ ] `unflac`
-- [ ] `urlscan`
-- [ ] `urlwatch`
-- [ ] `uwsm`
-- [ ] `vale`
-- [ ] `vdirsyncer`
-- [ ] `virt-viewer`
-- [ ] `vnstat`
-- [ ] `w3m`
-- [ ] `waypipe`
-- [ ] `wayvnc`
-- [ ] `wget2`
-- [ ] `whois`
-- [ ] `wiremix`
-- [ ] `wl`
-- [ ] `wl-clipboard`
-- [ ] `wlogout`
-- [ ] `wlr-randr`
-- [ ] `wlr-which-key`
-- [ ] `wofi`
-- [ ] `wtype`
-- [ ] `wxwidgets-gtk3`
-- [ ] `xdg-ninja`
-- [ ] `xorg-xinit`
-- [ ] `youtube-tui`
-- [ ] `ytsurf`
-- [ ] `zapret2`
-- [ ] `zathura`
-- [ ] `zathura-pdf-poppler`
-- [ ] `zk`
-- [ ] `zmap`

@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : advancecomp
+version     : "2.6"
+release     : 1
+homepage    : https://github.com/amadvance/advancecomp
+upstreams   :
+    - https://github.com/amadvance/advancecomp/archive/refs/tags/v2.6.tar.gz : 799397b10d087d0147d6af117a5a473120f1369f0a3a3d68bf953abc0b749b75
+summary     : Recompression utilities for .png, .mng, .zip and .gz files
+description : |
+    AdvanceCOMP contains Recompression utilities for .png, .mng, .zip and .gz files.
+license     :
+    - GPL-3.0-only
+builddeps   :
+    - binary(make)
+    - binary(g++)
+    - pkgconfig(zlib)
+setup       : |
+    ./autogen.sh
+    %configure
+build       : |
+    %make
+install     : |
+    %make_install

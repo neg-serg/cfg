@@ -2,23 +2,25 @@
 
 Total: **429** not yet installed
 
-## A (16 built, 5 installed via moss stone)
-- [x] `abduco` — stone ✅
-- [ ] `act-bin`
-- [x] `advancecomp` — stone ✅
-- [ ] `adw-gtk-theme`
-- [x] `age` — stone ✅
-- [x] `albumdetails` — stone ✅
-- [ ] `albumdetails-debug`
-- [ ] `aliae-bin`
-- [ ] `amd-ucode`
-- [ ] `amdgpu-vulkan-switcher-git`
-- [ ] `amdvlk-bin`
-- [ ] `amneziawg-dkms`
-- [ ] `amneziawg-tools`
-- [ ] `antigravity-tools-bin`
-- [ ] `aria2`
-- [x] `atop` — stone ✅
+Total: **428** not yet installed
+
+## A (16)
+- [x] `abduco` — stone package ✅
+- [ ] `act-bin` — AUR binary
+- [x] `advancecomp` — stone package ✅
+- [ ] `adw-gtk-theme` — flatpak (pending install)
+- [x] `age` — stone package (Go) ✅
+- [x] `albumdetails` — stone package ✅
+- [ ] `albumdetails-debug` — AUR debug
+- [ ] `aliae-bin` — AUR binary
+- [ ] `amd-ucode` — system, N/A
+- [ ] `amdgpu-vulkan-switcher-git` — AUR git
+- [ ] `amdvlk-bin` — AUR binary driver
+- [ ] `amneziawg-dkms` — kernel module
+- [ ] `amneziawg-tools` — WireGuard fork
+- [ ] `antigravity-tools-bin` — AUR binary
+- [ ] `aria2` — API conflict with nettle, needs patching
+- [x] `atop` — stone package ✅
 
 ## B (13)
 - [ ] `babashka-bin`

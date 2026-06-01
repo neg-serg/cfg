@@ -13,11 +13,10 @@ description : |
 license     :
     - GPL-3.0-only
 builddeps   :
-    - binary(make)
     - binary(g++)
     - pkgconfig(zlib)
 setup       : |
-    ./autogen.sh
+    autoreconf -fi
     %configure
 build       : |
     %make

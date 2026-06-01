@@ -2,13 +2,13 @@
 
 Total: **429** not yet installed
 
-## A (13 built, 3 installed via moss stone)
-- [x] `abduco` — stone package built & installed
+## A (16 built, 5 installed via moss stone)
+- [x] `abduco` — stone ✅
 - [ ] `act-bin`
-- [ ] `advancecomp` — build failed (autotools issue)
+- [x] `advancecomp` — stone ✅
 - [ ] `adw-gtk-theme`
-- [ ] `age`
-- [x] `albumdetails` — stone package built & installed
+- [x] `age` — stone ✅
+- [x] `albumdetails` — stone ✅
 - [ ] `albumdetails-debug`
 - [ ] `aliae-bin`
 - [ ] `amd-ucode`
@@ -18,7 +18,7 @@ Total: **429** not yet installed
 - [ ] `amneziawg-tools`
 - [ ] `antigravity-tools-bin`
 - [ ] `aria2`
-- [x] `atop` — stone package built & installed
+- [x] `atop` — stone ✅
 
 ## B (13)
 - [ ] `babashka-bin`

@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2025 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : age
+version     : "1.2.1"
+release     : 1
+homepage    : https://github.com/FiloSottile/age
+upstreams   :
+    - https://github.com/FiloSottile/age/archive/refs/tags/v1.2.1.tar.gz : 93bd89a16c74949ee7c69ef580d8e4cf5ce03e7d9c461b68cf1ace3e4017eef5
+summary     : A simple, modern and secure encryption tool
+description : |
+    age is a simple, modern and secure file encryption tool, 
+    featuring small explicit keys, no config options, and UNIX-style composability.
+license     :
+    - BSD-3-Clause
+networking  : true
+builddeps   :
+    - binary(go)
+build       : |
+    go build -o age ./cmd/age
+    go build -o age-keygen ./cmd/age-keygen
+install     : |
+    %install_bin age
+    %install_bin age-keygen

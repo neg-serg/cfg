@@ -1,0 +1,18 @@
+name: aliae
+version: "0.26.6"
+release: 1
+homepage: https://aliae.dev
+summary: Cross shell and platform alias management
+description: |
+  Cross shell and platform alias management.
+license:
+  - MIT
+builddeps:
+  - binary(wget)
+networking: true
+build: |
+  wget -q https://github.com/JanDeDobbeleer/aliae/releases/download/v0.26.6/aliae-linux-amd64
+  echo "808bbe54b7464d252c27e92c301022fb188784d2f26fe5d238fabb475b162443  aliae-linux-amd64" | sha256sum -c
+  mv aliae-linux-amd64 aliae
+install: |
+  %install_bin aliae

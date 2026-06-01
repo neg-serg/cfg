@@ -1,0 +1,14 @@
+name: act
+version: "0.2.89"
+release: 1
+homepage: https://github.com/nektos/act
+upstreams:
+  - https://github.com/nektos/act/releases/download/v0.2.89/act_Linux_x86_64.tar.gz : 0191d6f1f3b716b5c55820032605d05fc3c1cdbf581ebeff655019e5dd1524c0
+summary: Run your GitHub Actions locally
+description: |
+  Run your GitHub Actions locally.
+license:
+  - MIT
+install: |
+  bsdtar xf /mason/sourcedir/act_Linux_x86_64.tar.gz -C .
+  %install_bin act

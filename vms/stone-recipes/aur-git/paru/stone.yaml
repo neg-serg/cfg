@@ -1,0 +1,22 @@
+name: paru
+version: "0.1"
+release: 1
+homepage: https://github.com/morganamilo/paru
+upstreams: []
+summary: Feature packed AUR helper
+description: |
+  Feature packed AUR helper
+license:
+  - GPL-3.0-or-later
+builddeps:
+  - binary(cargo)
+  - binary(pkg-config)
+  - pkgconfig(libalpm)
+  - pacman
+networking: true
+setup: |
+  git clone --depth=1 https://github.com/Morganamilo/paru.git .
+build: |
+  %cargo_build
+install: |
+  %cargo_install

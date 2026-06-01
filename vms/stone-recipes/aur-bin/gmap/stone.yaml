@@ -1,0 +1,14 @@
+name: gmap
+version: "0.4.0"
+release: 1
+homepage: https://github.com/marawny/gmap
+upstreams:
+  - https://github.com/marawny/gmap/releases/download/v0.4.0/gmap-linux-x86_64-0.4.0.zip : fbf643656bf2d0c374ad4b6c15550c6c4888bd88403f3dc5c1d65fb50e69dea2
+summary: Git repository analysis tool for churn and heatmap visualization
+description: |
+  Git repository analysis tool for churn and heatmap visualization.
+license:
+  - MIT
+install: |
+  bsdtar xf /mason/sourcedir/gmap-linux-x86_64-0.4.0.zip -C .
+  %install_bin gmap

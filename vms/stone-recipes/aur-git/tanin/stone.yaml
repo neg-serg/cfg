@@ -1,0 +1,30 @@
+name: tanin
+version: "0.1"
+release: 1
+homepage: https://github.com/AnonMiraj/Tanin
+upstreams: []
+summary: A TUI ambient sound generator written in Rust
+description: |
+  A TUI ambient sound generator written in Rust
+license:
+  - MIT
+builddeps:
+  - binary(cargo)
+  - pkgconfig(alsa)
+  - pkgconfig(openssl)
+  - pkgconfig(opus)
+rundeps:
+  - alsa-lib
+  - openssl-libs
+  - opus
+environment: |
+  export CARGO_HTTP_TIMEOUT=120
+  export CARGO_NET_RETRY=10
+networking: true
+setup: |
+  git clone --depth=1 https://github.com/AnonMiraj/Tanin.git .
+  %cargo_fetch
+build: |
+  cargo build --release -j 24 --no-default-features
+install: |
+  %install_bin target/release/tanin

@@ -1,0 +1,14 @@
+name: simutil
+version: "0.5.0"
+release: 1
+homepage: https://github.com/dungngminh/simutil
+upstreams:
+  - https://github.com/dungngminh/simutil/releases/download/v0.5.0/simutil-linux-x64.tar.gz : 4b2ac3b1921da576765867eb3f3756f9e0475dbdb1e0f6fb12593e72f7102d90
+summary: Cross platform utility TUI app for launching iOS simulators / Android emulators
+description: |
+  Cross platform utility TUI app for launching iOS simulators / Android emulators, discover physical devices, ADB tools and more.
+license:
+  - MIT
+install: |
+  bsdtar xf /mason/sourcedir/simutil-linux-x64.tar.gz -C .
+  install -Dm00755 simutil-linux-x64 /mason/install/usr/bin/simutil

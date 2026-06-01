@@ -1,0 +1,14 @@
+name: reddix
+version: "0.2.9"
+release: 1
+homepage: https://github.com/ck-zhang/reddix
+upstreams:
+  - https://github.com/ck-zhang/reddix/releases/download/v0.2.9/reddix-x86_64-unknown-linux-gnu.tar.xz : 5d1195fe6729bfe7d41b0c7c9aad12e1e11c1eb9532d68d9704861d413179201
+summary: Reddit, refined for the terminal
+description: |
+  Reddit, refined for the terminal.
+license:
+  - MIT
+install: |
+  bsdtar xf /mason/sourcedir/reddix-x86_64-unknown-linux-gnu.tar.xz -C .
+  %install_bin reddix-x86_64-unknown-linux-gnu/reddix

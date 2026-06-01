@@ -1,0 +1,18 @@
+name: hishtory
+version: "0.335"
+release: 1
+homepage: https://hishtory.dev
+summary: Your shell history, synced, queryable, and in context
+description: |
+  Your shell history, synced, queryable, and in context.
+license:
+  - MIT
+builddeps:
+  - binary(wget)
+networking: true
+build: |
+  wget -q https://github.com/ddworken/hishtory/releases/download/v0.335/hishtory-linux-amd64
+  echo "49a926eecd40f0c0bc5ef5670de191496cf882216b5c53f32e3ebc2e3be2d271  hishtory-linux-amd64" | sha256sum -c
+  mv hishtory-linux-amd64 hishtory
+install: |
+  %install_bin hishtory

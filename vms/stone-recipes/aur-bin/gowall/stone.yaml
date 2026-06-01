@@ -1,0 +1,14 @@
+name: gowall
+version: "0.2.4"
+release: 1
+homepage: https://github.com/Achno/gowall
+upstreams:
+  - https://github.com/Achno/gowall/releases/download/v0.2.4/gowall-amd64-linux.tar.gz : dab486d5028e5f790fbd92dd26022ac5670b0d01adef4bd632ba7115c2d34ad3
+summary: A tool to convert a Wallpaper's color scheme - palette
+description: |
+  A tool to convert a Wallpaper's color scheme - palette.
+license:
+  - MIT
+install: |
+  bsdtar xf /mason/sourcedir/gowall-amd64-linux.tar.gz -C .
+  %install_bin gowall

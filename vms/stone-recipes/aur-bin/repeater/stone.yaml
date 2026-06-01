@@ -1,0 +1,14 @@
+name: repeater
+version: "0.1.10"
+release: 1
+homepage: https://github.com/shaankhosla/repeater
+upstreams:
+  - https://github.com/shaankhosla/repeater/releases/download/v0.1.10/repeater-x86_64-unknown-linux-gnu.tar.xz : cf9e0d0e6873b49349ba585eb98a9a89cc57613b1a70c294ead671ef807bb026
+summary: Spaced repetition, in your terminal
+description: |
+  Spaced repetition, in your terminal.
+license:
+  - Apache-2.0
+install: |
+  bsdtar xf /mason/sourcedir/repeater-x86_64-unknown-linux-gnu.tar.xz -C .
+  %install_bin repeater-x86_64-unknown-linux-gnu/repeater

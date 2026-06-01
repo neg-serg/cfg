@@ -1,0 +1,18 @@
+name: ghgrab
+version: "2.0.1"
+release: 1
+homepage: https://github.com/abhixdd/ghgrab
+summary: Search and download files from GitHub without leaving your CLI
+description: |
+  A simple, pretty terminal tool that lets you search and download files from GitHub without leaving your CLI.
+license:
+  - MIT
+builddeps:
+  - binary(wget)
+networking: true
+build: |
+  wget -q https://github.com/abhixdd/ghgrab/releases/download/v2.0.1/ghgrab-linux
+  echo "fa96f467f54efb5c1b65d69e950b5c8815c6a19a8eec35e7495e34967fdf34f5  ghgrab-linux" | sha256sum -c
+  mv ghgrab-linux ghgrab
+install: |
+  %install_bin ghgrab

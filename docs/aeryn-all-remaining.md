@@ -1,6 +1,6 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **439** (72%), осталось **164**
+**603** хост-пакетов, портировано **443** (73%), осталось **160**
 
 ## A (3)
 - [ ] `amd-ucode` — N/A
@@ -127,14 +127,13 @@
 - [ ] `orca`
 - [ ] `otter-launcher`
 
-## P (19)
+## P (18)
 - [ ] `pacman-contrib` — N/A
 - [ ] `paru`
 - [ ] `paru-debug` — debug
 - [ ] `patchage`
 - [ ] `pcmanfm`
 - [ ] `perl-image-exiftool`
-- [ ] `pgcli`
 - [ ] `picard`
 - [ ] `pipewire-alsa` — N/A
 - [ ] `pipewire-audio` — N/A
@@ -151,7 +150,7 @@
 ## Q (1)
 - [ ] `qman`
 
-## R (12)
+## R (9)
 - [ ] `raise`
 - [ ] `raise-debug` — debug
 - [ ] `rawtherapee`
@@ -159,9 +158,6 @@
 - [ ] `realtime-privileges`
 - [ ] `recoll`
 - [ ] `richcolors`
-- [ ] `rofi`
-- [ ] `rofi-file-browser-extended-git` — git
-- [ ] `rofi-file-browser-extended-git-debug` — debug
 - [ ] `roomeqwizard`
 - [ ] `rygel`
 

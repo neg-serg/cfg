@@ -1,6 +1,6 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **452** (74%), осталось **151**
+**603** хост-пакетов, портировано **453** (75%), осталось **150**
 
 ## A (3)
 - [ ] `amd-ucode` — N/A
@@ -120,7 +120,7 @@
 - [ ] `orca`
 - [ ] `otter-launcher`
 
-## P (16)
+## P (15)
 - [ ] `pacman-contrib` — N/A
 - [ ] `paru`
 - [ ] `paru-debug` — debug
@@ -135,7 +135,6 @@
 - [ ] `proton-vpn-cli`
 - [ ] `proxypilot`
 - [ ] `proxypilot-debug` — debug
-- [ ] `pwgen`
 - [ ] `python-transformers`
 
 ## Q (1)

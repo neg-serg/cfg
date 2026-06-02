@@ -1,10 +1,9 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **438** (72%), осталось **165**
+**603** хост-пакетов, портировано **441** (73%), осталось **162**
 
-## A (4)
+## A (3)
 - [ ] `amd-ucode` — N/A
-- [ ] `amdgpu-vulkan-switcher-git` — git, no stable release
 - [ ] `amdvlk-bin` — binary, no source
 - [ ] `amneziawg-dkms`
 
@@ -65,13 +64,12 @@
 - [ ] `gvfs-onedrive`
 - [ ] `gvfs-wsdd`
 
-## H (6)
+## H (5)
 - [ ] `haskell-tidal`
 - [ ] `helvum`
 - [ ] `hermes-agent`
 - [ ] `hw-probe`
 - [ ] `hwinfo`
-- [ ] `hyprquickframe-git` — git, no stable release
 
 ## I (4)
 - [ ] `i3-wm`
@@ -148,9 +146,8 @@
 - [ ] `pwgen`
 - [ ] `python-transformers`
 
-## Q (2)
+## Q (1)
 - [ ] `qman`
-- [ ] `quickshell-overview-git` — git, no stable release
 
 ## R (12)
 - [ ] `raise`

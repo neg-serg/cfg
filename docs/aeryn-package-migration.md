@@ -372,8 +372,8 @@
 - [ ] `dosbox` — `flatpak install io.github.dosbox.DOSBox`
 - [ ] `gnome-tour` — `flatpak install org.gnome.Tour`
 - [ ] `goverlay` — `flatpak install io.github.goverlay.GOverlay`
-- [ ] `neovim` — `flatpak install io.neovim.Neovim`
-- [ ] `nethack` — `flatpak install nethack`
+- [x] `neovim` — `flatpak install io.neovim.Neovim`
+- [x] `nethack` — `flatpak install nethack`
 - [ ] `nicotine+` — `flatpak install org.nicotine_plus.Nicotine`
 - [ ] `openrgb` — `flatpak install org.openrgb.OpenRGB`
 - [ ] `opensoundmeter` — `flatpak install io.gitlab.opensoundmeter.OpenSoundMeter`
@@ -588,18 +588,18 @@
 - [ ] `jpegoptim` — JPEG optimizer
 - [ ] `lbzip2` — parallel bzip2, use pbzip2
 - [ ] `lua-language-server` — LSP for Lua
-- [ ] `mediainfo` — media file info
+- [x] `mediainfo` — media file info
 - [ ] `memtester` — memory tester
 - [ ] `miller` — CSV/JSON processor
 - [ ] `minicom` — serial terminal
 - [ ] `moreutils` — additional Unix tools
-- [ ] `mpd` — Music Player Daemon
+- [x] `mpd` — Music Player Daemon
 - [ ] `mpdas` — MPD audio scrobbler
 - [ ] `neo-matrix` — Matrix rain effect
 - [ ] `neomutt` — email client
 - [ ] `nerdctl` — container runtime, use podman
 - [ ] `nethogs` — per-process network traffic
-- [ ] `nmap` — network scanner
+- [x] `nmap` — network scanner
 - [ ] `no-more-secrets` — terminal effect
 - [ ] `nvtop` — GPU monitor
 - [ ] `ollama` — `curl -fsSL https://ollama.ai/install.sh | sh`
@@ -616,7 +616,7 @@
 - [ ] `pigz` — parallel gzip
 - [ ] `plocate` — file locate
 - [ ] `pngquant` — PNG compressor
-- [ ] `powertop` — power management
+- [x] `powertop` — power management
 - [ ] `progress` — coreutils progress monitor
 - [ ] `pwgen` — password generator
 - [ ] `qman` — Qt man page viewer
@@ -629,7 +629,7 @@
 - [ ] `roomeqwizard` — audio EQ, download from roomeqwizard.com
 - [ ] `sbcl` — Common Lisp compiler
 - [ ] `sc3-plugins` — SuperCollider UGen plugins
-- [ ] `schedtool` — CPU scheduler tool
+- [x] `schedtool` — CPU scheduler tool
 - [ ] `sox` — audio editor
 - [ ] `sshpass` — SSH with password
 - [ ] `stress-ng` — stress testing
@@ -638,9 +638,9 @@
 - [ ] `sysstat` — system stats
 - [ ] `tcpdump` — packet analyzer
 - [ ] `tessen` — password menu
-- [ ] `tesseract` — OCR engine, build from source
-- [ ] `tesseract-data-eng` — English OCR data
-- [ ] `tesseract-data-rus` — Russian OCR data
+- [x] `tesseract` — OCR engine, build from source
+- [x] `tesseract-data-eng` — English OCR data
+- [x] `tesseract-data-rus` — Russian OCR data
 - [ ] `testdisk` — data recovery
 - [ ] `texlive-basic` — LaTeX distribution
 - [ ] `toilet` — ASCII art
@@ -648,9 +648,9 @@
 - [ ] `ttfautohint` — font hinter
 - [ ] `udiskie` — USB automounter
 - [ ] `unarchiver` — archive extractor
-- [ ] `unbound` — DNS resolver
+- [x] `unbound` — DNS resolver
 - [ ] `vnstat` — network traffic logger
-- [ ] `w3m` — text-mode browser
+- [x] `w3m` — text-mode browser
 - [ ] `waypipe` — Wayland proxy
 - [ ] `wayvnc` — use neatvnc (in moss: `neatvnc`)
 - [ ] `wget2` — download tool

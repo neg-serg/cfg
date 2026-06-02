@@ -1,6 +1,6 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **450** (74%), осталось **153**
+**603** хост-пакетов, портировано **452** (74%), осталось **151**
 
 ## A (3)
 - [ ] `amd-ucode` — N/A
@@ -17,19 +17,17 @@
 - [ ] `bottles`
 - [ ] `bucklespring`
 
-## C (8)
+## C (7)
 - [ ] `cachyos-settings` — N/A
 - [ ] `cage`
 - [ ] `carla`
 - [ ] `chromium`
 - [ ] `cloud-image-utils`
 - [ ] `cloudflare-speed-cli`
-- [ ] `cmake-language-server`
 - [ ] `corectrl`
 
-## D (3)
+## D (2)
 - [ ] `dkms` — N/A
-- [ ] `dool`
 - [ ] `droidcam`
 
 ## E (2)

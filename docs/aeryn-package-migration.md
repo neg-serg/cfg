@@ -497,7 +497,7 @@
 - [x] `amneziawg-tools` — N/A
 - [ ] `bluez-utils` — Bluetooth utils
 - [ ] `cage` — Wayland compositor, use Hyprland
-- [ ] `cdrtools` — CD tools, N/A
+- [x] `cdrtools` — CD tools, N/A
 - [ ] `cloud-image-utils` — cloud-init, N/A
 - [x] `dhcpcd` — use NetworkManager
 - [ ] `firewalld` — N/A

@@ -1,0 +1,17 @@
+name        : cloudflare-speed-cli
+version     : "2.2.1"
+release     : 1
+homepage    : https://github.com/tomieq/cloudflare-speed-cli
+summary     : Cloudflare speed test CLI
+description : |
+    Test the speed of Cloudflare CDN
+license     : MIT
+builddeps   :
+    - binary(go)
+networking  : true
+build       : |
+    go env -w GOPATH=$PWD/gopath
+    git clone https://github.com/tomieq/cloudflare-speed-cli.git .
+    go build -o cloudflare-speed-cli .
+install     : |
+    %install_bin cloudflare-speed-cli

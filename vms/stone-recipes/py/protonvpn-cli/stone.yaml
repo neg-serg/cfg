@@ -1,0 +1,26 @@
+name: python-protonvpn-cli
+version: '2.2.11'
+release: 1
+homepage: https://github.com/ProtonVPN/proton-vpn-cli
+upstreams:
+  - https://files.pythonhosted.org/packages/7d/f7/55844a152a8a08ff6acb62e6eb38c5df29eb8843927d1bdda0b752acbdf4/protonvpn_cli-2.2.11.tar.gz : 'dfeac76f80e49573819c9fae51fa4c7b7638dabdb61c9c91a4caad5f5edb08ce'
+summary: ProtonVPN CLI - ProtonVPN Command Line Tool
+description: |
+  ProtonVPN CLI is a command line tool for Linux that gives you access to ProtonVPN from the terminal.
+license:
+  - GPL-3.0-only
+builddeps:
+  - python(setuptools)
+  - binary(python3)
+rundeps:
+  - python-libs
+  - python-docopt
+  - python-jinja2
+  - python-requests
+  - python-distro
+  - python-pythondialog
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

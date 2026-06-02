@@ -1,0 +1,20 @@
+name        : youtube-tui
+version     : "0.5.0"
+release     : 1
+homepage    : https://github.com/darky/node-youtube-tui
+summary     : YouTube TUI client
+description : |
+    A TUI client for YouTube
+license     : MIT
+builddeps   :
+    - binary(cargo)
+networking  : true
+setup       : |
+    echo "nameserver 8.8.8.8" > /etc/resolv.conf 2>/dev/null || true
+build       : |
+    echo "nameserver 8.8.8.8" > /etc/resolv.conf 2>/dev/null || true
+    export CFLAGS="$(echo "$CFLAGS" | sed 's/--param ssp-buffer-size=32 //g')"
+    cargo install youtube-tui --root %(installroot)%(prefix)
+install       : |
+    # cargo install already places files in installroot
+    true

@@ -1,0 +1,17 @@
+name        : go-yq
+version     : "4.45.1"
+release     : 1
+homepage    : https://github.com/mikefarah/yq
+upstreams   :
+    - https://github.com/mikefarah/yq/archive/refs/tags/v4.45.1.tar.gz : 074a21a002c32a1db3850064ad1fc420083d037951c8102adecfea6c5fd96427
+summary     : YAML processor
+description : |
+    A portable command-line YAML processor written in Go
+license     : MIT
+builddeps   :
+    - binary(go)
+networking  : true
+build       : |
+    go build -o yq .
+install     : |
+    %install_bin yq

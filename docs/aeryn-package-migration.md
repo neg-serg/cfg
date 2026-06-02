@@ -438,7 +438,7 @@
 - [x] `himalaya` — `cargo install himalaya`
 - [x] `hxd` — `cargo install hxd`
 - [x] `kmon` — `cargo install kmon`
-- [ ] `lnav` — `cargo install lnav`
+- [x] `lnav` — `cargo install lnav`
 - [x] `mandoc` — `cargo install mandoc`
 - [ ] `newsraft` — `cargo install newsraft`
 - [x] `oyo` — `cargo install oyo`
@@ -644,7 +644,7 @@
 - [x] `testdisk` — data recovery
 - [ ] `texlive-basic` — LaTeX distribution
 - [ ] `toilet` — ASCII art
-- [ ] `traceroute` — use mtr (already installed)
+- [x] `traceroute` — use mtr (already installed)
 - [ ] `ttfautohint` — font hinter
 - [x] `udiskie` — USB automounter
 - [ ] `unarchiver` — archive extractor
@@ -658,7 +658,7 @@
 - [x] `wiremix` — audio tool
 - [x] `wlogout` — Wayland logout UI
 - [x] `wlr-randr` — output management
-- [ ] `wofi` — launcher, use fuzzel (in moss)
+- [x] `wofi` — launcher, use fuzzel (in moss)
 - [x] `wtype` — Wayland keyboard input, use ydotool (installed)
 - [ ] `ytsurf` — YouTube surf CLI
 - [ ] `zapret2` — DPI circumvention, build from GitHub

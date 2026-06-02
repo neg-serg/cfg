@@ -1,0 +1,22 @@
+name        : zmap
+version     : "4.3.1"
+release     : 1
+homepage    : https://zmap.io/
+upstreams   :
+    - https://github.com/zmap/zmap/archive/refs/tags/v4.3.1.tar.gz : a281eaeac415f49734e22f9219e36454843de494ab8f9723a3de7f123142050f
+summary     : Network scanner
+description : |
+    ZMap is an open-source network scanner that enables researchers to scan the Internet
+license     : Apache-2.0
+builddeps   :
+    - binary(make)
+    - binary(gcc)
+    - binary(pkgconf)
+    - binary(cmake)
+    - binary(gengetopt)
+setup       : |
+    %cmake -DWITH_JUDY=OFF
+build       : |
+    %make
+install     : |
+    %make_install

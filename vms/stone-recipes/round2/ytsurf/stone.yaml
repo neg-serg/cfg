@@ -1,0 +1,17 @@
+name        : ytsurf
+version     : "1.7.0"
+release     : 1
+homepage    : https://github.com/plamoxdev/ytsurf
+summary     : YouTube downloader TUI
+description : |
+    A TUI YouTube downloader written in Go
+license     : MIT
+builddeps   :
+    - binary(go)
+networking  : true
+build       : |
+    go env -w GOPATH=$PWD/gopath
+    git clone https://github.com/plamoxdev/ytsurf.git .
+    go build -o ytsurf .
+install     : |
+    %install_bin ytsurf

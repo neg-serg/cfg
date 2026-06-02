@@ -1,0 +1,24 @@
+name        : newsraft
+version     : "0.26"
+release     : 1
+homepage    : https://codeberg.org/grisha/newsraft
+upstreams   :
+    - https://codeberg.org/grisha/newsraft/archive/v0.26.tar.gz : 85277b5cf3feaff712d0ed2270decc4386b669dadf32009ae8463d726cab8dd5
+summary     : Feed reader for terminal
+description : |
+    A terminal feed reader with a curses interface
+license     : MIT
+builddeps   :
+    - pkgconf-devel
+    - ncurses-devel
+    - curl-devel
+    - libxml2-devel
+    - sqlite-devel
+    - yajl-devel
+networking  : true
+setup       : |
+    %meson
+build       : |
+    %meson_build
+install     : |
+    %meson_install

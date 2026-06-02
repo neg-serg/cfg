@@ -1,0 +1,25 @@
+name        : virt-viewer
+version     : "11.0"
+release     : 1
+homepage    : https://gitlab.com/virt-viewer/virt-viewer
+upstreams   :
+    - https://gitlab.com/virt-viewer/virt-viewer/-/archive/v11.0/virt-viewer-v11.0.tar.gz : 73e2f0148dd49c5ff5e8c5d0e9d9de592931895e89e2300e3de4ae96d8380a9b
+summary     : SPICE/VNC client
+description : |
+    A SPICE and VNC client for virtual machines
+license     : GPL-2.0-or-later
+builddeps   :
+    - pkgconf-devel
+    - gtk-3-devel
+    - spice-gtk-devel
+    - gtk-vnc-devel
+    - libvirt-glib-devel
+    - libxml2-devel
+    - binary(perl)
+    - glib2-devel
+setup       : |
+    %meson
+build       : |
+    %meson_build
+install     : |
+    %meson_install

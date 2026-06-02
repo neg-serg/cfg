@@ -1,0 +1,29 @@
+name        : lua-language-server
+version     : "3.13.9"
+release     : 1
+homepage    : https://github.com/LuaLS/lua-language-server
+upstreams   :
+    - https://github.com/LuaLS/lua-language-server/archive/refs/tags/3.13.9.tar.gz : b3e6c84e4432a29fccd0bfadfb07450fbec4dd479c9af528c1b0a06487cf32c6
+summary     : Lua language server
+description : |
+    A language server for Lua written in C
+license     : MIT
+builddeps   :
+    - binary(cargo)
+    - pkgconf-devel
+networking  : true
+setup       : |
+    echo "nameserver 8.8.8.8" > /etc/resolv.conf 2>/dev/null || true
+    git submodule update --init --recursive
+build       : |
+    echo "nameserver 8.8.8.8" > /etc/resolv.conf 2>/dev/null || true
+    export CFLAGS="$(echo "$CFLAGS" | sed 's/--param ssp-buffer-size=32 //g')"
+    cd 3rd/luamake
+    ./compile/install.sh
+    cd ../..
+    ./3rd/luamake/luamake rebuild
+install     : |
+    mkdir -p %(installroot)%(prefix)/bin
+    cp -r bin/* %(installroot)%(prefix)/bin/
+    mkdir -p %(installroot)%(prefix)/share/lua-language-server
+    cp -r meta script locale %(installroot)%(prefix)/share/lua-language-server/ 2>/dev/null || true

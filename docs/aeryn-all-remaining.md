@@ -1,6 +1,6 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **446** (73%), осталось **157**
+**603** хост-пакетов, портировано **448** (74%), осталось **155**
 
 ## A (3)
 - [ ] `amd-ucode` — N/A
@@ -27,10 +27,9 @@
 - [ ] `cmake-language-server`
 - [ ] `corectrl`
 
-## D (4)
+## D (3)
 - [ ] `dkms` — N/A
 - [ ] `dool`
-- [ ] `dosbox`
 - [ ] `droidcam`
 
 ## E (2)
@@ -65,11 +64,10 @@
 - [ ] `gvfs-onedrive`
 - [ ] `gvfs-wsdd`
 
-## H (5)
+## H (4)
 - [ ] `haskell-tidal`
 - [ ] `helvum`
 - [ ] `hermes-agent`
-- [ ] `hw-probe`
 - [ ] `hwinfo`
 
 ## I (4)

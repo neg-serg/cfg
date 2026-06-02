@@ -9,6 +9,7 @@ description : |
     CLI utility that pipes video streams into a video player
 license     : BSD-2-Clause
 builddeps   :
+    - python(setuptools)
     - binary(python3)
     - python-build
     - python-wheel

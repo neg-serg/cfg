@@ -9,15 +9,19 @@ description : |
     Universal Wayland Session Manager
 license     : MIT
 builddeps   :
+    - binary(meson)
+    - binary(scdoc)
     - binary(python3)
-    - python-build
-    - python-wheel
-    - python-installer
+    - binary(ninja)
+    - python-dbus
+    - python-xdg
 rundeps     :
     - python-libs
-networking  : true
+    - python-dbus
+    - python-xdg
+setup       : |
+    %meson
 build       : |
-    %pyproject_build
+    %meson_build
 install     : |
-    %pyproject_install
-    %python_compile
+    %meson_install

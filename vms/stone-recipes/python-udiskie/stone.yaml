@@ -9,6 +9,8 @@ description : |
     Removable disk automounter using udisks
 license     : MIT
 builddeps   :
+    - gettext
+    - python(setuptools)
     - binary(python3)
     - python-build
     - python-wheel

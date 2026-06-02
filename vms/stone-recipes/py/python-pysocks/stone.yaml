@@ -1,0 +1,20 @@
+name: python-pysocks
+version: "1.7.1"
+release: 1
+homepage: https://pypi.org/project/PySocks
+upstreams:
+  - https://files.pythonhosted.org/packages/bd/11/293dd436aea955d45fc4e8a35b6ae7270f5b8e00b53cf6c024c83b657a11/PySocks-1.7.1.tar.gz : 3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0
+summary: A Python SOCKS client module
+description: |
+  A Python SOCKS client module.
+license:
+  - BSD-3-Clause
+builddeps:
+  - python(setuptools)
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

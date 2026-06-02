@@ -11,6 +11,7 @@ license     :
     - MIT
 builddeps   :
     - binary(cargo)
+    - pkgconfig(dbus-1)
 networking  : true
 setup       : |
     %cargo_fetch

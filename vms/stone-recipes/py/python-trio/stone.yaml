@@ -1,0 +1,20 @@
+name: python-trio
+version: "0.33.0"
+release: 1
+homepage: https://pypi.org/project/trio
+upstreams:
+  - https://files.pythonhosted.org/packages/52/b6/c744031c6f89b18b3f5f4f7338603ab381d740a7f45938c4607b2302481f/trio-0.33.0.tar.gz : a29b92b73f09d4b48ed249acd91073281a7f1063f09caba5dc70465b5c7aa970
+summary: A friendly Python library for async concurrency and I/O
+description: |
+  A friendly Python library for async concurrency and I/O.
+license:
+  - Apache-2.0
+builddeps:
+  - python(setuptools)
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

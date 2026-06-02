@@ -1,0 +1,20 @@
+name: python-docopt
+version: "0.6.2"
+release: 1
+homepage: https://pypi.org/project/docopt
+upstreams:
+  - https://pypi.debian.net/docopt/docopt-0.6.2.tar.gz : 49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491
+summary: Pythonic argument parser
+description: |
+  Pythonic argument parser, that will make you smile.
+license:
+  - MIT
+builddeps:
+  - python(setuptools)
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

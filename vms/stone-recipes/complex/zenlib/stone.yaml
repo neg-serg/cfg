@@ -1,0 +1,23 @@
+name: zenlib
+version: "0.4.41"
+release: 1
+homepage: https://github.com/MediaArea/ZenLib
+upstreams:
+  - https://github.com/MediaArea/ZenLib/archive/refs/tags/v0.4.41.tar.gz : 45d5173fa0278f5264daa6836ae297aa303984482227d00b35c4f03929494c8f
+summary: C++ library for media info
+description: |
+  ZenLib
+license:
+  - Zlib
+builddeps:
+  - binary(cmake)
+  - binary(gcc)
+  - binary(g++)
+  - binary(ninja)
+setup: |
+  %cmake -S Project/CMake \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+build: |
+  %cmake_build
+install: |
+  %cmake_install

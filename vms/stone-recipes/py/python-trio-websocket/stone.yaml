@@ -1,0 +1,20 @@
+name: python-trio-websocket
+version: "0.12.2"
+release: 1
+homepage: https://pypi.org/project/trio-websocket
+upstreams:
+  - https://files.pythonhosted.org/packages/d1/3c/8b4358e81f2f2cfe71b66a267f023a91db20a817b9425dd964873796980a/trio_websocket-0.12.2.tar.gz : 22c72c436f3d1e264d0910a3951934798dcc5b00ae56fc4ee079d46c7cf20fae
+summary: WebSocket library for Trio
+description: |
+  WebSocket library for Trio.
+license:
+  - MIT
+builddeps:
+  - python(setuptools)
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

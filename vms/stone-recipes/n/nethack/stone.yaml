@@ -1,20 +1,24 @@
 name: nethack
-version: "3.6.3"
+version: "3.6.7"
 release: 1
-homepage: https://github.com/NetHack/NetHack
+homepage: https://www.nethack.org/
 upstreams:
-  - https://github.com/NetHack/NetHack/archive/refs/tags/v3.6.3.757eca7.tar.gz : 65fcdd703adf03f405f19b4d688a43524fc3661e2b9cd1017dbf8356a54a4d93
-summary: A dungeon exploration game
+  - https://github.com/NetHack/NetHack/archive/refs/tags/NetHack-3.6.7_Released.tar.gz : 018c9b170128f86a0ed70be487dc40c86e823d9f3689652eb60a140e24974439
+summary: A single-player dungeon exploration game
 description: |
-  NetHack is a single-player dungeon exploration game.
-license: NetHack General Public License
+  NetHack is a single-player dungeon exploration game
+license:
+  - NetHack General Public License
 builddeps:
   - binary(make)
   - binary(gcc)
+  - binary(flex)
+  - binary(bison)
   - ncurses-devel
 setup: |
   cd sys/unix && ./setup.sh hints/linux
 build: |
-  make CFLAGS="-I$(pwd)/include -std=gnu23 -Wno-implicit-int -Wno-deprecated-non-prototype -Wno-error"
+  make -j$(nproc) LEX=flex CFLAGS="-I$(pwd)/include -std=gnu89 -Wno-error=implicit-function-declaration -Wno-error=int-conversion -Wno-return-type -Wno-error=deprecated-non-prototype -Wno-error=incompatible-function-pointer-types"
 install: |
-  make install PREFIX=%(prefix) HACKDIR=%(prefix)/lib/nethackdir DESTDIR=%(installroot)
+  make install LEX=flex PREFIX=%(installroot)%(prefix) HACKDIR=%(installroot)%(prefix)/lib/nethackdir SHELLDIR=%(installroot)%(prefix)/bin
+  sed -i 's|HACKDIR=%(installroot)%(prefix)/lib/nethackdir|HACKDIR=%(prefix)/lib/nethackdir|' %(installroot)%(prefix)/bin/nethack

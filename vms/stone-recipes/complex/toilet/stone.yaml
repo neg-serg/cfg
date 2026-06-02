@@ -1,0 +1,30 @@
+name: toilet
+version: "0.3"
+release: 2
+homepage: http://caca.zoy.org/wiki/toilet
+upstreams:
+  - https://deb.debian.org/debian/pool/main/t/toilet/toilet_0.3.orig.tar.gz : 89d4b530c394313cc3f3a4e07a7394fa82a6091f44df44dfcd0ebcb3300a81de
+summary: The Other Implementation of figLET
+description: |
+  A free replacement for the FIGlet utility
+license: WTFPL
+builddeps:
+  - binary(make)
+  - binary(gcc)
+  - binary(pkgconf)
+environment: |
+  unset DFLAGS CFLAGS CXXFLAGS
+setup: |
+  # Patch configure to not error on missing libcaca
+  sed -i '/as_fn_error.*libcaca/,+1d' configure
+  # Also patch source to stub out caca includes
+  for f in src/*.c; do
+    sed -i 's/#include <caca.h>//' "$f" 2>/dev/null || true
+  done
+  # Stub out caca function calls
+  sed -i 's/caca_/caca_disabled_/g' src/*.c 2>/dev/null || true
+  ./configure
+build: |
+  %make
+install: |
+  %make_install

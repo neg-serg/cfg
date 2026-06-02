@@ -1,0 +1,23 @@
+name: ouch
+version: "0.2.0"
+release: 1
+homepage: https://github.com/ouch-org/ouch
+upstreams:
+  - git|https://github.com/ouch-org/ouch:
+      ref: b093277a857bce8f8b3c4638f022876d9a0825c3 # 0.2.0
+summary: Painless compression and decompression for your terminal
+description: |
+  ouch is a command-line utility for easily compressing and decompressing files
+license:
+  - MIT
+builddeps:
+  - binary(cargo)
+networking: true
+environment: |
+  CARGO_BUILD_TARGET=x86_64-unknown-linux-gnu
+setup: |
+  %cargo_fetch
+build: |
+  %cargo_build
+install: |
+  %cargo_install

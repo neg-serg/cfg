@@ -1,0 +1,30 @@
+name: wget2
+version: "2.2.1"
+release: 1
+homepage: https://www.gnu.org/software/wget/
+upstreams:
+  - https://ftp.gnu.org/gnu/wget/wget2-2.2.1.tar.gz : d7544b13e37f18e601244fce5f5f40688ac1d6ab9541e0fbb01a32ee1fb447b4
+summary: Advanced file downloading tool
+description: |
+  Wget2 is a modern successor to wget, supporting parallel downloads and modern protocols.
+license: GPL-3.0-or-later
+builddeps:
+  - binary(make)
+  - binary(gcc)
+  - binary(pkgconf)
+  - pkgconfig(libpcre2-8)
+  - pkgconfig(libnghttp2)
+  - libpsl-devel
+  - gnutls-devel
+  - zlib-devel
+  - brotli-devel
+  - zstd-devel
+  - bzip2-devel
+  - xz-devel
+  - pkgconfig(libidn2)
+setup: |
+  %configure
+build: |
+  %make
+install: |
+  %make_install

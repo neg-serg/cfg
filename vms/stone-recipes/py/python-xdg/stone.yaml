@@ -1,0 +1,20 @@
+name: python-xdg
+version: "0.28"
+release: 1
+homepage: https://pypi.org/project/pyxdg
+upstreams:
+  - https://pypi.debian.net/pyxdg/pyxdg-0.28.tar.gz : 3267bb3074e934df202af2ee0868575484108581e6f3cb006af1da35395e88b4
+summary: PyXDG - freedesktop.org standards implementation
+description: |
+  PyXDG contains implementations of freedesktop.org standards in python.
+license:
+  - LGPL-2.0-only
+builddeps:
+  - python(setuptools)
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

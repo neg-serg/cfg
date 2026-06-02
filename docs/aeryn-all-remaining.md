@@ -2,7 +2,7 @@
 
 **603** хост-пакетов, портировано в moss `.stone`
 
-## Всего: 419/603 (69%)
+## Всего: 424/603 (70%)
 
 ### A (16/21)
 - [x] `abduco`
@@ -131,7 +131,7 @@
 - [x] `fsel-bin`
 - [ ] `fwupd`
 
-### G (56/79)
+### G (57/79)
 - [x] `gallery-dl`
 - [x] `gamescope`
 - [x] `gdm`
@@ -187,7 +187,7 @@
 - [x] `go-yq`
 - [x] `goaccess`
 - [x] `goimapnotify`
-- [ ] `google-chrome`
+- [x] `google-chrome`
 - [ ] `goose-desktop-bin` — AUR
 - [x] `gopass`
 - [ ] `goverlay`
@@ -331,7 +331,7 @@
 - [x] `mtr`
 - [ ] `multipath-tools`
 
-### N (20/25)
+### N (21/25)
 - [x] `nano`
 - [x] `nautilus`
 - [x] `ncdu`
@@ -346,7 +346,7 @@
 - [x] `network-manager-applet`
 - [x] `networkmanager`
 - [ ] `networkmanager-qt`
-- [ ] `newsraft`
+- [x] `newsraft`
 - [ ] `nicotine+`
 - [x] `nmap`
 - [x] `no-more-secrets`
@@ -534,7 +534,7 @@
 - [x] `systemd-manager-tui`
 - [ ] `systemd-resolvconf`
 
-### T (28/38)
+### T (29/38)
 - [ ] `tabiew`
 - [x] `tailray`
 - [ ] `tailray-debug` — AUR
@@ -559,7 +559,7 @@
 - [x] `tig`
 - [x] `tmmpr`
 - [x] `tmux`
-- [ ] `toilet`
+- [x] `toilet`
 - [x] `traceroute`
 - [ ] `transmission-cli`
 - [x] `tree`
@@ -648,13 +648,13 @@
 - [ ] `ytsurf`
 - [x] `yubikey-manager`
 
-### Z (4/9)
+### Z (6/9)
 - [ ] `zapret2`
 - [ ] `zathura`
 - [ ] `zathura-pdf-poppler`
 - [x] `zellij`
-- [ ] `zen-browser-bin` — AUR
+- [x] `zen-browser-bin`
 - [x] `zk`
-- [ ] `zmap`
+- [x] `zmap`
 - [x] `zoxide`
 - [x] `zsh`

@@ -1,0 +1,20 @@
+name: python-requests-toolbelt
+version: "1.0.0"
+release: 1
+homepage: https://pypi.org/project/requests-toolbelt
+upstreams:
+  - https://pypi.debian.net/requests-toolbelt/requests-toolbelt-1.0.0.tar.gz : 7681a0a3d047012b5bdc0ee37d7f8f07ebe76ab08caeccfc3921ce23c88d5bc6
+summary: requests-toolbelt python package
+description: |
+  requests-toolbelt python package
+license:
+  - MIT
+builddeps:
+  - python(setuptools)
+rundeps:
+  - python-libs
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

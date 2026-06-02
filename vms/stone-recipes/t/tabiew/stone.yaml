@@ -11,6 +11,7 @@ license     :
     - MIT
 builddeps   :
     - binary(cargo)
+    - binary(perl)
 networking  : true
 setup       : |
     %cargo_fetch

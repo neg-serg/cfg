@@ -1,0 +1,20 @@
+name: python-defusedxml
+version: "0.7.1"
+release: 1
+homepage: https://github.com/tiran/defusedxml
+upstreams:
+  - https://files.pythonhosted.org/packages/0f/d5/c66da9b79e5bdb124974bfe172b4daf3c984ebd9c2a06e2b8a4dc7331c72/defusedxml-0.7.1.tar.gz : 1bb3032db185915b62d7c6209c5a8792be6a32ab2fedacc84e01b52c51aa3e69
+summary: XML bomb protection for Python stdlib modules
+description: |
+  defusedxml provides XML bomb protection for Python stdlib modules.
+license:
+  - Apache-2.0
+builddeps:
+  - binary(python3)
+  - python(setuptools)
+  - python(wheel)
+build: |
+  %pyproject_build
+install: |
+  %pyproject_install
+  %python_compile

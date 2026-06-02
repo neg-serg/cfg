@@ -14,7 +14,7 @@ scratchpads:
     cmd: "telegram-desktop"
   music:
     app_id: "kitty"
-    cmd: "kitty --single-instance --class music -e rmpc"
+    cmd: "kitty --single-instance --class music -e rmpc -c ~/.config/rmpc/config-scratchpad.ron"
   mixer:
     app_id: "qpwgraph"
     cmd: "qpwgraph"

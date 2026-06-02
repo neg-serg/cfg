@@ -1,27 +1,25 @@
 name: w3m
-version: 0.5.3+git20230121
-release: 1
+version: "0.5.3+git20230121"
+release: 2
 homepage: https://github.com/tats/w3m
 upstreams:
-  - https://github.com/tats/w3m/archive/refs/tags/v0.5.3+git20230121.tar.gz : fdc7d55d3c0104db26aa9759db34f37e5eee03f44c868796e3bbfb8935c96e39
+  - git|https://github.com/tats/w3m:
+      ref: 7178f65c5390bfdd06575af77075e41d54141da3 # v0.5.3+git20230121
 summary: A text-based web browser
 description: |
-  Text-based web browser
-license: MIT
+  W3M is a text-based web browser as well as a pager like less
+license:
+  - MIT
 builddeps:
+  - binary(ar)
   - binary(make)
   - binary(gcc)
-  - binary(pkgconf)
-  - binary(tar)
+  - pkgconfig(bdw-gc)
+  - pkgconfig(ncursesw)
+  - pkgconfig(zlib)
+  - pkgconfig(libssl)
 setup: |
-  cp /home/neg/stone-recipes/complex/w3m/gc-8.2.8.tar.gz /tmp/gc.tar.gz
-  tar -xzf /tmp/gc.tar.gz -C /tmp
-  cd /tmp/gc-8.2.8
-  ./configure --prefix=%(prefix)
-  make -j32
-  make install
-  cd /mason/build/x86_64/*/
-  %configure --with-gc=%(prefix)
+  ./configure --prefix=%(prefix) --with-gc=%(prefix) --enable-image=no --without-x
 build: |
   %make
 install: |

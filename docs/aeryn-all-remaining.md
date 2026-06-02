@@ -1,6 +1,6 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **448** (74%), осталось **155**
+**603** хост-пакетов, портировано **450** (74%), осталось **153**
 
 ## A (3)
 - [ ] `amd-ucode` — N/A
@@ -40,8 +40,7 @@
 - [ ] `firewalld`
 - [ ] `fwupd`
 
-## G (22)
-- [ ] `geoip`
+## G (21)
 - [ ] `ghc`
 - [ ] `ghostty-shell-integration`
 - [ ] `gimp`
@@ -83,7 +82,7 @@
 - [ ] `kexec-tools`
 - [ ] `kvantum-qt5`
 
-## L (19)
+## L (18)
 - [ ] `lib32-libpulse` — N/A
 - [ ] `lib32-pipewire-jack` — N/A
 - [ ] `lib32-vulkan-radeon` — N/A
@@ -98,7 +97,6 @@
 - [ ] `linux-cachyos-headers` — N/A
 - [ ] `linux-cachyos-lts` — N/A
 - [ ] `linux-cachyos-lts-headers` — N/A
-- [ ] `liquidctl`
 - [ ] `lsp-plugins`
 - [ ] `lua-language-server`
 - [ ] `lua53`

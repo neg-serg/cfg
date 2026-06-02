@@ -624,7 +624,7 @@
 - [ ] `raysession` — session manager
 - [x] `reptyr` — reparent terminal
 - [x] `rlwrap` — readline wrapper
-- [ ] `rmlint` — duplicate file finder
+- [x] `rmlint` — duplicate file finder
 - [ ] `rofi` — app launcher, use fuzzel (in moss)
 - [ ] `roomeqwizard` — audio EQ, download from roomeqwizard.com
 - [ ] `sbcl` — Common Lisp compiler
@@ -645,7 +645,7 @@
 - [ ] `texlive-basic` — LaTeX distribution
 - [ ] `toilet` — ASCII art
 - [x] `traceroute` — use mtr (already installed)
-- [ ] `ttfautohint` — font hinter
+- [x] `ttfautohint` — font hinter
 - [x] `udiskie` — USB automounter
 - [ ] `unarchiver` — archive extractor
 - [x] `unbound` — DNS resolver

@@ -1,6 +1,6 @@
 name        : zmap
 version     : "4.3.1"
-release     : 1
+release     : 2
 homepage    : https://zmap.io/
 upstreams   :
     - https://github.com/zmap/zmap/archive/refs/tags/v4.3.1.tar.gz : a281eaeac415f49734e22f9219e36454843de494ab8f9723a3de7f123142050f
@@ -14,9 +14,17 @@ builddeps   :
     - binary(pkgconf)
     - binary(cmake)
     - binary(gengetopt)
+    - binary(flex)
+    - binary(bison)
+    - judy-devel
+    - gmp-devel
+    - libpcap-devel
+    - json-c-devel
+    - libunistring-devel
 setup       : |
-    %cmake -DWITH_JUDY=OFF
+  ln -sf /usr/bin/bison /usr/bin/byacc
+  %cmake -DWITH_JUDY=ON -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 build       : |
-    %make
+  %cmake_build
 install     : |
-    %make_install
+  %cmake_install

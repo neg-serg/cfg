@@ -1,21 +1,23 @@
-name        : cdrtools
-version     : "3.02a09"
-release     : 1
-homepage    : https://sourceforge.net/projects/cdrtools/
-upstreams   :
-    - https://sourceforge.net/projects/cdrtools/files/cdrtools-3.02a09.tar.gz : c7e4f732fb299e9b5d836629dadf5512aa5e6a5624ff438ceb1d056f4dcb07c2
-summary     : CD/DVD/BluRay recording software
-description : |
-    Highly portable CD/DVD/BluRay command line recording software
-license     : GPL-2.0-only AND LGPL-2.0-only AND CDDL-1.0
-builddeps   :
-    - binary(make)
-    - binary(gcc)
-environment : |
-    unset CFLAGS CXXFLAGS LDFLAGS
-setup       : |
-    :
-build       : |
-    make CC=gcc
-install     : |
-    make install INSTALL=install DESTDIR=%(installroot) INS_BASE=/usr INS_RBASE=/
+name: cdrtools
+version: "3.02a09"
+release: 3
+homepage: https://sourceforge.net/projects/cdrtools/
+upstreams:
+  - https://sourceforge.net/projects/cdrtools/files/cdrtools-3.02a09.tar.gz: c7e4f732fb299e9b5d836629dadf5512aa5e6a5624ff438ceb1d056f4dcb07c2
+summary: CD/DVD/BluRay recording software
+description: |
+  Highly portable CD/DVD/BluRay command line recording software
+license: GPL-2.0-only AND LGPL-2.0-only AND CDDL-1.0
+builddeps:
+  - binary(make)
+  - binary(gcc)
+environment: |
+  unset CFLAGS CXXFLAGS LDFLAGS
+setup: |
+  mkdir -p incs/x86_64-linux-cc
+  printf 'CC = gcc\nCCOM = gcc\nOPT = -O2\nLINK = gcc\nAR = ar\nARFLAGS = rv\nLN = ln\nRM = rm -f\nCP = cp\nMKDIR = mkdir\nECHO = echo\nINSTALL = install\nINSTALLDIR = install -d\nINCLUDE = -I\nLDFLAGS =\nLIBS =\n' > incs/x86_64-linux-cc/rules.cnf
+  touch config.cache
+build: |
+  make CC=gcc GMAKE_NOWARN=true
+install: |
+  make install INSTALL=install DESTDIR=%(installroot) INS_BASE=%(prefix) INS_RBASE=/

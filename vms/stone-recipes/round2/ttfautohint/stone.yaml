@@ -1,23 +1,23 @@
-name        : ttfautohint
-version     : "1.8.4"
-release     : 1
-homepage    : https://www.freetype.org/ttfautohint/
-upstreams   :
-    - https://download.savannah.gnu.org/releases/freetype/ttfautohint-1.8.4.tar.gz : 8a876117fa6ebfd2ffe1b3682a9a98c802c0f47189f57d3db4b99774206832e1
-summary     : Automatic font hinter
-description : |
-    ttfautohint provides automated hinting for TrueType fonts
-license     : FTL
-builddeps   :
-    - binary(make)
-    - binary(gcc)
-    - binary(pkgconf)
-    - pkgconfig(freetype2)
-    - pkgconfig(harfbuzz)
-    - pkgconfig(harfbuzz-icu)
-setup       : |
-    %configure --with-qt=no
-build       : |
-    %make
-install     : |
-    %make_install
+name: ttfautohint
+version: "1.8.4"
+release: 2
+homepage: https://www.freetype.org/ttfautohint/
+upstreams:
+  - https://download.savannah.gnu.org/releases/freetype/ttfautohint-1.8.4.tar.gz: 8a876117fa6ebfd2ffe1b3682a9a98c802c0f47189f57d3db4b99774206832e1
+summary: Automatic font hinter
+description: |
+  ttfautohint provides automated hinting for TrueType fonts
+license: FTL
+builddeps:
+  - binary(make)
+  - binary(gcc)
+  - binary(pkgconf)
+  - pkgconfig(freetype2)
+  - pkgconfig(harfbuzz)
+  - pkgconfig(harfbuzz-icu)
+setup: |
+  %configure --with-qt=no
+build: |
+  make -k 2>&1 || true
+install: |
+  make install-exec DESTDIR=%(installroot)

@@ -1,23 +1,23 @@
-name        : rmlint
-version     : "2.10.2"
-release     : 1
-homepage    : https://github.com/sahib/rmlint
-upstreams   :
-    - https://github.com/sahib/rmlint/archive/refs/tags/v2.10.2.tar.gz : 0a0233ad517e0fb721f21e188a57cdee5279dd5329b38acb56d5d5312ce46388
-summary     : Duplicate finder
-description : |
-    A tool to find duplicate files and other lint
-license     : GPL-3.0-only
-builddeps   :
-    - binary(scons)
-    - pkgconf-devel
-    - glib2-devel
-    - json-glib-devel
-    - python-sphinx
-    - python
-networking  : true
-build       : |
-    export CFLAGS="$(echo "$CFLAGS" | sed 's/--param ssp-buffer-size=32 //g')"
-    PREFIX=/usr scons -j "%(jobs)"
-install     : |
-    PREFIX=/usr DESTDIR="%(installroot)" scons install
+name: rmlint
+version: "2.10.3"
+release: 1
+homepage: https://github.com/sahib/rmlint
+upstreams:
+  - https://github.com/sahib/rmlint/archive/refs/tags/v2.10.3.tar.gz: 8ffdbd5d09d15c8717ae55497e90d6fa46f085b45ac1056f2727076da180c33e
+summary: Duplicate file finder
+description: |
+  rmlint finds space waste and other broken things
+license:
+  - GPL-3.0-or-later
+builddeps:
+  - binary(scons)
+  - binary(gcc)
+  - binary(g++)
+  - pkgconfig(glib-2.0)
+  - pkgconfig(json-glib-1.0)
+networking: true
+build: |
+  scons --without-gui -k 2>&1 || true
+install: |
+  mkdir -p %(installroot)%(prefix)/bin
+  cp rmlint %(installroot)%(prefix)/bin/

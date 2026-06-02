@@ -362,13 +362,13 @@
 ## Other / needs research — fully analyzed (285)
 
 ### Flatpak (25)
-- [ ] `adw-gtk-theme` — `flatpak install org.gtk.Gtk3theme.adw-gtk3`
-- [ ] `aria2` — `flatpak install aria2`
-- [ ] `bazecor` — `flatpak install com.dygmalab.Bazecor`
+- [x] `adw-gtk-theme` — `flatpak install org.gtk.Gtk3theme.adw-gtk3`
+- [x] `aria2` — `flatpak install aria2`
+- [x] `bazecor` — `flatpak install com.dygmalab.Bazecor`
 - [ ] `borg` — `flatpak install org.borgbackup.Borg`
 - [ ] `carla` — `flatpak install studio.kx.carla`
 - [ ] `corectrl` — `flatpak install org.corectrl.CoreCtrl`
-- [ ] `ddccontrol` — `flatpak install org.ddccontrol.DDControl`
+- [x] `ddccontrol` — `flatpak install org.ddccontrol.DDControl`
 - [ ] `dosbox` — `flatpak install io.github.dosbox.DOSBox`
 - [ ] `gnome-tour` — `flatpak install org.gnome.Tour`
 - [ ] `goverlay` — `flatpak install io.github.goverlay.GOverlay`
@@ -391,118 +391,118 @@
 ### pip install (32)
 - [ ] `beets` — `pip install beets`
 - [ ] `cmake-language-server` — `pip install cmake-language-server`
-- [ ] `dool` — `pip install dool`
+- [x] `dool` — `pip install dool`
 - [ ] `geoip` — `pip install geoip2`
-- [ ] `git-filter-repo` — `pip install git-filter-repo`
-- [ ] `httpie` — `pip install httpie`
+- [x] `git-filter-repo` — `pip install git-filter-repo`
+- [x] `httpie` — `pip install httpie`
 - [ ] `jupyterlab` — `pip install jupyterlab`
 - [ ] `liquidctl` — `pip install liquidctl`
 - [ ] `neovim-remote` — `pip install neovim-remote`
-- [ ] `patool` — `pip install patool`
+- [x] `patool` — `pip install patool`
 - [ ] `pgcli` — `pip install pgcli`
 - [ ] `pre-commit` — `pip install pre-commit`
 - [ ] `proton-vpn-cli` — `pip install proton-vpn-cli`
 - [ ] `proxypilot` — `pip install proxypilot`
-- [ ] `python-annoy` — `pip install annoy`
-- [ ] `python-ascii_magic` — `pip install ascii_magic`
-- [ ] `python-faker` — `pip install faker`
-- [ ] `python-internetarchive` — `pip install internetarchive`
-- [ ] `python-mutagen` — `pip install mutagen`
-- [ ] `python-pipx` — `pip install pipx`
-- [ ] `python-pyperclip` — `pip install pyperclip`
-- [ ] `python-python-socks` — `pip install python-socks`
-- [ ] `python-rapidgzip` — `pip install rapidgzip`
-- [ ] `python-telethon` — `pip install telethon`
-- [ ] `python-textual` — `pip install textual`
+- [x] `python-annoy` — `pip install annoy`
+- [x] `python-ascii_magic` — `pip install ascii_magic`
+- [x] `python-faker` — `pip install faker`
+- [x] `python-internetarchive` — `pip install internetarchive`
+- [x] `python-mutagen` — `pip install mutagen`
+- [x] `python-pipx` — `pip install pipx`
+- [x] `python-pyperclip` — `pip install pyperclip`
+- [x] `python-python-socks` — `pip install python-socks`
+- [x] `python-rapidgzip` — `pip install rapidgzip`
+- [x] `python-telethon` — `pip install telethon`
+- [x] `python-textual` — `pip install textual`
 - [ ] `python-transformers` — `pip install transformers`
 - [ ] `richcolors` — `pip install richcolors`
-- [ ] `s-tui` — `pip install s-tui`
-- [ ] `scour` — `pip install scour`
-- [ ] `urlscan` — `pip install urlscan`
-- [ ] `urlwatch` — `pip install urlwatch`
-- [ ] `vdirsyncer` — `pip install vdirsyncer`
+- [x] `s-tui` — `pip install s-tui`
+- [x] `scour` — `pip install scour`
+- [x] `urlscan` — `pip install urlscan`
+- [x] `urlwatch` — `pip install urlwatch`
+- [x] `vdirsyncer` — `pip install vdirsyncer`
 
 ### cargo install (43)
-- [ ] `abduco` — `cargo install abduco`
-- [ ] `advancecomp` — `cargo install advancecomp`
-- [ ] `albumdetails` — `cargo install albumdetails`
-- [ ] `bandwhich` — `cargo install bandwhich`
-- [ ] `cliphist` — `cargo install cliphist`
-- [ ] `cpufetch` — `cargo install cpufetch`
-- [ ] `dualsensectl` — `cargo install dualsensectl`
-- [ ] `duf` — `cargo install duf`
-- [ ] `genact` — `cargo install genact`
-- [ ] `gist` — `cargo install gist`
-- [ ] `handlr-regex` — `cargo install handlr-regex`
+- [x] `abduco` — `cargo install abduco`
+- [x] `advancecomp` — `cargo install advancecomp`
+- [x] `albumdetails` — `cargo install albumdetails`
+- [x] `bandwhich` — `cargo install bandwhich`
+- [x] `cliphist` — `cargo install cliphist`
+- [x] `cpufetch` — `cargo install cpufetch`
+- [x] `dualsensectl` — `cargo install dualsensectl`
+- [x] `duf` — `cargo install duf`
+- [x] `genact` — `cargo install genact`
+- [x] `gist` — `cargo install gist`
+- [x] `handlr-regex` — `cargo install handlr-regex`
 - [ ] `helvum` — `cargo install helvum`
-- [ ] `himalaya` — `cargo install himalaya`
-- [ ] `hxd` — `cargo install hxd`
-- [ ] `kmon` — `cargo install kmon`
+- [x] `himalaya` — `cargo install himalaya`
+- [x] `hxd` — `cargo install hxd`
+- [x] `kmon` — `cargo install kmon`
 - [ ] `lnav` — `cargo install lnav`
-- [ ] `mandoc` — `cargo install mandoc`
+- [x] `mandoc` — `cargo install mandoc`
 - [ ] `newsraft` — `cargo install newsraft`
-- [ ] `oyo` — `cargo install oyo`
-- [ ] `prettyping` — `cargo install prettyping`
+- [x] `oyo` — `cargo install oyo`
+- [x] `prettyping` — `cargo install prettyping`
 - [ ] `raise` — `cargo install raise`
-- [ ] `rebuild-detector` — `cargo install rebuild-detector`
-- [ ] `regex-tui` — `cargo install regex-tui`
-- [ ] `resvg` — `cargo install resvg`
-- [ ] `rmpc` — `cargo install rmpc`
-- [ ] `rustmission` — `cargo install rustmission`
-- [ ] `satty` — `cargo install satty`
+- [x] `rebuild-detector` — `cargo install rebuild-detector`
+- [x] `regex-tui` — `cargo install regex-tui`
+- [x] `resvg` — `cargo install resvg`
+- [x] `rmpc` — `cargo install rmpc`
+- [x] `rustmission` — `cargo install rustmission`
+- [x] `satty` — `cargo install satty`
 - [ ] `sidecar` — `cargo install sidecar`
-- [ ] `songfetch` — `cargo install songfetch`
-- [ ] `swappy` — `cargo install swappy`
-- [ ] `systemd-manager-tui` — `cargo install systemd-manager-tui`
+- [x] `songfetch` — `cargo install songfetch`
+- [x] `swappy` — `cargo install swappy`
+- [x] `systemd-manager-tui` — `cargo install systemd-manager-tui`
 - [ ] `tabiew` — `cargo install tabiew`
-- [ ] `tailray` — `cargo install tailray`
+- [x] `tailray` — `cargo install tailray`
 - [ ] `taoup` — `cargo install taoup`
-- [ ] `tmmpr` — `cargo install tmmpr`
+- [x] `tmmpr` — `cargo install tmmpr`
 - [ ] `unflac` — `cargo install unflac`
-- [ ] `uwsm` — `cargo install uwsm`
-- [ ] `viu` — `cargo install viu`
+- [x] `uwsm` — `cargo install uwsm`
+- [x] `viu` — `cargo install viu`
 - [ ] `wl` — `cargo install wl`
-- [ ] `wlr-which-key` — `cargo install wlr-which-key`
-- [ ] `xdg-ninja` — `cargo install xdg-ninja`
+- [x] `wlr-which-key` — `cargo install wlr-which-key`
+- [x] `xdg-ninja` — `cargo install xdg-ninja`
 - [ ] `youtube-tui` — `cargo install ytermusic`
-- [ ] `zk` — `cargo install zk`
+- [x] `zk` — `cargo install zk`
 
 ### go install (9)
 - [ ] `cloudflare-speed-cli` — `go install github.com/cloudflare/speedtest@latest`
-- [ ] `ctop` — `go install github.com/bcicen/ctop@latest`
-- [ ] `dive` — `go install github.com/wagoodman/dive@latest`
-- [ ] `gitleaks` — `go install github.com/gitleaks/gitleaks@latest`
-- [ ] `goimapnotify` — `go install github.com/martinohmann/goimapnotify@latest`
-- [ ] `oh-my-posh` — `go install github.com/JanDeDobbeleer/oh-my-posh@latest`
-- [ ] `sops` — `go install github.com/getsops/sops/v3/cmd/sops@latest`
-- [ ] `ssh-to-age` — `go install github.com/ssh-to-age/ssh-to-age@latest`
-- [ ] `vale` — `go install github.com/errata-ai/vale/v3@latest`
+- [x] `ctop` — `go install github.com/bcicen/ctop@latest`
+- [x] `dive` — `go install github.com/wagoodman/dive@latest`
+- [x] `gitleaks` — `go install github.com/gitleaks/gitleaks@latest`
+- [x] `goimapnotify` — `go install github.com/martinohmann/goimapnotify@latest`
+- [x] `oh-my-posh` — `go install github.com/JanDeDobbeleer/oh-my-posh@latest`
+- [x] `sops` — `go install github.com/getsops/sops/v3/cmd/sops@latest`
+- [x] `ssh-to-age` — `go install github.com/ssh-to-age/ssh-to-age@latest`
+- [x] `vale` — `go install github.com/errata-ai/vale/v3@latest`
 
 ### npm install (4)
-- [ ] `claude-code` — `npm install -g @anthropic-ai/claude-code`
-- [ ] `diff-so-fancy` — `npm install -g diff-so-fancy`
-- [ ] `git-extras` — `npm install -g git-extras`
-- [ ] `gitlogue` — `npm install -g gitlogue`
+- [x] `claude-code` — `npm install -g @anthropic-ai/claude-code`
+- [x] `diff-so-fancy` — `npm install -g diff-so-fancy`
+- [x] `git-extras` — `npm install -g git-extras`
+- [x] `gitlogue` — `npm install -g gitlogue`
 
 ### Haskell (cabal) (1)
 - [ ] `haskell-tidal` — `cabal install tidal`
 
 ### AUR package (not applicable) (3)
 - [ ] `bucklespring` — closed source
-- [ ] `opencode` — this tool, install via npm
+- [x] `opencode` — this tool, install via npm
 - [ ] `paru` — AUR helper, not needed on AerynOS
 
 ### System package / N/A on AerynOS (45)
 - [ ] `amneziawg-dkms` — DKMS module, N/A
-- [ ] `amneziawg-tools` — N/A
+- [x] `amneziawg-tools` — N/A
 - [ ] `bluez-utils` — Bluetooth utils
 - [ ] `cage` — Wayland compositor, use Hyprland
 - [ ] `cdrtools` — CD tools, N/A
 - [ ] `cloud-image-utils` — cloud-init, N/A
-- [ ] `dhcpcd` — use NetworkManager
+- [x] `dhcpcd` — use NetworkManager
 - [ ] `firewalld` — N/A
 - [ ] `fwupd` — firmware updater
-- [ ] `geoip-database` — download manually
+- [x] `geoip-database` — download manually
 - [ ] `gnome-user-docs` — GNOME help docs
 - [ ] `gnome-user-share` — GNOME file sharing
 - [ ] `gst-libav` — GStreamer libav plugin
@@ -512,23 +512,23 @@
 - [ ] `gvfs-dnssd` — DNS-SD support for GVfs
 - [ ] `gvfs-onedrive` — OneDrive support for GVfs
 - [ ] `gvfs-wsdd` — WSD discovery for GVfs
-- [ ] `hunspell-ru` — Russian dictionary
+- [x] `hunspell-ru` — Russian dictionary
 - [ ] `hwinfo` — hardware info tool
 - [ ] `i3-wm` — use Hyprland (already installed)
 - [ ] `i3status` — use waybar
-- [ ] `inter-font` — font, download manually
-- [ ] `iosevka-neg-fonts` — font, download manually
+- [x] `inter-font` — font, download manually
+- [x] `iosevka-neg-fonts` — font, download manually
 - [ ] `kvantum-qt5` — part of kvantum, already in moss
 - [ ] `libfixposix` — library
 - [ ] `libguestfs` — VM disk tools
-- [ ] `lshw` — hardware lister
+- [x] `lshw` — hardware lister
 - [ ] `lua53` — old Lua version
 - [ ] `malcontent` — parental controls
 - [ ] `multipath-tools` — multipath storage
 - [ ] `nss-mdns` — mDNS hostname resolution
-- [ ] `nuspell` — use hunspell
+- [x] `nuspell` — use hunspell
 - [ ] `orca` — screen reader
-- [ ] `pcsc-tools` — smartcard tools
+- [x] `pcsc-tools` — smartcard tools
 - [ ] `perl-image-exiftool` — use exiftool via cargo/pip
 - [ ] `realtime-privileges` — realtime permissions
 - [ ] `rygel` — DLNA server
@@ -539,133 +539,133 @@
 - [ ] `wxwidgets-gtk3` — GUI library
 
 ### Fonts (manual) (10)
-- [ ] `noto-fonts` — download from Google Fonts
-- [ ] `noto-fonts-cjk` — CJK fonts
-- [ ] `noto-fonts-emoji` — emoji fonts
-- [ ] `noto-fonts-extra` — extra Noto fonts
-- [ ] `otf-font-awesome` — icon fonts
-- [ ] `ttf-gost` — GOST fonts
-- [ ] `ttf-ibm-plex` — IBM Plex fonts
-- [ ] `ttf-jetbrains-mono-nerd` — JetBrains Mono Nerd Font
-- [ ] `ttf-material-design-icons-extended` — Material Design Icons
-- [ ] `ttf-material-symbols-variable` — Material Symbols
+- [x] `noto-fonts` — download from Google Fonts
+- [x] `noto-fonts-cjk` — CJK fonts
+- [x] `noto-fonts-emoji` — emoji fonts
+- [x] `noto-fonts-extra` — extra Noto fonts
+- [x] `otf-font-awesome` — icon fonts
+- [x] `ttf-gost` — GOST fonts
+- [x] `ttf-ibm-plex` — IBM Plex fonts
+- [x] `ttf-jetbrains-mono-nerd` — JetBrains Mono Nerd Font
+- [x] `ttf-material-design-icons-extended` — Material Design Icons
+- [x] `ttf-material-symbols-variable` — Material Symbols
 
 ### Other (manual install) (110)
-- [ ] `atop` — system monitor, build from source
-- [ ] `bpftrace` — needs kernel BTF support
-- [ ] `convmv` — filename encoding converter
-- [ ] `cowsay` — talking cow
-- [ ] `dcfldd` — use dd (coreutils)
-- [ ] `ddrescue` — data recovery tool
-- [ ] `dos2unix` — text format converter
+- [x] `atop` — system monitor, build from source
+- [x] `bpftrace` — needs kernel BTF support
+- [x] `convmv` — filename encoding converter
+- [x] `cowsay` — talking cow
+- [x] `dcfldd` — use dd (coreutils)
+- [x] `ddrescue` — data recovery tool
+- [x] `dos2unix` — text format converter
 - [ ] `droidcam` — install from dev47apps.com
-- [ ] `enca` — charset detector
-- [ ] `entr` — file watcher, build from source
-- [ ] `etckeeper` — version control for /etc
-- [ ] `fennel` — Lua-based Lisp
-- [ ] `figlet` — ASCII art generator
-- [ ] `fio` — I/O benchmark tool
-- [ ] `fortune-mod` — fortune cookies
-- [ ] `fping` — ping multiple hosts
+- [x] `enca` — charset detector
+- [x] `entr` — file watcher, build from source
+- [x] `etckeeper` — version control for /etc
+- [x] `fennel` — Lua-based Lisp
+- [x] `figlet` — ASCII art generator
+- [x] `fio` — I/O benchmark tool
+- [x] `fortune-mod` — fortune cookies
+- [x] `fping` — ping multiple hosts
 - [ ] `ghc` — Haskell compiler via ghcup
 - [ ] `ghostty-shell-integration` — part of ghostty
-- [ ] `git-crypt` — git encryption
-- [ ] `goaccess` — log analyzer
-- [ ] `gptfdisk` — GPT fdisk tools
+- [x] `git-crypt` — git encryption
+- [x] `goaccess` — log analyzer
+- [x] `gptfdisk` — GPT fdisk tools
 - [ ] `grafana` — monitoring dashboard
-- [ ] `hashcat` — password cracker
+- [x] `hashcat` — password cracker
 - [ ] `hermes-agent` — eval.so agent
-- [ ] `hyprpicker` — color picker
-- [ ] `hyprscratch` — scratchpad
+- [x] `hyprpicker` — color picker
+- [x] `hyprscratch` — scratchpad
 - [ ] `id3v2` — MP3 tagger
-- [ ] `iftop` — network traffic monitor
+- [x] `iftop` — network traffic monitor
 - [ ] `instagram-cli` — Instagram CLI
-- [ ] `ioping` — I/O latency
-- [ ] `iotop-c` — I/O monitor
-- [ ] `iperf3` — network benchmark
-- [ ] `isync` — mail sync (mbsync)
-- [ ] `jdupes` — duplicate file finder
-- [ ] `jpegoptim` — JPEG optimizer
-- [ ] `lbzip2` — parallel bzip2, use pbzip2
+- [x] `ioping` — I/O latency
+- [x] `iotop-c` — I/O monitor
+- [x] `iperf3` — network benchmark
+- [x] `isync` — mail sync (mbsync)
+- [x] `jdupes` — duplicate file finder
+- [x] `jpegoptim` — JPEG optimizer
+- [x] `lbzip2` — parallel bzip2, use pbzip2
 - [ ] `lua-language-server` — LSP for Lua
 - [x] `mediainfo` — media file info
-- [ ] `memtester` — memory tester
-- [ ] `miller` — CSV/JSON processor
-- [ ] `minicom` — serial terminal
-- [ ] `moreutils` — additional Unix tools
+- [x] `memtester` — memory tester
+- [x] `miller` — CSV/JSON processor
+- [x] `minicom` — serial terminal
+- [x] `moreutils` — additional Unix tools
 - [x] `mpd` — Music Player Daemon
 - [ ] `mpdas` — MPD audio scrobbler
-- [ ] `neo-matrix` — Matrix rain effect
-- [ ] `neomutt` — email client
-- [ ] `nerdctl` — container runtime, use podman
-- [ ] `nethogs` — per-process network traffic
+- [x] `neo-matrix` — Matrix rain effect
+- [x] `neomutt` — email client
+- [x] `nerdctl` — container runtime, use podman
+- [x] `nethogs` — per-process network traffic
 - [x] `nmap` — network scanner
-- [ ] `no-more-secrets` — terminal effect
-- [ ] `nvtop` — GPU monitor
-- [ ] `ollama` — `curl -fsSL https://ollama.ai/install.sh | sh`
-- [ ] `ollama-vulkan` — set OLLAMA_USE_VULKAN=1
+- [x] `no-more-secrets` — terminal effect
+- [x] `nvtop` — GPU monitor
+- [x] `ollama` — `curl -fsSL https://ollama.ai/install.sh | sh`
+- [x] `ollama-vulkan` — set OLLAMA_USE_VULKAN=1
 - [ ] `openbsd-netcat` — networking utility
 - [ ] `openocd` — JTAG debugger
-- [ ] `optipng` — PNG optimizer
+- [x] `optipng` — PNG optimizer
 - [ ] `optiscaler-universal` — upscaler
-- [ ] `pandoc-cli` — document converter, download from pandoc.org
-- [ ] `par` — paragraph formatter
-- [ ] `pass` — password-store
+- [x] `pandoc-cli` — document converter, download from pandoc.org
+- [x] `par` — paragraph formatter
+- [x] `pass` — password-store
 - [ ] `patchage` — audio patch bay
-- [ ] `pbzip2` — parallel bzip2
-- [ ] `pigz` — parallel gzip
-- [ ] `plocate` — file locate
-- [ ] `pngquant` — PNG compressor
+- [x] `pbzip2` — parallel bzip2
+- [x] `pigz` — parallel gzip
+- [x] `plocate` — file locate
+- [x] `pngquant` — PNG compressor
 - [x] `powertop` — power management
-- [ ] `progress` — coreutils progress monitor
+- [x] `progress` — coreutils progress monitor
 - [ ] `pwgen` — password generator
 - [ ] `qman` — Qt man page viewer
-- [ ] `qt5ct` — Qt5 theme config
+- [x] `qt5ct` — Qt5 theme config
 - [ ] `raysession` — session manager
-- [ ] `reptyr` — reparent terminal
-- [ ] `rlwrap` — readline wrapper
+- [x] `reptyr` — reparent terminal
+- [x] `rlwrap` — readline wrapper
 - [ ] `rmlint` — duplicate file finder
 - [ ] `rofi` — app launcher, use fuzzel (in moss)
 - [ ] `roomeqwizard` — audio EQ, download from roomeqwizard.com
 - [ ] `sbcl` — Common Lisp compiler
 - [ ] `sc3-plugins` — SuperCollider UGen plugins
 - [x] `schedtool` — CPU scheduler tool
-- [ ] `sox` — audio editor
-- [ ] `sshpass` — SSH with password
-- [ ] `stress-ng` — stress testing
+- [x] `sox` — audio editor
+- [x] `sshpass` — SSH with password
+- [x] `stress-ng` — stress testing
 - [ ] `subversion` — SVN version control
-- [ ] `swayimg` — image viewer
-- [ ] `sysstat` — system stats
-- [ ] `tcpdump` — packet analyzer
-- [ ] `tessen` — password menu
+- [x] `swayimg` — image viewer
+- [x] `sysstat` — system stats
+- [x] `tcpdump` — packet analyzer
+- [x] `tessen` — password menu
 - [x] `tesseract` — OCR engine, build from source
 - [x] `tesseract-data-eng` — English OCR data
 - [x] `tesseract-data-rus` — Russian OCR data
-- [ ] `testdisk` — data recovery
+- [x] `testdisk` — data recovery
 - [ ] `texlive-basic` — LaTeX distribution
 - [ ] `toilet` — ASCII art
 - [ ] `traceroute` — use mtr (already installed)
 - [ ] `ttfautohint` — font hinter
-- [ ] `udiskie` — USB automounter
+- [x] `udiskie` — USB automounter
 - [ ] `unarchiver` — archive extractor
 - [x] `unbound` — DNS resolver
-- [ ] `vnstat` — network traffic logger
+- [x] `vnstat` — network traffic logger
 - [x] `w3m` — text-mode browser
-- [ ] `waypipe` — Wayland proxy
+- [x] `waypipe` — Wayland proxy
 - [ ] `wayvnc` — use neatvnc (in moss: `neatvnc`)
 - [ ] `wget2` — download tool
-- [ ] `whois` — domain lookup
-- [ ] `wiremix` — audio tool
-- [ ] `wlogout` — Wayland logout UI
-- [ ] `wlr-randr` — output management
+- [x] `whois` — domain lookup
+- [x] `wiremix` — audio tool
+- [x] `wlogout` — Wayland logout UI
+- [x] `wlr-randr` — output management
 - [ ] `wofi` — launcher, use fuzzel (in moss)
-- [ ] `wtype` — Wayland keyboard input, use ydotool (installed)
+- [x] `wtype` — Wayland keyboard input, use ydotool (installed)
 - [ ] `ytsurf` — YouTube surf CLI
 - [ ] `zapret2` — DPI circumvention, build from GitHub
 - [ ] `zmap` — network scanner
 
 ### Custom / from this repo (1)
-- [ ] `neg-pretty-printer` — custom script from this repo
+- [x] `neg-pretty-printer` — custom script from this repo
 
 ### wallpaper (1)
-- [ ] `adw-gtk-theme` — already listed in flatpak
+- [x] `adw-gtk-theme` — already listed in flatpak

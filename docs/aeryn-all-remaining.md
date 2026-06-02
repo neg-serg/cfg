@@ -1,6 +1,6 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **443** (73%), осталось **160**
+**603** хост-пакетов, портировано **444** (73%), осталось **159**
 
 ## A (3)
 - [ ] `amd-ucode` — N/A
@@ -127,7 +127,7 @@
 - [ ] `orca`
 - [ ] `otter-launcher`
 
-## P (18)
+## P (17)
 - [ ] `pacman-contrib` — N/A
 - [ ] `paru`
 - [ ] `paru-debug` — debug
@@ -139,7 +139,6 @@
 - [ ] `pipewire-audio` — N/A
 - [ ] `pipewire-jack` — N/A
 - [ ] `pipewire-pulse` — N/A
-- [ ] `pre-commit`
 - [ ] `proton-ge-custom-bin` — binary
 - [ ] `proton-vpn-cli`
 - [ ] `proxypilot`

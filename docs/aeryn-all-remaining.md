@@ -1,6 +1,6 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов всего, портировано **423**, осталось **180**
+**603** хост-пакетов всего, портировано **426**, осталось **177**
 
 ## A (5)
 - [ ] `albumdetails-debug` — AUR
@@ -44,7 +44,7 @@
 - [ ] `flclashx-bin` — AUR
 - [ ] `fwupd`
 
-## G (22)
+## G (21)
 - [ ] `geoip`
 - [ ] `ghc`
 - [ ] `ghostty-shell-integration`
@@ -57,7 +57,6 @@
 - [ ] `gnome-tour`
 - [ ] `gnome-user-docs`
 - [ ] `gnome-user-share`
-- [ ] `goose-desktop-bin` — AUR
 - [ ] `goverlay`
 - [ ] `grafana`
 - [ ] `gst-libav`
@@ -205,10 +204,6 @@
 - [ ] `ufw`
 - [ ] `unarchiver`
 - [ ] `unflac`
-
-## V (2)
-- [ ] `v2rayn-bin` — AUR
-- [ ] `vicinae-bin` — AUR
 
 ## W (5)
 - [ ] `wayvnc`

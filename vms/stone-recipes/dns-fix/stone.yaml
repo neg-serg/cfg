@@ -1,0 +1,25 @@
+name        : dns-fix
+version     : "1.0"
+release     : 1
+homepage    : https://example.com
+summary     : test DNS fix
+description : test
+license     : MIT
+networking  : true
+build       : |
+    echo "nameserver 8.8.8.8" > /etc/resolv.conf
+    echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+    echo "=== DNS TEST ==="
+    getent hosts crates.io 2>&1 || echo "getent failed"
+    host crates.io 2>&1 || echo "host failed"
+    ping -c 1 -W 3 crates.io 2>&1 | head -3 || echo "ping failed"
+    echo "=== CURL TEST ==="
+    curl --version 2>&1 | head -1 || echo "curl not found"
+    which wget 2>/dev/null || echo "wget not found"
+    which curl 2>/dev/null || which curl 2>/dev/null || echo "no curl binary"
+    echo "=== DONE ==="
+    mkdir -p %(installroot)/test
+    echo ok > %(installroot)/test/ok
+install      : |
+    mkdir -p %(installroot)/test
+    echo ok > %(installroot)/test/ok

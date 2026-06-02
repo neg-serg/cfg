@@ -1,0 +1,28 @@
+name: google-chrome
+version: "148.0.7778.215"
+release: 1
+homepage: https://www.google.com/chrome/
+upstreams:
+  - file:///home/neg/stone-recipes/desktop/google-chrome/google-chrome-148.0.7778.215.tar.gz : cd43d14ae891dec0852a799b0837a012c1222684aa94f49402e62ba0a95ec2c4
+summary: Google Chrome web browser
+description: |
+  Google Chrome is a fast, secure, and free web browser.
+license:
+  - BSD-3-Clause
+  - LGPL-2.0-or-later
+install: |
+  bsdtar xf chrome.deb
+  bsdtar xf data.tar.xz
+  install -Dm00755 opt/google/chrome/chrome %(installroot)%(bindir)/google-chrome
+  install -Dm00755 opt/google/chrome/google-chrome %(installroot)%(bindir)/google-chrome-stable
+  mkdir -p %(installroot)%(libdir)/google-chrome
+  cp -r opt/google/chrome/* %(installroot)%(libdir)/google-chrome/
+  install -Dm00644 usr/share/applications/google-chrome.desktop %(installroot)%(datadir)/applications/google-chrome.desktop
+  for size in 16 24 32 48 64 128 256; do
+    icon="opt/google/chrome/product_logo_${size}.png"
+    if [ -f "$icon" ]; then
+      mkdir -p %(installroot)%(datadir)/icons/hicolor/${size}x${size}/apps
+      install -Dm00644 "$icon" %(installroot)%(datadir)/icons/hicolor/${size}x${size}/apps/google-chrome.png
+    fi
+  done
+  install -Dm00644 opt/google/chrome/product_logo_256.png %(installroot)%(datadir)/icons/hicolor/256x256/apps/google-chrome.png || true

@@ -1,0 +1,19 @@
+name: net-test
+version: "1.0"
+release: 1
+homepage: https://google.com
+upstreams:
+  - https://github.com/neovim/neovim/archive/refs/tags/v0.12.2.tar.gz : 6dcf2a90eea17e26bf2eb8022d2dd7c8582f407121775b53d9b5613fa8dc5129
+summary: net test
+description: test
+license: MIT
+networking: true
+setup: |
+  cat /etc/resolv.conf 2>&1 || echo "no resolv.conf"
+  echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf 2>/dev/null || echo "cannot fix dns"
+  getent hosts google.com 2>&1 || echo "DNS FAILED"
+  curl -v --max-time 10 https://google.com 2>&1 | tail -5 || echo "CURL FAILED"
+build: |
+  echo "build ok"
+install: |
+  echo ok

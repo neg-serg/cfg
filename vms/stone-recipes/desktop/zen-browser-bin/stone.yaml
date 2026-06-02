@@ -1,0 +1,44 @@
+name: zen-browser-bin
+version: "1.20.1b"
+release: 1
+homepage: https://zen-browser.app/
+upstreams:
+  - https://github.com/zen-browser/desktop/releases/download/1.20.1b/zen.linux-x86_64.tar.xz : 43fa8cde02d60b473164fd7be8ee6fc0a9f0dc071288f0456850ec56e575c09a
+summary: Zen Browser - a Firefox-based browser
+description: |
+  Zen Browser is a privacy-focused Firefox-based web browser.
+license:
+  - MPL-2.0
+provides:
+  - soname(libmozsqlite3.so(x86_64))
+  - soname(libnss3.so(x86_64))
+  - soname(libnssutil3.so(x86_64))
+  - soname(libssl3.so(x86_64))
+  - soname(libnspr4.so(x86_64))
+  - soname(libplc4.so(x86_64))
+  - soname(libplds4.so(x86_64))
+install: |
+  bsdtar xf /mason/sourcedir/zen.linux-x86_64.tar.xz -C .
+  mkdir -p %(installroot)%(libdir)/zen
+  cp -r zen/* %(installroot)%(libdir)/zen/
+  mkdir -p %(installroot)%(bindir)
+  echo '#!/bin/sh' > %(installroot)%(bindir)/zen-browser
+  echo 'exec /usr/lib/zen/zen-bin "$@"' >> %(installroot)%(bindir)/zen-browser
+  chmod +x %(installroot)%(bindir)/zen-browser
+  mkdir -p %(installroot)%(datadir)/applications
+  echo "[Desktop Entry]" > %(installroot)%(datadir)/applications/zen-browser.desktop
+  echo "Type=Application" >> %(installroot)%(datadir)/applications/zen-browser.desktop
+  echo "Name=Zen Browser" >> %(installroot)%(datadir)/applications/zen-browser.desktop
+  echo "GenericName=Web Browser" >> %(installroot)%(datadir)/applications/zen-browser.desktop
+  echo "Comment=Privacy-focused Firefox-based browser" >> %(installroot)%(datadir)/applications/zen-browser.desktop
+  echo "Exec=zen-browser %%u" >> %(installroot)%(datadir)/applications/zen-browser.desktop
+  echo "Icon=zen-browser" >> %(installroot)%(datadir)/applications/zen-browser.desktop
+  echo "Terminal=false" >> %(installroot)%(datadir)/applications/zen-browser.desktop
+  echo "Categories=Network;WebBrowser;" >> %(installroot)%(datadir)/applications/zen-browser.desktop
+  echo "StartupNotify=true" >> %(installroot)%(datadir)/applications/zen-browser.desktop
+  echo "StartupWMClass=zen" >> %(installroot)%(datadir)/applications/zen-browser.desktop
+  echo "MimeType=text/html;text/xml;application/xhtml+xml;" >> %(installroot)%(datadir)/applications/zen-browser.desktop
+  mkdir -p %(installroot)%(datadir)/icons/hicolor/128x128/apps
+  install -Dm00644 zen/browser/chrome/icons/default/default128.png %(installroot)%(datadir)/icons/hicolor/128x128/apps/zen-browser.png 2>/dev/null || true
+  mkdir -p %(installroot)%(datadir)/icons/hicolor/64x64/apps
+  install -Dm00644 zen/browser/chrome/icons/default/default64.png %(installroot)%(datadir)/icons/hicolor/64x64/apps/zen-browser.png 2>/dev/null || true

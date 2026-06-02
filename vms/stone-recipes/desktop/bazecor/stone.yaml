@@ -1,0 +1,26 @@
+name: bazecor
+version: "1.8.3"
+release: 1
+homepage: https://www.dygma.com/bazecor/
+upstreams:
+  - file:///home/neg/stone-recipes/desktop/bazecor/bazecor-1.8.3.tar.gz : 57d6c54caefb5b4d910e299941ac3a1699a40028976adc38300d1e1edea2735a
+summary: Dygma keyboard configuration tool
+description: |
+  Bazecor is the official configuration software for Dygma keyboards.
+license:
+  - GPL-3.0-only
+install: |
+  install -Dm00755 Bazecor-1.8.3-x64.AppImage %(installroot)%(bindir)/bazecor
+  mkdir -p %(installroot)%(datadir)/applications
+  echo "[Desktop Entry]" > %(installroot)%(datadir)/applications/bazecor.desktop
+  echo "Type=Application" >> %(installroot)%(datadir)/applications/bazecor.desktop
+  echo "Name=Bazecor" >> %(installroot)%(datadir)/applications/bazecor.desktop
+  echo "GenericName=Keyboard Configurator" >> %(installroot)%(datadir)/applications/bazecor.desktop
+  echo "Comment=Dygma keyboard configuration software" >> %(installroot)%(datadir)/applications/bazecor.desktop
+  echo "Exec=bazecor" >> %(installroot)%(datadir)/applications/bazecor.desktop
+  echo "Icon=bazecor" >> %(installroot)%(datadir)/applications/bazecor.desktop
+  echo "Terminal=false" >> %(installroot)%(datadir)/applications/bazecor.desktop
+  echo "Categories=Utility;Settings;" >> %(installroot)%(datadir)/applications/bazecor.desktop
+  echo "StartupWMClass=Bazecor" >> %(installroot)%(datadir)/applications/bazecor.desktop
+  mkdir -p %(installroot)%(datadir)/icons/hicolor/256x256/apps
+  install -Dm00644 /dev/null %(installroot)%(datadir)/icons/hicolor/256x256/apps/bazecor.png

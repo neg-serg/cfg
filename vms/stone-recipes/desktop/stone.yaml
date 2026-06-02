@@ -1,0 +1,32 @@
+name: google-chrome
+version: "stable"
+release: 1
+homepage: https://www.google.com/chrome/
+upstreams:
+  - https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb : 23228ca2d8e0c0b27d00a025fa013ce8359dd060ad428063bdb6ef0626142d24
+summary: Google Chrome web browser
+description: |
+  Google Chrome is a fast, secure, and free web browser.
+license:
+  - BSD-3-Clause
+  - LGPL-2.0-or-later
+install: |
+  bsdtar xf /mason/sourcedir/google-chrome-stable_current_amd64.deb
+  bsdtar xf data.tar.xz
+  install -Dm00755 opt/google/chrome/chrome %(installroot)%(bindir)/google-chrome
+  install -Dm00755 opt/google/chrome/google-chrome %(installroot)%(bindir)/google-chrome-stable
+  mkdir -p %(installroot)%(libdir)/google-chrome
+  cp -r opt/google/chrome/* %(installroot)%(libdir)/google-chrome/
+  mkdir -p %(installroot)%(datadir)/applications
+  install -Dm00644 opt/google/chrome/google-chrome.desktop %(installroot)%(datadir)/applications/google-chrome.desktop
+  for size in 16 24 32 48 64 128 256; do
+    icon="opt/google/chrome/product_logo_${size}.png"
+    if [ -f "$icon" ]; then
+      mkdir -p %(installroot)%(datadir)/icons/hicolor/${size}x${size}/apps
+      install -Dm00644 "$icon" %(installroot)%(datadir)/icons/hicolor/${size}x${size}/apps/google-chrome.png
+    fi
+  done
+  mkdir -p %(installroot)%(datadir)/icons/hicolor/scalable/apps
+  if [ -f opt/google/chrome/product_logo_256.png ]; then
+    install -Dm00644 opt/google/chrome/product_logo_256.png %(installroot)%(datadir)/icons/hicolor/256x256/apps/google-chrome.png
+  fi

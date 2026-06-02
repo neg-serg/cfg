@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: 2026 AerynOS Developers
+# SPDX-License-Identifier: MPL-2.0
+
+name        : shellcheck
+version     : 0.10.0
+release     : 1
+homepage    : https://www.shellcheck.net/
+upstreams   :
+    - https://github.com/koalaman/shellcheck/archive/refs/tags/v0.10.0.tar.gz : 47cef926d96b3c63c51aba7000e7079779dbb33520af3e60b4ef7a074c49967b
+summary     : Shell script static analysis tool
+description : |
+    ShellCheck is a GPLv3 tool that gives warnings and suggestions for bash/sh shell scripts.
+license     :
+    - GPL-3.0-or-later
+builddeps   :
+    - binary(make)
+    - binary(curl)
+    - binary(xz)
+    - binary(gcc)
+    - binary(m4)
+networking  : true
+environment :
+    PATH : /usr/local/bin:/usr/bin:/bin:/usr/local/ghc/bin:/root/.ghcup/bin
+build       : |
+    # Install GHC
+    curl -L -o /tmp/ghc.tar.xz 'https://downloads.haskell.org/ghc/9.6.7/ghc-9.6.7-x86_64-deb11-linux.tar.xz'
+    cd /tmp && tar xf ghc.tar.xz
+    cd /tmp/ghc-9.6.7-x86_64-unknown-linux
+    ./configure --prefix=/usr/local
+    make install
+    hash -r
+
+    # Install cabal
+    curl -L -o /tmp/cabal.tar.xz 'https://downloads.haskell.org/~cabal/cabal-install-3.14.1.1/cabal-install-3.14.1.1-x86_64-linux-deb11.tar.xz'
+    cd /tmp && tar xf /tmp/cabal.tar.xz
+    install -m 755 cabal /usr/local/bin/
+
+    export PATH=/usr/local/bin:/usr/local/ghc/bin:/root/.ghcup/bin:/home/neg/.local/bin:/home/neg/.local/share/cargo/bin:/home/neg/.zi/polaris/sbin:/home/neg/.zi/polaris/bin:/home/neg/.local/bin:/home/neg/.local/share/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/home/neg/.local/share/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+    cabal update
+    cabal build
+install     : |
+    export PATH=/usr/local/bin:/usr/local/ghc/bin:/root/.ghcup/bin:/home/neg/.local/bin:/home/neg/.local/share/cargo/bin:/home/neg/.zi/polaris/sbin:/home/neg/.zi/polaris/bin:/home/neg/.local/bin:/home/neg/.local/share/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/home/neg/.local/share/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+    install -Dm00755  %(installroot)%(bindir)/shellcheck

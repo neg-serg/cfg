@@ -1,0 +1,17 @@
+name        : pandoc
+version     : "3.6.4"
+release     : 1
+homepage    : https://pandoc.org/
+upstreams   :
+    - https://github.com/jgm/pandoc/releases/download/3.6.4/pandoc-3.6.4-linux-amd64.tar.gz : 5def6e1ff535e397becce292ee97767a947306150b9fb1488003b67ac3417c5e
+summary     : Universal markup converter
+description : |
+    Pandoc is a universal document converter that can convert between
+    numerous markup formats.
+license     :
+    - GPL-2.0-or-later
+build       : |
+    bsdtar xf /mason/sourcedir/pandoc-3.6.4-linux-amd64.tar.gz
+install     : |
+    %install_exe pandoc-3.6.4/bin/pandoc %(installroot)%(bindir)/pandoc
+    %install_exe pandoc-3.6.4/bin/pandoc-citeproc %(installroot)%(bindir)/pandoc-citeproc || true

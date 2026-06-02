@@ -1,10 +1,10 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **441** (73%), осталось **162**
+**603** хост-пакетов, портировано **439** (72%), осталось **164**
 
 ## A (3)
 - [ ] `amd-ucode` — N/A
-- [ ] `amdvlk-bin` — binary, no source
+- [ ] `amdvlk-bin` — binary
 - [ ] `amneziawg-dkms`
 
 ## B (8)
@@ -27,8 +27,9 @@
 - [ ] `cmake-language-server`
 - [ ] `corectrl`
 
-## D (3)
+## D (4)
 - [ ] `dkms` — N/A
+- [ ] `dool`
 - [ ] `dosbox`
 - [ ] `droidcam`
 
@@ -38,14 +39,15 @@
 
 ## F (3)
 - [ ] `firewalld`
-- [ ] `flclashx-bin` — binary, no source
+- [ ] `flclashx-bin` — binary
 - [ ] `fwupd`
 
-## G (21)
+## G (22)
 - [ ] `geoip`
 - [ ] `ghc`
 - [ ] `ghostty-shell-integration`
 - [ ] `gimp`
+- [ ] `git-filter-repo`
 - [ ] `gnome-color-manager`
 - [ ] `gnome-connections`
 - [ ] `gnome-logs`
@@ -108,7 +110,7 @@
 ## M (4)
 - [ ] `malcontent`
 - [ ] `mpdas`
-- [ ] `mpdris2-git` — git, no stable release
+- [ ] `mpdris2-git` — git
 - [ ] `multipath-tools`
 
 ## N (3)
@@ -139,7 +141,7 @@
 - [ ] `pipewire-jack` — N/A
 - [ ] `pipewire-pulse` — N/A
 - [ ] `pre-commit`
-- [ ] `proton-ge-custom-bin` — binary, no source
+- [ ] `proton-ge-custom-bin` — binary
 - [ ] `proton-vpn-cli`
 - [ ] `proxypilot`
 - [ ] `proxypilot-debug` — debug
@@ -158,7 +160,7 @@
 - [ ] `recoll`
 - [ ] `richcolors`
 - [ ] `rofi`
-- [ ] `rofi-file-browser-extended-git` — git, no stable release
+- [ ] `rofi-file-browser-extended-git` — git
 - [ ] `rofi-file-browser-extended-git-debug` — debug
 - [ ] `roomeqwizard`
 - [ ] `rygel`
@@ -181,7 +183,7 @@
 - [ ] `tabiew`
 - [ ] `taoup`
 - [ ] `texlive-basic`
-- [ ] `themix-full-git` — git, no stable release
+- [ ] `themix-full-git` — git
 - [ ] `throne`
 - [ ] `transmission-cli`
 - [ ] `tumbler`

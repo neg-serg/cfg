@@ -1,31 +1,14 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **437** (72%), осталось **166**
+**603** хост-пакетов, портировано **438** (72%), осталось **165**
 
-## AUR (-git/-bin/-debug): 15
-- [ ] `amdgpu-vulkan-switcher-git`
-- [ ] `amdvlk-bin`
-- [ ] `flclashx-bin`
-- [ ] `hyprquickframe-git`
-- [ ] `mpdris2-git`
-- [ ] `paru-debug` — debug symbols (skip)
-- [ ] `proton-ge-custom-bin`
-- [ ] `proxypilot-debug` — debug symbols (skip)
-- [ ] `quickshell-overview-git`
-- [ ] `raise-debug` — debug symbols (skip)
-- [ ] `rofi-file-browser-extended-git`
-- [ ] `rofi-file-browser-extended-git-debug` — debug symbols (skip)
-- [ ] `sidecar-debug` — debug symbols (skip)
-- [ ] `themix-full-git`
-- [ ] `wl-debug` — debug symbols (skip)
-
-## Остальные: 151
-
-### A (2)
+## A (4)
 - [ ] `amd-ucode` — N/A
+- [ ] `amdgpu-vulkan-switcher-git` — git, no stable release
+- [ ] `amdvlk-bin` — binary, no source
 - [ ] `amneziawg-dkms`
 
-### B (8)
+## B (8)
 - [ ] `base` — N/A
 - [ ] `base-devel` — N/A
 - [ ] `beets`
@@ -35,8 +18,8 @@
 - [ ] `bottles`
 - [ ] `bucklespring`
 
-### C (8)
-- [ ] `cachyos-settings`
+## C (8)
+- [ ] `cachyos-settings` — N/A
 - [ ] `cage`
 - [ ] `carla`
 - [ ] `chromium`
@@ -45,20 +28,21 @@
 - [ ] `cmake-language-server`
 - [ ] `corectrl`
 
-### D (3)
+## D (3)
 - [ ] `dkms` — N/A
 - [ ] `dosbox`
 - [ ] `droidcam`
 
-### E (2)
+## E (2)
 - [ ] `efibootmgr` — N/A
 - [ ] `epiphany`
 
-### F (2)
+## F (3)
 - [ ] `firewalld`
+- [ ] `flclashx-bin` — binary, no source
 - [ ] `fwupd`
 
-### G (21)
+## G (21)
 - [ ] `geoip`
 - [ ] `ghc`
 - [ ] `ghostty-shell-integration`
@@ -81,27 +65,28 @@
 - [ ] `gvfs-onedrive`
 - [ ] `gvfs-wsdd`
 
-### H (5)
+## H (6)
 - [ ] `haskell-tidal`
 - [ ] `helvum`
 - [ ] `hermes-agent`
 - [ ] `hw-probe`
 - [ ] `hwinfo`
+- [ ] `hyprquickframe-git` — git, no stable release
 
-### I (4)
+## I (4)
 - [ ] `i3-wm`
 - [ ] `i3status`
 - [ ] `id3v2`
 - [ ] `instagram-cli`
 
-### J (1)
+## J (1)
 - [ ] `jupyterlab`
 
-### K (2)
+## K (2)
 - [ ] `kexec-tools`
 - [ ] `kvantum-qt5`
 
-### L (19)
+## L (19)
 - [ ] `lib32-libpulse` — N/A
 - [ ] `lib32-pipewire-jack` — N/A
 - [ ] `lib32-vulkan-radeon` — N/A
@@ -122,17 +107,18 @@
 - [ ] `lua53`
 - [ ] `lutris`
 
-### M (3)
+## M (4)
 - [ ] `malcontent`
 - [ ] `mpdas`
+- [ ] `mpdris2-git` — git, no stable release
 - [ ] `multipath-tools`
 
-### N (3)
+## N (3)
 - [ ] `neovim-remote`
 - [ ] `nicotine+`
 - [ ] `nss-mdns`
 
-### O (7)
+## O (7)
 - [ ] `openbsd-netcat`
 - [ ] `openocd`
 - [ ] `openrgb`
@@ -141,9 +127,10 @@
 - [ ] `orca`
 - [ ] `otter-launcher`
 
-### P (17)
-- [ ] `pacman-contrib`
+## P (19)
+- [ ] `pacman-contrib` — N/A
 - [ ] `paru`
+- [ ] `paru-debug` — debug
 - [ ] `patchage`
 - [ ] `pcmanfm`
 - [ ] `perl-image-exiftool`
@@ -154,70 +141,79 @@
 - [ ] `pipewire-jack` — N/A
 - [ ] `pipewire-pulse` — N/A
 - [ ] `pre-commit`
+- [ ] `proton-ge-custom-bin` — binary, no source
 - [ ] `proton-vpn-cli`
 - [ ] `proxypilot`
+- [ ] `proxypilot-debug` — debug
 - [ ] `pwgen`
-- [ ] `python-poetry`
 - [ ] `python-transformers`
 
-### Q (1)
+## Q (2)
 - [ ] `qman`
+- [ ] `quickshell-overview-git` — git, no stable release
 
-### R (9)
+## R (12)
 - [ ] `raise`
+- [ ] `raise-debug` — debug
 - [ ] `rawtherapee`
 - [ ] `raysession`
 - [ ] `realtime-privileges`
 - [ ] `recoll`
 - [ ] `richcolors`
 - [ ] `rofi`
+- [ ] `rofi-file-browser-extended-git` — git, no stable release
+- [ ] `rofi-file-browser-extended-git-debug` — debug
 - [ ] `roomeqwizard`
 - [ ] `rygel`
 
-### S (11)
+## S (12)
 - [ ] `sbcl`
 - [ ] `sbctl` — N/A
 - [ ] `sc3-plugins`
 - [ ] `sidecar`
+- [ ] `sidecar-debug` — debug
 - [ ] `simple-scan`
 - [ ] `slirp4netns`
 - [ ] `sonic-visualiser`
 - [ ] `subversion`
 - [ ] `supercollider`
 - [ ] `system-config-printer`
-- [ ] `systemd-resolvconf`
+- [ ] `systemd-resolvconf` — N/A
 
-### T (6)
+## T (7)
 - [ ] `tabiew`
 - [ ] `taoup`
 - [ ] `texlive-basic`
+- [ ] `themix-full-git` — git, no stable release
 - [ ] `throne`
 - [ ] `transmission-cli`
 - [ ] `tumbler`
 
-### U (3)
+## U (3)
 - [ ] `ufw`
 - [ ] `unarchiver`
 - [ ] `unflac`
 
-### W (4)
+## W (5)
 - [ ] `wayvnc`
 - [ ] `wget2`
 - [ ] `wl`
+- [ ] `wl-debug` — debug
 - [ ] `wxwidgets-gtk3`
 
-### X (4)
+## X (4)
 - [ ] `xf86-video-amdgpu` — N/A
 - [ ] `xf86-video-ati` — N/A
 - [ ] `xorg-server` — N/A
 - [ ] `xorg-xinit` — N/A
 
-### Y (3)
+## Y (3)
 - [ ] `yandex-browser`
 - [ ] `youtube-tui`
 - [ ] `ytsurf`
 
-### Z (3)
+## Z (3)
 - [ ] `zapret2`
 - [ ] `zathura`
 - [ ] `zathura-pdf-poppler`
+

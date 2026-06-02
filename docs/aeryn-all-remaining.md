@@ -1,15 +1,31 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов всего, портировано **426**, осталось **177**
+**603** хост-пакетов, портировано **437** (72%), осталось **166**
 
-## A (5)
-- [ ] `albumdetails-debug` — AUR
+## AUR (-git/-bin/-debug): 15
+- [ ] `amdgpu-vulkan-switcher-git`
+- [ ] `amdvlk-bin`
+- [ ] `flclashx-bin`
+- [ ] `hyprquickframe-git`
+- [ ] `mpdris2-git`
+- [ ] `paru-debug` — debug symbols (skip)
+- [ ] `proton-ge-custom-bin`
+- [ ] `proxypilot-debug` — debug symbols (skip)
+- [ ] `quickshell-overview-git`
+- [ ] `raise-debug` — debug symbols (skip)
+- [ ] `rofi-file-browser-extended-git`
+- [ ] `rofi-file-browser-extended-git-debug` — debug symbols (skip)
+- [ ] `sidecar-debug` — debug symbols (skip)
+- [ ] `themix-full-git`
+- [ ] `wl-debug` — debug symbols (skip)
+
+## Остальные: 151
+
+### A (2)
 - [ ] `amd-ucode` — N/A
-- [ ] `amdgpu-vulkan-switcher-git` — AUR
-- [ ] `amdvlk-bin` — AUR
 - [ ] `amneziawg-dkms`
 
-## B (8)
+### B (8)
 - [ ] `base` — N/A
 - [ ] `base-devel` — N/A
 - [ ] `beets`
@@ -19,7 +35,7 @@
 - [ ] `bottles`
 - [ ] `bucklespring`
 
-## C (8)
+### C (8)
 - [ ] `cachyos-settings`
 - [ ] `cage`
 - [ ] `carla`
@@ -29,22 +45,20 @@
 - [ ] `cmake-language-server`
 - [ ] `corectrl`
 
-## D (4)
+### D (3)
 - [ ] `dkms` — N/A
 - [ ] `dosbox`
 - [ ] `droidcam`
-- [ ] `duf-debug` — AUR
 
-## E (2)
+### E (2)
 - [ ] `efibootmgr` — N/A
 - [ ] `epiphany`
 
-## F (3)
+### F (2)
 - [ ] `firewalld`
-- [ ] `flclashx-bin` — AUR
 - [ ] `fwupd`
 
-## G (21)
+### G (21)
 - [ ] `geoip`
 - [ ] `ghc`
 - [ ] `ghostty-shell-integration`
@@ -67,36 +81,33 @@
 - [ ] `gvfs-onedrive`
 - [ ] `gvfs-wsdd`
 
-## H (6)
+### H (5)
 - [ ] `haskell-tidal`
 - [ ] `helvum`
 - [ ] `hermes-agent`
 - [ ] `hw-probe`
 - [ ] `hwinfo`
-- [ ] `hyprquickframe-git` — AUR
 
-## I (4)
+### I (4)
 - [ ] `i3-wm`
 - [ ] `i3status`
 - [ ] `id3v2`
 - [ ] `instagram-cli`
 
-## J (1)
+### J (1)
 - [ ] `jupyterlab`
 
-## K (2)
+### K (2)
 - [ ] `kexec-tools`
 - [ ] `kvantum-qt5`
 
-## L (21)
-- [ ] `lib32-amdvlk-bin` — AUR
+### L (19)
 - [ ] `lib32-libpulse` — N/A
 - [ ] `lib32-pipewire-jack` — N/A
 - [ ] `lib32-vulkan-radeon` — N/A
 - [ ] `libfixposix`
 - [ ] `libguestfs`
 - [ ] `limine`
-- [ ] `linux`
 - [ ] `linux-cachyos` — N/A
 - [ ] `linux-cachyos-eevdf` — N/A
 - [ ] `linux-cachyos-eevdf-headers` — N/A
@@ -111,33 +122,28 @@
 - [ ] `lua53`
 - [ ] `lutris`
 
-## M (5)
+### M (3)
 - [ ] `malcontent`
-- [ ] `man-pages`
 - [ ] `mpdas`
-- [ ] `mpdris2-git` — AUR
 - [ ] `multipath-tools`
 
-## N (4)
+### N (3)
 - [ ] `neovim-remote`
-- [ ] `networkmanager-qt`
 - [ ] `nicotine+`
 - [ ] `nss-mdns`
 
-## O (8)
+### O (7)
 - [ ] `openbsd-netcat`
 - [ ] `openocd`
 - [ ] `openrgb`
 - [ ] `opensoundmeter`
-- [ ] `oports-git` — AUR
 - [ ] `optiscaler-universal`
 - [ ] `orca`
 - [ ] `otter-launcher`
 
-## P (20)
+### P (17)
 - [ ] `pacman-contrib`
 - [ ] `paru`
-- [ ] `paru-debug` — AUR
 - [ ] `patchage`
 - [ ] `pcmanfm`
 - [ ] `perl-image-exiftool`
@@ -148,84 +154,70 @@
 - [ ] `pipewire-jack` — N/A
 - [ ] `pipewire-pulse` — N/A
 - [ ] `pre-commit`
-- [ ] `proton-ge-custom-bin` — AUR
 - [ ] `proton-vpn-cli`
 - [ ] `proxypilot`
-- [ ] `proxypilot-debug` — AUR
 - [ ] `pwgen`
 - [ ] `python-poetry`
 - [ ] `python-transformers`
 
-## Q (2)
+### Q (1)
 - [ ] `qman`
-- [ ] `quickshell-overview-git` — AUR
 
-## R (12)
+### R (9)
 - [ ] `raise`
-- [ ] `raise-debug` — AUR
 - [ ] `rawtherapee`
 - [ ] `raysession`
 - [ ] `realtime-privileges`
 - [ ] `recoll`
 - [ ] `richcolors`
 - [ ] `rofi`
-- [ ] `rofi-file-browser-extended-git` — AUR
-- [ ] `rofi-file-browser-extended-git-debug` — AUR
 - [ ] `roomeqwizard`
 - [ ] `rygel`
 
-## S (13)
+### S (11)
 - [ ] `sbcl`
 - [ ] `sbctl` — N/A
 - [ ] `sc3-plugins`
 - [ ] `sidecar`
-- [ ] `sidecar-debug` — AUR
 - [ ] `simple-scan`
 - [ ] `slirp4netns`
 - [ ] `sonic-visualiser`
-- [ ] `ssh-to-age-debug` — AUR
 - [ ] `subversion`
 - [ ] `supercollider`
 - [ ] `system-config-printer`
 - [ ] `systemd-resolvconf`
 
-## T (9)
+### T (6)
 - [ ] `tabiew`
-- [ ] `tailray-debug` — AUR
-- [ ] `tanin-git` — AUR
 - [ ] `taoup`
 - [ ] `texlive-basic`
-- [ ] `themix-full-git` — AUR
 - [ ] `throne`
 - [ ] `transmission-cli`
 - [ ] `tumbler`
 
-## U (3)
+### U (3)
 - [ ] `ufw`
 - [ ] `unarchiver`
 - [ ] `unflac`
 
-## W (5)
+### W (4)
 - [ ] `wayvnc`
 - [ ] `wget2`
 - [ ] `wl`
-- [ ] `wl-debug` — AUR
 - [ ] `wxwidgets-gtk3`
 
-## X (5)
-- [ ] `xdg-desktop-portal-termfilechooser-hunkyburrito-git` — AUR
+### X (4)
 - [ ] `xf86-video-amdgpu` — N/A
 - [ ] `xf86-video-ati` — N/A
 - [ ] `xorg-server` — N/A
 - [ ] `xorg-xinit` — N/A
 
-## Y (3)
+### Y (3)
 - [ ] `yandex-browser`
 - [ ] `youtube-tui`
 - [ ] `ytsurf`
 
-## Z (3)
+### Z (3)
 - [ ] `zapret2`
 - [ ] `zathura`
 - [ ] `zathura-pdf-poppler`
-

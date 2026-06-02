@@ -120,7 +120,7 @@ if [[ "$STATE" == "auto" ]]; then
 				exit 0
 			fi
 		else
-			readarray -t CHANGED_FILES <<< "$CHANGED_STR"
+			CHANGED_FILES=("${(f)CHANGED_STR}")
 			PLAN_JSON=$(python3 "${SCRIPT_DIR}/salt_impact.py" \
 				--files "${CHANGED_FILES[@]}" --json 2>/dev/null || \
 				python3 -c "import json; print(json.dumps({'changed_files':[],'selected_states':[],'fallback_reasons':['salt_impact.py failed'],'final_target':'system_description'}))")

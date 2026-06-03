@@ -1,18 +1,17 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **481** (79%), осталось **122**
+**603** хост-пакетов, портировано **484** (80%), осталось **119**
 
 ## A (3)
 - [ ] `amd-ucode` — N/A
 - [ ] `amdvlk-bin` — binary
 - [ ] `amneziawg-dkms`
 
-## B (6)
+## B (5)
 - [ ] `base` — N/A
 - [ ] `base-devel` — N/A
 - [ ] `blender`
 - [ ] `bluez-utils`
-- [ ] `borg`
 - [ ] `bottles`
 
 ## C (6)
@@ -34,9 +33,8 @@
 - [ ] `firewalld`
 - [ ] `fwupd`
 
-## G (19)
+## G (18)
 - [ ] `ghc`
-- [ ] `gimp`
 - [ ] `gnome-color-manager`
 - [ ] `gnome-connections`
 - [ ] `gnome-logs`
@@ -118,10 +116,9 @@
 ## Q (1)
 - [ ] `qman`
 
-## R (7)
+## R (6)
 - [ ] `raise`
 - [ ] `raise-debug` — debug
-- [ ] `rawtherapee`
 - [ ] `raysession`
 - [ ] `richcolors`
 - [ ] `roomeqwizard`

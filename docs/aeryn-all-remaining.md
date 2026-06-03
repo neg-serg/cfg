@@ -1,34 +1,30 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **453** (75%), осталось **150**
+**603** хост-пакетов, портировано **481** (79%), осталось **122**
 
 ## A (3)
 - [ ] `amd-ucode` — N/A
 - [ ] `amdvlk-bin` — binary
 - [ ] `amneziawg-dkms`
 
-## B (8)
+## B (6)
 - [ ] `base` — N/A
 - [ ] `base-devel` — N/A
-- [ ] `beets`
 - [ ] `blender`
 - [ ] `bluez-utils`
 - [ ] `borg`
 - [ ] `bottles`
-- [ ] `bucklespring`
 
-## C (7)
+## C (6)
 - [ ] `cachyos-settings` — N/A
-- [ ] `cage`
 - [ ] `carla`
 - [ ] `chromium`
 - [ ] `cloud-image-utils`
 - [ ] `cloudflare-speed-cli`
 - [ ] `corectrl`
 
-## D (2)
+## D (1)
 - [ ] `dkms` — N/A
-- [ ] `droidcam`
 
 ## E (2)
 - [ ] `efibootmgr` — N/A
@@ -38,11 +34,9 @@
 - [ ] `firewalld`
 - [ ] `fwupd`
 
-## G (21)
+## G (19)
 - [ ] `ghc`
-- [ ] `ghostty-shell-integration`
 - [ ] `gimp`
-- [ ] `git-filter-repo`
 - [ ] `gnome-color-manager`
 - [ ] `gnome-connections`
 - [ ] `gnome-logs`
@@ -67,24 +61,19 @@
 - [ ] `hermes-agent`
 - [ ] `hwinfo`
 
-## I (4)
+## I (3)
 - [ ] `i3-wm`
 - [ ] `i3status`
-- [ ] `id3v2`
 - [ ] `instagram-cli`
-
-## J (1)
-- [ ] `jupyterlab`
 
 ## K (2)
 - [ ] `kexec-tools`
 - [ ] `kvantum-qt5`
 
-## L (18)
+## L (14)
 - [ ] `lib32-libpulse` — N/A
 - [ ] `lib32-pipewire-jack` — N/A
 - [ ] `lib32-vulkan-radeon` — N/A
-- [ ] `libfixposix`
 - [ ] `libguestfs`
 - [ ] `limine`
 - [ ] `linux-cachyos` — N/A
@@ -95,32 +84,24 @@
 - [ ] `linux-cachyos-headers` — N/A
 - [ ] `linux-cachyos-lts` — N/A
 - [ ] `linux-cachyos-lts-headers` — N/A
-- [ ] `lsp-plugins`
-- [ ] `lua-language-server`
-- [ ] `lua53`
 - [ ] `lutris`
 
-## M (4)
+## M (2)
 - [ ] `malcontent`
-- [ ] `mpdas`
-- [ ] `mpdris2-git` — git
 - [ ] `multipath-tools`
 
-## N (3)
-- [ ] `neovim-remote`
-- [ ] `nicotine+`
+## N (1)
 - [ ] `nss-mdns`
 
-## O (7)
+## O (6)
 - [ ] `openbsd-netcat`
 - [ ] `openocd`
-- [ ] `openrgb`
 - [ ] `opensoundmeter`
 - [ ] `optiscaler-universal`
 - [ ] `orca`
 - [ ] `otter-launcher`
 
-## P (15)
+## P (12)
 - [ ] `pacman-contrib` — N/A
 - [ ] `paru`
 - [ ] `paru-debug` — debug
@@ -132,35 +113,28 @@
 - [ ] `pipewire-audio` — N/A
 - [ ] `pipewire-jack` — N/A
 - [ ] `pipewire-pulse` — N/A
-- [ ] `proton-vpn-cli`
-- [ ] `proxypilot`
-- [ ] `proxypilot-debug` — debug
 - [ ] `python-transformers`
 
 ## Q (1)
 - [ ] `qman`
 
-## R (9)
+## R (7)
 - [ ] `raise`
 - [ ] `raise-debug` — debug
 - [ ] `rawtherapee`
 - [ ] `raysession`
-- [ ] `realtime-privileges`
-- [ ] `recoll`
 - [ ] `richcolors`
 - [ ] `roomeqwizard`
 - [ ] `rygel`
 
-## S (12)
+## S (10)
 - [ ] `sbcl`
 - [ ] `sbctl` — N/A
 - [ ] `sc3-plugins`
 - [ ] `sidecar`
 - [ ] `sidecar-debug` — debug
 - [ ] `simple-scan`
-- [ ] `slirp4netns`
 - [ ] `sonic-visualiser`
-- [ ] `subversion`
 - [ ] `supercollider`
 - [ ] `system-config-printer`
 - [ ] `systemd-resolvconf` — N/A
@@ -179,10 +153,7 @@
 - [ ] `unarchiver`
 - [ ] `unflac`
 
-## W (5)
-- [ ] `wayvnc`
-- [ ] `wget2`
-- [ ] `wl`
+## W (2)
 - [ ] `wl-debug` — debug
 - [ ] `wxwidgets-gtk3`
 
@@ -192,9 +163,8 @@
 - [ ] `xorg-server` — N/A
 - [ ] `xorg-xinit` — N/A
 
-## Y (3)
+## Y (2)
 - [ ] `yandex-browser`
-- [ ] `youtube-tui`
 - [ ] `ytsurf`
 
 ## Z (3)

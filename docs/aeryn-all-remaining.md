@@ -1,16 +1,15 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **484** (80%), осталось **119**
+**603** хост-пакетов, портировано **486** (80%), осталось **117**
 
 ## A (3)
 - [ ] `amd-ucode` — N/A
 - [ ] `amdvlk-bin` — binary
 - [ ] `amneziawg-dkms`
 
-## B (5)
+## B (4)
 - [ ] `base` — N/A
 - [ ] `base-devel` — N/A
-- [ ] `blender`
 - [ ] `bluez-utils`
 - [ ] `bottles`
 
@@ -124,14 +123,13 @@
 - [ ] `roomeqwizard`
 - [ ] `rygel`
 
-## S (10)
+## S (9)
 - [ ] `sbcl`
 - [ ] `sbctl` — N/A
 - [ ] `sc3-plugins`
 - [ ] `sidecar`
 - [ ] `sidecar-debug` — debug
 - [ ] `simple-scan`
-- [ ] `sonic-visualiser`
 - [ ] `supercollider`
 - [ ] `system-config-printer`
 - [ ] `systemd-resolvconf` — N/A

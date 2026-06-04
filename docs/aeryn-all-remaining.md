@@ -1,6 +1,6 @@
 # AerynOS — оставшиеся пакеты
 
-608 хост-пакетов, портировано 510 — осталось 98
+608 хост-пакетов, портировано 509 — осталось 99
 
 - [ ] `albumdetails-debug`
 - [ ] `amdgpu-vulkan-switcher-git`
@@ -15,6 +15,7 @@
 - [ ] `corectrl`
 - [ ] `duf-debug`
 - [ ] `eilmeldung-bin`
+- [ ] `flclashx-bin`
 - [ ] `freeze-bin`
 - [ ] `fsel-bin`
 - [ ] `fwupd`
@@ -24,7 +25,6 @@
 - [ ] `goose-desktop-bin`
 - [ ] `goverlay`
 - [ ] `gowall-bin`
-- [ ] `grafana`
 - [ ] `haskell-tidal`
 - [ ] `helvum`
 - [ ] `hermes-agent`
@@ -33,6 +33,7 @@
 - [ ] `i3-wm`
 - [ ] `i3status`
 - [ ] `instagram-cli`
+- [ ] `jupyterlab`
 - [ ] `kanata-bin`
 - [ ] `lazytail-bin`
 - [ ] `libguestfs`
@@ -51,6 +52,7 @@
 - [ ] `pcmanfm`
 - [ ] `perl-image-exiftool`
 - [ ] `picard`
+- [ ] `proton-ge-custom-bin`
 - [ ] `protonup-rs-bin`
 - [ ] `proxypilot-debug`
 - [ ] `pup-bin`
@@ -95,7 +97,6 @@
 - [ ] `wl`
 - [ ] `wl-debug`
 - [ ] `wxwidgets-gtk3`
-- [ ] `yandex-browser`
 - [ ] `ytsurf`
 - [ ] `zapret2`
 - [ ] `zathura-pdf-poppler`

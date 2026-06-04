@@ -1,6 +1,502 @@
-# AerynOS — оставшиеся пакеты
+# AerynOS — портированные пакеты
 
-**608** хост-пакетов, портировано **480** (78%), осталось **128**
+**608** хост-пакетов, портировано **117**
+
+## Портировано: 491/608
+
+- [x] `abduco`
+- [x] `act-bin`
+- [x] `advancecomp`
+- [x] `adw-gtk-theme`
+- [x] `age`
+- [x] `albumdetails`
+- [x] `albumdetails-debug`
+- [x] `aliae-bin`
+- [x] `alsa-utils`
+- [x] `amdgpu-vulkan-switcher-git`
+- [x] `amdgpu_top`
+- [x] `amneziawg-tools`
+- [x] `android-tools`
+- [x] `antigravity-tools-bin`
+- [x] `aria2`
+- [x] `ark`
+- [x] `asciinema`
+- [x] `atop`
+- [x] `babashka-bin`
+- [x] `bandwhich`
+- [x] `bat`
+- [x] `bazecor`
+- [x] `beets`
+- [x] `borg`
+- [x] `bottom`
+- [x] `bpftrace`
+- [x] `breeze`
+- [x] `broot`
+- [x] `btop`
+- [x] `btrfs-progs`
+- [x] `cage`
+- [x] `carapace-bin`
+- [x] `cava`
+- [x] `ccid`
+- [x] `cdrtools`
+- [x] `chezmoi`
+- [x] `choose`
+- [x] `claude-code`
+- [x] `cliphist`
+- [x] `cmake-language-server`
+- [x] `convmv`
+- [x] `cosmic-greeter`
+- [x] `cowsay`
+- [x] `cpio`
+- [x] `cpufetch`
+- [x] `cpupower`
+- [x] `ctop`
+- [x] `cups`
+- [x] `curlie`
+- [x] `dash`
+- [x] `dcfldd`
+- [x] `ddccontrol`
+- [x] `ddrescue`
+- [x] `dhcpcd`
+- [x] `diff-so-fancy`
+- [x] `difftastic`
+- [x] `direnv`
+- [x] `distrobox`
+- [x] `dive`
+- [x] `dnsmasq`
+- [x] `doggo`
+- [x] `dool`
+- [x] `dos2unix`
+- [x] `dosbox`
+- [x] `dosfstools`
+- [x] `dualsensectl`
+- [x] `duf`
+- [x] `duf-debug`
+- [x] `dunst`
+- [x] `dust`
+- [x] `easyeffects`
+- [x] `edk2-ovmf`
+- [x] `eilmeldung-bin`
+- [x] `elfutils`
+- [x] `enca`
+- [x] `entr`
+- [x] `epr-git`
+- [x] `erdtree`
+- [x] `etckeeper`
+- [x] `expect`
+- [x] `eza`
+- [x] `fastfetch`
+- [x] `fclones`
+- [x] `fd`
+- [x] `fennel`
+- [x] `ffmpegthumbnailer`
+- [x] `figlet`
+- [x] `fio`
+- [x] `firefox`
+- [x] `fortune-mod`
+- [x] `fping`
+- [x] `freeze-bin`
+- [x] `fsel-bin`
+- [x] `gallery-dl`
+- [x] `gamescope`
+- [x] `gdm`
+- [x] `genact`
+- [x] `geoip`
+- [x] `geoip-database`
+- [x] `ghgrab-bin`
+- [x] `ghostty`
+- [x] `ghostty-shell-integration`
+- [x] `gimp`
+- [x] `gist`
+- [x] `git`
+- [x] `git-crypt`
+- [x] `git-delta`
+- [x] `git-extras`
+- [x] `git-filter-repo`
+- [x] `git-lfs`
+- [x] `github-cli`
+- [x] `gitleaks`
+- [x] `gitlogue`
+- [x] `glow`
+- [x] `gmap-bin`
+- [x] `gnome-backgrounds`
+- [x] `gnome-calculator`
+- [x] `gnome-calendar`
+- [x] `gnome-characters`
+- [x] `gnome-clocks`
+- [x] `gnome-console`
+- [x] `gnome-contacts`
+- [x] `gnome-control-center`
+- [x] `gnome-disk-utility`
+- [x] `gnome-font-viewer`
+- [x] `gnome-keyring`
+- [x] `gnome-logs`
+- [x] `gnome-maps`
+- [x] `gnome-menus`
+- [x] `gnome-remote-desktop`
+- [x] `gnome-session`
+- [x] `gnome-settings-daemon`
+- [x] `gnome-shell`
+- [x] `gnome-software`
+- [x] `gnome-system-monitor`
+- [x] `gnome-text-editor`
+- [x] `gnome-tweaks`
+- [x] `gnome-user-docs`
+- [x] `gnome-user-share`
+- [x] `gnome-weather`
+- [x] `go-yq`
+- [x] `goaccess`
+- [x] `goimapnotify`
+- [x] `google-chrome`
+- [x] `goose-desktop-bin`
+- [x] `gopass`
+- [x] `gowall-bin`
+- [x] `gptfdisk`
+- [x] `graphviz`
+- [x] `greetd`
+- [x] `grex`
+- [x] `grim`
+- [x] `gvfs-afc`
+- [x] `gvfs-dnssd`
+- [x] `gvfs-goa`
+- [x] `gvfs-gphoto2`
+- [x] `gvfs-mtp`
+- [x] `gvfs-nfs`
+- [x] `gvfs-onedrive`
+- [x] `gvfs-smb`
+- [x] `gvfs-wsdd`
+- [x] `handlr-regex`
+- [x] `hashcat`
+- [x] `helix`
+- [x] `hexyl`
+- [x] `himalaya`
+- [x] `hishtory-bin`
+- [x] `htmlq`
+- [x] `htop`
+- [x] `httpie`
+- [x] `hunspell-ru`
+- [x] `hw-probe`
+- [x] `hxd`
+- [x] `hyperfine`
+- [x] `hypridle`
+- [x] `hyprland`
+- [x] `hyprlock`
+- [x] `hyprpicker`
+- [x] `hyprpolkitagent`
+- [x] `hyprquickframe-git`
+- [x] `hyprscratch`
+- [x] `iftop`
+- [x] `inotify-tools`
+- [x] `inter-font`
+- [x] `inxi`
+- [x] `ioping`
+- [x] `iosevka-neg-fonts`
+- [x] `iotop-c`
+- [x] `iperf3`
+- [x] `isync`
+- [x] `iwd`
+- [x] `jc`
+- [x] `jdupes`
+- [x] `jpegoptim`
+- [x] `jujutsu`
+- [x] `just`
+- [x] `kanata-bin`
+- [x] `kate`
+- [x] `kitty`
+- [x] `kmon`
+- [x] `konsole`
+- [x] `kvantum`
+- [x] `kvantum-qt5`
+- [x] `lazytail-bin`
+- [x] `lbzip2`
+- [x] `less`
+- [x] `lib32-amdvlk-bin`
+- [x] `libfixposix`
+- [x] `libvirt`
+- [x] `linux`
+- [x] `linux-firmware`
+- [x] `linux-headers`
+- [x] `liquidctl`
+- [x] `lldb`
+- [x] `lnav`
+- [x] `localsend-bin`
+- [x] `lolcat`
+- [x] `loupe`
+- [x] `lowdown`
+- [x] `lshw`
+- [x] `lsof`
+- [x] `lsp-plugins`
+- [x] `lua-language-server`
+- [x] `lua53`
+- [x] `lutgen-bin`
+- [x] `lvm2`
+- [x] `malcontent`
+- [x] `man-pages`
+- [x] `mandoc`
+- [x] `mangohud`
+- [x] `massren`
+- [x] `matugen`
+- [x] `mediainfo`
+- [x] `memtester`
+- [x] `miller`
+- [x] `minicom`
+- [x] `moreutils`
+- [x] `mpc`
+- [x] `mpd`
+- [x] `mpdas`
+- [x] `mpdris2-git`
+- [x] `mpv`
+- [x] `mtr`
+- [x] `nano`
+- [x] `nautilus`
+- [x] `ncdu`
+- [x] `neg-pretty-printer`
+- [x] `neo-matrix`
+- [x] `neomutt`
+- [x] `neovim`
+- [x] `neovim-remote`
+- [x] `nerdctl`
+- [x] `nethack`
+- [x] `nethogs`
+- [x] `network-manager-applet`
+- [x] `networkmanager`
+- [x] `networkmanager-qt`
+- [x] `newsraft`
+- [x] `nicotine+`
+- [x] `nmap`
+- [x] `no-more-secrets`
+- [x] `noto-fonts`
+- [x] `noto-fonts-cjk`
+- [x] `noto-fonts-emoji`
+- [x] `noto-fonts-extra`
+- [x] `nuspell`
+- [x] `nvtop`
+- [x] `oh-my-posh`
+- [x] `ollama`
+- [x] `ollama-vulkan`
+- [x] `onefetch`
+- [x] `openblas`
+- [x] `opencode`
+- [x] `openrgb`
+- [x] `oports-git`
+- [x] `optipng`
+- [x] `orca`
+- [x] `otf-font-awesome`
+- [x] `ouch`
+- [x] `overskride-bin`
+- [x] `oyo`
+- [x] `pandoc-cli`
+- [x] `papers`
+- [x] `par`
+- [x] `pass`
+- [x] `pastel`
+- [x] `patchelf`
+- [x] `patool`
+- [x] `pavucontrol`
+- [x] `pbzip2`
+- [x] `pcsc-tools`
+- [x] `pcsclite`
+- [x] `perf`
+- [x] `pgcli`
+- [x] `pigz`
+- [x] `pipemixer-git`
+- [x] `pipewire-alsa`
+- [x] `pipewire-audio`
+- [x] `pipewire-jack`
+- [x] `pipewire-pulse`
+- [x] `pixora-icons-git`
+- [x] `plasma-desktop`
+- [x] `plasma-workspace`
+- [x] `playerctl`
+- [x] `plocate`
+- [x] `pngquant`
+- [x] `podman`
+- [x] `polkit-kde-agent`
+- [x] `powertop`
+- [x] `pre-commit`
+- [x] `prettyping`
+- [x] `progress`
+- [x] `proton-vpn-cli`
+- [x] `protontricks`
+- [x] `protonup-rs-bin`
+- [x] `proxypilot`
+- [x] `proxypilot-debug`
+- [x] `pup-bin`
+- [x] `pv`
+- [x] `pwgen`
+- [x] `python-annoy`
+- [x] `python-ascii_magic`
+- [x] `python-faker`
+- [x] `python-internetarchive`
+- [x] `python-mutagen`
+- [x] `python-pip`
+- [x] `python-pipx`
+- [x] `python-poetry`
+- [x] `python-pyperclip`
+- [x] `python-python-socks`
+- [x] `python-rapidgzip`
+- [x] `python-telethon`
+- [x] `python-textual`
+- [x] `qemu-desktop`
+- [x] `qpwgraph`
+- [x] `qt5-wayland`
+- [x] `qt5ct`
+- [x] `qt6-wayland`
+- [x] `qt6ct`
+- [x] `quickshell-git`
+- [x] `quickshell-overview-git`
+- [x] `rawtherapee`
+- [x] `rclone`
+- [x] `realtime-privileges`
+- [x] `rebuild-detector`
+- [x] `recoll`
+- [x] `reddix-bin`
+- [x] `regex-tui`
+- [x] `repeater-bin`
+- [x] `reptyr`
+- [x] `resterm-bin`
+- [x] `resvg`
+- [x] `rlwrap`
+- [x] `rmlint`
+- [x] `rmpc`
+- [x] `rofi`
+- [x] `rofi-file-browser-extended-git`
+- [x] `rsync`
+- [x] `ruff`
+- [x] `rustmission`
+- [x] `s-tui`
+- [x] `sad`
+- [x] `samba`
+- [x] `satty`
+- [x] `scc`
+- [x] `schedtool`
+- [x] `scour`
+- [x] `scx-scheds`
+- [x] `scx-tools`
+- [x] `shellcheck`
+- [x] `shfmt`
+- [x] `showtime`
+- [x] `simutil-bin`
+- [x] `sing-box-bin`
+- [x] `skopeo`
+- [x] `slurp`
+- [x] `smartmontools`
+- [x] `snapshot`
+- [x] `socat`
+- [x] `songfetch`
+- [x] `sops`
+- [x] `sox`
+- [x] `ssh-to-age`
+- [x] `ssh-to-age-debug`
+- [x] `sshfs`
+- [x] `sshpass`
+- [x] `steam`
+- [x] `strace`
+- [x] `strace-tui-bin`
+- [x] `streamlink`
+- [x] `stress-ng`
+- [x] `subversion`
+- [x] `sudo`
+- [x] `sushi`
+- [x] `swappy`
+- [x] `swayimg`
+- [x] `swayosd`
+- [x] `swtpm`
+- [x] `sysstat`
+- [x] `systemd-manager-tui`
+- [x] `tailray`
+- [x] `tailray-debug`
+- [x] `tailscale`
+- [x] `tanin-git`
+- [x] `taplo-cli`
+- [x] `tcpdump`
+- [x] `tdl-bin`
+- [x] `tealdeer`
+- [x] `telegram-desktop`
+- [x] `television`
+- [x] `terminus-font`
+- [x] `tessen`
+- [x] `tesseract`
+- [x] `tesseract-data-eng`
+- [x] `tesseract-data-rus`
+- [x] `testdisk`
+- [x] `texlive-basic`
+- [x] `texlive-langcyrillic`
+- [x] `texlive-latexextra`
+- [x] `tig`
+- [x] `tmmpr`
+- [x] `tmux`
+- [x] `toilet`
+- [x] `traceroute`
+- [x] `tree`
+- [x] `tree-sitter-cli`
+- [x] `ttf-gost`
+- [x] `ttf-ibm-plex`
+- [x] `ttf-jetbrains-mono-nerd`
+- [x] `ttf-material-design-icons-extended`
+- [x] `ttf-material-symbols-variable`
+- [x] `ttfautohint`
+- [x] `ttyd`
+- [x] `turbostat`
+- [x] `udiskie`
+- [x] `ugrep`
+- [x] `unbound`
+- [x] `urlscan`
+- [x] `urlwatch`
+- [x] `uv`
+- [x] `v2raya-bin`
+- [x] `v2rayn-bin`
+- [x] `vale`
+- [x] `valgrind`
+- [x] `vdirsyncer`
+- [x] `vicinae-bin`
+- [x] `vim`
+- [x] `virt-manager`
+- [x] `virt-viewer`
+- [x] `viu`
+- [x] `vnstat`
+- [x] `vulkan-headers`
+- [x] `w3m`
+- [x] `watchtower-bin`
+- [x] `waypipe`
+- [x] `wayvnc`
+- [x] `wev`
+- [x] `wf-recorder`
+- [x] `wget`
+- [x] `wget2`
+- [x] `whois`
+- [x] `wine`
+- [x] `wiremix`
+- [x] `wireplumber`
+- [x] `wireshark-cli`
+- [x] `witr-bin`
+- [x] `wl-clipboard`
+- [x] `wlogout`
+- [x] `wlr-randr`
+- [x] `wlr-which-key`
+- [x] `wofi`
+- [x] `wtype`
+- [x] `xdg-desktop-portal-hyprland`
+- [x] `xdg-desktop-portal-termfilechooser-hunkyburrito-git`
+- [x] `xdg-ninja`
+- [x] `xdg-user-dirs-gtk`
+- [x] `xfsprogs`
+- [x] `xh`
+- [x] `xwaylandvideobridge`
+- [x] `yamllint`
+- [x] `yazi`
+- [x] `ydotool`
+- [x] `yelp`
+- [x] `youtube-tui`
+- [x] `yubikey-manager`
+- [x] `zellij`
+- [x] `zen-browser-bin`
+- [x] `zk`
+- [x] `zmap`
+- [x] `zoxide`
+- [x] `zsh`
+
+## Осталось: 117
 
 - [ ] `amd-ucode` — N/A
 - [ ] `amdvlk-bin` — AUR
@@ -8,7 +504,7 @@
 - [ ] `base` — N/A
 - [ ] `base-devel` — N/A
 - [ ] `blender`
-- [ ] `bluez-utils`
+- [ ] `bluez-utils` — N/A
 - [ ] `bottles`
 - [ ] `bucklespring`
 - [ ] `cabal-install`
@@ -22,7 +518,7 @@
 - [ ] `droidcam`
 - [ ] `efibootmgr` — N/A
 - [ ] `epiphany`
-- [ ] `firewalld`
+- [ ] `firewalld` — N/A
 - [ ] `flclashx-bin` — AUR
 - [ ] `fwupd`
 - [ ] `ghc`
@@ -36,9 +532,6 @@
 - [ ] `gst-plugins-ugly`
 - [ ] `gtk-engine-murrine`
 - [ ] `gtk-engines`
-- [ ] `gvfs-dnssd`
-- [ ] `gvfs-onedrive`
-- [ ] `gvfs-wsdd`
 - [ ] `haskell-tidal`
 - [ ] `helvum`
 - [ ] `hermes-agent`
@@ -49,7 +542,6 @@
 - [ ] `instagram-cli`
 - [ ] `jupyterlab`
 - [ ] `kexec-tools`
-- [ ] `kvantum-qt5`
 - [ ] `lib32-libpulse` — N/A
 - [ ] `lib32-pipewire-jack` — N/A
 - [ ] `lib32-vulkan-radeon` — N/A
@@ -64,13 +556,12 @@
 - [ ] `linux-cachyos-lts` — N/A
 - [ ] `linux-cachyos-lts-headers` — N/A
 - [ ] `lutris`
-- [ ] `multipath-tools`
-- [ ] `nss-mdns`
+- [ ] `multipath-tools` — N/A
+- [ ] `nss-mdns` — N/A
 - [ ] `openbsd-netcat`
 - [ ] `openocd`
 - [ ] `opensoundmeter`
 - [ ] `optiscaler-universal`
-- [ ] `orca`
 - [ ] `otter-launcher`
 - [ ] `pacman-contrib` — N/A
 - [ ] `paru`
@@ -80,10 +571,6 @@
 - [ ] `pdf2svg`
 - [ ] `perl-image-exiftool`
 - [ ] `picard`
-- [ ] `pipewire-alsa` — N/A
-- [ ] `pipewire-audio` — N/A
-- [ ] `pipewire-jack` — N/A
-- [ ] `pipewire-pulse` — N/A
 - [ ] `proton-ge-custom-bin` — AUR
 - [ ] `python-transformers`
 - [ ] `qman`
@@ -108,16 +595,14 @@
 - [ ] `systemd-resolvconf` — N/A
 - [ ] `tabiew`
 - [ ] `taoup`
-- [ ] `texlive-basic`
-- [ ] `texlive-langcyrillic`
-- [ ] `texlive-latexextra`
 - [ ] `themix-full-git` — AUR
 - [ ] `throne`
 - [ ] `transmission-cli`
 - [ ] `tumbler`
-- [ ] `ufw`
+- [ ] `ufw` — N/A
 - [ ] `unarchiver`
 - [ ] `unflac`
+- [ ] `uwsm`
 - [ ] `wl`
 - [ ] `wl-debug` — AUR
 - [ ] `wxwidgets-gtk3`

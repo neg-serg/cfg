@@ -1,6 +1,6 @@
 # AerynOS — оставшиеся пакеты
 
-**608** хост-пакетов, портировано **486** (79%), осталось **122**
+**608** хост-пакетов, портировано **487** — осталось **121**
 
 - [ ] `amd-ucode` — N/A
 - [ ] `amdvlk-bin` — AUR
@@ -14,7 +14,6 @@
 - [ ] `cabal-install`
 - [ ] `cachyos-settings` — N/A
 - [ ] `carla`
-- [ ] `chromium`
 - [ ] `cloud-image-utils`
 - [ ] `cloudflare-speed-cli`
 - [ ] `corectrl`

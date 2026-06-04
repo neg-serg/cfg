@@ -1,6 +1,6 @@
 # AerynOS — оставшиеся пакеты
 
-608 хост-пакетов, портировано 502 — осталось 106
+608 хост-пакетов, портировано 507 — осталось 101
 
 - [ ] `amd-ucode` — N/A
 - [ ] `amdvlk-bin` — AUR
@@ -17,14 +17,10 @@
 - [ ] `corectrl`
 - [ ] `dkms` — N/A
 - [ ] `efibootmgr` — N/A
-- [ ] `epiphany`
 - [ ] `firewalld` — N/A
 - [ ] `flclashx-bin` — AUR
 - [ ] `fwupd`
 - [ ] `ghc`
-- [ ] `gnome-color-manager`
-- [ ] `gnome-connections`
-- [ ] `gnome-tour`
 - [ ] `goverlay`
 - [ ] `grafana`
 - [ ] `haskell-tidal`
@@ -57,7 +53,6 @@
 - [ ] `openocd`
 - [ ] `opensoundmeter`
 - [ ] `optiscaler-universal`
-- [ ] `orca`
 - [ ] `otter-launcher`
 - [ ] `pacman-contrib` — N/A
 - [ ] `paru`

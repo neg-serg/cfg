@@ -30,7 +30,7 @@
                 panes: [
                     (size: "80%", pane: Pane(Queue)),
                     (size: "20%", pane: Split(
-                        direction: Vertical,
+                        direction: Horizontal,
                         panes: [
                             (size: "40%", pane: Pane(Lyrics)),
                             (size: "60%", pane: Pane(AlbumArt)),

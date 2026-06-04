@@ -1,6 +1,6 @@
 # AerynOS — оставшиеся пакеты
 
-608 хост-пакетов, портировано 499 — осталось 109
+608 хост-пакетов, портировано 502 — осталось 106
 
 - [ ] `amd-ucode` — N/A
 - [ ] `amdvlk-bin` — AUR
@@ -27,13 +27,6 @@
 - [ ] `gnome-tour`
 - [ ] `goverlay`
 - [ ] `grafana`
-- [ ] `gst-libav`
-- [ ] `gst-plugins-ugly`
-- [ ] `gtk-engine-murrine`
-- [ ] `gtk-engines`
-- [ ] `gvfs-dnssd`
-- [ ] `gvfs-onedrive`
-- [ ] `gvfs-wsdd`
 - [ ] `haskell-tidal`
 - [ ] `helvum`
 - [ ] `hermes-agent`
@@ -73,6 +66,10 @@
 - [ ] `pcmanfm`
 - [ ] `perl-image-exiftool`
 - [ ] `picard`
+- [ ] `pipewire-alsa` — N/A
+- [ ] `pipewire-audio` — N/A
+- [ ] `pipewire-jack` — N/A
+- [ ] `pipewire-pulse` — N/A
 - [ ] `proton-ge-custom-bin` — AUR
 - [ ] `python-transformers`
 - [ ] `qman`

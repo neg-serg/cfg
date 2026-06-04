@@ -1,14 +1,14 @@
 # AerynOS — оставшиеся пакеты
 
-**608** хост-пакетов, портировано **487** — осталось **121**
+608 хост-пакетов, портировано 499 — осталось 109
 
 - [ ] `amd-ucode` — N/A
 - [ ] `amdvlk-bin` — AUR
 - [ ] `amneziawg-dkms`
-- [ ] `blender`
+- [ ] `base` — N/A
+- [ ] `base-devel` — N/A
 - [ ] `bluez-utils` — N/A
 - [ ] `bottles`
-- [ ] `bucklespring`
 - [ ] `cabal-install`
 - [ ] `cachyos-settings` — N/A
 - [ ] `carla`
@@ -16,7 +16,6 @@
 - [ ] `cloudflare-speed-cli`
 - [ ] `corectrl`
 - [ ] `dkms` — N/A
-- [ ] `droidcam`
 - [ ] `efibootmgr` — N/A
 - [ ] `epiphany`
 - [ ] `firewalld` — N/A
@@ -25,7 +24,6 @@
 - [ ] `ghc`
 - [ ] `gnome-color-manager`
 - [ ] `gnome-connections`
-- [ ] `gnome-music`
 - [ ] `gnome-tour`
 - [ ] `goverlay`
 - [ ] `grafana`
@@ -42,7 +40,6 @@
 - [ ] `hwinfo`
 - [ ] `i3-wm`
 - [ ] `i3status`
-- [ ] `id3v2`
 - [ ] `instagram-cli`
 - [ ] `jupyterlab`
 - [ ] `kexec-tools`
@@ -74,7 +71,6 @@
 - [ ] `paru-debug` — AUR
 - [ ] `patchage`
 - [ ] `pcmanfm`
-- [ ] `pdf2svg`
 - [ ] `perl-image-exiftool`
 - [ ] `picard`
 - [ ] `proton-ge-custom-bin` — AUR
@@ -86,15 +82,11 @@
 - [ ] `richcolors`
 - [ ] `rofi-file-browser-extended-git-debug` — AUR
 - [ ] `roomeqwizard`
-- [ ] `rygel`
 - [ ] `sbcl`
 - [ ] `sbctl` — N/A
 - [ ] `sc3-plugins`
 - [ ] `sidecar`
 - [ ] `sidecar-debug` — AUR
-- [ ] `simple-scan`
-- [ ] `slirp4netns`
-- [ ] `sonic-visualiser`
 - [ ] `stack`
 - [ ] `supercollider`
 - [ ] `system-config-printer`
@@ -103,7 +95,6 @@
 - [ ] `taoup`
 - [ ] `themix-full-git` — AUR
 - [ ] `throne`
-- [ ] `transmission-cli`
 - [ ] `tumbler`
 - [ ] `ufw` — N/A
 - [ ] `unarchiver`
@@ -119,5 +110,4 @@
 - [ ] `yandex-browser`
 - [ ] `ytsurf`
 - [ ] `zapret2`
-- [ ] `zathura`
 - [ ] `zathura-pdf-poppler`

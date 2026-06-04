@@ -5,8 +5,6 @@
 - [ ] `amd-ucode` — N/A
 - [ ] `amdvlk-bin` — AUR
 - [ ] `amneziawg-dkms`
-- [ ] `base` — N/A
-- [ ] `base-devel` — N/A
 - [ ] `blender`
 - [ ] `bluez-utils` — N/A
 - [ ] `bottles`

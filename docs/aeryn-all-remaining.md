@@ -1,105 +1,102 @@
 # AerynOS — оставшиеся пакеты
 
-608 хост-пакетов, портировано 507 — осталось 101
+608 хост-пакетов, портировано 510 — осталось 98
 
-- [ ] `amd-ucode` — N/A
-- [ ] `amdvlk-bin` — AUR
+- [ ] `albumdetails-debug`
+- [ ] `amdgpu-vulkan-switcher-git`
+- [ ] `amdvlk-bin`
 - [ ] `amneziawg-dkms`
-- [ ] `base` — N/A
-- [ ] `base-devel` — N/A
-- [ ] `bluez-utils` — N/A
+- [ ] `antigravity-tools-bin`
 - [ ] `bottles`
 - [ ] `cabal-install`
-- [ ] `cachyos-settings` — N/A
 - [ ] `carla`
 - [ ] `cloud-image-utils`
 - [ ] `cloudflare-speed-cli`
 - [ ] `corectrl`
-- [ ] `dkms` — N/A
-- [ ] `efibootmgr` — N/A
-- [ ] `firewalld` — N/A
-- [ ] `flclashx-bin` — AUR
+- [ ] `duf-debug`
+- [ ] `eilmeldung-bin`
+- [ ] `freeze-bin`
+- [ ] `fsel-bin`
 - [ ] `fwupd`
 - [ ] `ghc`
+- [ ] `ghgrab-bin`
+- [ ] `gmap-bin`
+- [ ] `goose-desktop-bin`
 - [ ] `goverlay`
+- [ ] `gowall-bin`
 - [ ] `grafana`
 - [ ] `haskell-tidal`
 - [ ] `helvum`
 - [ ] `hermes-agent`
+- [ ] `hishtory-bin`
 - [ ] `hwinfo`
 - [ ] `i3-wm`
 - [ ] `i3status`
 - [ ] `instagram-cli`
-- [ ] `jupyterlab`
-- [ ] `kexec-tools`
-- [ ] `kvantum-qt5`
-- [ ] `lib32-libpulse` — N/A
-- [ ] `lib32-pipewire-jack` — N/A
-- [ ] `lib32-vulkan-radeon` — N/A
+- [ ] `kanata-bin`
+- [ ] `lazytail-bin`
 - [ ] `libguestfs`
-- [ ] `limine`
-- [ ] `linux-cachyos` — N/A
-- [ ] `linux-cachyos-eevdf` — N/A
-- [ ] `linux-cachyos-eevdf-headers` — N/A
-- [ ] `linux-cachyos-hardened` — N/A
-- [ ] `linux-cachyos-hardened-headers` — N/A
-- [ ] `linux-cachyos-headers` — N/A
-- [ ] `linux-cachyos-lts` — N/A
-- [ ] `linux-cachyos-lts-headers` — N/A
+- [ ] `localsend-bin`
+- [ ] `lutgen-bin`
 - [ ] `lutris`
-- [ ] `multipath-tools` — N/A
-- [ ] `nss-mdns` — N/A
 - [ ] `openbsd-netcat`
 - [ ] `openocd`
 - [ ] `opensoundmeter`
 - [ ] `optiscaler-universal`
 - [ ] `otter-launcher`
-- [ ] `pacman-contrib` — N/A
+- [ ] `overskride-bin`
 - [ ] `paru`
-- [ ] `paru-debug` — AUR
+- [ ] `paru-debug`
 - [ ] `patchage`
 - [ ] `pcmanfm`
 - [ ] `perl-image-exiftool`
 - [ ] `picard`
-- [ ] `pipewire-alsa` — N/A
-- [ ] `pipewire-audio` — N/A
-- [ ] `pipewire-jack` — N/A
-- [ ] `pipewire-pulse` — N/A
-- [ ] `proton-ge-custom-bin` — AUR
+- [ ] `protonup-rs-bin`
+- [ ] `proxypilot-debug`
+- [ ] `pup-bin`
 - [ ] `python-transformers`
 - [ ] `qman`
 - [ ] `raise`
-- [ ] `raise-debug` — AUR
+- [ ] `raise-debug`
 - [ ] `raysession`
+- [ ] `reddix-bin`
+- [ ] `repeater-bin`
+- [ ] `resterm-bin`
 - [ ] `richcolors`
-- [ ] `rofi-file-browser-extended-git-debug` — AUR
+- [ ] `rofi-file-browser-extended-git`
+- [ ] `rofi-file-browser-extended-git-debug`
 - [ ] `roomeqwizard`
 - [ ] `sbcl`
-- [ ] `sbctl` — N/A
 - [ ] `sc3-plugins`
 - [ ] `sidecar`
-- [ ] `sidecar-debug` — AUR
+- [ ] `sidecar-debug`
+- [ ] `simutil-bin`
+- [ ] `sing-box-bin`
+- [ ] `ssh-to-age-debug`
 - [ ] `stack`
+- [ ] `strace-tui-bin`
 - [ ] `supercollider`
 - [ ] `system-config-printer`
-- [ ] `systemd-resolvconf` — N/A
 - [ ] `tabiew`
+- [ ] `tailray-debug`
 - [ ] `taoup`
-- [ ] `themix-full-git` — AUR
+- [ ] `tdl-bin`
+- [ ] `themix-full-git`
 - [ ] `throne`
 - [ ] `tumbler`
-- [ ] `ufw` — N/A
 - [ ] `unarchiver`
 - [ ] `unflac`
 - [ ] `uwsm`
+- [ ] `v2raya-bin`
+- [ ] `v2rayn-bin`
+- [ ] `vicinae-bin`
+- [ ] `watchtower-bin`
+- [ ] `witr-bin`
 - [ ] `wl`
-- [ ] `wl-debug` — AUR
+- [ ] `wl-debug`
 - [ ] `wxwidgets-gtk3`
-- [ ] `xf86-video-amdgpu` — N/A
-- [ ] `xf86-video-ati` — N/A
-- [ ] `xorg-server` — N/A
-- [ ] `xorg-xinit` — N/A
 - [ ] `yandex-browser`
 - [ ] `ytsurf`
 - [ ] `zapret2`
 - [ ] `zathura-pdf-poppler`
+- [ ] `zen-browser-bin`

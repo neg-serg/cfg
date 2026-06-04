@@ -1,47 +1,35 @@
 # AerynOS — оставшиеся пакеты
 
-**603** хост-пакетов, портировано **486** (80%), осталось **117**
+**608** хост-пакетов, портировано **480** (78%), осталось **128**
 
-## A (3)
 - [ ] `amd-ucode` — N/A
-- [ ] `amdvlk-bin` — binary
+- [ ] `amdvlk-bin` — AUR
 - [ ] `amneziawg-dkms`
-
-## B (4)
 - [ ] `base` — N/A
 - [ ] `base-devel` — N/A
+- [ ] `blender`
 - [ ] `bluez-utils`
 - [ ] `bottles`
-
-## C (6)
+- [ ] `bucklespring`
+- [ ] `cabal-install`
 - [ ] `cachyos-settings` — N/A
 - [ ] `carla`
 - [ ] `chromium`
 - [ ] `cloud-image-utils`
 - [ ] `cloudflare-speed-cli`
 - [ ] `corectrl`
-
-## D (1)
 - [ ] `dkms` — N/A
-
-## E (2)
+- [ ] `droidcam`
 - [ ] `efibootmgr` — N/A
 - [ ] `epiphany`
-
-## F (2)
 - [ ] `firewalld`
+- [ ] `flclashx-bin` — AUR
 - [ ] `fwupd`
-
-## G (18)
 - [ ] `ghc`
 - [ ] `gnome-color-manager`
 - [ ] `gnome-connections`
-- [ ] `gnome-logs`
-- [ ] `gnome-maps`
 - [ ] `gnome-music`
 - [ ] `gnome-tour`
-- [ ] `gnome-user-docs`
-- [ ] `gnome-user-share`
 - [ ] `goverlay`
 - [ ] `grafana`
 - [ ] `gst-libav`
@@ -51,23 +39,17 @@
 - [ ] `gvfs-dnssd`
 - [ ] `gvfs-onedrive`
 - [ ] `gvfs-wsdd`
-
-## H (4)
 - [ ] `haskell-tidal`
 - [ ] `helvum`
 - [ ] `hermes-agent`
 - [ ] `hwinfo`
-
-## I (3)
 - [ ] `i3-wm`
 - [ ] `i3status`
+- [ ] `id3v2`
 - [ ] `instagram-cli`
-
-## K (2)
+- [ ] `jupyterlab`
 - [ ] `kexec-tools`
 - [ ] `kvantum-qt5`
-
-## L (14)
 - [ ] `lib32-libpulse` — N/A
 - [ ] `lib32-pipewire-jack` — N/A
 - [ ] `lib32-vulkan-radeon` — N/A
@@ -82,88 +64,69 @@
 - [ ] `linux-cachyos-lts` — N/A
 - [ ] `linux-cachyos-lts-headers` — N/A
 - [ ] `lutris`
-
-## M (2)
-- [ ] `malcontent`
 - [ ] `multipath-tools`
-
-## N (1)
 - [ ] `nss-mdns`
-
-## O (6)
 - [ ] `openbsd-netcat`
 - [ ] `openocd`
 - [ ] `opensoundmeter`
 - [ ] `optiscaler-universal`
 - [ ] `orca`
 - [ ] `otter-launcher`
-
-## P (12)
 - [ ] `pacman-contrib` — N/A
 - [ ] `paru`
-- [ ] `paru-debug` — debug
+- [ ] `paru-debug` — AUR
 - [ ] `patchage`
 - [ ] `pcmanfm`
+- [ ] `pdf2svg`
 - [ ] `perl-image-exiftool`
 - [ ] `picard`
 - [ ] `pipewire-alsa` — N/A
 - [ ] `pipewire-audio` — N/A
 - [ ] `pipewire-jack` — N/A
 - [ ] `pipewire-pulse` — N/A
+- [ ] `proton-ge-custom-bin` — AUR
 - [ ] `python-transformers`
-
-## Q (1)
 - [ ] `qman`
-
-## R (6)
 - [ ] `raise`
-- [ ] `raise-debug` — debug
+- [ ] `raise-debug` — AUR
 - [ ] `raysession`
 - [ ] `richcolors`
+- [ ] `rofi-file-browser-extended-git-debug` — AUR
 - [ ] `roomeqwizard`
 - [ ] `rygel`
-
-## S (9)
 - [ ] `sbcl`
 - [ ] `sbctl` — N/A
 - [ ] `sc3-plugins`
 - [ ] `sidecar`
-- [ ] `sidecar-debug` — debug
+- [ ] `sidecar-debug` — AUR
 - [ ] `simple-scan`
+- [ ] `slirp4netns`
+- [ ] `sonic-visualiser`
+- [ ] `stack`
 - [ ] `supercollider`
 - [ ] `system-config-printer`
 - [ ] `systemd-resolvconf` — N/A
-
-## T (7)
 - [ ] `tabiew`
 - [ ] `taoup`
 - [ ] `texlive-basic`
-- [ ] `themix-full-git` — git
+- [ ] `texlive-langcyrillic`
+- [ ] `texlive-latexextra`
+- [ ] `themix-full-git` — AUR
 - [ ] `throne`
 - [ ] `transmission-cli`
 - [ ] `tumbler`
-
-## U (3)
 - [ ] `ufw`
 - [ ] `unarchiver`
 - [ ] `unflac`
-
-## W (2)
-- [ ] `wl-debug` — debug
+- [ ] `wl`
+- [ ] `wl-debug` — AUR
 - [ ] `wxwidgets-gtk3`
-
-## X (4)
 - [ ] `xf86-video-amdgpu` — N/A
 - [ ] `xf86-video-ati` — N/A
 - [ ] `xorg-server` — N/A
 - [ ] `xorg-xinit` — N/A
-
-## Y (2)
 - [ ] `yandex-browser`
 - [ ] `ytsurf`
-
-## Z (3)
 - [ ] `zapret2`
 - [ ] `zathura`
 - [ ] `zathura-pdf-poppler`
-

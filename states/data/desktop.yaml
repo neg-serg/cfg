@@ -97,11 +97,6 @@ hyprland_plugins:
   dir: hyprland-plugins
   enable:
   - name: xtra-dispatchers
-- id: hyprglass
-  repo: https://github.com/hyprnux/hyprglass
-  dir: HyprGlass
-  enable:
-  - name: hyprglass
 - id: darkwindow
   repo: https://github.com/micha4w/Hypr-DarkWindow
   dir: Hypr-DarkWindow
@@ -109,7 +104,6 @@ hyprland_plugins:
   - name: Hypr-DarkWindow
 hyprland_check_plugins:
 - borders-plus-plus
-- hyprglass
 - Hypr-DarkWindow
 niri_packages:
 - niri

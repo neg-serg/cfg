@@ -11,7 +11,7 @@
 ambxst_repo:
   git.latest:
     - name: {{ ambxst.repo_url }}
-    - target: {{ ambxst.install_path }}
+    - target: {{ home }}/.local/src/ambxst
     - user: {{ user }}
     - force_reset: true
     - rev: main
@@ -24,7 +24,7 @@ ambxst_launcher:
         export PATH="{{ home }}/.local/bin:$PATH"
         export QML2_IMPORT_PATH="{{ home }}/.local/lib/qml:$QML2_IMPORT_PATH"
         export QML_IMPORT_PATH="$QML2_IMPORT_PATH"
-        exec "{{ ambxst.install_path }}/cli.sh" "$@"
+        exec "{{ home }}/.local/src/ambxst/cli.sh" "$@"
     - mode: '0755'
     - user: root
     - group: root

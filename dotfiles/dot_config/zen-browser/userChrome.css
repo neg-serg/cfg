@@ -1,5 +1,72 @@
-/* --- True Black: force #000 on all chrome surfaces --- */
-@import url("zen-themes/e8976c92-47dc-4065-bf53-67326dd47007/chrome.css");
+/* ===== True Black theme (inlined — @import resolves to profile root in Firefox, not chrome/) ===== */
+* {
+  scrollbar-color: #333 #000 !important;
+}
+
+:root {
+  --zen-main-browser-background: #000000 !important;
+  --zen-main-browser-background-toolbar: #000000 !important;
+  --zen-primary-color: #000000 !important;
+  --zen-colors-tertiary: #000000 !important;
+  --zen-colors-secondary: #000000 !important;
+  --zen-workspaces-strip-background-color: #000000 !important;
+  --lwt-accent-color: #000000 !important;
+  --lwt-text-color: #cccccc !important;
+  --lwt-toolbar-field-background-color: #1a1a1a !important;
+  --lwt-toolbar-field-color: #cccccc !important;
+  --lwt-toolbar-field-border-color: #000000 !important;
+  --lwt-toolbar-field-highlight: #333333 !important;
+  --lwt-toolbar-field-highlight-text: #ffffff !important;
+  --lwt-sidebar-background-color: #000000 !important;
+  --lwt-sidebar-text-color: #cccccc !important;
+  --toolbar-bgcolor: #000000 !important;
+  --toolbar-color: #cccccc !important;
+  --toolbar-field-bgcolor: #1a1a1a !important;
+  --toolbar-field-color: #cccccc !important;
+  --toolbar-field-border-color: #000000 !important;
+  --toolbar-field-focus-bgcolor: #1a1a1a !important;
+  --toolbar-field-focus-color: #cccccc !important;
+  --toolbar-field-focus-border-color: #333333 !important;
+  --toolbar-hover-background: #2a2a2a !important;
+  --toolbarbutton-hover-background: #2a2a2a !important;
+  --toolbarbutton-active-background: #333333 !important;
+  --tab-selected-bgcolor: #0a0a0a !important;
+  --tab-hover-background-color: #1a1a1a !important;
+  --tab-line-color: #333333 !important;
+  --tab-loading-fill: #333333 !important;
+  --tabs-border-color: #000000 !important;
+  --tab-background-color: #000000 !important;
+  --arrowpanel-background: #1a1a1a !important;
+  --arrowpanel-color: #cccccc !important;
+  --arrowpanel-border-color: #000000 !important;
+  --panel-background: #1a1a1a !important;
+  --panel-color: #cccccc !important;
+  --panel-border-color: #000000 !important;
+  --panel-item-hover-bgcolor: #333333 !important;
+  --sidebar-background-color: #000000 !important;
+  --sidebar-text-color: #cccccc !important;
+  --sidebar-border-color: #000000 !important;
+  --urlbar-background-color: #1a1a1a !important;
+  --urlbar-view-background: #1a1a1a !important;
+  --urlbar-color: #cccccc !important;
+  --urlbar-border-color: #000000 !important;
+  --better-findbar-background-color: #1a1a1a !important;
+  --button-bgcolor: #000000 !important;
+  --button-hover-bgcolor: #2a2a2a !important;
+  --button-active-bgcolor: #333333 !important;
+  --button-color: #cccccc !important;
+  --button-primary-bgcolor: #333333 !important;
+  --button-primary-color: #ffffff !important;
+  --icon-color: #cccccc !important;
+  --workspace-button-bg: #0a0a0a !important;
+}
+
+.zen-browser-generic-background { background: #000000 !important; }
+#sidebar-box, #sidebar { background-color: #000000 !important; }
+#zen-sidebar-web-panel { background-color: #000000 !important; }
+#main-window, #browser, #navigator-toolbox { background-color: #000000 !important; }
+#zen-workspaces-strip { background-color: #000000 !important; }
+/* ===== End True Black theme ===== */
 
 /* --- Bottom navbar for Zen Browser ---
  * Moves the navigation bar (URL bar + toolbar) to the bottom of the window.

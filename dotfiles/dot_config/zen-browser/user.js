@@ -1,4 +1,4 @@
-user_pref("accessibility.typeaheadfind.flashBar", 0);
+user_pref("accessibility.typeaheadfind.flashbar", 0);
 user_pref("browser.bookmarks.addedImportButton", false);
 user_pref("browser.bookmarks.restore_default_bookmarks", false);
 user_pref("browser.download.dir", "{{ home }}/dw");

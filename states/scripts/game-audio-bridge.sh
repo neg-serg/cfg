@@ -47,27 +47,33 @@ for i in $(seq 1 "$LINK_TIMEOUT"); do
     sleep 1
 done
 
-# Link both channels — do NOT exit on individual failure so both get attempted
+log "Disconnecting existing links on target ports..."
+pw-link -d "${RME_OUT}:playback_AUX${TARGET_LEFT}" 2>/dev/null || true
+pw-link -d "${RME_OUT}:playback_AUX${TARGET_RIGHT}" 2>/dev/null || true
+
+# Link both channels
+link_target() {
+    local port="$1" target="$2" attempt
+    for attempt in $(seq 1 5); do
+        if pw-link "${NULL_SINK}:${port}" "${RME_OUT}:${target}" 2>/dev/null; then
+            log "Linked: ${NULL_SINK}:${port} -> ${RME_OUT}:${target}"
+            return 0
+        fi
+        debug "Retry $attempt: $port -> $target"
+        sleep 1
+    done
+    log "ERROR: failed to link $port -> $target"
+    return 1
+}
+
 LINK_OK=true
-for attempt in $(seq 1 5); do
-    if pw-link "${NULL_SINK}:monitor_FL" "${RME_OUT}:playback_AUX${TARGET_LEFT}" 2>/dev/null; then
-        debug "Linked left"
-        break
-    fi
-    log "Retry $attempt: left"
-    sleep 1
-done || LINK_OK=false
+link_target "monitor_FL" "playback_AUX${TARGET_LEFT}" || LINK_OK=false
+link_target "monitor_FR" "playback_AUX${TARGET_RIGHT}" || LINK_OK=false
 
-for attempt in $(seq 1 5); do
-    if pw-link "${NULL_SINK}:monitor_FR" "${RME_OUT}:playback_AUX${TARGET_RIGHT}" 2>/dev/null; then
-        debug "Linked right"
-        break
-    fi
-    log "Retry $attempt: right"
-    sleep 1
-done || LINK_OK=false
-
-$LINK_OK || log "WARNING: one or both links failed"
+if [ "$LINK_OK" = false ]; then
+    log "ERROR: one or both links failed — not changing default sink"
+    exit 1
+fi
 
 log "Setting default sink to $NULL_SINK..."
 for i in $(seq 1 5); do

@@ -6,7 +6,6 @@ PartOf=pipewire.service
 
 [Service]
 Type=oneshot
-RemainAfterExit=yes
 ExecStart={{ home }}/.local/bin/game-audio-bridge
 ExecStop=-/usr/bin/pw-link -d "game_output:monitor_FL" "{{ rme_node }}:playback_AUX0" 2>/dev/null || true
 ExecStop=-/usr/bin/pw-link -d "game_output:monitor_FR" "{{ rme_node }}:playback_AUX1" 2>/dev/null || true

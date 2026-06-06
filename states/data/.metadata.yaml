@@ -1,6 +1,9 @@
 schema_versions:
+  ambxst.yaml: 1
   amnezia.yaml: 1
   audio.yaml: 1
+  awg_tunnel.yaml: 1
+  axctl.yaml: 1
   bind_mounts.yaml: 1
   cachyos.yaml: 1
   code_rag.yaml: 1
@@ -31,6 +34,7 @@ schema_versions:
   mpd.yaml: 1
   mpv_scripts.yaml: 1
   network.yaml: 1
+  nothing_kde_widgets.yaml: 1
   ollama.yaml: 1
   packages.yaml: 1
   service_catalog.yaml: 1

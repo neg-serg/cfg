@@ -48,18 +48,22 @@ for i in $(seq 1 "$LINK_TIMEOUT"); do
 done
 
 log "Disconnecting existing links on target ports..."
-pw-link -d "${RME_OUT}:playback_AUX${TARGET_LEFT}" 2>/dev/null || true
-pw-link -d "${RME_OUT}:playback_AUX${TARGET_RIGHT}" 2>/dev/null || true
+pw-link -d "${NULL_SINK}:monitor_FL" "${RME_OUT}:playback_AUX${TARGET_LEFT}" 2>/dev/null || true
+pw-link -d "${NULL_SINK}:monitor_FR" "${RME_OUT}:playback_AUX${TARGET_RIGHT}" 2>/dev/null || true
 
 # Link both channels
 link_target() {
-    local port="$1" target="$2" attempt
+    local port="$1" target="$2" attempt result
     for attempt in $(seq 1 5); do
-        if pw-link "${NULL_SINK}:${port}" "${RME_OUT}:${target}" 2>/dev/null; then
+        result=$(pw-link "${NULL_SINK}:${port}" "${RME_OUT}:${target}" 2>&1) && {
             log "Linked: ${NULL_SINK}:${port} -> ${RME_OUT}:${target}"
             return 0
+        }
+        if echo "$result" | grep -q "File exists"; then
+            debug "Already linked: $port -> $target"
+            return 0
         fi
-        debug "Retry $attempt: $port -> $target"
+        debug "Retry $attempt ($result): $port -> $target"
         sleep 1
     done
     log "ERROR: failed to link $port -> $target"

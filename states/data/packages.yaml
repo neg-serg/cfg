@@ -536,6 +536,7 @@ aur:
   - paru-debug
   - pipemixer-git
   - pixora-icons-git                 # 16-bit pixel art style icons theme
+  - proton-cachyos                   # Proton build with CachyOS optimizations
   - proton-ge-custom-bin
   - pup-bin
   - python-ascii_magic

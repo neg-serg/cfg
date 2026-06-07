@@ -1,0 +1,19 @@
+name: amdvlk
+version: "2025.Q2.1"
+release: 1
+homepage: https://github.com/GPUOpen-Drivers/AMDVLK
+upstreams:
+  - https://github.com/GPUOpen-Drivers/AMDVLK/releases/download/v-2025.Q2.1/amdvlk-2025.Q2.1.x86_64.rpm : 932c79062e2487bb1f318136bcf666cb0342faea29e70f791b8f6f425d6afdf8
+summary: AMD's standalone Vulkan driver
+description: |
+  AMD's standalone Vulkan driver (Stable RPM Release)
+license:
+  - MIT
+provides:
+  - vulkan-driver
+install: |
+  bsdtar xf /mason/sourcedir/amdvlk-2025.Q2.1.x86_64.rpm -C .
+  install -Dm00755 usr/lib64/amdvlk64.so %(installroot)%(libdir)/amdvlk64.so
+  install -Dm00644 etc/vulkan/icd.d/amd_icd64.json %(installroot)%(datadir)/vulkan/icd.d/amd_icd64.json
+  install -Dm00644 etc/vulkan/implicit_layer.d/amd_icd64.json %(installroot)%(datadir)/vulkan/implicit_layer.d/amd_icd64.json
+  install -Dm00644 usr/share/doc/amdvlk/LICENSE.txt %(installroot)%(datadir)/doc/amdvlk/LICENSE.txt

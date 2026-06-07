@@ -4,6 +4,7 @@ paru_install:
   droidcam: droidcam
   opensoundmeter: opensoundmeter
   overskride: overskride-bin
+  proton-cachyos: proton-cachyos
   proton-ge: proton-ge-custom-bin
   protonup-rs: protonup-rs-bin
   roomeqwizard: roomeqwizard

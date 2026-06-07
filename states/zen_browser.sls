@@ -53,6 +53,14 @@ zen_floorp_profile_import:
 
 {{ salt['desktop.browser_extensions']('zen', zen_profile, zen.extensions, 'zen_user_js') }}
 
+zen_ext_surfingkeys:
+  file.managed:
+    - name: {{ zen_profile }}/extensions/{a8332c60-5b6d-41ee-bfc8-e9bb331d34ad}.xpi
+    - source: salt://states/files/surfingkeys_ff_patched.xpi
+    - user: {{ user }}
+    - group: {{ user }}
+    - makedirs: True
+
 zen_set_proxy_script:
   file.managed:
     - name: {{ home }}/.local/bin/set-zen-proxy

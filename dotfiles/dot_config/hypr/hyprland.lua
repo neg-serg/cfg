@@ -346,11 +346,8 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("qs -c overview")
   hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE QT_XDG_DESKTOP_PORTAL GTK_THEME QT_STYLE_OVERRIDE QT_QPA_PLATFORMTHEME")
   hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE QT_XDG_DESKTOP_PORTAL GTK_THEME QT_STYLE_OVERRIDE QT_QPA_PLATFORMTHEME")
-  -- Scratchpads (launch at startup, window rules auto-move to special workspace)
-  hl.exec_cmd("kitty --single-instance --class teardown -e btop")
-  hl.exec_cmd("kitty --single-instance --class torrment -e rustmission")
-  hl.exec_cmd("kitty --single-instance --class music -e rmpc -c ~/.config/rmpc/config-scratchpad.ron")
-  hl.exec_cmd("kitty --single-instance --class mixer -e pipemixer")
+  -- Scratchpad keep-alive loop (background)
+  hl.exec_cmd("zsh -c 'while true; do for sp in \"kitty --class music -e rmpc -c ~/.config/rmpc/config-scratchpad.ron:rmpc.*scratchpad\" \"kitty --class teardown -e btop:btop\" \"kitty --class torrment -e rustmission:rustmission\" \"kitty --class mixer -e pipemixer:pipemixer\"; do cmd=${sp%%:*}; pat=${sp##*:}; pgrep -f $pat >/dev/null 2>&1 || eval $cmd \\&; done; sleep 5; done' &")
 end)
 
 -- Animations

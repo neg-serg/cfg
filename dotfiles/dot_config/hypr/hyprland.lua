@@ -68,9 +68,9 @@ hl.config({
 })
 
 local M4 = "SUPER"
-local M1 = "Alt"
-local C = "Control"
-local SH = "Shift"
+local M1 = "ALT"
+local C = "CTRL"
+local SH = "SHIFT"
 
 hl.bind(M4 .. "+S", hl.dsp.exec_cmd("hyprctl switchxkblayout current next"))
 hl.bind(M1 .. "+Tab", hl.dsp.exec_cmd("~/.local/bin/hypr-focus-hist --switch"))
@@ -203,7 +203,7 @@ hl.define_submap("resize", "reset", function()
 end)
 
 -- Submap: selectors
-hl.bind(M4 .. "+Alt+S", hl.dsp.submap("selectors"))
+hl.bind(M4 .. "+ALT+S", hl.dsp.submap("selectors"))
 hl.define_submap("selectors", "reset", function()
   submap_resets()
   bind_reset("w", hl.dsp.exec_cmd("hyde-selector wallpaper"))

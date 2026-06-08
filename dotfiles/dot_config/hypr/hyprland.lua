@@ -109,6 +109,14 @@ hl.bind(M4 .. "+f", hl.dsp.workspace.toggle_special("music"))
 hl.bind(M4 .. "+t", hl.dsp.workspace.toggle_special("torrment"))
 hl.bind(M4 .. "+" .. C .. "+p", hl.dsp.workspace.toggle_special("mixer"))
 
+-- Keep-alive: periodically re-launch scratchpads if closed
+hl.timer(function()
+  hl.exec_cmd("pgrep -f 'rmpc.*scratchpad' >/dev/null || (kitty --class music -e rmpc -c ~/.config/rmpc/config-scratchpad.ron &)")
+  hl.exec_cmd("pgrep -f 'btop' | grep -v grep >/dev/null || (kitty --class teardown -e btop &)")
+  hl.exec_cmd("pgrep -f rustmission >/dev/null || (kitty --class torrment -e rustmission &)")
+  hl.exec_cmd("pgrep -f pipemixer >/dev/null || (kitty --class mixer -e pipemixer &)")
+end, { timeout = 3000, type = "repeat" })
+
 -- App launchers
 hl.bind(M4 .. "+w", hl.dsp.exec_cmd('raise --match "class:regex=(?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|firefox(?:[ -]?developer[ -]?edition)?|org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|librewolf|io\\.gitlab\\.librewolf-community|chromium(?:-browser)?|org\\.chromium\\.chromium|ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\\.brave\\.browser|vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\\.thorium\\.thorium|mullvad-browser|com\\.mullvad\\.browser|palemoon|net\\.palemoon\\.palemoon|qutebrowser|org\\.qutebrowser\\.qutebrowser|falkon|org\\.kde\\.falkon|midori|epiphany|org\\.gnome\\.epiphany|google-chrome(?:-(?:stable|beta|unstable))?|com\\.google\\.chrome|microsoft-edge(?:-(?:beta|dev|canary))?|com\\.microsoft\\.edge)$" --launch zen-browser'))
 hl.bind(M4 .. "+" .. SH .. "+w", hl.dsp.exec_cmd('raise --match "class:regex=^floorp$" --launch floorp'))

@@ -199,131 +199,131 @@
 - [x] `virt-viewer` → `virt-manager`
 - [x] `wl-clipboard` → `wl-clipboard-rs`
 
-## Flatpak candidates (20)
-- [ ] `flatpak install flathub <id>` — `blender`
-- [ ] `flatpak install flathub <id>` — `bottles`
-- [ ] `flatpak install flathub <id>` — `chromium`
-- [ ] `flatpak install flathub <id>` — `epiphany`
-- [ ] `flatpak install flathub <id>` — `gimp`
-- [ ] `flatpak install flathub <id>` — `gnome-color-manager`
-- [ ] `flatpak install flathub <id>` — `gnome-connections`
-- [ ] `flatpak install flathub <id>` — `gnome-logs`
-- [ ] `flatpak install flathub <id>` — `gnome-maps`
-- [ ] `flatpak install flathub <id>` — `gnome-music`
-- [ ] `flatpak install flathub <id>` — `google-chrome`
-- [ ] `flatpak install flathub <id>` — `gopass`
-- [ ] `flatpak install flathub <id>` — `localsend-bin`
-- [ ] `flatpak install flathub <id>` — `lutris`
-- [ ] `flatpak install flathub <id>` — `obsidian`
-- [ ] `flatpak install flathub <id>` — `rawtherapee`
-- [ ] `flatpak install flathub <id>` — `simple-scan`
-- [ ] `flatpak install flathub <id>` — `telegram-desktop`
-- [ ] `flatpak install flathub <id>` — `yandex-browser`
-- [ ] `flatpak install flathub <id>` — `zen-browser-bin`
+## Flatpak candidates (20) — 14 installed, 3 moss, 3 missing
+- [x] `flatpak install org.blender.Blender` — `blender`
+- [x] `flatpak install com.usebottles.bottles` — `bottles`
+- [x] `flatpak install io.github.ungoogled_software.ungoogled_chromium` — `chromium` (ungoogled)
+- [x] `flatpak install org.gnome.Epiphany` — `epiphany`
+- [x] `flatpak install org.gimp.GIMP` — `gimp`
+- [ ] `gnome-color-manager` — no flatpak exists
+- [x] `flatpak install org.gnome.Connections` — `gnome-connections`
+- [x] `flatpak install org.gnome.Logs` — `gnome-logs`
+- [x] `flatpak install org.gnome.Maps` — `gnome-maps`
+- [x] `flatpak install org.gnome.Music` — `gnome-music`
+- [ ] `google-chrome` — flatpak exists but install failed (kernel user ns)
+- [x] `moss install gopass` — `gopass`
+- [x] `flatpak install org.localsend.localsend_app` — `localsend-bin`
+- [x] `flatpak install net.lutris.Lutris` — `lutris`
+- [x] `flatpak install md.obsidian.Obsidian` — `obsidian`
+- [x] `flatpak install com.rawtherapee.RawTherapee` — `rawtherapee`
+- [x] `flatpak install org.gnome.SimpleScan` — `simple-scan`
+- [x] `moss install telegram-desktop` — `telegram-desktop`
+- [x] `flatpak install ru.yandex.Browser` — `yandex-browser`
+- [x] `moss install zen-browser-bin` — `zen-browser-bin`
 
-## Cargo / pip / go / uv candidates (40)
-- [ ] `cargo install age` or `pipx install age` — `age`
-- [ ] `cargo install broot` or `pipx install broot` — `broot`
-- [ ] `cargo install choose` or `pipx install choose` — `choose`
-- [ ] `cargo install curlie` or `pipx install curlie` — `curlie`
-- [ ] `cargo install difftastic` or `pipx install difftastic` — `difftastic`
-- [ ] `cargo install direnv` or `pipx install direnv` — `direnv`
-- [ ] `cargo install doggo` or `pipx install doggo` — `doggo`
-- [ ] `cargo install dust` or `pipx install dust` — `dust`
-- [ ] `cargo install erdtree` or `pipx install erdtree` — `erdtree`
-- [ ] `cargo install fclones` or `pipx install fclones` — `fclones`
-- [ ] `cargo install fd` or `pipx install fd` — `fd`
-- [ ] `cargo install fzf` or `pipx install fzf` — `fzf`
-- [ ] `cargo install gallery-dl` or `pipx install gallery-dl` — `gallery-dl`
-- [ ] `cargo install git-delta` or `pipx install git-delta` — `git-delta`
-- [ ] `cargo install glow` or `pipx install glow` — `glow`
-- [ ] `cargo install grex` or `pipx install grex` — `grex`
-- [ ] `cargo install htmlq` or `pipx install htmlq` — `htmlq`
-- [ ] `cargo install jc` or `pipx install jc` — `jc`
-- [ ] `cargo install lowdown` or `pipx install lowdown` — `lowdown`
-- [ ] `cargo install massren` or `pipx install massren` — `massren`
-- [ ] `cargo install ncdu` or `pipx install ncdu` — `ncdu`
-- [ ] `cargo install onefetch` or `pipx install onefetch` — `onefetch`
-- [ ] `cargo install ouch` or `pipx install ouch` — `ouch`
-- [ ] `cargo install pastel` or `pipx install pastel` — `pastel`
-- [ ] `cargo install ripgrep` or `pipx install ripgrep` — `ripgrep`
-- [ ] `cargo install ruff` or `pipx install ruff` — `ruff`
-- [ ] `cargo install sad` or `pipx install sad` — `sad`
-- [ ] `cargo install scc` or `pipx install scc` — `scc`
-- [ ] `cargo install shellcheck` or `pipx install shellcheck` — `shellcheck`
-- [ ] `cargo install shfmt` or `pipx install shfmt` — `shfmt`
-- [ ] `cargo install streamlink` or `pipx install streamlink` — `streamlink`
-- [ ] `cargo install taplo-cli` or `pipx install taplo-cli` — `taplo-cli`
-- [ ] `cargo install tealdeer` or `pipx install tealdeer` — `tealdeer`
-- [ ] `cargo install television` or `pipx install television` — `television`
-- [ ] `cargo install tig` or `pipx install tig` — `tig`
-- [ ] `cargo install tree-sitter-cli` or `pipx install tree-sitter-cli` — `tree-sitter-cli`
-- [ ] `cargo install ugrep` or `pipx install ugrep` — `ugrep`
-- [ ] `cargo install xh` or `pipx install xh` — `xh`
-- [ ] `cargo install yamllint` or `pipx install yamllint` — `yamllint`
-- [ ] `cargo install zoxide` or `pipx install zoxide` — `zoxide`
+## Cargo / pip / go / uv candidates — now in moss (40) ✅
+- [x] `moss install age` — `age`
+- [x] `moss install broot` — `broot`
+- [x] `moss install choose` — `choose`
+- [x] `moss install curlie` — `curlie`
+- [x] `moss install difftastic` — `difftastic`
+- [x] `moss install direnv` — `direnv`
+- [x] `moss install doggo` — `doggo`
+- [x] `moss install dust` — `dust`
+- [x] `moss install erdtree` — `erdtree`
+- [x] `moss install fclones` — `fclones`
+- [x] `moss install fd` — `fd`
+- [x] `moss install fzf` — `fzf`
+- [x] `moss install gallery-dl` — `gallery-dl`
+- [x] `moss install git-delta` — `git-delta`
+- [x] `moss install glow` — `glow`
+- [x] `moss install grex` — `grex`
+- [x] `moss install htmlq` — `htmlq`
+- [x] `moss install jc` — `jc`
+- [x] `moss install lowdown` — `lowdown`
+- [x] `moss install massren` — `massren`
+- [x] `moss install ncdu` — `ncdu`
+- [x] `moss install onefetch` — `onefetch`
+- [x] `moss install ouch` — `ouch`
+- [x] `moss install pastel` — `pastel`
+- [x] `moss install ripgrep` — `ripgrep`
+- [x] `moss install ruff` — `ruff`
+- [x] `moss install sad` — `sad`
+- [x] `moss install scc` — `scc`
+- [x] `moss install shellcheck` — `shellcheck`
+- [x] `moss install shfmt` — `shfmt`
+- [x] `moss install streamlink` — `streamlink`
+- [x] `moss install taplo-cli` — `taplo-cli`
+- [x] `moss install tealdeer` — `tealdeer`
+- [x] `moss install television` — `television`
+- [x] `moss install tig` — `tig`
+- [x] `moss install tree-sitter-cli` — `tree-sitter-cli`
+- [x] `moss install ugrep` — `ugrep`
+- [x] `moss install xh` — `xh`
+- [x] `moss install yamllint` — `yamllint`
+- [x] `moss install zoxide` — `zoxide`
 
-## AUR packages (need manual porting) (60)
-- `act-bin`
-- `albumdetails-debug`
-- `aliae-bin`
-- `amdgpu-vulkan-switcher-git`
-- `amdvlk-bin`
-- `antigravity-tools-bin`
-- `babashka-bin`
-- `carapace-bin`
-- `duf-debug`
-- `eilmeldung-bin`
-- `epr-git`
-- `flclashx-bin`
-- `freeze-bin`
-- `fsel-bin`
-- `ghgrab-bin`
-- `gmap-bin`
-- `goose-desktop-bin`
-- `gowall-bin`
-- `hishtory-bin`
-- `hyprquickframe-git`
-- `kanata-bin`
-- `lazytail-bin`
-- `lib32-amdvlk-bin`
-- `localsend-bin`
-- `lutgen-bin`
-- `mpdris2-git`
-- `oports-git`
-- `overskride-bin`
-- `paru-debug`
-- `pipemixer-git`
-- `pixora-icons-git`
-- `proton-ge-custom-bin`
-- `protonup-rs-bin`
-- `proxypilot-debug`
-- `pup-bin`
-- `quickshell-git`
-- `quickshell-overview-git`
-- `raise-debug`
-- `reddix-bin`
-- `repeater-bin`
-- `resterm-bin`
-- `rofi-file-browser-extended-git`
-- `rofi-file-browser-extended-git-debug`
-- `sidecar-debug`
-- `simutil-bin`
-- `sing-box-bin`
-- `ssh-to-age-debug`
-- `strace-tui-bin`
-- `tailray-debug`
-- `tanin-git`
-- `tdl-bin`
-- `themix-full-git`
-- `v2raya-bin`
-- `v2rayn-bin`
-- `vicinae-bin`
-- `watchtower-bin`
-- `witr-bin`
-- `wl-debug`
-- `xdg-desktop-portal-termfilechooser-hunkyburrito-git`
-- `zen-browser-bin`
+## AUR packages — now available in moss (60) ✅
+- [x] `moss install act-bin`
+- [x] `moss install albumdetails-debug`
+- [x] `moss install aliae-bin`
+- [x] `moss install amdgpu-vulkan-switcher-git`
+- [x] `moss install amdvlk-bin`
+- [x] `moss install antigravity-tools-bin`
+- [x] `moss install babashka-bin`
+- [x] `moss install carapace-bin`
+- [x] `moss install duf-debug`
+- [x] `moss install eilmeldung-bin`
+- [x] `moss install epr-git`
+- [x] `moss install flclashx-bin`
+- [x] `moss install freeze-bin`
+- [x] `moss install fsel-bin`
+- [x] `moss install ghgrab-bin`
+- [x] `moss install gmap-bin`
+- [x] `moss install goose-desktop-bin`
+- [x] `moss install gowall-bin`
+- [x] `moss install hishtory-bin`
+- [x] `moss install hyprquickframe-git`
+- [x] `moss install kanata-bin`
+- [x] `moss install lazytail-bin`
+- [x] `moss install lib32-amdvlk-bin`
+- [x] `moss install localsend-bin`
+- [x] `moss install lutgen-bin`
+- [x] `moss install mpdris2-git`
+- [x] `moss install oports-git`
+- [x] `moss install overskride-bin`
+- [x] `moss install paru-debug`
+- [x] `moss install pipemixer-git`
+- [x] `moss install pixora-icons-git`
+- [x] `moss install proton-ge-custom-bin`
+- [x] `moss install protonup-rs-bin`
+- [x] `moss install proxypilot-debug`
+- [x] `moss install pup-bin`
+- [x] `moss install quickshell-git`
+- [x] `moss install quickshell-overview-git`
+- [x] `moss install raise-debug`
+- [x] `moss install reddix-bin`
+- [x] `moss install repeater-bin`
+- [x] `moss install resterm-bin`
+- [x] `moss install rofi-file-browser-extended-git`
+- [x] `moss install rofi-file-browser-extended-git-debug`
+- [x] `moss install sidecar-debug`
+- [x] `moss install simutil-bin`
+- [x] `moss install sing-box-bin`
+- [x] `moss install ssh-to-age-debug`
+- [x] `moss install strace-tui-bin`
+- [x] `moss install tailray-debug`
+- [x] `moss install tanin-git`
+- [x] `moss install tdl-bin`
+- [x] `moss install themix-full-git`
+- [x] `moss install v2raya-bin`
+- [x] `moss install v2rayn-bin`
+- [x] `moss install vicinae-bin`
+- [x] `moss install watchtower-bin`
+- [x] `moss install witr-bin`
+- [x] `moss install wl-debug`
+- [x] `moss install xdg-desktop-portal-termfilechooser-hunkyburrito-git`
+- [x] `moss install zen-browser-bin`
 
 ## System packages (N/A on AerynOS) (32)
 - `amd-ucode`
@@ -365,44 +365,44 @@
 - [x] `adw-gtk-theme` — `flatpak install org.gtk.Gtk3theme.adw-gtk3`
 - [x] `aria2` — `flatpak install aria2`
 - [x] `bazecor` — `flatpak install com.dygmalab.Bazecor`
-- [ ] `borg` — `flatpak install org.borgbackup.Borg`
-- [ ] `carla` — `flatpak install studio.kx.carla`
-- [ ] `corectrl` — `flatpak install org.corectrl.CoreCtrl`
+- [x] `borg` — `moss install borg`
+- [x] `carla` — `flatpak install studio.kx.carla`
+- [ ] `corectrl` — no flatpak exists
 - [x] `ddccontrol` — `flatpak install org.ddccontrol.DDControl`
-- [ ] `dosbox` — `flatpak install io.github.dosbox.DOSBox`
-- [ ] `gnome-tour` — `flatpak install org.gnome.Tour`
-- [ ] `goverlay` — `flatpak install io.github.goverlay.GOverlay`
+- [x] `dosbox` — `moss install dosbox`
+- [ ] `gnome-tour` — no flatpak exists
+- [x] `goverlay` — `flatpak install io.github.benjamimgois.goverlay`
 - [x] `neovim` — `flatpak install io.neovim.Neovim`
 - [x] `nethack` — `flatpak install nethack`
-- [ ] `nicotine+` — `flatpak install org.nicotine_plus.Nicotine`
-- [ ] `openrgb` — `flatpak install org.openrgb.OpenRGB`
-- [ ] `opensoundmeter` — `flatpak install io.gitlab.opensoundmeter.OpenSoundMeter`
-- [ ] `otter-launcher` — `flatpak install org.otter_browser.Otter`
-- [ ] `pcmanfm` — `flatpak install org.pcmanfm.PCManFM`
-- [ ] `picard` — `flatpak install org.musicbrainz.Picard`
-- [ ] `recoll` — `flatpak install org.recoll.Recoll`
-- [ ] `sonic-visualiser` — `flatpak install org.sonicvisualiser.SonicVisualiser`
-- [ ] `supercollider` — `flatpak install org.supercollider.SuperCollider`
-- [ ] `throne` — `flatpak install com.mercury.Throne`
-- [ ] `transmission-cli` — `flatpak install com.transmissionbt.Transmission`
-- [ ] `zathura` — `flatpak install org.pwmt.zathura`
-- [ ] `zathura-pdf-poppler` — part of zathura flatpak
+- [x] `nicotine+` — `flatpak install org.nicotine_plus.Nicotine`
+- [x] `openrgb` — `moss install openrgb`
+- [ ] `opensoundmeter` — no flatpak exists
+- [ ] `otter-launcher` — no flatpak exists
+- [ ] `pcmanfm` — no flatpak exists
+- [x] `picard` — `flatpak install org.musicbrainz.Picard`
+- [x] `recoll` — `moss install recoll`
+- [ ] `sonic-visualiser` — no flatpak exists
+- [ ] `supercollider` — no flatpak exists
+- [ ] `throne` — no flatpak exists
+- [x] `transmission-cli` — `moss install transmission-cli`
+- [x] `zathura` — `moss install zathura`
+- [x] `zathura-pdf-poppler` — `moss install zathura-pdf-poppler`
 
 ### pip install (32)
-- [ ] `beets` — `pip install beets`
-- [ ] `cmake-language-server` — `pip install cmake-language-server`
+- [x] `beets` — `pipx install beets`
+- [x] `cmake-language-server` — `pipx install cmake-language-server`
 - [x] `dool` — `pip install dool`
-- [ ] `geoip` — `pip install geoip2`
+- [x] `geoip` — `pip install geoip2`
 - [x] `git-filter-repo` — `pip install git-filter-repo`
 - [x] `httpie` — `pip install httpie`
-- [ ] `jupyterlab` — `pip install jupyterlab`
-- [ ] `liquidctl` — `pip install liquidctl`
-- [ ] `neovim-remote` — `pip install neovim-remote`
+- [x] `jupyterlab` — `pipx install jupyterlab`
+- [x] `liquidctl` — `pip install liquidctl`
+- [x] `neovim-remote` — `pipx install neovim-remote`
 - [x] `patool` — `pip install patool`
-- [ ] `pgcli` — `pip install pgcli`
-- [ ] `pre-commit` — `pip install pre-commit`
-- [ ] `proton-vpn-cli` — `pip install proton-vpn-cli`
-- [ ] `proxypilot` — `pip install proxypilot`
+- [x] `pgcli` — `pipx install pgcli`
+- [x] `pre-commit` — `pipx install pre-commit`
+- [ ] `proton-vpn-cli` — package does not exist on PyPI
+- [ ] `proxypilot` — package does not exist on PyPI
 - [x] `python-annoy` — `pip install annoy`
 - [x] `python-ascii_magic` — `pip install ascii_magic`
 - [x] `python-faker` — `pip install faker`
@@ -414,8 +414,8 @@
 - [x] `python-rapidgzip` — `pip install rapidgzip`
 - [x] `python-telethon` — `pip install telethon`
 - [x] `python-textual` — `pip install textual`
-- [ ] `python-transformers` — `pip install transformers`
-- [ ] `richcolors` — `pip install richcolors`
+- [x] `python-transformers` — `pipx install transformers`
+- [x] `richcolors` — `moss install richcolors`
 - [x] `s-tui` — `pip install s-tui`
 - [x] `scour` — `pip install scour`
 - [x] `urlscan` — `pip install urlscan`
@@ -434,41 +434,41 @@
 - [x] `genact` — `cargo install genact`
 - [x] `gist` — `cargo install gist`
 - [x] `handlr-regex` — `cargo install handlr-regex`
-- [ ] `helvum` — `cargo install helvum`
+- [x] `helvum` — `moss install helvum`
 - [x] `himalaya` — `cargo install himalaya`
 - [x] `hxd` — `cargo install hxd`
 - [x] `kmon` — `cargo install kmon`
 - [x] `lnav` — `cargo install lnav`
 - [x] `mandoc` — `cargo install mandoc`
-- [ ] `newsraft` — `cargo install newsraft`
+- [x] `newsraft` — `moss install newsraft`
 - [x] `oyo` — `cargo install oyo`
 - [x] `prettyping` — `cargo install prettyping`
-- [ ] `raise` — `cargo install raise`
+- [x] `raise` — `moss install raise`
 - [x] `rebuild-detector` — `cargo install rebuild-detector`
 - [x] `regex-tui` — `cargo install regex-tui`
 - [x] `resvg` — `cargo install resvg`
 - [x] `rmpc` — `cargo install rmpc`
 - [x] `rustmission` — `cargo install rustmission`
 - [x] `satty` — `cargo install satty`
-- [ ] `sidecar` — `cargo install sidecar`
+- [x] `sidecar` — compiled on host, deployed to VM
 - [x] `songfetch` — `cargo install songfetch`
 - [x] `swappy` — `cargo install swappy`
 - [x] `systemd-manager-tui` — `cargo install systemd-manager-tui`
-- [ ] `tabiew` — `cargo install tabiew`
+- [x] `tabiew` — compiled on host, deployed to VM
 - [x] `tailray` — `cargo install tailray`
-- [ ] `taoup` — `cargo install taoup`
+- [ ] `taoup` — Ruby gem, not a cargo crate
 - [x] `tmmpr` — `cargo install tmmpr`
-- [ ] `unflac` — `cargo install unflac`
+- [x] `unflac` — `moss install unflac`
 - [x] `uwsm` — `cargo install uwsm`
 - [x] `viu` — `cargo install viu`
-- [ ] `wl` — `cargo install wl`
+- [x] `wl` — `moss install wl-clipboard` (wl-clipboard-rs)
 - [x] `wlr-which-key` — `cargo install wlr-which-key`
 - [x] `xdg-ninja` — `cargo install xdg-ninja`
-- [ ] `youtube-tui` — `cargo install ytermusic`
+- [x] `youtube-tui` — `moss install youtube-tui`
 - [x] `zk` — `cargo install zk`
 
 ### go install (9)
-- [ ] `cloudflare-speed-cli` — `go install github.com/cloudflare/speedtest@latest`
+- [x] `cloudflare-speed-cli` — `moss install cloudflare-speed-cli`
 - [x] `ctop` — `go install github.com/bcicen/ctop@latest`
 - [x] `dive` — `go install github.com/wagoodman/dive@latest`
 - [x] `gitleaks` — `go install github.com/gitleaks/gitleaks@latest`
@@ -488,7 +488,7 @@
 - [ ] `haskell-tidal` — `cabal install tidal`
 
 ### AUR package (not applicable) (3)
-- [ ] `bucklespring` — closed source
+- [x] `bucklespring` — `moss install bucklespring`
 - [x] `opencode` — this tool, install via npm
 - [ ] `paru` — AUR helper, not needed on AerynOS
 
@@ -519,11 +519,11 @@
 - [x] `inter-font` — font, download manually
 - [x] `iosevka-neg-fonts` — font, download manually
 - [ ] `kvantum-qt5` — part of kvantum, already in moss
-- [ ] `libfixposix` — library
+- [x] `libfixposix` — `moss install libfixposix`
 - [ ] `libguestfs` — VM disk tools
 - [x] `lshw` — hardware lister
 - [ ] `lua53` — old Lua version
-- [ ] `malcontent` — parental controls
+- [x] `malcontent` — `moss install malcontent`
 - [ ] `multipath-tools` — multipath storage
 - [ ] `nss-mdns` — mDNS hostname resolution
 - [x] `nuspell` — use hunspell
@@ -533,7 +533,7 @@
 - [ ] `realtime-privileges` — realtime permissions
 - [ ] `rygel` — DLNA server
 - [ ] `slirp4netns` — user-mode networking
-- [ ] `system-config-printer` — printer config
+- [x] `system-config-printer` — `moss install system-config-printer`
 - [ ] `tumbler` — thumbnailer
 - [ ] `ufw` — use firewalld alternative
 - [ ] `wxwidgets-gtk3` — GUI library
@@ -558,7 +558,7 @@
 - [x] `dcfldd` — use dd (coreutils)
 - [x] `ddrescue` — data recovery tool
 - [x] `dos2unix` — text format converter
-- [ ] `droidcam` — install from dev47apps.com
+- [x] `droidcam` — `moss install droidcam`
 - [x] `enca` — charset detector
 - [x] `entr` — file watcher, build from source
 - [x] `etckeeper` — version control for /etc
@@ -577,7 +577,7 @@
 - [ ] `hermes-agent` — eval.so agent
 - [x] `hyprpicker` — color picker
 - [x] `hyprscratch` — scratchpad
-- [ ] `id3v2` — MP3 tagger
+- [x] `id3v2` — `moss install id3v2`
 - [x] `iftop` — network traffic monitor
 - [ ] `instagram-cli` — Instagram CLI
 - [x] `ioping` — I/O latency
@@ -587,14 +587,14 @@
 - [x] `jdupes` — duplicate file finder
 - [x] `jpegoptim` — JPEG optimizer
 - [x] `lbzip2` — parallel bzip2, use pbzip2
-- [ ] `lua-language-server` — LSP for Lua
+- [x] `lua-language-server` — `moss install lua-language-server`
 - [x] `mediainfo` — media file info
 - [x] `memtester` — memory tester
 - [x] `miller` — CSV/JSON processor
 - [x] `minicom` — serial terminal
 - [x] `moreutils` — additional Unix tools
 - [x] `mpd` — Music Player Daemon
-- [ ] `mpdas` — MPD audio scrobbler
+- [x] `mpdas` — `moss install mpdas`
 - [x] `neo-matrix` — Matrix rain effect
 - [x] `neomutt` — email client
 - [x] `nerdctl` — container runtime, use podman
@@ -604,7 +604,7 @@
 - [x] `nvtop` — GPU monitor
 - [x] `ollama` — `curl -fsSL https://ollama.ai/install.sh | sh`
 - [x] `ollama-vulkan` — set OLLAMA_USE_VULKAN=1
-- [ ] `openbsd-netcat` — networking utility
+- [x] `openbsd-netcat` — `moss install openbsd-netcat`
 - [ ] `openocd` — JTAG debugger
 - [x] `optipng` — PNG optimizer
 - [ ] `optiscaler-universal` — upscaler
@@ -618,14 +618,14 @@
 - [x] `pngquant` — PNG compressor
 - [x] `powertop` — power management
 - [x] `progress` — coreutils progress monitor
-- [ ] `pwgen` — password generator
-- [ ] `qman` — Qt man page viewer
+- [x] `pwgen` — `moss install pwgen`
+- [x] `qman` — `moss install qman`
 - [x] `qt5ct` — Qt5 theme config
 - [ ] `raysession` — session manager
 - [x] `reptyr` — reparent terminal
 - [x] `rlwrap` — readline wrapper
 - [x] `rmlint` — duplicate file finder
-- [ ] `rofi` — app launcher, use fuzzel (in moss)
+- [x] `rofi` — `moss install rofi`
 - [ ] `roomeqwizard` — audio EQ, download from roomeqwizard.com
 - [ ] `sbcl` — Common Lisp compiler
 - [ ] `sc3-plugins` — SuperCollider UGen plugins
@@ -643,7 +643,7 @@
 - [x] `tesseract-data-rus` — Russian OCR data
 - [x] `testdisk` — data recovery
 - [ ] `texlive-basic` — LaTeX distribution
-- [ ] `toilet` — ASCII art
+- [x] `toilet` — `moss install toilet`
 - [x] `traceroute` — use mtr (already installed)
 - [x] `ttfautohint` — font hinter
 - [x] `udiskie` — USB automounter
@@ -653,16 +653,16 @@
 - [x] `w3m` — text-mode browser
 - [x] `waypipe` — Wayland proxy
 - [ ] `wayvnc` — use neatvnc (in moss: `neatvnc`)
-- [ ] `wget2` — download tool
+- [x] `wget2` — `moss install wget2`
 - [x] `whois` — domain lookup
 - [x] `wiremix` — audio tool
 - [x] `wlogout` — Wayland logout UI
 - [x] `wlr-randr` — output management
 - [x] `wofi` — launcher, use fuzzel (in moss)
 - [x] `wtype` — Wayland keyboard input, use ydotool (installed)
-- [ ] `ytsurf` — YouTube surf CLI
-- [ ] `zapret2` — DPI circumvention, build from GitHub
-- [ ] `zmap` — network scanner
+- [x] `ytsurf` — `moss install ytsurf`
+- [x] `zapret2` — `moss install zapret2`
+- [x] `zmap` — `moss install zmap`
 
 ### Custom / from this repo (1)
 - [x] `neg-pretty-printer` — custom script from this repo

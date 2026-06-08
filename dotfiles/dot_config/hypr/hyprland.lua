@@ -355,3 +355,61 @@ hl.animation({ leaf = "fadeLayersIn",     enabled = true, speed = 0.125,  bezier
 hl.animation({ leaf = "fadeLayersOut",    enabled = true, speed = 0.03125, bezier = "menu_accel" })
 hl.animation({ leaf = "workspaces",       enabled = true, speed = 0.125,  bezier = "menu_decel",    style = "slide" })
 hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 0.1875, bezier = "md3_decel",     style = "slidefadevert 15%" })
+
+-- Window rules
+hl.window_rule({ name = "nm-connection-editor", match = { class = "^(nm-connection-editor)$" }, float = true, size = "45% 45%", center = true, tag = "nm-connection-editor" })
+hl.window_rule({ name = "pip-float", match = { title = "^([Pp]icture[- ]?[Ii]n[- ]?[Pp]icture)(.*)$" }, float = true, keep_aspect_ratio = true, move = "73% 72%", size = "25% 25%", pin = true, tag = "pip" })
+hl.window_rule({ name = "file-dialog", match = { title = "^(Open File|Select a File|Choose wallpaper|Open Folder|Save As|Library|File Upload)(.*)$" }, center = true, float = true, tag = "file-dialog" })
+hl.window_rule({ name = "yazi-chooser", match = { class = "^(yazi-chooser)$" }, float = true, center = true, size = "65% 75%", tag = "yazi-chooser" })
+hl.window_rule({ name = "telegram", match = { class = "^(org%.telegram%.desktop)$" }, float = true, tag = "telegram" })
+hl.window_rule({ name = "telegram-wrapped", match = { class = "^(.telegram-desktop-wrapped)$" }, center = true, float = true, tag = "telegram" })
+hl.window_rule({ name = "utility-float", match = { class = "^(qt5ct|wine|steamwebhelper|sun-awt-X11-XFramePeer|xdg-desktop-portal-gtk)$" }, float = true, tag = "utility" })
+hl.window_rule({ name = "mpd-add", match = { class = "^(mpd-add)(.*)$" }, float = true, size = "35% 35%", move = "64% 59%", tag = "mpd-add" })
+hl.window_rule({ name = "wine-exe", match = { title = ".*%.exe" }, immediate = true, tag = "wine-exe" })
+hl.window_rule({ name = "steam-app", match = { class = "^(steam_app_.*)$" }, immediate = true, render_unfocused = true, no_blur = true, no_anim = true, tag = "steam-app" })
+hl.window_rule({ name = "vicinae", match = { class = "^(vicinae)$" }, float = true, no_anim = true, move = "575 408", stay_focused = true })
+hl.window_rule({ name = "xwayland", match = { xwayland = true }, no_blur = true, tag = "xwayland" })
+hl.window_rule({ name = "xwayland-drags", match = { class = "^$", title = "^$", xwayland = true, float = true, fullscreen = false, pin = false }, no_focus = true })
+hl.window_rule({ name = "pinentry", match = { class = "^(pinentry-)(.*)$" }, stay_focused = true, tag = "pinentry" })
+hl.window_rule({ name = "nemo", match = { class = "^(nemo)$" }, opacity = 0.92, tag = "file-manager" })
+hl.window_rule({ name = "xwaylandvideobridge", match = { class = "^(xwaylandvideobridge)$" }, opacity = 0.0, no_anim = true, no_initial_focus = true, max_size = "1 1", no_blur = true, tag = "xwaylandvideobridge" })
+hl.window_rule({ name = "swayimg", match = { class = "^(swayimg)$" }, float = true, size = "1200 800", move = "100 100", fullscreen = true })
+hl.window_rule({ name = "hide-borders", match = { float = false }, border_size = 0 })
+
+-- Workspace routing
+hl.window_rule({ name = "route-term", match = { class = "^term$" }, no_blur = true, workspace = "1" })
+hl.window_rule({ name = "route-zen", match = { initial_class = "^(zen)$" }, workspace = "2 silent" })
+hl.window_rule({ name = "route-dev", match = { class = "^nwim$" }, workspace = "3" })
+hl.window_rule({ name = "route-games", match = { class = "^(steam|Steam|steam_app_%d+|gamescope)$" }, workspace = "4" })
+hl.window_rule({ name = "route-doc", match = { class = "^org%.pwmt%.zathura$" }, workspace = "5" })
+hl.window_rule({ name = "route-vid", match = { class = "^mpv$" }, workspace = "7" })
+hl.window_rule({ name = "route-obs", match = { class = "^obs$" }, workspace = "8" })
+hl.window_rule({ name = "route-pic", match = { class = "^swayimg$" }, workspace = "9" })
+hl.window_rule({ name = "route-patchbay", match = { class = "^(qpwgraph|Carla2)$" }, workspace = "13" })
+hl.window_rule({ name = "route-daw", match = { class = "^(REAPER|Renoise)$" }, workspace = "14" })
+hl.window_rule({ name = "route-dw", match = { class = "^org%.nicotine_plus%.Nicotine$" }, workspace = "15" })
+hl.window_rule({ name = "route-keyboard", match = { class = "^(Bazecor|wootility-lekker|Vial|via)$" }, workspace = "16" })
+hl.window_rule({ name = "route-im", match = { class = "^im%.riot%.Riot$" }, workspace = "17" })
+hl.window_rule({ name = "route-remote", match = { class = "^(Vmware-view|xfreerdp|remmina|org%.remmina%.Remmina)$" }, workspace = "18" })
+hl.window_rule({ name = "route-notes", match = { class = "^Obsidian$" }, workspace = "19" })
+hl.window_rule({ name = "route-vm", match = { class = "^(%.virt-manager-wrapped|qemu-system-x86_64|Qemu-system-x86_64)$" }, workspace = "11" })
+hl.window_rule({ name = "route-wine", match = { class = "^com%.usebottles%.bottles$" }, workspace = "12" })
+hl.window_rule({ name = "route-winboat", match = { class = "^(winboat|WinBoat)$" }, workspace = "20", float = true })
+
+-- Scratchpad float
+for _, cls in ipairs({ "^(KotatogramDesktop|Skype|Slack|TelegramDesktop|org%.telegram%.desktop|zoom)$", "^(ncmpcpp|rmpc|music)$", "^(mixer|pipemixer)$", "^(torrment)$", "^(teardown)$" }) do
+  hl.window_rule({ name = "scratchpad-float", match = { class = cls }, float = true })
+end
+
+-- Layer rules
+for _, ns in ipairs({ "gtk-layer-shell", "launcher", "notifications", "bar[0-9]*", "qs-panel", "barcorner.*", "dock[0-9]*", "overview[0-9]*", "cheatsheet[0-9]*", "sideright[0-9]*", "sideleft[0-9]*", "indicator.*", "osk[0-9]*" }) do
+  hl.layer_rule({ name = "blur-a-" .. ns, match = { namespace = ns }, blur = true, ignore_alpha = 1.0 })
+end
+for _, ns in ipairs({ "logout_dialog", "session[0-9]*" }) do
+  hl.layer_rule({ name = "blur-" .. ns, match = { namespace = ns }, blur = true })
+end
+for _, ns in ipairs({ "selection", "indicator.*", "hyprpicker", "qs-panel" }) do
+  hl.layer_rule({ name = "noanim-" .. ns, match = { namespace = ns }, no_anim = true })
+end
+hl.layer_rule({ name = "anim-sideleft", match = { namespace = "sideleft.*" }, animation = "slide left" })
+hl.layer_rule({ name = "anim-sideright", match = { namespace = "sideright.*" }, animation = "slide right" })

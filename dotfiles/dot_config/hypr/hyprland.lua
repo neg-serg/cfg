@@ -92,10 +92,10 @@ hl.bind(M4 .. "+mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Scratchpad toggles
 -- Scratchpad float rules: auto-move to special workspace + float
-hl.window_rule({ name = "sp-teardown", match = { class = "^teardown$" }, workspace = "special:teardown", float = true })
-hl.window_rule({ name = "sp-music",    match = { class = "^music$" },    workspace = "special:music",    float = true })
-hl.window_rule({ name = "sp-torrment", match = { class = "^torrment$" }, workspace = "special:torrment", float = true })
-hl.window_rule({ name = "sp-mixer",    match = { class = "^mixer$" },    workspace = "special:mixer",    float = true })
+hl.window_rule({ name = "sp-teardown", match = { class = "^teardown$" }, workspace = "special:teardown", float = true, size = "1880 560" })
+hl.window_rule({ name = "sp-music",    match = { class = "^music$" },    workspace = "special:music",    float = true, size = "1200 480" })
+hl.window_rule({ name = "sp-torrment", match = { class = "^torrment$" }, workspace = "special:torrment", float = true, size = "1880 480" })
+hl.window_rule({ name = "sp-mixer",    match = { class = "^mixer$" },    workspace = "special:mixer",    float = true, size = "620 840" })
 hl.window_rule({ name = "sp-im",       match = { class = "^org\\.telegram\\.desktop$|^TelegramDesktop$" }, workspace = "special:im", float = true })
 
 hl.window_rule({ name = "sp-hiddify",  match = { class = "^app\\.hiddify\\.com$" }, workspace = "special:hiddify",  float = true })
@@ -103,11 +103,53 @@ hl.window_rule({ name = "sp-amnezia",  match = { class = "^AmneziaVPN$" },      
 hl.window_rule({ name = "sp-flclashx", match = { class = "^com\\.follow\\.clashx$" }, workspace = "special:flclashx", float = true })
 hl.window_rule({ name = "sp-v2rayn",   match = { class = "^v2rayN$" },             workspace = "special:v2rayn",   float = true })
 
-hl.bind(M4 .. "+d", function() hl.exec_cmd("kitty --single-instance --class teardown -e btop"); hl.dispatch(hl.dsp.workspace.toggle_special("teardown")) end)
+-- Scratchpad system: event-driven, no delay, no duplicate windows
+local sp_alive = {}       -- class -> bool (window exists)
+local sp_want_toggle = {} -- class -> bool (toggle after openwindow)
+
+local sp_map = {
+  teardown = { cmd = "kitty --single-instance --class teardown -e btop", special = "teardown" },
+  music    = { cmd = "kitty --single-instance --class music -e rmpc -c ~/.config/rmpc/config-scratchpad.ron", special = "music" },
+  torrment = { cmd = "kitty --single-instance --class torrment -e rustmission", special = "torrment" },
+  mixer    = { cmd = "kitty --single-instance --class mixer -e pipemixer", special = "mixer" },
+}
+
+local sp_count = {}
+
+hl.on("openwindow", function(e)
+  local w = e.window
+  local cls = w.class
+  if sp_map[cls] then
+    sp_count[cls] = (sp_count[cls] or 0) + 1
+    if sp_want_toggle[cls] then
+      sp_want_toggle[cls] = nil
+      hl.dispatch(hl.dsp.workspace.toggle_special(sp_map[cls].special))
+    end
+  end
+end)
+
+hl.on("closewindow", function(e)
+  local w = e.window
+  local cls = w.class
+  if sp_map[cls] then
+    sp_count[cls] = math.max(0, (sp_count[cls] or 1) - 1)
+  end
+end)
+
+local function sp_toggle(cls)
+  if sp_count[cls] and sp_count[cls] > 0 then
+    hl.dispatch(hl.dsp.workspace.toggle_special(sp_map[cls].special))
+  else
+    sp_want_toggle[cls] = true
+    hl.exec_cmd(sp_map[cls].cmd)
+  end
+end
+
+hl.bind(M4 .. "+d", function() sp_toggle("teardown") end)
 hl.bind(M4 .. "+e", function() hl.dispatch(hl.dsp.workspace.toggle_special("im")) end)
-hl.bind(M4 .. "+f", function() hl.exec_cmd("kitty --single-instance --class music -e rmpc -c ~/.config/rmpc/config-scratchpad.ron"); hl.dispatch(hl.dsp.workspace.toggle_special("music")) end)
-hl.bind(M4 .. "+t", function() hl.exec_cmd("kitty --single-instance --class torrment -e rustmission"); hl.dispatch(hl.dsp.workspace.toggle_special("torrment")) end)
-hl.bind(M4 .. "+" .. C .. "+p", function() hl.exec_cmd("kitty --single-instance --class mixer -e pipemixer"); hl.dispatch(hl.dsp.workspace.toggle_special("mixer")) end)
+hl.bind(M4 .. "+f", function() sp_toggle("music") end)
+hl.bind(M4 .. "+t", function() sp_toggle("torrment") end)
+hl.bind(M4 .. "+" .. C .. "+p", function() sp_toggle("mixer") end)
 
 -- App launchers
 hl.bind(M4 .. "+w", hl.dsp.exec_cmd('raise --match "class:regex=(?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|firefox(?:[ -]?developer[ -]?edition)?|org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|librewolf|io\\.gitlab\\.librewolf-community|chromium(?:-browser)?|org\\.chromium\\.chromium|ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\\.brave\\.browser|vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\\.thorium\\.thorium|mullvad-browser|com\\.mullvad\\.browser|palemoon|net\\.palemoon\\.palemoon|qutebrowser|org\\.qutebrowser\\.qutebrowser|falkon|org\\.kde\\.falkon|midori|epiphany|org\\.gnome\\.epiphany|google-chrome(?:-(?:stable|beta|unstable))?|com\\.google\\.chrome|microsoft-edge(?:-(?:beta|dev|canary))?|com\\.microsoft\\.edge)$" --launch zen-browser'))

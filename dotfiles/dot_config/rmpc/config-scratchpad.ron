@@ -15,7 +15,7 @@
     scroll_amount: 5,
     keep_state_on_song_change: true,
     album_art: (
-        method: Auto,
+        method: Kitty,
         max_size_px: (width: 1200, height: 1200),
         disabled_protocols: ["http://", "https://"],
         vertical_align: Center,

@@ -103,11 +103,11 @@ hl.window_rule({ name = "sp-amnezia",  match = { class = "^AmneziaVPN$" },      
 hl.window_rule({ name = "sp-flclashx", match = { class = "^com\\.follow\\.clashx$" }, workspace = "special:flclashx", float = true })
 hl.window_rule({ name = "sp-v2rayn",   match = { class = "^v2rayN$" },             workspace = "special:v2rayn",   float = true })
 
-hl.bind(M4 .. "+d", function() hl.exec_cmd("kitty --single-instance --class teardown -e btop"); hl.timer(function() hl.dispatch(hl.dsp.workspace.toggle_special("teardown")) end, { timeout = 200, type = "oneshot" }) end)
-hl.bind(M4 .. "+e", function() hl.timer(function() hl.dispatch(hl.dsp.workspace.toggle_special("im")) end, { timeout = 100, type = "oneshot" }) end)
-hl.bind(M4 .. "+f", function() hl.exec_cmd("kitty --single-instance --class music -e rmpc -c ~/.config/rmpc/config-scratchpad.ron"); hl.timer(function() hl.dispatch(hl.dsp.workspace.toggle_special("music")) end, { timeout = 200, type = "oneshot" }) end)
-hl.bind(M4 .. "+t", function() hl.exec_cmd("kitty --single-instance --class torrment -e rustmission"); hl.timer(function() hl.dispatch(hl.dsp.workspace.toggle_special("torrment")) end, { timeout = 200, type = "oneshot" }) end)
-hl.bind(M4 .. "+" .. C .. "+p", function() hl.exec_cmd("kitty --single-instance --class mixer -e pipemixer"); hl.timer(function() hl.dispatch(hl.dsp.workspace.toggle_special("mixer")) end, { timeout = 200, type = "oneshot" }) end)
+hl.bind(M4 .. "+d", function() hl.exec_cmd("kitty --single-instance --class teardown -e btop"); hl.dispatch(hl.dsp.workspace.toggle_special("teardown")) end)
+hl.bind(M4 .. "+e", function() hl.dispatch(hl.dsp.workspace.toggle_special("im")) end)
+hl.bind(M4 .. "+f", function() hl.exec_cmd("kitty --single-instance --class music -e rmpc -c ~/.config/rmpc/config-scratchpad.ron"); hl.dispatch(hl.dsp.workspace.toggle_special("music")) end)
+hl.bind(M4 .. "+t", function() hl.exec_cmd("kitty --single-instance --class torrment -e rustmission"); hl.dispatch(hl.dsp.workspace.toggle_special("torrment")) end)
+hl.bind(M4 .. "+" .. C .. "+p", function() hl.exec_cmd("kitty --single-instance --class mixer -e pipemixer"); hl.dispatch(hl.dsp.workspace.toggle_special("mixer")) end)
 
 -- App launchers
 hl.bind(M4 .. "+w", hl.dsp.exec_cmd('raise --match "class:regex=(?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|firefox(?:[ -]?developer[ -]?edition)?|org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|librewolf|io\\.gitlab\\.librewolf-community|chromium(?:-browser)?|org\\.chromium\\.chromium|ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\\.brave\\.browser|vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\\.thorium\\.thorium|mullvad-browser|com\\.mullvad\\.browser|palemoon|net\\.palemoon\\.palemoon|qutebrowser|org\\.qutebrowser\\.qutebrowser|falkon|org\\.kde\\.falkon|midori|epiphany|org\\.gnome\\.epiphany|google-chrome(?:-(?:stable|beta|unstable))?|com\\.google\\.chrome|microsoft-edge(?:-(?:beta|dev|canary))?|com\\.microsoft\\.edge)$" --launch zen-browser'))

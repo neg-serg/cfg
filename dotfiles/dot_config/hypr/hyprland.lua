@@ -91,11 +91,23 @@ hl.bind(M4 .. "+mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(M4 .. "+mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Scratchpad toggles
-hl.bind(M4 .. "+d", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle teardown"))
-hl.bind(M4 .. "+e", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle im"))
-hl.bind(M4 .. "+f", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle music"))
-hl.bind(M4 .. "+t", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle torrment"))
-hl.bind(M4 .. "+" .. C .. "+p", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle mixer"))
+-- Scratchpad float rules: auto-move to special workspace + float
+hl.window_rule({ name = "sp-teardown", match = { class = "^teardown$" }, workspace = "special:teardown", float = true })
+hl.window_rule({ name = "sp-music",    match = { class = "^music$" },    workspace = "special:music",    float = true })
+hl.window_rule({ name = "sp-torrment", match = { class = "^torrment$" }, workspace = "special:torrment", float = true })
+hl.window_rule({ name = "sp-mixer",    match = { class = "^mixer$" },    workspace = "special:mixer",    float = true })
+hl.window_rule({ name = "sp-im",       match = { class = "^org\\.telegram\\.desktop$|^TelegramDesktop$" }, workspace = "special:im", float = true })
+
+hl.window_rule({ name = "sp-hiddify",  match = { class = "^app\\.hiddify\\.com$" }, workspace = "special:hiddify",  float = true })
+hl.window_rule({ name = "sp-amnezia",  match = { class = "^AmneziaVPN$" },        workspace = "special:amnezia",  float = true })
+hl.window_rule({ name = "sp-flclashx", match = { class = "^com\\.follow\\.clashx$" }, workspace = "special:flclashx", float = true })
+hl.window_rule({ name = "sp-v2rayn",   match = { class = "^v2rayN$" },             workspace = "special:v2rayn",   float = true })
+
+hl.bind(M4 .. "+d", hl.dsp.workspace.toggle_special("teardown"))
+hl.bind(M4 .. "+e", hl.dsp.workspace.toggle_special("im"))
+hl.bind(M4 .. "+f", hl.dsp.workspace.toggle_special("music"))
+hl.bind(M4 .. "+t", hl.dsp.workspace.toggle_special("torrment"))
+hl.bind(M4 .. "+" .. C .. "+p", hl.dsp.workspace.toggle_special("mixer"))
 
 -- App launchers
 hl.bind(M4 .. "+w", hl.dsp.exec_cmd('raise --match "class:regex=(?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|firefox(?:[ -]?developer[ -]?edition)?|org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|librewolf|io\\.gitlab\\.librewolf-community|chromium(?:-browser)?|org\\.chromium\\.chromium|ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\\.brave\\.browser|vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\\.thorium\\.thorium|mullvad-browser|com\\.mullvad\\.browser|palemoon|net\\.palemoon\\.palemoon|qutebrowser|org\\.qutebrowser\\.qutebrowser|falkon|org\\.kde\\.falkon|midori|epiphany|org\\.gnome\\.epiphany|google-chrome(?:-(?:stable|beta|unstable))?|com\\.google\\.chrome|microsoft-edge(?:-(?:beta|dev|canary))?|com\\.microsoft\\.edge)$" --launch zen-browser'))
@@ -276,10 +288,10 @@ end)
 hl.bind(M4 .. "+v", hl.dsp.submap("vpn"))
 hl.define_submap("vpn", "reset", function()
   submap_resets()
-  binde_reset("h", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle hiddify"))
-  binde_reset("a", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle amnezia"))
-  binde_reset("f", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle flclashx"))
-  binde_reset("n", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle v2rayn"))
+  binde_reset("h", function() hl.exec_cmd("hiddify"); hl.dispatch(hl.dsp.workspace.toggle_special("hiddify")) end)
+  binde_reset("a", function() hl.exec_cmd("/usr/local/bin/AmneziaVPN"); hl.dispatch(hl.dsp.workspace.toggle_special("amnezia")) end)
+  binde_reset("f", function() hl.exec_cmd("flclashx"); hl.dispatch(hl.dsp.workspace.toggle_special("flclashx")) end)
+  binde_reset("n", function() hl.exec_cmd("/opt/v2rayn-bin/v2rayN"); hl.dispatch(hl.dsp.workspace.toggle_special("v2rayn")) end)
 end)
 
 -- Workspaces
@@ -326,6 +338,11 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("qs -c overview")
   hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE QT_XDG_DESKTOP_PORTAL GTK_THEME QT_STYLE_OVERRIDE QT_QPA_PLATFORMTHEME")
   hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE QT_XDG_DESKTOP_PORTAL GTK_THEME QT_STYLE_OVERRIDE QT_QPA_PLATFORMTHEME")
+  -- Scratchpads (launch at startup, window rules auto-move to special workspace)
+  hl.exec_cmd("kitty --single-instance --class teardown -e btop")
+  hl.exec_cmd("kitty --single-instance --class torrment -e rustmission")
+  hl.exec_cmd("kitty --single-instance --class music -e rmpc -c ~/.config/rmpc/config-scratchpad.ron")
+  hl.exec_cmd("kitty --single-instance --class mixer -e pipemixer")
 end)
 
 -- Animations

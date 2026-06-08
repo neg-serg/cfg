@@ -34,8 +34,6 @@ hl.env("GTK_USE_PORTAL", "1")
 hl.env("GTK_THEME", "Flight-Dark-GTK")
 hl.env("XCURSOR_THEME", "Alkano-aio")
 
-hl.bind("SUPER+Q", hl.dsp.exec_cmd("kitty"))
-
 hl.config({
   general = {
     gaps_in = 0, gaps_out = 0, border_size = border_size,
@@ -68,3 +66,85 @@ hl.config({
   master = { new_status = "master", mfact = 0.7 },
   scrolling = { column_width = 0.5, fullscreen_on_one_column = true, explicit_column_widths = "0.5, 1.0", focus_fit_method = 1, follow_focus = true, follow_min_visible = 0.5, direction = "right" },
 })
+
+local M4 = "SUPER"
+local M1 = "Alt"
+local C = "Control"
+local SH = "Shift"
+
+hl.bind(M4 .. "+S", hl.dsp.exec_cmd("hyprctl switchxkblayout current next"))
+hl.bind(M1 .. "+Tab", hl.dsp.exec_cmd("~/.local/bin/hypr-focus-hist --switch"))
+hl.bind(M4 .. "+Tab", hl.dsp.exec_cmd("qs ipc -c overview call overview toggle"))
+hl.bind(M4 .. "+" .. C .. "+backslash", hl.dsp.window.resize({ x = 640, y = 480 }))
+hl.bind(M4 .. "+" .. SH .. "+Tab", hl.dsp.window.cycle_next({ next = true }))
+hl.bind(M4 .. "+" .. SH .. "+Tab", hl.dsp.window.bring_to_top())
+hl.bind(M4 .. "+c", hl.dsp.exec_cmd("~/.local/bin/clip"))
+hl.bind(M4 .. "+Escape", hl.dsp.window.close())
+hl.bind(M4 .. "+r", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
+hl.bind(M4 .. "+Return", hl.dsp.exec_cmd("kitty --single-instance"), { locked = true })
+hl.bind(M4 .. "+p", hl.dsp.exec_cmd("pkill rofi || ~/.local/bin/rofi-pass-2col"), { locked = true })
+hl.bind(M4 .. "+" .. SH .. "+p", hl.dsp.exec_cmd("pkill rofi || tessen"), { locked = true })
+
+-- Mouse
+hl.bind(M4 .. "+mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(M4 .. "+mouse_up", hl.dsp.focus({ workspace = "e-1" }))
+hl.bind(M4 .. "+mouse:272", hl.dsp.window.drag(), { mouse = true })
+hl.bind(M4 .. "+mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+-- Scratchpad toggles
+hl.bind(M4 .. "+d", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle teardown"))
+hl.bind(M4 .. "+e", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle im"))
+hl.bind(M4 .. "+f", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle music"))
+hl.bind(M4 .. "+t", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle torrment"))
+hl.bind(M4 .. "+" .. C .. "+p", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle mixer"))
+
+-- Focus / scrolling
+hl.bind(M4 .. "+equal", hl.dsp.layout("colresize +conf"))
+hl.bind(M4 .. "+" .. SH .. "+equal", hl.dsp.layout("fit all"))
+hl.bind(M4 .. "+h", hl.dsp.layout("focus l"))
+hl.bind(M4 .. "+j", hl.dsp.layout("focus d"))
+hl.bind(M4 .. "+k", hl.dsp.layout("focus u"))
+hl.bind(M4 .. "+l", hl.dsp.layout("focus r"))
+hl.bind(M4 .. "+" .. SH .. "+h", hl.dsp.window.move({ direction = "l" }))
+hl.bind(M4 .. "+" .. SH .. "+j", hl.dsp.window.move({ direction = "d" }))
+hl.bind(M4 .. "+" .. SH .. "+k", hl.dsp.window.move({ direction = "u" }))
+hl.bind(M4 .. "+" .. SH .. "+l", hl.dsp.window.move({ direction = "r" }))
+
+-- Media
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume +5"), { repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume -5"), { repeating = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"), { repeating = true })
+hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("swayosd-client --input-volume mute-toggle"), { repeating = true })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("swayosd-client --brightness +10"), { repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("swayosd-client --brightness -10"), { repeating = true })
+hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
+hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
+hl.bind(M4 .. "+" .. SH .. "+w", hl.dsp.exec_cmd("~/.local/bin/pl cmd play-pause"), { locked = true })
+hl.bind(M4 .. "+comma", hl.dsp.exec_cmd("~/.local/bin/pl cmd previous"), { locked = true })
+hl.bind(M4 .. "+period", hl.dsp.exec_cmd("~/.local/bin/pl cmd next"), { locked = true })
+hl.bind(M4 .. "+" .. SH .. "+i", hl.dsp.exec_cmd("~/.local/bin/pl vol mute"), { locked = true })
+hl.bind(M4 .. "+" .. SH .. "+o", hl.dsp.exec_cmd("~/.local/bin/pl vol unmute"), { locked = true })
+hl.bind(M4 .. "+m", hl.dsp.exec_cmd("~/.local/bin/music-rename current"), { locked = true })
+
+-- Misc
+hl.bind(M1 .. "+g", hl.dsp.exec_cmd("~/.local/bin/hypr-win-list"))
+hl.bind(M1 .. "+backslash", hl.dsp.exec_cmd("~/.local/bin/hypr-win-list"))
+hl.bind(M4 .. "+" .. SH .. "+m", hl.dsp.exec_cmd("~/.local/bin/main-menu"))
+hl.bind(M4 .. "+slash", hl.dsp.exec_cmd("~/.local/bin/hypr-shortcuts"))
+hl.bind(M4 .. "+" .. SH .. "+S", hl.dsp.exec_cmd("hyprquickframe"))
+hl.bind(M4 .. "+" .. SH .. "+r", hl.dsp.exec_cmd('shot="$HOME/pic/shots/satty-$(date \'+%Y%m%d-%H.%M.%S\').png"; grim "$shot" && pic-info "$shot"'))
+hl.bind(M4 .. "+" .. SH .. "+" .. C .. "+r", hl.dsp.exec_cmd('shot="$HOME/pic/shots/satty-$(date \'+%Y%m%d-%H.%M.%S\').png"; grim -g "$(slurp)" "$shot" && pic-info "$shot"'))
+hl.bind(M4 .. "+" .. SH .. "+v", hl.dsp.exec_cmd("~/.local/bin/screenrec screen"))
+hl.bind(M4 .. "+" .. SH .. "+" .. C .. "+v", hl.dsp.exec_cmd("~/.local/bin/screenrec area"))
+hl.bind(M1 .. "+q", hl.dsp.exec_cmd("vicinae toggle"))
+hl.bind("Caps_Lock", hl.dsp.exec_cmd("swayosd-client --caps-lock"))
+hl.bind(M4 .. "+apostrophe", hl.dsp.exec_cmd("~/.local/bin/hypr-fix"))
+hl.bind(M4 .. "+" .. SH .. "+apostrophe", hl.dsp.exec_cmd("~/.local/bin/sys-relief"))
+hl.bind(M4 .. "+i", hl.dsp.exec_cmd("wlr-which-key"))
+hl.bind(M4 .. "+" .. M1 .. "+p", hl.dsp.exec_cmd("~/.local/bin/switch-proxy"))
+hl.bind(M4 .. "+n", hl.dsp.exec_cmd("dunstctl history-pop"))
+hl.bind(M4 .. "+space", hl.dsp.exec_cmd("dunstctl close-all"), { locked = true })
+hl.bind(M4 .. "+" .. C .. "+d", hl.dsp.layout("splitratio -0.1"), { release = true })
+hl.bind(M4 .. "+" .. C .. "+f", hl.dsp.layout("splitratio +0.1"), { release = true })

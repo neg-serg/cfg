@@ -117,9 +117,10 @@ local sp_map = {
 local sp_count = {}
 
 hl.on("window.open", function(e)
-  local w = e.window
+  local w = e and e.window
+  if not w then return end
   local cls = w.class
-  if sp_map[cls] then
+  if cls and sp_map[cls] then
     sp_count[cls] = (sp_count[cls] or 0) + 1
     if sp_want_toggle[cls] then
       sp_want_toggle[cls] = nil
@@ -129,9 +130,10 @@ hl.on("window.open", function(e)
 end)
 
 hl.on("window.close", function(e)
-  local w = e.window
+  local w = e and e.window
+  if not w then return end
   local cls = w.class
-  if sp_map[cls] then
+  if cls and sp_map[cls] then
     sp_count[cls] = math.max(0, (sp_count[cls] or 1) - 1)
   end
 end)

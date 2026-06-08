@@ -91,59 +91,11 @@ hl.bind(M4 .. "+mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(M4 .. "+mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Scratchpad toggles
--- Scratchpad toggle helper (direct hl.dispatch, no external processes)
-local function sp_toggle(name, cmd, sx, sy, px, py)
-  local p = io.popen("hyprctl clients -j 2>/dev/null")
-  if not p then
-    hl.exec_cmd(cmd)
-    return
-  end
-  local j = p:read("*a")
-  p:close()
-  
-  local addr = j:match('"class":"' .. name .. '".-("address":"([^"]-)"')
-  if not addr then
-    addr = j:match('"address":"([^"]-)".-"class":"' .. name .. '"')
-  end
-  if not addr then
-    hl.exec_cmd(cmd)
-    return
-  end
-
-  -- Detect workspace: look for "name":"..." near the class match
-  local ws = ""
-  local start = j:find('"class":"' .. name .. '"', 1, true)
-  if start then
-    local after = j:sub(start):match('"name":"([^"]-)"')
-    if after then ws = after end
-  end
-
-  if ws == "special:" .. name then
-    -- Show: read active ws, move to it, float, focus, resize, position
-    local ap = io.popen("hyprctl activeworkspace -j 2>/dev/null")
-    local active = "1"
-    if ap then
-      local aj = ap:read("*a")
-      ap:close()
-      local m = aj and aj:match('"name":"([^"]-)"')
-      if m then active = m end
-    end
-    hl.dispatch(hl.dsp.window.move({ workspace = active, window = "address:" .. addr }))
-    hl.dispatch(hl.dsp.window.float({ action = "enable", window = "address:" .. addr }))
-    hl.dispatch(hl.dsp.focus({ window = "address:" .. addr }))
-    if sx then hl.dispatch(hl.dsp.window.resize({ x = sx, y = sy, window = "address:" .. addr })) end
-    if px then hl.dispatch(hl.dsp.window.move({ x = px, y = py, window = "address:" .. addr })) end
-  else
-    -- Hide: move to special workspace
-    hl.dispatch(hl.dsp.window.move({ workspace = "special:" .. name, window = "address:" .. addr }))
-  end
-end
-
-hl.bind(M4 .. "+d", function() sp_toggle("teardown", "kitty --single-instance --class teardown -e btop &", 1880, 560, 20, 0) end)
-hl.bind(M4 .. "+e", function() sp_toggle("org.telegram.desktop", "Telegram &", 560, 1020, 1340, 20) end)
-hl.bind(M4 .. "+f", function() sp_toggle("music", "kitty --single-instance --class music -e rmpc -c ~/.config/rmpc/config-scratchpad.ron &", 1200, 480, 360, 560) end)
-hl.bind(M4 .. "+t", function() sp_toggle("torrment", "kitty --single-instance --class torrment -e rustmission &", 1880, 480, 20, 0) end)
-hl.bind(M4 .. "+" .. C .. "+p", function() sp_toggle("mixer", "kitty --single-instance --class mixer -e pipemixer &", 620, 840, 1280, 32) end)
+hl.bind(M4 .. "+d", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle teardown"))
+hl.bind(M4 .. "+e", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle im"))
+hl.bind(M4 .. "+f", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle music"))
+hl.bind(M4 .. "+t", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle torrment"))
+hl.bind(M4 .. "+" .. C .. "+p", hl.dsp.exec_cmd("~/.local/bin/scratchpad-toggle mixer"))
 
 -- App launchers
 hl.bind(M4 .. "+w", hl.dsp.exec_cmd('raise --match "class:regex=(?i)^(zen|floorp|one\\.ablaze\\.floorp|floorpdeveloperedition|firefox(?:[ -]?developer[ -]?edition)?|org\\.mozilla\\.firefox(?:[ -]?developer[ -]?edition)?|librewolf|io\\.gitlab\\.librewolf-community|chromium(?:-browser)?|org\\.chromium\\.chromium|ungoogled-chromium(?:-dev)?|brave(?:-browser(?:-(?:beta|nightly))?)?|com\\.brave\\.browser|vivaldi(?:-(?:stable|snapshot))?|opera(?:-(?:beta|developer))?|thorium-browser|com\\.thorium\\.thorium|mullvad-browser|com\\.mullvad\\.browser|palemoon|net\\.palemoon\\.palemoon|qutebrowser|org\\.qutebrowser\\.qutebrowser|falkon|org\\.kde\\.falkon|midori|epiphany|org\\.gnome\\.epiphany|google-chrome(?:-(?:stable|beta|unstable))?|com\\.google\\.chrome|microsoft-edge(?:-(?:beta|dev|canary))?|com\\.microsoft\\.edge)$" --launch zen-browser'))

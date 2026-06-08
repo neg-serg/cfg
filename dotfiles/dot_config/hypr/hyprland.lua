@@ -91,45 +91,51 @@ hl.bind(M4 .. "+mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(M4 .. "+mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Scratchpad toggles
--- Scratchpad toggle helper
-local function sp_dispatch(fmt, ...)
-  hl.exec_cmd(string.format(fmt, ...))
-end
-
+-- Scratchpad toggle helper (direct hl.dispatch, no external processes)
 local function sp_toggle(name, cmd, sx, sy, px, py)
   local p = io.popen("hyprctl clients -j 2>/dev/null")
-  if not p then return end
+  if not p then
+    hl.exec_cmd(cmd)
+    return
+  end
   local j = p:read("*a")
   p:close()
-  if not j then return end
   
-  -- Find window address and workspace
   local addr = j:match('"class":"' .. name .. '".-("address":"([^"]-)"')
   if not addr then
     addr = j:match('"address":"([^"]-)".-"class":"' .. name .. '"')
   end
-  local ws = addr and j:match('"class":"' .. name .. '".-"name":"([^"]-)"'.. string.rep('.',string.len(addr)*2))
-  if not ws then ws = "" end
-
-  if addr then
-    if ws == "special:" .. name then
-      -- Show: active ws, float, focus, resize, position
-      local ap = io.popen("hyprctl activeworkspace -j 2>/dev/null")
-      local aj = ap and ap:read("*a")
-      if ap then ap:close() end
-      local active = aj and aj:match('"name":"([^"]+)"') or "1"
-      sp_dispatch([[hyprctl 'dispatch hl.dsp.window.move({ workspace = "%s", window = "address:%s" })']], active, addr)
-      sp_dispatch([[hyprctl 'dispatch hl.dsp.window.float({ action = "enable", window = "address:%s" })']], addr)
-      sp_dispatch([[hyprctl 'dispatch hl.dsp.focus({ window = "address:%s" })']], addr)
-      if sx then sp_dispatch([[hyprctl 'dispatch hl.dsp.window.resize({ x = %d, y = %d, window = "address:%s" })']], sx, sy, addr) end
-      if px then sp_dispatch([[hyprctl 'dispatch hl.dsp.window.move({ x = %d, y = %d, window = "address:%s" })']], px, py, addr) end
-    else
-      -- Hide: move to special workspace
-      sp_dispatch([[hyprctl 'dispatch hl.dsp.window.move({ workspace = "special:%s", window = "address:%s" })']], name, addr)
-    end
-  else
-    -- Launch new: just spawn the command, rules will float it
+  if not addr then
     hl.exec_cmd(cmd)
+    return
+  end
+
+  -- Detect workspace: look for "name":"..." near the class match
+  local ws = ""
+  local start = j:find('"class":"' .. name .. '"', 1, true)
+  if start then
+    local after = j:sub(start):match('"name":"([^"]-)"')
+    if after then ws = after end
+  end
+
+  if ws == "special:" .. name then
+    -- Show: read active ws, move to it, float, focus, resize, position
+    local ap = io.popen("hyprctl activeworkspace -j 2>/dev/null")
+    local active = "1"
+    if ap then
+      local aj = ap:read("*a")
+      ap:close()
+      local m = aj and aj:match('"name":"([^"]-)"')
+      if m then active = m end
+    end
+    hl.dispatch(hl.dsp.window.move({ workspace = active, window = "address:" .. addr }))
+    hl.dispatch(hl.dsp.window.float({ action = "enable", window = "address:" .. addr }))
+    hl.dispatch(hl.dsp.focus({ window = "address:" .. addr }))
+    if sx then hl.dispatch(hl.dsp.window.resize({ x = sx, y = sy, window = "address:" .. addr })) end
+    if px then hl.dispatch(hl.dsp.window.move({ x = px, y = py, window = "address:" .. addr })) end
+  else
+    -- Hide: move to special workspace
+    hl.dispatch(hl.dsp.window.move({ workspace = "special:" .. name, window = "address:" .. addr }))
   end
 end
 

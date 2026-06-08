@@ -116,7 +116,7 @@ local sp_map = {
 
 local sp_count = {}
 
-hl.on("openwindow", function(e)
+hl.on("window.open", function(e)
   local w = e.window
   local cls = w.class
   if sp_map[cls] then
@@ -128,7 +128,7 @@ hl.on("openwindow", function(e)
   end
 end)
 
-hl.on("closewindow", function(e)
+hl.on("window.close", function(e)
   local w = e.window
   local cls = w.class
   if sp_map[cls] then

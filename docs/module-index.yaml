@@ -125,7 +125,7 @@ states:
   data_files:
   - data/desktop.yaml
   configs:
-  - configs/win11.xml
+  - vms/win11.xml
 - id: dns
   path: states/dns.sls
   purpose: 'DNS services: unbound recursive resolver, AdGuard Home filtering, avahi

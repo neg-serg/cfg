@@ -511,7 +511,7 @@
 - [x] `iosevka-neg-fonts` — font, download manually
 - [x] `kvantum-qt5` — included in kvantum (moss)
 - [x] `libfixposix` — `moss install libfixposix`
-- [ ] `libguestfs` — blocked: hivex fails on slibtool (AerynOS uses slibtool not GNU libtool), augeas+OCaml+fuse3+jansson+hivex dep chain too deep for non-state-managed build
+- [x] `libguestfs` — `./configure` with stub hivex.pc, `REALLY_INSTALL=yes make install`
 - [x] `lshw` — hardware lister
 - [x] `lua53` — built from source 5.3.6 → /usr/local
 - [x] `malcontent` — `moss install malcontent`

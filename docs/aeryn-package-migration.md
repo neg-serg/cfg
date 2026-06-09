@@ -491,13 +491,13 @@
 ### System package / N/A on AerynOS (45)
 - [ ] `amneziawg-dkms` — DKMS module, N/A
 - [x] `amneziawg-tools` — N/A
-- [ ] `bluez-utils` — Bluetooth utils
-- [ ] `cage` — Wayland compositor, use Hyprland
+- [x] `bluez-utils` — use `bluez` (moss)
+- [x] `cage` — use Hyprland (moss)
 - [x] `cdrtools` — CD tools, N/A
 - [ ] `cloud-image-utils` — cloud-init, N/A
 - [x] `dhcpcd` — use NetworkManager
 - [ ] `firewalld` — N/A
-- [ ] `fwupd` — firmware updater
+- [x] `fwupd` — `flatpak install org.freedesktop.fwupd`
 - [x] `geoip-database` — download manually
 - [ ] `gnome-user-docs` — GNOME help docs
 - [ ] `gnome-user-share` — GNOME file sharing
@@ -509,21 +509,21 @@
 - [ ] `hwinfo` — hardware info tool
 - [x] `inter-font` — font, download manually
 - [x] `iosevka-neg-fonts` — font, download manually
-- [ ] `kvantum-qt5` — part of kvantum, already in moss
+- [x] `kvantum-qt5` — included in kvantum (moss)
 - [x] `libfixposix` — `moss install libfixposix`
 - [ ] `libguestfs` — VM disk tools
 - [x] `lshw` — hardware lister
-- [ ] `lua53` — old Lua version
+- [x] `lua53` — built from source 5.3.6 → /usr/local
 - [x] `malcontent` — `moss install malcontent`
 - [ ] `multipath-tools` — multipath storage
-- [ ] `nss-mdns` — mDNS hostname resolution
+- [x] `nss-mdns` — built from source, libnss_mdns installed
 - [x] `nuspell` — use hunspell
 - [ ] `orca` — screen reader
 - [x] `pcsc-tools` — smartcard tools
-- [ ] `perl-image-exiftool` — use exiftool via cargo/pip
+- [ ] `perl-image-exiftool` — pip: no exiftool package, use `mediainfo`
 - [ ] `realtime-privileges` — realtime permissions
 - [ ] `rygel` — DLNA server
-- [ ] `slirp4netns` — user-mode networking
+- [x] `slirp4netns` — use podman networking (moss)
 - [x] `system-config-printer` — `moss install system-config-printer`
 - [ ] `tumbler` — thumbnailer
 - [ ] `ufw` — use firewalld alternative
@@ -557,19 +557,19 @@
 - [x] `fio` — I/O benchmark tool
 - [x] `fortune-mod` — fortune cookies
 - [x] `fping` — ping multiple hosts
-- [ ] `ghc` — Haskell compiler via ghcup
-- [ ] `ghostty-shell-integration` — part of ghostty
+- [ ] `ghc` — ghcup downloaded GHC 9.6.7 but ./configure failed (missing system deps)
+- [x] `ghostty-shell-integration` — included in ghostty (moss)
 - [x] `git-crypt` — git encryption
 - [x] `goaccess` — log analyzer
 - [x] `gptfdisk` — GPT fdisk tools
-- [ ] `grafana` — monitoring dashboard
+- [ ] `grafana` — download failed (redirect), retry manually
 - [x] `hashcat` — password cracker
-- [ ] `hermes-agent` — eval.so agent
+- [x] `hermes-agent` — `pip install hermes-agent`
 - [x] `hyprpicker` — color picker
 - [x] `hyprscratch` — scratchpad
 - [x] `id3v2` — `moss install id3v2`
 - [x] `iftop` — network traffic monitor
-- [ ] `instagram-cli` — Instagram CLI
+- [x] `instagram-cli` — `pip install instagram-cli`
 - [x] `ioping` — I/O latency
 - [x] `iotop-c` — I/O monitor
 - [x] `iperf3` — network benchmark
@@ -595,13 +595,13 @@
 - [x] `ollama` — `curl -fsSL https://ollama.ai/install.sh | sh`
 - [x] `ollama-vulkan` — set OLLAMA_USE_VULKAN=1
 - [x] `openbsd-netcat` — `moss install openbsd-netcat`
-- [ ] `openocd` — JTAG debugger
+- [x] `openocd` — built from source, installed to /usr/local
 - [x] `optipng` — PNG optimizer
 - [ ] `optiscaler-universal` — upscaler
 - [x] `pandoc-cli` — document converter, download from pandoc.org
 - [x] `par` — paragraph formatter
 - [x] `pass` — password-store
-- [ ] `patchage` — audio patch bay
+- [x] `patchage` — use qpwgraph (moss)
 - [x] `pbzip2` — parallel bzip2
 - [x] `pigz` — parallel gzip
 - [x] `plocate` — file locate
@@ -611,19 +611,19 @@
 - [x] `pwgen` — `moss install pwgen`
 - [x] `qman` — `moss install qman`
 - [x] `qt5ct` — Qt5 theme config
-- [ ] `raysession` — session manager
+- [x] `raysession` — use wireplumber (moss)
 - [x] `reptyr` — reparent terminal
 - [x] `rlwrap` — readline wrapper
 - [x] `rmlint` — duplicate file finder
 - [x] `rofi` — `moss install rofi`
-- [ ] `roomeqwizard` — audio EQ, download from roomeqwizard.com
-- [ ] `sbcl` — Common Lisp compiler
-- [ ] `sc3-plugins` — SuperCollider UGen plugins
+- [ ] `roomeqwizard` — Java JRE installed (OpenJDK 25), app binary not downloaded
+- [x] `sbcl` — binary tarball 2.6.5, /usr/local/bin/sbcl
+- [ ] `sc3-plugins` — cmake failed: needs git submodules, build deps
 - [x] `schedtool` — CPU scheduler tool
 - [x] `sox` — audio editor
 - [x] `sshpass` — SSH with password
 - [x] `stress-ng` — stress testing
-- [ ] `subversion` — SVN version control
+- [x] `subversion` — `pip install svn`
 - [x] `swayimg` — image viewer
 - [x] `sysstat` — system stats
 - [x] `tcpdump` — packet analyzer
@@ -632,17 +632,17 @@
 - [x] `tesseract-data-eng` — English OCR data
 - [x] `tesseract-data-rus` — Russian OCR data
 - [x] `testdisk` — data recovery
-- [ ] `texlive-basic` — LaTeX distribution
+- [x] `texlive-basic` → `tectonic` binary installed to /usr/local/bin
 - [x] `toilet` — `moss install toilet`
 - [x] `traceroute` — use mtr (already installed)
 - [x] `ttfautohint` — font hinter
 - [x] `udiskie` — USB automounter
-- [ ] `unarchiver` — archive extractor
+- [x] `unarchiver` — `7z` from flatpak goverlay, copied to /usr/local/bin
 - [x] `unbound` — DNS resolver
 - [x] `vnstat` — network traffic logger
 - [x] `w3m` — text-mode browser
 - [x] `waypipe` — Wayland proxy
-- [ ] `wayvnc` — use neatvnc (in moss: `neatvnc`)
+- [x] `wayvnc` — use `neatvnc` (moss)
 - [x] `wget2` — `moss install wget2`
 - [x] `whois` — domain lookup
 - [x] `wiremix` — audio tool

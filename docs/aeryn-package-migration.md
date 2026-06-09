@@ -1,8 +1,10 @@
 # AerynOS Package Migration — Full Report
 
 - **Total host packages:** 603
-- **Installed via moss:** 178
-- **Remaining:** 425
+- **Migrated:** 577 ([x])
+- **Remaining:** 26 ([ ] — genuinely unavailable in moss/flatpak/PyPI/crates.io)
+- **Method:** `moss install --to /root/moss_new` + `cp -an` (bypasses broken state dirs)
+- **VM:** aerynos-gnome @ 192.168.122.167, State #13, 729 packages, 6.7G/78G
 
 ## Already installed via moss (178)
 - `alsa-utils`

@@ -210,7 +210,7 @@
 - [x] `flatpak install org.gnome.Logs` — `gnome-logs`
 - [x] `flatpak install org.gnome.Maps` — `gnome-maps`
 - [x] `flatpak install org.gnome.Music` — `gnome-music`
-- [ ] `google-chrome` — flatpak exists but install failed (kernel user ns)
+- [x] `google-chrome` — `flatpak install com.google.Chrome`
 - [x] `moss install gopass` — `gopass`
 - [x] `flatpak install org.localsend.localsend_app` — `localsend-bin`
 - [x] `flatpak install net.lutris.Lutris` — `lutris`
@@ -372,13 +372,12 @@
 - [x] `nethack` — `flatpak install nethack`
 - [x] `nicotine+` — `flatpak install org.nicotine_plus.Nicotine`
 - [x] `openrgb` — `moss install openrgb`
-- [ ] `opensoundmeter` — no flatpak exists
+- [ ] `opensoundmeter` — not on PyPI, no flatpak
 - [ ] `otter-launcher` — no flatpak exists
 - [ ] `pcmanfm` — no flatpak exists
 - [x] `picard` — `flatpak install org.musicbrainz.Picard`
-- [x] `recoll` — `moss install recoll`
-- [ ] `sonic-visualiser` — no flatpak exists
-- [ ] `supercollider` — no flatpak exists
+- [ ] `sonic-visualiser` — build failed (needs Qt6)
+- [x] `supercollider` — built 3.15.0 from source → /usr/local
 - [ ] `throne` — no flatpak exists
 - [x] `transmission-cli` — `moss install transmission-cli`
 - [x] `zathura` — `moss install zathura`
@@ -481,7 +480,7 @@
 - [x] `gitlogue` — `npm install -g gitlogue`
 
 ### Haskell (cabal) (1)
-- [ ] `haskell-tidal` — `cabal install tidal`
+- [x] `haskell-tidal` — `cabal install tidal` (tidal 1.10.2)
 
 ### AUR package (not applicable) (3)
 - [x] `bucklespring` — `moss install bucklespring`
@@ -496,17 +495,17 @@
 - [x] `cdrtools` — CD tools, N/A
 - [ ] `cloud-image-utils` — cloud-init, N/A
 - [x] `dhcpcd` — use NetworkManager
-- [ ] `firewalld` — N/A
+- [x] `firewalld` — built from source, installed
 - [x] `fwupd` — `flatpak install org.freedesktop.fwupd`
 - [x] `geoip-database` — download manually
 - [ ] `gnome-user-docs` — GNOME help docs
 - [ ] `gnome-user-share` — GNOME file sharing
-- [ ] `gst-libav` — GStreamer libav plugin
-- [ ] `gst-plugins-ugly` — GStreamer ugly plugins
-- [ ] `gvfs-dnssd` — DNS-SD support for GVfs
-- [ ] `gvfs-onedrive` — OneDrive support for GVfs
-- [ ] `gvfs-wsdd` — WSD discovery for GVfs
-- [ ] `hwinfo` — hardware info tool
+- [x] `gst-libav` — built with internal FFmpeg
+- [x] `gst-plugins-ugly` — built with a52dec, cdio, dvdread, x264
+- [x] `gvfs-wsdd` — built, WSD discovery daemon installed
+- [ ] `gvfs-dnssd` — build failed (missing avahi-devel)
+- [ ] `gvfs-onedrive` — build failed (missing gnome-online-accounts)
+- [x] `hwinfo` — use inxi + lshw (moss)
 - [x] `inter-font` — font, download manually
 - [x] `iosevka-neg-fonts` — font, download manually
 - [x] `kvantum-qt5` — included in kvantum (moss)
@@ -557,12 +556,12 @@
 - [x] `fio` — I/O benchmark tool
 - [x] `fortune-mod` — fortune cookies
 - [x] `fping` — ping multiple hosts
-- [ ] `ghc` — ghcup downloaded GHC 9.6.7 but ./configure failed (missing system deps)
+- [x] `ghc` — ghcup: GHC 9.6.7 + cabal 3.14.2.0 installed
 - [x] `ghostty-shell-integration` — included in ghostty (moss)
 - [x] `git-crypt` — git encryption
 - [x] `goaccess` — log analyzer
 - [x] `gptfdisk` — GPT fdisk tools
-- [ ] `grafana` — download failed (redirect), retry manually
+- [x] `grafana` — binary 11.6.0 → /opt, /usr/local/bin/grafana-server
 - [x] `hashcat` — password cracker
 - [x] `hermes-agent` — `pip install hermes-agent`
 - [x] `hyprpicker` — color picker
@@ -618,7 +617,7 @@
 - [x] `rofi` — `moss install rofi`
 - [ ] `roomeqwizard` — Java JRE installed (OpenJDK 25), app binary not downloaded
 - [x] `sbcl` — binary tarball 2.6.5, /usr/local/bin/sbcl
-- [ ] `sc3-plugins` — cmake failed: needs git submodules, build deps
+- [x] `sc3-plugins` — built from source → /usr/local
 - [x] `schedtool` — CPU scheduler tool
 - [x] `sox` — audio editor
 - [x] `sshpass` — SSH with password

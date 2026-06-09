@@ -3,7 +3,7 @@
    id: desktop
    purpose: "Desktop environment: top-level include for compositor, packages, portal, and user session."
    includes: [desktop.hyprland, desktop.packages, desktop.portal, desktop.system, desktop.user, desktop.nothing_kde_widgets, desktop.vm_win11]
-   optional: [desktop.themes]
+   optional: [desktop.plasma, desktop.themes]
 #}
 # =============================================================================
 # Desktop environment — top-level include for system, packages, portal, hyprland, user
@@ -19,3 +19,4 @@ include:
   - desktop.user
   - desktop.nothing_kde_widgets
   - desktop.vm_win11
+  - desktop.plasma

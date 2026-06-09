@@ -462,6 +462,7 @@ other:
 - papers
 - pass
 - plasma-desktop
+- plasma-wayland-session
 - plasma-workspace
 - polkit-kde-agent
 - breeze

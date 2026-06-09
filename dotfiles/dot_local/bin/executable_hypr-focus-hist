@@ -25,6 +25,15 @@ def socket_dir() -> str:
     return f"/tmp/hypr/{sig}"
 
 
+def notify(msg: str) -> None:
+    subprocess.run(
+        ["notify-send", "-a", "hypr-focus-hist", msg],
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+
 def state_path() -> str:
     return f"{socket_dir()}/focus-history"
 
@@ -36,74 +45,86 @@ def switch() -> int:
         with open(path) as f:
             addr = f.read().strip()
     except FileNotFoundError:
+        notify("No focus history yet")
         return 1
     if not addr:
+        notify("Empty focus history")
         return 1
-    subprocess.run(
+    result = subprocess.run(
         ["hyprctl", "dispatch", "focuswindow", f"address:{addr}"],
-        check=False,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        capture_output=True,
+        text=True,
     )
-    return 0
+    if result.returncode != 0:
+        notify(f"focuswindow failed: {result.stderr.strip()}")
+    return result.returncode
 
 
 def daemon() -> None:
-    """Listen to Hyprland events and track focus history."""
-    sd = socket_dir()
+    """Listen to Hyprland events and track focus history, auto-reconnect on failure."""
     path = state_path()
 
-    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    sock.connect(f"{sd}/.socket2.sock")
-
-    # Ordered list of window addresses, most recent last.
-    history: list[str] = []
-
-    buf = b""
     while True:
-        data = sock.recv(4096)
-        if not data:
-            break
-        buf += data
-        while b"\n" in buf:
-            line, buf = buf.split(b"\n", 1)
-            event = line.decode(errors="replace")
+        try:
+            sd = socket_dir()
+            sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            sock.connect(f"{sd}/.socket2.sock")
+        except Exception as e:
+            notify(f"Cannot connect to Hyprland socket: {e}")
+            return
 
-            if event.startswith("activewindowv2>>"):
-                hex_addr = event[16:]
-                if not hex_addr:
-                    continue
-                addr = f"0x{hex_addr}"
-                # Skip if already the most recent
-                if history and history[-1] == addr:
-                    continue
-                # Move to end (re-insert)
-                if addr in history:
-                    history.remove(addr)
-                history.append(addr)
-                # Cap history size
-                if len(history) > 20:
-                    history = history[-20:]
-                # Write previous window to state file
-                if len(history) >= 2:
-                    with open(path, "w") as f:
-                        f.write(history[-2])
+        # Ordered list of window addresses, most recent last.
+        history: list[str] = []
 
-            elif event.startswith("closewindow>>"):
-                hex_addr = event[13:]
-                addr = f"0x{hex_addr}"
-                history = [h for h in history if h != addr]
-                if len(history) >= 2:
-                    with open(path, "w") as f:
-                        f.write(history[-2])
-                elif history:
-                    with open(path, "w") as f:
-                        f.write(history[0])
-                else:
-                    try:
-                        os.remove(path)
-                    except FileNotFoundError:
-                        pass
+        buf = b""
+        try:
+            while True:
+                data = sock.recv(4096)
+                if not data:
+                    break
+                buf += data
+                while b"\n" in buf:
+                    line, buf = buf.split(b"\n", 1)
+                    event = line.decode(errors="replace")
+
+                    if event.startswith("activewindowv2>>"):
+                        hex_addr = event[16:]
+                        if not hex_addr:
+                            continue
+                        addr = f"0x{hex_addr}"
+                        if history and history[-1] == addr:
+                            continue
+                        if addr in history:
+                            history.remove(addr)
+                        history.append(addr)
+                        if len(history) > 20:
+                            history = history[-20:]
+                        if len(history) >= 2:
+                            with open(path, "w") as f:
+                                f.write(history[-2])
+
+                    elif event.startswith("closewindow>>"):
+                        hex_addr = event[13:]
+                        addr = f"0x{hex_addr}"
+                        history = [h for h in history if h != addr]
+                        if len(history) >= 2:
+                            with open(path, "w") as f:
+                                f.write(history[-2])
+                        elif history:
+                            with open(path, "w") as f:
+                                f.write(history[0])
+                        else:
+                            try:
+                                os.remove(path)
+                            except FileNotFoundError:
+                                pass
+        except (ConnectionError, OSError) as e:
+            notify(f"Socket disconnected, reconnecting: {e}")
+            continue
+        except Exception:
+            notify("Unexpected error in focus history daemon, restarting")
+            continue
+        break
 
 
 def main() -> int:

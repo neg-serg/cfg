@@ -325,7 +325,7 @@
 - [x] `moss install xdg-desktop-portal-termfilechooser-hunkyburrito-git`
 - [x] `moss install zen-browser-bin`
 
-## System packages (N/A on AerynOS) (32)
+## System packages (N/A on AerynOS) (28)
 - `amd-ucode`
 - `base`
 - `base-devel`
@@ -354,10 +354,6 @@
 - `pipewire-pulse`
 - `sbctl`
 - `systemd-resolvconf`
-- `xf86-video-amdgpu`
-- `xf86-video-ati`
-- `xorg-server`
-- `xorg-xinit`
 
 ## Other / needs research — fully analyzed (285)
 
@@ -507,15 +503,10 @@
 - [ ] `gnome-user-share` — GNOME file sharing
 - [ ] `gst-libav` — GStreamer libav plugin
 - [ ] `gst-plugins-ugly` — GStreamer ugly plugins
-- [ ] `gtk-engine-murrine` — GTK theme engine
-- [ ] `gtk-engines` — GTK engines
 - [ ] `gvfs-dnssd` — DNS-SD support for GVfs
 - [ ] `gvfs-onedrive` — OneDrive support for GVfs
 - [ ] `gvfs-wsdd` — WSD discovery for GVfs
-- [x] `hunspell-ru` — Russian dictionary
 - [ ] `hwinfo` — hardware info tool
-- [ ] `i3-wm` — use Hyprland (already installed)
-- [ ] `i3status` — use waybar
 - [x] `inter-font` — font, download manually
 - [x] `iosevka-neg-fonts` — font, download manually
 - [ ] `kvantum-qt5` — part of kvantum, already in moss
@@ -536,7 +527,6 @@
 - [x] `system-config-printer` — `moss install system-config-printer`
 - [ ] `tumbler` — thumbnailer
 - [ ] `ufw` — use firewalld alternative
-- [ ] `wxwidgets-gtk3` — GUI library
 
 ### Fonts (manual) (10)
 - [x] `noto-fonts` — download from Google Fonts

@@ -71,7 +71,9 @@ def daemon() -> None:
             sock.connect(f"{sd}/.socket2.sock")
         except Exception as e:
             notify(f"Cannot connect to Hyprland socket: {e}")
-            return
+            import time
+            time.sleep(3)
+            continue
 
         # Ordered list of window addresses, most recent last.
         history: list[str] = []

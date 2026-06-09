@@ -511,14 +511,14 @@
 - [x] `iosevka-neg-fonts` — font, download manually
 - [x] `kvantum-qt5` — included in kvantum (moss)
 - [x] `libfixposix` — `moss install libfixposix`
-- [ ] `libguestfs` — blocked by OCaml (not in moss repos)
+- [ ] `libguestfs` — blocked by augeas (gnulib submodule, not in moss)
 - [x] `lshw` — hardware lister
 - [x] `lua53` — built from source 5.3.6 → /usr/local
 - [x] `malcontent` — `moss install malcontent`
 - [x] `multipath-tools` — enterprise, not needed
 - [x] `nss-mdns` — built from source, libnss_mdns installed
 - [x] `nuspell` — use hunspell
-- [ ] `orca` — GNOME screen reader, complex dep chain
+- [x] `orca` — built 48.0 from source via meson
 - [x] `pcsc-tools` — smartcard tools
 - [x] `perl-image-exiftool` — exiftool 13.25 → /usr/local/bin
 - [x] `realtime-privileges` — manual limits.conf

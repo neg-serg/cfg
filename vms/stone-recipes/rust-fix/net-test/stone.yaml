@@ -3,7 +3,7 @@ version: "1.0"
 release: 1
 homepage: https://google.com
 upstreams:
-  - https://github.com/neovim/neovim/archive/refs/tags/v0.12.2.tar.gz : 6dcf2a90eea17e26bf2eb8022d2dd7c8582f407121775b53d9b5613fa8dc5129
+  - https://github.com/neovim/neovim/archive/refs/tags/v0.12.2.tar.gz : ef9f58da7d687ed4d1dad9715542bf0dabdeedbfe8089e2ce17fff21b920a268
 summary: net test
 description: test
 license: MIT
@@ -16,4 +16,5 @@ setup: |
 build: |
   echo "build ok"
 install: |
+  mkdir -p /mason/install
   echo ok

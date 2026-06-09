@@ -503,7 +503,7 @@
 - [x] `gst-plugins-ugly` — built with a52dec, cdio, dvdread, x264
 - [x] `gvfs-onedrive` — pre-built gvfs-goa-volume-monitor from moss cache
 - [x] `gvfs-wsdd` — built, WSD discovery daemon installed
-- [ ] `gvfs-dnssd` — blocked by gcr-4 dep chain (moss blit broken)
+- [x] `gvfs-dnssd` — `moss install --to` workaround (blit fixed)
 - [x] `hwinfo` — use inxi + lshw (moss)
 - [x] `inter-font` — font, download manually
 - [x] `iosevka-neg-fonts` — font, download manually

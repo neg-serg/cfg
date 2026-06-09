@@ -376,7 +376,7 @@
 - [ ] `otter-launcher` — no flatpak exists
 - [ ] `pcmanfm` — no flatpak exists
 - [x] `picard` — `flatpak install org.musicbrainz.Picard`
-- [ ] `sonic-visualiser` — build failed (needs Qt6)
+- [ ] `sonic-visualiser` — 9-level dep chain blocked (lrdf/raptor), moss blit broken
 - [x] `supercollider` — built 3.15.0 from source → /usr/local
 - [ ] `throne` — no flatpak exists
 - [x] `transmission-cli` — `moss install transmission-cli`
@@ -501,9 +501,9 @@
 - [ ] `gnome-user-share` — GNOME file sharing
 - [x] `gst-libav` — built with internal FFmpeg
 - [x] `gst-plugins-ugly` — built with a52dec, cdio, dvdread, x264
+- [x] `gvfs-onedrive` — pre-built gvfs-goa-volume-monitor from moss cache
 - [x] `gvfs-wsdd` — built, WSD discovery daemon installed
-- [ ] `gvfs-dnssd` — build failed (missing avahi-devel)
-- [ ] `gvfs-onedrive` — build failed (missing gnome-online-accounts)
+- [ ] `gvfs-dnssd` — blocked by gcr-4 dep chain (moss blit broken)
 - [x] `hwinfo` — use inxi + lshw (moss)
 - [x] `inter-font` — font, download manually
 - [x] `iosevka-neg-fonts` — font, download manually

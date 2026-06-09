@@ -495,7 +495,6 @@
 - [x] `cdrtools` — CD tools, N/A
 - [ ] `cloud-image-utils` — cloud-init, N/A
 - [x] `dhcpcd` — use NetworkManager
-- [x] `firewalld` — built from source, installed
 - [x] `fwupd` — `flatpak install org.freedesktop.fwupd`
 - [x] `geoip-database` — download manually
 - [ ] `gnome-user-docs` — GNOME help docs
@@ -525,7 +524,7 @@
 - [x] `slirp4netns` — use podman networking (moss)
 - [x] `system-config-printer` — `moss install system-config-printer`
 - [ ] `tumbler` — thumbnailer
-- [ ] `ufw` — use firewalld alternative
+- [ ] `ufw` — not needed
 
 ### Fonts (manual) (10)
 - [x] `noto-fonts` — download from Google Fonts

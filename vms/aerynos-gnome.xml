@@ -40,6 +40,13 @@
       <target dev='vda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
     </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/mnt/one/vms/AerynOS-GNOME-live-x86_64.iso'/>
+      <target dev='sda' bus='sata'/>
+      <readonly/>
+      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
+    </disk>
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
     </controller>
@@ -89,7 +96,9 @@
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
     <tpm model='tpm-crb'>
-      <backend type='emulator' version='2.0'/>
+      <backend type='emulator' version='2.0'>
+        <profile name='default-v1'/>
+      </backend>
     </tpm>
     <graphics type='vnc' port='5901' autoport='no' listen='127.0.0.1'>
       <listen type='address' address='127.0.0.1'/>

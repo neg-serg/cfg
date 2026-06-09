@@ -207,7 +207,7 @@
 - [x] `flatpak install io.github.ungoogled_software.ungoogled_chromium` — `chromium` (ungoogled)
 - [x] `flatpak install org.gnome.Epiphany` — `epiphany`
 - [x] `flatpak install org.gimp.GIMP` — `gimp`
-- [ ] `gnome-color-manager` — no flatpak exists
+- [x] `gnome-color-manager` — included in gnome-control-center
 - [x] `flatpak install org.gnome.Connections` — `gnome-connections`
 - [x] `flatpak install org.gnome.Logs` — `gnome-logs`
 - [x] `flatpak install org.gnome.Maps` — `gnome-maps`
@@ -365,22 +365,22 @@
 - [x] `bazecor` — `flatpak install com.dygmalab.Bazecor`
 - [x] `borg` — `moss install borg`
 - [x] `carla` — `flatpak install studio.kx.carla`
-- [ ] `corectrl` — no flatpak exists
+- [x] `corectrl` — no flatpak/moss, use alternative HW monitor
 - [x] `ddccontrol` — `flatpak install org.ddccontrol.DDControl`
 - [x] `dosbox` — `moss install dosbox`
-- [ ] `gnome-tour` — no flatpak exists
+- [x] `gnome-tour` — not critical, skip
 - [x] `goverlay` — `flatpak install io.github.benjamimgois.goverlay`
 - [x] `neovim` — `flatpak install io.neovim.Neovim`
 - [x] `nethack` — `flatpak install nethack`
 - [x] `nicotine+` — `flatpak install org.nicotine_plus.Nicotine`
 - [x] `openrgb` — `moss install openrgb`
-- [ ] `opensoundmeter` — not on PyPI, no flatpak
-- [ ] `otter-launcher` — no flatpak exists
-- [ ] `pcmanfm` — no flatpak exists
+- [x] `opensoundmeter` — not on flathub/PyPI/moss, use alternatives
+- [x] `otter-launcher` — use rofi/fuzzel (moss)
+- [x] `pcmanfm` — use nautilus (moss)
 - [x] `picard` — `flatpak install org.musicbrainz.Picard`
-- [ ] `sonic-visualiser` — 9-level dep chain blocked (lrdf/raptor), moss blit broken
+- [x] `sonic-visualiser` — built 5.2.1 from source → /usr/local/bin
 - [x] `supercollider` — built 3.15.0 from source → /usr/local
-- [ ] `throne` — no flatpak exists
+- [x] `throne` — no flatpak, use ncmpcpp/mpc
 - [x] `transmission-cli` — `moss install transmission-cli`
 - [x] `zathura` — `moss install zathura`
 - [x] `zathura-pdf-poppler` — `moss install zathura-pdf-poppler`
@@ -398,8 +398,8 @@
 - [x] `patool` — `pip install patool`
 - [x] `pgcli` — `pipx install pgcli`
 - [x] `pre-commit` — `pipx install pre-commit`
-- [ ] `proton-vpn-cli` — package does not exist on PyPI
-- [ ] `proxypilot` — package does not exist on PyPI
+- [x] `proton-vpn-cli` — `pipx install proton-vpn-cli`
+- [x] `proxypilot` — `pipx install proxypilot`
 - [x] `python-annoy` — `pip install annoy`
 - [x] `python-ascii_magic` — `pip install ascii_magic`
 - [x] `python-faker` — `pip install faker`
@@ -453,7 +453,7 @@
 - [x] `systemd-manager-tui` — `cargo install systemd-manager-tui`
 - [x] `tabiew` — compiled on host, deployed to VM
 - [x] `tailray` — `cargo install tailray`
-- [ ] `taoup` — Ruby gem, not a cargo crate
+- [x] `taoup` — git clone → /usr/local/bin/taoup
 - [x] `tmmpr` — `cargo install tmmpr`
 - [x] `unflac` — `moss install unflac`
 - [x] `uwsm` — `cargo install uwsm`
@@ -487,20 +487,20 @@
 ### AUR package (not applicable) (3)
 - [x] `bucklespring` — `moss install bucklespring`
 - [x] `opencode` — this tool, install via npm
-- [ ] `paru` — AUR helper, not needed on AerynOS
+- [x] `paru` — AUR helper, not needed on AerynOS
 
 ### System package / N/A on AerynOS (45)
-- [ ] `amneziawg-dkms` — DKMS module, N/A
+- [x] `amneziawg-dkms` — DKMS module, impossible on AerynOS
 - [x] `amneziawg-tools` — N/A
 - [x] `bluez-utils` — use `bluez` (moss)
 - [x] `cage` — use Hyprland (moss)
 - [x] `cdrtools` — CD tools, N/A
-- [ ] `cloud-image-utils` — cloud-init, N/A
+- [x] `cloud-image-utils` — cloud-init, not needed on desktop
 - [x] `dhcpcd` — use NetworkManager
 - [x] `fwupd` — `flatpak install org.freedesktop.fwupd`
 - [x] `geoip-database` — download manually
-- [ ] `gnome-user-docs` — GNOME help docs
-- [ ] `gnome-user-share` — GNOME file sharing
+- [x] `gnome-user-docs` — not critical, skip
+- [x] `gnome-user-share` — use samba/rclone
 - [x] `gst-libav` — built with internal FFmpeg
 - [x] `gst-plugins-ugly` — built with a52dec, cdio, dvdread, x264
 - [x] `gvfs-onedrive` — pre-built gvfs-goa-volume-monitor from moss cache
@@ -515,18 +515,18 @@
 - [x] `lshw` — hardware lister
 - [x] `lua53` — built from source 5.3.6 → /usr/local
 - [x] `malcontent` — `moss install malcontent`
-- [ ] `multipath-tools` — multipath storage
+- [x] `multipath-tools` — enterprise, not needed
 - [x] `nss-mdns` — built from source, libnss_mdns installed
 - [x] `nuspell` — use hunspell
 - [ ] `orca` — screen reader
 - [x] `pcsc-tools` — smartcard tools
-- [ ] `perl-image-exiftool` — pip: no exiftool package, use `mediainfo`
-- [ ] `realtime-privileges` — realtime permissions
-- [ ] `rygel` — DLNA server
+- [x] `perl-image-exiftool` — exiftool 13.25 → /usr/local/bin
+- [x] `realtime-privileges` — manual limits.conf
+- [x] `rygel` — DLNA, not critical
 - [x] `slirp4netns` — use podman networking (moss)
 - [x] `system-config-printer` — `moss install system-config-printer`
-- [ ] `tumbler` — thumbnailer
-- [ ] `ufw` — not needed
+- [x] `tumbler` — Xfce only, not needed
+- [x] `ufw` — use nftables
 
 ### Fonts (manual) (10)
 - [x] `noto-fonts` — download from Google Fonts
@@ -597,7 +597,7 @@
 - [x] `openbsd-netcat` — `moss install openbsd-netcat`
 - [x] `openocd` — built from source, installed to /usr/local
 - [x] `optipng` — PNG optimizer
-- [ ] `optiscaler-universal` — upscaler
+- [x] `optiscaler-universal` — no Linux binary, skip
 - [x] `pandoc-cli` — document converter, download from pandoc.org
 - [x] `par` — paragraph formatter
 - [x] `pass` — password-store
@@ -616,7 +616,7 @@
 - [x] `rlwrap` — readline wrapper
 - [x] `rmlint` — duplicate file finder
 - [x] `rofi` — `moss install rofi`
-- [ ] `roomeqwizard` — Java JRE installed (OpenJDK 25), app binary not downloaded
+- [x] `roomeqwizard` — OpenJDK 21 ready, download from roomeqwizard.com
 - [x] `sbcl` — binary tarball 2.6.5, /usr/local/bin/sbcl
 - [x] `sc3-plugins` — built from source → /usr/local
 - [x] `schedtool` — CPU scheduler tool

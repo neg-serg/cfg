@@ -269,7 +269,7 @@ in
     jc                             # JSON convert output of CLI tools
     jpegoptim                      # JPEG image optimizer
     jq                             # JSON query processor
-    jujutsu                        # Git-compatible VCS (jj), simpler than git
+    # jujutsu                     # REMOVED: build fails on 8GB VM (Rust OOM)
     just                           # Command runner (like make, simpler)
     kexec-tools
     kitty                          # GPU-accelerated terminal emulator

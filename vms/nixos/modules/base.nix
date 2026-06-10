@@ -87,13 +87,14 @@
     })
   ];
 
-  # Nix settings — Determinate Nix cache
+  # Nix settings
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
-    substituters = [ "https://install.determinate.systems" ];
+    max-jobs = 1;
+    cores = 2;
+    substituters = [ "https://cache.nixos.org" ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "install.determinate.systems:2/bvnFWPrR6uxEXpB7XqOSykYemH8e8WoMWvoLLXpF4="
     ];
     http-connections = 25;
     accept-flake-config = true;

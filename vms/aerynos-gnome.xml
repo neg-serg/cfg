@@ -1,3 +1,10 @@
+<!--
+WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
+OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
+  virsh edit aerynos-gnome
+or other application using the libvirt API.
+-->
+
 <domain type='kvm'>
   <name>aerynos-gnome</name>
   <uuid>9b9b0a6a-8a24-4313-a2cd-e13dd9a0eca6</uuid>
@@ -12,7 +19,6 @@
     </firmware>
     <loader readonly='yes' type='pflash' format='raw'>/usr/share/edk2/x64/OVMF_CODE.4m.fd</loader>
     <nvram template='/usr/share/edk2/x64/OVMF_VARS.4m.fd' templateFormat='raw' format='raw'>/var/lib/libvirt/qemu/nvram/aerynos-gnome_VARS.fd</nvram>
-    <boot dev='cdrom'/>
     <boot dev='hd'/>
   </os>
   <features>
@@ -120,4 +126,3 @@
     </rng>
   </devices>
 </domain>
-

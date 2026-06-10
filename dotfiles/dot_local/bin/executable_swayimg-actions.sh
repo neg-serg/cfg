@@ -99,9 +99,9 @@ choose_dest() {
     {
       printf '%s\n' "$pics_dir"
       if command -v fd > /dev/null 2>&1; then
-        fd -td -d 2 . "$pics_dir" 2> /dev/null
+        fd -td . "$pics_dir" 2> /dev/null
       else
-        find "$pics_dir" -maxdepth 2 -mindepth 1 -type d 2> /dev/null
+        find "$pics_dir" -mindepth 1 -type d 2> /dev/null
       fi
       # Merge zoxide-remembered dirs within pics_dir (may include deeper paths)
       if command -v zoxide > /dev/null 2>&1; then

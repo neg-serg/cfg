@@ -3,7 +3,8 @@
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
   #:use-module (guix licenses)
-  #:use-module (gnu packages compression))
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages elf))
 
 (define-public kanata
   (package
@@ -14,7 +15,7 @@
               (uri "https://github.com/jtroo/kanata/releases/download/v1.11.0/linux-binaries-x64.zip")
               (sha256 (base32 "1qmlb5a54hgri65c8v19hd6jshsvss7rkwxc5b67iw67njpk9xnr"))))
     (build-system gnu-build-system)
-    (native-inputs (list unzip))
+    (native-inputs (list unzip patchelf))
     (arguments
      '(#:tests? #f #:strip-binaries? #f #:validate-runpath? #f
        #:phases (modify-phases %standard-phases
@@ -30,11 +31,20 @@
                   (replace 'install
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
-                             (bin (string-append out "/bin")))
+                             (bin (string-append out "/bin"))
+                             (glibc (assoc-ref %build-inputs "libc"))
+                             (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
+                             (pe (string-append (assoc-ref %build-inputs "patchelf")
+                                                "/bin/patchelf")))
                         (mkdir-p bin)
                         (for-each (lambda (f)
                                     (copy-file f (string-append bin "/" (basename f))))
-                                  (find-files "." "^kanata_")))
+                                  (find-files "." "^kanata_"))
+                        (for-each (lambda (b)
+                                    (false-if-exception
+                                     (invoke pe "--set-interpreter" interp
+                                             (string-append bin "/" b))))
+                                  (find-files bin ".*")))
                       #t)))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://github.com/jtroo/kanata")

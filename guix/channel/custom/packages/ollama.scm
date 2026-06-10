@@ -29,45 +29,42 @@
        #:strip-binaries? #f
        #:validate-runpath? #f
        #:phases (modify-phases %standard-phases
-         (replace 'unpack
-           (lambda* (#:key source #:allow-other-keys)
-             (let ((zstd-bin (string-append (assoc-ref %build-inputs "zstd") "/bin/zstd"))
-                   (tar-bin  (string-append (assoc-ref %build-inputs "tar") "/bin/tar"))
-                   (tmp-tar  "/tmp/ollama.tar"))
-               (invoke zstd-bin "-d" source "-o" tmp-tar)
-               (invoke tar-bin "xf" tmp-tar)
-               #t)))
+      (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (let* ((zstd-bin (string-append (assoc-ref %build-inputs "zstd") "/bin/zstd"))
+                     (tar-bin  (string-append (assoc-ref %build-inputs "tar") "/bin/tar"))
+                     (tmp-dir  (mkdtemp! "/tmp/ollama.XXXXXX"))
+                     (tmp-tar  (string-append tmp-dir "/ollama.tar")))
+                (invoke zstd-bin "-d" source "-o" tmp-tar)
+                (invoke tar-bin "xf" tmp-tar)
+                #t)))
          (delete 'configure)
          (delete 'check)
          (delete 'build)
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (bin  (string-append out "/bin"))
-                    (glibc (assoc-ref %build-inputs "libc"))
-                    (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
-                    (gcc-lib (string-append (assoc-ref %build-inputs "gcc") "/lib"))
-                    (pe (string-append (assoc-ref %build-inputs "patchelf")
-                                       "/bin/patchelf")))
-               (mkdir-p bin)
-               (if (file-exists? "bin/ollama")
+                    (let* ((out     (assoc-ref outputs "out"))
+                     (bin     (string-append out "/bin"))
+                     (glibc   (assoc-ref %build-inputs "libc"))
+                     (interp  (string-append glibc "/lib/ld-linux-x86-64.so.2"))
+                     (gcc-lib (string-append (assoc-ref %build-inputs "gcc") "/lib"))
+                     (pe      (string-append (assoc-ref %build-inputs "patchelf")
+                                             "/bin/patchelf")))
+                (mkdir-p bin)
+                (if (file-exists? "bin/ollama")
                    (begin
                      (install-file "bin/ollama" bin)
-                     (false-if-exception
                       (invoke pe "--set-interpreter" interp
-                              (string-append bin "/ollama")))
-                     (false-if-exception
+                              (string-append bin "/ollama"))
                       (invoke pe "--add-rpath" gcc-lib
-                              (string-append bin "/ollama"))))
-                   (if (file-exists? "ollama")
-                       (begin
-                         (install-file "ollama" bin)
-                         (false-if-exception
+                              (string-append bin "/ollama")))
+                    (if (file-exists? "ollama")
+                        (begin
+                          (install-file "ollama" bin)
                           (invoke pe "--set-interpreter" interp
-                                  (string-append bin "/ollama")))
-                         (false-if-exception
+                                  (string-append bin "/ollama"))
                           (invoke pe "--add-rpath" gcc-lib
-                                  (string-append bin "/ollama"))))
+                                  (string-append bin "/ollama")))
                        (format #t "ERROR: ollama not found~%")))
                #t))))))
     (supported-systems '("x86_64-linux"))

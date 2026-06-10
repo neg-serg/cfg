@@ -126,7 +126,8 @@ root ALL=(ALL) ALL
           "iwd" "dnsmasq" "unbound" "dhcpcd"
           "nethogs" "bandwhich" "iftop" "vnstat" "iperf"
           "network-manager" "network-manager-applet"
-          "tailscale" "wireguard-tools"
+          ;; tailscale provided by custom channel, not main Guix
+          "wireguard-tools"
           "doggo" "whois"
 
           ;; ── Development ──

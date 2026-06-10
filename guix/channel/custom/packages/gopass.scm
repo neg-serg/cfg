@@ -19,6 +19,7 @@
           (base32
             "1dqf1jmpg6y6wcg74s6k65i3agscq07khmbihkxys729ljdk0xxy"))))
     (build-system gnu-build-system)
+    (native-inputs (list patchelf))
     (arguments
      '(#:tests? #f
        #:strip-binaries? #f
@@ -30,9 +31,15 @@
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
+                    (bin (string-append out "/bin"))
+                    (glibc (assoc-ref %build-inputs "libc"))
+                    (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
+                    (pe (string-append (assoc-ref %build-inputs "patchelf")
+                                       "/bin/patchelf")))
                (mkdir-p bin)
                (install-file "gopass" bin)
+               (invoke pe "--set-interpreter" interp
+                       (string-append bin "/gopass"))
                #t))))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://www.gopass.pw")

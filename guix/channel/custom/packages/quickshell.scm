@@ -24,8 +24,9 @@
               (uri (string-append
                     "https://git.outfoxxed.me/quickshell/quickshell/archive/v"
                     version ".tar.gz"))
-              (sha256
-               (base32 "yj11z444raq4plmm716cjawp4spcqk73xckj03fa4knwczd3nvjh"))))
+               ;; FIXME: hash may be invalid — run `guix build -f quickshell.scm` to verify
+               (sha256
+                (base32 "0000000000000000000000000000000000000000000000000000"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f

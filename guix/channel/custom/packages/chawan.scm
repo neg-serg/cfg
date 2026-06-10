@@ -21,9 +21,10 @@
                     (url "https://git.sr.ht/~bptato/chawan")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0000000000000000000000000000000000000000000000000000"))))
+               ;; FIXME: placeholder — run `guix build -f chawan.scm` to get real hash
+               (sha256
+                (base32
+                 "0000000000000000000000000000000000000000000000000000"))))
     (build-system gnu-build-system)
     (arguments
      (list

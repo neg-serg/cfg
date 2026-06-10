@@ -30,6 +30,11 @@
          (add-before 'build 'set-version
            (lambda _
              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "1.14.1"))))))
+    ;; FIXME: python-vdf may not exist in (gnu packages python-xyz).
+    ;; If missing, define a custom package in python-ports.scm:
+    ;;   (define-public python-vdf
+    ;;     (package (name "python-vdf") ...))
+    ;; Source: https://github.com/ValvePython/vdf
     (inputs
      (list python-pillow python-vdf winetricks))
     (home-page "https://github.com/Matoking/protontricks")

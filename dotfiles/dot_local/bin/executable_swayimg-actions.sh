@@ -29,10 +29,14 @@ _signal_prev() {
 
 # ---- wl helpers -------------------------------------------------------------
 ensure_swww() {
-  # Start wl daemon if not running
-  if ! wl query > /dev/null 2>&1; then
-    wl init > /dev/null 2>&1 || true
-    sleep 0.05
+  # Start wl daemon if not running; retry query until socket is ready
+  if ! wl query &>/dev/null; then
+    wl init &>/dev/null || true
+    local sock="${XDG_RUNTIME_DIR:-/run/user/1000}/wl.sock"
+    local i=0
+    while [ $i -lt 20 ] && ! [ -S "$sock" ]; do
+      sleep 0.05; i=$((i + 1))
+    done
   fi
 }
 

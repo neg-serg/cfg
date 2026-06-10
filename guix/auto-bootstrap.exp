@@ -1,0 +1,35 @@
+#!/usr/bin/expect -f
+set timeout 14400
+
+catch { exec sudo pkill -9 qemu }
+sleep 2
+exec cp /usr/share/edk2/x64/OVMF_VARS.4m.fd /tmp/guix-vm-vars.fd
+
+spawn qemu-system-x86_64 \
+  -enable-kvm -cpu host -smp 12 -m 8G \
+  -drive file=/var/lib/libvirt/images/guix-system-vm-1.5.0.qcow2,if=virtio \
+  -drive if=pflash,format=raw,readonly=on,file=/usr/share/edk2/x64/OVMF_CODE.4m.fd \
+  -drive if=pflash,format=raw,file=/tmp/guix-vm-vars.fd \
+  -nographic -net nic,model=virtio -net user \
+  -no-reboot
+
+expect {
+  -re "login:" { send_user "=== Login ===\n"; send "guest\r" }
+  timeout { send_user "TIMEOUT\n"; exit 1 }
+}
+expect {
+  -re "Password:" { send "guix\r" }
+  timeout { send_user "TIMEOUT pass\n"; exit 1 }
+}
+expect -re "\\$ " { send_user "=== Shell ready ===\n" }
+sleep 2
+
+send "sudo guix system image -t qcow2 /etc/config.scm -L /home/guest/cfg-channel --no-pull --substitute-urls=https://mirror.yandex.ru/mirrors/guix/ --image-size=10G 2>&1\r"
+
+expect {
+  -re "successfully" { send_user "\n=== SUCCESS ===\n" }
+  -re "error:" { send_user "\n=== FAILED ===\n" }
+  timeout { send_user "\n=== TIMEOUT (4h) ===\n" }
+}
+send "sudo shutdown -h now\r"
+expect eof

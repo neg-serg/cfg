@@ -1,0 +1,56 @@
+#!/usr/bin/expect -f
+set timeout 7200
+
+spawn qemu-system-x86_64 \
+  -enable-kvm -cpu host -smp 12 -m 8G \
+  -drive file=/var/lib/libvirt/images/guix-system-vm-1.5.0.qcow2,if=virtio \
+  -drive if=pflash,format=raw,readonly=on,file=/usr/share/edk2/x64/OVMF_CODE.4m.fd \
+  -drive if=pflash,format=raw,file=/tmp/guix-vm-vars.fd \
+  -nographic \
+  -net nic,model=virtio -net user \
+  -no-reboot
+
+# Wait for GRUB menu to be fully drawn
+expect {
+  -re "Firmware setup" {
+    send_user "GRUB ready, sending Enter in 3s\n"
+    sleep 3
+    send "\r"
+  }
+  timeout { send_user "TIMEOUT waiting for GRUB\n"; exit 1 }
+}
+
+# Wait for boot to complete (login prompt or bash)
+expect {
+  -re "login:" {
+    send_user "Login prompt\n"
+    send "guest\r"
+    exp_continue
+  }
+  -re "Password:" {
+    send "guix\r"
+    exp_continue
+  }
+  -re "tcsetattr" {
+    send_user "Direct bash — no login needed\n"
+    sleep 2
+  }
+  -re "# " { send_user "Root shell\n" }
+  -re "\\$ " { send_user "User shell\n" }
+  timeout { send_user "TIMEOUT (120s) waiting for login\n"; exit 1 }
+}
+
+sleep 2
+send "\r"
+sleep 1
+
+send "sudo guix system reconfigure /etc/config.scm -L /home/guest/cfg-channel 2>&1\r"
+
+expect {
+  -re "successfully" { send_user "\n=== SUCCESS ===\n" }
+  -re "guix system: error" { send_user "\n=== FAILED ===\n" }
+  timeout { send_user "\n=== TIMEOUT (2h) ===\n" }
+}
+
+send "sudo shutdown -h now\r"
+expect eof

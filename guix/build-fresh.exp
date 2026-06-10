@@ -1,0 +1,41 @@
+#!/usr/bin/expect -f
+set timeout 14400
+
+catch { exec sudo pkill -9 qemu }
+sleep 2
+exec cp /usr/share/edk2/x64/OVMF_VARS.4m.fd /tmp/guix-vm-vars.fd
+exec mkdir -p /tmp/guix-share
+exec qemu-img create -f qcow2 /tmp/guix-data.qcow2 2G
+
+spawn qemu-system-x86_64 \
+  -enable-kvm -cpu host -smp 12 -m 8G \
+  -drive file=/var/lib/libvirt/images/guix-system-vm-1.5.0.qcow2,if=virtio \
+  -drive file=/tmp/guix-data.qcow2,if=virtio \
+  -drive if=pflash,format=raw,readonly=on,file=/usr/share/edk2/x64/OVMF_CODE.4m.fd \
+  -drive if=pflash,format=raw,file=/tmp/guix-vm-vars.fd \
+  -nographic -net nic,model=virtio -net user,hostfwd=tcp::2223-:2222 \
+  -no-reboot
+
+expect { -re "login:" { send "guest\r" } timeout { exit 1 } }
+expect { -re "Password:" { send "guix\r" } timeout { exit 1 } }
+expect -re "\\$ " {}
+
+send "sudo -i\r"
+expect -re "# " {}
+
+# Format data disk and build image to it
+send "mkfs.ext4 -F /dev/vdb && mount /dev/vdb /mnt && echo READY\r"
+expect -re "READY"
+
+send "guix system image -t qcow2 /etc/config.scm -L /home/guest/cfg-channel 2>&1\r"
+
+expect {
+  -re "successfully" { puts "BUILD OK" }
+  -re "error:" { puts "BUILD FAILED" }
+  timeout { puts "TIMEOUT" }
+}
+
+send "cp /gnu/store/*image.qcow2 /mnt/guix-fresh.qcow2 2>/dev/null; umount /mnt; echo COPIED\r"
+expect -re "COPIED"
+send "shutdown -h now\r"
+expect eof

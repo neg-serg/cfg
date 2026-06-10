@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """
-Annotate Salt package lists with inline descriptions.
+Annotate package lists with descriptions in Salt (YAML), NixOS (Nix), and Guix (Scheme).
 
-Reads package names from states/data/packages.yaml and adds inline comments.
+Reads package names from each config file and adds inline comments with descriptions.
 Skips packages that already have comments.
 
 Usage:
-  python3 scripts/annotate-packages.py --salt   # Salt only
+  python3 scripts/annotate-packages.py              # all three configs
+  python3 scripts/annotate-packages.py --salt        # Salt only
+  python3 scripts/annotate-packages.py --salt        # Salt only
+  #python3 scripts/annotate-packages.py --guix        # removed
 """
 
 import re, argparse
@@ -265,7 +268,6 @@ DESC = {
     "mangohud": "Game overlay (FPS, temps, etc.)",
     "nethack": "Classic roguelike dungeon crawler",
     "steam": "Steam gaming platform",
-    "proton-cachyos": "Proton with CachyOS optimizations (experimental)",
     "proton-ge-custom": "Proton GE (Wine fork for Steam)",
     "protontricks": "Winetricks for Proton",
     "qbittorrent": "BitTorrent client (Qt)",
@@ -345,7 +347,6 @@ DESC = {
     "par": "Paragraph reformatter (text formatting CLI)",
     "powerlevel10k": "Zsh theme with performance (custom theme)",
     "proteinview": "Protein structure viewer (molecular graphics)",
-    "proton-cachyos": "Proton with CachyOS optimizations (AUR)",
     "proton-ge-custom": "Proton GE (community Wine fork for Steam)",
     "protontricks": "Winetricks wrapper for Proton/Steam Play",
     "python-uv-dynamic-versioning": "Python version management via uv (dynamic)",
@@ -400,6 +401,8 @@ DESC = {
     "kmon": "Kernel module manager TUI",
 }
 
+# ── Configs that store package names as "quoted strings" (Guix)
+GUIX_STRING_PKGS = True
 
 def annotate_salt():
     """Annotate Salt packages.yaml"""

@@ -1,0 +1,9 @@
+FROM docker.io/library/alpine:3.21
+RUN apk add --no-cache bash xz curl
+COPY guix-binary.tar.xz /tmp/
+RUN tar -xf /tmp/guix-binary.tar.xz -C / && rm /tmp/guix-binary.tar.xz
+RUN ln -s /var/guix/profiles/per-user/root/current-guix/bin/guix /usr/local/bin/guix
+RUN ln -s /var/guix/profiles/per-user/root/current-guix/bin/guix-daemon /usr/local/bin/guix-daemon
+RUN addgroup -S guixbuild && for i in 1 2 3 4 5 6 7 8 9 10; do adduser -S -G guixbuild -h /var/empty -s /sbin/nologin "guixbuilder$i"; done
+RUN mkdir -p /var/guix/profiles/per-user/root
+CMD ["guix-daemon", "--build-users-group=guixbuild", "--disable-chroot"]

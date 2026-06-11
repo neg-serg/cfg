@@ -116,7 +116,7 @@ root ALL=(ALL) ALL
      "pandoc" 
      ;; Archive & Compression
      "pigz" "pbzip2" "lbzip2" "unzip" "zip"
-     "cpio" "p7zip"
+          "cpio" "7zip"
      ;; Storage & Filesystems
      "btrfs-progs" "dosfstools" "xfsprogs"
      "lvm2" "gptfdisk" "efibootmgr" "ddrescue" "testdisk"

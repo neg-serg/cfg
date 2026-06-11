@@ -95,7 +95,7 @@
     clipcat
     dcfldd
     ddccontrol
-    dool
+    dool-monitor
     droidcam
     dualsensectl
     eilmeldung

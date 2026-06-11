@@ -4,13 +4,15 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix licenses))
 
-(define-public dool
+(define-public dool-monitor
   (package
     (name "dool")
     (version "1.3.8")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "dool" version))
+              (uri (string-append
+                    "https://files.pythonhosted.org/packages/source/"
+                    (string-take "dool" 1) "/dool/dool-" version ".tar.gz"))
               (sha256
                (base32 "1ihqh8s18acrggfw2l65cdp7xnirs7xwa39jg3xc95r60avdvlrn"))))
     (build-system pyproject-build-system)
@@ -22,4 +24,4 @@ Linux system: CPU, memory, network, load average, etc.  It also includes a
 robust plug-in architecture.")
     (license gpl3+)))
 
-dool
+dool-monitor

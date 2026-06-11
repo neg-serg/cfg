@@ -2,7 +2,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
+  #:use-module ((guix build-system python) #:hide (pypi-uri))
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)

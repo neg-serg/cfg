@@ -12,7 +12,7 @@
   (package
     (name "wl")
     (version "0.1.0")
-    (source (local-file (dirname (current-filename)) "wl-binaries.tar.gz"
+    (source (local-file "/home/neg/src/cfg/guix/channel/custom/packages/wl-binaries.tar.gz"
               #:recursive? #f))
     (build-system gnu-build-system)
     (native-inputs (list patchelf tar gzip))

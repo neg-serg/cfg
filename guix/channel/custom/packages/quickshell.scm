@@ -13,7 +13,9 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages version-control)
-  #:use-module (gnu packages man))
+  #:use-module (gnu packages man)
+  #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages jemalloc))
 
 (define-public quickshell
   (package

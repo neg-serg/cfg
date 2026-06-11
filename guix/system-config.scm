@@ -111,24 +111,31 @@ root ALL=(ALL) ALL
           "fastfetch" "cowsay" "figlet" "toilet" "lolcat"
           "chafa" "viu"
 
-          ;; ── System Monitoring ──
-          "btop" "htop" "atop" "bottom" "iotop" "powertop"
-          "ncdu" "dust" "duf" "progress" "pv"
-          "strace" "lsof" "sysstat" "cpupower"
-          "hwinfo" "lshw" "inxi" "smartmontools"
-          "bpftrace" "perf"
+           ;; ── System Monitoring ──
+           "btop" "htop" "atop" "bottom" "iotop" "powertop"
+           "ncdu" "dust" "duf" "progress" "pv"
+           "strace" "lsof" "sysstat" "cpupower"
+           "hwinfo" "lshw" "inxi" "smartmontools"
+           "bpftrace" "perf"
+           "fio" "memtester" "turbostat" "schedtool" "plocate"
+           "lm-sensors" "inotify-tools" "hw-probe"
 
-          ;; ── Network & Connectivity ──
-          "curl" "wget" "wget2" "aria2"
-          "rsync" "rclone" "syncthing"
-          "openssh" "sshfs" "sshpass" "socat"
-          "nmap" "tcpdump" "traceroute" "fping" "mtr"
-          "iwd" "dnsmasq" "unbound" "dhcpcd"
-          "nethogs" "bandwhich" "iftop" "vnstat" "iperf"
-          "network-manager" "network-manager-applet"
-          ;; tailscale provided by custom channel, not main Guix
-          "wireguard-tools"
-          "doggo" "whois"
+           ;; ── Network & Connectivity ──
+           "curl" "wget" "wget2" "aria2"
+           "rsync" "rclone" "syncthing"
+           "openssh" "sshfs" "sshpass" "socat"
+           "nmap" "tcpdump" "traceroute" "fping" "mtr"
+           "iwd" "dnsmasq" "unbound" "dhcpcd"
+           "nethogs" "bandwhich" "iftop" "vnstat" "iperf"
+           "network-manager" "network-manager-applet"
+           ;; tailscale provided by custom channel, not main Guix
+           "wireguard-tools"
+           "doggo" "whois"
+           "avahi" "nss-mdns"
+           "bluez" "bluez-utils"
+           "firewalld" "ufw"
+           "samba" "openbsd-netcat" "iperf3"
+           "httpie" "xh" "curlie"
 
           ;; ── Development ──
           "python" "python-pip" "python-pipx" "python-poetry"
@@ -144,14 +151,17 @@ root ALL=(ALL) ALL
           "shellcheck" "shfmt" "ruff" "uv" "vale"
           "yamllint" "taplo" "pre-commit"
           "difftastic" "just" "scc"
-          "tree-sitter"
+           "tree-sitter"
+           "clang" "npm" "python-numpy" "python-orjson"
+           "lua-5.3" "perl-image-exiftool" "gallery-dl"
 
-          ;; ── Git / VCS ──
+           ;; ── Git / VCS ──
           "git-lfs" "git-crypt" "git-delta" "git-extras"
           "git-filter-repo" "gh" "glow" "tig" "lazygit"
-          "jujutsu" "subversion" "gitleaks" "onefetch"
+           "jujutsu" "subversion" "gitleaks" "onefetch"
+           "gist"
 
-          ;; ── Editors ──
+           ;; ── Editors ──
           "vim" "nano" "helix" "kate"
 
           ;; ── Terminal Emulators ──
@@ -171,9 +181,10 @@ root ALL=(ALL) ALL
           "cliphist" "wf-recorder" "wayvnc" "waypipe"
           "wev" "ydotool"
           "xdg-desktop-portal-hyprland" "xdg-user-dirs-gtk"
-          "uwsm"
+           "uwsm"
+           "hyprpolkitagent" "qt5-wayland" "qt6-wayland"
 
-          ;; ── Desktop / GNOME ──
+           ;; ── Desktop / GNOME ──
           "gnome-backgrounds" "gnome-calculator" "gnome-calendar"
           "gnome-characters" "gnome-clocks"
           "gnome-color-manager" "gnome-connections" "gnome-console"
@@ -186,8 +197,10 @@ root ALL=(ALL) ALL
           "gnome-system-monitor" "gnome-text-editor"
           "gnome-tweaks" "gnome-weather"
           "simple-scan" "sushi" "yelp" "epiphany"
-          "orca" "papers"
-          "greetd" "tuigreet"
+           "orca" "papers"
+           "gnome-menus" "gnome-tour" "gnome-user-docs" "gnome-user-share"
+           "gvfs" "rygel" "tumbler" "snapshot" "loupe"
+           "greetd" "tuigreet"
 
           ;; ── Browsers ──
           "icecat" "ungoogled-chromium-wayland"
@@ -201,9 +214,10 @@ root ALL=(ALL) ALL
           "sox" "id3v2" "mediainfo" "chromaprint"
           "playerctl" "wireplumber" "pavucontrol"
           "gstreamer" "gst-plugins-base" "gst-plugins-good"
-          "gst-plugins-bad" "gst-plugins-ugly" "gst-libav"
+           "gst-plugins-bad" "gst-plugins-ugly" "gst-libav"
+           "sonic-visualiser" "helvum" "lsp-plugins" "grilo-plugins"
 
-          ;; ── Graphics & Images ──
+           ;; ── Graphics & Images ──
           "gimp" "blender" "inkscape"
           "jpegoptim" "optipng" "pngquant" "scour"
           "resvg" "chafa" "viu"
@@ -256,15 +270,20 @@ root ALL=(ALL) ALL
           "tealdeer" "tldr"
           "asciinema" "screenfetch"
           "android-tools"
-          "fonts-jetbrains-mono"
+           "fonts-jetbrains-mono"
+           "chezmoi" "pwgen" "cdparanoia" "enca" "iotop-c"
+           "wireshark-cli" "zbar" "zk" "zmap" "w3m"
+           "geoip" "hunspell-dict-ru" "libpulse" "pass" "hxd"
+           "openocd" "libnotify" "xdg-utils"
 
-          ;; ── Display Manager / Login ──
+           ;; ── Display Manager / Login ──
           "greetd" "tuigreet"
 
           ;; ── Printing ──
-          "cups" "system-config-printer"
+           "cups" "system-config-printer"
+           "cups-pk-helper"
 
-          ;; ── Other ──
+           ;; ── Other ──
           "etckeeper" "borg" "rclone"
           "grafana" "unbound"
           "streamlink" "yt-dlp"
@@ -273,9 +292,12 @@ root ALL=(ALL) ALL
           "minicom" "ttyd"
           "freerdp" "remmina"
           "fwupd" "udiskie" "upower"
-          "cage" "xwaylandvideobridge"
+           "cage" "xwaylandvideobridge"
+           "kvantum" "qt5ct" "qt6ct" "plasma-desktop" "plasma-workspace"
+           "polkit-kde-agent" "breeze" "breeze-icons"
+           "corectrl" "openrgb"
 
-          ;; ── KDE Apps ──
+           ;; ── KDE Apps ──
           "ark" "konsole" "kate"
 
           ;; ── Custom channel packages ──

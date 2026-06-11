@@ -9,7 +9,9 @@
   #:use-module (custom packages chawan)
   #:use-module (custom packages clipcat)
   #:use-module (custom packages ddccontrol)
+  #:use-module (custom packages dool)
   #:use-module (custom packages droidcam)
+  #:use-module (custom packages dualsensectl)
   #:use-module (custom packages epr)
   #:use-module (custom packages flclashx)
   #:use-module (custom packages font-iosevkaterm-nerd-fonts)
@@ -27,6 +29,7 @@
   #:use-module (custom packages limine)
   #:use-module (custom packages massren)
   #:use-module (custom packages neo-matrix)
+  #:use-module (custom packages newsraft)
   #:use-module (custom packages ollama)
   #:use-module (custom packages oports)
   #:use-module (custom packages optiscaler)
@@ -34,6 +37,7 @@
   #:use-module (custom packages par)
   #:use-module (custom packages powerlevel10k)
   #:use-module (custom packages proteinview)
+  #:use-module (custom packages proton-cachyos)
   #:use-module (custom packages proton-ge)
   #:use-module (custom packages protontricks)
   #:use-module (custom packages proxypilot)
@@ -41,6 +45,7 @@
   #:use-module (custom packages python-uv-dynamic-versioning)
   #:use-module (custom packages pzip)
   #:use-module (custom packages regex-tui)
+  #:use-module (custom packages rmlint)
   #:use-module (custom packages richcolors)
   #:use-module (custom packages rofi-file-browser-extended)
   #:use-module (custom packages roomeqwizard)
@@ -56,6 +61,7 @@
   #:use-module (custom packages tailscale)
   #:use-module (custom packages tanin)
   #:use-module (custom packages taoup)
+  #:use-module (custom packages tessen)
   #:use-module (custom packages tmmpr)
   #:use-module (custom packages unflac)
   #:use-module (custom packages v2raya)
@@ -90,7 +96,9 @@
     clipcat
     dcfldd
     ddccontrol
+    dool
     droidcam
+    dualsensectl
     eilmeldung
     epr
     flclashx
@@ -120,6 +128,7 @@
     lutgen
     massren
     neo-matrix
+    newsraft
     oh-my-posh
     ollama
     opensoundmeter
@@ -131,6 +140,7 @@
     par
     powerlevel10k
     proteinview
+    proton-cachyos
     proton-ge-custom
     protontricks
     protonup-rs
@@ -147,6 +157,7 @@
     pzip
     reddix
     regex-tui
+    rmlint
     repeater
     resterm
     richcolors
@@ -165,6 +176,7 @@
     tailscale
     tanin
     taoup
+    tessen
     tdl
     throne
     tmmpr
@@ -183,10 +195,41 @@
     ytsurf
     zapret2
     zen-browser
-    ;; ── Added in parity push ──
+    ;; ── Parity push (binary packages, batch 6-10) ──
+    yazi
+    ruff-linter
+    gitleaks-sec
+    ttyd-share
+    genact-activity
+    ctop-monitor
+    onefetch-info
+    erdtree-disk
+    bandwhich-net
+    resvg-render
+    doggo-dns
+    xh-client
+    lnav-log
+    cpufetch-tool
+    viu-viewer
+    sops-secrets
+    taplo-fmt
+    tabiew-tui
+    sad-editor
+    axctl-compositor
+    grex-tool
+    no-more-secrets-nms
+    nvtop-monitor
+    s-tui-stress
+    ssh-to-age-key
+    geoip-database-maxmind
     hermes-agent
     goose-ai
     mpdas
+    ;; ── Missing from bulk-binaries ──
+    gh-cli
+    glow-markdown
+    lazygit-bin
+    zellij-bin
     ))
 
 all-custom-packages

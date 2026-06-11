@@ -10,14 +10,14 @@
 (define-public newsraft
   (package
     (name "newsraft")
-    (version "0.28")
+    (version "0.36")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/newsraft/newsraft")
-                    (commit (string-append "v" version))))
+                    (commit (string-append "newsraft-" version))))
               (file-name (git-file-name name version))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+              (sha256 (base32 "2uni5y2m6ezxlvkgughlzhnvolvkugyrr3hjjjbfjiwsfp5r375a"))))
     (build-system gnu-build-system)
     (inputs (list curl expat sqlite gumbo-parser))
     (arguments

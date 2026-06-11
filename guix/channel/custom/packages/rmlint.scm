@@ -15,7 +15,7 @@
                     (url "https://github.com/sahib/rmlint")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+               (sha256 (base32 "r7632xij2foiof5okvex5egw7jdpbbnullaqk3zhe4dw3imaym7a"))))
     (build-system gnu-build-system)
     (native-inputs (list python python-scons))
     (arguments

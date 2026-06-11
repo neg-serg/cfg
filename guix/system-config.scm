@@ -275,21 +275,31 @@ root ALL=(ALL) ALL
            "wireshark-cli" "zbar" "zk" "zmap" "w3m"
            "geoip" "hunspell-dict-ru" "libpulse" "pass" "hxd"
            "openocd" "libnotify" "xdg-utils"
+           "jupyterlab" "multipath-tools" "pastel"
+           "stress-ng" "parted" "which" "sudo" "less" "man-pages"
+           "elfutils" "kexec-tools" "tree-sitter-cli"
+           "qrencode" "goaccess" "htmlq"
+           "bucklespring" "amneziawg-tools"
+           "i3-wm" "i3status" "networkmanager" "nm-connection-editor"
+           "goimapnotify" "gitogue" "wiremix"
+           "proton-vpn-cli" "zram-generator" "systemd-resolvconf"
+           "transmission-cli" "television" "showtime" "rmpc"
+           "rofi" "pipewire" "neg-pretty-printer" "prettyping"
+           "plasma-wayland-session" "kvantum-qt5"
 
            ;; ── Display Manager / Login ──
-          "greetd" "tuigreet"
+           "greetd" "tuigreet"
 
-          ;; ── Printing ──
+           ;; ── Printing ──
            "cups" "system-config-printer"
            "cups-pk-helper"
 
            ;; ── Other ──
           "etckeeper" "borg" "rclone"
           "grafana" "unbound"
-          "streamlink" "yt-dlp"
-          "nicotine+" "transmission"
-          "aria2" "wget" "curl"
-          "minicom" "ttyd"
+           "streamlink" "yt-dlp"
+           "nicotine+" "transmission"
+           "minicom" "ttyd"
           "freerdp" "remmina"
           "fwupd" "udiskie" "upower"
            "cage" "xwaylandvideobridge"

@@ -15,7 +15,8 @@
                     "https://github.com/CachyOS/proton-cachyos/releases/download/"
                     "cachyos-11.0-20260601-slr/"
                     "proton-cachyos-11.0-20260601-slr-x86_64.tar.xz"))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+               ;; FIXME: large file (~900 MB), run `guix build -f proton-cachyos.scm` to fill hash
+               (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
     (build-system gnu-build-system)
     (native-inputs (list xz))
     (arguments

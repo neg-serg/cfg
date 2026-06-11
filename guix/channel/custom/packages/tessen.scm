@@ -14,7 +14,7 @@
                     (url "https://github.com/ayushnix/tessen")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+               (sha256 (base32 "mive3afkkwzpxbudfstef4hhjhoftp2umtpnqzue7egq3uogtnna"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f

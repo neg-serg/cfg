@@ -13,7 +13,7 @@
       <feature enabled='no' name='secure-boot'/>
     </firmware>
     <loader readonly='yes' type='pflash' format='raw'>/usr/share/edk2/x64/OVMF_CODE.4m.fd</loader>
-    <nvram template="/tmp/nvram-template.fd"templateFormat='raw' format='raw'>/var/lib/libvirt/qemu/nvram/aerynos-gnome_VARS.fd</nvram>  </os>
+    <nvram template='/usr/share/edk2/x64/aerynos_VARS.fd' templateFormat='raw' format='raw'>/var/lib/libvirt/qemu/nvram/aerynos-gnome_VARS.fd</nvram>  </os>
   <features>
     <acpi/>
     <apic/>

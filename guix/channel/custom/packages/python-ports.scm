@@ -130,3 +130,21 @@
     (synopsis "SQLite query tool")
     (description "SQLite query tool.")
     (license #f)))
+
+(define-public python-vdf
+  (package
+    (name "python-vdf")
+    (version "3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vdf" version))
+       (sha256
+        (base32 "7vkbt5a6a6qqbhs77ubhy7ol4q6r67uo6rj25kuq3hiexad54kxq"))))
+    (build-system pyproject-build-system)
+    (arguments '(#:tests? #f))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/ValvePython/vdf")
+    (synopsis "Library for working with Valve's VDF text format")
+    (description "Library for parsing and serializing Valve's KeyValue text format.")
+    (license license:expat)))

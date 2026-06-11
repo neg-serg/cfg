@@ -143,6 +143,7 @@
     python-sqlit
     python-texicode
     python-uv-dynamic-versioning
+    python-vdf
     pzip
     reddix
     regex-tui

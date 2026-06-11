@@ -1,6 +1,7 @@
 (define-module (custom packages parity-push)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix licenses)
   #:use-module (gnu packages elf)
@@ -320,24 +321,44 @@
 ;; ── BATCH 10: Final parity push ──
 
 (define-public grex-tool
-  ;; FIXME: run `guix build -f parity-push.scm` to fill hash
   (single-binary-package "grex" "1.4.5"
     "https://github.com/pemistahl/grex/releases/download/v1.4.5/grex-v1.4.5-x86_64-unknown-linux-musl.tar.gz"
-    "0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    "lpd6zhvepzr2tumplbmakyp7tte5cqsisyyn4wmfeght6tiohxja"
     "grex"))
 
 (define-public no-more-secrets-nms
-  ;; FIXME: run `guix build -f parity-push.scm` to fill hash
-  (binary-package "nms" "1.0.1"
-    "https://github.com/bartobri/no-more-secrets/releases/download/v1.0.1/nms-1.0.1.tar.gz"
-    "0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    "nms"))
+  (package
+    (name "nms") (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bartobri/no-more-secrets")
+                    (commit "v1.0.1")))
+              (file-name (git-file-name name version))
+              (sha256 (base32
+                       "1936m1xz131b4iwdipxphrs5f7axbx2l5hxyr740z207i5p0d0mz"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'build
+           (lambda* (#:key #:allow-other-keys)
+             (invoke "make" "-C" "nms")))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (install-file "nms/nms" (string-append out "/bin"))))))))
+    (supported-systems '("x86_64-linux"))
+    (home-page "https://github.com/bartobri/no-more-secrets")
+    (synopsis "Recreate the Hollywood text-display effect")
+    (description "A set of tools to recreate the fascinating text-display effect")
+    (license bsd-3)))
 
 (define-public nvtop-monitor
-  ;; FIXME: run `guix build -f parity-push.scm` to fill hash
-  (binary-package "nvtop" "3.2.0"
-    "https://github.com/Syllo/nvtop/releases/download/3.2.0/nvtop-3.2.0.tar.gz"
-    "0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  (single-binary-package "nvtop" "3.2.0"
+    "https://github.com/Syllo/nvtop/releases/download/3.2.0/nvtop-3.2.0-x86_64.AppImage"
+    "gpcu7nycl5b2ee63r2mdbcda2qanwm2juyp4sobp4rzwy7jfqdca"
     "nvtop"))
 
 (define-public s-tui-stress
@@ -345,8 +366,7 @@
     (name "s-tui") (version "1.1.6")
     (source (origin (method url-fetch)
              (uri "https://github.com/amanusk/s-tui/archive/refs/tags/v1.1.6.tar.gz")
-             ;; FIXME: run `guix build -f parity-push.scm` to fill hash
-             (sha256 (base32 "0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))))
+             (sha256 (base32 "tgujavttuqt6xtspo7muy5wnlhklh4g2otabrz6ljfi4okbfxptq"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f #:phases (modify-phases %standard-phases
       (delete 'bootstrap) (delete 'configure) (delete 'check) (delete 'build)
@@ -363,19 +383,17 @@
     (license gpl2+)))
 
 (define-public ssh-to-age-key
-  ;; FIXME: run `guix build -f parity-push.scm` to fill hash
-  (binary-package "ssh-to-age" "1.1.3"
-    "https://github.com/Mic92/ssh-to-age/releases/download/1.1.3/ssh-to-age-x86_64-unknown-linux-musl.tar.gz"
-    "0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  (single-binary-package "ssh-to-age" "1.3.0"
+    "https://github.com/Mic92/ssh-to-age/releases/download/v1.3.0/ssh-to-age.linux-amd64"
+    "bis5gvhicvhhtt7ozrkehthsie3o7wowzeb72a7wdbmodgtqedda"
     "ssh-to-age"))
 
 (define-public geoip-database-maxmind
-  ;; FIXME: run `guix build -f parity-push.scm` to fill hash
   (package
     (name "geoip-database") (version "20240501")
     (source (origin (method url-fetch)
              (uri "https://git.io/GeoLite2-City.mmdb")
-             (sha256 (base32 "0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")))
+             (sha256 (base32 "sepvr2l4ijwujkr2qkjzkxxz6ooqtx455kvr7ybgex45p7whj7tq")))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f #:phases (modify-phases %standard-phases
       (delete 'bootstrap) (delete 'configure) (delete 'check) (delete 'build)

@@ -6,7 +6,8 @@
   #:use-module (guix licenses)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
-  #:use-module (gnu packages python-xyz))
+  #:use-module (gnu packages python-xyz)
+  #:use-module ((custom packages python-ports) #:select (python-vdf)))
 
 (define-public protontricks
   (package
@@ -30,11 +31,6 @@
          (add-before 'build 'set-version
            (lambda _
              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "1.14.1"))))))
-    ;; FIXME: python-vdf may not exist in (gnu packages python-xyz).
-    ;; If missing, define a custom package in python-ports.scm:
-    ;;   (define-public python-vdf
-    ;;     (package (name "python-vdf") ...))
-    ;; Source: https://github.com/ValvePython/vdf
     (inputs
      (list python-pillow python-vdf winetricks))
     (home-page "https://github.com/Matoking/protontricks")

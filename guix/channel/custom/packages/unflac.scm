@@ -14,7 +14,8 @@
                     (url "https://git.sr.ht/~ft/unflac")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+               ;; FIXME: run `guix build -f unflac.scm` to fill hash
+               (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
     (build-system gnu-build-system)
     (native-inputs (list go))
     (arguments

@@ -41,34 +41,34 @@
     (description "")
     (license gpl3+)))
 
-;;; Example: oports — network port scanner
-(define-public oports
-  (package
-    (name "oports")
-    (version "0.1.0")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/sdushantha/oports")
-              (commit "master")))
-        (file-name (git-file-name name version))
-        (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
-    (build-system trivial-build-system)
-    (arguments
-     '(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((source (assoc-ref %build-inputs "source"))
-                (out    (assoc-ref %outputs "out"))
-                (bin    (string-append out "/bin")))
-           (mkdir-p bin)
-           (copy-recursively source (string-append out "/share/oports"))
-           (symlink (string-append out "/share/oports/oports.sh")
-                    (string-append bin "/oports"))
-           (chmod (string-append bin "/oports") #o555)))))
-    (home-page "https://github.com/sdushantha/oports")
-    (synopsis "Network port scanner")
-    (description "Simple network port scanner written in bash.")
-    (license gpl3+)))
+;;; Template example — see oports.scm for the real package.
+;; (define-public oports
+;;   (package
+;;     (name "oports")
+;;     (version "0.1.0")
+;;     (source
+;;       (origin
+;;         (method git-fetch)
+;;         (uri (git-reference
+;;               (url "https://github.com/sdushantha/oports")
+;;               (commit "master")))
+;;         (file-name (git-file-name name version))
+;;         (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+;;     (build-system trivial-build-system)
+;;     (arguments
+;;      '(#:modules ((guix build utils))
+;;        #:builder
+;;        (begin
+;;          (use-modules (guix build utils))
+;;          (let* ((source (assoc-ref %build-inputs "source"))
+;;                 (out    (assoc-ref %outputs "out"))
+;;                 (bin    (string-append out "/bin")))
+;;            (mkdir-p bin)
+;;            (copy-recursively source (string-append out "/share/oports"))
+;;            (symlink (string-append out "/share/oports/oports.sh")
+;;                     (string-append bin "/oports"))
+;;            (chmod (string-append bin "/oports") #o555)))))
+;;     (home-page "https://github.com/sdushantha/oports")
+;;     (synopsis "Network port scanner")
+;;     (description "Simple network port scanner written in bash.")
+;;     (license gpl3+)))

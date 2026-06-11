@@ -20,7 +20,7 @@
                     (url "https://github.com/themix-project/oomox-gtk-theme")
                     (commit "0f134c33")))
               (file-name (git-file-name name version))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+               (sha256 (base32 "zqa6fpnivchxtf546ybyduokv5gniksokjjszgwz53l73o3dcp3q"))))
     (build-system gnu-build-system)
     (inputs (list gtk+ glib gdk-pixbuf librsvg sassc))
     (arguments

@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y curl xz-utils ca-certificates nss-plugi
 # Download Guix install script separately
 RUN curl -sL -o /tmp/guix-install.sh https://guix.gnu.org/install.sh
 RUN chmod +x /tmp/guix-install.sh
-RUN /tmp/guix-install.sh --no-daemon
+RUN echo "y\nn\n" | /tmp/guix-install.sh
 
 ENV GUIX_PROFILE=/root/.guix-profile
 ENV PATH=/root/.guix-profile/bin:$PATH

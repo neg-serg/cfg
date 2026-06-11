@@ -44,7 +44,7 @@ root ALL=(ALL) ALL
         (list
           ;; Shell & core
           "zsh" "git" "neovim" "tmux" "curl" "wget"
-          "htop" "btop" "rsync" "ripgrep" "fd" "bat" "eza"
+          "htop" "btop" "rsync" "ripgrep" "fd" "bat"
           "jq" "tree" "less" "which"
           ;; SSH/network
           "openssh" "nmap" "socat" "iperf" "lsof"

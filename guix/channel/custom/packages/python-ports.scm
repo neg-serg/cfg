@@ -2,7 +2,6 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system pyproject)
-  #:use-module ((guix build-system python) #:hide (pypi-uri))
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -16,7 +15,8 @@
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "ascii_magic" version))
+       (uri (string-append
+              "https://files.pythonhosted.org/packages/source/a/ascii_magic/ascii_magic-" version ".tar.gz"))
        (sha256
         (base32 "07n3finj98x11l7ncnj365n78n40pqd46dwj8b3pglk0xbj1cxym"))))
     (build-system pyproject-build-system)
@@ -35,7 +35,8 @@
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "neovim-remote" version))
+       (uri (string-append
+              "https://files.pythonhosted.org/packages/source/n/neovim-remote/neovim-remote-" version ".tar.gz"))
        (sha256
         (base32 "00kxlb3f1k7iaxzpsr07scavmnyg8c1jmicmr13mfk2lcdac6g2b"))))
     (build-system pyproject-build-system)
@@ -54,7 +55,8 @@
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "rapidgzip" version))
+       (uri (string-append
+              "https://files.pythonhosted.org/packages/source/r/rapidgzip/rapidgzip-" version ".tar.gz"))
        (sha256
         (base32 "0kn1l7yxkh3l3fvarx4g38m78rsysdd3xs41md4l5phjphlly4lb"))))
     (build-system pyproject-build-system)
@@ -72,7 +74,8 @@
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "scdl" version))
+       (uri (string-append
+              "https://files.pythonhosted.org/packages/source/s/scdl/scdl-" version ".tar.gz"))
        (sha256
         (base32 "1m89dfvzwhhyv1gkqc7mlvxbvdmahsv9kqwnzqb4sn4khar2zdxg"))))
     (build-system pyproject-build-system)
@@ -90,7 +93,8 @@
     (version "0.1.11")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "cmake_language_server" version))
+              (uri (string-append
+              "https://files.pythonhosted.org/packages/source/c/cmake_language_server/cmake_language_server-" version ".tar.gz"))
               (sha256 (base32 "0nv9rnry4nkjknrmhy34mjndskq4c9kqz999f9x4asf5gqv4hpq0"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-pygls))
@@ -107,7 +111,8 @@
     (version "0.1.1")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "texicode" version))
+              (uri (string-append
+              "https://files.pythonhosted.org/packages/source/t/texicode/texicode-" version ".tar.gz"))
               (sha256 (base32 "02dvxz3s59ghz014j4n3j83clm6wwlwp0n2xjvw1bvvjv9ik48zr"))))
     (build-system pyproject-build-system)
     (arguments '(#:tests? #f))
@@ -122,7 +127,8 @@
     (version "0.1.1")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "sqlit" version))
+              (uri (string-append
+              "https://files.pythonhosted.org/packages/source/s/sqlit/sqlit-" version ".tar.gz"))
               (sha256 (base32 "0x9vm1880fx62xhfydcww51p2q3d1rp75fkgbfq5bzxbw7mvi14y"))))
     (build-system pyproject-build-system)
     (arguments '(#:tests? #f))
@@ -138,7 +144,8 @@
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "vdf" version))
+       (uri (string-append
+              "https://files.pythonhosted.org/packages/source/v/vdf/vdf-" version ".tar.gz"))
        (sha256
         (base32 "1bz2gn04pl6rj2mawlzlirz1ygg4rdypq0pxbyg018873vs1jm7x"))))
     (build-system pyproject-build-system)

@@ -77,7 +77,6 @@
   #:use-module (custom packages zapret2)
   #:use-module (custom packages zen-browser)
   #:use-module (custom packages hermes-agent)
-  #:use-module (custom packages goose)
   #:use-module (custom packages mpdas)
   #:use-module (custom packages parity-push))  ; grex, nms, nvtop, s-tui, ssh-to-age, geoip-db
 

@@ -16,36 +16,37 @@
     (native-inputs (list patchelf tar gzip unzip))
     (arguments
      `(#:tests? #f #:strip-binaries? #f #:validate-runpath? #f
-       #:phases (modify-phases %standard-phases
-         (delete 'bootstrap) (delete 'configure) (delete 'check)
-         (delete 'build) (delete 'patch-usr-bin-file)
-         (delete 'patch-source-shebangs) (delete 'patch-generated-file-shebangs)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out    (assoc-ref outputs "out"))
-                    (bdir   (string-append out "/bin"))
-                    (glibc  (assoc-ref %build-inputs "libc"))
-                    (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
-                    (pe     (string-append (assoc-ref %build-inputs "patchelf")
-                                           "/bin/patchelf")))
-               (mkdir-p bdir)
-               (if (file-exists? ,bin)
-                   (begin
-                     (install-file ,bin bdir)
-                     (chmod (string-append bdir "/" ,bin) #o555)
-                     (false-if-exception
-                      (invoke pe "--set-interpreter" interp
-                              (string-append bdir "/" ,bin))))
-                   (let ((files (find-files "." (lambda (f s)
-                                  (string-contains (basename f) ,bin)))))
-                     (if (pair? files)
-                         (let ((src (car files)))
-                           (copy-file src (string-append bdir "/" ,bin))
-                           (chmod (string-append bdir "/" ,bin) #o555)
-                           (false-if-exception
-                            (invoke pe "--set-interpreter" interp
-                                    (string-append bdir "/" ,bin)))))))
-               #t))))))
+        #:phases (modify-phases %standard-phases
+          (delete 'bootstrap) (delete 'configure) (delete 'check)
+          (delete 'build) (delete 'patch-usr-bin-file)
+          (delete 'patch-source-shebangs) (delete 'patch-generated-file-shebangs)
+          (delete 'install)
+          (add-after 'unpack 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out    (assoc-ref outputs "out"))
+                     (bdir   (string-append out "/bin"))
+                     (glibc  (assoc-ref %build-inputs "libc"))
+                     (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
+                     (pe     (string-append (assoc-ref %build-inputs "patchelf")
+                                            "/bin/patchelf")))
+                (mkdir-p bdir)
+                (if (file-exists? ,bin)
+                    (begin
+                      (install-file ,bin bdir)
+                      (chmod (string-append bdir "/" ,bin) #o555)
+                      (false-if-exception
+                       (invoke pe "--set-interpreter" interp
+                               (string-append bdir "/" ,bin))))
+                    (let ((files (find-files "." (lambda (f s)
+                                   (string-contains (basename f) ,bin)))))
+                      (if (pair? files)
+                          (let ((src (car files)))
+                            (copy-file src (string-append bdir "/" ,bin))
+                            (chmod (string-append bdir "/" ,bin) #o555)
+                            (false-if-exception
+                             (invoke pe "--set-interpreter" interp
+                                     (string-append bdir "/" ,bin)))))))
+                #t))))))
     (supported-systems '("x86_64-linux"))
     (home-page "") (synopsis "") (description "") (license gpl3+)))
 
@@ -140,29 +141,31 @@
     (native-inputs (list patchelf))
     (arguments
      `(#:tests? #f #:strip-binaries? #f #:validate-runpath? #f
-       #:phases (modify-phases %standard-phases
-         (delete 'bootstrap) (delete 'configure) (delete 'check)
-         (delete 'build) (delete 'patch-usr-bin-file)
-         (delete 'patch-source-shebangs) (delete 'patch-generated-file-shebangs)
-         (replace 'unpack
-           (lambda* (#:key source #:allow-other-keys)
-             (copy-file source ,bin)
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out    (assoc-ref outputs "out"))
-                    (bdir   (string-append out "/bin"))
-                    (glibc  (assoc-ref %build-inputs "libc"))
-                    (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
-                    (pe     (string-append (assoc-ref %build-inputs "patchelf")
-                                           "/bin/patchelf")))
-               (mkdir-p bdir)
-               (copy-file ,bin (string-append bdir "/" ,bin))
-               (chmod (string-append bdir "/" ,bin) #o555)
-               (false-if-exception
-                (invoke pe "--set-interpreter" interp
-                        (string-append bdir "/" ,bin)))
-               #t))))))
+        #:phases (modify-phases %standard-phases
+          (delete 'bootstrap) (delete 'configure) (delete 'check)
+          (delete 'build) (delete 'patch-usr-bin-file)
+          (delete 'patch-source-shebangs) (delete 'patch-generated-file-shebangs)
+          (delete 'unpack)
+          (delete 'install)
+          (add-after 'unpack 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (copy-file source ,bin)
+              #t))
+          (add-after 'unpack 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out    (assoc-ref outputs "out"))
+                     (bdir   (string-append out "/bin"))
+                     (glibc  (assoc-ref %build-inputs "libc"))
+                     (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
+                     (pe     (string-append (assoc-ref %build-inputs "patchelf")
+                                            "/bin/patchelf")))
+                (mkdir-p bdir)
+                (copy-file ,bin (string-append bdir "/" ,bin))
+                (chmod (string-append bdir "/" ,bin) #o555)
+                (false-if-exception
+                 (invoke pe "--set-interpreter" interp
+                         (string-append bdir "/" ,bin)))
+                #t))))))
     (supported-systems '("x86_64-linux"))
     (home-page "") (synopsis "") (description "") (license gpl3+)))
 
@@ -201,25 +204,27 @@
          (delete 'bootstrap) (delete 'configure) (delete 'check)
          (delete 'build) (delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs) (delete 'patch-generated-file-shebangs)
-         (replace 'unpack
+         (delete 'unpack)
+         (add-after 'unpack 'unpack
            (lambda* (#:key source #:allow-other-keys)
-             (system (string-append "gunzip -c " source " > taplo"))
-             #t))
-         (replace 'install
+           (system (string-append "gunzip -c " source " > taplo"))
+           #t))
+         (delete 'install)
+         (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out    (assoc-ref outputs "out"))
-                    (bdir   (string-append out "/bin"))
-                    (glibc  (assoc-ref %build-inputs "libc"))
-                    (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
-                    (pe     (string-append (assoc-ref %build-inputs "patchelf")
-                                           "/bin/patchelf")))
-               (mkdir-p bdir)
-               (copy-file "taplo" (string-append bdir "/taplo"))
-               (chmod (string-append bdir "/taplo") #o555)
-               (false-if-exception
-                (invoke pe "--set-interpreter" interp
-                        (string-append bdir "/taplo")))
-               #t))))))
+           (let* ((out    (assoc-ref outputs "out"))
+           (bdir   (string-append out "/bin"))
+           (glibc  (assoc-ref %build-inputs "libc"))
+           (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
+           (pe     (string-append (assoc-ref %build-inputs "patchelf")
+           "/bin/patchelf")))
+           (mkdir-p bdir)
+           (copy-file "taplo" (string-append bdir "/taplo"))
+           (chmod (string-append bdir "/taplo") #o555)
+           (false-if-exception
+           (invoke pe "--set-interpreter" interp
+           (string-append bdir "/taplo")))
+           #t))))))
     (supported-systems '("x86_64-linux"))
     (home-page "") (synopsis "") (description "") (license gpl3+)))
 
@@ -238,29 +243,31 @@
          (delete 'bootstrap) (delete 'configure) (delete 'check)
          (delete 'build) (delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs) (delete 'patch-generated-file-shebangs)
-         (replace 'unpack
+         (delete 'unpack)
+         (add-after 'unpack 'unpack
            (lambda* (#:key source #:allow-other-keys)
-             (invoke "ar" "x" source "data.tar.xz")
-             (invoke "tar" "xf" "data.tar.xz")
-             #t))
-         (replace 'install
+           (invoke "ar" "x" source "data.tar.xz")
+           (invoke "tar" "xf" "data.tar.xz")
+           #t))
+         (delete 'install)
+         (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out    (assoc-ref outputs "out"))
-                    (bdir   (string-append out "/bin"))
-                    (glibc  (assoc-ref %build-inputs "libc"))
-                    (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
-                    (pe     (string-append (assoc-ref %build-inputs "patchelf")
-                                           "/bin/patchelf")))
-               (mkdir-p bdir)
-               ;; tabiew installs as 'tw' inside the DEB
-               (if (file-exists? "usr/bin/tw")
-                   (begin
-                     (copy-file "usr/bin/tw" (string-append bdir "/tabiew"))
-                     (chmod (string-append bdir "/tabiew") #o555)
-                     (false-if-exception
-                      (invoke pe "--set-interpreter" interp
-                              (string-append bdir "/tabiew")))))
-               #t))))))
+           (let* ((out    (assoc-ref outputs "out"))
+           (bdir   (string-append out "/bin"))
+           (glibc  (assoc-ref %build-inputs "libc"))
+           (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
+           (pe     (string-append (assoc-ref %build-inputs "patchelf")
+           "/bin/patchelf")))
+           (mkdir-p bdir)
+           ;; tabiew installs as 'tw' inside the DEB
+           (if (file-exists? "usr/bin/tw")
+           (begin
+           (copy-file "usr/bin/tw" (string-append bdir "/tabiew"))
+           (chmod (string-append bdir "/tabiew") #o555)
+           (false-if-exception
+           (invoke pe "--set-interpreter" interp
+           (string-append bdir "/tabiew")))))
+           #t))))))
     (supported-systems '("x86_64-linux"))
     (home-page "") (synopsis "") (description "") (license gpl3+)))
 
@@ -285,29 +292,31 @@
          (delete 'bootstrap) (delete 'configure) (delete 'check)
          (delete 'build) (delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs) (delete 'patch-generated-file-shebangs)
-         (replace 'unpack
+         (delete 'unpack)
+         (add-after 'unpack 'unpack
            (lambda* (#:key source #:allow-other-keys)
-             (invoke "ar" "x" source "data.tar.zst")
-             (invoke "zstd" "-d" "data.tar.zst" "-o" "data.tar")
-             (invoke "tar" "xf" "data.tar")
-             #t))
-         (replace 'install
+           (invoke "ar" "x" source "data.tar.zst")
+           (invoke "zstd" "-d" "data.tar.zst" "-o" "data.tar")
+           (invoke "tar" "xf" "data.tar")
+           #t))
+         (delete 'install)
+         (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out    (assoc-ref outputs "out"))
-                    (bdir   (string-append out "/bin"))
-                    (glibc  (assoc-ref %build-inputs "libc"))
-                    (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
-                    (pe     (string-append (assoc-ref %build-inputs "patchelf")
-                                           "/bin/patchelf")))
-               (mkdir-p bdir)
-               (if (file-exists? "usr/bin/sad")
-                   (begin
-                     (copy-file "usr/bin/sad" (string-append bdir "/sad"))
-                     (chmod (string-append bdir "/sad") #o555)
-                     (false-if-exception
-                      (invoke pe "--set-interpreter" interp
-                              (string-append bdir "/sad")))))
-               #t))))))
+           (let* ((out    (assoc-ref outputs "out"))
+           (bdir   (string-append out "/bin"))
+           (glibc  (assoc-ref %build-inputs "libc"))
+           (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
+           (pe     (string-append (assoc-ref %build-inputs "patchelf")
+           "/bin/patchelf")))
+           (mkdir-p bdir)
+           (if (file-exists? "usr/bin/sad")
+           (begin
+           (copy-file "usr/bin/sad" (string-append bdir "/sad"))
+           (chmod (string-append bdir "/sad") #o555)
+           (false-if-exception
+           (invoke pe "--set-interpreter" interp
+           (string-append bdir "/sad")))))
+           #t))))))
     (supported-systems '("x86_64-linux"))
     (home-page "") (synopsis "") (description "") (license gpl3+)))
 
@@ -342,13 +351,15 @@
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
          (delete 'configure)
-         (replace 'build
+         (delete 'build)
+         (add-after 'unpack 'build
            (lambda* (#:key #:allow-other-keys)
-             (invoke "make" "-C" "nms")))
-         (replace 'install
+           (invoke "make" "-C" "nms")))
+         (delete 'install)
+         (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (install-file "nms/nms" (string-append out "/bin"))))))))
+           (let ((out (assoc-ref outputs "out")))
+           (install-file "nms/nms" (string-append out "/bin"))))))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://github.com/bartobri/no-more-secrets")
     (synopsis "Recreate the Hollywood text-display effect")
@@ -366,17 +377,18 @@
     (name "s-tui") (version "1.1.6")
     (source (origin (method url-fetch)
              (uri "https://github.com/amanusk/s-tui/archive/refs/tags/v1.1.6.tar.gz")
-             (sha256 (base32 "tgujavttuqt6xtspo7muy5wnlhklh4g2otabrz6ljfi4okbfxptq"))))
+             (sha256 (base32 "1rxv4llcfla9rgkiih3lvbqb7m2rrmv4rnbp9z7fn9x4fdb91a4r"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f #:phases (modify-phases %standard-phases
       (delete 'bootstrap) (delete 'configure) (delete 'check) (delete 'build)
-      (replace 'install
+      (delete 'install)
+      (add-after 'unpack 'install
         (lambda* (#:key outputs #:allow-other-keys)
-          (let ((out (assoc-ref outputs "out")))
-            (mkdir-p (string-append out "/bin"))
-            (copy-recursively "." (string-append out "/share/s-tui"))
-            (symlink (string-append out "/share/s-tui/s-tui")
-                     (string-append out "/bin/s-tui"))))))))
+        (let ((out (assoc-ref outputs "out")))
+        (mkdir-p (string-append out "/bin"))
+        (copy-recursively "." (string-append out "/share/s-tui"))
+        (symlink (string-append out "/share/s-tui/s-tui")
+        (string-append out "/bin/s-tui"))))))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://github.com/amanusk/s-tui")
     (synopsis "Stress-Terminal UI") (description "CPU stress and monitoring TUI")
@@ -393,15 +405,16 @@
     (name "geoip-database") (version "20240501")
     (source (origin (method url-fetch)
              (uri "https://git.io/GeoLite2-City.mmdb")
-             (sha256 (base32 "sepvr2l4ijwujkr2qkjzkxxz6ooqtx455kvr7ybgex45p7whj7tq")))
+             (sha256 (base32 "1rsgqzzdgy954vh1zazakpghk7gkz5g9b4w27am48va2gklmh7wi")))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f #:phases (modify-phases %standard-phases
       (delete 'bootstrap) (delete 'configure) (delete 'check) (delete 'build)
-      (replace 'install
+      (delete 'install)
+      (add-after 'unpack 'install
         (lambda* (#:key outputs source #:allow-other-keys)
-          (let ((out (assoc-ref outputs "out")))
-            (mkdir-p (string-append out "/share/GeoIP"))
-            (copy-file source (string-append out "/share/GeoIP/GeoLite2-City.mmdb"))))))))
+        (let ((out (assoc-ref outputs "out")))
+        (mkdir-p (string-append out "/share/GeoIP"))
+        (copy-file source (string-append out "/share/GeoIP/GeoLite2-City.mmdb"))))))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://dev.maxmind.com/geoip") (synopsis "GeoIP database")
     (description "MaxMind GeoLite2 City database") (license cc-by-sa4.0)))

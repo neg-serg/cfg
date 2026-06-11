@@ -16,7 +16,7 @@
                     (url "https://github.com/nowrep/dualsensectl")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-               (sha256 (base32 "uyktarmwsjltrmjnbjez6mpb7ygmgzj5uiyo37t4nbrxbggonnza"))))
+               (sha256 (base32 "0wkbrsc70qv8gkzfsc527mjw637yw4qryj8a5nqkhmwjjr2k05d6"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list eudev hidapi))

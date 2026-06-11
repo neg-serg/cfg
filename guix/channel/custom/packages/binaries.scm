@@ -37,7 +37,7 @@
            (copy-file source target)
            (chmod target #o555)))))
     (home-page "")
-    (synopsis ,(string-append name " — pre-built binary"))
+    (synopsis (string-append name " — pre-built binary"))
     (description "")
     (license gpl3+)))
 

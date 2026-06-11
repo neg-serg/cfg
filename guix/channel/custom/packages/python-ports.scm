@@ -140,7 +140,7 @@
        (method url-fetch)
        (uri (pypi-uri "vdf" version))
        (sha256
-        (base32 "7vkbt5a6a6qqbhs77ubhy7ol4q6r67uo6rj25kuq3hiexad54kxq"))))
+        (base32 "1bz2gn04pl6rj2mawlzlirz1ygg4rdypq0pxbyg018873vs1jm7x"))))
     (build-system pyproject-build-system)
     (arguments '(#:tests? #f))
     (native-inputs (list python-setuptools))

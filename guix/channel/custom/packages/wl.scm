@@ -5,7 +5,8 @@
   #:use-module (guix licenses)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages base)
-  #:use-module (gnu packages compression))
+  #:use-module (gnu packages compression)
+  #:use-module (guix gexp))
 
 (define-public wl
   (package

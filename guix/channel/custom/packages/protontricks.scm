@@ -6,7 +6,7 @@
   #:use-module (guix licenses)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
-  #:use-module (gnu packages python-xyz)
+  #:use-module ((gnu packages python-xyz) #:hide (python-vdf))
   #:use-module ((custom packages python-ports) #:select (python-vdf)))
 
 (define-public protontricks

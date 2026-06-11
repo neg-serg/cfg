@@ -12,7 +12,7 @@
               (method url-fetch)
               (uri (pypi-uri "dool" version))
               (sha256
-               (base32 "g3j53nqce2l4j6tygig4l66rhhnh43tdyvimdxl3teurinecddda"))))
+               (base32 "1ihqh8s18acrggfw2l65cdp7xnirs7xwa39jg3xc95r60avdvlrn"))))
     (build-system pyproject-build-system)
     (arguments '(#:tests? #f))
     (home-page "https://github.com/scottchiefbaker/dool")

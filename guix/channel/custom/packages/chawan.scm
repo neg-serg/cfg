@@ -23,44 +23,38 @@
               (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "z4e6aic7rwzizsiwyrhsvqo66y4s57e5m3z4rdojvlsbgb46xmwa"))))
+                 "0b5vkq3i7r5ar66wiwv6kpy2wfgnvv0jlky42v4qrcldbwhf02fg"))))
     (build-system gnu-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure)
-          (replace 'build
-            (lambda* (#:key outputs #:allow-other-keys)
-              (invoke "make" (string-append "LIBEXECDIR="
-                                            (assoc-ref outputs "out")
-                                            "/lib/chawan"))))
-          (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (bin (string-append out "/bin"))
-                     (libexec (string-append out "/lib/chawan"))
-                     (share (string-append out "/share")))
-                ;; Create directories
-                (mkdir-p bin)
-                (mkdir-p libexec)
-                (mkdir-p (string-append share "/man/man1"))
-                (mkdir-p (string-append share "/man/man5"))
-                ;; Install binaries from src/
-                (copy-recursively "src" libexec)
-                ;; Install cha binary (main entry point)
-                (symlink (string-append libexec "/cha/cha")
-                         (string-append bin "/cha"))
-                ;; Install man pages
-                (for-each
-                 (lambda (f)
-                   (install-file f (string-append share "/man/man1")))
-                 (find-files "doc" "\\.1$"))
-                (for-each
-                 (lambda (f)
-                   (install-file f (string-append share "/man/man5")))
-                 (find-files "doc" "\\.5$"))))))
-      #:tests? #f))
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'build
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "make" (string-append "LIBEXECDIR="
+                                           (assoc-ref outputs "out")
+                                           "/lib/chawan"))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (libexec (string-append out "/lib/chawan"))
+                    (share (string-append out "/share")))
+               (mkdir-p bin)
+               (mkdir-p libexec)
+               (mkdir-p (string-append share "/man/man1"))
+               (mkdir-p (string-append share "/man/man5"))
+               (copy-recursively "src" libexec)
+               (symlink (string-append libexec "/cha/cha")
+                        (string-append bin "/cha"))
+               (for-each
+                (lambda (f)
+                  (install-file f (string-append share "/man/man1")))
+                (find-files "doc" "\\.1$"))
+               (for-each
+                (lambda (f)
+                  (install-file f (string-append share "/man/man5")))
+                (find-files "doc" "\\.5$"))))))))
     (native-inputs (list nim bash-minimal))
     (inputs (list brotli libssh2 openssl curl))
     (home-page "https://chawan.net/")

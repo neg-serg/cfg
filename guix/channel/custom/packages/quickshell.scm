@@ -25,7 +25,7 @@
                     "https://git.outfoxxed.me/quickshell/quickshell/archive/v"
                     version ".tar.gz"))
                (sha256
-                (base32 "6sbb7eeezkyexuvvhbgmsk4xe2xmythd5mtsadoketw4m7ndw3sq"))))
+                (base32 "1rdnldywdv94r86j09zbwd6crbi6jwmwjk1qnp94pc6ahj81z0pl"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f

@@ -310,66 +310,40 @@ root ALL=(ALL) ALL
            ;; ── KDE Apps ──
           "ark" "konsole" "kate"
 
-          ;; ── Custom channel packages ──
-          ;; Added via all-custom-packages from (custom packages all)
-          ;; plus mpdas, powerlevel10k from their respective modules
-          )
+           ;; ── Custom channel packages ──
+           ;; Added via all-custom-packages from (custom packages all)
+           ;; plus mpdas, powerlevel10k from their respective modules
+           )
        all-custom-packages        ;; ~80 custom packages from channel
        (list mpdas powerlevel10k) ;; additional custom packages
-      %base-packages))
+      %base-packages)))
 
   (services
-    (let* ((base (remove
-                   (lambda (svc)
-                     (let ((t (service-kind svc)))
-                       (memq t (list gdm-service-type
-                                     sddm-service-type
-                                     slim-service-type
-                                     wpa-supplicant-service-type
-                                     network-manager-service-type
-                                     modem-manager-service-type
-                                     cups-pk-helper-service-type))))
-                   (modify-services %desktop-services
-                     (login-service-type config =>
-                       (login-configuration
-                         (inherit config)
-                         (motd vm-image-motd)))
-                      (guix-service-type config =>
-                        (guix-configuration
-                          (inherit config)
-                          (guix (current-guix))
-                          (extra-options
-                            (list "--cores=16" "--max-jobs=8"))
-                           (substitute-urls
-                             (list "https://mirror.yandex.ru/mirrors/guix/"
-                                   "https://substitutes.nonguix.org"))))))))
-      (append
-        (list
-          ;; greetd display manager (replaces SDDM)
-          (simple-service 'greetd
-            shepherd-root-service-type
-            (list (shepherd-service
-                    (provision '(greetd))
-                    (requirement '(user-processes))
-                    (start #~(make-forkexec-constructor
-                              (list #$(file-append greetd "/bin/greetd")
-                                    "-c" "/etc/greetd/config.toml")
-                              #:log-file "/var/log/greetd.log"))
-                    (stop #~(make-kill-destructor))
-                    (auto-start? #t))))
-          (service openssh-service-type
-            (openssh-configuration
-              (port-number 2222)
-              (password-authentication? #t)))
-           (service spice-vdagent-service-type)
-           (service dhcpcd-service-type)
-           (service unbound-service-type)
-           ;; Shepherd services — disabled for initial build
-           ;; (simple-service 'mpd-shepherd ...)
-           ;; (simple-service 'tailscale-shepherd ...)
-           ;; (simple-service 'ollama-shepherd ...)
-           ;; (simple-service 'kanata-shepherd ...)
-           ;; (simple-service 'mpdas-shepherd ...)
-        base)))
+    (cons* (service openssh-service-type
+        (openssh-configuration
+          (port-number 2222)
+          (password-authentication? #t)))
+      (service dhcpcd-service-type)
+      (service unbound-service-type)
+      (service spice-vdagent-service-type)
+      ;; greetd display manager
+      (simple-service 'greetd
+        shepherd-root-service-type
+        (list (shepherd-service
+                (provision '(greetd))
+                (requirement '(user-processes))
+                (start #~(make-forkexec-constructor
+                          (list #$(file-append greetd "/bin/greetd")
+                                "-c" "/etc/greetd/config.toml")
+                          #:log-file "/var/log/greetd.log"))
+                (stop #~(make-kill-destructor))
+                (auto-start? #t))))
+      ;; Shepherd services — disabled for initial build
+      ;; (simple-service 'mpd-shepherd ...)
+      ;; (simple-service 'tailscale-shepherd ...)
+      ;; (simple-service 'ollama-shepherd ...)
+      ;; (simple-service 'kanata-shepherd ...)
+      ;; (simple-service 'mpdas-shepherd ...)
+      %desktop-services))
 
-  (name-service-switch %mdns-host-lookup-nss))
+  (name-service-switch %mdns-host-lookup-nss)))

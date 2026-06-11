@@ -17,7 +17,7 @@
                     (url "https://github.com/newsraft/newsraft")
                     (commit (string-append "newsraft-" version))))
               (file-name (git-file-name name version))
-              (sha256 (base32 "2uni5y2m6ezxlvkgughlzhnvolvkugyrr3hjjjbfjiwsfp5r375a"))))
+              (sha256 (base32 "1ynzn6zj4baa4nj99klf24dsmskjnnfvr3m18vapaczi9kiqw6nm"))))
     (build-system gnu-build-system)
     (inputs (list curl expat sqlite gumbo-parser))
     (arguments

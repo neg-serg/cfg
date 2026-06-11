@@ -28,7 +28,8 @@
 
   (users (cons* (user-account
     (name "neg") (comment "neg")
-    (password (crypt "neg" "$6$rounds=4096"))
+    (password (crypt "neg"
+                     "$6$rounds=4096$SxT0QXvizdX0biWn"))
     (group "users")
     (supplementary-groups '("wheel" "netdev" "audio" "video" "kvm" "input"))
     (shell (file-append zsh "/bin/zsh")))

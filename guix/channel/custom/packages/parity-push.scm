@@ -15,38 +15,40 @@
     (build-system gnu-build-system)
     (native-inputs (list patchelf tar gzip unzip))
     (arguments
-     `(#:tests? #f #:strip-binaries? #f #:validate-runpath? #f
-        #:phases (modify-phases %standard-phases
-          (delete 'bootstrap) (delete 'configure) (delete 'check)
-          (delete 'build) (delete 'patch-usr-bin-file)
-          (delete 'patch-source-shebangs) (delete 'patch-generated-file-shebangs)
-          (delete 'install)
-          (add-after 'unpack 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out    (assoc-ref outputs "out"))
-                     (bdir   (string-append out "/bin"))
-                     (glibc  (assoc-ref %build-inputs "libc"))
-                     (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
-                     (pe     (string-append (assoc-ref %build-inputs "patchelf")
-                                            "/bin/patchelf")))
-                (mkdir-p bdir)
-                (if (file-exists? ,bin)
-                    (begin
-                      (install-file ,bin bdir)
-                      (chmod (string-append bdir "/" ,bin) #o555)
-                      (false-if-exception
-                       (invoke pe "--set-interpreter" interp
-                               (string-append bdir "/" ,bin))))
-                    (let ((files (find-files "." (lambda (f s)
-                                   (string-contains (basename f) ,bin)))))
-                      (if (pair? files)
-                          (let ((src (car files)))
-                            (copy-file src (string-append bdir "/" ,bin))
-                            (chmod (string-append bdir "/" ,bin) #o555)
-                            (false-if-exception
-                             (invoke pe "--set-interpreter" interp
-                                     (string-append bdir "/" ,bin)))))))
-                #t))))))
+     (let* ((bin-file bin)
+            (install-phase
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out    (assoc-ref outputs "out"))
+                      (bdir   (string-append out "/bin"))
+                      (glibc  (assoc-ref %build-inputs "libc"))
+                      (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
+                      (pe     (string-append (assoc-ref %build-inputs "patchelf")
+                                             "/bin/patchelf")))
+                 (mkdir-p bdir)
+                 (if (file-exists? bin-file)
+                     (begin
+                       (install-file bin-file bdir)
+                       (chmod (string-append bdir "/" bin-file) #o555)
+                       (false-if-exception
+                        (invoke pe "--set-interpreter" interp
+                                (string-append bdir "/" bin-file))))
+                     (let ((files (find-files "." (lambda (f s)
+                                    (string-contains (basename f) bin-file)))))
+                       (if (pair? files)
+                           (let ((src (car files)))
+                             (copy-file src (string-append bdir "/" bin-file))
+                             (chmod (string-append bdir "/" bin-file) #o555)
+                             (false-if-exception
+                              (invoke pe "--set-interpreter" interp
+                                      (string-append bdir "/" bin-file)))))))
+                 #t))))
+       `(#:tests? #f #:strip-binaries? #f #:validate-runpath? #f
+         #:phases ,(modify-phases %standard-phases
+                     (delete 'bootstrap) (delete 'configure) (delete 'check)
+                     (delete 'build) (delete 'patch-usr-bin-file)
+                     (delete 'patch-source-shebangs) (delete 'patch-generated-file-shebangs)
+                     (delete 'install)
+                     (add-after 'unpack 'install install-phase)))))
     (supported-systems '("x86_64-linux"))
     (home-page "") (synopsis "") (description "") (license gpl3+)))
 
@@ -332,7 +334,7 @@
 (define-public grex-tool
   (single-binary-package "grex" "1.4.5"
     "https://github.com/pemistahl/grex/releases/download/v1.4.5/grex-v1.4.5-x86_64-unknown-linux-musl.tar.gz"
-    "lpd6zhvepzr2tumplbmakyp7tte5cqsisyyn4wmfeght6tiohxja"
+    "1lix1r6kz3r1hmcxwc4n911d3jcwzxhhan2qiz8sjqvyljgfrisv"
     "grex"))
 
 (define-public no-more-secrets-nms
@@ -369,7 +371,7 @@
 (define-public nvtop-monitor
   (single-binary-package "nvtop" "3.2.0"
     "https://github.com/Syllo/nvtop/releases/download/3.2.0/nvtop-3.2.0-x86_64.AppImage"
-    "gpcu7nycl5b2ee63r2mdbcda2qanwm2juyp4sobp4rzwy7jfqdca"
+    "1i404mynqwz45wwcj7x694rxn06lc243164fvc9s4hsz0avlzi9k"
     "nvtop"))
 
 (define-public s-tui-stress
@@ -397,15 +399,17 @@
 (define-public ssh-to-age-key
   (single-binary-package "ssh-to-age" "1.3.0"
     "https://github.com/Mic92/ssh-to-age/releases/download/v1.3.0/ssh-to-age.linux-amd64"
-    "bis5gvhicvhhtt7ozrkehthsie3o7wowzeb72a7wdbmodgtqedda"
+    "1ii0f2df2n0qyq1zs0y9svcyydj1yb646m6cxv7pjkhmx1ad698a"
     "ssh-to-age"))
 
 (define-public geoip-database-maxmind
   (package
     (name "geoip-database") (version "20240501")
-    (source (origin (method url-fetch)
-             (uri "https://git.io/GeoLite2-City.mmdb")
-             (sha256 (base32 "1rsgqzzdgy954vh1zazakpghk7gkz5g9b4w27am48va2gklmh7wi")))
+    (source (origin
+              (method url-fetch)
+              (uri "https://git.io/GeoLite2-City.mmdb")
+              (sha256 (base32
+                       "1rsgqzzdgy954vh1zazakpghk7gkz5g9b4w27am48va2gklmh7wi"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f #:phases (modify-phases %standard-phases
       (delete 'bootstrap) (delete 'configure) (delete 'check) (delete 'build)

@@ -147,8 +147,12 @@ root ALL=(ALL) ALL
   "chezmoi" "pwgen" "parted" "sudo" "less" "which"
   "qrencode" "stress-ng"
   "libnotify" "xdg-utils"
-  "i3-wm" "i3status"))
- %base-packages))
+  "i3-wm" "i3status")
+          "bash" "bottom" "cliphist" "corectrl" "distrobox" "easyeffects" "eza" "fastfetch" "fish" "gamemode"
+         )
+ %base-packages)
+          "ansible" "ardour" "audacity" "awscli" "baobab" "bitwarden" "bleachbit" "caddy" "calibre" "clipman" "darktable" "delta" "digikam" "doctl" "dua-cli" "easytag" "evince" "filelight" "filezilla" "fish" "flameshot" "glances" "gparted" "handbrake" "helm" "htop" "jellyfin" "kdenlive" "keepassxc" "kodi" "kubectl" "lsd" "mariadb" "meld" "neofetch" "nginx" "openshot" "partitionmanager" "pavucontrol" "peek" "postgresql" "qbittorrent" "redis" "scribus" "smplayer" "sqlite" "stacer" "starship" "strawberry" "swayidle" "swaylock" "terraform" "thunderbird" "traefik" "vlc" "vlc" "watchexec" "wireshark"
+         )
  (services
  (cons*
  (service openssh-service-type

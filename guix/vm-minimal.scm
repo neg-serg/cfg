@@ -172,4 +172,5 @@ root ALL=(ALL) ALL
   (list "https://mirror.yandex.ru/mirrors/guix/"
    "https://bordeaux.guix.gnu.org"))
   (extra-options
+          "ansible" "ardour" "audacity" "awscli" "axctl" "bandwhich" "baobab" "bash" "bitwarden" "bleachbit" "bottom" "caddy" "calibre" "cliphist" "clipman" "corectrl" "cpufetch" "ctop" "darktable" "delta" "digikam" "distrobox" "doctl" "doggo" "dua-cli" "easyeffects" "easytag" "erdtree" "evince" "eza" "fastfetch" "filelight" "filezilla" "fish" "flameshot" "gamemode" "genact" "gitleaks" "glances" "goose" "gparted" "grex" "handbrake" "helm" "htop" "iperf3" "jellyfin" "kdenlive" "keepassxc" "kodi" "kubectl" "lnav" "lsd" "mariadb" "meld" "neofetch" "nginx" "no-more-secrets" "nvtop" "onefetch" "openbsd-netcat" "openshot" "partitionmanager" "pavucontrol" "peek" "postgresql" "proton-vpn-cli" "qbittorrent" "redis" "resvg" "ruff" "s-tui" "sad" "scribus" "smplayer" "sops" "sqlite" "ssh-to-age" "stacer" "starship" "strawberry" "swayidle" "swaylock" "tabiew" "taplo" "terraform" "thunderbird" "traefik" "ttyd" "vlc" "watchexec" "wireshark" "xh" "yazi"
   (list "--cores=24" "--max-jobs=8"))))))))

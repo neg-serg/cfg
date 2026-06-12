@@ -89,15 +89,15 @@
     amdgpu-vulkan-switcher
     ananicy-cpp
     babashka
-    bazecor
+    ;; FIXME: bazecor — build failure, removed
     carapace-bin
-    chawan
+    ;; FIXME: chawan — build failure, removed
     clipcat
     dcfldd
     ddccontrol
-    dool-monitor
-    droidcam
-    dualsensectl
+    ;; FIXME: dool-monitor — build failure, removed
+    ;; FIXME: droidcam — build failure, removed
+    ;; FIXME: dualsensectl — build failure, removed
     eilmeldung
     epr
     flclashx
@@ -127,7 +127,7 @@
     lutgen
     massren
     neo-matrix
-    newsraft
+    ;; FIXME: newsraft — build failure, removed
     oh-my-posh
     ollama
     opensoundmeter
@@ -139,7 +139,7 @@
     par
     powerlevel10k
     proteinview
-    proton-cachyos
+    ;; FIXME: proton-cachyos — build failure, removed
     proton-ge-custom
     protontricks
     protonup-rs
@@ -148,18 +148,18 @@
     python-cmake-language-server
     python-neovim-remote
     python-rapidgzip
-        python-sqlit
-    python-texicode
+        ;; FIXME: python-sqlit — build failure, removed
+    ;; FIXME: python-texicode — build failure, removed
     python-uv-dynamic-versioning
     python-vdf
     pzip
     reddix
     regex-tui
-    rmlint
+    ;; FIXME: rmlint — build failure, removed
     repeater
     resterm
     richcolors
-    rofi-file-browser-extended
+    ;; FIXME: rofi-file-browser-extended — build failure, removed
     roomeqwizard
     rsmetrx
     rustmission
@@ -174,13 +174,13 @@
     tailscale
     tanin
     taoup
-    tessen
+    ;; FIXME: tessen — build failure, removed
     tdl
     throne
     tmmpr
-    unflac
+    ;; FIXME: unflac — build failure, removed
     v2raya
-    vicinae
+    ;; FIXME: vicinae — build failure, removed
     watchtower
     winetricks
     wlr-which-key
@@ -189,7 +189,7 @@
     xdg-ninja
     xray
     xwaylandvideobridge
-    youtube-tui
+    ;; FIXME: youtube-tui — build failure, removed
     ytsurf
     zapret2
     zen-browser
@@ -210,13 +210,13 @@
     cpufetch-tool
     viu-viewer
     sops-secrets
-    taplo-fmt
-    tabiew-tui
-    sad-editor
+    ;; FIXME: taplo-fmt — build failure, removed
+    ;; FIXME: tabiew-tui — build failure, removed
+    ;; FIXME: sad-editor — build failure, removed
     axctl-compositor
     grex-tool
-    no-more-secrets-nms
-    nvtop-monitor
+    ;; FIXME: no-more-secrets-nms — build failure, removed
+    ;; FIXME: nvtop-monitor — build failure, removed
     s-tui-stress
     ssh-to-age-key
     geoip-database-maxmind

@@ -23,7 +23,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -57,7 +56,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -91,7 +89,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -126,7 +123,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -160,7 +156,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -194,7 +189,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -228,7 +222,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -262,7 +255,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -296,7 +288,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -330,7 +321,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -365,7 +355,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -399,7 +388,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -433,7 +421,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -565,12 +552,10 @@
          (delete 'bootstrap) (delete 'configure) (delete 'check)
          (delete 'build) (delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs) (delete 'patch-generated-file-shebangs)
-         (delete 'unpack)
          (add-after 'unpack 'unpack
            (lambda* (#:key source #:allow-other-keys)
            (system (string-append "gunzip -c " source " > taplo"))
            #t))
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
            (let* ((out    (assoc-ref outputs "out"))
@@ -604,13 +589,11 @@
          (delete 'bootstrap) (delete 'configure) (delete 'check)
          (delete 'build) (delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs) (delete 'patch-generated-file-shebangs)
-         (delete 'unpack)
          (add-after 'unpack 'unpack
            (lambda* (#:key source #:allow-other-keys)
            (invoke "ar" "x" source "data.tar.xz")
            (invoke "tar" "xf" "data.tar.xz")
            #t))
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
            (let* ((out    (assoc-ref outputs "out"))
@@ -643,7 +626,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -681,14 +663,12 @@
          (delete 'bootstrap) (delete 'configure) (delete 'check)
          (delete 'build) (delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs) (delete 'patch-generated-file-shebangs)
-         (delete 'unpack)
          (add-after 'unpack 'unpack
            (lambda* (#:key source #:allow-other-keys)
            (invoke "ar" "x" source "data.tar.zst")
            (invoke "zstd" "-d" "data.tar.zst" "-o" "data.tar")
            (invoke "tar" "xf" "data.tar")
            #t))
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
            (let* ((out    (assoc-ref outputs "out"))
@@ -721,7 +701,6 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -796,7 +775,6 @@
          (add-after 'unpack 'build
            (lambda* (#:key #:allow-other-keys)
            (invoke "make" "-C" "nms")))
-         (delete 'install)
          (add-after 'unpack 'install
            (lambda* (#:key outputs #:allow-other-keys)
            (let ((out (assoc-ref outputs "out")))

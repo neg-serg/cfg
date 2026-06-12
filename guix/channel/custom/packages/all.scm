@@ -148,8 +148,7 @@
     python-cmake-language-server
     python-neovim-remote
     python-rapidgzip
-    python-scdl
-    python-sqlit
+        python-sqlit
     python-texicode
     python-uv-dynamic-versioning
     python-vdf

@@ -12,7 +12,7 @@ blur_size = 9
 blur_passes = 2
 blur_vibrancy = 0
 
-hl.monitor({ output = "DP-2", mode = "3840x2160@240", position = "0x0", scale = 2, vrr = 3, bitdepth = 10, cm = "auto" })
+hl.monitor({ output = "DP-2", mode = "3840x2160@240", position = "0x0", scale = 2, vrr = 2, bitdepth = 10, cm = "auto" })
 hl.monitor({ output = "DP-1", disabled = true })
 
 hl.env("GDK_SCALE", "2")
@@ -58,7 +58,7 @@ hl.config({
   misc = {
     disable_hyprland_logo = false, enable_anr_dialog = false, force_default_wallpaper = 0,
     font_family = "Iosevka", splash_font_family = "Iosevka",
-    vrr = 3, enable_swallow = true, middle_click_paste = false, disable_autoreload = 0,
+    vrr = 2, enable_swallow = true, middle_click_paste = false, disable_autoreload = 0,
   },
   cursor = { sync_gsettings_theme = true, no_hardware_cursors = true, min_refresh_rate = 240, inactive_timeout = 1, hide_on_key_press = true, warp_on_change_workspace = false },
   render = { direct_scanout = 2 },

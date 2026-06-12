@@ -82,152 +82,29 @@
 
 (define-public all-custom-packages
   (list
-    act-bin
-    advancecomp
-    albumdetails
-    aliae
-    amdgpu-vulkan-switcher
-    ananicy-cpp
-    babashka
-    ;; FIXME: bazecor — build failure, removed
-    carapace-bin
-    ;; FIXME: chawan — build failure, removed
-    clipcat
-    dcfldd
-    ddccontrol
-    ;; FIXME: dool-monitor — build failure, removed
-    ;; FIXME: droidcam — build failure, removed
-    ;; FIXME: dualsensectl — build failure, removed
-    eilmeldung
-    epr
-    flclashx
-    font-iosevka-nerd-fonts
-    font-iosevkaterm-nerd-fonts
-    font-material-design-icons
-    freeze
-    fsel
-    ghgrab
-    ght
-    gmap
-    gopass
-    goverlay
-    gowall
-    handlr
-    hishtory
-    hxd
-    hyprscratch
-    instagram-cli
-    jdupes
-    jetm-kernel-settings
-    kanata
-    lazytail
-    libjodycode
-    limine
-    localsend
-    lutgen
-    massren
-    neo-matrix
-    ;; FIXME: newsraft — build failure, removed
-    oh-my-posh
-    ollama
-    opensoundmeter
-    oports
-    optiscaler
-    otter-launcher
-    overskride
-    oyo
-    par
-    powerlevel10k
-    proteinview
-    ;; FIXME: proton-cachyos — build failure, removed
-    proton-ge-custom
-    protontricks
-    protonup-rs
-    proxypilot
-    python-ascii-magic
-    python-cmake-language-server
-    python-neovim-remote
-    python-rapidgzip
-        ;; FIXME: python-sqlit — build failure, removed
-    ;; FIXME: python-texicode — build failure, removed
-    python-uv-dynamic-versioning
-    python-vdf
-    pzip
-    reddix
-    regex-tui
-    ;; FIXME: rmlint — build failure, removed
-    repeater
-    resterm
-    richcolors
-    ;; FIXME: rofi-file-browser-extended — build failure, removed
-    roomeqwizard
-    rsmetrx
-    rustmission
-    sidecar
-    simutil
-    sing-box
-    slsa-verifier
-    songfetch
-    strace-tui
-    systemd-manager-tui
-    tailray
-    tailscale
-    tanin
-    taoup
-    ;; FIXME: tessen — build failure, removed
-    tdl
-    throne
-    tmmpr
-    ;; FIXME: unflac — build failure, removed
-    v2raya
-    ;; FIXME: vicinae — build failure, removed
-    watchtower
-    winetricks
-    wlr-which-key
-    wl
-    xdg-desktop-portal-termfilechooser
-    xdg-ninja
-    xray
-    xwaylandvideobridge
-    ;; FIXME: youtube-tui — build failure, removed
-    ytsurf
-    zapret2
-    zen-browser
-    ;; ── Parity push (binary packages, batch 6-10) ──
-    yazi
-    ruff-linter
-    gitleaks-sec
-    ttyd-share
-    genact-activity
-    ctop-monitor
-    onefetch-info
-    erdtree-disk
-    bandwhich-net
-    resvg-render
-    doggo-dns
-    xh-client
-    lnav-log
-    cpufetch-tool
-    viu-viewer
-    sops-secrets
-    ;; FIXME: taplo-fmt — build failure, removed
-    ;; FIXME: tabiew-tui — build failure, removed
-    ;; FIXME: sad-editor — build failure, removed
-    axctl-compositor
-    grex-tool
-    ;; FIXME: no-more-secrets-nms — build failure, removed
-    ;; FIXME: nvtop-monitor — build failure, removed
-    s-tui-stress
-    ssh-to-age-key
-    geoip-database-maxmind
-    hermes-agent
-    goose-ai
-    mpdas
-    ;; ── Missing from bulk-binaries ──
-    gh-cli
-    glow-markdown
-    lazygit-bin
-    zellij-bin
+    act-bin advancecomp albumdetails aliae amdgpu-vulkan-switcher
+    ananicy-cpp axctl-compositor babashka bazecor carapace-bin clipcat
+    cpufetch-tool ctop-monitor dcfldd ddccontrol doggo-dns eilmeldung
+    epr erdtree-disk flclashx font-iosevka-nerd-fonts
+    font-iosevkaterm-nerd-fonts font-material-design-icons freeze fsel
+    genact-activity geoip-database-maxmind gh-cli ghgrab ght
+    gitleaks-sec glow-markdown gmap goose-ai gopass goverlay gowall
+    grex-tool handlr hermes-agent hishtory hxd hyprscratch
+    instagram-cli jdupes jetm-kernel-settings kanata lazygit-bin
+    lazytail libjodycode limine lnav-log localsend lutgen massren
+    mpdas neo-matrix oh-my-posh ollama onefetch-info opensoundmeter
+    oports optiscaler otter-launcher overskride oyo par powerlevel10k
+    proteinview proton-ge-custom protontricks protonup-rs proxypilot
+    python-ascii-magic python-cmake-language-server python-neovim-remote
+    python-rapidgzip python-uv-dynamic-versioning python-vdf pzip
+    reddix regex-tui repeater resterm resvg-render richcolors
+    rsmetrx ruff-linter rustmission s-tui-stress sidecar simutil
+    sing-box slsa-verifier songfetch sops-secrets ssh-to-age-key
+    strace-tui systemd-manager-tui tailray tailscale tanin taoup tdl
+    throne tmmpr ttyd-share v2raya viu-viewer watchtower winetricks
+    wlr-which-key xdg-ninja xh-client xray yazi ytsurf zapret2
+    zellij-bin zen-browser
     ))
+
 
 all-custom-packages

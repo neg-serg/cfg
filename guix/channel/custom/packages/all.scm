@@ -87,7 +87,7 @@
     dcfldd ddccontrol eilmeldung
     epr flclashx font-iosevka-nerd-fonts
     font-iosevkaterm-nerd-fonts font-material-design-icons freeze fsel
-    genact-activity geoip-database-maxmind gh-cli ghgrab ght
+    gh-cli ghgrab ght
     glow-markdown gmap gopass goverlay gowall
     handlr hermes-agent hishtory hxd hyprscratch
     instagram-cli jdupes jetm-kernel-settings kanata lazygit-bin

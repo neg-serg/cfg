@@ -36,8 +36,8 @@
                (mkdir-p bin)
                (install-file "aliae-linux-amd64" bin)
                (chmod (string-append bin "/aliae-linux-amd64") #o755)
-               (invoke pe "--set-interpreter" interp
-                       (string-append bin "/aliae-linux-amd64"))
+               (false-if-exception (invoke pe "--set-interpreter" interp
+                       (string-append bin "/aliae-linux-amd64")))
                #t))))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://aliae.dev")

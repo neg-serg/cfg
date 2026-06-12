@@ -32,8 +32,8 @@
                (mkdir-p bin)
                (install-file "tmmpr" bin)
                (chmod (string-append bin "/tmmpr") #o755)
-               (invoke pe "--set-interpreter" interp
-                       (string-append bin "/tmmpr"))
+               (false-if-exception (invoke pe "--set-interpreter" interp
+                       (string-append bin "/tmmpr")))
                #t))))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://github.com/tanciaku/tmmpr")

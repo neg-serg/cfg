@@ -38,8 +38,8 @@
                (rename-file (string-append bin "/ght-linux-amd64")
                             (string-append bin "/ght"))
                (chmod (string-append bin "/ght") #o755)
-               (invoke pe "--set-interpreter" interp
-                       (string-append bin "/ght"))
+               (false-if-exception (invoke pe "--set-interpreter" interp
+                       (string-append bin "/ght")))
                #t))))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://github.com/kwame-Owusu/ght")

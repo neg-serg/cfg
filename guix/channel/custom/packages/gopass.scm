@@ -38,8 +38,8 @@
                                        "/bin/patchelf")))
                (mkdir-p bin)
                (install-file "gopass" bin)
-               (invoke pe "--set-interpreter" interp
-                       (string-append bin "/gopass"))
+               (false-if-exception (invoke pe "--set-interpreter" interp
+                       (string-append bin "/gopass")))
                #t))))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://www.gopass.pw")

@@ -53,8 +53,8 @@
                (mkdir-p bin)
                (install-file "vicinae" bin)
                (chmod (string-append bin "/vicinae") #o755)
-               (invoke pe "--set-interpreter" interp
-                       (string-append bin "/vicinae"))
+               (false-if-exception (invoke pe "--set-interpreter" interp
+                       (string-append bin "/vicinae")))
                #t))))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://github.com/neg-serg/vicinae")

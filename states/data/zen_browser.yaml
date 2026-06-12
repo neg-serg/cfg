@@ -35,3 +35,6 @@ extensions:
   slug: clearurls
 - id: jid1-93WyvpgvxzGATw@jetpack
   slug: to-google-translate
+- id: '{a8332c60-5b6d-41ee-bfc8-e9bb331d34ad}'
+  slug: surfingkeys
+  source: salt://states/files/surfingkeys_ff_patched.xpi

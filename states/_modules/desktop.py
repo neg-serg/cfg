@@ -337,32 +337,44 @@ def browser_extensions(
     for ext in extensions:
         ext_id = ext.get("id", "")
         slug = ext.get("slug", "")
+        source = ext.get("source")
         xpi = f"{ext_dir}/{ext_id}.xpi"
         slug_safe = slug.replace("-", "_")
         state_id = f"{prefix}_ext_{slug_safe}"
-        cmd = (
-            f"rm -f '{xpi}.tmp'\n"
-            f"if curl --http1.1 --fail --silent --show-error --location "
-            f"--ipv4 "
-            f"--connect-timeout 10 --max-time 30 "
-            f"--retry 3 --retry-delay 3 --retry-max-time 60 --retry-all-errors "
-            f"-o '{xpi}.tmp' "
-            f"'https://addons.mozilla.org/firefox/downloads/latest/{slug}/latest.xpi'; then\n"
-            f"  mv -f '{xpi}.tmp' '{xpi}'\n"
-            f"else\n"
-            f"  rm -f '{xpi}.tmp'\n"
-            f'  echo "WARNING: download of {slug} failed, will retry on next apply" >&2\n'
-            f"fi"
-        )
-        out[state_id] = {
-            "cmd.run": [
-                {"name": cmd},
-                {"creates": xpi},
-                {"runas": u},
-                {"parallel": True},
-                {"require": [{"file": ext_dir_id}]},
-            ]
-        }
+        if source:
+            out[state_id] = {
+                "file.managed": [
+                    {"name": xpi},
+                    {"source": source},
+                    {"user": u},
+                    {"group": u},
+                    {"makedirs": True},
+                ]
+            }
+        else:
+            cmd = (
+                f"rm -f '{xpi}.tmp'\n"
+                f"if curl --http1.1 --fail --silent --show-error --location "
+                f"--ipv4 "
+                f"--connect-timeout 10 --max-time 30 "
+                f"--retry 3 --retry-delay 3 --retry-max-time 60 --retry-all-errors "
+                f"-o '{xpi}.tmp' "
+                f"'https://addons.mozilla.org/firefox/downloads/latest/{slug}/latest.xpi'; then\n"
+                f"  mv -f '{xpi}.tmp' '{xpi}'\n"
+                f"else\n"
+                f"  rm -f '{xpi}.tmp'\n"
+                f'  echo "WARNING: download of {slug} failed, will retry on next apply" >&2\n'
+                f"fi"
+            )
+            out[state_id] = {
+                "cmd.run": [
+                    {"name": cmd},
+                    {"creates": xpi},
+                    {"runas": u},
+                    {"parallel": True},
+                    {"require": [{"file": ext_dir_id}]},
+                ]
+            }
 
     if unwanted:
         for ext_id_val in unwanted:
@@ -383,15 +395,72 @@ def browser_extensions(
     reset_id = f"{prefix}_reset_extensions_json"
     onchanges: list[dict[str, str]] = [{"file": user_js_id}]
     for ext in extensions:
+        if ext.get("source"):
+            continue
         slug = ext.get("slug", "")
         slug_safe = slug.replace("-", "_")
         onchanges.append({"cmd": f"{prefix}_ext_{slug_safe}"})
     out[reset_id] = {
         "file.absent": [
             {"name": f"{profile}/extensions.json"},
-            {"onchanges_any": onchanges},
+            {"onchanges_any": onchanges if onchanges else [{"file": user_js_id}]},
         ]
     }
+
+    local_exts = [e for e in extensions if e.get("source")]
+    if local_exts:
+        patch_onchanges = [{"file": user_js_id}]
+        for ext in local_exts:
+            slug = ext.get("slug", "")
+            slug_safe = slug.replace("-", "_")
+            patch_onchanges.append({"file": f"{prefix}_ext_{slug_safe}"})
+        cmds = []
+        for ext in local_exts:
+            ext_id = ext.get("id", "")
+            profile_esc = profile.replace("'", "'\\''")
+            cmds.append(
+                f"""
+python3 -c '
+import json, os, sys
+e = "{profile}/extensions.json"
+xpi = "{profile}/extensions/{ext_id}.xpi"
+if not os.path.exists(xpi): sys.exit(0)
+if not os.path.exists(e): sys.exit(0)
+with open(e) as fh:
+    data = json.load(fh)
+aid = "{ext_id}"
+if any(a["id"] == aid for a in data.get("addons", [])): sys.exit(0)
+entry = {{
+    "id": aid,
+    "version": "1.17.11",
+    "type": "extension",
+    "manifestVersion": 2,
+    "active": True,
+    "userDisabled": False,
+    "appDisabled": False,
+    "visible": True,
+    "defaultLocale": {{"name": "Surfingkeys", "creator": "brook hong"}},
+    "path": xpi,
+    "location": "app-profile",
+    "rootURI": "jar:file://" + xpi.replace(" ", "%20") + "!/",
+    "signedState": 2,
+    "foreignInstall": True,
+    "installDate": 1779839357856,
+    "updateDate": 1779839357856,
+}}
+data["addons"].append(entry)
+with open(e, "w") as fh:
+    json.dump(data, fh, indent=2)
+'
+"""
+            )
+        out[f"{prefix}_patch_extensions_json"] = {
+            "cmd.run": [
+                {"name": "\n".join(cmd.strip() for cmd in cmds)},
+                {"runas": u},
+                {"onchanges_any": patch_onchanges},
+            ]
+        }
 
     return out
 

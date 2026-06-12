@@ -83,28 +83,27 @@
 (define-public all-custom-packages
   (list
     act-bin advancecomp albumdetails aliae amdgpu-vulkan-switcher
-    ananicy-cpp axctl-compositor babashka bazecor carapace-bin clipcat
-    cpufetch-tool ctop-monitor dcfldd ddccontrol doggo-dns eilmeldung
-    epr erdtree-disk flclashx font-iosevka-nerd-fonts
+    ananicy-cpp babashka carapace-bin clipcat
+    dcfldd ddccontrol eilmeldung
+    epr flclashx font-iosevka-nerd-fonts
     font-iosevkaterm-nerd-fonts font-material-design-icons freeze fsel
-    genact-activity geoip-database-maxmind gh-cli ghgrab ght
-    gitleaks-sec glow-markdown gmap goose-ai gopass goverlay gowall
-    grex-tool handlr hermes-agent hishtory hxd hyprscratch
+    gh-cli ghgrab ght
+    glow-markdown gmap gopass goverlay gowall
+    handlr hermes-agent hishtory hxd hyprscratch
     instagram-cli jdupes jetm-kernel-settings kanata lazygit-bin
-    lazytail libjodycode limine lnav-log localsend lutgen massren
-    mpdas neo-matrix oh-my-posh ollama onefetch-info opensoundmeter
+    lazytail libjodycode limine localsend lutgen massren
+    mpdas neo-matrix oh-my-posh opensoundmeter
     oports optiscaler otter-launcher overskride oyo par powerlevel10k
-    proteinview proton-ge-custom protontricks protonup-rs proxypilot
+    proteinview protontricks protonup-rs proxypilot
     python-ascii-magic python-cmake-language-server python-neovim-remote
     python-rapidgzip python-uv-dynamic-versioning python-vdf pzip
-    reddix regex-tui repeater resterm resvg-render richcolors
-    rsmetrx ruff-linter rustmission s-tui-stress sidecar simutil
-    sing-box slsa-verifier songfetch sops-secrets ssh-to-age-key
+    reddix regex-tui repeater resterm richcolors
+    rsmetrx rustmission sidecar simutil
+    sing-box slsa-verifier songfetch
     strace-tui systemd-manager-tui tailray tailscale tanin taoup tdl
-    throne tmmpr ttyd-share v2raya viu-viewer watchtower winetricks
-    wlr-which-key xdg-ninja xh-client xray yazi ytsurf zapret2
+    throne tmmpr v2raya watchtower winetricks
+    wlr-which-key xdg-ninja xray ytsurf zapret2
     zellij-bin zen-browser
     ))
-
 
 all-custom-packages

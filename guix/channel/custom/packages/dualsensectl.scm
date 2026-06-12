@@ -4,7 +4,8 @@
   #:use-module (guix build-system meson)
   #:use-module (guix licenses)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages pkg-config))
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages libusb))
 
 (define-public dualsensectl
   (package

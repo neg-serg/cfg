@@ -160,10 +160,11 @@ root ALL=(ALL) ALL
     (memq (service-kind svc)
      (list gdm-service-type)))
     %desktop-services)
- (guix-service-type config =>
-  (guix-configuration
-  (inherit config)
-  (substitute-urls
+        (guix-service-type config =>
+          (guix-configuration
+            (inherit config)
+            (guix (current-guix))
+            (substitute-urls
   (list "https://mirror.yandex.ru/mirrors/guix/"
    "https://bordeaux.guix.gnu.org"))
   (extra-options

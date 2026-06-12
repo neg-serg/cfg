@@ -2,7 +2,8 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
-  #:use-module (guix licenses))
+  #:use-module (guix licenses)
+  #:use-module (gnu packages golang))
 
 (define-public unflac
   (package

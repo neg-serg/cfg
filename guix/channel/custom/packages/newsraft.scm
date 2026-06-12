@@ -5,7 +5,8 @@
   #:use-module (guix licenses)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages sqlite)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages web))
 
 (define-public newsraft
   (package

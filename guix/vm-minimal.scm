@@ -4,7 +4,7 @@
 (use-package-modules admin audio base bootloaders certs compression
  curl disk file fonts gnupg linux mpd networking
  package-management rsync ssh shells
- version-control vim wget xdisorg xorg kde-utils)
+ version-control vim wget xdisorg xorg)
 (use-modules ((gnu packages shells) #:select (zsh)))
 (operating-system
  (host-name "guix-eval")
@@ -147,7 +147,7 @@ root ALL=(ALL) ALL
  "chezmoi" "pwgen" "parted" "sudo" "less" "which"
  "qrencode" "stress-ng"
  "libnotify" "xdg-utils"
- "i3-wm" "i3status" "ansible" "ardour" "audacity" "awscli" "baobab" "bash" "bottom" "calibre" "cliphist" "clipman" "corectrl" "darktable" "delta" "digikam" "distrobox" "doctl" "easyeffects" "evince" "eza" "fastfetch" "filelight" "filezilla" "fish" "flameshot" "gamemode" "glances" "gparted" "handbrake" "helm" "kdenlive" "keepassxc" "kodi" "lsd" "mariadb" "meld" "neofetch" "nginx" "openshot" "partitionmanager" "pavucontrol" "peek" "postgresql" "qbittorrent" "redis" "scribus" "smplayer" "sqlite" "starship" "strawberry" "swayidle" "swaylock" "vlc" "watchexec" "wireshark" ark cage difftastic dive fclones helix hypridle hyprland hyprlock hyprpicker jujutsu konsole ncmpcpp nicotine+ openvpn ouch restic wayvnc wev wezterm xdg-desktop-portal-hyprland xdg-user-dirs ydotool yq) "ark" "cage" "difftastic" "dive" "fclones" "helix" "hypridle" "hyprland" "hyprlock" "hyprpicker" "jujutsu" "konsole" "ncmpcpp" "nicotine+" "openvpn" "ouch" "restic" "wayvnc" "wev" "wezterm" "xdg-desktop-portal-hyprland" "xdg-user-dirs" "ydotool" "yq")
+ "i3-wm" "i3status" "ansible" "ardour" "audacity" "awscli" "baobab" "bash" "bottom" "calibre" "cliphist" "clipman" "corectrl" "darktable" "delta" "digikam" "distrobox" "doctl" "easyeffects" "evince" "eza" "fastfetch" "filelight" "filezilla" "fish" "flameshot" "gamemode" "glances" "gparted" "handbrake" "helm" "kdenlive" "keepassxc" "kodi" "lsd" "mariadb" "meld" "neofetch" "nginx" "openshot" "partitionmanager" "pavucontrol" "peek" "postgresql" "qbittorrent" "redis" "scribus" "smplayer" "sqlite" "starship" "strawberry" "swayidle" "swaylock" "vlc" "watchexec" "wireshark"))
  %base-packages))
  (services
  (cons*

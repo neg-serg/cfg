@@ -260,13 +260,13 @@ def main() -> int:
         return 0
 
     subprocess.run(
-        [HYPRCTL, "dispatch", "focuswindow", f"address:{addr}"],
+        [HYPRCTL, "eval", f'hl.dispatch(hl.dsp.focus({{window = "address:{addr}"}}))'],
         check=False,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
     subprocess.run(
-        [HYPRCTL, "dispatch", "bringactivetotop"],
+        [HYPRCTL, "eval", "hl.dispatch(hl.dsp.window.bring_to_top())"],
         check=False,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,

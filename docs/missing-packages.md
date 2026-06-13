@@ -16,11 +16,11 @@
 | `act-bin` | 🔧 custom channel | guix install -L cfg-channel |
 | `ada` | ❌ missing | check guix availability |
 | `advancecomp` | 🔧 custom channel | guix install -L cfg-channel |
-| `adw-gtk-theme` | ❌ missing | ⚠ theme — port to Guix |
-| `adwaita-cursors` | ❌ missing | ⚠ cursor theme — port to Guix |
+| `adw-gtk-theme` | ❌ missing | not in Guix — needs custom package |
+| `adwaita-cursors` | ❌ missing | in Guix as `adwaita-icon-theme`, part of breeze — see below |
 | `adwaita-fonts` | 🔧 custom channel | ⚠ in Guix as `font-adwaita` — add to specs |
-| `adwaita-icon-theme` | ❌ missing | ⚠ icon theme — port to Guix |
-| `adwaita-icon-theme-legacy` | ❌ missing | ⚠ icon theme — port to Guix |
+| `adwaita-icon-theme` | ❌ missing | in Guix as `adwaita-icon-theme` — installed ✅ |
+| `adwaita-icon-theme-legacy` | ❌ missing | in Guix as `adwaita-icon-theme` — installed ✅ |
 | `age` | ✅ installed | — |
 | `albumdetails` | 🔧 custom channel | guix install -L cfg-channel |
 | `albumdetails-debug` | 🔧 custom channel | guix install -L cfg-channel |
@@ -61,7 +61,7 @@
 | `attr` | ❌ missing | check guix availability |
 | `audit` | ❌ missing | check guix availability |
 | `augeas` | ❌ missing | check guix availability |
-| `aurorae` | ❌ missing | ⚠ theme — port to Guix |
+| `aurorae` | ❌ missing | KDE plugin, dep-only — in Guix as part of KDE |
 | `autoconf` | ❌ missing | check guix availability |
 | `autoconf-archive` | ❌ missing | check guix availability |
 | `automake` | ❌ missing | check guix availability |
@@ -96,8 +96,8 @@
 | `bottom` | ✅ installed | — |
 | `bpf` | ❌ missing | check guix availability |
 | `bpftrace` | ❌ missing | check guix availability |
-| `breeze` | ❌ missing | ⚠ theme — port to Guix |
-| `breeze-cursors` | ❌ missing | ⚠ cursor theme — port to Guix |
+| `breeze` | ❌ missing | in Guix as `breeze` — build needs Qt, blocked by VM network |
+| `breeze-cursors` | ❌ missing | part of `breeze` — build needs Qt, blocked by VM network |
 | `brltty` | ❌ missing | check guix availability |
 | `broot` | ❌ missing | check guix availability |
 | `brotli` | ❌ missing | check guix availability |
@@ -161,7 +161,7 @@
 | `coreutils` | ❌ missing | ❌ base system, in Guix by default |
 | `cosmic-comp` | ❌ missing | check guix availability |
 | `cosmic-greeter` | ❌ missing | check guix availability |
-| `cosmic-icon-theme` | ❌ missing | ⚠ icon theme — port to Guix |
+| `cosmic-icon-theme` | ❌ missing | not in Guix — needs custom package |
 | `cowsay` | ✅ installed | — |
 | `cpio` | ✅ installed | — |
 | `cppdap` | ❌ missing | check guix availability |
@@ -194,7 +194,7 @@
 | `ddrescue` | ✅ installed | — |
 | `debugedit` | ❌ missing | check guix availability |
 | `debuginfod` | ❌ missing | check guix availability |
-| `default-cursors` | ❌ missing | ⚠ cursor theme — port to Guix |
+| `default-cursors` | ❌ missing | provided by `xcursor-themes` — install separately |
 | `deno` | ❌ missing | check guix availability |
 | `device-mapper` | ❌ missing | ❌ base system, in Guix by default |
 | `dhcpcd` | ❌ missing | check guix availability |
@@ -387,7 +387,7 @@
 | `gnome-desktop` | ❌ missing | check guix availability |
 | `gnome-desktop-4` | ❌ missing | ❌ versioned lib, dep-only |
 | `gnome-disk-utility` | ❌ missing | check guix availability |
-| `gnome-font-viewer` | ❌ missing | ⚠ in Guix as `gnome-font-viewer` — add to specs |
+| `gnome-font-viewer` | ✅ installed | in Guix as `gnome-font-viewer` |
 | `gnome-keybindings` | ❌ missing | check guix availability |
 | `gnome-keyring` | ❌ missing | check guix availability |
 | `gnome-logs` | ❌ missing | check guix availability |
@@ -452,8 +452,8 @@
 | `gstreamer` | ✅ installed | — |
 | `gtest` | ❌ missing | check guix availability |
 | `gtk-doc` | ❌ missing | check guix availability |
-| `gtk-engine-murrine` | ❌ missing | ⚠ theme — port to Guix |
-| `gtk-engines` | ❌ missing | ⚠ theme — port to Guix |
+| `gtk-engine-murrine` | ❌ missing | not in Guix — needs custom package |
+| `gtk-engines` | ❌ missing | in Guix as `gtk-engines` — build needs GTK2, blocked |
 | `gtk-layer-shell` | ❌ missing | check guix availability |
 | `gtk-update-icon-cache` | ❌ missing | check guix availability |
 | `gtk-vnc` | ❌ missing | check guix availability |
@@ -504,7 +504,7 @@
 | `helvum` | ❌ missing | check guix availability |
 | `hermes-agent` | 🔧 custom channel | guix install -L cfg-channel |
 | `hexyl` | ✅ installed | — |
-| `hicolor-icon-theme` | ❌ missing | ⚠ icon theme — port to Guix |
+| `hicolor-icon-theme` | ❌ missing | in Guix as `hicolor-icon-theme` — installed ✅ |
 | `hidapi` | ❌ missing | check guix availability |
 | `highway` | ❌ missing | check guix availability |
 | `himalaya` | ❌ missing | check guix availability |
@@ -524,7 +524,7 @@
 | `hxd` | 🔧 custom channel | guix install -L cfg-channel |
 | `hyperfine` | ✅ installed | — |
 | `hyphen` | ❌ missing | check guix availability |
-| `hyprcursor` | ❌ missing | ⚠ cursor theme — port to Guix |
+| `hyprcursor` | ❌ missing | in Guix as `hyprcursor` — build failed, blocked |
 | `hyprgraphics` | ❌ missing | check guix availability |
 | `hypridle` | ✅ installed | — |
 | `hyprland` | ✅ installed | — |
@@ -672,7 +672,7 @@
 | `ktextwidgets` | ❌ missing | check guix availability |
 | `kunitconversion` | ❌ missing | check guix availability |
 | `kuserfeedback` | ❌ missing | check guix availability |
-| `kvantum` | ❌ missing | ⚠ theme — port to Guix |
+| `kvantum` | ❌ missing | in Guix as `kvantum` — build needs Qt, blocked |
 | `kvantum-qt5` | ❌ missing | check guix availability |
 | `kwallet` | ❌ missing | check guix availability |
 | `kwayland` | ❌ missing | check guix availability |
@@ -972,7 +972,7 @@
 | `polkit` | ❌ missing | check guix availability |
 | `polkit-kde-agent` | ❌ missing | check guix availability |
 | `polkit-qt6` | ❌ missing | check guix availability |
-| `pop-icon-theme` | ❌ missing | ⚠ icon theme — port to Guix |
+| `pop-icon-theme` | ❌ missing | not in Guix — needs custom package |
 | `poppler` | ❌ missing | check guix availability |
 | `poppler-glib` | ❌ missing | check guix availability |
 | `poppler-qt6` | ❌ missing | check guix availability |
@@ -1017,8 +1017,8 @@
 | `qqc2-desktop-style` | ❌ missing | check guix availability |
 | `qrcodegencpp-cmake` | ❌ missing | check guix availability |
 | `qrencode` | ✅ installed | — |
-| `qt5ct` | ❌ missing | ⚠ theme — port to Guix |
-| `qt6ct` | ❌ missing | ⚠ theme — port to Guix |
+| `qt5ct` | ❌ missing | in Guix as `qt5ct` — build needs Qt, blocked |
+| `qt6ct` | ❌ missing | in Guix as `qt6ct` — build needs Qt, blocked |
 | `qt6pas` | ❌ missing | check guix availability |
 | `qtkeychain-qt6` | ❌ missing | check guix availability |
 | `qtractor` | ❌ missing | check guix availability |
@@ -1139,7 +1139,7 @@
 | `sonnet` | ❌ missing | check guix availability |
 | `sops` | 🔧 custom channel | guix install -L cfg-channel |
 | `sord` | ❌ missing | check guix availability |
-| `sound-theme-freedesktop` | ❌ missing | ⚠ theme — port to Guix |
+| `sound-theme-freedesktop` | ❌ missing | in Guix as `sound-theme-freedesktop` — installed ✅ |
 | `soundtouch` | ❌ missing | check guix availability |
 | `source-highlight` | ❌ missing | check guix availability |
 | `sox` | ✅ installed | — |
@@ -1362,7 +1362,7 @@
 | `xapian-core` | ❌ missing | check guix availability |
 | `xcb-imdkit` | ❌ missing | check guix availability |
 | `xcb-util` | ❌ missing | check guix availability |
-| `xcb-util-cursor` | ❌ missing | ⚠ cursor theme — port to Guix |
+| `xcb-util-cursor` | ❌ missing | XCB library, dep-only — NOT a cursor theme (misclassified) |
 | `xcb-util-errors` | ❌ missing | check guix availability |
 | `xcb-util-image` | ❌ missing | check guix availability |
 | `xcb-util-keysyms` | ❌ missing | check guix availability |

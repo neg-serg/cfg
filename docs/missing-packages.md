@@ -16,11 +16,11 @@
 | `act-bin` | 🔧 custom channel | guix install -L cfg-channel |
 | `ada` | ❌ missing | check guix availability |
 | `advancecomp` | 🔧 custom channel | guix install -L cfg-channel |
-| `adw-gtk-theme` | ❌ missing | check guix availability |
-| `adwaita-cursors` | ❌ missing | check guix availability |
-| `adwaita-fonts` | ❌ missing | check guix availability |
-| `adwaita-icon-theme` | ❌ missing | check guix availability |
-| `adwaita-icon-theme-legacy` | ❌ missing | check guix availability |
+| `adw-gtk-theme` | ❌ missing | ⚠ theme — port to Guix |
+| `adwaita-cursors` | ❌ missing | ⚠ cursor theme — port to Guix |
+| `adwaita-fonts` | ❌ missing | ⚠ font — port to Guix |
+| `adwaita-icon-theme` | ❌ missing | ⚠ icon theme — port to Guix |
+| `adwaita-icon-theme-legacy` | ❌ missing | ⚠ icon theme — port to Guix |
 | `age` | ✅ installed | — |
 | `albumdetails` | 🔧 custom channel | guix install -L cfg-channel |
 | `albumdetails-debug` | 🔧 custom channel | guix install -L cfg-channel |
@@ -31,13 +31,13 @@
 | `alsa-topology-conf` | ❌ missing | check guix availability |
 | `alsa-ucm-conf` | ❌ missing | check guix availability |
 | `alure` | ❌ missing | check guix availability |
-| `amd-ucode` | ❌ missing | check guix availability |
+| `amd-ucode` | ❌ missing | ❌ firmware/microcode |
 | `amdgpu-opengl-switcher-git` | ❌ missing | check guix availability |
 | `amdgpu-vulkan-switcher-git` | 🔧 custom channel | guix install -L cfg-channel |
 | `amdgpu_top` | ❌ missing | check guix availability |
 | `amdvlk-bin` | ❌ missing | check guix availability |
 | `aml` | ❌ missing | check guix availability |
-| `amneziawg-dkms` | ❌ missing | check guix availability |
+| `amneziawg-dkms` | ❌ missing | ❌ kernel module/headers |
 | `ananicy-cpp` | 🔧 custom channel | guix install -L cfg-channel |
 | `antigravity-tools-bin` | ❌ missing | check guix availability |
 | `aom` | ❌ missing | check guix availability |
@@ -48,7 +48,7 @@
 | `apr` | ❌ missing | check guix availability |
 | `apr-util` | ❌ missing | check guix availability |
 | `aquamarine` | ❌ missing | check guix availability |
-| `archlinux-keyring` | ❌ missing | check guix availability |
+| `archlinux-keyring` | ❌ missing | ❌ base system, in Guix by default |
 | `argon2` | ❌ missing | check guix availability |
 | `aria2` | ✅ installed | — |
 | `ark` | ✅ installed | — |
@@ -61,7 +61,7 @@
 | `attr` | ❌ missing | check guix availability |
 | `audit` | ❌ missing | check guix availability |
 | `augeas` | ❌ missing | check guix availability |
-| `aurorae` | ❌ missing | check guix availability |
+| `aurorae` | ❌ missing | ⚠ theme — port to Guix |
 | `autoconf` | ❌ missing | check guix availability |
 | `autoconf-archive` | ❌ missing | check guix availability |
 | `automake` | ❌ missing | check guix availability |
@@ -81,7 +81,7 @@
 | `bcg729` | ❌ missing | check guix availability |
 | `beets` | ✅ installed | — |
 | `bind` | ❌ missing | check guix availability |
-| `binutils` | ❌ missing | check guix availability |
+| `binutils` | ❌ missing | ❌ base system, in Guix by default |
 | `bison` | ❌ missing | check guix availability |
 | `blas` | ❌ missing | check guix availability |
 | `blender` | ✅ installed | — |
@@ -96,8 +96,8 @@
 | `bottom` | ✅ installed | — |
 | `bpf` | ❌ missing | check guix availability |
 | `bpftrace` | ❌ missing | check guix availability |
-| `breeze` | ❌ missing | check guix availability |
-| `breeze-cursors` | ❌ missing | check guix availability |
+| `breeze` | ❌ missing | ⚠ theme — port to Guix |
+| `breeze-cursors` | ❌ missing | ⚠ cursor theme — port to Guix |
 | `brltty` | ❌ missing | check guix availability |
 | `broot` | ❌ missing | check guix availability |
 | `brotli` | ❌ missing | check guix availability |
@@ -107,8 +107,8 @@
 | `bucklespring` | ❌ missing | check guix availability |
 | `bzip2` | ❌ missing | check guix availability |
 | `c-ares` | ❌ missing | check guix availability |
-| `ca-certificates` | ❌ missing | check guix availability |
-| `ca-certificates-mozilla` | ❌ missing | check guix availability |
+| `ca-certificates` | ❌ missing | ❌ base system, in Guix by default |
+| `ca-certificates-mozilla` | ❌ missing | ❌ base system, in Guix by default |
 | `cabal-install` | ❌ missing | check guix availability |
 | `cabextract` | ❌ missing | check guix availability |
 | `cachyos-ananicy-rules` | ❌ missing | check guix availability |
@@ -116,11 +116,11 @@
 | `cage` | ✅ installed | — |
 | `cairo` | ❌ missing | check guix availability |
 | `cairomm` | ❌ missing | check guix availability |
-| `cairomm-1.16` | ❌ missing | check guix availability |
+| `cairomm-1.16` | ❌ missing | ❌ versioned lib, dep-only |
 | `capnproto` | ❌ missing | check guix availability |
 | `capstone` | ❌ missing | check guix availability |
 | `carapace-bin` | 🔧 custom channel | guix install -L cfg-channel |
-| `cargo-auditable` | ❌ missing | check guix availability |
+| `cargo-auditable` | ❌ missing | ❌ cargo lib, dep-only |
 | `carla` | ✅ installed | — |
 | `catatonit` | ❌ missing | check guix availability |
 | `cava` | ✅ installed | — |
@@ -158,10 +158,10 @@
 | `convertlit` | ❌ missing | check guix availability |
 | `convmv` | ❌ missing | check guix availability |
 | `corectrl` | ✅ installed | — |
-| `coreutils` | ❌ missing | check guix availability |
+| `coreutils` | ❌ missing | ❌ base system, in Guix by default |
 | `cosmic-comp` | ❌ missing | check guix availability |
 | `cosmic-greeter` | ❌ missing | check guix availability |
-| `cosmic-icon-theme` | ❌ missing | check guix availability |
+| `cosmic-icon-theme` | ❌ missing | ⚠ icon theme — port to Guix |
 | `cowsay` | ✅ installed | — |
 | `cpio` | ✅ installed | — |
 | `cppdap` | ❌ missing | check guix availability |
@@ -169,7 +169,7 @@
 | `cpufetch` | 🔧 custom channel | guix install -L cfg-channel |
 | `cpupower` | ✅ installed | — |
 | `cracklib` | ❌ missing | check guix availability |
-| `cryptsetup` | ❌ missing | check guix availability |
+| `cryptsetup` | ❌ missing | ❌ base system, in Guix by default |
 | `ctop` | 🔧 custom channel | guix install -L cfg-channel |
 | `cunit` | ❌ missing | check guix availability |
 | `cups` | ✅ installed | — |
@@ -181,11 +181,11 @@
 | `dash` | ✅ installed | — |
 | `dav1d` | ❌ missing | check guix availability |
 | `db5.3` | ❌ missing | check guix availability |
-| `dbus` | ❌ missing | check guix availability |
+| `dbus` | ❌ missing | ❌ base system, in Guix by default |
 | `dbus-broker` | ❌ missing | check guix availability |
-| `dbus-broker-units` | ❌ missing | check guix availability |
+| `dbus-broker-units` | ❌ missing | ❌ data/assets, dep-only |
 | `dbus-glib` | ❌ missing | check guix availability |
-| `dbus-units` | ❌ missing | check guix availability |
+| `dbus-units` | ❌ missing | ❌ data/assets, dep-only |
 | `dcfldd` | 🔧 custom channel | guix install -L cfg-channel |
 | `dconf` | ❌ missing | check guix availability |
 | `ddccontrol` | 🔧 custom channel | guix install -L cfg-channel |
@@ -194,9 +194,9 @@
 | `ddrescue` | ✅ installed | — |
 | `debugedit` | ❌ missing | check guix availability |
 | `debuginfod` | ❌ missing | check guix availability |
-| `default-cursors` | ❌ missing | check guix availability |
+| `default-cursors` | ❌ missing | ⚠ cursor theme — port to Guix |
 | `deno` | ❌ missing | check guix availability |
-| `device-mapper` | ❌ missing | check guix availability |
+| `device-mapper` | ❌ missing | ❌ base system, in Guix by default |
 | `dhcpcd` | ❌ missing | check guix availability |
 | `diff-so-fancy` | ✅ installed | — |
 | `difftastic` | ✅ installed | — |
@@ -226,18 +226,18 @@
 | `dtc` | ❌ missing | check guix availability |
 | `dualsensectl` | 🔧 custom channel | guix install -L cfg-channel |
 | `duf` | ❌ missing | check guix availability |
-| `duf-debug` | ❌ missing | check guix availability |
+| `duf-debug` | ❌ missing | ❌ debug symbols |
 | `duktape` | ❌ missing | check guix availability |
 | `dumb` | ❌ missing | check guix availability |
 | `dunst` | ✅ installed | — |
 | `dust` | ❌ missing | check guix availability |
 | `dvisvgm` | ❌ missing | check guix availability |
-| `e2fsprogs` | ❌ missing | check guix availability |
+| `e2fsprogs` | ❌ missing | ❌ base system, in Guix by default |
 | `easyeffects` | ✅ installed | — |
 | `editorconfig-core-c` | ❌ missing | check guix availability |
 | `edk2-ovmf` | ❌ missing | check guix availability |
 | `efibootmgr` | ✅ installed | — |
-| `efivar` | ❌ missing | check guix availability |
+| `efivar` | ❌ missing | ❌ base system, in Guix by default |
 | `egl-wayland` | ❌ missing | check guix availability |
 | `eglexternalplatform` | ❌ missing | check guix availability |
 | `eilmeldung-bin` | 🔧 custom channel | guix install -L cfg-channel |
@@ -275,7 +275,7 @@
 | `fftw` | ❌ missing | check guix availability |
 | `figlet` | ✅ installed | — |
 | `file` | ❌ missing | check guix availability |
-| `filesystem` | ❌ missing | check guix availability |
+| `filesystem` | ❌ missing | ❌ base system, in Guix by default |
 | `findutils` | ❌ missing | check guix availability |
 | `fio` | ✅ installed | — |
 | `firefox` | ❌ missing | check guix availability |
@@ -289,8 +289,8 @@
 | `fluidsynth` | ❌ missing | check guix availability |
 | `fmt` | ❌ missing | check guix availability |
 | `folks` | ❌ missing | check guix availability |
-| `fontconfig` | ❌ missing | check guix availability |
-| `fontforge` | ❌ missing | check guix availability |
+| `fontconfig` | ❌ missing | ⚠ font — port to Guix |
+| `fontforge` | ❌ missing | ⚠ font — port to Guix |
 | `fortune-mod` | ❌ missing | check guix availability |
 | `fping` | ✅ installed | — |
 | `frameworkintegration` | ❌ missing | check guix availability |
@@ -313,9 +313,9 @@
 | `ganv` | ❌ missing | check guix availability |
 | `gawk` | ❌ missing | check guix availability |
 | `gc` | ❌ missing | check guix availability |
-| `gcc` | ❌ missing | check guix availability |
+| `gcc` | ❌ missing | ❌ base system, in Guix by default |
 | `gcr` | ❌ missing | check guix availability |
-| `gcr-4` | ❌ missing | check guix availability |
+| `gcr-4` | ❌ missing | ❌ versioned lib, dep-only |
 | `gd` | ❌ missing | check guix availability |
 | `gdb` | ✅ installed | — |
 | `gdbm` | ❌ missing | check guix availability |
@@ -358,9 +358,9 @@
 | `glib-networking` | ❌ missing | check guix availability |
 | `glib-perl` | ❌ missing | check guix availability |
 | `glib2` | ❌ missing | check guix availability |
-| `glibc` | ❌ missing | check guix availability |
+| `glibc` | ❌ missing | ❌ base system, in Guix by default |
 | `glibmm` | ❌ missing | check guix availability |
-| `glibmm-2.68` | ❌ missing | check guix availability |
+| `glibmm-2.68` | ❌ missing | ❌ versioned lib, dep-only |
 | `glm` | ❌ missing | check guix availability |
 | `glow` | 🔧 custom channel | guix install -L cfg-channel |
 | `glslang` | ❌ missing | check guix availability |
@@ -374,7 +374,7 @@
 | `gnome-app-list` | ❌ missing | check guix availability |
 | `gnome-autoar` | ❌ missing | check guix availability |
 | `gnome-backgrounds` | ❌ missing | check guix availability |
-| `gnome-bluetooth-3.0` | ❌ missing | check guix availability |
+| `gnome-bluetooth-3.0` | ❌ missing | ❌ versioned lib, dep-only |
 | `gnome-calculator` | ❌ missing | check guix availability |
 | `gnome-calendar` | ❌ missing | check guix availability |
 | `gnome-characters` | ❌ missing | check guix availability |
@@ -385,9 +385,9 @@
 | `gnome-contacts` | ❌ missing | check guix availability |
 | `gnome-control-center` | ❌ missing | check guix availability |
 | `gnome-desktop` | ❌ missing | check guix availability |
-| `gnome-desktop-4` | ❌ missing | check guix availability |
+| `gnome-desktop-4` | ❌ missing | ❌ versioned lib, dep-only |
 | `gnome-disk-utility` | ❌ missing | check guix availability |
-| `gnome-font-viewer` | ❌ missing | check guix availability |
+| `gnome-font-viewer` | ❌ missing | ⚠ font — port to Guix |
 | `gnome-keybindings` | ❌ missing | check guix availability |
 | `gnome-keyring` | ❌ missing | check guix availability |
 | `gnome-logs` | ❌ missing | check guix availability |
@@ -411,7 +411,7 @@
 | `gnustep-base` | ❌ missing | check guix availability |
 | `gnutls` | ❌ missing | check guix availability |
 | `go` | ✅ installed | — |
-| `go-yq` | ❌ missing | check guix availability |
+| `go-yq` | ❌ missing | ❌ go lib, dep-only |
 | `goaccess` | ❌ missing | check guix availability |
 | `gobject-introspection` | ❌ missing | check guix availability |
 | `gobject-introspection-runtime` | ❌ missing | check guix availability |
@@ -443,7 +443,7 @@
 | `groff` | ❌ missing | check guix availability |
 | `gsettings-desktop-schemas` | ❌ missing | check guix availability |
 | `gsettings-system-schemas` | ❌ missing | check guix availability |
-| `gsfonts` | ❌ missing | check guix availability |
+| `gsfonts` | ❌ missing | ⚠ font — port to Guix |
 | `gsl` | ❌ missing | check guix availability |
 | `gsm` | ❌ missing | check guix availability |
 | `gsound` | ❌ missing | check guix availability |
@@ -452,8 +452,8 @@
 | `gstreamer` | ✅ installed | — |
 | `gtest` | ❌ missing | check guix availability |
 | `gtk-doc` | ❌ missing | check guix availability |
-| `gtk-engine-murrine` | ❌ missing | check guix availability |
-| `gtk-engines` | ❌ missing | check guix availability |
+| `gtk-engine-murrine` | ❌ missing | ⚠ theme — port to Guix |
+| `gtk-engines` | ❌ missing | ⚠ theme — port to Guix |
 | `gtk-layer-shell` | ❌ missing | check guix availability |
 | `gtk-update-icon-cache` | ❌ missing | check guix availability |
 | `gtk-vnc` | ❌ missing | check guix availability |
@@ -462,7 +462,7 @@
 | `gtk4` | ❌ missing | check guix availability |
 | `gtk4-layer-shell` | ❌ missing | check guix availability |
 | `gtkmm` | ❌ missing | check guix availability |
-| `gtkmm-4.0` | ❌ missing | check guix availability |
+| `gtkmm-4.0` | ❌ missing | ❌ versioned lib, dep-only |
 | `gtkmm3` | ❌ missing | check guix availability |
 | `gtksourceview4` | ❌ missing | check guix availability |
 | `gtksourceview5` | ❌ missing | check guix availability |
@@ -504,7 +504,7 @@
 | `helvum` | ❌ missing | check guix availability |
 | `hermes-agent` | 🔧 custom channel | guix install -L cfg-channel |
 | `hexyl` | ✅ installed | — |
-| `hicolor-icon-theme` | ❌ missing | check guix availability |
+| `hicolor-icon-theme` | ❌ missing | ⚠ icon theme — port to Guix |
 | `hidapi` | ❌ missing | check guix availability |
 | `highway` | ❌ missing | check guix availability |
 | `himalaya` | ❌ missing | check guix availability |
@@ -524,7 +524,7 @@
 | `hxd` | 🔧 custom channel | guix install -L cfg-channel |
 | `hyperfine` | ✅ installed | — |
 | `hyphen` | ❌ missing | check guix availability |
-| `hyprcursor` | ❌ missing | check guix availability |
+| `hyprcursor` | ❌ missing | ⚠ cursor theme — port to Guix |
 | `hyprgraphics` | ❌ missing | check guix availability |
 | `hypridle` | ✅ installed | — |
 | `hyprland` | ✅ installed | — |
@@ -542,7 +542,7 @@
 | `hyprwire` | ❌ missing | check guix availability |
 | `i3-wm` | ✅ installed | — |
 | `i3status` | ✅ installed | — |
-| `iana-etc` | ❌ missing | check guix availability |
+| `iana-etc` | ❌ missing | ❌ base system, in Guix by default |
 | `ibus` | ❌ missing | check guix availability |
 | `icoextract` | ❌ missing | check guix availability |
 | `icu` | ❌ missing | check guix availability |
@@ -560,11 +560,11 @@
 | `intel-oneapi-tbb` | ❌ missing | check guix availability |
 | `intel-oneapi-tcm` | ❌ missing | check guix availability |
 | `intel-oneapi-umf` | ❌ missing | check guix availability |
-| `inter-font` | ❌ missing | check guix availability |
+| `inter-font` | ❌ missing | ⚠ font — port to Guix |
 | `intltool` | ❌ missing | check guix availability |
 | `inxi` | ✅ installed | — |
 | `ioping` | ❌ missing | check guix availability |
-| `iosevka-neg-fonts` | ❌ missing | check guix availability |
+| `iosevka-neg-fonts` | ❌ missing | ⚠ font — port to Guix |
 | `iotop-c` | ❌ missing | check guix availability |
 | `iperf3` | ❌ missing | check guix availability |
 | `iproute2` | ❌ missing | check guix availability |
@@ -672,7 +672,7 @@
 | `ktextwidgets` | ❌ missing | check guix availability |
 | `kunitconversion` | ❌ missing | check guix availability |
 | `kuserfeedback` | ❌ missing | check guix availability |
-| `kvantum` | ❌ missing | check guix availability |
+| `kvantum` | ❌ missing | ⚠ theme — port to Guix |
 | `kvantum-qt5` | ❌ missing | check guix availability |
 | `kwallet` | ❌ missing | check guix availability |
 | `kwayland` | ❌ missing | check guix availability |
@@ -695,7 +695,7 @@
 | `leptonica` | ❌ missing | check guix availability |
 | `less` | ✅ installed | — |
 | `level-zero-loader` | ❌ missing | check guix availability |
-| `licenses` | ❌ missing | check guix availability |
+| `licenses` | ❌ missing | ❌ base system, in Guix by default |
 | `lilv` | ❌ missing | check guix availability |
 | `limine` | 🔧 custom channel | guix install -L cfg-channel |
 | `linux` | ❌ missing | check guix availability |
@@ -703,7 +703,7 @@
 | `linux-cachyos-eevdf` | ❌ missing | check guix availability |
 | `linux-cachyos-hardened` | ❌ missing | check guix availability |
 | `linux-cachyos-lts` | ❌ missing | check guix availability |
-| `linux-firmware` | ❌ missing | check guix availability |
+| `linux-firmware` | ❌ missing | ❌ firmware/microcode |
 | `linux-firmware-amdgpu` | ❌ missing | check guix availability |
 | `linux-firmware-atheros` | ❌ missing | check guix availability |
 | `linux-firmware-broadcom` | ❌ missing | check guix availability |
@@ -746,7 +746,7 @@
 | `lsscsi` | ❌ missing | check guix availability |
 | `lua` | ❌ missing | check guix availability |
 | `lua-language-server` | ❌ missing | check guix availability |
-| `lua51-lpeg` | ❌ missing | check guix availability |
+| `lua51-lpeg` | ❌ missing | ❌ lua51 lib, dep-only |
 | `lua53` | ❌ missing | check guix availability |
 | `lua54` | ❌ missing | check guix availability |
 | `lua54-lpeg` | ❌ missing | check guix availability |
@@ -774,7 +774,7 @@
 | `matugen` | ❌ missing | check guix availability |
 | `mbedtls` | ❌ missing | check guix availability |
 | `md4c` | ❌ missing | check guix availability |
-| `mdadm` | ❌ missing | check guix availability |
+| `mdadm` | ❌ missing | ❌ base system, in Guix by default |
 | `media-player-info` | ❌ missing | check guix availability |
 | `mediainfo` | ✅ installed | — |
 | `memtester` | ✅ installed | — |
@@ -788,7 +788,7 @@
 | `minizip` | ❌ missing | check guix availability |
 | `minizip-ng` | ❌ missing | check guix availability |
 | `mjpegtools` | ❌ missing | check guix availability |
-| `mkinitcpio` | ❌ missing | check guix availability |
+| `mkinitcpio` | ❌ missing | ❌ base system, in Guix by default |
 | `mkinitcpio-busybox` | ❌ missing | check guix availability |
 | `mobile-broadband-provider-info` | ❌ missing | check guix availability |
 | `mod_dnssd` | ❌ missing | check guix availability |
@@ -906,23 +906,23 @@
 | `overskride-bin` | 🔧 custom channel | guix install -L cfg-channel |
 | `oyo` | 🔧 custom channel | guix install -L cfg-channel |
 | `p11-kit` | ❌ missing | check guix availability |
-| `pacman` | ❌ missing | check guix availability |
+| `pacman` | ❌ missing | ❌ base system, in Guix by default |
 | `pacman-contrib` | ❌ missing | check guix availability |
-| `pacman-mirrorlist` | ❌ missing | check guix availability |
+| `pacman-mirrorlist` | ❌ missing | ❌ base system, in Guix by default |
 | `pacutils` | ❌ missing | check guix availability |
 | `pahole` | ❌ missing | check guix availability |
 | `pam` | ❌ missing | check guix availability |
-| `pambase` | ❌ missing | check guix availability |
+| `pambase` | ❌ missing | ❌ base system, in Guix by default |
 | `pandoc-cli` | ❌ missing | check guix availability |
 | `pango` | ❌ missing | check guix availability |
 | `pangomm` | ❌ missing | check guix availability |
-| `pangomm-2.48` | ❌ missing | check guix availability |
+| `pangomm-2.48` | ❌ missing | ❌ versioned lib, dep-only |
 | `papers` | ❌ missing | check guix availability |
 | `par` | 🔧 custom channel | guix install -L cfg-channel |
 | `parallel` | ✅ installed | — |
 | `parted` | ✅ installed | — |
 | `paru` | ❌ missing | check guix availability |
-| `paru-debug` | ❌ missing | check guix availability |
+| `paru-debug` | ❌ missing | ❌ debug symbols |
 | `pass` | ❌ missing | check guix availability |
 | `passim` | ❌ missing | check guix availability |
 | `passt` | ❌ missing | check guix availability |
@@ -957,7 +957,7 @@
 | `pixman` | ❌ missing | check guix availability |
 | `pixora-icons-git` | ❌ missing | check guix availability |
 | `pkcs11-helper` | ❌ missing | check guix availability |
-| `pkgconf` | ❌ missing | check guix availability |
+| `pkgconf` | ❌ missing | ❌ base system, in Guix by default |
 | `plasma-activities` | ❌ missing | check guix availability |
 | `plasma-activities-stats` | ❌ missing | check guix availability |
 | `plasma-desktop` | ❌ missing | check guix availability |
@@ -972,7 +972,7 @@
 | `polkit` | ❌ missing | check guix availability |
 | `polkit-kde-agent` | ❌ missing | check guix availability |
 | `polkit-qt6` | ❌ missing | check guix availability |
-| `pop-icon-theme` | ❌ missing | check guix availability |
+| `pop-icon-theme` | ❌ missing | ⚠ icon theme — port to Guix |
 | `poppler` | ❌ missing | check guix availability |
 | `poppler-glib` | ❌ missing | check guix availability |
 | `poppler-qt6` | ❌ missing | check guix availability |
@@ -1017,8 +1017,8 @@
 | `qqc2-desktop-style` | ❌ missing | check guix availability |
 | `qrcodegencpp-cmake` | ❌ missing | check guix availability |
 | `qrencode` | ✅ installed | — |
-| `qt5ct` | ❌ missing | check guix availability |
-| `qt6ct` | ❌ missing | check guix availability |
+| `qt5ct` | ❌ missing | ⚠ theme — port to Guix |
+| `qt6ct` | ❌ missing | ⚠ theme — port to Guix |
 | `qt6pas` | ❌ missing | check guix availability |
 | `qtkeychain-qt6` | ❌ missing | check guix availability |
 | `qtractor` | ❌ missing | check guix availability |
@@ -1026,7 +1026,7 @@
 | `quickshell-git` | ❌ missing | check guix availability |
 | `quickshell-overview-git` | ❌ missing | check guix availability |
 | `raise` | ❌ missing | check guix availability |
-| `raise-debug` | ❌ missing | check guix availability |
+| `raise-debug` | ❌ missing | ❌ debug symbols |
 | `rapidfuzz-cpp` | ❌ missing | check guix availability |
 | `raptor` | ❌ missing | check guix availability |
 | `rasqal` | ❌ missing | check guix availability |
@@ -1108,7 +1108,7 @@
 | `serf` | ❌ missing | check guix availability |
 | `sfsexp` | ❌ missing | check guix availability |
 | `shaderc` | ❌ missing | check guix availability |
-| `shadow` | ❌ missing | check guix availability |
+| `shadow` | ❌ missing | ❌ base system, in Guix by default |
 | `shared-mime-info` | ❌ missing | check guix availability |
 | `shellcheck` | ✅ installed | — |
 | `shfmt` | ❌ missing | check guix availability |
@@ -1139,7 +1139,7 @@
 | `sonnet` | ❌ missing | check guix availability |
 | `sops` | 🔧 custom channel | guix install -L cfg-channel |
 | `sord` | ❌ missing | check guix availability |
-| `sound-theme-freedesktop` | ❌ missing | check guix availability |
+| `sound-theme-freedesktop` | ❌ missing | ⚠ theme — port to Guix |
 | `soundtouch` | ❌ missing | check guix availability |
 | `source-highlight` | ❌ missing | check guix availability |
 | `sox` | ✅ installed | — |
@@ -1187,7 +1187,7 @@
 | `syslinux` | ❌ missing | check guix availability |
 | `sysstat` | ✅ installed | — |
 | `system-config-printer` | ✅ installed | — |
-| `systemd` | ❌ missing | check guix availability |
+| `systemd` | ❌ missing | ❌ base system, in Guix by default |
 | `systemd-manager-tui` | 🔧 custom channel | guix install -L cfg-channel |
 | `systemd-resolvconf` | ❌ missing | check guix availability |
 | `systemd-sysvcompat` | ❌ missing | check guix availability |
@@ -1210,7 +1210,7 @@
 | `tecla` | ❌ missing | check guix availability |
 | `telegram-desktop` | ✅ installed | — |
 | `television` | ❌ missing | check guix availability |
-| `terminus-font` | ❌ missing | check guix availability |
+| `terminus-font` | ❌ missing | ⚠ font — port to Guix |
 | `tessen` | 🔧 custom channel | guix install -L cfg-channel |
 | `tesseract` | ❌ missing | check guix availability |
 | `tesseract-data-eng` | ❌ missing | check guix availability |
@@ -1284,7 +1284,7 @@
 | `usbutils` | ❌ missing | check guix availability |
 | `usd` | ❌ missing | check guix availability |
 | `uthash` | ❌ missing | check guix availability |
-| `util-linux` | ❌ missing | check guix availability |
+| `util-linux` | ❌ missing | ❌ base system, in Guix by default |
 | `uv` | ❌ missing | check guix availability |
 | `uvicorn` | ❌ missing | check guix availability |
 | `uwsm` | ❌ missing | check guix availability |
@@ -1325,10 +1325,10 @@
 | `wayland-protocols` | ❌ missing | check guix availability |
 | `waypipe` | ✅ installed | — |
 | `wayvnc` | ✅ installed | — |
-| `webkit2gtk-4.1` | ❌ missing | check guix availability |
-| `webkitgtk-6.0` | ❌ missing | check guix availability |
+| `webkit2gtk-4.1` | ❌ missing | ❌ versioned lib, dep-only |
+| `webkitgtk-6.0` | ❌ missing | ❌ versioned lib, dep-only |
 | `webrtc-audio-processing` | ❌ missing | check guix availability |
-| `webrtc-audio-processing-1` | ❌ missing | check guix availability |
+| `webrtc-audio-processing-1` | ❌ missing | ❌ versioned lib, dep-only |
 | `wev` | ✅ installed | — |
 | `wf-recorder` | ✅ installed | — |
 | `wget` | ✅ installed | — |
@@ -1362,7 +1362,7 @@
 | `xapian-core` | ❌ missing | check guix availability |
 | `xcb-imdkit` | ❌ missing | check guix availability |
 | `xcb-util` | ❌ missing | check guix availability |
-| `xcb-util-cursor` | ❌ missing | check guix availability |
+| `xcb-util-cursor` | ❌ missing | ⚠ cursor theme — port to Guix |
 | `xcb-util-errors` | ❌ missing | check guix availability |
 | `xcb-util-image` | ❌ missing | check guix availability |
 | `xcb-util-keysyms` | ❌ missing | check guix availability |

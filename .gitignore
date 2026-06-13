@@ -85,5 +85,3 @@ $HOME/
 channel/custom/packages/roomeqwizard.sh
 channel/custom/packages/vicinae.bin
 build/pkgbuilds/proxypilot/proxypilot-*
-guix/channel/custom/packages/wl-binaries.tar.gz
-guix/channel/custom/packages/data/hunspell-ru.tar.gz

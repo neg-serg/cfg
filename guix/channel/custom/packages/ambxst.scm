@@ -14,10 +14,10 @@
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://github.com/Axenide/Ambxst/archive/refs/tags/v"
+                    "https://github.com/Axenide/Ambxst/archive/refs/tags/"
                     version ".tar.gz"))
               (sha256
-               (base32 "smaqrm0rr3a6pp4mh1jcp5zrcg8yly9qcr0lq0jr0vn1a0rm2bnh"))))
+               (base32 "1yhqabd5wkz883yljpd7vqg6clkx8rb9jr5c2lhvjlc7qnv9shhv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f

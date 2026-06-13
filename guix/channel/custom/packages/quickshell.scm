@@ -15,7 +15,10 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages man)
   #:use-module (gnu packages xdisorg)
-  #:use-module (gnu packages jemalloc))
+  #:use-module (gnu packages jemalloc)
+  #:use-module (gnu packages cpp)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages polkit))
 
 (define-public quickshell
   (package
@@ -32,33 +35,37 @@
     (arguments
      `(#:tests? #f
        #:configure-flags
-       (list "-GNinja"
-             "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
-             "-DDISTRIBUTOR=Guix"
-             "-DINSTALL_QML_PREFIX=lib/qt6/qml")
+         (list "-GNinja"
+               "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+               "-DDISTRIBUTOR=Guix"
+               "-DDO_NOT_CHECK_CPPTRACE_USABILITY=ON"
+               "-DINSTALL_QML_PREFIX=lib/qt6/qml")
        #:phases
        (modify-phases %standard-phases
          ;; Skip tests — quickshell requires a running Wayland compositor
          (delete 'check))))
-    (native-inputs
-     (list ninja pkg-config cmake-minimal git-minimal))
-    (inputs
-     (list qtbase
-           qtdeclarative
-           qtsvg
-           qtwayland
-           qtshadertools
-           qttools
-           qtimageformats
-           qtmultimedia
-           wayland
-           wayland-protocols
-           mesa
-           libdrm
-           libglvnd
-           libxcb
-           pipewire
-           jemalloc))
+      (native-inputs
+       (list ninja pkg-config cmake-minimal git-minimal cli11 cpptrace))
+     (inputs
+      (list qtbase
+            qtdeclarative
+            qtsvg
+            qtwayland
+            qtshadertools
+            qttools
+            qtimageformats
+            qtmultimedia
+            wayland
+            wayland-protocols
+            mesa
+            libdrm
+            libglvnd
+            libxcb
+            pipewire
+            jemalloc
+            glib
+            polkit
+            linux-pam))
     (supported-systems '("x86_64-linux"))
     (home-page "https://git.outfoxxed.me/quickshell/quickshell")
     (synopsis "Flexible toolkit for making desktop shells with QtQuick")

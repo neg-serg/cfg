@@ -4,7 +4,7 @@
 (use-package-modules admin audio base bootloaders certs compression
  curl disk file fonts gnupg linux mpd networking
  package-management rsync ssh shells
- version-control vim wget xdisorg xorg kde-utils wm terminals rust-apps backup vpn mpd containers text-editors)
+ version-control vim wget xdisorg xorg containers vpn backup rust-apps terminals wm text-editors kde-systemtools kde-utils kde-utils wm terminals rust-apps backup vpn mpd containers text-editors)
 (use-modules ((gnu packages shells) #:select (zsh)))
 (operating-system
  (host-name "guix-eval")

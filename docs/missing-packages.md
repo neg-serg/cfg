@@ -17,10 +17,10 @@
 | `ada` | ❌ missing | check guix availability |
 | `advancecomp` | 🔧 custom channel | guix install -L cfg-channel |
 | `adw-gtk-theme` | ❌ missing | not in Guix — needs custom package |
-| `adwaita-cursors` | ❌ missing | in Guix as `adwaita-icon-theme`, part of breeze — see below |
+| `adwaita-cursors` | ✅ installed | in Guix, installed via guix archive |
 | `adwaita-fonts` | 🔧 custom channel | ⚠ in Guix as `font-adwaita` — add to specs |
-| `adwaita-icon-theme` | ❌ missing | in Guix as `adwaita-icon-theme` — installed ✅ |
-| `adwaita-icon-theme-legacy` | ❌ missing | in Guix as `adwaita-icon-theme` — installed ✅ |
+| `adwaita-icon-theme` | ✅ installed | in Guix, installed via guix archive |
+| `adwaita-icon-theme-legacy` | ✅ installed | in Guix, installed via guix archive |
 | `age` | ✅ installed | — |
 | `albumdetails` | 🔧 custom channel | guix install -L cfg-channel |
 | `albumdetails-debug` | 🔧 custom channel | guix install -L cfg-channel |
@@ -96,8 +96,8 @@
 | `bottom` | ✅ installed | — |
 | `bpf` | ❌ missing | check guix availability |
 | `bpftrace` | ❌ missing | check guix availability |
-| `breeze` | ❌ missing | in Guix as `breeze` — build needs Qt, blocked by VM network |
-| `breeze-cursors` | ❌ missing | part of `breeze` — build needs Qt, blocked by VM network |
+| `breeze` | ✅ installed | in Guix, installed via guix archive |
+| `breeze-cursors` | ✅ installed | in Guix, installed via guix archive |
 | `brltty` | ❌ missing | check guix availability |
 | `broot` | ❌ missing | check guix availability |
 | `brotli` | ❌ missing | check guix availability |
@@ -194,7 +194,7 @@
 | `ddrescue` | ✅ installed | — |
 | `debugedit` | ❌ missing | check guix availability |
 | `debuginfod` | ❌ missing | check guix availability |
-| `default-cursors` | ❌ missing | provided by `xcursor-themes` — install separately |
+| `default-cursors` | ✅ installed | in Guix, installed via guix archive |
 | `deno` | ❌ missing | check guix availability |
 | `device-mapper` | ❌ missing | ❌ base system, in Guix by default |
 | `dhcpcd` | ❌ missing | check guix availability |
@@ -387,7 +387,7 @@
 | `gnome-desktop` | ❌ missing | check guix availability |
 | `gnome-desktop-4` | ❌ missing | ❌ versioned lib, dep-only |
 | `gnome-disk-utility` | ❌ missing | check guix availability |
-| `gnome-font-viewer` | ✅ installed | in Guix as `gnome-font-viewer` |
+| `gnome-font-viewer` | ✅ installed | in Guix, installed via guix archive |
 | `gnome-keybindings` | ❌ missing | check guix availability |
 | `gnome-keyring` | ❌ missing | check guix availability |
 | `gnome-logs` | ❌ missing | check guix availability |
@@ -453,7 +453,7 @@
 | `gtest` | ❌ missing | check guix availability |
 | `gtk-doc` | ❌ missing | check guix availability |
 | `gtk-engine-murrine` | ❌ missing | not in Guix — needs custom package |
-| `gtk-engines` | ❌ missing | in Guix as `gtk-engines` — build needs GTK2, blocked |
+| `gtk-engines` | ✅ installed | in Guix, installed via guix archive |
 | `gtk-layer-shell` | ❌ missing | check guix availability |
 | `gtk-update-icon-cache` | ❌ missing | check guix availability |
 | `gtk-vnc` | ❌ missing | check guix availability |
@@ -504,7 +504,7 @@
 | `helvum` | ❌ missing | check guix availability |
 | `hermes-agent` | 🔧 custom channel | guix install -L cfg-channel |
 | `hexyl` | ✅ installed | — |
-| `hicolor-icon-theme` | ❌ missing | in Guix as `hicolor-icon-theme` — installed ✅ |
+| `hicolor-icon-theme` | ✅ installed | in Guix, installed via guix archive |
 | `hidapi` | ❌ missing | check guix availability |
 | `highway` | ❌ missing | check guix availability |
 | `himalaya` | ❌ missing | check guix availability |
@@ -524,7 +524,7 @@
 | `hxd` | 🔧 custom channel | guix install -L cfg-channel |
 | `hyperfine` | ✅ installed | — |
 | `hyphen` | ❌ missing | check guix availability |
-| `hyprcursor` | ❌ missing | in Guix as `hyprcursor` — build failed, blocked |
+| `hyprcursor` | ✅ installed | in Guix, installed via guix archive |
 | `hyprgraphics` | ❌ missing | check guix availability |
 | `hypridle` | ✅ installed | — |
 | `hyprland` | ✅ installed | — |
@@ -672,7 +672,7 @@
 | `ktextwidgets` | ❌ missing | check guix availability |
 | `kunitconversion` | ❌ missing | check guix availability |
 | `kuserfeedback` | ❌ missing | check guix availability |
-| `kvantum` | ❌ missing | in Guix as `kvantum` — build needs Qt, blocked |
+| `kvantum` | ✅ installed | in Guix, installed via guix archive |
 | `kvantum-qt5` | ❌ missing | check guix availability |
 | `kwallet` | ❌ missing | check guix availability |
 | `kwayland` | ❌ missing | check guix availability |
@@ -1017,8 +1017,8 @@
 | `qqc2-desktop-style` | ❌ missing | check guix availability |
 | `qrcodegencpp-cmake` | ❌ missing | check guix availability |
 | `qrencode` | ✅ installed | — |
-| `qt5ct` | ❌ missing | in Guix as `qt5ct` — build needs Qt, blocked |
-| `qt6ct` | ❌ missing | in Guix as `qt6ct` — build needs Qt, blocked |
+| `qt5ct` | ✅ installed | in Guix, installed via guix archive |
+| `qt6ct` | ✅ installed | in Guix, installed via guix archive |
 | `qt6pas` | ❌ missing | check guix availability |
 | `qtkeychain-qt6` | ❌ missing | check guix availability |
 | `qtractor` | ❌ missing | check guix availability |
@@ -1139,7 +1139,7 @@
 | `sonnet` | ❌ missing | check guix availability |
 | `sops` | 🔧 custom channel | guix install -L cfg-channel |
 | `sord` | ❌ missing | check guix availability |
-| `sound-theme-freedesktop` | ❌ missing | in Guix as `sound-theme-freedesktop` — installed ✅ |
+| `sound-theme-freedesktop` | ✅ installed | in Guix, installed via guix archive |
 | `soundtouch` | ❌ missing | check guix availability |
 | `source-highlight` | ❌ missing | check guix availability |
 | `sox` | ✅ installed | — |

@@ -85,3 +85,4 @@ $HOME/
 channel/custom/packages/roomeqwizard.sh
 channel/custom/packages/vicinae.bin
 build/pkgbuilds/proxypilot/proxypilot-*
+guix/channel/custom/packages/iosevka-neg-fonts.tar.gz

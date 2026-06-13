@@ -78,6 +78,7 @@
   #:use-module (custom packages parity-push)  ; grex, nms, nvtop, s-tui, ssh-to-age, geoip-db
   #:use-module (custom packages ambxst)
   #:use-module (custom packages hunspell-dict-ru)
+  #:use-module (custom packages iosevka-neg-fonts)
   #:use-module (custom packages quickshell)
   #:use-module (custom packages source-ioping)
   #:use-module (custom packages source-misc)
@@ -121,6 +122,7 @@
     ;; (roomeqwizard, xwaylandvideobridge: local-file blobs missing)
     ;; dualsensectl: hash mismatch, needs update
     ambxst chawan droidcam hunspell-dict-ru
+    font-iosevka-neg
     ioping newsraft ollama proton-cachyos proton-ge-custom
     quickshell rmlint rofi-file-browser-extended
     themix-theme-oomox tessen unflac vicinae wl

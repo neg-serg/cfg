@@ -18,7 +18,7 @@
 | `advancecomp` | 🔧 custom channel | guix install -L cfg-channel |
 | `adw-gtk-theme` | ❌ missing | ⚠ theme — port to Guix |
 | `adwaita-cursors` | ❌ missing | ⚠ cursor theme — port to Guix |
-| `adwaita-fonts` | ❌ missing | ⚠ font — port to Guix |
+| `adwaita-fonts` | 🔧 custom channel | ⚠ in Guix as `font-adwaita` — add to specs |
 | `adwaita-icon-theme` | ❌ missing | ⚠ icon theme — port to Guix |
 | `adwaita-icon-theme-legacy` | ❌ missing | ⚠ icon theme — port to Guix |
 | `age` | ✅ installed | — |
@@ -289,8 +289,8 @@
 | `fluidsynth` | ❌ missing | check guix availability |
 | `fmt` | ❌ missing | check guix availability |
 | `folks` | ❌ missing | check guix availability |
-| `fontconfig` | ❌ missing | ⚠ font — port to Guix |
-| `fontforge` | ❌ missing | ⚠ font — port to Guix |
+| `fontconfig` | ❌ missing | ❌ library, dep-only |
+| `fontforge` | ✅ installed | already in system profile |
 | `fortune-mod` | ❌ missing | check guix availability |
 | `fping` | ✅ installed | — |
 | `frameworkintegration` | ❌ missing | check guix availability |
@@ -387,7 +387,7 @@
 | `gnome-desktop` | ❌ missing | check guix availability |
 | `gnome-desktop-4` | ❌ missing | ❌ versioned lib, dep-only |
 | `gnome-disk-utility` | ❌ missing | check guix availability |
-| `gnome-font-viewer` | ❌ missing | ⚠ font — port to Guix |
+| `gnome-font-viewer` | ❌ missing | ⚠ in Guix as `gnome-font-viewer` — add to specs |
 | `gnome-keybindings` | ❌ missing | check guix availability |
 | `gnome-keyring` | ❌ missing | check guix availability |
 | `gnome-logs` | ❌ missing | check guix availability |
@@ -443,7 +443,7 @@
 | `groff` | ❌ missing | check guix availability |
 | `gsettings-desktop-schemas` | ❌ missing | check guix availability |
 | `gsettings-system-schemas` | ❌ missing | check guix availability |
-| `gsfonts` | ❌ missing | ⚠ font — port to Guix |
+| `gsfonts` | 🔧 custom channel | ⚠ in Guix as `font-ghostscript` — add to specs |
 | `gsl` | ❌ missing | check guix availability |
 | `gsm` | ❌ missing | check guix availability |
 | `gsound` | ❌ missing | check guix availability |
@@ -560,11 +560,11 @@
 | `intel-oneapi-tbb` | ❌ missing | check guix availability |
 | `intel-oneapi-tcm` | ❌ missing | check guix availability |
 | `intel-oneapi-umf` | ❌ missing | check guix availability |
-| `inter-font` | ❌ missing | ⚠ font — port to Guix |
+| `inter-font` | 🔧 custom channel | ⚠ in Guix as `font-inter` — add to specs |
 | `intltool` | ❌ missing | check guix availability |
 | `inxi` | ✅ installed | — |
 | `ioping` | ❌ missing | check guix availability |
-| `iosevka-neg-fonts` | ❌ missing | ⚠ font — port to Guix |
+| `iosevka-neg-fonts` | 🔧 custom channel | ⚠ AUR custom Iosevka — port to custom channel |
 | `iotop-c` | ❌ missing | check guix availability |
 | `iperf3` | ❌ missing | check guix availability |
 | `iproute2` | ❌ missing | check guix availability |
@@ -1210,7 +1210,7 @@
 | `tecla` | ❌ missing | check guix availability |
 | `telegram-desktop` | ✅ installed | — |
 | `television` | ❌ missing | check guix availability |
-| `terminus-font` | ❌ missing | ⚠ font — port to Guix |
+| `terminus-font` | 🔧 custom channel | ⚠ in Guix as `font-terminus` — add to specs |
 | `tessen` | 🔧 custom channel | guix install -L cfg-channel |
 | `tesseract` | ❌ missing | check guix availability |
 | `tesseract-data-eng` | ❌ missing | check guix availability |

@@ -1,965 +1,1427 @@
-# Missing: Arch → Guix VM
+# Missing Packages Status Report
 
-Host: 2829 | Guix system: 361 | Custom channel: 136 | **Still missing**: 959
+**Host total**: 2829 | **In Guix specs**: 351 | **In custom channel**: 129
 
-| Package | Action |
-|---------|--------|
-| `a52dec` | `guix search a52dec` |
-| `aalib` | `guix search aalib` |
-| `aardvark-dns` | `guix search aardvark-dns` |
-| `abseil-cpp` | `guix search abseil-cpp` |
-| `accountsservice` | `guix search accountsservice` |
-| `acl` | `guix search acl` |
-| `acpica` | `guix search acpica` |
-| `ada` | `guix search ada` |
-| `adw-gtk-theme` | `guix search adw-gtk-theme` |
-| `adwaita-cursors` | `guix search adwaita-cursors` |
-| `adwaita-fonts` | `guix search adwaita-fonts` |
-| `adwaita-icon-theme` | `guix search adwaita-icon-theme` |
-| `adwaita-icon-theme-legacy` | `guix search adwaita-icon-theme-legacy` |
-| `alembic` | `guix search alembic` |
-| `alure` | `guix search alure` |
-| `amdgpu-opengl-switcher-git` | `guix search amdgpu-opengl-switcher` |
-| `amdgpu_top` | `guix search amdgpu_top` |
-| `amdvlk-bin` | `guix search amdvlk` |
-| `aml` | `guix search aml` |
-| `amneziawg-dkms` | `guix search amneziawg-dkms` |
-| `aom` | `guix search aom` |
-| `apache` | `guix search apache` |
-| `apparmor` | `guix search apparmor` |
-| `appstream` | `guix search appstream` |
-| `appstream-qt` | `guix search appstream-qt` |
-| `apr` | `guix search apr` |
-| `apr-util` | `guix search apr-util` |
-| `aquamarine` | `guix search aquamarine` |
-| `archlinux-keyring` | `guix search archlinux-keyring` |
-| `argon2` | `guix search argon2` |
-| `aspell` | `guix search aspell` |
-| `at-spi2-core` | `guix search at-spi2-core` |
-| `atkmm` | `guix search atkmm` |
-| `attica` | `guix search attica` |
-| `attr` | `guix search attr` |
-| `audit` | `guix search audit` |
-| `augeas` | `guix search augeas` |
-| `aurorae` | `guix search aurorae` |
-| `autoconf` | `guix search autoconf` |
-| `autoconf-archive` | `guix search autoconf-archive` |
-| `automake` | `guix search automake` |
-| `ayatana-ido` | `guix search ayatana-ido` |
-| `babl` | `guix search babl` |
-| `baloo` | `guix search baloo` |
-| `base` | `guix search base` |
-| `bash-completion` | `guix search bash-completion` |
-| `bcc` | `guix search bcc` |
-| `bcg729` | `guix search bcg729` |
-| `bind` | `guix search bind` |
-| `binutils` | `guix search binutils` |
-| `blas` | `guix search blas` |
-| `blosc` | `guix search blosc` |
-| `blueprint-compiler` | `guix search blueprint-compiler` |
-| `bluez` | `guix search bluez` |
-| `bluez-obex` | `guix search bluez-obex` |
-| `bolt` | `guix search bolt` |
-| `botan` | `guix search botan` |
-| `bottles` | `guix search bottles` |
-| `bpf` | `guix search bpf` |
-| `bpftrace` | `guix search bpftrace` |
-| `brltty` | `guix search brltty` |
-| `brotli` | `guix search brotli` |
-| `bubblewrap` | `guix search bubblewrap` |
-| `bucklespring` | `guix search bucklespring` |
-| `c-ares` | `guix search c-ares` |
-| `ca-certificates` | `guix search ca-certificates` |
-| `ca-certificates-mozilla` | `guix search ca-certificates-mozilla` |
-| `cabal-install` | `guix search cabal-install` |
-| `cabextract` | `guix search cabextract` |
-| `cachyos-ananicy-rules` | `guix search cachyos-ananicy-rules` |
-| `cachyos-settings` | `guix search cachyos-settings` |
-| `cairo` | `guix search cairo` |
-| `cairomm` | `guix search cairomm` |
-| `cairomm-1.16` | `guix search cairomm-1.16` |
-| `capnproto` | `guix search capnproto` |
-| `capstone` | `guix search capstone` |
-| `catatonit` | `guix search catatonit` |
-| `cblas` | `guix search cblas` |
-| `ccid` | `guix search ccid` |
-| `cdparanoia` | `guix search cdparanoia` |
-| `cdrtools` | `guix search cdrtools` |
-| `ceres-solver` | `guix search ceres-solver` |
-| `chawan` | `guix search chawan` |
-| `chmlib` | `guix search chmlib` |
-| `choose` | `guix search choose` |
-| `chromium` | nonguix/flatpak |
-| `clang` | `guix search clang` |
-| `clang21` | `guix search clang21` |
-| `claude-code` | AUR/manual — not in Guix |
-| `cloudflare-speed-cli` | `guix search cloudflare-speed-cli` |
-| `clucene` | `guix search clucene` |
-| `cmark-gfm` | `guix search cmark-gfm` |
-| `colord` | `guix search colord` |
-| `colord-gtk4` | `guix search colord-gtk4` |
-| `colord-sane` | `guix search colord-sane` |
-| `compiler-rt` | `guix search compiler-rt` |
-| `compiler-rt21` | `guix search compiler-rt21` |
-| `composefs` | `guix search composefs` |
-| `confuse` | `guix search confuse` |
-| `conmon` | `guix search conmon` |
-| `containerd` | `guix search containerd` |
-| `convertlit` | `guix search convertlit` |
-| `convmv` | `guix search convmv` |
-| `corectrl` | `guix search corectrl` |
-| `cosmic-comp` | `guix search cosmic-comp` |
-| `cosmic-greeter` | `guix search cosmic-greeter` |
-| `cosmic-icon-theme` | `guix search cosmic-icon-theme` |
-| `cppdap` | `guix search cppdap` |
-| `cpptrace` | `guix search cpptrace` |
-| `cracklib` | `guix search cracklib` |
-| `cryptsetup` | `guix search cryptsetup` |
-| `cunit` | `guix search cunit` |
-| `cups-filters` | `guix search cups-filters` |
-| `cups-pk-helper` | `guix search cups-pk-helper` |
-| `curlie` | `guix search curlie` |
-| `cython` | `guix search cython` |
-| `dav1d` | `guix search dav1d` |
-| `db5.3` | `guix search db5.3` |
-| `dbus` | `guix search dbus` |
-| `dbus-broker` | `guix search dbus-broker` |
-| `dbus-broker-units` | `guix search dbus-broker-units` |
-| `dbus-glib` | `guix search dbus-glib` |
-| `dbus-units` | `guix search dbus-units` |
-| `dconf` | `guix search dconf` |
-| `ddccontrol-db-git` | `guix search ddccontrol-db` |
-| `ddcutil` | `guix search ddcutil` |
-| `debugedit` | `guix search debugedit` |
-| `debuginfod` | `guix search debuginfod` |
-| `default-cursors` | `guix search default-cursors` |
-| `deno` | `guix search deno` |
-| `device-mapper` | `guix search device-mapper` |
-| `dhcpcd` | `guix search dhcpcd` |
-| `directx-shader-compiler` | `guix search directx-shader-compiler` |
-| `disarchive` | `guix search disarchive` |
-| `djvulibre` | `guix search djvulibre` |
-| `dkms` | `guix search dkms` |
-| `dmidecode` | AUR/manual — not in Guix |
-| `dnssec-anchors` | `guix search dnssec-anchors` |
-| `docbook-xml` | `guix search docbook-xml` |
-| `docbook-xsl` | `guix search docbook-xsl` |
-| `dos2unix` | `guix search dos2unix` |
-| `dotconf` | `guix search dotconf` |
-| `double-conversion` | `guix search double-conversion` |
-| `doxygen` | `guix search doxygen` |
-| `draco` | `guix search draco` |
-| `dtc` | `guix search dtc` |
-| `duktape` | `guix search duktape` |
-| `dumb` | `guix search dumb` |
-| `dvisvgm` | `guix search dvisvgm` |
-| `editorconfig-core-c` | `guix search editorconfig-core-c` |
-| `edk2-ovmf` | `guix search edk2-ovmf` |
-| `egl-wayland` | `guix search egl-wayland` |
-| `eglexternalplatform` | `guix search eglexternalplatform` |
-| `elfutils` | `guix search elfutils` |
-| `ell` | `guix search ell` |
-| `embree` | `guix search embree` |
-| `enca` | `guix search enca` |
-| `enchant` | `guix search enchant` |
-| `espeak-ng` | `guix search espeak-ng` |
-| `etckeeper` | `guix search etckeeper` |
-| `evolution-data-server` | `guix search evolution-data-server` |
-| `exempi` | `guix search exempi` |
-| `exfatprogs` | `guix search exfatprogs` |
-| `exiv2` | `guix search exiv2` |
-| `expat` | `guix search expat` |
-| `extra-cmake-modules` | `guix search extra-cmake-modules` |
-| `faac` | `guix search faac` |
-| `faad2` | `guix search faad2` |
-| `fakeroot` | `guix search fakeroot` |
-| `fastfetch` | `guix search fastfetch` |
-| `ffcall` | `guix search ffcall` |
-| `ffmpeg4.4` | `guix search ffmpeg4.4` |
-| `fftw` | `guix search fftw` |
-| `file` | `guix search file` |
-| `filesystem` | `guix search filesystem` |
-| `firewalld` | `guix search firewalld` |
-| `fish` | `guix search fish` |
-| `flac` | `guix search flac` |
-| `flashrom` | `guix search flashrom` |
-| `flatpak` | `guix search flatpak` |
-| `fluidsynth` | `guix search fluidsynth` |
-| `fmt` | `guix search fmt` |
-| `folks` | `guix search folks` |
-| `fontconfig` | `guix search fontconfig` |
-| `fontforge` | `guix search fontforge` |
-| `fortune-mod` | `guix search fortune-mod` |
-| `frameworkintegration` | `guix search frameworkintegration` |
-| `freeglut` | `guix search freeglut` |
-| `freetype2` | `guix search freetype2` |
-| `fribidi` | `guix search fribidi` |
-| `fstrm` | `guix search fstrm` |
-| `fuse2` | `guix search fuse2` |
-| `fuse3` | `guix search fuse3` |
-| `fvs2` | `guix search fvs2` |
-| `fwupd-efi` | `guix search fwupd-efi` |
-| `gallery-dl` | `guix search gallery-dl` |
-| `ganv` | `guix search ganv` |
-| `gcc` | `guix search gcc` |
-| `gcr` | `guix search gcr` |
-| `gcr-4` | `guix search gcr-4` |
-| `gdk-pixbuf2` | `guix search gdk-pixbuf2` |
-| `gdm` | `guix search gdm` |
-| `gegl` | `guix search gegl` |
-| `gendesk` | `guix search gendesk` |
-| `geoclue` | `guix search geoclue` |
-| `geocode-glib` | AUR/manual — not in Guix |
-| `geoip-database` | `guix search geoip-database` |
-| `gettext` | `guix search gettext` |
-| `gexiv2` | `guix search gexiv2` |
-| `gflags` | `guix search gflags` |
-| `gfxstream` | `guix search gfxstream` |
-| `ghc` | `guix search ghc` |
-| `ghostscript` | `guix search ghostscript` |
-| `ghostty-shell-integration` | `guix search ghostty-shell-integration` |
-| `ghostty-terminfo` | `guix search ghostty-terminfo` |
-| `giflib` | `guix search giflib` |
-| `girara` | `guix search girara` |
-| `gist` | `guix search gist` |
-| `git-extras` | `guix search git-extras` |
-| `git-filter-repo` | `guix search git-filter-repo` |
-| `github-cli` | `guix search github-cli` |
-| `gitlogue` | `guix search gitlogue` |
-| `gjs` | `guix search gjs` |
-| `glaze` | `guix search glaze` |
-| `glew` | `guix search glew` |
-| `glfw` | `guix search glfw` |
-| `glib-networking` | `guix search glib-networking` |
-| `glib-perl` | `guix search glib-perl` |
-| `glib2` | `guix search glib2` |
-| `glibc` | `guix search glibc` |
-| `glibmm` | `guix search glibmm` |
-| `glibmm-2.68` | `guix search glibmm-2.68` |
-| `glm` | `guix search glm` |
-| `glslang` | `guix search glslang` |
-| `glu` | `guix search glu` |
-| `glusterfs` | `guix search glusterfs` |
-| `glycin` | `guix search glycin` |
-| `glycin-gtk4` | `guix search glycin-gtk4` |
-| `gmime3` | `guix search gmime3` |
-| `gmp` | `guix search gmp` |
-| `gnome-app-list` | `guix search gnome-app-list` |
-| `gnome-autoar` | `guix search gnome-autoar` |
-| `gnome-backgrounds` | `guix search gnome-backgrounds` |
-| `gnome-bluetooth-3.0` | `guix search gnome-bluetooth-3.0` |
-| `gnome-characters` | `guix search gnome-characters` |
-| `gnome-clocks` | `guix search gnome-clocks` |
-| `gnome-color-manager` | `guix search gnome-color-manager` |
-| `gnome-connections` | `guix search gnome-connections` |
-| `gnome-console` | `guix search gnome-console` |
-| `gnome-contacts` | `guix search gnome-contacts` |
-| `gnome-desktop` | `guix search gnome-desktop` |
-| `gnome-desktop-4` | `guix search gnome-desktop-4` |
-| `gnome-font-viewer` | `guix search gnome-font-viewer` |
-| `gnome-keybindings` | `guix search gnome-keybindings` |
-| `gnome-logs` | `guix search gnome-logs` |
-| `gnome-maps` | `guix search gnome-maps` |
-| `gnome-menus` | `guix search gnome-menus` |
-| `gnome-music` | `guix search gnome-music` |
-| `gnome-online-accounts` | `guix search gnome-online-accounts` |
-| `gnome-remote-desktop` | `guix search gnome-remote-desktop` |
-| `gnome-session` | `guix search gnome-session` |
-| `gnome-settings-daemon` | `guix search gnome-settings-daemon` |
-| `gnome-shell` | `guix search gnome-shell` |
-| `gnome-software` | `guix search gnome-software` |
-| `gnome-system-monitor` | `guix search gnome-system-monitor` |
-| `gnome-tour` | `guix search gnome-tour` |
-| `gnome-user-share` | `guix search gnome-user-share` |
-| `gnome-weather` | `guix search gnome-weather` |
-| `gnulib-l10n` | `guix search gnulib-l10n` |
-| `gnustep-base` | `guix search gnustep-base` |
-| `gnutls` | `guix search gnutls` |
-| `goaccess` | `guix search goaccess` |
-| `gobject-introspection` | `guix search gobject-introspection` |
-| `gobject-introspection-runtime` | `guix search gobject-introspection-runtime` |
-| `goimapnotify` | `guix search goimapnotify` |
-| `gom` | `guix search gom` |
-| `google-chrome` | nonguix/flatpak |
-| `google-glog` | `guix search google-glog` |
-| `goose-desktop-bin` | `guix search goose-desktop` |
-| `gperf` | `guix search gperf` |
-| `gperftools` | `guix search gperftools` |
-| `gpgme` | `guix search gpgme` |
-| `gpgmepp` | `guix search gpgmepp` |
-| `gpm` | `guix search gpm` |
-| `grafana` | `guix search grafana` |
-| `graphene` | `guix search graphene` |
-| `graphite` | `guix search graphite` |
-| `greetd-agreety` | `guix search greetd-agreety` |
-| `grilo` | `guix search grilo` |
-| `grilo-plugins` | `guix search grilo-plugins` |
-| `groff` | `guix search groff` |
-| `gsettings-desktop-schemas` | `guix search gsettings-desktop-schemas` |
-| `gsettings-system-schemas` | `guix search gsettings-system-schemas` |
-| `gsfonts` | `guix search gsfonts` |
-| `gsl` | `guix search gsl` |
-| `gsm` | `guix search gsm` |
-| `gsound` | `guix search gsound` |
-| `gspell` | `guix search gspell` |
-| `gssdp` | `guix search gssdp` |
-| `gtest` | `guix search gtest` |
-| `gtk-doc` | `guix search gtk-doc` |
-| `gtk-engine-murrine` | `guix search gtk-engine-murrine` |
-| `gtk-engines` | `guix search gtk-engines` |
-| `gtk-layer-shell` | `guix search gtk-layer-shell` |
-| `gtk-update-icon-cache` | `guix search gtk-update-icon-cache` |
-| `gtk-vnc` | `guix search gtk-vnc` |
-| `gtk2` | `guix search gtk2` |
-| `gtk3` | `guix search gtk3` |
-| `gtk4` | `guix search gtk4` |
-| `gtk4-layer-shell` | `guix search gtk4-layer-shell` |
-| `gtkmm` | `guix search gtkmm` |
-| `gtkmm-4.0` | `guix search gtkmm-4.0` |
-| `gtkmm3` | `guix search gtkmm3` |
-| `gtksourceview4` | `guix search gtksourceview4` |
-| `gtksourceview5` | `guix search gtksourceview5` |
-| `gts` | `guix search gts` |
-| `guile-bytestructures` | `guix search guile-bytestructures` |
-| `guile-bzip2` | `guix search guile-bzip2` |
-| `guile-gcrypt` | `guix search guile-gcrypt` |
-| `guile-gnutls` | `guix search guile-gnutls` |
-| `guile-json` | `guix search guile-json` |
-| `guile-lzma` | `guix search guile-lzma` |
-| `guile-quickcheck` | `guix search guile-quickcheck` |
-| `guile-semver` | `guix search guile-semver` |
-| `guile-ssh` | `guix search guile-ssh` |
-| `gumbo-parser` | `guix search gumbo-parser` |
-| `gupnp` | `guix search gupnp` |
-| `gupnp-av` | `guix search gupnp-av` |
-| `gupnp-dlna` | `guix search gupnp-dlna` |
-| `gupnp-igd` | `guix search gupnp-igd` |
-| `gvfs` | `guix search gvfs` |
-| `gvfs-afc` | `guix search gvfs-afc` |
-| `gvfs-dnssd` | `guix search gvfs-dnssd` |
-| `gvfs-goa` | `guix search gvfs-goa` |
-| `gvfs-gphoto2` | `guix search gvfs-gphoto2` |
-| `gvfs-mtp` | `guix search gvfs-mtp` |
-| `gvfs-nfs` | `guix search gvfs-nfs` |
-| `gvfs-onedrive` | `guix search gvfs-onedrive` |
-| `gvfs-smb` | `guix search gvfs-smb` |
-| `gvfs-wsdd` | `guix search gvfs-wsdd` |
-| `gweather-locations` | `guix search gweather-locations` |
-| `handlr-regex` | `guix search handlr-regex` |
-| `harfbuzz` | `guix search harfbuzz` |
-| `harfbuzz-icu` | `guix search harfbuzz-icu` |
-| `haskell-githash` | `guix search haskellhash` |
-| `hdf5` | `guix search hdf5` |
-| `help2man` | `guix search help2man` |
-| `helvum` | `guix search helvum` |
-| `hicolor-icon-theme` | `guix search hicolor-icon-theme` |
-| `hidapi` | `guix search hidapi` |
-| `highway` | `guix search highway` |
-| `hiredis` | `guix search hiredis` |
-| `hivex` | `guix search hivex` |
-| `hslua-cli` | `guix search hslua-cli` |
-| `htmlq` | `guix search htmlq` |
-| `httpie` | `guix search httpie` |
-| `hunspell` | `guix search hunspell` |
-| `hunspell-ru` | `guix search hunspell-ru` |
-| `hw-probe` | `guix search hw-probe` |
-| `hwdata` | `guix search hwdata` |
-| `hwloc` | `guix search hwloc` |
-| `hyphen` | `guix search hyphen` |
-| `hyprcursor` | `guix search hyprcursor` |
-| `hyprgraphics` | `guix search hyprgraphics` |
-| `hyprland-guiutils` | `guix search hyprland-guiutils` |
-| `hyprland-qt-support` | `guix search hyprland-qt-support` |
-| `hyprlang` | `guix search hyprlang` |
-| `hyprpolkitagent` | `guix search hyprpolkitagent` |
-| `hyprquickframe-git` | `guix search hyprquickframe` |
-| `hyprtoolkit` | `guix search hyprtoolkit` |
-| `hyprutils` | `guix search hyprutils` |
-| `hyprwayland-scanner` | `guix search hyprwayland-scanner` |
-| `hyprwire` | `guix search hyprwire` |
-| `iana-etc` | `guix search iana-etc` |
-| `ibus` | `guix search ibus` |
-| `icoextract` | `guix search icoextract` |
-| `icu` | `guix search icu` |
-| `id3lib` | `guix search id3lib` |
-| `iio-sensor-proxy` | `guix search iio-sensor-proxy` |
-| `ijs` | `guix search ijs` |
-| `imath` | `guix search imath` |
-| `imlib2` | `guix search imlib2` |
-| `iniparser` | `guix search iniparser` |
-| `intel-oneapi-openmp` | `guix search intel-oneapi-openmp` |
-| `intel-oneapi-tbb` | `guix search intel-oneapi-tbb` |
-| `intel-oneapi-tcm` | `guix search intel-oneapi-tcm` |
-| `intel-oneapi-umf` | `guix search intel-oneapi-umf` |
-| `inter-font` | `guix search inter-font` |
-| `intltool` | `guix search intltool` |
-| `ioping` | `guix search ioping` |
-| `iosevka-neg-fonts` | `guix search iosevka-neg-fonts` |
-| `iotop-c` | `guix search iotop-c` |
-| `iperf3` | `guix search iperf3` |
-| `iputils` | `guix search iputils` |
-| `ipython` | `guix search ipython` |
-| `iso-codes` | AUR/manual — not in Guix |
-| `itstool` | `guix search itstool` |
-| `iwd` | `guix search iwd` |
-| `jansson` | `guix search jansson` |
-| `jasper` | `guix search jasper` |
-| `jbig2dec` | `guix search jbig2dec` |
-| `jbigkit` | `guix search jbigkit` |
-| `jdk8-openjdk` | `guix search jdk8-openjdk` |
-| `jemalloc` | `guix search jemalloc` |
-| `jfsutils` | `guix search jfsutils` |
-| `jimtcl` | `guix search jimtcl` |
-| `jre8-openjdk` | `guix search jre8-openjdk` |
-| `jre8-openjdk-headless` | `guix search jre8-openjdk-headless` |
-| `js140` | `guix search js140` |
-| `json-c` | `guix search json-c` |
-| `json-glib` | `guix search json-glib` |
-| `jsoncpp` | `guix search jsoncpp` |
-| `judy` | `guix search judy` |
-| `jupyter-nbclient` | `guix search jupyter-nbclient` |
-| `jupyter-nbconvert` | `guix search jupyter-nbconvert` |
-| `jupyter-nbformat` | `guix search jupyter-nbformat` |
-| `jupyter-notebook-shim` | `guix search jupyter-notebook-shim` |
-| `jupyter-server` | `guix search jupyter-server` |
-| `jupyterlab` | `guix search jupyterlab` |
-| `jupyterlab-pygments` | `guix search jupyterlab-pygments` |
-| `kactivitymanagerd` | `guix search kactivitymanagerd` |
-| `karchive` | `guix search karchive` |
-| `kauth` | `guix search kauth` |
-| `kbookmarks` | `guix search kbookmarks` |
-| `kcmutils` | `guix search kcmutils` |
-| `kcodecs` | AUR/manual — not in Guix |
-| `kcolorscheme` | `guix search kcolorscheme` |
-| `kcompletion` | `guix search kcompletion` |
-| `kconfig` | `guix search kconfig` |
-| `kconfigwidgets` | `guix search kconfigwidgets` |
-| `kcoreaddons` | `guix search kcoreaddons` |
-| `kcrash` | `guix search kcrash` |
-| `kdbusaddons` | `guix search kdbusaddons` |
-| `kdeclarative` | `guix search kdeclarative` |
-| `kdecoration` | `guix search kdecoration` |
-| `kded` | `guix search kded` |
-| `kdesu` | `guix search kdesu` |
-| `kdnssd` | `guix search kdnssd` |
-| `kdoctools` | `guix search kdoctools` |
-| `kdsoap` | `guix search kdsoap` |
-| `kdsoap-ws-discovery-client` | `guix search kdsoap-ws-discovery-client` |
-| `keyutils` | `guix search keyutils` |
-| `kfilemetadata` | `guix search kfilemetadata` |
-| `kglobalaccel` | `guix search kglobalaccel` |
-| `kglobalacceld` | `guix search kglobalacceld` |
-| `kguiaddons` | `guix search kguiaddons` |
-| `kholidays` | `guix search kholidays` |
-| `ki18n` | `guix search ki18n` |
-| `kiconthemes` | `guix search kiconthemes` |
-| `kidletime` | `guix search kidletime` |
-| `kio` | `guix search kio` |
-| `kio-extras` | `guix search kio-extras` |
-| `kio-fuse` | `guix search kio-fuse` |
-| `kirigami` | `guix search kirigami` |
-| `kirigami-addons` | `guix search kirigami-addons` |
-| `kitemmodels` | `guix search kitemmodels` |
-| `kitemviews` | `guix search kitemviews` |
-| `kitty-shell-integration` | `guix search kitty-shell-integration` |
-| `kitty-terminfo` | `guix search kitty-terminfo` |
-| `kjobwidgets` | `guix search kjobwidgets` |
-| `kmenuedit` | `guix search kmenuedit` |
-| `kmon` | `guix search kmon` |
-| `knewstuff` | `guix search knewstuff` |
-| `knighttime` | `guix search knighttime` |
-| `knotifications` | `guix search knotifications` |
-| `knotifyconfig` | `guix search knotifyconfig` |
-| `kpackage` | `guix search kpackage` |
-| `kparts` | `guix search kparts` |
-| `kpipewire` | `guix search kpipewire` |
-| `kpty` | `guix search kpty` |
-| `kquickcharts` | `guix search kquickcharts` |
-| `krb5` | `guix search krb5` |
-| `krunner` | `guix search krunner` |
-| `kscreenlocker` | `guix search kscreenlocker` |
-| `kservice` | `guix search kservice` |
-| `kstatusnotifieritem` | `guix search kstatusnotifieritem` |
-| `ksvg` | `guix search ksvg` |
-| `ksystemstats` | `guix search ksystemstats` |
-| `ktexteditor` | `guix search ktexteditor` |
-| `ktextwidgets` | `guix search ktextwidgets` |
-| `kunitconversion` | `guix search kunitconversion` |
-| `kuserfeedback` | `guix search kuserfeedback` |
-| `kvantum` | `guix search kvantum` |
-| `kvantum-qt5` | `guix search kvantum-qt5` |
-| `kwallet` | `guix search kwallet` |
-| `kwayland` | `guix search kwayland` |
-| `kwidgetsaddons` | `guix search kwidgetsaddons` |
-| `kxmlgui` | `guix search kxmlgui` |
-| `kyotocabinet` | `guix search kyotocabinet` |
-| `l-smash` | `guix search l-smash` |
-| `lame` | `guix search lame` |
-| `lapack` | `guix search lapack` |
-| `layer-shell-qt` | `guix search layer-shell-qt` |
-| `lcms2` | `guix search lcms2` |
-| `ldb` | `guix search ldb` |
-| `ldns` | `guix search ldns` |
-| `leancrypto` | `guix search leancrypto` |
-| `lensfun` | `guix search lensfun` |
-| `leptonica` | `guix search leptonica` |
-| `level-zero-loader` | `guix search level-zero-loader` |
-| `licenses` | `guix search licenses` |
-| `lilv` | `guix search lilv` |
-| `linux` | `guix search linux` |
-| `liquidctl` | `guix search liquidctl` |
-| `lld` | `guix search lld` |
-| `lldb` | `guix search lldb` |
-| `llhttp` | `guix search llhttp` |
-| `lm_sensors` | `guix search lm_sensors` |
-| `lmdb` | `guix search lmdb` |
-| `localsearch` | `guix search localsearch` |
-| `log4cplus` | `guix search log4cplus` |
-| `loupe` | `guix search loupe` |
-| `lpsolve` | `guix search lpsolve` |
-| `lrzip` | `guix search lrzip` |
-| `lsb-release` | `guix search lsb-release` |
-| `lsp-plugins-clap` | `guix search lsp-plugins-clap` |
-| `lsp-plugins-gst` | `guix search lsp-plugins-gst` |
-| `lsp-plugins-ladspa` | `guix search lsp-plugins-ladspa` |
-| `lsp-plugins-lv2` | `guix search lsp-plugins-lv2` |
-| `lsp-plugins-standalone` | `guix search lsp-plugins-standalone` |
-| `lsp-plugins-vst` | `guix search lsp-plugins-vst` |
-| `lsp-plugins-vst3` | `guix search lsp-plugins-vst3` |
-| `lsscsi` | `guix search lsscsi` |
-| `lua-language-server` | `guix search lua-language-server` |
-| `lua51-lpeg` | `guix search lua51-lpeg` |
-| `lua53` | `guix search lua53` |
-| `lua54` | `guix search lua54` |
-| `lua54-lpeg` | `guix search lua54-lpeg` |
-| `luajit` | `guix search luajit` |
-| `lv2` | `guix search lv2` |
-| `lz4` | `guix search lz4` |
-| `lzlib` | `guix search lzlib` |
-| `lzo` | `guix search lzo` |
-| `lzop` | `guix search lzop` |
-| `mailcap` | `guix search mailcap` |
-| `malcontent` | `guix search malcontent` |
-| `mallard-ducktype` | `guix search mallard-ducktype` |
-| `man-pages` | `guix search man-pages` |
-| `mandoc` | `guix search mandoc` |
-| `manifold` | `guix search manifold` |
-| `materialx` | `guix search materialx` |
-| `matugen` | `guix search matugen` |
-| `mbedtls` | `guix search mbedtls` |
-| `md4c` | `guix search md4c` |
-| `mdadm` | `guix search mdadm` |
-| `media-player-info` | `guix search media-player-info` |
-| `menu-cache` | `guix search menu-cache` |
-| `milou` | `guix search milou` |
-| `miniupnpc` | `guix search miniupnpc` |
-| `minizip` | `guix search minizip` |
-| `minizip-ng` | `guix search minizip-ng` |
-| `mjpegtools` | `guix search mjpegtools` |
-| `mkinitcpio` | `guix search mkinitcpio` |
-| `mkinitcpio-busybox` | `guix search mkinitcpio-busybox` |
-| `mobile-broadband-provider-info` | `guix search mobile-broadband-provider-info` |
-| `mod_dnssd` | `guix search mod_dnssd` |
-| `mpdecimal` | `guix search mpdecimal` |
-| `mpdris2-git` | `guix search mpdris2` |
-| `mpfr` | `guix search mpfr` |
-| `mpg123` | `guix search mpg123` |
-| `msgpack-c` | `guix search msgpack-c` |
-| `msgraph` | `guix search msgraph` |
-| `mtdev` | `guix search mtdev` |
-| `mtools` | `guix search mtools` |
-| `mujs` | `guix search mujs` |
-| `muparser` | `guix search muparser` |
-| `mutter` | `guix search mutter` |
-| `mypaint-brushes` | `guix search mypaint-brushes` |
-| `mypaint-brushes1` | `guix search mypaint-brushes1` |
-| `nanobind` | `guix search nanobind` |
-| `nasm` | `guix search nasm` |
-| `ncurses` | `guix search ncurses` |
-| `ndctl` | `guix search ndctl` |
-| `neatvnc` | `guix search neatvnc` |
-| `neg-pretty-printer` | `guix search neg-pretty-printer` |
-| `neon` | `guix search neon` |
-| `neovim-remote` | `guix search neovim-remote` |
-| `net-snmp` | `guix search net-snmp` |
-| `netavark` | `guix search netavark` |
-| `netpbm` | `guix search netpbm` |
-| `nettle` | `guix search nettle` |
-| `networkmanager` | `guix search networkmanager` |
-| `networkmanager-openvpn` | `guix search networkmanager-openvpn` |
-| `networkmanager-qt` | `guix search networkmanager-qt` |
-| `networkmanager-vpn-plugin-openvpn` | `guix search networkmanager-vpn-plugin-openvpn` |
-| `nlohmann-json` | `guix search nlohmann-json` |
-| `nm-connection-editor` | `guix search nm-connection-editor` |
-| `no-more-secrets` | `guix search no-more-secrets` |
-| `nodejs` | `guix search nodejs` |
-| `nodejs-nopt` | `guix search nodejs-nopt` |
-| `notmuch` | `guix search notmuch` |
-| `notmuch-runtime` | `guix search notmuch-runtime` |
-| `npth` | `guix search npth` |
-| `nspr` | `guix search nspr` |
-| `nss` | `guix search nss` |
-| `ntfs-3g` | `guix search ntfs-3g` |
-| `ntfsprogs` | `guix search ntfsprogs` |
-| `numactl` | `guix search numactl` |
-| `nuspell` | `guix search nuspell` |
-| `obs-studio` | `guix search obs-studio` |
-| `ocean-sound-theme` | `guix search ocean-sound-theme` |
-| `ocl-icd` | `guix search ocl-icd` |
-| `ollama-vulkan` | `guix search ollama-vulkan` |
-| `onetbb` | `guix search onetbb` |
-| `oniguruma` | `guix search oniguruma` |
-| `openal` | `guix search openal` |
-| `openblas` | `guix search openblas` |
-| `openbsd-netcat` | `guix search openbsd-netcat` |
-| `opencode` | AUR/manual — not in Guix |
-| `opencolorio` | `guix search opencolorio` |
-| `opencore-amr` | `guix search opencore-amr` |
-| `openexr` | `guix search openexr` |
-| `openh264` | `guix search openh264` |
-| `openimagedenoise` | `guix search openimagedenoise` |
-| `openimageio` | `guix search openimageio` |
-| `openjpeg2` | `guix search openjpeg2` |
-| `openjph` | `guix search openjph` |
-| `openocd` | `guix search openocd` |
-| `openpgl` | `guix search openpgl` |
-| `openrgb` | `guix search openrgb` |
-| `openshadinglanguage` | `guix search openshadinglanguage` |
-| `openssl` | `guix search openssl` |
-| `opensubdiv` | `guix search opensubdiv` |
-| `openvdb` | `guix search openvdb` |
-| `openvpn` | `guix search openvpn` |
-| `openxr` | `guix search openxr` |
-| `optiscaler-universal` | `guix search optiscaler-universal` |
-| `opus` | `guix search opus` |
-| `opusfile` | `guix search opusfile` |
-| `orc` | `guix search orc` |
-| `orca` | `guix search orca` |
-| `osinfo-db` | `guix search osinfo-db` |
-| `ostree` | `guix search ostree` |
-| `p11-kit` | `guix search p11-kit` |
-| `pacman` | `guix search pacman` |
-| `pacman-contrib` | `guix search pacman-contrib` |
-| `pacman-mirrorlist` | `guix search pacman-mirrorlist` |
-| `pacutils` | `guix search pacutils` |
-| `pahole` | `guix search pahole` |
-| `pam` | `guix search pam` |
-| `pambase` | `guix search pambase` |
-| `pandoc-cli` | `guix search pandoc-cli` |
-| `pango` | `guix search pango` |
-| `pangomm` | `guix search pangomm` |
-| `pangomm-2.48` | `guix search pangomm-2.48` |
-| `paru` | `guix search paru` |
-| `paru-debug` | `guix search paru` |
-| `passim` | `guix search passim` |
-| `passt` | `guix search passt` |
-| `patchage` | `guix search patchage` |
-| `patool` | `guix search patool` |
-| `pcaudiolib` | `guix search pcaudiolib` |
-| `pcre` | `guix search pcre` |
-| `pcre2` | `guix search pcre2` |
-| `pcsc-perl` | `guix search pcsc-perl` |
-| `pcsclite` | `guix search pcsclite` |
-| `pdf2svg` | `guix search pdf2svg` |
-| `perf` | `guix search perf` |
-| `perl` | `guix search perl` |
-| `phodav` | `guix search phodav` |
-| `pinentry` | `guix search pinentry` |
-| `pipemixer-git` | `guix search pipemixer` |
-| `pipewire` | `guix search pipewire` |
-| `pipewire-alsa` | `guix search pipewire-alsa` |
-| `pipewire-audio` | `guix search pipewire-audio` |
-| `pipewire-jack` | `guix search pipewire-jack` |
-| `pipewire-pulse` | `guix search pipewire-pulse` |
-| `pixman` | `guix search pixman` |
-| `pkcs11-helper` | `guix search pkcs11-helper` |
-| `po4a` | `guix search po4a` |
-| `polkit` | `guix search polkit` |
-| `polkit-kde-agent` | `guix search polkit-kde-agent` |
-| `polkit-qt6` | `guix search polkit-qt6` |
-| `pop-icon-theme` | `guix search pop-icon-theme` |
-| `poppler` | `guix search poppler` |
-| `poppler-glib` | `guix search poppler-glib` |
-| `poppler-qt6` | `guix search poppler-qt6` |
-| `popt` | `guix search popt` |
-| `portaudio` | `guix search portaudio` |
-| `potrace` | `guix search potrace` |
-| `powerdevil` | `guix search powerdevil` |
-| `prettyping` | `guix search prettyping` |
-| `prison` | `guix search prison` |
-| `procps-ng` | `guix search procps-ng` |
-| `protobuf` | `guix search protobuf` |
-| `protobuf-c` | `guix search protobuf-c` |
-| `proton-ge-custom-bin` | `guix search proton-ge-custom` |
-| `proton-vpn-cli` | flatpak/manual |
-| `proton-vpn-daemon` | flatpak/manual |
-| `ptex` | `guix search ptex` |
-| `pugixml` | `guix search pugixml` |
-| `pup-bin` | `guix search pup` |
-| `pybind11` | `guix search pybind11` |
-| `pyside6` | `guix search pyside6` |
-| `pystring` | `guix search pystring` |
-| `python311` | `guix search python311` |
-| `qca-qt6` | `guix search qca-qt6` |
-| `qcoro` | `guix search qcoro` |
-| `qhull` | `guix search qhull` |
-| `qman` | `guix search qman` |
-| `qpdf` | `guix search qpdf` |
-| `qqc2-breeze-style` | `guix search qqc2-breeze-style` |
-| `qqc2-desktop-style` | `guix search qqc2-desktop-style` |
-| `qrcodegencpp-cmake` | AUR/manual — not in Guix |
-| `qt5ct` | `guix search qt5ct` |
-| `qt6ct` | `guix search qt6ct` |
-| `qt6pas` | `guix search qt6pas` |
-| `qtkeychain-qt6` | `guix search qtkeychain-qt6` |
-| `qtractor` | `guix search qtractor` |
-| `quazip-qt6` | `guix search quazip-qt6` |
-| `quickshell-git` | `guix search quickshell` |
-| `quickshell-overview-git` | `guix search quickshell-overview` |
-| `raise` | `guix search raise` |
-| `raise-debug` | `guix search raise` |
-| `rapidfuzz-cpp` | `guix search rapidfuzz-cpp` |
-| `raptor` | `guix search raptor` |
-| `rasqal` | `guix search rasqal` |
-| `rav1e` | `guix search rav1e` |
-| `raysession` | `guix search raysession` |
-| `rdma-core` | `guix search rdma-core` |
-| `re2` | `guix search re2` |
-| `readline` | `guix search readline` |
-| `realtime-privileges` | `guix search realtime-privileges` |
-| `rebuild-detector` | `guix search rebuild-detector` |
-| `recode` | AUR/manual — not in Guix |
-| `redland` | `guix search redland` |
-| `rhash` | `guix search rhash` |
-| `ripgrep-all` | `guix search ripgrep-all` |
-| `rmpc` | `guix search rmpc` |
-| `rnnoise` | `guix search rnnoise` |
-| `robin-map` | `guix search robin-map` |
-| `rofi` | `guix search rofi` |
-| `rpcbind` | `guix search rpcbind` |
-| `rtkit` | `guix search rtkit` |
-| `rtmpdump` | `guix search rtmpdump` |
-| `rubberband` | `guix search rubberband` |
-| `rubygems` | `guix search rubygems` |
-| `runc` | `guix search runc` |
-| `rutabaga-ffi` | `guix search rutabaga-ffi` |
-| `rygel` | `guix search rygel` |
-| `samba` | `guix search samba` |
-| `sane` | `guix search sane` |
-| `sassc` | `guix search sassc` |
-| `sbc` | `guix search sbc` |
-| `sbcl` | `guix search sbcl` |
-| `sc3-plugins` | `guix search sc3-plugins` |
-| `scc` | `guix search scc` |
-| `scdoc` | `guix search scdoc` |
-| `schedtool` | `guix search schedtool` |
-| `scons` | `guix search scons` |
-| `scx-scheds` | `guix search scx-scheds` |
-| `sdbus-cpp` | `guix search sdbus-cpp` |
-| `sdl2_image` | `guix search sdl2_image` |
-| `sdl2_mixer` | `guix search sdl2_mixer` |
-| `sdl2_ttf` | `guix search sdl2_ttf` |
-| `sdl3` | `guix search sdl3` |
-| `sdl3_ttf` | `guix search sdl3_ttf` |
-| `sdl_net` | `guix search sdl_net` |
-| `sdl_sound` | `guix search sdl_sound` |
-| `seabios` | `guix search seabios` |
-| `seatd` | `guix search seatd` |
-| `semver` | `guix search semver` |
-| `serd` | `guix search serd` |
-| `serf` | `guix search serf` |
-| `sfsexp` | `guix search sfsexp` |
-| `shaderc` | `guix search shaderc` |
-| `shared-mime-info` | `guix search shared-mime-info` |
-| `shiboken6` | `guix search shiboken6` |
-| `showtime` | `guix search showtime` |
-| `simde` | `guix search simde` |
-| `simdjson` | `guix search simdjson` |
-| `slang` | `guix search slang` |
-| `sleuthkit` | `guix search sleuthkit` |
-| `smbclient` | `guix search smbclient` |
-| `snappy` | `guix search snappy` |
-| `snapshot` | `guix search snapshot` |
-| `sndio` | `guix search sndio` |
-| `solid` | `guix search solid` |
-| `sonic-visualiser` | `guix search sonic-visualiser` |
-| `sonnet` | `guix search sonnet` |
-| `sord` | `guix search sord` |
-| `sound-theme-freedesktop` | `guix search sound-theme-freedesktop` |
-| `soundtouch` | `guix search soundtouch` |
-| `source-highlight` | `guix search source-highlight` |
-| `spandsp` | `guix search spandsp` |
-| `spdlog` | `guix search spdlog` |
-| `speech-dispatcher` | `guix search speech-dispatcher` |
-| `speex` | `guix search speex` |
-| `speexdsp` | `guix search speexdsp` |
-| `spice` | `guix search spice` |
-| `spice-gtk` | `guix search spice-gtk` |
-| `spice-protocol` | `guix search spice-protocol` |
-| `sqlcipher` | `guix search sqlcipher` |
-| `sqlite` | `guix search sqlite` |
-| `sratom` | `guix search sratom` |
-| `srt` | `guix search srt` |
-| `stack` | `guix search stack` |
-| `startup-notification` | `guix search startup-notification` |
-| `steam-devices` | flatpak |
-| `stk` | `guix search stk` |
-| `stress` | `guix search stress` |
-| `suitesparse` | `guix search suitesparse` |
-| `supercollider` | `guix search supercollider` |
-| `supermin` | `guix search supermin` |
-| `svt-av1` | `guix search svt-av1` |
-| `svt-hevc` | `guix search svt-hevc` |
-| `swayosd` | `guix search swayosd` |
-| `swtpm` | `guix search swtpm` |
-| `syndication` | `guix search syndication` |
-| `syntax-highlighting` | `guix search syntax-highlighting` |
-| `sysfsutils` | `guix search sysfsutils` |
-| `syslinux` | `guix search syslinux` |
-| `systemsettings` | `guix search systemsettings` |
-| `taglib` | `guix search taglib` |
-| `talloc` | `guix search talloc` |
-| `taplo-cli` | `guix search taplo-cli` |
-| `tcl` | `guix search tcl` |
-| `tdb` | `guix search tdb` |
-| `tecla` | `guix search tecla` |
-| `television` | `guix search television` |
-| `terminus-font` | `guix search terminus-font` |
-| `tesseract` | `guix search tesseract` |
-| `tesseract-data-eng` | `guix search tesseract-data-eng` |
-| `tesseract-data-osd` | `guix search tesseract-data-osd` |
-| `tesseract-data-rus` | `guix search tesseract-data-rus` |
-| `tevent` | `guix search tevent` |
-| `texinfo` | `guix search texinfo` |
-| `texlive-basic` | `guix search texlive-basic` |
-| `texlive-bin` | `guix search texlive` |
-| `texlive-langcyrillic` | `guix search texlive-langcyrillic` |
-| `texlive-latex` | `guix search texlive-latex` |
-| `texlive-latexextra` | `guix search texlive-latexextra` |
-| `texlive-latexrecommended` | `guix search texlive-latexrecommended` |
-| `texlive-pictures` | `guix search texlive-pictures` |
-| `themix-export-spotify-git` | flatpak |
-| `themix-full-git` | `guix search themix-full` |
-| `themix-gui-git` | `guix search themix-gui` |
-| `themix-icons-archdroid-git` | `guix search themix-icons-archdroid` |
-| `themix-icons-gnome-colors-git` | `guix search themix-icons-gnome-colors` |
-| `themix-icons-numix-git` | `guix search themix-icons-numix` |
-| `themix-icons-papirus-git` | `guix search themix-icons-papirus` |
-| `themix-icons-suru-plus-aspromauros-git` | `guix search themix-icons-suru-plus-aspromauros` |
-| `themix-icons-suru-plus-git` | `guix search themix-icons-suru-plus` |
-| `themix-import-images-git` | `guix search themix-import-images` |
-| `themix-plugin-base16-git` | `guix search themix-plugin-base16` |
-| `themix-theme-oomox-git` | `guix search themix-theme-oomox` |
-| `tinysparql` | `guix search tinysparql` |
-| `tinyxml2` | `guix search tinyxml2` |
-| `toilet` | `guix search toilet` |
-| `tomlplusplus` | `guix search tomlplusplus` |
-| `totem-pl-parser` | `guix search totem-pl-parser` |
-| `tpm2-tss` | `guix search tpm2-tss` |
-| `transmission-cli` | `guix search transmission-cli` |
-| `tree-sitter-c` | `guix search tree-sitter-c` |
-| `tree-sitter-cli` | `guix search tree-sitter-cli` |
-| `tree-sitter-lua` | `guix search tree-sitter-lua` |
-| `tree-sitter-markdown` | `guix search tree-sitter-markdown` |
-| `tree-sitter-query` | `guix search tree-sitter-query` |
-| `tree-sitter-vim` | `guix search tree-sitter-vim` |
-| `tree-sitter-vimdoc` | `guix search tree-sitter-vimdoc` |
-| `tslib` | `guix search tslib` |
-| `ttfautohint` | `guix search ttfautohint` |
-| `tumbler` | `guix search tumbler` |
-| `turbostat` | `guix search turbostat` |
-| `twolame` | `guix search twolame` |
-| `tzdata` | `guix search tzdata` |
-| `uchardet` | `guix search uchardet` |
-| `udisks2` | `guix search udisks2` |
-| `ufw` | `guix search ufw` |
-| `ugrep` | `guix search ugrep` |
-| `unarchiver` | `guix search unarchiver` |
-| `unbound` | `guix search unbound` |
-| `unibilium` | `guix search unibilium` |
-| `usbmuxd` | `guix search usbmuxd` |
-| `usbredir` | `guix search usbredir` |
-| `usd` | `guix search usd` |
-| `uthash` | `guix search uthash` |
-| `util-linux` | `guix search util-linux` |
-| `uvicorn` | `guix search uvicorn` |
-| `uwsm` | `guix search uwsm` |
-| `v2ray` | `guix search v2ray` |
-| `v2ray-domain-list-community` | `guix search v2ray-domain-list-community` |
-| `v2ray-geoip` | `guix search v2ray-geoip` |
-| `v2rayn-bin` | `guix search v2rayn` |
-| `vamp-plugin-sdk` | `guix search vamp-plugin-sdk` |
-| `vapoursynth` | `guix search vapoursynth` |
-| `vde2` | `guix search vde2` |
-| `vid.stab` | `guix search vid.stab` |
-| `vim-runtime` | `guix search vim-runtime` |
-| `virglrenderer` | `guix search virglrenderer` |
-| `virt-install` | `guix search virt-install` |
-| `virtiofsd` | `guix search virtiofsd` |
-| `vkbasalt-cli` | `guix search vkbasalt-cli` |
-| `vmaf` | `guix search vmaf` |
-| `volume_key` | `guix search volume_key` |
-| `vte3` | `guix search vte3` |
-| `vte4` | `guix search vte4` |
-| `w3m` | `guix search w3m` |
-| `wavpack` | `guix search wavpack` |
-| `wayland` | `guix search wayland` |
-| `wayland-protocols` | `guix search wayland-protocols` |
-| `webkit2gtk-4.1` | `guix search webkit2gtk-4.1` |
-| `webkitgtk-6.0` | `guix search webkitgtk-6.0` |
-| `webrtc-audio-processing` | `guix search webrtc-audio-processing` |
-| `webrtc-audio-processing-1` | `guix search webrtc-audio-processing-1` |
-| `wildmidi` | `guix search wildmidi` |
-| `wireless-regdb` | `guix search wireless-regdb` |
-| `wiremix` | `guix search wiremix` |
-| `wireshark-cli` | `guix search wireshark-cli` |
-| `witr-bin` | `guix search witr` |
-| `wlroots0.20` | `guix search wlroots0.20` |
-| `woff2` | `guix search woff2` |
-| `wolfssl` | `guix search wolfssl` |
-| `wpa_supplicant` | `guix search wpa_supplicant` |
-| `wsdd` | `guix search wsdd` |
-| `wxwidgets-gtk3` | `guix search wxwidgets-gtk3` |
-| `x264` | `guix search x264` |
-| `x265` | `guix search x265` |
-| `xapian-core` | `guix search xapian-core` |
-| `xcb-imdkit` | `guix search xcb-imdkit` |
-| `xcb-util` | `guix search xcb-util` |
-| `xcb-util-cursor` | `guix search xcb-util-cursor` |
-| `xcb-util-errors` | `guix search xcb-util-errors` |
-| `xcb-util-image` | `guix search xcb-util-image` |
-| `xcb-util-keysyms` | `guix search xcb-util-keysyms` |
-| `xcb-util-renderutil` | `guix search xcb-util-renderutil` |
-| `xcb-util-wm` | `guix search xcb-util-wm` |
-| `xcb-util-xrm` | `guix search xcb-util-xrm` |
-| `xdg-dbus-proxy` | `guix search xdg-dbus-proxy` |
-| `xdg-desktop-portal` | `guix search xdg-desktop-portal` |
-| `xdg-desktop-portal-gnome` | `guix search xdg-desktop-portal-gnome` |
-| `xdg-desktop-portal-gtk` | `guix search xdg-desktop-portal-gtk` |
-| `xdg-desktop-portal-kde` | `guix search xdg-desktop-portal-kde` |
-| `xdg-desktop-portal-termfilechooser-hunkyburrito-git` | `guix search xdg-desktop-portal-termfilechooser-hunkyburrito` |
-| `xdg-user-dirs-gtk` | `guix search xdg-user-dirs-gtk` |
-| `xmlsec` | `guix search xmlsec` |
-| `xorgproto` | `guix search xorgproto` |
-| `xvidcore` | `guix search xvidcore` |
-| `xxhash` | `guix search xxhash` |
-| `yajl` | `guix search yajl` |
-| `yaml-cpp` | `guix search yaml-cpp` |
-| `yandex-browser` | `guix search yandex-browser` |
-| `yara` | `guix search yara` |
-| `yelp-xsl` | `guix search yelp-xsl` |
-| `yt-dlp-ejs` | `guix search yt-dlp-ejs` |
-| `yyjson` | `guix search yyjson` |
-| `zbar` | `guix search zbar` |
-| `zenity` | `guix search zenity` |
-| `zeromq` | `guix search zeromq` |
-| `zimg` | `guix search zimg` |
-| `zint` | `guix search zint` |
-| `zita-convolver` | `guix search zita-convolver` |
-| `zix` | `guix search zix` |
-| `zlib-ng` | `guix search zlib-ng` |
-| `zmap` | `guix search zmap` |
-| `zram-generator` | `guix search zram-generator` |
-| `zvbi` | `guix search zvbi` |
-| `zxing-cpp` | `guix search zxing-cpp` |
-| `zziplib` | `guix search zziplib` |
+| Package | Status | Action |
+|---------|--------|--------|
+| `7zip` | ✅ installed | — |
+| `a52dec` | ❌ missing | check guix availability |
+| `aalib` | ❌ missing | check guix availability |
+| `aardvark-dns` | ❌ missing | check guix availability |
+| `abduco` | ✅ installed | — |
+| `abseil-cpp` | ❌ missing | check guix availability |
+| `accountsservice` | ❌ missing | check guix availability |
+| `acl` | ❌ missing | check guix availability |
+| `acpica` | ❌ missing | check guix availability |
+| `act-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `ada` | ❌ missing | check guix availability |
+| `advancecomp` | 🔧 custom channel | guix install -L cfg-channel |
+| `adw-gtk-theme` | ❌ missing | check guix availability |
+| `adwaita-cursors` | ❌ missing | check guix availability |
+| `adwaita-fonts` | ❌ missing | check guix availability |
+| `adwaita-icon-theme` | ❌ missing | check guix availability |
+| `adwaita-icon-theme-legacy` | ❌ missing | check guix availability |
+| `age` | ✅ installed | — |
+| `albumdetails` | 🔧 custom channel | guix install -L cfg-channel |
+| `albumdetails-debug` | 🔧 custom channel | guix install -L cfg-channel |
+| `alembic` | ❌ missing | check guix availability |
+| `aliae-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `alsa-card-profiles` | ❌ missing | check guix availability |
+| `alsa-plugins` | ❌ missing | check guix availability |
+| `alsa-topology-conf` | ❌ missing | check guix availability |
+| `alsa-ucm-conf` | ❌ missing | check guix availability |
+| `alure` | ❌ missing | check guix availability |
+| `amd-ucode` | ❌ missing | check guix availability |
+| `amdgpu-opengl-switcher-git` | ❌ missing | check guix availability |
+| `amdgpu-vulkan-switcher-git` | 🔧 custom channel | guix install -L cfg-channel |
+| `amdgpu_top` | ❌ missing | check guix availability |
+| `amdvlk-bin` | ❌ missing | check guix availability |
+| `aml` | ❌ missing | check guix availability |
+| `amneziawg-dkms` | ❌ missing | check guix availability |
+| `ananicy-cpp` | 🔧 custom channel | guix install -L cfg-channel |
+| `antigravity-tools-bin` | ❌ missing | check guix availability |
+| `aom` | ❌ missing | check guix availability |
+| `apache` | ❌ missing | check guix availability |
+| `apparmor` | ❌ missing | check guix availability |
+| `appstream` | ❌ missing | check guix availability |
+| `appstream-qt` | ❌ missing | check guix availability |
+| `apr` | ❌ missing | check guix availability |
+| `apr-util` | ❌ missing | check guix availability |
+| `aquamarine` | ❌ missing | check guix availability |
+| `archlinux-keyring` | ❌ missing | check guix availability |
+| `argon2` | ❌ missing | check guix availability |
+| `aria2` | ✅ installed | — |
+| `ark` | ✅ installed | — |
+| `asciinema` | ✅ installed | — |
+| `aspell` | ❌ missing | check guix availability |
+| `at-spi2-core` | ❌ missing | check guix availability |
+| `atkmm` | ❌ missing | check guix availability |
+| `atop` | ✅ installed | — |
+| `attica` | ❌ missing | check guix availability |
+| `attr` | ❌ missing | check guix availability |
+| `audit` | ❌ missing | check guix availability |
+| `augeas` | ❌ missing | check guix availability |
+| `aurorae` | ❌ missing | check guix availability |
+| `autoconf` | ❌ missing | check guix availability |
+| `autoconf-archive` | ❌ missing | check guix availability |
+| `automake` | ❌ missing | check guix availability |
+| `avahi` | ✅ installed | — |
+| `ayatana-ido` | ❌ missing | check guix availability |
+| `babashka-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `babl` | ❌ missing | check guix availability |
+| `baloo` | ❌ missing | check guix availability |
+| `bandwhich` | ❌ missing | check guix availability |
+| `base` | ❌ missing | check guix availability |
+| `bash` | ✅ installed | — |
+| `bash-completion` | ❌ missing | check guix availability |
+| `bat` | ✅ installed | — |
+| `bazecor` | 🔧 custom channel | guix install -L cfg-channel |
+| `bc` | ❌ missing | check guix availability |
+| `bcc` | ❌ missing | check guix availability |
+| `bcg729` | ❌ missing | check guix availability |
+| `beets` | ✅ installed | — |
+| `bind` | ❌ missing | check guix availability |
+| `binutils` | ❌ missing | check guix availability |
+| `bison` | ❌ missing | check guix availability |
+| `blas` | ❌ missing | check guix availability |
+| `blender` | ✅ installed | — |
+| `blosc` | ❌ missing | check guix availability |
+| `blueprint-compiler` | ❌ missing | check guix availability |
+| `bluez` | ❌ missing | check guix availability |
+| `bluez-obex` | ❌ missing | check guix availability |
+| `bolt` | ❌ missing | check guix availability |
+| `borg` | ✅ installed | — |
+| `botan` | ❌ missing | check guix availability |
+| `bottles` | ❌ missing | check guix availability |
+| `bottom` | ✅ installed | — |
+| `bpf` | ❌ missing | check guix availability |
+| `bpftrace` | ❌ missing | check guix availability |
+| `breeze` | ❌ missing | check guix availability |
+| `breeze-cursors` | ❌ missing | check guix availability |
+| `brltty` | ❌ missing | check guix availability |
+| `broot` | ❌ missing | check guix availability |
+| `brotli` | ❌ missing | check guix availability |
+| `btop` | ✅ installed | — |
+| `btrfs-progs` | ✅ installed | — |
+| `bubblewrap` | ❌ missing | check guix availability |
+| `bucklespring` | ❌ missing | check guix availability |
+| `bzip2` | ❌ missing | check guix availability |
+| `c-ares` | ❌ missing | check guix availability |
+| `ca-certificates` | ❌ missing | check guix availability |
+| `ca-certificates-mozilla` | ❌ missing | check guix availability |
+| `cabal-install` | ❌ missing | check guix availability |
+| `cabextract` | ❌ missing | check guix availability |
+| `cachyos-ananicy-rules` | ❌ missing | check guix availability |
+| `cachyos-settings` | ❌ missing | check guix availability |
+| `cage` | ✅ installed | — |
+| `cairo` | ❌ missing | check guix availability |
+| `cairomm` | ❌ missing | check guix availability |
+| `cairomm-1.16` | ❌ missing | check guix availability |
+| `capnproto` | ❌ missing | check guix availability |
+| `capstone` | ❌ missing | check guix availability |
+| `carapace-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `cargo-auditable` | ❌ missing | check guix availability |
+| `carla` | ✅ installed | — |
+| `catatonit` | ❌ missing | check guix availability |
+| `cava` | ✅ installed | — |
+| `cblas` | ❌ missing | check guix availability |
+| `ccid` | ❌ missing | check guix availability |
+| `cdparanoia` | ❌ missing | check guix availability |
+| `cdrtools` | ❌ missing | check guix availability |
+| `ceres-solver` | ❌ missing | check guix availability |
+| `chafa` | ✅ installed | — |
+| `chawan` | ❌ missing | check guix availability |
+| `chezmoi` | ✅ installed | — |
+| `chmlib` | ❌ missing | check guix availability |
+| `choose` | ❌ missing | check guix availability |
+| `chromaprint` | ✅ installed | — |
+| `chromium` | ❌ missing | check guix availability |
+| `clang` | ❌ missing | check guix availability |
+| `clang21` | ❌ missing | check guix availability |
+| `claude-code` | ❌ missing | check guix availability |
+| `cliphist` | ✅ installed | — |
+| `cloudflare-speed-cli` | ❌ missing | check guix availability |
+| `clucene` | ❌ missing | check guix availability |
+| `cmake` | ✅ installed | — |
+| `cmake-format` | ❌ missing | check guix availability |
+| `cmake-language-server` | ❌ missing | check guix availability |
+| `cmark-gfm` | ❌ missing | check guix availability |
+| `colord` | ❌ missing | check guix availability |
+| `colord-gtk4` | ❌ missing | check guix availability |
+| `colord-sane` | ❌ missing | check guix availability |
+| `compiler-rt` | ❌ missing | check guix availability |
+| `compiler-rt21` | ❌ missing | check guix availability |
+| `composefs` | ❌ missing | check guix availability |
+| `confuse` | ❌ missing | check guix availability |
+| `conmon` | ❌ missing | check guix availability |
+| `containerd` | ❌ missing | check guix availability |
+| `convertlit` | ❌ missing | check guix availability |
+| `convmv` | ❌ missing | check guix availability |
+| `corectrl` | ✅ installed | — |
+| `coreutils` | ❌ missing | check guix availability |
+| `cosmic-comp` | ❌ missing | check guix availability |
+| `cosmic-greeter` | ❌ missing | check guix availability |
+| `cosmic-icon-theme` | ❌ missing | check guix availability |
+| `cowsay` | ✅ installed | — |
+| `cpio` | ✅ installed | — |
+| `cppdap` | ❌ missing | check guix availability |
+| `cpptrace` | ❌ missing | check guix availability |
+| `cpufetch` | 🔧 custom channel | guix install -L cfg-channel |
+| `cpupower` | ✅ installed | — |
+| `cracklib` | ❌ missing | check guix availability |
+| `cryptsetup` | ❌ missing | check guix availability |
+| `ctop` | 🔧 custom channel | guix install -L cfg-channel |
+| `cunit` | ❌ missing | check guix availability |
+| `cups` | ✅ installed | — |
+| `cups-filters` | ❌ missing | check guix availability |
+| `cups-pk-helper` | ❌ missing | check guix availability |
+| `curl` | ✅ installed | — |
+| `curlie` | ❌ missing | check guix availability |
+| `cython` | ❌ missing | check guix availability |
+| `dash` | ✅ installed | — |
+| `dav1d` | ❌ missing | check guix availability |
+| `db5.3` | ❌ missing | check guix availability |
+| `dbus` | ❌ missing | check guix availability |
+| `dbus-broker` | ❌ missing | check guix availability |
+| `dbus-broker-units` | ❌ missing | check guix availability |
+| `dbus-glib` | ❌ missing | check guix availability |
+| `dbus-units` | ❌ missing | check guix availability |
+| `dcfldd` | 🔧 custom channel | guix install -L cfg-channel |
+| `dconf` | ❌ missing | check guix availability |
+| `ddccontrol` | 🔧 custom channel | guix install -L cfg-channel |
+| `ddccontrol-db-git` | ❌ missing | check guix availability |
+| `ddcutil` | ❌ missing | check guix availability |
+| `ddrescue` | ✅ installed | — |
+| `debugedit` | ❌ missing | check guix availability |
+| `debuginfod` | ❌ missing | check guix availability |
+| `default-cursors` | ❌ missing | check guix availability |
+| `deno` | ❌ missing | check guix availability |
+| `device-mapper` | ❌ missing | check guix availability |
+| `dhcpcd` | ❌ missing | check guix availability |
+| `diff-so-fancy` | ✅ installed | — |
+| `difftastic` | ✅ installed | — |
+| `diffutils` | ❌ missing | check guix availability |
+| `directx-shader-compiler` | ❌ missing | check guix availability |
+| `direnv` | ✅ installed | — |
+| `disarchive` | ❌ missing | check guix availability |
+| `distrobox` | ✅ installed | — |
+| `dive` | ✅ installed | — |
+| `djvulibre` | ❌ missing | check guix availability |
+| `dkms` | ❌ missing | check guix availability |
+| `dmidecode` | ❌ missing | check guix availability |
+| `dnsmasq` | ✅ installed | — |
+| `dnssec-anchors` | ❌ missing | check guix availability |
+| `docbook-xml` | ❌ missing | check guix availability |
+| `docbook-xsl` | ❌ missing | check guix availability |
+| `doggo` | 🔧 custom channel | guix install -L cfg-channel |
+| `dool` | 🔧 custom channel | guix install -L cfg-channel |
+| `dos2unix` | ❌ missing | check guix availability |
+| `dosbox` | ✅ installed | — |
+| `dosfstools` | ✅ installed | — |
+| `dotconf` | ❌ missing | check guix availability |
+| `double-conversion` | ❌ missing | check guix availability |
+| `doxygen` | ❌ missing | check guix availability |
+| `draco` | ❌ missing | check guix availability |
+| `droidcam` | 🔧 custom channel | guix install -L cfg-channel |
+| `dtc` | ❌ missing | check guix availability |
+| `dualsensectl` | 🔧 custom channel | guix install -L cfg-channel |
+| `duf` | ❌ missing | check guix availability |
+| `duf-debug` | ❌ missing | check guix availability |
+| `duktape` | ❌ missing | check guix availability |
+| `dumb` | ❌ missing | check guix availability |
+| `dunst` | ✅ installed | — |
+| `dust` | ❌ missing | check guix availability |
+| `dvisvgm` | ❌ missing | check guix availability |
+| `e2fsprogs` | ❌ missing | check guix availability |
+| `easyeffects` | ✅ installed | — |
+| `editorconfig-core-c` | ❌ missing | check guix availability |
+| `edk2-ovmf` | ❌ missing | check guix availability |
+| `efibootmgr` | ✅ installed | — |
+| `efivar` | ❌ missing | check guix availability |
+| `egl-wayland` | ❌ missing | check guix availability |
+| `eglexternalplatform` | ❌ missing | check guix availability |
+| `eilmeldung-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `elfutils` | ❌ missing | check guix availability |
+| `ell` | ❌ missing | check guix availability |
+| `embree` | ❌ missing | check guix availability |
+| `enca` | ❌ missing | check guix availability |
+| `enchant` | ❌ missing | check guix availability |
+| `entr` | ✅ installed | — |
+| `epiphany` | ✅ installed | — |
+| `epr-git` | 🔧 custom channel | guix install -L cfg-channel |
+| `erdtree` | 🔧 custom channel | guix install -L cfg-channel |
+| `espeak-ng` | ❌ missing | check guix availability |
+| `etckeeper` | ❌ missing | check guix availability |
+| `evince` | ✅ installed | — |
+| `evolution-data-server` | ❌ missing | check guix availability |
+| `exempi` | ❌ missing | check guix availability |
+| `exfatprogs` | ❌ missing | check guix availability |
+| `exiv2` | ❌ missing | check guix availability |
+| `expat` | ❌ missing | check guix availability |
+| `expect` | ✅ installed | — |
+| `extra-cmake-modules` | ❌ missing | check guix availability |
+| `eza` | ✅ installed | — |
+| `faac` | ❌ missing | check guix availability |
+| `faad2` | ❌ missing | check guix availability |
+| `fakeroot` | ❌ missing | check guix availability |
+| `fastfetch` | ✅ installed | — |
+| `fclones` | ✅ installed | — |
+| `fd` | ✅ installed | — |
+| `fennel` | ✅ installed | — |
+| `ffcall` | ❌ missing | check guix availability |
+| `ffmpeg` | ✅ installed | — |
+| `ffmpeg4.4` | ❌ missing | check guix availability |
+| `ffmpegthumbnailer` | ✅ installed | — |
+| `fftw` | ❌ missing | check guix availability |
+| `figlet` | ✅ installed | — |
+| `file` | ❌ missing | check guix availability |
+| `filesystem` | ❌ missing | check guix availability |
+| `findutils` | ❌ missing | check guix availability |
+| `fio` | ✅ installed | — |
+| `firefox` | ❌ missing | check guix availability |
+| `firewalld` | ❌ missing | check guix availability |
+| `fish` | ✅ installed | — |
+| `flac` | ❌ missing | check guix availability |
+| `flashrom` | ❌ missing | check guix availability |
+| `flatpak` | ❌ missing | check guix availability |
+| `flclashx-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `flex` | ❌ missing | check guix availability |
+| `fluidsynth` | ❌ missing | check guix availability |
+| `fmt` | ❌ missing | check guix availability |
+| `folks` | ❌ missing | check guix availability |
+| `fontconfig` | ❌ missing | check guix availability |
+| `fontforge` | ❌ missing | check guix availability |
+| `fortune-mod` | ❌ missing | check guix availability |
+| `fping` | ✅ installed | — |
+| `frameworkintegration` | ❌ missing | check guix availability |
+| `freeglut` | ❌ missing | check guix availability |
+| `freerdp` | ✅ installed | — |
+| `freetype2` | ❌ missing | check guix availability |
+| `freeze-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `fribidi` | ❌ missing | check guix availability |
+| `fsel-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `fstrm` | ❌ missing | check guix availability |
+| `fuse2` | ❌ missing | check guix availability |
+| `fuse3` | ❌ missing | check guix availability |
+| `fvs2` | ❌ missing | check guix availability |
+| `fwupd` | ✅ installed | — |
+| `fwupd-efi` | ❌ missing | check guix availability |
+| `fzf` | ✅ installed | — |
+| `gallery-dl` | ❌ missing | check guix availability |
+| `gamemode` | ✅ installed | — |
+| `gamescope` | ❌ missing | check guix availability |
+| `ganv` | ❌ missing | check guix availability |
+| `gawk` | ❌ missing | check guix availability |
+| `gc` | ❌ missing | check guix availability |
+| `gcc` | ❌ missing | check guix availability |
+| `gcr` | ❌ missing | check guix availability |
+| `gcr-4` | ❌ missing | check guix availability |
+| `gd` | ❌ missing | check guix availability |
+| `gdb` | ✅ installed | — |
+| `gdbm` | ❌ missing | check guix availability |
+| `gdk-pixbuf2` | ❌ missing | check guix availability |
+| `gdm` | ❌ missing | check guix availability |
+| `gegl` | ❌ missing | check guix availability |
+| `genact` | 🔧 custom channel | guix install -L cfg-channel |
+| `gendesk` | ❌ missing | check guix availability |
+| `geoclue` | ❌ missing | check guix availability |
+| `geocode-glib` | ❌ missing | check guix availability |
+| `geoip` | 🔧 custom channel | guix install -L cfg-channel |
+| `geoip-database` | ❌ missing | check guix availability |
+| `gettext` | ❌ missing | check guix availability |
+| `gexiv2` | ❌ missing | check guix availability |
+| `gflags` | ❌ missing | check guix availability |
+| `gfxstream` | ❌ missing | check guix availability |
+| `ghc` | ❌ missing | check guix availability |
+| `ghgrab-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `ghostscript` | ❌ missing | check guix availability |
+| `ghostty` | ❌ missing | check guix availability |
+| `ghostty-shell-integration` | ❌ missing | check guix availability |
+| `ghostty-terminfo` | ❌ missing | check guix availability |
+| `giflib` | ❌ missing | check guix availability |
+| `gimp` | ✅ installed | — |
+| `girara` | ❌ missing | check guix availability |
+| `gist` | ❌ missing | check guix availability |
+| `git` | ✅ installed | — |
+| `git-crypt` | ✅ installed | — |
+| `git-delta` | ❌ missing | check guix availability |
+| `git-extras` | ❌ missing | check guix availability |
+| `git-filter-repo` | ❌ missing | check guix availability |
+| `git-lfs` | ✅ installed | — |
+| `github-cli` | ❌ missing | check guix availability |
+| `gitleaks` | 🔧 custom channel | guix install -L cfg-channel |
+| `gitlogue` | ❌ missing | check guix availability |
+| `gjs` | ❌ missing | check guix availability |
+| `glaze` | ❌ missing | check guix availability |
+| `glew` | ❌ missing | check guix availability |
+| `glfw` | ❌ missing | check guix availability |
+| `glib-networking` | ❌ missing | check guix availability |
+| `glib-perl` | ❌ missing | check guix availability |
+| `glib2` | ❌ missing | check guix availability |
+| `glibc` | ❌ missing | check guix availability |
+| `glibmm` | ❌ missing | check guix availability |
+| `glibmm-2.68` | ❌ missing | check guix availability |
+| `glm` | ❌ missing | check guix availability |
+| `glow` | 🔧 custom channel | guix install -L cfg-channel |
+| `glslang` | ❌ missing | check guix availability |
+| `glu` | ❌ missing | check guix availability |
+| `glusterfs` | ❌ missing | check guix availability |
+| `glycin` | ❌ missing | check guix availability |
+| `glycin-gtk4` | ❌ missing | check guix availability |
+| `gmap-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `gmime3` | ❌ missing | check guix availability |
+| `gmp` | ❌ missing | check guix availability |
+| `gnome-app-list` | ❌ missing | check guix availability |
+| `gnome-autoar` | ❌ missing | check guix availability |
+| `gnome-backgrounds` | ❌ missing | check guix availability |
+| `gnome-bluetooth-3.0` | ❌ missing | check guix availability |
+| `gnome-calculator` | ❌ missing | check guix availability |
+| `gnome-calendar` | ❌ missing | check guix availability |
+| `gnome-characters` | ❌ missing | check guix availability |
+| `gnome-clocks` | ❌ missing | check guix availability |
+| `gnome-color-manager` | ❌ missing | check guix availability |
+| `gnome-connections` | ❌ missing | check guix availability |
+| `gnome-console` | ❌ missing | check guix availability |
+| `gnome-contacts` | ❌ missing | check guix availability |
+| `gnome-control-center` | ❌ missing | check guix availability |
+| `gnome-desktop` | ❌ missing | check guix availability |
+| `gnome-desktop-4` | ❌ missing | check guix availability |
+| `gnome-disk-utility` | ❌ missing | check guix availability |
+| `gnome-font-viewer` | ❌ missing | check guix availability |
+| `gnome-keybindings` | ❌ missing | check guix availability |
+| `gnome-keyring` | ❌ missing | check guix availability |
+| `gnome-logs` | ❌ missing | check guix availability |
+| `gnome-maps` | ❌ missing | check guix availability |
+| `gnome-menus` | ❌ missing | check guix availability |
+| `gnome-music` | ❌ missing | check guix availability |
+| `gnome-online-accounts` | ❌ missing | check guix availability |
+| `gnome-remote-desktop` | ❌ missing | check guix availability |
+| `gnome-session` | ❌ missing | check guix availability |
+| `gnome-settings-daemon` | ❌ missing | check guix availability |
+| `gnome-shell` | ❌ missing | check guix availability |
+| `gnome-software` | ❌ missing | check guix availability |
+| `gnome-system-monitor` | ❌ missing | check guix availability |
+| `gnome-text-editor` | ❌ missing | check guix availability |
+| `gnome-tour` | ❌ missing | check guix availability |
+| `gnome-tweaks` | ❌ missing | check guix availability |
+| `gnome-user-share` | ❌ missing | check guix availability |
+| `gnome-weather` | ❌ missing | check guix availability |
+| `gnulib-l10n` | ❌ missing | check guix availability |
+| `gnupg` | ✅ installed | — |
+| `gnustep-base` | ❌ missing | check guix availability |
+| `gnutls` | ❌ missing | check guix availability |
+| `go` | ✅ installed | — |
+| `go-yq` | ❌ missing | check guix availability |
+| `goaccess` | ❌ missing | check guix availability |
+| `gobject-introspection` | ❌ missing | check guix availability |
+| `gobject-introspection-runtime` | ❌ missing | check guix availability |
+| `goimapnotify` | ❌ missing | check guix availability |
+| `gom` | ❌ missing | check guix availability |
+| `google-chrome` | ❌ missing | check guix availability |
+| `google-glog` | ❌ missing | check guix availability |
+| `goose-desktop-bin` | ❌ missing | check guix availability |
+| `gopass` | 🔧 custom channel | guix install -L cfg-channel |
+| `goverlay` | 🔧 custom channel | guix install -L cfg-channel |
+| `gowall-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `gperf` | ❌ missing | check guix availability |
+| `gperftools` | ❌ missing | check guix availability |
+| `gpgme` | ❌ missing | check guix availability |
+| `gpgmepp` | ❌ missing | check guix availability |
+| `gpm` | ❌ missing | check guix availability |
+| `gptfdisk` | ✅ installed | — |
+| `grafana` | ❌ missing | check guix availability |
+| `graphene` | ❌ missing | check guix availability |
+| `graphite` | ❌ missing | check guix availability |
+| `graphviz` | ✅ installed | — |
+| `greetd` | ✅ installed | — |
+| `greetd-agreety` | ❌ missing | check guix availability |
+| `grep` | ❌ missing | check guix availability |
+| `grex` | 🔧 custom channel | guix install -L cfg-channel |
+| `grilo` | ❌ missing | check guix availability |
+| `grilo-plugins` | ❌ missing | check guix availability |
+| `grim` | ✅ installed | — |
+| `groff` | ❌ missing | check guix availability |
+| `gsettings-desktop-schemas` | ❌ missing | check guix availability |
+| `gsettings-system-schemas` | ❌ missing | check guix availability |
+| `gsfonts` | ❌ missing | check guix availability |
+| `gsl` | ❌ missing | check guix availability |
+| `gsm` | ❌ missing | check guix availability |
+| `gsound` | ❌ missing | check guix availability |
+| `gspell` | ❌ missing | check guix availability |
+| `gssdp` | ❌ missing | check guix availability |
+| `gstreamer` | ✅ installed | — |
+| `gtest` | ❌ missing | check guix availability |
+| `gtk-doc` | ❌ missing | check guix availability |
+| `gtk-engine-murrine` | ❌ missing | check guix availability |
+| `gtk-engines` | ❌ missing | check guix availability |
+| `gtk-layer-shell` | ❌ missing | check guix availability |
+| `gtk-update-icon-cache` | ❌ missing | check guix availability |
+| `gtk-vnc` | ❌ missing | check guix availability |
+| `gtk2` | ❌ missing | check guix availability |
+| `gtk3` | ❌ missing | check guix availability |
+| `gtk4` | ❌ missing | check guix availability |
+| `gtk4-layer-shell` | ❌ missing | check guix availability |
+| `gtkmm` | ❌ missing | check guix availability |
+| `gtkmm-4.0` | ❌ missing | check guix availability |
+| `gtkmm3` | ❌ missing | check guix availability |
+| `gtksourceview4` | ❌ missing | check guix availability |
+| `gtksourceview5` | ❌ missing | check guix availability |
+| `gts` | ❌ missing | check guix availability |
+| `guile` | ❌ missing | check guix availability |
+| `guile-bytestructures` | ❌ missing | check guix availability |
+| `guile-bzip2` | ❌ missing | check guix availability |
+| `guile-gcrypt` | ❌ missing | check guix availability |
+| `guile-gnutls` | ❌ missing | check guix availability |
+| `guile-json` | ❌ missing | check guix availability |
+| `guile-lzma` | ❌ missing | check guix availability |
+| `guile-quickcheck` | ❌ missing | check guix availability |
+| `guile-semver` | ❌ missing | check guix availability |
+| `guile-ssh` | ❌ missing | check guix availability |
+| `gumbo-parser` | ❌ missing | check guix availability |
+| `gupnp` | ❌ missing | check guix availability |
+| `gupnp-av` | ❌ missing | check guix availability |
+| `gupnp-dlna` | ❌ missing | check guix availability |
+| `gupnp-igd` | ❌ missing | check guix availability |
+| `gvfs` | ❌ missing | check guix availability |
+| `gvfs-afc` | ❌ missing | check guix availability |
+| `gvfs-dnssd` | ❌ missing | check guix availability |
+| `gvfs-goa` | ❌ missing | check guix availability |
+| `gvfs-gphoto2` | ❌ missing | check guix availability |
+| `gvfs-mtp` | ❌ missing | check guix availability |
+| `gvfs-nfs` | ❌ missing | check guix availability |
+| `gvfs-onedrive` | ❌ missing | check guix availability |
+| `gvfs-smb` | ❌ missing | check guix availability |
+| `gvfs-wsdd` | ❌ missing | check guix availability |
+| `gweather-locations` | ❌ missing | check guix availability |
+| `gzip` | ❌ missing | check guix availability |
+| `handlr-regex` | ❌ missing | check guix availability |
+| `harfbuzz` | ❌ missing | check guix availability |
+| `harfbuzz-icu` | ❌ missing | check guix availability |
+| `hashcat` | ✅ installed | — |
+| `hdf5` | ❌ missing | check guix availability |
+| `helix` | ✅ installed | — |
+| `help2man` | ❌ missing | check guix availability |
+| `helvum` | ❌ missing | check guix availability |
+| `hermes-agent` | 🔧 custom channel | guix install -L cfg-channel |
+| `hexyl` | ✅ installed | — |
+| `hicolor-icon-theme` | ❌ missing | check guix availability |
+| `hidapi` | ❌ missing | check guix availability |
+| `highway` | ❌ missing | check guix availability |
+| `himalaya` | ❌ missing | check guix availability |
+| `hiredis` | ❌ missing | check guix availability |
+| `hishtory-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `hivex` | ❌ missing | check guix availability |
+| `hslua-cli` | ❌ missing | check guix availability |
+| `htmlq` | ❌ missing | check guix availability |
+| `htop` | ✅ installed | — |
+| `httpie` | ❌ missing | check guix availability |
+| `hunspell` | ❌ missing | check guix availability |
+| `hunspell-ru` | ❌ missing | check guix availability |
+| `hw-probe` | ❌ missing | check guix availability |
+| `hwdata` | ❌ missing | check guix availability |
+| `hwinfo` | ✅ installed | — |
+| `hwloc` | ❌ missing | check guix availability |
+| `hxd` | 🔧 custom channel | guix install -L cfg-channel |
+| `hyperfine` | ✅ installed | — |
+| `hyphen` | ❌ missing | check guix availability |
+| `hyprcursor` | ❌ missing | check guix availability |
+| `hyprgraphics` | ❌ missing | check guix availability |
+| `hypridle` | ✅ installed | — |
+| `hyprland` | ✅ installed | — |
+| `hyprland-guiutils` | ❌ missing | check guix availability |
+| `hyprland-qt-support` | ❌ missing | check guix availability |
+| `hyprlang` | ❌ missing | check guix availability |
+| `hyprlock` | ✅ installed | — |
+| `hyprpicker` | ✅ installed | — |
+| `hyprpolkitagent` | ❌ missing | check guix availability |
+| `hyprquickframe-git` | ❌ missing | check guix availability |
+| `hyprscratch` | 🔧 custom channel | guix install -L cfg-channel |
+| `hyprtoolkit` | ❌ missing | check guix availability |
+| `hyprutils` | ❌ missing | check guix availability |
+| `hyprwayland-scanner` | ❌ missing | check guix availability |
+| `hyprwire` | ❌ missing | check guix availability |
+| `i3-wm` | ✅ installed | — |
+| `i3status` | ✅ installed | — |
+| `iana-etc` | ❌ missing | check guix availability |
+| `ibus` | ❌ missing | check guix availability |
+| `icoextract` | ❌ missing | check guix availability |
+| `icu` | ❌ missing | check guix availability |
+| `id3lib` | ❌ missing | check guix availability |
+| `id3v2` | ❌ missing | check guix availability |
+| `iftop` | ❌ missing | check guix availability |
+| `iio-sensor-proxy` | ❌ missing | check guix availability |
+| `ijs` | ❌ missing | check guix availability |
+| `imagemagick` | ✅ installed | — |
+| `imath` | ❌ missing | check guix availability |
+| `imlib2` | ❌ missing | check guix availability |
+| `iniparser` | ❌ missing | check guix availability |
+| `instagram-cli` | 🔧 custom channel | guix install -L cfg-channel |
+| `intel-oneapi-openmp` | ❌ missing | check guix availability |
+| `intel-oneapi-tbb` | ❌ missing | check guix availability |
+| `intel-oneapi-tcm` | ❌ missing | check guix availability |
+| `intel-oneapi-umf` | ❌ missing | check guix availability |
+| `inter-font` | ❌ missing | check guix availability |
+| `intltool` | ❌ missing | check guix availability |
+| `inxi` | ✅ installed | — |
+| `ioping` | ❌ missing | check guix availability |
+| `iosevka-neg-fonts` | ❌ missing | check guix availability |
+| `iotop-c` | ❌ missing | check guix availability |
+| `iperf3` | ❌ missing | check guix availability |
+| `iproute2` | ❌ missing | check guix availability |
+| `iptables` | ❌ missing | check guix availability |
+| `iputils` | ❌ missing | check guix availability |
+| `ipython` | ❌ missing | check guix availability |
+| `iso-codes` | ❌ missing | check guix availability |
+| `isync` | ✅ installed | — |
+| `itstool` | ❌ missing | check guix availability |
+| `iw` | ❌ missing | check guix availability |
+| `iwd` | ❌ missing | check guix availability |
+| `jansson` | ❌ missing | check guix availability |
+| `jasper` | ❌ missing | check guix availability |
+| `jbig2dec` | ❌ missing | check guix availability |
+| `jbigkit` | ❌ missing | check guix availability |
+| `jc` | ✅ installed | — |
+| `jdk8-openjdk` | ❌ missing | check guix availability |
+| `jdupes` | 🔧 custom channel | guix install -L cfg-channel |
+| `jemalloc` | ❌ missing | check guix availability |
+| `jfsutils` | ❌ missing | check guix availability |
+| `jimtcl` | ❌ missing | check guix availability |
+| `jpegoptim` | ✅ installed | — |
+| `jq` | ✅ installed | — |
+| `jre8-openjdk` | ❌ missing | check guix availability |
+| `jre8-openjdk-headless` | ❌ missing | check guix availability |
+| `js140` | ❌ missing | check guix availability |
+| `json-c` | ❌ missing | check guix availability |
+| `json-glib` | ❌ missing | check guix availability |
+| `jsoncpp` | ❌ missing | check guix availability |
+| `judy` | ❌ missing | check guix availability |
+| `jujutsu` | ✅ installed | — |
+| `jupyter-nbclient` | ❌ missing | check guix availability |
+| `jupyter-nbconvert` | ❌ missing | check guix availability |
+| `jupyter-nbformat` | ❌ missing | check guix availability |
+| `jupyter-notebook-shim` | ❌ missing | check guix availability |
+| `jupyter-server` | ❌ missing | check guix availability |
+| `jupyterlab` | ❌ missing | check guix availability |
+| `jupyterlab-pygments` | ❌ missing | check guix availability |
+| `just` | ❌ missing | check guix availability |
+| `kactivitymanagerd` | ❌ missing | check guix availability |
+| `kanata-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `karchive` | ❌ missing | check guix availability |
+| `kate` | ✅ installed | — |
+| `kauth` | ❌ missing | check guix availability |
+| `kbd` | ❌ missing | check guix availability |
+| `kbookmarks` | ❌ missing | check guix availability |
+| `kcmutils` | ❌ missing | check guix availability |
+| `kcodecs` | ❌ missing | check guix availability |
+| `kcolorscheme` | ❌ missing | check guix availability |
+| `kcompletion` | ❌ missing | check guix availability |
+| `kconfig` | ❌ missing | check guix availability |
+| `kconfigwidgets` | ❌ missing | check guix availability |
+| `kcoreaddons` | ❌ missing | check guix availability |
+| `kcrash` | ❌ missing | check guix availability |
+| `kdbusaddons` | ❌ missing | check guix availability |
+| `kdeclarative` | ❌ missing | check guix availability |
+| `kdecoration` | ❌ missing | check guix availability |
+| `kded` | ❌ missing | check guix availability |
+| `kdesu` | ❌ missing | check guix availability |
+| `kdnssd` | ❌ missing | check guix availability |
+| `kdoctools` | ❌ missing | check guix availability |
+| `kdsoap` | ❌ missing | check guix availability |
+| `kdsoap-ws-discovery-client` | ❌ missing | check guix availability |
+| `keyutils` | ❌ missing | check guix availability |
+| `kfilemetadata` | ❌ missing | check guix availability |
+| `kglobalaccel` | ❌ missing | check guix availability |
+| `kglobalacceld` | ❌ missing | check guix availability |
+| `kguiaddons` | ❌ missing | check guix availability |
+| `kholidays` | ❌ missing | check guix availability |
+| `ki18n` | ❌ missing | check guix availability |
+| `kiconthemes` | ❌ missing | check guix availability |
+| `kidletime` | ❌ missing | check guix availability |
+| `kio` | ❌ missing | check guix availability |
+| `kio-extras` | ❌ missing | check guix availability |
+| `kio-fuse` | ❌ missing | check guix availability |
+| `kirigami` | ❌ missing | check guix availability |
+| `kirigami-addons` | ❌ missing | check guix availability |
+| `kitemmodels` | ❌ missing | check guix availability |
+| `kitemviews` | ❌ missing | check guix availability |
+| `kitty` | ✅ installed | — |
+| `kitty-shell-integration` | ❌ missing | check guix availability |
+| `kitty-terminfo` | ❌ missing | check guix availability |
+| `kjobwidgets` | ❌ missing | check guix availability |
+| `kmenuedit` | ❌ missing | check guix availability |
+| `kmod` | ❌ missing | check guix availability |
+| `kmon` | ❌ missing | check guix availability |
+| `knewstuff` | ❌ missing | check guix availability |
+| `knighttime` | ❌ missing | check guix availability |
+| `knotifications` | ❌ missing | check guix availability |
+| `knotifyconfig` | ❌ missing | check guix availability |
+| `konsole` | ✅ installed | — |
+| `kpackage` | ❌ missing | check guix availability |
+| `kparts` | ❌ missing | check guix availability |
+| `kpipewire` | ❌ missing | check guix availability |
+| `kpty` | ❌ missing | check guix availability |
+| `kquickcharts` | ❌ missing | check guix availability |
+| `krb5` | ❌ missing | check guix availability |
+| `krunner` | ❌ missing | check guix availability |
+| `kscreenlocker` | ❌ missing | check guix availability |
+| `kservice` | ❌ missing | check guix availability |
+| `kstatusnotifieritem` | ❌ missing | check guix availability |
+| `ksvg` | ❌ missing | check guix availability |
+| `ksystemstats` | ❌ missing | check guix availability |
+| `ktexteditor` | ❌ missing | check guix availability |
+| `ktextwidgets` | ❌ missing | check guix availability |
+| `kunitconversion` | ❌ missing | check guix availability |
+| `kuserfeedback` | ❌ missing | check guix availability |
+| `kvantum` | ❌ missing | check guix availability |
+| `kvantum-qt5` | ❌ missing | check guix availability |
+| `kwallet` | ❌ missing | check guix availability |
+| `kwayland` | ❌ missing | check guix availability |
+| `kwidgetsaddons` | ❌ missing | check guix availability |
+| `kwin` | ❌ missing | check guix availability |
+| `kwindowsystem` | ❌ missing | check guix availability |
+| `kxmlgui` | ❌ missing | check guix availability |
+| `kyotocabinet` | ❌ missing | check guix availability |
+| `l-smash` | ❌ missing | check guix availability |
+| `lame` | ❌ missing | check guix availability |
+| `lapack` | ❌ missing | check guix availability |
+| `layer-shell-qt` | ❌ missing | check guix availability |
+| `lazytail-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `lbzip2` | ✅ installed | — |
+| `lcms2` | ❌ missing | check guix availability |
+| `ldb` | ❌ missing | check guix availability |
+| `ldns` | ❌ missing | check guix availability |
+| `leancrypto` | ❌ missing | check guix availability |
+| `lensfun` | ❌ missing | check guix availability |
+| `leptonica` | ❌ missing | check guix availability |
+| `less` | ✅ installed | — |
+| `level-zero-loader` | ❌ missing | check guix availability |
+| `licenses` | ❌ missing | check guix availability |
+| `lilv` | ❌ missing | check guix availability |
+| `limine` | 🔧 custom channel | guix install -L cfg-channel |
+| `linux` | ❌ missing | check guix availability |
+| `linux-cachyos` | ❌ missing | check guix availability |
+| `linux-cachyos-eevdf` | ❌ missing | check guix availability |
+| `linux-cachyos-hardened` | ❌ missing | check guix availability |
+| `linux-cachyos-lts` | ❌ missing | check guix availability |
+| `linux-firmware` | ❌ missing | check guix availability |
+| `linux-firmware-amdgpu` | ❌ missing | check guix availability |
+| `linux-firmware-atheros` | ❌ missing | check guix availability |
+| `linux-firmware-broadcom` | ❌ missing | check guix availability |
+| `linux-firmware-cirrus` | ❌ missing | check guix availability |
+| `linux-firmware-intel` | ❌ missing | check guix availability |
+| `linux-firmware-mediatek` | ❌ missing | check guix availability |
+| `linux-firmware-nvidia` | ❌ missing | check guix availability |
+| `linux-firmware-other` | ❌ missing | check guix availability |
+| `linux-firmware-radeon` | ❌ missing | check guix availability |
+| `linux-firmware-realtek` | ❌ missing | check guix availability |
+| `linux-firmware-whence` | ❌ missing | check guix availability |
+| `liquidctl` | ❌ missing | check guix availability |
+| `lld` | ❌ missing | check guix availability |
+| `lldb` | ❌ missing | check guix availability |
+| `llhttp` | ❌ missing | check guix availability |
+| `llvm` | ❌ missing | check guix availability |
+| `llvm21` | ❌ missing | check guix availability |
+| `lm_sensors` | ❌ missing | check guix availability |
+| `lmdb` | ❌ missing | check guix availability |
+| `lnav` | 🔧 custom channel | guix install -L cfg-channel |
+| `localsearch` | ❌ missing | check guix availability |
+| `localsend-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `log4cplus` | ❌ missing | check guix availability |
+| `lolcat` | ✅ installed | — |
+| `loupe` | ❌ missing | check guix availability |
+| `lowdown` | ❌ missing | check guix availability |
+| `lpsolve` | ❌ missing | check guix availability |
+| `lrzip` | ❌ missing | check guix availability |
+| `lsb-release` | ❌ missing | check guix availability |
+| `lshw` | ✅ installed | — |
+| `lsof` | ✅ installed | — |
+| `lsp-plugins` | ✅ installed | — |
+| `lsp-plugins-clap` | ❌ missing | check guix availability |
+| `lsp-plugins-gst` | ❌ missing | check guix availability |
+| `lsp-plugins-ladspa` | ❌ missing | check guix availability |
+| `lsp-plugins-lv2` | ❌ missing | check guix availability |
+| `lsp-plugins-standalone` | ❌ missing | check guix availability |
+| `lsp-plugins-vst` | ❌ missing | check guix availability |
+| `lsp-plugins-vst3` | ❌ missing | check guix availability |
+| `lsscsi` | ❌ missing | check guix availability |
+| `lua` | ❌ missing | check guix availability |
+| `lua-language-server` | ❌ missing | check guix availability |
+| `lua51-lpeg` | ❌ missing | check guix availability |
+| `lua53` | ❌ missing | check guix availability |
+| `lua54` | ❌ missing | check guix availability |
+| `lua54-lpeg` | ❌ missing | check guix availability |
+| `luajit` | ❌ missing | check guix availability |
+| `lutgen-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `lutris` | ❌ missing | check guix availability |
+| `lv2` | ❌ missing | check guix availability |
+| `lvm2` | ✅ installed | — |
+| `lz4` | ❌ missing | check guix availability |
+| `lzip` | ❌ missing | check guix availability |
+| `lzlib` | ❌ missing | check guix availability |
+| `lzo` | ❌ missing | check guix availability |
+| `lzop` | ❌ missing | check guix availability |
+| `m4` | ❌ missing | check guix availability |
+| `mailcap` | ❌ missing | check guix availability |
+| `make` | ✅ installed | — |
+| `malcontent` | ❌ missing | check guix availability |
+| `mallard-ducktype` | ❌ missing | check guix availability |
+| `man-pages` | ❌ missing | check guix availability |
+| `mandoc` | ❌ missing | check guix availability |
+| `mangohud` | ✅ installed | — |
+| `manifold` | ❌ missing | check guix availability |
+| `massren` | 🔧 custom channel | guix install -L cfg-channel |
+| `materialx` | ❌ missing | check guix availability |
+| `matugen` | ❌ missing | check guix availability |
+| `mbedtls` | ❌ missing | check guix availability |
+| `md4c` | ❌ missing | check guix availability |
+| `mdadm` | ❌ missing | check guix availability |
+| `media-player-info` | ❌ missing | check guix availability |
+| `mediainfo` | ✅ installed | — |
+| `memtester` | ✅ installed | — |
+| `menu-cache` | ❌ missing | check guix availability |
+| `mesa` | ❌ missing | check guix availability |
+| `meson` | ✅ installed | — |
+| `miller` | ❌ missing | check guix availability |
+| `milou` | ❌ missing | check guix availability |
+| `minicom` | ✅ installed | — |
+| `miniupnpc` | ❌ missing | check guix availability |
+| `minizip` | ❌ missing | check guix availability |
+| `minizip-ng` | ❌ missing | check guix availability |
+| `mjpegtools` | ❌ missing | check guix availability |
+| `mkinitcpio` | ❌ missing | check guix availability |
+| `mkinitcpio-busybox` | ❌ missing | check guix availability |
+| `mobile-broadband-provider-info` | ❌ missing | check guix availability |
+| `mod_dnssd` | ❌ missing | check guix availability |
+| `moreutils` | ✅ installed | — |
+| `mpc` | ✅ installed | — |
+| `mpd` | ✅ installed | — |
+| `mpdas` | 🔧 custom channel | guix install -L cfg-channel |
+| `mpdecimal` | ❌ missing | check guix availability |
+| `mpdris2-git` | ❌ missing | check guix availability |
+| `mpfr` | ❌ missing | check guix availability |
+| `mpg123` | ❌ missing | check guix availability |
+| `mpv` | ✅ installed | — |
+| `msgpack-c` | ❌ missing | check guix availability |
+| `msgraph` | ❌ missing | check guix availability |
+| `mtdev` | ❌ missing | check guix availability |
+| `mtools` | ❌ missing | check guix availability |
+| `mtr` | ✅ installed | — |
+| `mujs` | ❌ missing | check guix availability |
+| `muparser` | ❌ missing | check guix availability |
+| `mutter` | ❌ missing | check guix availability |
+| `mypaint-brushes` | ❌ missing | check guix availability |
+| `mypaint-brushes1` | ❌ missing | check guix availability |
+| `nano` | ✅ installed | — |
+| `nanobind` | ❌ missing | check guix availability |
+| `nasm` | ❌ missing | check guix availability |
+| `nautilus` | ✅ installed | — |
+| `ncdu` | ✅ installed | — |
+| `ncurses` | ❌ missing | check guix availability |
+| `ndctl` | ❌ missing | check guix availability |
+| `neatvnc` | ❌ missing | check guix availability |
+| `neg-pretty-printer` | ❌ missing | check guix availability |
+| `neo-matrix` | 🔧 custom channel | guix install -L cfg-channel |
+| `neomutt` | ✅ installed | — |
+| `neon` | ❌ missing | check guix availability |
+| `neovim` | ✅ installed | — |
+| `neovim-remote` | ❌ missing | check guix availability |
+| `nerdctl` | ❌ missing | check guix availability |
+| `net-snmp` | ❌ missing | check guix availability |
+| `netavark` | ❌ missing | check guix availability |
+| `nethack` | ✅ installed | — |
+| `nethogs` | ❌ missing | check guix availability |
+| `netpbm` | ❌ missing | check guix availability |
+| `nettle` | ❌ missing | check guix availability |
+| `network-manager-applet` | ❌ missing | check guix availability |
+| `networkmanager` | ❌ missing | check guix availability |
+| `networkmanager-openvpn` | ❌ missing | check guix availability |
+| `networkmanager-qt` | ❌ missing | check guix availability |
+| `networkmanager-vpn-plugin-openvpn` | ❌ missing | check guix availability |
+| `newsraft` | 🔧 custom channel | guix install -L cfg-channel |
+| `nftables` | ❌ missing | check guix availability |
+| `nicotine+` | ✅ installed | — |
+| `ninja` | ✅ installed | — |
+| `nlohmann-json` | ❌ missing | check guix availability |
+| `nm-connection-editor` | ❌ missing | check guix availability |
+| `nmap` | ✅ installed | — |
+| `no-more-secrets` | ❌ missing | check guix availability |
+| `node-gyp` | ❌ missing | check guix availability |
+| `nodejs` | ❌ missing | check guix availability |
+| `nodejs-nopt` | ❌ missing | check guix availability |
+| `notmuch` | ❌ missing | check guix availability |
+| `notmuch-runtime` | ❌ missing | check guix availability |
+| `npm` | ❌ missing | check guix availability |
+| `npth` | ❌ missing | check guix availability |
+| `nspr` | ❌ missing | check guix availability |
+| `nss` | ❌ missing | check guix availability |
+| `nss-mdns` | ✅ installed | — |
+| `ntfs-3g` | ❌ missing | check guix availability |
+| `ntfsprogs` | ❌ missing | check guix availability |
+| `numactl` | ❌ missing | check guix availability |
+| `nuspell` | ❌ missing | check guix availability |
+| `nvtop` | 🔧 custom channel | guix install -L cfg-channel |
+| `obs-studio` | ❌ missing | check guix availability |
+| `ocean-sound-theme` | ❌ missing | check guix availability |
+| `ocl-icd` | ❌ missing | check guix availability |
+| `oh-my-posh` | 🔧 custom channel | guix install -L cfg-channel |
+| `ollama` | 🔧 custom channel | guix install -L cfg-channel |
+| `ollama-vulkan` | ❌ missing | check guix availability |
+| `onefetch` | 🔧 custom channel | guix install -L cfg-channel |
+| `onetbb` | ❌ missing | check guix availability |
+| `oniguruma` | ❌ missing | check guix availability |
+| `openal` | ❌ missing | check guix availability |
+| `openblas` | ❌ missing | check guix availability |
+| `openbsd-netcat` | ❌ missing | check guix availability |
+| `opencode` | ❌ missing | check guix availability |
+| `opencolorio` | ❌ missing | check guix availability |
+| `opencore-amr` | ❌ missing | check guix availability |
+| `openexr` | ❌ missing | check guix availability |
+| `openh264` | ❌ missing | check guix availability |
+| `openimagedenoise` | ❌ missing | check guix availability |
+| `openimageio` | ❌ missing | check guix availability |
+| `openjpeg2` | ❌ missing | check guix availability |
+| `openjph` | ❌ missing | check guix availability |
+| `openocd` | ❌ missing | check guix availability |
+| `openpgl` | ❌ missing | check guix availability |
+| `openrgb` | ❌ missing | check guix availability |
+| `openshadinglanguage` | ❌ missing | check guix availability |
+| `opensoundmeter` | 🔧 custom channel | guix install -L cfg-channel |
+| `openssh` | ✅ installed | — |
+| `openssl` | ❌ missing | check guix availability |
+| `opensubdiv` | ❌ missing | check guix availability |
+| `openvdb` | ❌ missing | check guix availability |
+| `openvpn` | ✅ installed | — |
+| `openxr` | ❌ missing | check guix availability |
+| `oports-git` | 🔧 custom channel | guix install -L cfg-channel |
+| `optipng` | ✅ installed | — |
+| `optiscaler-universal` | ❌ missing | check guix availability |
+| `opus` | ❌ missing | check guix availability |
+| `opusfile` | ❌ missing | check guix availability |
+| `orc` | ❌ missing | check guix availability |
+| `orca` | ❌ missing | check guix availability |
+| `osinfo-db` | ❌ missing | check guix availability |
+| `ostree` | ❌ missing | check guix availability |
+| `otter-launcher` | 🔧 custom channel | guix install -L cfg-channel |
+| `ouch` | ✅ installed | — |
+| `overskride-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `oyo` | 🔧 custom channel | guix install -L cfg-channel |
+| `p11-kit` | ❌ missing | check guix availability |
+| `pacman` | ❌ missing | check guix availability |
+| `pacman-contrib` | ❌ missing | check guix availability |
+| `pacman-mirrorlist` | ❌ missing | check guix availability |
+| `pacutils` | ❌ missing | check guix availability |
+| `pahole` | ❌ missing | check guix availability |
+| `pam` | ❌ missing | check guix availability |
+| `pambase` | ❌ missing | check guix availability |
+| `pandoc-cli` | ❌ missing | check guix availability |
+| `pango` | ❌ missing | check guix availability |
+| `pangomm` | ❌ missing | check guix availability |
+| `pangomm-2.48` | ❌ missing | check guix availability |
+| `papers` | ❌ missing | check guix availability |
+| `par` | 🔧 custom channel | guix install -L cfg-channel |
+| `parallel` | ✅ installed | — |
+| `parted` | ✅ installed | — |
+| `paru` | ❌ missing | check guix availability |
+| `paru-debug` | ❌ missing | check guix availability |
+| `pass` | ❌ missing | check guix availability |
+| `passim` | ❌ missing | check guix availability |
+| `passt` | ❌ missing | check guix availability |
+| `pastel` | ❌ missing | check guix availability |
+| `patch` | ❌ missing | check guix availability |
+| `patchage` | ❌ missing | check guix availability |
+| `patchelf` | ✅ installed | — |
+| `patool` | ❌ missing | check guix availability |
+| `pavucontrol` | ✅ installed | — |
+| `pbzip2` | ✅ installed | — |
+| `pcaudiolib` | ❌ missing | check guix availability |
+| `pciutils` | ❌ missing | check guix availability |
+| `pcmanfm` | ✅ installed | — |
+| `pcre` | ❌ missing | check guix availability |
+| `pcre2` | ❌ missing | check guix availability |
+| `pcsc-perl` | ❌ missing | check guix availability |
+| `pcsclite` | ❌ missing | check guix availability |
+| `pdf2svg` | ❌ missing | check guix availability |
+| `perf` | ❌ missing | check guix availability |
+| `perl` | ❌ missing | check guix availability |
+| `pgcli` | ❌ missing | check guix availability |
+| `phodav` | ❌ missing | check guix availability |
+| `picard` | ✅ installed | — |
+| `pigz` | ✅ installed | — |
+| `pinentry` | ❌ missing | check guix availability |
+| `pipemixer-git` | ❌ missing | check guix availability |
+| `pipewire` | ❌ missing | check guix availability |
+| `pipewire-alsa` | ❌ missing | check guix availability |
+| `pipewire-audio` | ❌ missing | check guix availability |
+| `pipewire-jack` | ❌ missing | check guix availability |
+| `pipewire-pulse` | ❌ missing | check guix availability |
+| `pixman` | ❌ missing | check guix availability |
+| `pixora-icons-git` | ❌ missing | check guix availability |
+| `pkcs11-helper` | ❌ missing | check guix availability |
+| `pkgconf` | ❌ missing | check guix availability |
+| `plasma-activities` | ❌ missing | check guix availability |
+| `plasma-activities-stats` | ❌ missing | check guix availability |
+| `plasma-desktop` | ❌ missing | check guix availability |
+| `plasma-integration` | ❌ missing | check guix availability |
+| `plasma-workspace` | ❌ missing | check guix availability |
+| `plasma5support` | ❌ missing | check guix availability |
+| `playerctl` | ✅ installed | — |
+| `plocate` | ✅ installed | — |
+| `pngquant` | ✅ installed | — |
+| `po4a` | ❌ missing | check guix availability |
+| `podman` | ✅ installed | — |
+| `polkit` | ❌ missing | check guix availability |
+| `polkit-kde-agent` | ❌ missing | check guix availability |
+| `polkit-qt6` | ❌ missing | check guix availability |
+| `pop-icon-theme` | ❌ missing | check guix availability |
+| `poppler` | ❌ missing | check guix availability |
+| `poppler-glib` | ❌ missing | check guix availability |
+| `poppler-qt6` | ❌ missing | check guix availability |
+| `popt` | ❌ missing | check guix availability |
+| `portaudio` | ❌ missing | check guix availability |
+| `potrace` | ❌ missing | check guix availability |
+| `powerdevil` | ❌ missing | check guix availability |
+| `powertop` | ✅ installed | — |
+| `pre-commit` | ✅ installed | — |
+| `prettyping` | ❌ missing | check guix availability |
+| `prison` | ❌ missing | check guix availability |
+| `procps-ng` | ❌ missing | check guix availability |
+| `progress` | ✅ installed | — |
+| `protobuf` | ❌ missing | check guix availability |
+| `protobuf-c` | ❌ missing | check guix availability |
+| `proton-cachyos` | 🔧 custom channel | guix install -L cfg-channel |
+| `proton-ge-custom-bin` | ❌ missing | check guix availability |
+| `proton-vpn-cli` | ❌ missing | check guix availability |
+| `proton-vpn-daemon` | ❌ missing | check guix availability |
+| `protontricks` | 🔧 custom channel | guix install -L cfg-channel |
+| `protonup-rs-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `proxypilot` | 🔧 custom channel | guix install -L cfg-channel |
+| `proxypilot-debug` | 🔧 custom channel | guix install -L cfg-channel |
+| `psmisc` | ❌ missing | check guix availability |
+| `ptex` | ❌ missing | check guix availability |
+| `pugixml` | ❌ missing | check guix availability |
+| `pup-bin` | ❌ missing | check guix availability |
+| `pv` | ✅ installed | — |
+| `pwgen` | ✅ installed | — |
+| `pybind11` | ❌ missing | check guix availability |
+| `pyside6` | ❌ missing | check guix availability |
+| `pystring` | ❌ missing | check guix availability |
+| `python` | ✅ installed | — |
+| `python311` | ❌ missing | check guix availability |
+| `qca-qt6` | ❌ missing | check guix availability |
+| `qcoro` | ❌ missing | check guix availability |
+| `qhull` | ❌ missing | check guix availability |
+| `qman` | ❌ missing | check guix availability |
+| `qpdf` | ❌ missing | check guix availability |
+| `qpwgraph` | ✅ installed | — |
+| `qqc2-breeze-style` | ❌ missing | check guix availability |
+| `qqc2-desktop-style` | ❌ missing | check guix availability |
+| `qrcodegencpp-cmake` | ❌ missing | check guix availability |
+| `qrencode` | ✅ installed | — |
+| `qt5ct` | ❌ missing | check guix availability |
+| `qt6ct` | ❌ missing | check guix availability |
+| `qt6pas` | ❌ missing | check guix availability |
+| `qtkeychain-qt6` | ❌ missing | check guix availability |
+| `qtractor` | ❌ missing | check guix availability |
+| `quazip-qt6` | ❌ missing | check guix availability |
+| `quickshell-git` | ❌ missing | check guix availability |
+| `quickshell-overview-git` | ❌ missing | check guix availability |
+| `raise` | ❌ missing | check guix availability |
+| `raise-debug` | ❌ missing | check guix availability |
+| `rapidfuzz-cpp` | ❌ missing | check guix availability |
+| `raptor` | ❌ missing | check guix availability |
+| `rasqal` | ❌ missing | check guix availability |
+| `rav1e` | ❌ missing | check guix availability |
+| `rawtherapee` | ✅ installed | — |
+| `raysession` | ❌ missing | check guix availability |
+| `rclone` | ✅ installed | — |
+| `rdma-core` | ❌ missing | check guix availability |
+| `re2` | ❌ missing | check guix availability |
+| `readline` | ❌ missing | check guix availability |
+| `realtime-privileges` | ❌ missing | check guix availability |
+| `rebuild-detector` | ❌ missing | check guix availability |
+| `recode` | ❌ missing | check guix availability |
+| `recoll` | ✅ installed | — |
+| `reddix-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `redland` | ❌ missing | check guix availability |
+| `regex-tui` | 🔧 custom channel | guix install -L cfg-channel |
+| `repeater-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `reptyr` | ✅ installed | — |
+| `resterm-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `resvg` | 🔧 custom channel | guix install -L cfg-channel |
+| `rhash` | ❌ missing | check guix availability |
+| `richcolors` | 🔧 custom channel | guix install -L cfg-channel |
+| `ripgrep` | ✅ installed | — |
+| `ripgrep-all` | ❌ missing | check guix availability |
+| `rlwrap` | ✅ installed | — |
+| `rmlint` | 🔧 custom channel | guix install -L cfg-channel |
+| `rmpc` | ❌ missing | check guix availability |
+| `rnnoise` | ❌ missing | check guix availability |
+| `robin-map` | ❌ missing | check guix availability |
+| `rofi` | ❌ missing | check guix availability |
+| `rofi-file-browser-extended-git` | 🔧 custom channel | guix install -L cfg-channel |
+| `rofi-file-browser-extended-git-debug` | 🔧 custom channel | guix install -L cfg-channel |
+| `roomeqwizard` | 🔧 custom channel | guix install -L cfg-channel |
+| `rpcbind` | ❌ missing | check guix availability |
+| `rsync` | ✅ installed | — |
+| `rtkit` | ❌ missing | check guix availability |
+| `rtmpdump` | ❌ missing | check guix availability |
+| `rubberband` | ❌ missing | check guix availability |
+| `ruby` | ✅ installed | — |
+| `rubygems` | ❌ missing | check guix availability |
+| `ruff` | 🔧 custom channel | guix install -L cfg-channel |
+| `runc` | ❌ missing | check guix availability |
+| `rust` | ✅ installed | — |
+| `rust-bindgen` | ❌ missing | check guix availability |
+| `rust-src` | ❌ missing | check guix availability |
+| `rustmission` | 🔧 custom channel | guix install -L cfg-channel |
+| `rutabaga-ffi` | ❌ missing | check guix availability |
+| `rygel` | ❌ missing | check guix availability |
+| `s-tui` | 🔧 custom channel | guix install -L cfg-channel |
+| `sad` | 🔧 custom channel | guix install -L cfg-channel |
+| `samba` | ❌ missing | check guix availability |
+| `sane` | ❌ missing | check guix availability |
+| `sassc` | ❌ missing | check guix availability |
+| `satty` | ❌ missing | check guix availability |
+| `sbc` | ❌ missing | check guix availability |
+| `sbcl` | ❌ missing | check guix availability |
+| `sbctl` | ❌ missing | check guix availability |
+| `sc3-plugins` | ❌ missing | check guix availability |
+| `scc` | ❌ missing | check guix availability |
+| `scdoc` | ❌ missing | check guix availability |
+| `schedtool` | ❌ missing | check guix availability |
+| `scons` | ❌ missing | check guix availability |
+| `scour` | ❌ missing | check guix availability |
+| `scx-scheds` | ❌ missing | check guix availability |
+| `sdbus-cpp` | ❌ missing | check guix availability |
+| `sdl2_image` | ❌ missing | check guix availability |
+| `sdl2_mixer` | ❌ missing | check guix availability |
+| `sdl2_ttf` | ❌ missing | check guix availability |
+| `sdl3` | ❌ missing | check guix availability |
+| `sdl3_ttf` | ❌ missing | check guix availability |
+| `sdl_net` | ❌ missing | check guix availability |
+| `sdl_sound` | ❌ missing | check guix availability |
+| `seabios` | ❌ missing | check guix availability |
+| `seatd` | ❌ missing | check guix availability |
+| `sed` | ❌ missing | check guix availability |
+| `semver` | ❌ missing | check guix availability |
+| `serd` | ❌ missing | check guix availability |
+| `serf` | ❌ missing | check guix availability |
+| `sfsexp` | ❌ missing | check guix availability |
+| `shaderc` | ❌ missing | check guix availability |
+| `shadow` | ❌ missing | check guix availability |
+| `shared-mime-info` | ❌ missing | check guix availability |
+| `shellcheck` | ✅ installed | — |
+| `shfmt` | ❌ missing | check guix availability |
+| `shiboken6` | ❌ missing | check guix availability |
+| `showtime` | ❌ missing | check guix availability |
+| `sidecar` | 🔧 custom channel | guix install -L cfg-channel |
+| `sidecar-debug` | 🔧 custom channel | guix install -L cfg-channel |
+| `simde` | ❌ missing | check guix availability |
+| `simdjson` | ❌ missing | check guix availability |
+| `simple-scan` | ✅ installed | — |
+| `simutil-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `sing-box-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `skopeo` | ✅ installed | — |
+| `slang` | ❌ missing | check guix availability |
+| `sleuthkit` | ❌ missing | check guix availability |
+| `slirp4netns` | ✅ installed | — |
+| `slsa-verifier` | 🔧 custom channel | guix install -L cfg-channel |
+| `slurp` | ✅ installed | — |
+| `smartmontools` | ✅ installed | — |
+| `smbclient` | ❌ missing | check guix availability |
+| `snappy` | ❌ missing | check guix availability |
+| `snapshot` | ❌ missing | check guix availability |
+| `sndio` | ❌ missing | check guix availability |
+| `socat` | ✅ installed | — |
+| `solid` | ❌ missing | check guix availability |
+| `songfetch` | 🔧 custom channel | guix install -L cfg-channel |
+| `sonic-visualiser` | ❌ missing | check guix availability |
+| `sonnet` | ❌ missing | check guix availability |
+| `sops` | 🔧 custom channel | guix install -L cfg-channel |
+| `sord` | ❌ missing | check guix availability |
+| `sound-theme-freedesktop` | ❌ missing | check guix availability |
+| `soundtouch` | ❌ missing | check guix availability |
+| `source-highlight` | ❌ missing | check guix availability |
+| `sox` | ✅ installed | — |
+| `spandsp` | ❌ missing | check guix availability |
+| `spdlog` | ❌ missing | check guix availability |
+| `speech-dispatcher` | ❌ missing | check guix availability |
+| `speex` | ❌ missing | check guix availability |
+| `speexdsp` | ❌ missing | check guix availability |
+| `spice` | ❌ missing | check guix availability |
+| `spice-gtk` | ❌ missing | check guix availability |
+| `spice-protocol` | ❌ missing | check guix availability |
+| `sqlcipher` | ❌ missing | check guix availability |
+| `sqlite` | ✅ installed | — |
+| `sratom` | ❌ missing | check guix availability |
+| `srt` | ❌ missing | check guix availability |
+| `ssh-to-age` | 🔧 custom channel | guix install -L cfg-channel |
+| `ssh-to-age-debug` | 🔧 custom channel | guix install -L cfg-channel |
+| `sshfs` | ✅ installed | — |
+| `sshpass` | ✅ installed | — |
+| `stack` | ❌ missing | check guix availability |
+| `startup-notification` | ❌ missing | check guix availability |
+| `steam` | ❌ missing | check guix availability |
+| `steam-devices` | ❌ missing | check guix availability |
+| `stk` | ❌ missing | check guix availability |
+| `strace` | ✅ installed | — |
+| `strace-tui-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `streamlink` | ✅ installed | — |
+| `stress` | ❌ missing | check guix availability |
+| `stress-ng` | ✅ installed | — |
+| `subversion` | ✅ installed | — |
+| `sudo` | ✅ installed | — |
+| `suitesparse` | ❌ missing | check guix availability |
+| `supercollider` | ❌ missing | check guix availability |
+| `supermin` | ❌ missing | check guix availability |
+| `sushi` | ✅ installed | — |
+| `svt-av1` | ❌ missing | check guix availability |
+| `svt-hevc` | ❌ missing | check guix availability |
+| `swappy` | ✅ installed | — |
+| `swayimg` | ❌ missing | check guix availability |
+| `swayosd` | ❌ missing | check guix availability |
+| `swtpm` | ❌ missing | check guix availability |
+| `syndication` | ❌ missing | check guix availability |
+| `syntax-highlighting` | ❌ missing | check guix availability |
+| `sysfsutils` | ❌ missing | check guix availability |
+| `syslinux` | ❌ missing | check guix availability |
+| `sysstat` | ✅ installed | — |
+| `system-config-printer` | ✅ installed | — |
+| `systemd` | ❌ missing | check guix availability |
+| `systemd-manager-tui` | 🔧 custom channel | guix install -L cfg-channel |
+| `systemd-resolvconf` | ❌ missing | check guix availability |
+| `systemd-sysvcompat` | ❌ missing | check guix availability |
+| `systemsettings` | ❌ missing | check guix availability |
+| `tabiew` | 🔧 custom channel | guix install -L cfg-channel |
+| `taglib` | ❌ missing | check guix availability |
+| `tailray` | 🔧 custom channel | guix install -L cfg-channel |
+| `tailray-debug` | 🔧 custom channel | guix install -L cfg-channel |
+| `tailscale` | 🔧 custom channel | guix install -L cfg-channel |
+| `talloc` | ❌ missing | check guix availability |
+| `tanin-git` | 🔧 custom channel | guix install -L cfg-channel |
+| `taoup` | 🔧 custom channel | guix install -L cfg-channel |
+| `taplo-cli` | ❌ missing | check guix availability |
+| `tar` | ❌ missing | check guix availability |
+| `tcl` | ❌ missing | check guix availability |
+| `tcpdump` | ✅ installed | — |
+| `tdb` | ❌ missing | check guix availability |
+| `tdl-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `tealdeer` | ✅ installed | — |
+| `tecla` | ❌ missing | check guix availability |
+| `telegram-desktop` | ✅ installed | — |
+| `television` | ❌ missing | check guix availability |
+| `terminus-font` | ❌ missing | check guix availability |
+| `tessen` | 🔧 custom channel | guix install -L cfg-channel |
+| `tesseract` | ❌ missing | check guix availability |
+| `tesseract-data-eng` | ❌ missing | check guix availability |
+| `tesseract-data-osd` | ❌ missing | check guix availability |
+| `tesseract-data-rus` | ❌ missing | check guix availability |
+| `testdisk` | ✅ installed | — |
+| `tevent` | ❌ missing | check guix availability |
+| `texinfo` | ❌ missing | check guix availability |
+| `texlive-basic` | ❌ missing | check guix availability |
+| `texlive-bin` | ❌ missing | check guix availability |
+| `texlive-langcyrillic` | ❌ missing | check guix availability |
+| `texlive-latex` | ❌ missing | check guix availability |
+| `texlive-latexextra` | ❌ missing | check guix availability |
+| `texlive-latexrecommended` | ❌ missing | check guix availability |
+| `texlive-pictures` | ❌ missing | check guix availability |
+| `themix-export-spotify-git` | ❌ missing | check guix availability |
+| `themix-full-git` | ❌ missing | check guix availability |
+| `themix-gui-git` | ❌ missing | check guix availability |
+| `themix-icons-archdroid-git` | ❌ missing | check guix availability |
+| `themix-icons-gnome-colors-git` | ❌ missing | check guix availability |
+| `themix-icons-numix-git` | ❌ missing | check guix availability |
+| `themix-icons-papirus-git` | ❌ missing | check guix availability |
+| `themix-icons-suru-plus-aspromauros-git` | ❌ missing | check guix availability |
+| `themix-icons-suru-plus-git` | ❌ missing | check guix availability |
+| `themix-import-images-git` | ❌ missing | check guix availability |
+| `themix-plugin-base16-git` | ❌ missing | check guix availability |
+| `themix-theme-oomox-git` | ❌ missing | check guix availability |
+| `throne` | 🔧 custom channel | guix install -L cfg-channel |
+| `tig` | ✅ installed | — |
+| `tinysparql` | ❌ missing | check guix availability |
+| `tinyxml2` | ❌ missing | check guix availability |
+| `tmmpr` | 🔧 custom channel | guix install -L cfg-channel |
+| `tmux` | ✅ installed | — |
+| `toilet` | ❌ missing | check guix availability |
+| `tomlplusplus` | ❌ missing | check guix availability |
+| `totem-pl-parser` | ❌ missing | check guix availability |
+| `tpm2-tss` | ❌ missing | check guix availability |
+| `traceroute` | ✅ installed | — |
+| `transmission-cli` | ❌ missing | check guix availability |
+| `tree` | ✅ installed | — |
+| `tree-sitter` | ✅ installed | — |
+| `tree-sitter-c` | ❌ missing | check guix availability |
+| `tree-sitter-cli` | ❌ missing | check guix availability |
+| `tree-sitter-lua` | ❌ missing | check guix availability |
+| `tree-sitter-markdown` | ❌ missing | check guix availability |
+| `tree-sitter-query` | ❌ missing | check guix availability |
+| `tree-sitter-vim` | ❌ missing | check guix availability |
+| `tree-sitter-vimdoc` | ❌ missing | check guix availability |
+| `tslib` | ❌ missing | check guix availability |
+| `ttfautohint` | ❌ missing | check guix availability |
+| `ttyd` | 🔧 custom channel | guix install -L cfg-channel |
+| `tumbler` | ❌ missing | check guix availability |
+| `turbostat` | ❌ missing | check guix availability |
+| `twolame` | ❌ missing | check guix availability |
+| `tzdata` | ❌ missing | check guix availability |
+| `uchardet` | ❌ missing | check guix availability |
+| `udiskie` | ✅ installed | — |
+| `udisks2` | ❌ missing | check guix availability |
+| `ufw` | ❌ missing | check guix availability |
+| `ugrep` | ❌ missing | check guix availability |
+| `unarchiver` | ❌ missing | check guix availability |
+| `unbound` | ❌ missing | check guix availability |
+| `unflac` | 🔧 custom channel | guix install -L cfg-channel |
+| `unibilium` | ❌ missing | check guix availability |
+| `unzip` | ✅ installed | — |
+| `upower` | ✅ installed | — |
+| `urlscan` | ✅ installed | — |
+| `urlwatch` | ❌ missing | check guix availability |
+| `usbmuxd` | ❌ missing | check guix availability |
+| `usbredir` | ❌ missing | check guix availability |
+| `usbutils` | ❌ missing | check guix availability |
+| `usd` | ❌ missing | check guix availability |
+| `uthash` | ❌ missing | check guix availability |
+| `util-linux` | ❌ missing | check guix availability |
+| `uv` | ❌ missing | check guix availability |
+| `uvicorn` | ❌ missing | check guix availability |
+| `uwsm` | ❌ missing | check guix availability |
+| `v2ray` | ❌ missing | check guix availability |
+| `v2ray-domain-list-community` | ❌ missing | check guix availability |
+| `v2ray-geoip` | ❌ missing | check guix availability |
+| `v2raya-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `v2rayn-bin` | ❌ missing | check guix availability |
+| `vale` | ❌ missing | check guix availability |
+| `valgrind` | ✅ installed | — |
+| `vamp-plugin-sdk` | ❌ missing | check guix availability |
+| `vapoursynth` | ❌ missing | check guix availability |
+| `vde2` | ❌ missing | check guix availability |
+| `vdirsyncer` | ✅ installed | — |
+| `vicinae-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `vid.stab` | ❌ missing | check guix availability |
+| `vim` | ✅ installed | — |
+| `vim-runtime` | ❌ missing | check guix availability |
+| `virglrenderer` | ❌ missing | check guix availability |
+| `virt-install` | ❌ missing | check guix availability |
+| `virt-manager` | ✅ installed | — |
+| `virt-viewer` | ✅ installed | — |
+| `virtiofsd` | ❌ missing | check guix availability |
+| `viu` | 🔧 custom channel | guix install -L cfg-channel |
+| `vkbasalt-cli` | ❌ missing | check guix availability |
+| `vmaf` | ❌ missing | check guix availability |
+| `vnstat` | ❌ missing | check guix availability |
+| `volume_key` | ❌ missing | check guix availability |
+| `vte3` | ❌ missing | check guix availability |
+| `vte4` | ❌ missing | check guix availability |
+| `vulkan-icd-loader` | ❌ missing | check guix availability |
+| `vulkan-mesa-implicit-layers` | ❌ missing | check guix availability |
+| `vulkan-radeon` | ❌ missing | check guix availability |
+| `w3m` | ❌ missing | check guix availability |
+| `watchtower-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `wavpack` | ❌ missing | check guix availability |
+| `wayland` | ❌ missing | check guix availability |
+| `wayland-protocols` | ❌ missing | check guix availability |
+| `waypipe` | ✅ installed | — |
+| `wayvnc` | ✅ installed | — |
+| `webkit2gtk-4.1` | ❌ missing | check guix availability |
+| `webkitgtk-6.0` | ❌ missing | check guix availability |
+| `webrtc-audio-processing` | ❌ missing | check guix availability |
+| `webrtc-audio-processing-1` | ❌ missing | check guix availability |
+| `wev` | ✅ installed | — |
+| `wf-recorder` | ✅ installed | — |
+| `wget` | ✅ installed | — |
+| `wget2` | ✅ installed | — |
+| `which` | ✅ installed | — |
+| `whois` | ✅ installed | — |
+| `wildmidi` | ❌ missing | check guix availability |
+| `wine` | ✅ installed | — |
+| `winetricks` | 🔧 custom channel | guix install -L cfg-channel |
+| `wireless-regdb` | ❌ missing | check guix availability |
+| `wiremix` | ❌ missing | check guix availability |
+| `wireplumber` | ✅ installed | — |
+| `wireshark-cli` | ❌ missing | check guix availability |
+| `witr-bin` | ❌ missing | check guix availability |
+| `wl` | 🔧 custom channel | guix install -L cfg-channel |
+| `wl-clipboard` | ✅ installed | — |
+| `wl-debug` | 🔧 custom channel | guix install -L cfg-channel |
+| `wlogout` | ✅ installed | — |
+| `wlr-randr` | ✅ installed | — |
+| `wlr-which-key` | 🔧 custom channel | guix install -L cfg-channel |
+| `wlroots0.20` | ❌ missing | check guix availability |
+| `woff2` | ❌ missing | check guix availability |
+| `wofi` | ✅ installed | — |
+| `wolfssl` | ❌ missing | check guix availability |
+| `wpa_supplicant` | ❌ missing | check guix availability |
+| `wsdd` | ❌ missing | check guix availability |
+| `wtype` | ✅ installed | — |
+| `wxwidgets-gtk3` | ❌ missing | check guix availability |
+| `x264` | ❌ missing | check guix availability |
+| `x265` | ❌ missing | check guix availability |
+| `xapian-core` | ❌ missing | check guix availability |
+| `xcb-imdkit` | ❌ missing | check guix availability |
+| `xcb-util` | ❌ missing | check guix availability |
+| `xcb-util-cursor` | ❌ missing | check guix availability |
+| `xcb-util-errors` | ❌ missing | check guix availability |
+| `xcb-util-image` | ❌ missing | check guix availability |
+| `xcb-util-keysyms` | ❌ missing | check guix availability |
+| `xcb-util-renderutil` | ❌ missing | check guix availability |
+| `xcb-util-wm` | ❌ missing | check guix availability |
+| `xcb-util-xrm` | ❌ missing | check guix availability |
+| `xdg-dbus-proxy` | ❌ missing | check guix availability |
+| `xdg-desktop-portal` | ❌ missing | check guix availability |
+| `xdg-desktop-portal-gnome` | ❌ missing | check guix availability |
+| `xdg-desktop-portal-gtk` | ❌ missing | check guix availability |
+| `xdg-desktop-portal-hyprland` | ✅ installed | — |
+| `xdg-desktop-portal-kde` | ❌ missing | check guix availability |
+| `xdg-desktop-portal-termfilechooser-hunkyburrito-git` | ❌ missing | check guix availability |
+| `xdg-ninja` | 🔧 custom channel | guix install -L cfg-channel |
+| `xdg-user-dirs` | ✅ installed | — |
+| `xdg-user-dirs-gtk` | ❌ missing | check guix availability |
+| `xfsprogs` | ✅ installed | — |
+| `xh` | 🔧 custom channel | guix install -L cfg-channel |
+| `xmlsec` | ❌ missing | check guix availability |
+| `xorgproto` | ❌ missing | check guix availability |
+| `xvidcore` | ❌ missing | check guix availability |
+| `xwaylandvideobridge` | 🔧 custom channel | guix install -L cfg-channel |
+| `xxhash` | ❌ missing | check guix availability |
+| `xz` | ❌ missing | check guix availability |
+| `yajl` | ❌ missing | check guix availability |
+| `yaml-cpp` | ❌ missing | check guix availability |
+| `yamllint` | ❌ missing | check guix availability |
+| `yandex-browser` | ❌ missing | check guix availability |
+| `yara` | ❌ missing | check guix availability |
+| `yazi` | 🔧 custom channel | guix install -L cfg-channel |
+| `ydotool` | ✅ installed | — |
+| `yelp` | ✅ installed | — |
+| `yelp-xsl` | ❌ missing | check guix availability |
+| `youtube-tui` | 🔧 custom channel | guix install -L cfg-channel |
+| `yt-dlp` | ✅ installed | — |
+| `yt-dlp-ejs` | ❌ missing | check guix availability |
+| `ytsurf` | 🔧 custom channel | guix install -L cfg-channel |
+| `yubikey-manager` | ❌ missing | check guix availability |
+| `yyjson` | ❌ missing | check guix availability |
+| `zapret2` | 🔧 custom channel | guix install -L cfg-channel |
+| `zathura` | ✅ installed | — |
+| `zathura-pdf-poppler` | ✅ installed | — |
+| `zbar` | ❌ missing | check guix availability |
+| `zellij` | 🔧 custom channel | guix install -L cfg-channel |
+| `zen-browser-bin` | 🔧 custom channel | guix install -L cfg-channel |
+| `zenity` | ❌ missing | check guix availability |
+| `zeromq` | ❌ missing | check guix availability |
+| `zimg` | ❌ missing | check guix availability |
+| `zint` | ❌ missing | check guix availability |
+| `zip` | ✅ installed | — |
+| `zita-convolver` | ❌ missing | check guix availability |
+| `zix` | ❌ missing | check guix availability |
+| `zk` | ❌ missing | check guix availability |
+| `zlib-ng` | ❌ missing | check guix availability |
+| `zmap` | ❌ missing | check guix availability |
+| `zoxide` | ✅ installed | — |
+| `zram-generator` | ❌ missing | check guix availability |
+| `zsh` | ✅ installed | — |
+| `zstd` | ❌ missing | check guix availability |
+| `zvbi` | ❌ missing | check guix availability |
+| `zxing-cpp` | ❌ missing | check guix availability |
+| `zziplib` | ❌ missing | check guix availability |

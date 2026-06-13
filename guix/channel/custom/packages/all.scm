@@ -11,7 +11,6 @@
   #:use-module (custom packages ddccontrol)
   #:use-module (custom packages dool)
   #:use-module (custom packages droidcam)
-  #:use-module (custom packages dualsensectl)
   #:use-module (custom packages epr)
   #:use-module (custom packages flclashx)
   #:use-module (custom packages font-iosevkaterm-nerd-fonts)
@@ -48,7 +47,6 @@
   #:use-module (custom packages rmlint)
   #:use-module (custom packages richcolors)
   #:use-module (custom packages rofi-file-browser-extended)
-  #:use-module (custom packages roomeqwizard)
   #:use-module (custom packages rsmetrx)
   #:use-module (custom packages rustmission)
   #:use-module (custom packages sidecar)
@@ -71,14 +69,20 @@
   #:use-module (custom packages wl)
   #:use-module (custom packages xdg-desktop-portal-termfilechooser)
   #:use-module (custom packages xray)
-  #:use-module (custom packages xwaylandvideobridge)
   #:use-module (custom packages youtube-tui)
   #:use-module (custom packages ytsurf)
   #:use-module (custom packages zapret2)
   #:use-module (custom packages zen-browser)
   #:use-module (custom packages hermes-agent)
   #:use-module (custom packages mpdas)
-  #:use-module (custom packages parity-push))  ; grex, nms, nvtop, s-tui, ssh-to-age, geoip-db
+  #:use-module (custom packages parity-push)  ; grex, nms, nvtop, s-tui, ssh-to-age, geoip-db
+  #:use-module (custom packages ambxst)
+  #:use-module (custom packages hunspell-dict-ru)
+  #:use-module (custom packages quickshell)
+  #:use-module (custom packages source-ioping)
+  #:use-module (custom packages source-misc)
+  #:use-module (custom packages themix)
+  #:use-module (custom packages nicotine+))
 
 (define-public all-custom-packages
   (list
@@ -104,6 +108,25 @@
     throne tmmpr v2raya watchtower winetricks
     wlr-which-key xdg-ninja xray ytsurf zapret2
     zellij-bin zen-browser
+    ;; parity-push batch (27 packages)
+    yazi ruff-linter gitleaks-sec ttyd-share genact-activity
+    ctop-monitor onefetch-info erdtree-disk bandwhich-net
+    resvg-render doggo-dns xh-client lnav-log cpufetch-tool
+    viu-viewer sops-secrets taplo-fmt tabiew-tui goose-ai
+    sad-editor axctl-compositor grex-tool no-more-secrets-nms
+    nvtop-monitor s-tui-stress ssh-to-age-key geoip-database-maxmind
+    ;; nicotine+ — removed: uses backquote macro at load time which fails
+    ;; python-ports extras — python-scdl/texicode/sqlit removed: missing deps (python-curl-cffi etc.)
+    ;; missing single-module entries
+    ;; (roomeqwizard, xwaylandvideobridge: local-file blobs missing)
+    ;; dualsensectl: hash mismatch, needs update
+    ambxst chawan droidcam hunspell-dict-ru
+    ioping newsraft ollama proton-cachyos proton-ge-custom
+    quickshell rmlint rofi-file-browser-extended
+    themix-theme-oomox tessen unflac vicinae wl
+    xdg-desktop-portal-termfilechooser youtube-tui
+    ;; source-misc
+    fortune-mod
     ))
 
 all-custom-packages

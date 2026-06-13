@@ -6,7 +6,8 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
-  #:use-module (gnu packages image))
+  #:use-module (gnu packages image)
+  #:use-module (gnu packages web))
 
 ;; themix-theme-oomox — GTK2/GTK3 theme generator plugin
 ;; Source: shell scripts + SCSS templates, no compilation needed

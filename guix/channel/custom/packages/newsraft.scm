@@ -6,7 +6,8 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages web))
+  #:use-module (gnu packages web)
+  #:use-module (guix utils))
 
 (define-public newsraft
   (package
@@ -18,16 +19,16 @@
                     (url "https://github.com/newsraft/newsraft")
                     (commit (string-append "newsraft-" version))))
               (file-name (git-file-name name version))
-              (sha256 (base32 "1ynzn6zj4baa4nj99klf24dsmskjnnfvr3m18vapaczi9kiqw6nm"))))
+              (sha256 (base32 "15fkhs9lzxpngkaqxyq6zkcxdkzw22i5mrq9s3d9xhffnqvwayf6"))))
     (build-system gnu-build-system)
     (inputs (list curl expat sqlite gumbo-parser))
     (arguments
-     '(#:tests? #f
-       #:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'check))))
+     `(#:tests? #f
+        #:make-flags (list (string-append "CC=" ,(cc-for-target))
+                           (string-append "PREFIX=" (assoc-ref %outputs "out")))
+        #:phases (modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'check))))
     (home-page "https://codeberg.org/newsraft/newsraft")
     (synopsis "Feed reader with terminal UI")
     (description "Newsraft is a feed reader with a text-based user interface.

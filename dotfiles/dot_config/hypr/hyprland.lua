@@ -163,8 +163,9 @@ hl.bind(M4 .. "+" .. SH .. "+o", hl.dsp.exec_cmd("~/.local/bin/pl vol unmute"), 
 hl.bind(M4 .. "+m", hl.dsp.exec_cmd("~/.local/bin/music-rename current"), { locked = true })
 
 -- Misc
-hl.bind(M1 .. "+g", hl.dsp.exec_cmd("~/.local/bin/hypr-win-list"))
-hl.bind(M1 .. "+backslash", hl.dsp.exec_cmd("~/.local/bin/hypr-win-list"))
+-- M1+g and M1+backslash: use function wrapper to avoid hl.dsp.exec_cmd quirks on 0.55.3
+hl.bind(M1 .. "+g", function() hl.exec_cmd("~/.local/bin/hypr-win-list") end)
+hl.bind(M1 .. "+backslash", function() hl.exec_cmd("~/.local/bin/hypr-win-list") end)
 hl.bind(M4 .. "+" .. SH .. "+m", hl.dsp.exec_cmd("~/.local/bin/main-menu"))
 hl.bind(M4 .. "+slash", hl.dsp.exec_cmd("~/.local/bin/hypr-shortcuts"))
 hl.bind(M4 .. "+" .. SH .. "+S", hl.dsp.exec_cmd("hyprquickframe"))

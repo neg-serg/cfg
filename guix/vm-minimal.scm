@@ -1,11 +1,10 @@
 ;; Production VM config — full toolset for neg's workstation
 (use-modules (gnu) (guix) (srfi srfi-1))
 (use-service-modules desktop networking ssh xorg spice shepherd)
-(use-package-modules admin audio base bootloaders certs compression containers
-                     curl disk file fonts gnupg kde-systemtools kde-utils linux
-                     mpd networking nicotine package-management rsync rust-apps ssh
-                     shells terminals text-editors version-control vim vpn wget
-                     wm xdisorg xorg)
+(use-package-modules admin audio base bootloaders certs compression
+ curl disk file fonts gnupg linux mpd networking
+ package-management rsync ssh shells
+ version-control vim wget xdisorg xorg kde-utils)
 (use-modules ((gnu packages shells) #:select (zsh)))
 (operating-system
  (host-name "guix-eval")

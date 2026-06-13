@@ -29,13 +29,24 @@
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
          (delete 'configure)
-         (add-after 'unpack 'fix-deps
-           (lambda _
-             ;; Remove appindicator dependency (not in Guix)
-             (substitute* "src/droidcam.c"
-               (("#include <libappindicator/app-indicator.h>") "")
-               (("APPINDICATOR_SIMPLE_INDICATOR") ""))
-             #t))
+          (add-after 'unpack 'fix-deps
+            (lambda _
+              ;; Fix Makefile: remove APPINDICATOR pkg-config (not in Guix)
+              ;; and fix libusbmuxd pkg-config name (pc file is libusbmuxd-2.0)
+              (substitute* "Makefile"
+                (("GTK.*pkg-config.*\\$\\(APPINDICATOR\\).*") "")
+                (("^USBMUXD.*")
+                 "USBMUXD := -lusbmuxd-2.0"))
+              ;; Remove appindicator dependency from source:
+              ;;   1. Delete the #include line
+              ;;   2. Comment out add_indicator call site
+              ;;   3. Replace add_indicator function body with empty stub
+              (invoke "sed" "-i"
+                "-e" "/#include <libappindicator\\/app-indicator.h>/d"
+                "-e" "/add_indicator(window);/s/.*/\\/\\* & \\*\\//"
+                "-e" "/^static void add_indicator/,/^}$/c\\static void add_indicator(GtkWidget *window) {}"
+                "src/droidcam.c")
+              #t))
          (replace 'build
            (lambda* (#:key #:allow-other-keys)
              (invoke "make" "droidcam" "CC=gcc" "APPINDICATOR=")

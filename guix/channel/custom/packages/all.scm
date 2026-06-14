@@ -8,6 +8,7 @@
   #:use-module (custom packages bulk-binaries)
   #:use-module (custom packages chawan)
   #:use-module (custom packages clipcat)
+  #:use-module (custom packages cosmic-icon-theme)
   #:use-module (custom packages ddccontrol)
   #:use-module (custom packages dool)
   #:use-module (custom packages droidcam)
@@ -16,6 +17,7 @@
   #:use-module (custom packages font-iosevkaterm-nerd-fonts)
   #:use-module (custom packages font-material-design-icons)
   #:use-module (custom packages ght)
+  #:use-module (custom packages go-yq)
   #:use-module (custom packages gopass)
   #:use-module (custom packages goverlay)
   #:use-module (custom packages handlr)
@@ -24,6 +26,7 @@
   #:use-module (custom packages iosevka-nerd-fonts)
   #:use-module (custom packages jetm-kernel-settings)
   #:use-module (custom packages kanata)
+  #:use-module (custom packages kmon)
   #:use-module (custom packages libjodycode)
   #:use-module (custom packages limine)
   #:use-module (custom packages massren)
@@ -34,12 +37,14 @@
   #:use-module (custom packages optiscaler)
   #:use-module (custom packages otter-launcher)
   #:use-module (custom packages par)
+  #:use-module (custom packages pop-icon-theme)
   #:use-module (custom packages powerlevel10k)
   #:use-module (custom packages proteinview)
   #:use-module (custom packages proton-cachyos)
   #:use-module (custom packages proton-ge)
   #:use-module (custom packages protontricks)
   #:use-module (custom packages proxypilot)
+  #:use-module (custom packages pup)
   #:use-module (custom packages python-ports)
   #:use-module (custom packages python-uv-dynamic-versioning)
   #:use-module (custom packages pzip)
@@ -88,18 +93,18 @@
 (define-public all-custom-packages
   (list
     act-bin advancecomp albumdetails aliae amdgpu-vulkan-switcher
-    ananicy-cpp babashka carapace-bin clipcat
+    ananicy-cpp babashka carapace-bin clipcat cosmic-icon-theme
     dcfldd ddccontrol eilmeldung
     epr flclashx font-iosevka-nerd-fonts
     font-iosevkaterm-nerd-fonts font-material-design-icons freeze fsel
-    gh-cli ghgrab ght
+    gh-cli ghgrab ght go-yq
     glow-markdown gmap gopass goverlay gowall
     handlr hermes-agent hishtory hxd hyprscratch
-    instagram-cli jdupes jetm-kernel-settings kanata lazygit-bin
+    instagram-cli jdupes jetm-kernel-settings kanata kmon lazygit-bin
     lazytail libjodycode limine localsend lutgen massren
     mpdas neo-matrix oh-my-posh opensoundmeter
-    oports optiscaler otter-launcher overskride oyo par powerlevel10k
-    proteinview protontricks protonup-rs proxypilot
+    oports optiscaler otter-launcher overskride oyo par pop-icon-theme powerlevel10k
+    proteinview protontricks protonup-rs proxypilot pup
     python-ascii-magic python-cmake-language-server python-neovim-remote
     python-rapidgzip python-uv-dynamic-versioning python-vdf pzip
     reddix regex-tui repeater resterm richcolors

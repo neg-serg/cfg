@@ -6,8 +6,8 @@
 |---------|--------|--------|
 | `act-bin` | 🔧 custom channel | guix install -L cfg-channel |
 | `advancecomp` | 🔧 custom channel | guix install -L cfg-channel |
-| `adw-gtk-theme` | ❌ missing | not in Guix — needs custom package |
-| `adwaita-fonts` | 🔧 custom channel | ⚠ in Guix as `font-adwaita` — add to specs |
+| `adw-gtk-theme` | ✅ in Guix | `guix install adw-gtk3-theme` |
+| `adwaita-fonts` | ✅ in Guix | `guix install font-adwaita` |
 | `albumdetails` | 🔧 custom channel | guix install -L cfg-channel |
 | `albumdetails-debug` | 🔧 custom channel | guix install -L cfg-channel |
 | `aliae-bin` | 🔧 custom channel | guix install -L cfg-channel |
@@ -22,12 +22,12 @@
 | `broot` | ❌ missing | check guix availability |
 | `bucklespring` | ❌ missing | check guix availability |
 | `carapace-bin` | 🔧 custom channel | guix install -L cfg-channel |
-| `ccid` | ❌ missing | check guix availability |
-| `cdparanoia` | ❌ missing | check guix availability |
+| `ccid` | ✅ in Guix | `guix install ccid` |
+| `cdparanoia` | ✅ in Guix | `guix install cdparanoia` |
 | `choose` | ❌ missing | check guix availability |
 | `chromium` | ❌ missing | check guix availability |
 | `clang` | ❌ missing | check guix availability |
-| `cosmic-icon-theme` | ❌ missing | not in Guix — needs custom package |
+| `cosmic-icon-theme` | 🔧 custom channel | `guix install -L cfg-channel cosmic-icon-theme` |
 | `cpufetch` | 🔧 custom channel | guix install -L cfg-channel |
 | `ctop` | 🔧 custom channel | guix install -L cfg-channel |
 | `dcfldd` | 🔧 custom channel | guix install -L cfg-channel |
@@ -45,7 +45,7 @@
 | `flatpak` | ❌ missing | check guix availability |
 | `flclashx-bin` | 🔧 custom channel | guix install -L cfg-channel |
 | `flex` | ❌ missing | check guix availability |
-| `fluidsynth` | ❌ missing | check guix availability |
+| `fluidsynth` | ✅ in Guix | `guix install fluidsynth` |
 | `freeze-bin` | 🔧 custom channel | guix install -L cfg-channel |
 | `fsel-bin` | 🔧 custom channel | guix install -L cfg-channel |
 | `gallery-dl` | ❌ missing | check guix availability |
@@ -53,7 +53,7 @@
 | `genact` | 🔧 custom channel | guix install -L cfg-channel |
 | `geoip` | 🔧 custom channel | guix install -L cfg-channel |
 | `ghgrab-bin` | 🔧 custom channel | guix install -L cfg-channel |
-| `ghostscript` | ❌ missing | check guix availability |
+| `ghostscript` | ✅ in Guix | `guix install ghostscript` |
 | `ghostty` | ❌ missing | check guix availability |
 | `gist` | ❌ missing | check guix availability |
 | `git-delta` | ❌ missing | check guix availability |
@@ -78,8 +78,8 @@
 | `goverlay` | 🔧 custom channel | guix install -L cfg-channel |
 | `gowall-bin` | 🔧 custom channel | guix install -L cfg-channel |
 | `grex` | 🔧 custom channel | guix install -L cfg-channel |
-| `gsfonts` | 🔧 custom channel | ⚠ in Guix as `font-ghostscript` — add to specs |
-| `gtk-engine-murrine` | ❌ missing | not in Guix — needs custom package |
+| `gsfonts` | ✅ in Guix | `guix install font-ghostscript` |
+| `gtk-engine-murrine` | ✅ in Guix | `guix install murrine` |
 | `gvfs` | ❌ missing | check guix availability |
 | `handlr-regex` | ❌ missing | check guix availability |
 | `hermes-agent` | 🔧 custom channel | guix install -L cfg-channel |
@@ -92,7 +92,7 @@
 | `hyprscratch` | 🔧 custom channel | guix install -L cfg-channel |
 | `iftop` | ❌ missing | check guix availability |
 | `instagram-cli` | 🔧 custom channel | guix install -L cfg-channel |
-| `inter-font` | 🔧 custom channel | ⚠ in Guix as `font-inter` — add to specs |
+| `inter-font` | ✅ in Guix | `guix install font-inter` |
 | `iosevka-neg-fonts` | 🔧 custom channel | ⚠ AUR custom Iosevka — port to custom channel |
 | `iperf3` | ❌ missing | check guix availability |
 | `iwd` | ❌ missing | check guix availability |
@@ -109,7 +109,7 @@
 | `lua-language-server` | ❌ missing | check guix availability |
 | `lutgen-bin` | 🔧 custom channel | guix install -L cfg-channel |
 | `lutris` | ❌ missing | check guix availability |
-| `mandoc` | ❌ missing | check guix availability |
+| `mandoc` | ✅ in Guix | `guix install mandoc` |
 | `massren` | 🔧 custom channel | guix install -L cfg-channel |
 | `matugen` | ❌ missing | check guix availability |
 | `miller` | ❌ missing | check guix availability |
@@ -120,14 +120,14 @@
 | `networkmanager` | ❌ missing | check guix availability |
 | `newsraft` | 🔧 custom channel | guix install -L cfg-channel |
 | `nodejs` | ❌ missing | check guix availability |
-| `notmuch` | ❌ missing | check guix availability |
+| `notmuch` | ✅ in Guix | `guix install notmuch` |
 | `nvtop` | 🔧 custom channel | guix install -L cfg-channel |
 | `oh-my-posh` | 🔧 custom channel | guix install -L cfg-channel |
 | `ollama` | 🔧 custom channel | guix install -L cfg-channel |
 | `onefetch` | 🔧 custom channel | guix install -L cfg-channel |
 | `opencode` | ❌ missing | check guix availability |
 | `opensoundmeter` | 🔧 custom channel | guix install -L cfg-channel |
-| `openssl` | ❌ missing | check guix availability |
+| `openssl` | ✅ in Guix | `guix install openssl` |
 | `oports-git` | 🔧 custom channel | guix install -L cfg-channel |
 | `otter-launcher` | 🔧 custom channel | guix install -L cfg-channel |
 | `overskride-bin` | 🔧 custom channel | guix install -L cfg-channel |
@@ -135,7 +135,7 @@
 | `par` | 🔧 custom channel | guix install -L cfg-channel |
 | `pastel` | ❌ missing | check guix availability |
 | `pciutils` | ❌ missing | check guix availability |
-| `pop-icon-theme` | ❌ missing | not in Guix — needs custom package |
+| `pop-icon-theme` | 🔧 custom channel | `guix install -L cfg-channel pop-icon-theme` |
 | `proton-cachyos` | 🔧 custom channel | guix install -L cfg-channel |
 | `protontricks` | 🔧 custom channel | guix install -L cfg-channel |
 | `protonup-rs-bin` | 🔧 custom channel | guix install -L cfg-channel |
@@ -187,7 +187,7 @@
 | `taoup` | 🔧 custom channel | guix install -L cfg-channel |
 | `tdl-bin` | 🔧 custom channel | guix install -L cfg-channel |
 | `television` | ❌ missing | check guix availability |
-| `terminus-font` | 🔧 custom channel | ⚠ in Guix as `font-terminus` — add to specs |
+| `terminus-font` | ✅ in Guix | `guix install font-terminus` |
 | `tessen` | 🔧 custom channel | guix install -L cfg-channel |
 | `throne` | 🔧 custom channel | guix install -L cfg-channel |
 | `tmmpr` | 🔧 custom channel | guix install -L cfg-channel |
@@ -321,7 +321,7 @@
 | `nftables` | ❌ missing | needs Guix packaging |
 | `npm` | ❌ missing | needs Guix packaging |
 | `ntfs-3g` | ❌ missing | needs Guix packaging |
-| `obs-studio` | ❌ missing | needs Guix packaging |
+| `obs-studio` | ✅ in Guix | `guix install obs` |
 | `openocd` | ❌ missing | needs Guix packaging |
 | `openrgb` | ❌ missing | needs Guix packaging |
 | `optiscaler-universal` | ❌ missing | needs Guix packaging |
@@ -337,7 +337,7 @@
 | `perl` | ❌ missing | needs Guix packaging |
 | `pgcli` | ❌ missing | needs Guix packaging |
 | `pixman` | ❌ missing | needs Guix packaging |
-| `polkit` | ❌ missing | needs Guix packaging |
+| `polkit` | ✅ in Guix | `guix install polkit` |
 | `potrace` | ❌ missing | needs Guix packaging |
 | `procps-ng` | ❌ missing | needs Guix packaging |
 | `pup-bin` | ❌ missing | needs Guix packaging |

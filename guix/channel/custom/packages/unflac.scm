@@ -24,12 +24,13 @@
          (delete 'bootstrap)
          (delete 'configure)
          (delete 'check)
-          (replace 'build
-            (lambda _
-              (setenv "HOME" "/tmp")
-              (invoke "go" "mod" "tidy")
-              (invoke "go" "build" "-o" "unflac" ".")
-              #t))
+           (replace 'build
+             (lambda _
+               (setenv "HOME" "/tmp")
+               (setenv "GOPROXY" "off")
+               (setenv "GOFLAGS" "-mod=mod")
+               (invoke "go" "build" "-o" "unflac" ".")
+               #t))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((bin (string-append (assoc-ref outputs "out") "/bin")))

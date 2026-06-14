@@ -11,10 +11,10 @@
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/pop-os/icon-theme")
-                    (commit "d0a5c231298f36ec1670dd266e2468b98d52155f")))
-              (file-name (git-file-name name version))
-              (sha256 (base32 "1inscbacnmk7kn6h16njxi7prq87w23avgizxqjh5m6v7a0z3bxv"))))
+                     (url "https://github.com/pop-os/icon-theme")
+                     (commit "1a575a8e99b4ae629b9b16543a3a04d148632ba9")))
+               (file-name (git-file-name name version))
+               (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f #:strip-binaries? #f #:validate-runpath? #f

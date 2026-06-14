@@ -11,10 +11,10 @@
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/pop-os/cosmic-icons")
-                    (commit "c2c19f312ed5e1d71691d15e31d28f9f66e0aad3")))
-              (file-name (git-file-name name version))
-              (sha256 (base32 "18saxdmfa86sivhmwqdqvn2xg4yaqks89c65gm8rd2b5dni40bgf"))))
+                     (url "https://github.com/pop-os/cosmic-icons")
+                     (commit "2c697e8e97cfd619107a872b28c31317281184ff")))
+               (file-name (git-file-name name version))
+               (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f #:strip-binaries? #f #:validate-runpath? #f

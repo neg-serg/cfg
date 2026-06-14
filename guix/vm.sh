@@ -6,7 +6,7 @@ set -e
 VM_NAME=guix
 SSH_PORT=10023
 GUEST_PORT=2222
-IMAGE=/var/lib/libvirt/images/guix-system-vm-1.5.0.qcow2
+IMAGE=/var/lib/libvirt/images/guix.qcow2
 
 stop_vm() {
   sudo virsh destroy "$VM_NAME" 2>/dev/null || true

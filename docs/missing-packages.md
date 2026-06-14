@@ -1,6 +1,6 @@
 # Missing Packages Status Report
 
-**Host total**: 2829 | **✅ in Guix**: 190 | **🔧 custom**: 138 | **🔧 nonguix**: 3 | **⬛ skip**: 23 | **❌ left**: 6 | **🔧 need pkg**: 2
+**Host total**: 2829 | **✅ installed in VM**: 271 | **🔧 custom**: 138 | **🔧 nonguix**: 3 | **⬛ skip**: 23 | **❌ left**: 6 | **🔧 need pkg**: 2 | *(disk: 46G/49G — needs resize)*
 
 | Package | Status | Action |
 |---------|--------|--------|

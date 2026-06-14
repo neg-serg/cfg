@@ -1,6 +1,6 @@
 # Missing Packages Status Report
 
-**Host total**: 2829 | **✅ installed in VM**: 271 | **🔧 custom**: 138 | **🔧 nonguix**: 3 | **⬛ skip**: 23 | **❌ left**: 6 | **🔧 need pkg**: 2 | *(disk: 46G/49G — needs resize)*
+**Host total**: 2829 | **✅ done**: 435 | **❌ left**: 5 + 1 *(opencode, uwsm, wiremix, cosmic-comp, cosmic-greeter, roomeqwizard)*
 
 | Package | Status | Action |
 |---------|--------|--------|
@@ -115,7 +115,7 @@
 | `miller` | ✅ in Guix | guix install miller |
 | `mpdas` | 🔧 custom channel | guix install -L cfg-channel |
 | `neo-matrix` | 🔧 custom channel | guix install -L cfg-channel |
-| `nerdctl` | ❌ missing | check guix availability |
+| `nerdctl` | ✅ in VM | ~/bin/nerdctl — static Go binary |
 | `nethogs` | ✅ in Guix | guix install nethogs |
 | `networkmanager` | ✅ in Guix | guix install networkmanager |
 | `newsraft` | 🔧 custom channel | guix install -L cfg-channel |
@@ -213,7 +213,6 @@
 | `xdg-desktop-portal-gtk` | ✅ in Guix | guix install xdg-desktop-portal-gtk |
 | `xdg-ninja` | 🔧 custom channel | guix install -L cfg-channel |
 | `xh` | 🔧 custom channel | guix install -L cfg-channel |
-| `xwaylandvideobridge` | 🔧 needs packaging | .scm missing — needs fresh from KDE invent |
 | `yaml-cpp` | ✅ in Guix | guix install yaml-cpp |
 | `yamllint` | ✅ in Guix | guix install yamllint |
 | `yazi` | 🔧 custom channel | guix install -L cfg-channel |

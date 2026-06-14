@@ -12,11 +12,10 @@
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.sr.ht/~ft/unflac")
-                    (commit (string-append "v" version))))
+                    (url "https://github.com/nilzeronull/unflac")
+                    (commit "0ed8af0cfc4a0a1487b9b556d4923dc2fd276a5d")))
               (file-name (git-file-name name version))
-               ;; FIXME: sourcehut project removed (404), needs alternative source
-               (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+              (sha256 (base32 "1a36gag3zba11rwrzpk6pc5yavwbmkifbdk5j3zbkm32y93iraij"))))
     (build-system gnu-build-system)
     (native-inputs (list go))
     (arguments
@@ -25,11 +24,12 @@
          (delete 'bootstrap)
          (delete 'configure)
          (delete 'check)
-         (replace 'build
-           (lambda _
-             (setenv "HOME" "/tmp")
-             (invoke "go" "build" "-o" "unflac" ".")
-             #t))
+          (replace 'build
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "go" "mod" "tidy")
+              (invoke "go" "build" "-o" "unflac" ".")
+              #t))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((bin (string-append (assoc-ref outputs "out") "/bin")))

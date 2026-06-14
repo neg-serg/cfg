@@ -9,7 +9,9 @@
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages curl)
-  #:use-module (gnu packages bash))
+  #:use-module (gnu packages bash)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages commencement))
 
 (define-public chawan
   (package
@@ -23,7 +25,7 @@
               (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "0b5vkq3i7r5ar66wiwv6kpy2wfgnvv0jlky42v4qrcldbwhf02fg"))))
+                 "19znbjwvw6k83ra75f1q0y2x13nifyifq5jnppxcg1fbsjrls0vq"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f
@@ -31,31 +33,20 @@
          (delete 'configure)
          (replace 'build
            (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "make" (string-append "LIBEXECDIR="
-                                           (assoc-ref outputs "out")
-                                           "/lib/chawan"))))
+             (setenv "HOME" "/tmp")
+             (let ((libexec (string-append (assoc-ref outputs "out")
+                                           "/lib/chawan")))
+               (invoke "make" "CC=gcc" "AR=ar"
+                       (string-append "PREFIX=" (assoc-ref outputs "out"))
+                       (string-append "LIBEXECDIR=" libexec)))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (libexec (string-append out "/lib/chawan"))
-                    (share (string-append out "/share")))
-               (mkdir-p bin)
-               (mkdir-p libexec)
-               (mkdir-p (string-append share "/man/man1"))
-               (mkdir-p (string-append share "/man/man5"))
-               (copy-recursively "src" libexec)
-               (symlink (string-append libexec "/cha/cha")
-                        (string-append bin "/cha"))
-               (for-each
-                (lambda (f)
-                  (install-file f (string-append share "/man/man1")))
-                (find-files "doc" "\\.1$"))
-               (for-each
-                (lambda (f)
-                  (install-file f (string-append share "/man/man5")))
-                (find-files "doc" "\\.5$"))))))))
-    (native-inputs (list nim bash-minimal))
+             (let ((out (assoc-ref outputs "out")))
+               (invoke "make" "install"
+                       (string-append "PREFIX=" out)
+                       (string-append "LIBEXECDIR=" out "/lib/chawan")
+                       "DESTDIR=")))))))
+    (native-inputs (list nim bash-minimal pkg-config gcc-toolchain))
     (inputs (list brotli libssh2 openssl curl))
     (home-page "https://chawan.net/")
     (synopsis "Text-mode web browser and pager")

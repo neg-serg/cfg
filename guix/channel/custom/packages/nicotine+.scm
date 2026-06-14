@@ -2,11 +2,13 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (guix build-system python)
   #:use-module (guix licenses)
   #:use-module (gnu packages)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gettext))
@@ -17,10 +19,10 @@
     (inherit python-pytaglib)
     (arguments
      (substitute-keyword-arguments (package-arguments python-pytaglib)
-       ((#:tests? tests? #f) #f)
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (delete 'wrap)))))))
+       ((#:tests? _ #f) #f)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'wrap)))))))
 
 ;; nicotine+ — Python Soulseek client  
 (define-public nicotine+
@@ -35,7 +37,7 @@
               (file-name (git-file-name name version))
               (sha256 (base32 "0xj7hlhgirgjyfmdchksvwhjhaqaf5n84brzih6fqlbsrr9gxkw9"))))
     (build-system python-build-system)
-    (native-inputs (list gettext-minimal))
+    (native-inputs (list gettext-minimal python-setuptools python-wheel))
     (arguments '(#:tests? #f))
     (propagated-inputs
      (list python-pytaglib-fixed gtk+ python-pygobject))

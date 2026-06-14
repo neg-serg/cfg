@@ -20,11 +20,18 @@
     (inputs (list rofi))
     (arguments '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'fix-werror
-                    (lambda _
-                      (substitute* "CMakeLists.txt"
-                        (("-Werror") ""))
-                      #t)))))
+                   (add-after 'unpack 'fix-incompatible-pointer-types
+                     (lambda _
+                       (substitute* "src/filebrowser.c"
+                         (("static cairo_surface_t \\*file_browser_get_icon \\( const Mode \\*sw, unsigned int selected_line, int height \\)")
+                          "static cairo_surface_t *file_browser_get_icon ( const Mode *sw, unsigned int selected_line, unsigned int height )"))
+                       #t))
+                   (add-after 'unpack 'fix-install-dirs
+                     (lambda _
+                       (substitute* "CMakeLists.txt"
+                         (("\\$\\{ROFI_PLUGINS_DIR\\}") "lib/rofi")
+                         (("/usr/share/man/man1") "share/man/man1"))
+                       #t)))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://github.com/marvinkreis/rofi-file-browser-extended")
     (synopsis "Rofi plugin for file browsing")

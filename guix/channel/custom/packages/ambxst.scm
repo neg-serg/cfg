@@ -52,3 +52,5 @@ exec ~a -p ~a/shell.qml \"$@\"
 It provides a unified panel (bar, dock, notch), dashboard, lockscreen,
 desktop widgets, and notification system.")
     (license gpl3+)))
+
+ambxst

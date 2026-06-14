@@ -3,10 +3,14 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system python)
   #:use-module (guix licenses)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages gcc)
   #:use-module (guix build utils))
 
 
@@ -689,7 +693,7 @@
 ;; axctl: Axenide compositor control CLI (Go binary from GitHub releases)
 (define-public axctl-compositor
   (package (name "axctl") (version "0.0.19")
-    (source (origin (method url-fetch) (uri "https://github.com/Axenide/axctl/releases/download/v0.0.19/axctl_linux_amd64") (sha256 (base32 "8grpig3vw59w8igbj06whpwacb3mfdw1q48asw3q48gcd238qgv0"))))
+    (source (origin (method url-fetch) (uri "https://github.com/Axenide/axctl/releases/download/v0.0.19/axctl_linux_amd64") (sha256 (base32 "1xn3d24cc7i2g1qas461h4vmgiv2i9gwh3chxd2w8lz1gfy7iws3"))))
     (build-system gnu-build-system)
     (native-inputs (list patchelf tar gzip unzip))
     (arguments
@@ -761,19 +765,23 @@
                     (commit "v1.0.1")))
               (file-name (git-file-name name version))
               (sha256 (base32
-                       "1936m1xz131b4iwdipxphrs5f7axbx2l5hxyr740z207i5p0d0mz"))))
+                        "14h34zpgjldw9bf65chb72gnzw5q88djrdasz2828r3ck6k88l21"))))
     (build-system gnu-build-system)
+    (native-inputs (list gcc))
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
          (delete 'configure)
          (replace 'build
-           (lambda* (#:key #:allow-other-keys)
-           (invoke "make" "-C" "nms")))
+           (lambda* (#:key inputs #:allow-other-keys)
+           (setenv "CC" (string-append (assoc-ref inputs "gcc") "/bin/gcc"))
+           (invoke "make")))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
-           (let ((out (assoc-ref outputs "out")))
-           (install-file "nms/nms" (string-append out "/bin"))))))))
+           (let* ((out (assoc-ref outputs "out"))
+                  (bin (string-append out "/bin")))
+           (mkdir-p bin)
+           (install-file "bin/nms" bin)))))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://github.com/bartobri/no-more-secrets")
     (synopsis "Recreate the Hollywood text-display effect")
@@ -791,6 +799,7 @@
          (delete 'bootstrap)(delete 'configure)(delete 'check)
          (delete 'build)(delete 'patch-usr-bin-file)
          (delete 'patch-source-shebangs)(delete 'patch-generated-file-shebangs)
+         (delete 'make-dynamic-linker-cache)
          (add-after 'unpack 'copy-bin
            (lambda* (#:key source #:allow-other-keys)
              (copy-file source "nvtop") #t))
@@ -813,18 +822,12 @@
   (package
     (name "s-tui") (version "1.1.6")
     (source (origin (method url-fetch)
-             (uri "https://github.com/amanusk/s-tui/archive/refs/tags/v1.1.6.tar.gz")
-             (sha256 (base32 "1rxv4llcfla9rgkiih3lvbqb7m2rrmv4rnbp9z7fn9x4fdb91a4r"))))
-    (build-system gnu-build-system)
-    (arguments '(#:tests? #f #:phases (modify-phases %standard-phases
-      (delete 'bootstrap) (delete 'configure) (delete 'check) (delete 'build)
-      (replace 'install
-        (lambda* (#:key outputs #:allow-other-keys)
-        (let ((out (assoc-ref outputs "out")))
-        (mkdir-p (string-append out "/bin"))
-        (copy-recursively "." (string-append out "/share/s-tui"))
-        (symlink (string-append out "/share/s-tui/s-tui")
-        (string-append out "/bin/s-tui"))))))))
+             (uri (pypi-uri "s-tui" version))
+             (sha256 (base32 "0mvvqg0pr8k0cy0mbvi25yqm6zsf8mipdbq97xjqfvifryf6j9wx"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f))
+    (native-inputs (list python-setuptools python-wheel))
+    (propagated-inputs (list python-psutil python-urwid))
     (supported-systems '("x86_64-linux"))
     (home-page "https://github.com/amanusk/s-tui")
     (synopsis "Stress-Terminal UI") (description "CPU stress and monitoring TUI")
@@ -866,7 +869,7 @@
               (method url-fetch)
               (uri "https://git.io/GeoLite2-City.mmdb")
               (sha256 (base32
-                       "1rsgqzzdgy954vh1zazakpghk7gkz5g9b4w27am48va2gklmh7wi"))))
+                       "0d96jxfg0fw5rq1iqkvr2a09r96hbvzd09ywx1dkwam7akfbkwbd"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f #:phases (modify-phases %standard-phases
       (delete 'bootstrap) (delete 'configure) (delete 'check) (delete 'build)

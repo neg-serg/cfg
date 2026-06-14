@@ -2,6 +2,7 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build utils)
   #:use-module (guix licenses))
 
 (define-public pop-icon-theme
@@ -11,13 +12,16 @@
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/pop-os/icon-theme")
-                     (commit "1a575a8e99b4ae629b9b16543a3a04d148632ba9")))
-               (file-name (git-file-name name version))
-               (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+                    (url "https://github.com/pop-os/icon-theme")
+                    (commit "1a575a8e99b4ae629b9b16543a3a04d148632ba9")))
+              (file-name (git-file-name name version))
+              (sha256 (base32 "0fqh6w2dnzn8ncaas2x6w3znsfa2r4g4gnzj719jdm924gxazm86"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f #:strip-binaries? #f #:validate-runpath? #f
+       #:modules ((guix build gnu-build-system)
+                  (guix build utils)
+                  (ice-9 ftw))
        #:phases (modify-phases %standard-phases
                   (delete 'bootstrap) (delete 'configure) (delete 'check)
                   (delete 'build) (delete 'patch-usr-bin-file)

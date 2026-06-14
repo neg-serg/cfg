@@ -2,6 +2,7 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build utils)
   #:use-module (guix licenses))
 
 (define-public cosmic-icon-theme
@@ -11,10 +12,10 @@
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/pop-os/cosmic-icons")
-                     (commit "2c697e8e97cfd619107a872b28c31317281184ff")))
-               (file-name (git-file-name name version))
-               (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+                    (url "https://github.com/pop-os/cosmic-icons")
+                    (commit "2c697e8e97cfd619107a872b28c31317281184ff")))
+              (file-name (git-file-name name version))
+              (sha256 (base32 "0dhz0gq625c0ln92gbpvxq74s6h3fb4y3ywb8zijqirgrvh2b36y"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f #:strip-binaries? #f #:validate-runpath? #f
@@ -28,14 +29,13 @@
                       (let ((out (assoc-ref outputs "out"))
                             (icon-dir "share/icons"))
                         (mkdir-p (string-append out "/" icon-dir))
-                        (for-each (lambda (d)
-                                    (copy-recursively d
-                                      (string-append out "/" icon-dir "/" d)))
-                                  (scandir "."
-                                    (lambda (f)
-                                      (and (not (member f '("." "..")))
-                                           (not (string-prefix? "." f))
-                                           (eq? 'directory (stat:type (stat f)))))))
+                        (for-each (lambda (f)
+                                    (when (eq? 'directory (stat:type (stat f)))
+                                      (let ((d (basename f)))
+                                        (unless (string-prefix? "." d)
+                                          (copy-recursively f
+                                            (string-append out "/" icon-dir "/" d))))))
+                                  (find-files "." (const #t) #:directories? #t))
                         #t))))))
     (home-page "https://github.com/pop-os/cosmic-icons")
     (synopsis "COSMIC icon theme")

@@ -2,7 +2,7 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages golang))
 
 (define-public unflac
@@ -21,25 +21,34 @@
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-         (delete 'bootstrap)
-         (delete 'configure)
-         (delete 'check)
-           (replace 'build
-             (lambda _
-               (setenv "HOME" "/tmp")
-               (setenv "GOPROXY" "off")
-               (setenv "GOFLAGS" "-mod=mod")
-               (invoke "go" "build" "-o" "unflac" ".")
-               #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (mkdir-p bin)
-               (install-file "unflac" bin)
-               #t))))))
+          (delete 'bootstrap)
+          (delete 'configure)
+          (delete 'check)
+          (replace 'build
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "GO111MODULE" "off")
+              ;; Patch out the chardet dependency
+              (substitute* "input.go"
+                (("\"github.com/ftrvxmtrx/chardet\"") "")
+                (("chardet\\.NewTextDecoder\\(chardet\\.UTF8\\)") "nil"))
+              ;; Setup GOPATH
+              (let ((gopath (string-append (getcwd) "/go")))
+                (setenv "GOPATH" gopath)
+                (mkdir-p (string-append gopath "/src/unflac"))
+                (for-each (lambda (f) (install-file f (string-append gopath "/src/unflac")))
+                          (find-files "." "\\.go$")))
+              (invoke "go" "build" "-o" "unflac" "unflac")
+              #t))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+                (mkdir-p bin)
+                (install-file "unflac" bin)
+                #t))))))
     (home-page "https://git.sr.ht/~ft/unflac")
     (synopsis "Fast frame-accurate audio image + cue sheet splitter")
     (description "unflac splits audio images using cue sheets, written in Go.")
-    (license bsd-3)))
+    (license license:bsd-3)))
 
 unflac

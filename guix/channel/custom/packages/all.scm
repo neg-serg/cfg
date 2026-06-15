@@ -85,7 +85,6 @@
   #:use-module (custom packages wl)
   #:use-module (custom packages xdg-desktop-portal-termfilechooser)
   #:use-module (custom packages xray)
-  #:use-module (custom packages yamllint)
   #:use-module (custom packages youtube-tui)
   #:use-module (custom packages ytsurf)
   #:use-module (custom packages zapret2)
@@ -138,7 +137,7 @@
     sbctl
     strace-tui systemd-manager-tui tailray tailscale tanin taoup tdl
     throne tmmpr v2raya watchtower winetricks
-    wlr-which-key xdg-ninja xray yamllint ytsurf zapret2
+    wlr-which-key xdg-ninja xray ytsurf zapret2
     zellij-bin zen-browser zmap
     ;; parity-push batch (27 packages)
     yazi ruff-linter gitleaks-sec ttyd-share genact-activity

@@ -3,8 +3,13 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
   #:use-module (guix licenses)
-  #:use-module (gnu packages crates-gtk)
-  #:use-module (gnu packages pkg-config))
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gl)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pulseaudio))
 
 (define-public swayosd
   (package
@@ -21,7 +26,7 @@
     (native-inputs (list pkg-config))
     (inputs (list gtk
                   gtk-layer-shell
-                  libpulse
+                  pulseaudio
                   glib
                   cairo
                   pango))

@@ -3,7 +3,11 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
   #:use-module (guix licenses)
-  #:use-module (gnu packages crates-gtk)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages pkg-config))
 
 (define-public satty
@@ -27,7 +31,7 @@
                   gdk-pixbuf
                   libadwaita
                   fontconfig
-                  epoxy))
+                   libepoxy))
     (arguments
      '(#:install-source? #f))
     (supported-systems '("x86_64-linux"))

@@ -82,14 +82,15 @@ WidgetCapsule {
     }
 
     // Updates via MPD idle on 'options' subsystem
+    // Direct command array (no bash wrapper) so Quickshell's Process
+    // can properly SIGTERM the child, preventing orphan processes.
     ProcessRunner {
         id: idle
-        // Prefer mpc; fallback to rmpc
-        cmd: ["bash", "-lc", "mpc -q idle options player 2>/dev/null || rmpc -q idle options player 2>/dev/null || true"]
+        cmd: ["mpc", "-q", "idle", "options", "player"]
         restartOnExit: true
         backoffMs: 250
         onExited: (code, status) => {
-            if (root.enabled) proc.start()
+            if (root.enabled && !idle.running) root.refresh()
         }
     }
 

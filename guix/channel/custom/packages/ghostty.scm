@@ -16,7 +16,7 @@
                     (url "https://github.com/ghostty-org/ghostty")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+              (sha256 (base32 "0glwj88s8jj8vrlc42fzwj4v8yzm01szvnl4mg51qaw5wddk4yk0"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config zig))
     (arguments

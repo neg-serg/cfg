@@ -11,13 +11,12 @@
 (define-public firewalld
   (package
     (name "firewalld")
-    (version "2.4.0")
+    (version "2.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/firewalld/firewalld/"
-                                  "releases/download/v" version
-                                  "/firewalld-" version ".tar.gz"))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+                                  "archive/v" version ".tar.gz"))
+              (sha256 (base32 "12g1lzlcxx2akyfli5cjgmszsr2vh1jmm41y6mda0h8rfi1h193h"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config
                          python

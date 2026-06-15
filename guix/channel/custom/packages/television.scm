@@ -12,7 +12,7 @@
               (method url-fetch)
               (uri (crate-uri "television" version))
               (file-name (string-append name "-" version ".tar.gz"))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+              (sha256 (base32 "0wnzrswv5m6nwkr8cwx82jy73xyqjx6zvmf6ic1grrcqjhvw42m0"))))
     (build-system cargo-build-system)
     (arguments
      '(#:install-source? #f))

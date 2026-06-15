@@ -6,7 +6,7 @@ set -e
 VM_NAME=guix
 SSH_PORT=10023
 GUEST_PORT=2222
-IMAGE=/var/lib/libvirt/images/guix.qcow2
+IMAGE=/mnt/one/vms/guix.qcow2
 
 stop_vm() {
   sudo virsh destroy "$VM_NAME" 2>/dev/null || true
@@ -26,7 +26,7 @@ fix_image_path() {
 import xml.etree.ElementTree as ET
 tree = ET.parse('/home/neg/src/cfg/vms/guix.xml')
 for el in tree.iter():
-    if el.get('file','').endswith('guix-system-vm-1.5.0.qcow2'):
+    if el.get('file','').endswith('guix.qcow2'):
         el.set('file', '$IMAGE')
         tree.write('/home/neg/src/cfg/vms/guix.xml')
         print('image path fixed')

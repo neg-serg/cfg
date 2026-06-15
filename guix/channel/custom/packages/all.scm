@@ -53,11 +53,13 @@
   #:use-module (custom packages proteinview)
   #:use-module (custom packages proton-cachyos)
   #:use-module (custom packages proton-ge)
+  #:use-module (custom packages protonup-qt)
   #:use-module (custom packages protontricks)
   #:use-module (custom packages proxypilot)
   #:use-module (custom packages pup)
   #:use-module (custom packages python-minidb)
   #:use-module (custom packages python-ports)
+  #:use-module (custom packages python-pskc)
   #:use-module (custom packages python-uv-dynamic-versioning)
   #:use-module (custom packages pzip)
   #:use-module (custom packages regex-tui)
@@ -80,6 +82,8 @@
   #:use-module (custom packages taoup)
   #:use-module (custom packages tessen)
   #:use-module (custom packages tmmpr)
+  #:use-module (custom packages ufw)
+  #:use-module (custom packages unarchiver)
   #:use-module (custom packages unflac)
   #:use-module (custom packages v2raya)
   #:use-module (custom packages vicinae)
@@ -90,6 +94,7 @@
   #:use-module (custom packages xray)
   #:use-module (custom packages youtube-tui)
   #:use-module (custom packages ytsurf)
+  #:use-module (custom packages yubikey-manager)
   #:use-module (custom packages zapret2)
   #:use-module (custom packages zen-browser)
   #:use-module (custom packages zmap)
@@ -111,8 +116,10 @@
   #:use-module (custom packages wiremix)
   #:use-module (custom packages firewalld)
   #:use-module (custom packages gamescope)
+  #:use-module (custom packages geoip)
   #:use-module (custom packages ghostty)
   #:use-module (custom packages satty)
+  #:use-module (custom packages schedtool)
   #:use-module (custom packages swayosd)
   #:use-module (custom packages television)
   #:use-module (custom packages xwaylandvideobridge))
@@ -133,17 +140,18 @@
     lazytail libjodycode limine localsend lutgen massren
     mpdas neg-pretty-printer neo-matrix oh-my-posh opensoundmeter
     oports optiscaler otter-launcher overskride oyo par pop-icon-theme powerlevel10k
-    proteinview protontricks protonup-rs proxypilot pup
+    proteinview protontricks protonup-qt protonup-rs proxypilot pup
      python-ascii-magic python-cmake-language-server python-minidb
      python-neovim-remote
-    python-rapidgzip python-uv-dynamic-versioning python-vdf pzip
+     python-pskc
+     python-rapidgzip python-uv-dynamic-versioning python-vdf pzip
     reddix regex-tui repeater resterm richcolors
     rsmetrx rustmission sidecar simutil
     sing-box slsa-verifier sonic-visualiser songfetch
-    sbctl
+    sbctl schedtool
     strace-tui systemd-manager-tui tailray tailscale tanin taoup tdl
     throne tmmpr v2raya watchtower winetricks
-    wlr-which-key xdg-ninja xray ytsurf zapret2
+    wlr-which-key xdg-ninja xray yubikey-manager ytsurf zapret2
     zellij-bin zen-browser zmap
     ;; parity-push batch (27 packages)
     yazi ruff-linter gitleaks-sec ttyd-share genact-activity
@@ -161,12 +169,12 @@
     ambxst chawan droidcam hunspell-dict-ru
     bucklespring
     font-iosevka-neg
-    firewalld gamescope ghostty satty swayosd television
+    firewalld gamescope geoip ghostty satty swayosd television
     ghostty-bin gitlogue htmlq matugen rmpc wsdd
     ioping newsraft ollama proton-cachyos proton-ge-custom
     grafana
     quickshell rmlint rofi-file-browser-extended
-    themix-theme-oomox tessen unflac vicinae wl
+    themix-theme-oomox tessen ufw unarchiver unflac vicinae wl
     xdg-desktop-portal-termfilechooser youtube-tui
     ;; new packages
     nerdctl opencode urlwatch uwsm wiremix

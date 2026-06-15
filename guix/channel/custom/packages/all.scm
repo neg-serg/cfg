@@ -92,7 +92,13 @@
   #:use-module (custom packages nerdctl)
   #:use-module (custom packages opencode)
   #:use-module (custom packages uwsm)
-  #:use-module (custom packages wiremix))
+  #:use-module (custom packages wiremix)
+  #:use-module (custom packages firewalld)
+  #:use-module (custom packages gamescope)
+  #:use-module (custom packages ghostty)
+  #:use-module (custom packages satty)
+  #:use-module (custom packages swayosd)
+  #:use-module (custom packages television))
 
 (define-public all-custom-packages
   (list
@@ -132,6 +138,7 @@
     ;; dualsensectl: hash mismatch, needs update
     ambxst chawan droidcam hunspell-dict-ru
     font-iosevka-neg
+    firewalld gamescope ghostty satty swayosd television
     ioping newsraft ollama proton-cachyos proton-ge-custom
     quickshell rmlint rofi-file-browser-extended
     themix-theme-oomox tessen unflac vicinae wl

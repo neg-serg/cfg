@@ -1,6 +1,6 @@
 # Missing Packages Status Report
 
-**Host total**: 2829 | **✅ done**: 435 | **❌ left**: 5 + 1 *(opencode, uwsm, wiremix, cosmic-comp, cosmic-greeter, roomeqwizard)*
+**Host total**: 2829 | **✅ done**: 439 | **❌ left**: 1 *(cosmic-greeter)*
 
 | Package | Status | Action |
 |---------|--------|--------|
@@ -125,7 +125,7 @@
 | `oh-my-posh` | 🔧 custom channel | guix install -L cfg-channel |
 | `ollama` | 🔧 custom channel | guix install -L cfg-channel |
 | `onefetch` | 🔧 custom channel | guix install -L cfg-channel |
-| `opencode` | ❌ missing | check guix availability |
+| `opencode` | ✅ in VM | opencode 1.17.7 — pre-built binary |
 | `opensoundmeter` | 🔧 custom channel | guix install -L cfg-channel |
 | `openssl` | ✅ in Guix | guix install openssl |
 | `oports-git` | 🔧 custom channel | guix install -L cfg-channel |
@@ -198,7 +198,7 @@
 | `unflac` | 🔧 custom channel | guix install -L cfg-channel |
 | `usbutils` | ✅ in Guix | guix install usbutils |
 | `uv` | ✅ in Guix | guix install uv |
-| `uwsm` | ❌ missing | check guix availability |
+| `uwsm` | ✅ in VM | uwsm 0.26.5 — meson build |
 | `v2raya-bin` | 🔧 custom channel | guix install -L cfg-channel |
 | `vale` | ✅ in Guix | guix install vale |
 | `vicinae-bin` | 🔧 custom channel | guix install -L cfg-channel |
@@ -206,7 +206,7 @@
 | `vnstat` | ✅ in Guix | guix install vnstat |
 | `watchtower-bin` | 🔧 custom channel | guix install -L cfg-channel |
 | `winetricks` | 🔧 custom channel | guix install -L cfg-channel |
-| `wiremix` | ❌ missing | check guix availability |
+| `wiremix` | ✅ in VM | wiremix 0.11.0 — Rust cargo build |
 | `wl` | 🔧 custom channel | guix install -L cfg-channel |
 | `wl-debug` | 🔧 custom channel | guix install -L cfg-channel |
 | `wlr-which-key` | 🔧 custom channel | guix install -L cfg-channel |
@@ -238,8 +238,8 @@
 | `cmake-format` | ✅ in Guix | guix install cmake-format |
 | `colord` | ✅ in Guix | guix install colord |
 | `containerd` | ✅ in Guix | guix install containerd |
-| `cosmic-comp` | ❌ missing | needs Guix packaging |
-| `cosmic-greeter` | ❌ missing | needs Guix packaging |
+| `cosmic-comp` | ✅ built on host | needs VM sync — 27MB Rust binary |
+| `cosmic-greeter` | 🔧 needs vendor | vendored tarball broken — git revision missing |
 | `cython` | ✅ in Guix | guix install cython |
 | `debuginfod` | ✅ in Guix | guix install debuginfod |
 | `deno` | ✅ in Guix | guix install deno |

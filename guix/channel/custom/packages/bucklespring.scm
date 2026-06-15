@@ -48,18 +48,19 @@
                 (mkdir-p bin)
                 (install-file "buckle" (string-append out "/libexec"))
                 (copy-recursively "wav" wav)
-                ;; Create symlinks for dlopened audio backends
-                (let ((flac-lib (string-append (assoc-ref inputs "flac") "/lib")))
-                  (for-each (lambda (soname)
-                              (false-if-exception
-                               (symlink (string-append flac-lib "/libFLAC.so.14")
-                                        (string-append flac-lib "/" soname))))
-                            '("libFLAC.so.8" "libFLAC.so.12")))
+                ;; Create compat symlinks for dlopened audio backends in $out/lib
+                (let ((out-lib (string-append out "/lib"))
+                      (flac-lib (string-append (assoc-ref inputs "flac") "/lib")))
+                  (mkdir-p out-lib)
+                  (symlink (string-append flac-lib "/libFLAC.so.14")
+                           (string-append out-lib "/libFLAC.so.8"))
+                  (symlink (string-append flac-lib "/libFLAC.so.14")
+                           (string-append out-lib "/libFLAC.so.12")))
                 (call-with-output-file (string-append bin "/buckle")
                  (lambda (port)
                    (format port "#!~a/bin/sh~%" (assoc-ref inputs "bash"))
-                   (format port "export LD_LIBRARY_PATH=~a:$LD_LIBRARY_PATH~%"
-                           (string-join libs ":"))
+                    (format port "export LD_LIBRARY_PATH=~a/lib:~a:$LD_LIBRARY_PATH~%"
+                            out (string-join libs ":"))
                    (format port "exec ~a/libexec/buckle \"$@\"~%" out)))
                (chmod (string-append bin "/buckle") #o555)
                #t))))))

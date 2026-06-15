@@ -65,6 +65,7 @@
   #:use-module (custom packages rofi-file-browser-extended)
   #:use-module (custom packages rsmetrx)
   #:use-module (custom packages rustmission)
+  #:use-module (custom packages sonic-visualiser)
   #:use-module (custom packages sbctl)
   #:use-module (custom packages sidecar)
   #:use-module (custom packages sing-box)
@@ -134,7 +135,7 @@
     python-rapidgzip python-uv-dynamic-versioning python-vdf pzip
     reddix regex-tui repeater resterm richcolors
     rsmetrx rustmission sidecar simutil
-    sing-box slsa-verifier songfetch
+    sing-box slsa-verifier sonic-visualiser songfetch
     sbctl
     strace-tui systemd-manager-tui tailray tailscale tanin taoup tdl
     throne tmmpr v2raya watchtower winetricks

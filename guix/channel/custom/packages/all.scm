@@ -88,7 +88,11 @@
   #:use-module (custom packages source-ioping)
   #:use-module (custom packages source-misc)
   #:use-module (custom packages themix)
-  #:use-module (custom packages nicotine+))
+  #:use-module (custom packages nicotine+)
+  #:use-module (custom packages nerdctl)
+  #:use-module (custom packages opencode)
+  #:use-module (custom packages uwsm)
+  #:use-module (custom packages wiremix))
 
 (define-public all-custom-packages
   (list
@@ -132,6 +136,8 @@
     quickshell rmlint rofi-file-browser-extended
     themix-theme-oomox tessen unflac vicinae wl
     xdg-desktop-portal-termfilechooser youtube-tui
+    ;; new packages
+    nerdctl opencode uwsm wiremix
     ;; source-misc
     fortune-mod
     ))

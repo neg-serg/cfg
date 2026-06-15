@@ -15,8 +15,8 @@ stop_vm() {
 }
 
 start_vm() {
-  cp /usr/share/edk2/x64/OVMF_VARS.4m.fd /tmp/guix-vm-vars.fd
-  sudo virsh define /tmp/guix-vm.xml 2>/dev/null || true
+  cp /usr/share/edk2/x64/OVMF_VARS.4m.fd /home/neg/src/cfg/vms/guix-vm-vars.fd
+  sudo virsh define /home/neg/src/cfg/vms/guix.xml 2>/dev/null || true
   sudo virsh start "$VM_NAME" 2>/dev/null || true
 }
 
@@ -24,11 +24,11 @@ start_vm() {
 fix_image_path() {
   python3 -c "
 import xml.etree.ElementTree as ET
-tree = ET.parse('/tmp/guix-vm.xml')
+tree = ET.parse('/home/neg/src/cfg/vms/guix.xml')
 for el in tree.iter():
     if el.get('file','').endswith('guix-system-vm-1.5.0.qcow2'):
         el.set('file', '$IMAGE')
-        tree.write('/tmp/guix-vm.xml')
+        tree.write('/home/neg/src/cfg/vms/guix.xml')
         print('image path fixed')
         break
 " 2>/dev/null || true

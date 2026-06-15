@@ -15,7 +15,7 @@
                     (url "https://github.com/christgau/wsdd")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+              (sha256 (base32 "1qj5z0j6hhvvydwrx9mxayw6cvq4j01jzvn2rd6jpq3i1aaxgksg"))))
     (build-system gnu-build-system)
     (inputs (list python))
     (arguments

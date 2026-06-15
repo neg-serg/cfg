@@ -12,7 +12,7 @@
               (method url-fetch)
               (uri (crate-uri "htmlq" version))
               (file-name (string-append name "-" version ".tar.gz"))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+              (sha256 (base32 "0912cdkz5xji1hzfj1cf42zh1kd860b52xmwwhb7q2jhp6qk25jh"))))
     (build-system cargo-build-system)
     (arguments
      '(#:install-source? #f))

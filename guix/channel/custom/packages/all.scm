@@ -139,6 +139,7 @@
     ambxst chawan droidcam hunspell-dict-ru
     font-iosevka-neg
     firewalld gamescope ghostty satty swayosd television
+    ghostty-bin gitlogue htmlq matugen rmpc wsdd
     ioping newsraft ollama proton-cachyos proton-ge-custom
     quickshell rmlint rofi-file-browser-extended
     themix-theme-oomox tessen unflac vicinae wl

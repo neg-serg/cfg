@@ -40,6 +40,7 @@
   #:use-module (custom packages libjodycode)
   #:use-module (custom packages limine)
   #:use-module (custom packages massren)
+  #:use-module (custom packages neg-pretty-printer)
   #:use-module (custom packages neo-matrix)
   #:use-module (custom packages newsraft)
   #:use-module (custom packages ollama)
@@ -126,7 +127,7 @@
     instagram-cli jdupes judy jetm-kernel-settings kanata kmon lazygit-bin
     iperf3
     lazytail libjodycode limine localsend lutgen massren
-    mpdas neo-matrix oh-my-posh opensoundmeter
+    mpdas neg-pretty-printer neo-matrix oh-my-posh opensoundmeter
     oports optiscaler otter-launcher overskride oyo par pop-icon-theme powerlevel10k
     proteinview protontricks protonup-rs proxypilot pup
     python-ascii-magic python-cmake-language-server python-neovim-remote

@@ -114,7 +114,8 @@
   #:use-module (custom packages ghostty)
   #:use-module (custom packages satty)
   #:use-module (custom packages swayosd)
-  #:use-module (custom packages television))
+  #:use-module (custom packages television)
+  #:use-module (custom packages xwaylandvideobridge))
 
 (define-public all-custom-packages
   (list
@@ -154,7 +155,8 @@
     ;; nicotine+ — removed: uses backquote macro at load time which fails
     ;; python-ports extras — python-scdl/texicode/sqlit removed: missing deps (python-curl-cffi etc.)
     ;; missing single-module entries
-    ;; (roomeqwizard, xwaylandvideobridge: local-file blobs missing)
+    ;; (roomeqwizard: local-file blobs missing)
+    ;; xwaylandvideobridge: now packaged from source
     ;; dualsensectl: hash mismatch, needs update
     ambxst chawan droidcam hunspell-dict-ru
     bucklespring
@@ -168,6 +170,7 @@
     xdg-desktop-portal-termfilechooser youtube-tui
     ;; new packages
     nerdctl opencode urlwatch uwsm wiremix
+    xwaylandvideobridge
     ;; source-misc
     fortune-mod
     ))

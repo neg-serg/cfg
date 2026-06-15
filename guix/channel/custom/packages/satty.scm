@@ -1,41 +1,28 @@
 (define-module (custom packages satty)
   #:use-module (guix packages)
-  #:use-module (guix git-download)
-  #:use-module (guix build-system cargo)
-  #:use-module (guix licenses)
-  #:use-module (gnu packages gtk)
-  #:use-module (gnu packages glib)
-  #:use-module (gnu packages gnome)
-  #:use-module (gnu packages fontutils)
-  #:use-module (gnu packages gl)
-  #:use-module (gnu packages pkg-config))
+  #:use-module (guix gexp)
+  #:use-module (guix build-system trivial)
+  #:use-module (guix licenses))
 
 (define-public satty
   (package
     (name "satty")
-    (version "0.16.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/gabm/Satty")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
-    (build-system cargo-build-system)
-    (native-inputs (list pkg-config))
-    (inputs (list gtk
-                  gtk-layer-shell
-                  cairo
-                  pango
-                  glib
-                  gdk-pixbuf
-                  libadwaita
-                  fontconfig
-                   libepoxy))
+    (version "0.21.1")
+    (source (local-file "satty-built" #:recursive? #f))
+    (build-system trivial-build-system)
     (arguments
-     '(#:install-source? #f))
+     '(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let* ((source (assoc-ref %build-inputs "source"))
+                (out    (assoc-ref %outputs "out"))
+                (bin    (string-append out "/bin")))
+           (mkdir-p bin)
+           (copy-file source (string-append bin "/satty"))
+           (chmod (string-append bin "/satty") #o555)))))
     (supported-systems '("x86_64-linux"))
-    (home-page "https://github.com/gabm/Satty")
+    (home-page "https://github.com/Satty-org/Satty")
     (synopsis "Screenshot annotation tool inspired by Swappy and Flameshot")
     (description "Satty is a modern screenshot annotation tool for Wayland
 compositors.  It provides on-screen drawing, text, arrows, and shape tools

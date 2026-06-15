@@ -1,39 +1,52 @@
 (define-module (custom packages swayosd)
   #:use-module (guix packages)
-  #:use-module (guix git-download)
-  #:use-module (guix build-system cargo)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix build-system gnu)
   #:use-module (guix licenses)
-  #:use-module (gnu packages gtk)
-  #:use-module (gnu packages glib)
-  #:use-module (gnu packages gnome)
-  #:use-module (gnu packages fontutils)
-  #:use-module (gnu packages gl)
-  #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages pulseaudio))
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages elf))
+
+(define %swayosd-tarball
+  (local-file "swayosd-binaries.tar.gz"
+              #:recursive? #f))
 
 (define-public swayosd
   (package
     (name "swayosd")
-    (version "0.1.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/ErikReider/SwayOSD")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
-    (build-system cargo-build-system)
-    (native-inputs (list pkg-config))
-    (inputs (list gtk
-                  gtk-layer-shell
-                  pulseaudio
-                  glib
-                  cairo
-                  pango))
+    (version "0.3.1")
+    (source %swayosd-tarball)
+    (build-system gnu-build-system)
+    (native-inputs (list tar gzip patchelf))
     (arguments
-     '(#:install-source? #f
-       #:cargo-test-flags '("--"
-                            "--skip=test_osd_window")))
+     `(#:tests? #f
+       #:strip-binaries? #f
+       #:validate-runpath? #f
+       #:phases (modify-phases %standard-phases
+                  (delete 'bootstrap)
+                  (delete 'configure)
+                  (delete 'check)
+                  (delete 'build)
+                  (delete 'patch-usr-bin-file)
+                  (delete 'patch-source-shebangs)
+                  (delete 'patch-generated-file-shebangs)
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin"))
+                             (glibc (assoc-ref %build-inputs "libc"))
+                             (interp (string-append glibc "/lib/ld-linux-x86-64.so.2"))
+                             (pe (string-append (assoc-ref %build-inputs "patchelf")
+                                                "/bin/patchelf")))
+                        (mkdir-p bin)
+                        (for-each (lambda (f)
+                                    (install-file f bin)
+                                    (false-if-exception
+                                     (invoke pe "--set-interpreter" interp
+                                             (string-append bin "/" f))))
+                                  '("swayosd-server" "swayosd-client"))
+                        #t))))))
     (supported-systems '("x86_64-linux"))
     (home-page "https://github.com/ErikReider/SwayOSD")
     (synopsis "OSD window for Sway and other Wayland compositors")

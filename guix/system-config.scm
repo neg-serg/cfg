@@ -282,7 +282,6 @@ root ALL=(ALL) ALL
            "bucklespring" "amneziawg-tools"
            "i3-wm" "i3status" "networkmanager" "nm-connection-editor"
            "goimapnotify" "gitogue" "wiremix"
-           "proton-vpn-cli" "zram-generator" "systemd-resolvconf"
            "transmission-cli" "television" "showtime" "rmpc"
            "rofi" "pipewire" "neg-pretty-printer" "prettyping"
            "plasma-wayland-session" "kvantum-qt5"

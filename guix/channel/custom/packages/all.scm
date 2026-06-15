@@ -56,6 +56,7 @@
   #:use-module (custom packages protontricks)
   #:use-module (custom packages proxypilot)
   #:use-module (custom packages pup)
+  #:use-module (custom packages python-minidb)
   #:use-module (custom packages python-ports)
   #:use-module (custom packages python-uv-dynamic-versioning)
   #:use-module (custom packages pzip)
@@ -105,6 +106,7 @@
   #:use-module (custom packages nicotine+)
   #:use-module (custom packages nerdctl)
   #:use-module (custom packages opencode)
+  #:use-module (custom packages urlwatch)
   #:use-module (custom packages uwsm)
   #:use-module (custom packages wiremix)
   #:use-module (custom packages firewalld)
@@ -131,7 +133,8 @@
     mpdas neg-pretty-printer neo-matrix oh-my-posh opensoundmeter
     oports optiscaler otter-launcher overskride oyo par pop-icon-theme powerlevel10k
     proteinview protontricks protonup-rs proxypilot pup
-    python-ascii-magic python-cmake-language-server python-neovim-remote
+     python-ascii-magic python-cmake-language-server python-minidb
+     python-neovim-remote
     python-rapidgzip python-uv-dynamic-versioning python-vdf pzip
     reddix regex-tui repeater resterm richcolors
     rsmetrx rustmission sidecar simutil
@@ -164,7 +167,7 @@
     themix-theme-oomox tessen unflac vicinae wl
     xdg-desktop-portal-termfilechooser youtube-tui
     ;; new packages
-    nerdctl opencode uwsm wiremix
+    nerdctl opencode urlwatch uwsm wiremix
     ;; source-misc
     fortune-mod
     ))

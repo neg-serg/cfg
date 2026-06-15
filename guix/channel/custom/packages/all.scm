@@ -120,6 +120,7 @@
   #:use-module (custom packages ghostty)
   #:use-module (custom packages satty)
   #:use-module (custom packages schedtool)
+  #:use-module (custom packages sc3-plugins)
   #:use-module (custom packages swayosd)
   #:use-module (custom packages television)
   #:use-module (custom packages xwaylandvideobridge))

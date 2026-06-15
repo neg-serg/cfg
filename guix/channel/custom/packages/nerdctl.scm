@@ -1,17 +1,20 @@
 (define-module (custom packages nerdctl)
   #:use-module (guix packages)
-  #:use-module (guix gexp)
+  #:use-module (guix download)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:))
-
-(define nerdctl-bin
-  (local-file "/tmp/nerdctl" #:recursive? #f))
 
 (define-public nerdctl
   (package
     (name "nerdctl")
     (version "2.3.1")
-    (source nerdctl-bin)
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/containerd/nerdctl/releases/download/v"
+                    version "/nerdctl-" version "-linux-amd64.tar.gz"))
+              (sha256
+               (base32 "0mjgssxya1s5j8kkb6qqsv2fxadcbbvvjg7s7mgl9zjfiydl14yj"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f #:strip-binaries? #f #:validate-runpath? #f

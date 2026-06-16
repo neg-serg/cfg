@@ -1,6 +1,12 @@
 (define-module (custom packages all)
   #:use-module (custom packages albumdetails)
   #:use-module (custom packages aliae)
+  #:use-module (custom packages cloudflare-speed-cli)
+  #:use-module (custom packages haskell-tidal)
+  #:use-module (custom packages liquidctl)
+  #:use-module (custom packages qman)
+  #:use-module (custom packages raise)
+  #:use-module (custom packages zk)
   #:use-module (custom packages amdgpu-switcher)
   #:use-module (custom packages ananicy-cpp)
   #:use-module (custom packages bazecor)
@@ -134,17 +140,17 @@
 (define-public all-custom-packages
   (list
     act-bin advancecomp albumdetails aliae amdgpu-vulkan-switcher
-    ananicy-cpp babashka carapace-bin clipcat cosmic-icon-theme
+    ananicy-cpp babashka carapace-bin clipcat cloudflare-speed-cli cosmic-icon-theme
     dcfldd ddccontrol eilmeldung
     epr flclashx font-iosevka-nerd-fonts
     font-iosevkaterm-nerd-fonts font-material-design-icons freeze fsel
     gh-cli ghgrab ght gist     go-yq
     duf dust choose httpie
     glow-markdown gmap gopass goverlay gowall
-    handlr hermes-agent himalaya hishtory hxd hyprscratch
+    handlr haskell-tidal hermes-agent himalaya hishtory hxd hyprscratch
     instagram-cli jdupes judy jetm-kernel-settings kanata kmon lazygit-bin
     iperf3
-    lazytail libjodycode limine localsend lutgen massren
+    lazytail libjodycode limine liquidctl localsend lutgen massren
     mpdas neg-pretty-printer neo-matrix oh-my-posh opensoundmeter
     oports optiscaler otter-launcher overskride oyo par pop-icon-theme powerlevel10k
     proteinview protontricks protonup-qt protonup-rs proxypilot pup
@@ -159,7 +165,7 @@
     strace-tui systemd-manager-tui tailray tailscale tanin taoup tdl
     throne tmmpr v2raya watchtower winetricks
     wlr-which-key xdg-ninja xray yubikey-manager ytsurf zapret2
-    zellij-bin zen-browser zmap
+    zellij-bin zen-browser zk zmap
     ;; parity-push batch (27 packages)
     yazi ruff-linter gitleaks-sec ttyd-share genact-activity
     ctop-monitor onefetch-info erdtree-disk bandwhich-net
@@ -180,7 +186,7 @@
     ghostty-bin gitlogue htmlq matugen rmpc wsdd
     ioping newsraft ollama proton-cachyos proton-ge-custom
     grafana
-    quickshell rmlint rofi-file-browser-extended
+    quickshell qman raise rmlint rofi-file-browser-extended
     themix-theme-oomox tessen ufw unarchiver unflac vicinae wl
     xdg-desktop-portal-termfilechooser youtube-tui
     ;; new packages

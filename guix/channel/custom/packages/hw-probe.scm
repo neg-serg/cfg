@@ -6,7 +6,6 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages pciutils)
-  #:use-module (gnu packages usbutils)
   #:use-module (gnu packages linux))
 
 (define-public hw-probe

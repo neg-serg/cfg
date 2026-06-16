@@ -2,8 +2,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system cargo)
-  #:use-module (guix licenses)
-  #:use-module (gnu packages crates-io))
+  #:use-module (guix licenses))
 
 (define-public rmpc
   (package

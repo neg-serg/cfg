@@ -313,7 +313,7 @@ root ALL=(ALL) ALL
            ;; Added via all-custom-packages from (custom packages all)
            ;; plus mpdas, powerlevel10k from their respective modules
            )
-       all-custom-packages        ;; ~80 custom packages from channel
+       ;; all-custom-packages        ;; disabled — module loading broken
        (list mpdas powerlevel10k) ;; additional custom packages
       %base-packages)))
 

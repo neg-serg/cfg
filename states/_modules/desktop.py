@@ -319,8 +319,12 @@ def browser_extensions(
     user_js_id: str,
     unwanted: list[str] | None = None,
     user: str | None = None,
+    project_dir: str | None = None,
 ) -> dict[str, Any]:
     u = user or _host()["user"]
+    h = _host()
+    if project_dir is None:
+        project_dir = h.get("project_dir", f"{h.get('home', '/root')}/src/cfg")
     ext_dir = f"{profile}/extensions"
     out: dict[str, Any] = {}
 
@@ -342,13 +346,15 @@ def browser_extensions(
         slug_safe = slug.replace("-", "_")
         state_id = f"{prefix}_ext_{slug_safe}"
         if source:
+            source_path = source.replace("salt://", "")
+            fs_source = f"{project_dir}/{source_path}"
+            cmd = f"cp '{fs_source}' '{xpi}'"
             out[state_id] = {
-                "file.managed": [
-                    {"name": xpi},
-                    {"source": source},
-                    {"user": u},
-                    {"group": u},
-                    {"makedirs": True},
+                "cmd.run": [
+                    {"name": cmd},
+                    {"creates": xpi},
+                    {"runas": u},
+                    {"require": [{"file": ext_dir_id}]},
                 ]
             }
         else:
@@ -409,27 +415,24 @@ def browser_extensions(
 
     local_exts = [e for e in extensions if e.get("source")]
     if local_exts:
-        patch_onchanges = [{"file": user_js_id}]
-        for ext in local_exts:
-            slug = ext.get("slug", "")
-            slug_safe = slug.replace("-", "_")
-            patch_onchanges.append({"file": f"{prefix}_ext_{slug_safe}"})
         cmds = []
         for ext in local_exts:
             ext_id = ext.get("id", "")
-            profile_esc = profile.replace("'", "'\\''")
             cmds.append(
                 f"""
 python3 -c '
 import json, os, sys
 e = "{profile}/extensions.json"
-xpi = "{profile}/extensions/{ext_id}.xpi"
-if not os.path.exists(xpi): sys.exit(0)
-if not os.path.exists(e): sys.exit(0)
-with open(e) as fh:
-    data = json.load(fh)
+xpi = "{ext_dir}/{ext_id}.xpi"
 aid = "{ext_id}"
-if any(a["id"] == aid for a in data.get("addons", [])): sys.exit(0)
+if not os.path.exists(xpi): sys.exit(0)
+if os.path.exists(e):
+    with open(e) as fh:
+        data = json.load(fh)
+    if any(a.get("id") == aid for a in data.get("addons", [])):
+        sys.exit(0)
+else:
+    data = {{"schemaVersion": 34, "addons": []}}
 entry = {{
     "id": aid,
     "version": "1.17.11",
@@ -448,9 +451,10 @@ entry = {{
     "installDate": 1779839357856,
     "updateDate": 1779839357856,
 }}
-data["addons"].append(entry)
+data.setdefault("addons", []).append(entry)
 with open(e, "w") as fh:
     json.dump(data, fh, indent=2)
+print("patched extensions.json with " + aid)
 '
 """
             )
@@ -458,7 +462,6 @@ with open(e, "w") as fh:
             "cmd.run": [
                 {"name": "\n".join(cmd.strip() for cmd in cmds)},
                 {"runas": u},
-                {"onchanges_any": patch_onchanges},
             ]
         }
 

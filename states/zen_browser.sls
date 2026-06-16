@@ -51,7 +51,7 @@ zen_floorp_profile_import:
       - file: floorp_user_js
 {% endif %}
 
-{{ salt['desktop.browser_extensions']('zen', zen_profile, zen.extensions, 'zen_user_js') }}
+{{ salt['desktop.browser_extensions']('zen', zen_profile, zen.extensions, 'zen_user_js', project_dir=host.project_dir) }}
 
 zen_set_proxy_script:
   file.managed:

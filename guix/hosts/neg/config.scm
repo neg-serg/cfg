@@ -4,6 +4,7 @@
 (use-modules (custom packages all))
 
 (operating-system
+  (kernel (specification->package "linux"))
   (host-name "guix")
   (timezone "Europe/Moscow")
   (locale "en_US.utf8")
@@ -26,6 +27,7 @@
     (name "neg")
     (group "users")
     (supplementary-groups '("wheel" "netdev" "audio" "video" "kvm" "input"))
+    (password (crypt "change-me-on-first-login" "$6$riy.KguvT7QpDgWi"))
     (shell (file-append zsh "/bin/zsh")))
     %base-user-accounts))
   (sudoers-file (plain-file "sudoers" "root ALL=(ALL) ALL\n%wheel ALL=NOPASSWD: ALL\n"))

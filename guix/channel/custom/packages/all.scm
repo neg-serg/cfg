@@ -17,7 +17,6 @@
   #:use-module (custom packages choose)
   #:use-module (custom packages cosmic-icon-theme)
   #:use-module (custom packages ddccontrol)
-  #:use-module (custom packages dool)
   #:use-module (custom packages droidcam)
   #:use-module (custom packages duf)
   #:use-module (custom packages dust)

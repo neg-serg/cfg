@@ -864,12 +864,12 @@
 
 (define-public geoip-database-maxmind
   (package
-    (name "geoip-database") (version "20240501")
+    (name "geoip-database") (version "20260616")
     (source (origin
               (method url-fetch)
-              (uri "https://git.io/GeoLite2-City.mmdb")
+              (uri "https://github.com/P3TERX/GeoLite.mmdb/releases/download/2026.06.16/GeoLite2-City.mmdb")
               (sha256 (base32
-                       "0d96jxfg0fw5rq1iqkvr2a09r96hbvzd09ywx1dkwam7akfbkwbd"))))
+                       "02vad3bgc9jvnrvzrfjvdcq4brnzbyqzzbykbdrnclw49fhahj57"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f #:phases (modify-phases %standard-phases
       (delete 'bootstrap) (delete 'configure) (delete 'check) (delete 'build)

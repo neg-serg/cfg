@@ -2,8 +2,7 @@
   #:use-module (custom packages albumdetails)
   #:use-module (custom packages aliae)
   #:use-module (custom packages cloudflare-speed-cli)
-  #:use-module (custom packages haskell-tidal)
-  #:use-module (custom packages liquidctl)
+    #:use-module (custom packages liquidctl)
   #:use-module (custom packages qman)
   #:use-module (custom packages raise)
   #:use-module (custom packages zk)
@@ -57,8 +56,6 @@
   #:use-module (custom packages pop-icon-theme)
   #:use-module (custom packages powerlevel10k)
   #:use-module (custom packages proteinview)
-  #:use-module (custom packages proton-cachyos)
-  #:use-module (custom packages proton-ge)
   #:use-module (custom packages protonup-qt)
   #:use-module (custom packages protontricks)
   #:use-module (custom packages proxypilot)
@@ -88,8 +85,7 @@
   #:use-module (custom packages taoup)
   #:use-module (custom packages tessen)
   #:use-module (custom packages tmmpr)
-  #:use-module (custom packages ufw)
-  #:use-module (custom packages unarchiver)
+    #:use-module (custom packages unarchiver)
   #:use-module (custom packages unflac)
   #:use-module (custom packages v2raya)
   #:use-module (custom packages vicinae)
@@ -113,7 +109,6 @@
   #:use-module (custom packages quickshell)
   #:use-module (custom packages source-ioping)
   #:use-module (custom packages source-misc)
-  #:use-module (custom packages themix)
   #:use-module (custom packages nicotine+)
   #:use-module (custom packages nerdctl)
   #:use-module (custom packages opencode)
@@ -125,7 +120,6 @@
   #:use-module (custom packages geoip)
   #:use-module (custom packages ghostty)
   #:use-module (custom packages ghostty-bin)
-  #:use-module (custom packages gitlogue)
   #:use-module (custom packages htmlq)
   #:use-module (custom packages matugen)
   #:use-module (custom packages rmpc)
@@ -147,7 +141,7 @@
     gh-cli ghgrab ght gist     go-yq
     duf dust choose httpie
     glow-markdown gmap gopass goverlay gowall
-    handlr haskell-tidal hermes-agent himalaya hishtory hxd hyprscratch
+    handlr hermes-agent himalaya hishtory hxd hyprscratch
     instagram-cli jdupes judy jetm-kernel-settings kanata kmon lazygit-bin
     iperf3
     lazytail libjodycode limine liquidctl localsend lutgen massren
@@ -182,12 +176,12 @@
     ambxst chawan droidcam hunspell-dict-ru
     bucklespring
     font-iosevka-neg
-    firewalld gamescope geoip ghostty satty swayosd television
-    ghostty-bin gitlogue htmlq matugen rmpc wsdd
-    ioping newsraft ollama proton-cachyos proton-ge-custom
+    firewalld gamescope geoip satty swayosd television
+    ghostty-bin htmlq matugen rmpc wsdd
+    ioping newsraft ollama
     grafana
     quickshell qman raise rmlint rofi-file-browser-extended
-    themix-theme-oomox tessen ufw unarchiver unflac vicinae wl
+    tessen unarchiver unflac vicinae wl
     xdg-desktop-portal-termfilechooser youtube-tui
     ;; new packages
     nerdctl opencode urlwatch uwsm wiremix

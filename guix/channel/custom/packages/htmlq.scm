@@ -38,7 +38,7 @@
                                                "/bin/patchelf")))
                         (mkdir-p bdir)
                         (copy-file "htmlq" (string-append bdir "/htmlq"))
-                        (chmod (string-append bdir "/htmlq") #o555)
+                        (chmod (string-append bdir "/htmlq") #o755)
                         (invoke pe "--set-interpreter" interp
                                 (string-append bdir "/htmlq"))))))))
     (supported-systems '("x86_64-linux"))

@@ -17,11 +17,11 @@
                          (mount-point "/boot/efi")
                          (device (uuid "3D2F-1F3A" 'fat32))
                          (type "vfat"))
-                       (file-system
-                         (mount-point "/")
-                         (device (uuid "9cefda31-a98c-47c7-bfd8-dbeb35e66965" 'xfs))
-                         (type "xfs")
-                          (options ""))
+                        (file-system
+                          (mount-point "/")
+                          (device (uuid "215eff1d-905d-4f29-95d1-c85c8c117205" 'btrfs))
+                          (type "btrfs")
+                          (options "compress=zstd,noatime"))
                        %base-file-systems))
   (users (cons (user-account
     (name "neg")

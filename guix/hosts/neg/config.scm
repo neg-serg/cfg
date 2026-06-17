@@ -20,7 +20,7 @@
                          (mount-point "/")
                          (device (uuid "9cefda31-a98c-47c7-bfd8-dbeb35e66965" 'xfs))
                          (type "xfs")
-                         (options "noatime"))
+                          (options ""))
                        %base-file-systems))
   (users (cons (user-account
     (name "neg")

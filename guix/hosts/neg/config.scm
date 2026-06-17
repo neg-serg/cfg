@@ -20,7 +20,7 @@
                          (mount-point "/")
                          (device (uuid "9cefda31-a98c-47c7-bfd8-dbeb35e66965" 'xfs))
                          (type "xfs")
-                         (options "defaults,pquota"))
+                         (options "noatime"))
                        %base-file-systems))
   (users (cons (user-account
     (name "neg")
@@ -61,7 +61,7 @@
         "efibootmgr" "cpupower" "turbostat" "lvm2" "xfsprogs" "moreutils" "nethack"
         "picard" "plocate" "rlwrap" "sbcl" "sox" "subversion" "traceroute" "udiskie"
         "nss-certs" "font-jetbrains-mono" "font-fira-code" "font-google-noto" "font-dejavu" "qt5ct" "qt6ct"
-        "i3-wm" "i3status" "xterm" "network-manager" "bluez" "steam" "firefox"
+        "network-manager" "bluez" "steam" "firefox"
         ))
     all-custom-packages
     %base-packages))

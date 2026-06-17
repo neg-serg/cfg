@@ -1,5 +1,5 @@
 (use-modules (gnu) (guix))
-(use-service-modules networking ssh desktop)
+(use-service-modules networking ssh desktop base)
 (use-package-modules base ssh shells certs admin)
 (use-modules (custom packages all))
 
@@ -52,7 +52,9 @@
         "mpv" "ffmpeg" "imagemagick" "gimp" "inkscape" "blender"
         "podman" "docker" "distrobox" "skopeo" "dive" "telegram-desktop" "obs"
         "beets" "difftastic" "jujutsu" "wireguard-tools" "powertop" "ranger" "notmuch"
-        "hyprland" "kitty" "alacritty" "foot" "wezterm" "wlogout"
+        "hyprland" "hypridle" "hyprlock" "hyprpicker" "hyprpaper"
+        "xdg-desktop-portal-hyprland"
+        "kitty" "alacritty" "foot" "wezterm" "wlogout"
         "dunst" "slurp" "grim" "swappy" "swaybg" "swayimg" "wl-clipboard" "cliphist"
         "wf-recorder" "playerctl" "wireplumber" "pavucontrol" "neomutt" "isync"
         "vdirsyncer" "zathura" "zathura-pdf-poppler" "pandoc" "borg" "age" "pwgen"
@@ -67,7 +69,19 @@
         ))
     all-custom-packages
     %base-packages))
-  (services (append (list (service greetd-service-type)
+  (services (append (list (service greetd-service-type
+                           (greetd-configuration
+                             (terminals
+                               (list
+                                 (greetd-terminal-configuration
+                                   (terminal-vt "1")
+                                   (terminal-switch #t)
+                                   (default-session-command
+                                     (greetd-agreety-session
+                                       (extra-env '(("XDG_SESSION_TYPE" . "wayland")
+                                                    ("XDG_CURRENT_DESKTOP" . "Hyprland")))
+                                       (command (file-append (specification->package "hyprland")
+                                                              "/bin/Hyprland")))))))))
                           (service openssh-service-type
                             (openssh-configuration (port-number 22) (password-authentication? #t))))
                     %desktop-services)))

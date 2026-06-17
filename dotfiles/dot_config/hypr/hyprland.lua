@@ -410,7 +410,7 @@ hl.window_rule({ name = "xwayland-drags", match = { class = "^$", title = "^$", 
 hl.window_rule({ name = "pinentry", match = { class = "^(pinentry-)(.*)$" }, stay_focused = true, tag = "pinentry" })
 hl.window_rule({ name = "nemo", match = { class = "^(nemo)$" }, opacity = 0.92, tag = "file-manager" })
 hl.window_rule({ name = "xwaylandvideobridge", match = { class = "^(xwaylandvideobridge)$" }, opacity = 0.0, no_anim = true, no_initial_focus = true, max_size = "1 1", no_blur = true, tag = "xwaylandvideobridge" })
-hl.window_rule({ name = "swayimg", match = { class = "^(swayimg)$" }, float = true, size = "1200 800", move = "100 100", fullscreen = true })
+hl.window_rule({ name = "swayimg", match = { class = "^(swayimg)$" }, float = true, size = "1200 800", move = "100 100" })
 hl.window_rule({ name = "hide-borders", match = { float = false }, border_size = 0 })
 
 -- Workspace routing

@@ -1,26 +1,34 @@
 (define-module (custom packages mpd-mpc)
   #:use-module (guix packages)
-  #:use-module (gnu packages mpd)
+  #:use-module (guix gexp)
+  #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:prefix license:))
 
 ;; The MPD client 'mpc' conflicts with math library 'mpc' in the profile.
-;; This package provides the same binary under a unique name via 'mpc-cli'.
+;; This is a wrapper that provides the mpd-mpc binary with a symlink at 'mpc-cli'.
 (define-public mpd-mpc
-  (package
-    (inherit mpc)
-    (name "mpd-mpc")
-    (arguments
-     (substitute-keyword-arguments (package-arguments mpc)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'install 'rename-binary
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (rename-file (string-append bin "/mpc")
-                              (string-append bin "/mpc-cli"))
-                 (symlink (string-append bin "/mpc-cli")
-                          (string-append bin "/mpc")))
-               #t))))))))
+  (let ((mpg (@ (gnu packages mpd) mpd-mpc)))
+    (package
+      (name "mpd-mpc")
+      (version (package-version mpg))
+      (source #f)
+      (build-system trivial-build-system)
+      (inputs (list mpg))
+      (arguments
+       (list #:modules '((guix build utils))
+             #:builder
+             #~(begin
+                 (use-modules (guix build utils))
+                 (let* ((out #$output)
+                        (bin (string-append out "/bin"))
+                        (mpd-mpc-in #$(file-append mpg "/bin/mpc")))
+                   (mkdir-p bin)
+                   (symlink mpd-mpc-in (string-append bin "/mpc"))
+                   (symlink mpd-mpc-in (string-append bin "/mpc-cli"))))))
+      (home-page "https://www.musicpd.org/clients/mpc/")
+      (synopsis "Music Player Daemon client")
+      (description "MPC is a minimalist command line interface to MPD, the music
+player daemon.")
+      (license license:gpl2))))
 
 mpd-mpc

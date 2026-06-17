@@ -6,7 +6,9 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages pciutils)
-  #:use-module (gnu packages linux))
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages hardware)
+  #:use-module (gnu packages admin))
 
 (define-public hw-probe
   (package
@@ -18,7 +20,7 @@
                     (url "https://github.com/linuxhw/hw-probe")
                     (commit version)))
               (file-name (git-file-name name version))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+              (sha256 (base32 "1d6scnl12kq3dss9d3vdgf7kgbl2x7x31py1bj16vi1vd69xzlpi"))))
     (build-system gnu-build-system)
     (inputs (list perl
                   curl
@@ -35,7 +37,11 @@
                   (delete 'check)
                   (replace 'build
                     (lambda _
-                      (invoke "make" "prefix=/"))))))
+                      (invoke "make" "prefix=/")))
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (invoke "make" "install"
+                              (string-append "prefix=" (assoc-ref outputs "out"))))))))
     (home-page "https://github.com/linuxhw/hw-probe")
     (synopsis "Hardware probe tool for Linux")
     (description "HW Probe is a tool to probe for hardware, check

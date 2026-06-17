@@ -16,7 +16,7 @@
               (method url-fetch)
               (uri (string-append "https://lutris.net/releases/lutris_"
                                   version ".tar.xz"))
-              (sha256 (base32 "0000000000000000000000000000000000000000000000000000"))))
+                             (sha256 (base32 "1qc7wz5vryqwhzi6fq5y7vrf79ydgwb4nlax9prw00146rcdgzcv"))))
     (build-system gnu-build-system)
     (inputs (list python python-pygobject gtk+ glib))
     (arguments

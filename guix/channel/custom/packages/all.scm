@@ -28,6 +28,7 @@
   #:use-module (custom packages grafana)
   #:use-module (custom packages ght)
   #:use-module (custom packages gist)
+  #:use-module (custom packages gitlogue)
   #:use-module (custom packages go-yq)
   #:use-module (custom packages gopass)
   #:use-module (custom packages goverlay)
@@ -129,6 +130,7 @@
   #:use-module (custom packages sc3-plugins)
   #:use-module (custom packages swayosd)
   #:use-module (custom packages television)
+  #:use-module (custom packages themix)
   #:use-module (custom packages xwaylandvideobridge))
 
 (define-public all-custom-packages

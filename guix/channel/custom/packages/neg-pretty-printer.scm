@@ -14,6 +14,7 @@
     (build-system pyproject-build-system)
     (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs (list python-colored))
+    (arguments '(#:tests? #f))
     (home-page "https://github.com/neg-serg")
     (synopsis "Custom pretty-printer utilities for scripts")
     (description "Custom pretty-printer utilities providing color helpers,

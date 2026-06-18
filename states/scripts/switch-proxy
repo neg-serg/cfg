@@ -7,7 +7,7 @@ set -euo pipefail
 # Available proxy modes
 MODES=(
     "direct:Direct (no proxy)"
-    "telegram:Telegram Xray (SOCKS5 :10808)"
+    "telegram:Telegram Xray (SOCKS5 :10811)"
     "debug:Debug Xray (SOCKS5 :10810)"
     "system_vpn:System VPN (fallback to Telegram proxy)"
 )

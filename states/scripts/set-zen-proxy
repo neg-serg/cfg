@@ -52,7 +52,7 @@ PROXY_MODES = {
     "telegram": {
         "network.proxy.type": 1,
         "network.proxy.socks": "localhost",
-        "network.proxy.socks_port": 10808,
+        "network.proxy.socks_port": 10811,
         "network.proxy.socks_version": 5,
         "network.proxy.allow_hijacking_localhost": True,
         "network.proxy.no_proxies_on": "localhost, 127.0.0.1, 192.168.2.0/24",
@@ -70,7 +70,7 @@ PROXY_MODES = {
     "system_vpn": {
         "network.proxy.type": 1,
         "network.proxy.socks": "localhost",
-        "network.proxy.socks_port": 10808,
+        "network.proxy.socks_port": 10811,
         "network.proxy.socks_version": 5,
         "network.proxy.allow_hijacking_localhost": True,
         "network.proxy.no_proxies_on": "localhost, 127.0.0.1, 192.168.2.0/24",

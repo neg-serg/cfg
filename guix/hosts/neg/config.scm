@@ -19,9 +19,10 @@
                          (type "vfat"))
                         (file-system
                           (mount-point "/")
-                          (device (uuid "b1e446a2-4576-4c6d-bd20-1ef9b14730cd" 'btrfs))
+                          (device (uuid "b4ab175b-5b62-4a32-9cd9-b6c52ae592dc" 'btrfs))
                           (type "btrfs")
-                          (options "noatime"))
+                          (flags '(no-atime))
+                          (options ""))
                        %base-file-systems))
   (users (cons (user-account
     (name "neg")

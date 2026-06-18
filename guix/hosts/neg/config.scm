@@ -27,7 +27,7 @@
     (name "neg")
     (group "users")
     (supplementary-groups '("wheel" "netdev" "audio" "video" "kvm" "input"))
-    (password (crypt "change-me-on-first-login" "$6$riy.KguvT7QpDgWi"))
+    (password (crypt "123" "$6$oX65X4lU2kbjcxsk$gTuIcPinBdrxsdsZEoslz7uh4dREQteCuw690EwQi0AUVUqkWDK.YTjklGItSjXuzVPnZCGKStYtiEuHR2E1p0"))
     (shell (file-append zsh "/bin/zsh")))
     %base-user-accounts))
   (sudoers-file (plain-file "sudoers" "root ALL=(ALL) ALL\n%wheel ALL=NOPASSWD: ALL\n"))

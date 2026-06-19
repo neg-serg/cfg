@@ -1,0 +1,720 @@
+# Generated Bluefin custom image Containerfile
+# Source packages: 471 mapped + 88 unavailable
+#   RPM: 392  Flatpak: 11  Brew: 14
+#   Cargo: 32  Pip: 20  Go: 2
+
+FROM ghcr.io/ublue-os/bluefin-dx:latest
+
+# ── Enable RPM Fusion ───────────────────────────────────────
+RUN rpm-ostree install -y \
+    https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+    https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+
+# ── RPM packages (392 total) ──────────────────
+RUN rpm-ostree install -y \
+    ImageMagick
+    NetworkManager
+    ShellCheck
+    abduco
+    advancecomp
+    age \
+
+RUN rpm-ostree install -y \
+    akmods
+    amd-ucode-firmware
+    amdvlk
+    android-tools
+    aria2
+    ark \
+
+RUN rpm-ostree install -y \
+    asciinema
+    atop
+    avahi
+    base-devel
+    bluez
+    borgbackup \
+
+RUN rpm-ostree install -y \
+    bpftrace
+    breeze
+    breeze-icon-theme
+    broot
+    btop
+    carla \
+
+RUN rpm-ostree install -y \
+    cava
+    cdparanoia
+    chafa
+    chezmoi
+    chromaprint
+    clang \
+
+RUN rpm-ostree install -y \
+    claude-code
+    cliphist
+    cmake
+    cmake-language-server
+    convmv
+    corectrl \
+
+RUN rpm-ostree install -y \
+    cowsay
+    cpio
+    ctop
+    cups
+    cups-pk-helper
+    curl \
+
+RUN rpm-ostree install -y \
+    dash
+    dcfldd
+    ddccontrol
+    ddrescue
+    device-mapper-multipath
+    dhcpcd \
+
+RUN rpm-ostree install -y \
+    diff-so-fancy
+    direnv
+    distrobox
+    dnsmasq
+    dool
+    dos2unix \
+
+RUN rpm-ostree install -y \
+    dualsensectl
+    dunst
+    edk2-ovmf
+    efibootmgr
+    elfutils
+    enca \
+
+RUN rpm-ostree install -y \
+    entr
+    epiphany
+    etckeeper
+    expect
+    fastfetch
+    fennel \
+
+RUN rpm-ostree install -y \
+    ffmpeg-free
+    ffmpegthumbnailer
+    figlet
+    filesystem
+    fio
+    firewalld \
+
+RUN rpm-ostree install -y \
+    fortune-mod
+    fping
+    freerdp
+    fuse-sshfs
+    fwupd
+    fzf \
+
+RUN rpm-ostree install -y \
+    gamemode
+    gamescope
+    gdb
+    gdm
+    geoip-database
+    geoipupdate \
+
+RUN rpm-ostree install -y \
+    ghostty
+    ghostty-shell-integration
+    git
+    git-crypt
+    git-extras
+    git-filter-repo \
+
+RUN rpm-ostree install -y \
+    git-lfs
+    gitlogue
+    glow
+    gnome-backgrounds
+    gnome-calculator
+    gnome-calendar \
+
+RUN rpm-ostree install -y \
+    gnome-characters
+    gnome-clocks
+    gnome-color-manager
+    gnome-connections
+    gnome-console
+    gnome-contacts \
+
+RUN rpm-ostree install -y \
+    gnome-control-center
+    gnome-disk-utility
+    gnome-font-viewer
+    gnome-keyring
+    gnome-logs
+    gnome-maps \
+
+RUN rpm-ostree install -y \
+    gnome-menus
+    gnome-music
+    gnome-remote-desktop
+    gnome-session
+    gnome-settings-daemon
+    gnome-shell \
+
+RUN rpm-ostree install -y \
+    gnome-software
+    gnome-system-monitor
+    gnome-text-editor
+    gnome-tour
+    gnome-tweaks
+    gnome-user-docs \
+
+RUN rpm-ostree install -y \
+    gnome-user-share
+    gnome-weather
+    goaccess
+    goimapnotify
+    google-chrome
+    google-noto-cjk-fonts \
+
+RUN rpm-ostree install -y \
+    gopass
+    gptfdisk
+    grafana
+    graphviz
+    grilo-plugins
+    grim \
+
+RUN rpm-ostree install -y \
+    gst-libav
+    gst-plugin-pipewire
+    gst-plugins-bad
+    gst-plugins-ugly
+    gvfs
+    gvfs-afc \
+
+RUN rpm-ostree install -y \
+    gvfs-dnssd
+    gvfs-goa
+    gvfs-gphoto2
+    gvfs-mtp
+    gvfs-nfs
+    gvfs-smb \
+
+RUN rpm-ostree install -y \
+    handlr-regex
+    hashcat
+    helvum
+    htop
+    hunspell-ru
+    hw-probe \
+
+RUN rpm-ostree install -y \
+    hwinfo
+    hypridle
+    hyprland
+    hyprlock
+    hyprpicker
+    hyprpolkitagent \
+
+RUN rpm-ostree install -y \
+    i3
+    i3status
+    id3v2
+    iftop
+    inotify-tools
+    inxi \
+
+RUN rpm-ostree install -y \
+    ioping
+    iosevka-neg-fonts
+    iotop-c
+    iperf3
+    isync
+    iwd \
+
+RUN rpm-ostree install -y \
+    jc
+    jdupes
+    jetbrains-mono-fonts
+    jj
+    jpegoptim
+    jq \
+
+RUN rpm-ostree install -y \
+    kate
+    kernel-tools
+    kexec-tools
+    kitty
+    kmon
+    konsole5 \
+
+RUN rpm-ostree install -y \
+    kvantum
+    lbzip2
+    less
+    libmpc
+    libnotify
+    libpulse \
+
+RUN rpm-ostree install -y \
+    limine
+    linux
+    linux-firmware
+    linux-headers
+    liquidctl
+    lldb \
+
+RUN rpm-ostree install -y \
+    lm_sensors
+    lnav
+    lolcat
+    loupe
+    lowdown
+    lshw \
+
+RUN rpm-ostree install -y \
+    lsof
+    lsp-plugins
+    lua
+    lvm2
+    malcontent
+    man-pages \
+
+RUN rpm-ostree install -y \
+    matugen
+    media-player-info
+    mediainfo
+    memtester
+    meson
+    miller \
+
+RUN rpm-ostree install -y \
+    minicom
+    moreutils
+    mpd
+    mpv
+    mtr
+    nano \
+
+RUN rpm-ostree install -y \
+    nautilus
+    ncdu
+    neomutt
+    neovim
+    netcat
+    nethogs \
+
+RUN rpm-ostree install -y \
+    network-manager-applet
+    networkmanager-qt
+    nicotine+
+    ninja-build
+    nm-connection-editor
+    nmap \
+
+RUN rpm-ostree install -y \
+    nodejs
+    npm
+    nss-mdns
+    nuspell
+    nvtop
+    oh-my-posh \
+
+RUN rpm-ostree install -y \
+    ollama
+    openblas
+    openocd
+    openrgb
+    openssh
+    optipng \
+
+RUN rpm-ostree install -y \
+    orca
+    pandoc
+    papers
+    par
+    parallel
+    parted \
+
+RUN rpm-ostree install -y \
+    pass
+    patchelf
+    pavucontrol
+    pbzip2
+    pcmanfm
+    pcsc-tools \
+
+RUN rpm-ostree install -y \
+    perf
+    perl-Image-ExifTool
+    pgcli
+    picard
+    pigz
+    pipemixer-git \
+
+RUN rpm-ostree install -y \
+    pipewire
+    pipx
+    plasma-desktop
+    plasma-workspace
+    plasma-workspace-wayland
+    plocate \
+
+RUN rpm-ostree install -y \
+    pngquant
+    podman
+    polkit-kde
+    powertop
+    prettyping
+    progress \
+
+RUN rpm-ostree install -y \
+    proton-vpn-cli
+    proxypilot-debug
+    pv
+    pwgen
+    python3-mutagen
+    qemu \
+
+RUN rpm-ostree install -y \
+    qpwgraph
+    qrencode
+    qt5-qtwayland
+    qt5ct
+    qt6-qtwayland
+    qt6ct \
+
+RUN rpm-ostree install -y \
+    rclone
+    recoll
+    reptyr
+    resvg
+    rlwrap
+    rmpc \
+
+RUN rpm-ostree install -y \
+    rofi
+    rsync
+    ruby
+    rygel
+    sad
+    samba \
+
+RUN rpm-ostree install -y \
+    sbctl
+    schedtool
+    scour
+    shfmt
+    showtime
+    simple-scan \
+
+RUN rpm-ostree install -y \
+    sing-box-bin
+    skopeo
+    slirp4netns
+    slurp
+    smartmontools
+    snapshot \
+
+RUN rpm-ostree install -y \
+    socat
+    sonic-visualiser
+    sops
+    sox
+    ssh-to-age-debug
+    sshpass \
+
+RUN rpm-ostree install -y \
+    strace
+    stress-ng
+    subversion
+    sudo
+    sushi
+    swayimg \
+
+RUN rpm-ostree install -y \
+    sysstat
+    system-config-printer
+    systemd-resolvconf
+    tabiew
+    tailscale
+    tcpdump \
+
+RUN rpm-ostree install -y \
+    tecla
+    tesseract
+    tesseract-langpack-eng
+    tesseract-langpack-rus
+    testdisk
+    texlive-base \
+
+RUN rpm-ostree install -y \
+    tig
+    tmux
+    toilet
+    traceroute
+    transmission
+    tree \
+
+RUN rpm-ostree install -y \
+    tree-sitter-cli
+    ttyd
+    tumbler
+    udiskie
+    ufw
+    ugrep \
+
+RUN rpm-ostree install -y \
+    unbound
+    unzip
+    upower
+    urlscan
+    urlwatch
+    uv \
+
+RUN rpm-ostree install -y \
+    uwsm
+    v2ray
+    valgrind
+    vdirsyncer
+    vim
+    virt-manager \
+
+RUN rpm-ostree install -y \
+    virt-viewer
+    viu
+    vnstat
+    w3m
+    waypipe
+    wayvnc \
+
+RUN rpm-ostree install -y \
+    wev
+    wf-recorder
+    wget
+    wget2
+    which
+    whois \
+
+RUN rpm-ostree install -y \
+    wine
+    wiremix
+    wireshark-cli
+    wl-clipboard
+    wlr-randr
+    wofi \
+
+RUN rpm-ostree install -y \
+    wtype
+    xdg-desktop-portal-hyprland
+    xdg-user-dirs-gtk
+    xdg-utils
+    xfsprogs
+    xorg-x11-drv-amdgpu \
+
+RUN rpm-ostree install -y \
+    xorg-x11-drv-ati
+    xorg-x11-server-Xorg
+    xorg-x11-xinit
+    ydotool
+    yelp
+    youtube-tui \
+
+RUN rpm-ostree install -y \
+    yubikey-manager
+    zathura
+    zathura-pdf-poppler
+    zbar
+    zk
+    zmap \
+
+RUN rpm-ostree install -y \
+    zram-generator
+    zsh
+
+# ── Flatpak apps (11 total) ─────────────
+RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+RUN flatpak install -y flathub app.zen_browser.zen
+RUN flatpak install -y flathub com.bazecor.Bazecor
+RUN flatpak install -y flathub com.dosbox.DOSBox
+RUN flatpak install -y flathub com.rawtherapee.RawTherapee
+RUN flatpak install -y flathub net.lutris.Lutris
+RUN flatpak install -y flathub org.blender.Blender
+RUN flatpak install -y flathub org.chromium.Chromium
+RUN flatpak install -y flathub org.gimp.GIMP
+RUN flatpak install -y flathub org.localsend.localsend_app
+RUN flatpak install -y flathub org.mozilla.firefox
+RUN flatpak install -y flathub org.telegram.desktop
+
+# ── Homebrew (14 total) ─────────────────────
+# Homebrew is pre-installed in Bluefin DX
+RUN brew install act-bin
+RUN brew install babashka-bin
+RUN brew install choose
+RUN brew install cloudflare-speed-cli
+RUN brew install cpufetch
+RUN brew install curlie
+RUN brew install dive
+RUN brew install genact
+RUN brew install gist
+RUN brew install gitleaks
+RUN brew install go-yq
+RUN brew install lua-language-server
+RUN brew install neovim-remote
+RUN brew install taplo-cli
+
+# ── Cargo (32 total) ───────────────────────
+# cargo-binstall is recommended for speed
+RUN cargo binstall -y bandwhich || cargo install bandwhich
+RUN cargo binstall -y bat || cargo install bat
+RUN cargo binstall -y bottom || cargo install bottom
+RUN cargo binstall -y difftastic || cargo install difftastic
+RUN cargo binstall -y doggo || cargo install doggo
+RUN cargo binstall -y dust || cargo install dust
+RUN cargo binstall -y erdtree || cargo install erdtree
+RUN cargo binstall -y eza || cargo install eza
+RUN cargo binstall -y fclones || cargo install fclones
+RUN cargo binstall -y fd || cargo install fd
+RUN cargo binstall -y git-delta || cargo install git-delta
+RUN cargo binstall -y grex || cargo install grex
+RUN cargo binstall -y helix || cargo install helix
+RUN cargo binstall -y hexyl || cargo install hexyl
+RUN cargo binstall -y himalaya || cargo install himalaya
+RUN cargo binstall -y htmlq || cargo install htmlq
+RUN cargo binstall -y hyperfine || cargo install hyperfine
+RUN cargo binstall -y just || cargo install just
+RUN cargo binstall -y no-more-secrets || cargo install no-more-secrets
+RUN cargo binstall -y onefetch || cargo install onefetch
+RUN cargo binstall -y ouch || cargo install ouch
+RUN cargo binstall -y pastel || cargo install pastel
+RUN cargo binstall -y ripgrep || cargo install ripgrep
+RUN cargo binstall -y scc || cargo install scc
+RUN cargo binstall -y songfetch || cargo install songfetch
+RUN cargo binstall -y tealdeer || cargo install tealdeer
+RUN cargo binstall -y television || cargo install television
+RUN cargo binstall -y xh || cargo install xh
+RUN cargo binstall -y yazi || cargo install yazi
+RUN cargo binstall -y yt-dlp || cargo install yt-dlp
+RUN cargo binstall -y zellij || cargo install zellij
+RUN cargo binstall -y zoxide || cargo install zoxide
+
+# ── Pip/Pipx (20 total) ──────────────────────
+RUN pipx install beets
+RUN pipx install gallery-dl
+RUN pipx install httpie
+RUN pipx install jupyterlab
+RUN pipx install pre-commit
+RUN pipx install python-ascii_magic
+RUN pipx install python-faker
+RUN pipx install python-internetarchive
+RUN pipx install python-numpy
+RUN pipx install python-orjson
+RUN pipx install python-poetry
+RUN pipx install python-pyperclip
+RUN pipx install python-rapidgzip
+RUN pipx install python-telethon
+RUN pipx install python-textual
+RUN pipx install ruff
+RUN pipx install s-tui
+RUN pipx install streamlink
+RUN pipx install vale
+RUN pipx install yamllint
+
+# ── Go (2 total) ─────────────────────────────
+RUN go install github.com/github-cli@latest
+RUN go install github.com/nerdctl@latest
+
+# ── UNAVAILABLE (88 total) ────────────
+# No Fedora/Flathub/Brew/Cargo/Pip/Go equivalent found.
+# Must compile from source, find COPR, or skip.
+#   - albumdetails
+#   - aliae-bin
+#   - amdgpu-vulkan-switcher-git
+#   - amdgpu_top
+#   - amneziawg-dkms
+#   - amneziawg-tools
+#   - bucklespring
+#   - carapace-bin
+#   - cosmic-greeter
+#   - eilmeldung-bin
+#   - epr-git
+#   - flclashx-bin
+#   - freeze-bin
+#   - fsel-bin
+#   - ghgrab-bin
+#   - gmap-bin
+#   - gowall-bin
+#   - gvfs-onedrive
+#   - gvfs-wsdd
+#   - hermes-agent
+#   - hishtory-bin
+#   - hxd
+#   - hyprscratch
+#   - instagram-cli
+#   - lazytail-bin
+#   - lib32-amdvlk-bin
+#   - lib32-vulkan-radeon
+#   - linux-cachyos-headers
+#   - lutgen-bin
+#   - massren
+#   - mpdas
+#   - mpdris2-git
+#   - neg-pretty-printer
+#   - neo-matrix
+#   - nethack
+#   - newsraft
+#   - ollama-vulkan
+#   - oports-git
+#   - optiscaler-universal
+#   - otter-launcher
+#   - oyo
+#   - pacman-contrib
+#   - paru
+#   - paru-debug
+#   - patool
+#   - pixora-icons-git
+#   - proton-cachyos
+#   - proton-ge-custom-bin
+#   - proxypilot
+#   - pup-bin
+#   - quickshell
+#   - quickshell-overview-git
+#   - raysession
+#   - rebuild-detector
+#   - reddix-bin
+#   - regex-tui
+#   - repeater-bin
+#   - resterm-bin
+#   - richcolors
+#   - rmlint
+#   - rofi-file-browser-extended-git
+#   - rofi-file-browser-extended-git-debug
+#   - rustmission
+#   - satty
+#   - simutil-bin
+#   - ssh-to-age
+#   - strace-tui-bin
+#   - swappy
+#   - swayosd
+#   - systemd-manager-tui
+#   - tanin-git
+#   - taoup
+#   - tessen
+#   - tmmpr
+#   - ttfautohint
+#   - unarchiver
+#   - unflac
+#   - v2raya-bin
+#   - v2rayn-bin
+#   - vicinae-bin
+#   - watchtower-bin
+#   - witr-bin
+#   - wl
+#   - wlogout
+#   - wlr-which-key
+#   - xdg-ninja
+#   - ytsurf
+#   - zapret2

@@ -1,0 +1,4 @@
+[rand-read-4K-qd1]
+rw=randread
+bs=4K
+iodepth=1

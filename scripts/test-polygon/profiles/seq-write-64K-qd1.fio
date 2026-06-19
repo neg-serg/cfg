@@ -1,0 +1,4 @@
+[seq-write-64K-qd1]
+rw=write
+bs=64K
+iodepth=1

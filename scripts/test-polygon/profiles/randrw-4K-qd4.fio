@@ -1,0 +1,5 @@
+[randrw-4K-qd4]
+rw=randrw
+rwmixread=50
+bs=4K
+iodepth=4

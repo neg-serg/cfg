@@ -1,0 +1,6 @@
+config: btrfs-raid0-dm
+device: /dev/nvme0n1p2 (5 × 100G dm-linear slices)
+mkfs: mkfs.btrfs -d raid0 -m raid0 on /dev/mapper/btrfs-r0p0 /dev/mapper/btrfs-r0p1 /dev/mapper/btrfs-r0p2 /dev/mapper/btrfs-r0p3 /dev/mapper/btrfs-r0p4
+mount: -o noatime,ssd
+date: 2026-06-19T20:06:04+03:00
+kernel: 7.0.12-1-cachyos

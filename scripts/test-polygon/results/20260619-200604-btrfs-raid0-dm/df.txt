@@ -1,0 +1,2 @@
+Filesystem              Size  Used Avail Use% Mounted on
+/dev/mapper/btrfs-r0p0  500G  4.7G  495G   1% /mnt/test-raid0

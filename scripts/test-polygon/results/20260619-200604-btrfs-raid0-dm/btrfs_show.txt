@@ -1,0 +1,7 @@
+Label: 'btrfs-raid0-dm'  uuid: dd60870e-c1ac-4db5-8d82-b8c3db273d58
+	Total devices 5 FS bytes used 4.59GiB
+	devid    1 size 100.00GiB used 18.20GiB path /dev/mapper/btrfs-r0p0
+	devid    2 size 100.00GiB used 18.20GiB path /dev/mapper/btrfs-r0p1
+	devid    3 size 100.00GiB used 18.20GiB path /dev/mapper/btrfs-r0p2
+	devid    4 size 100.00GiB used 18.20GiB path /dev/mapper/btrfs-r0p3
+	devid    5 size 100.00GiB used 18.20GiB path /dev/mapper/btrfs-r0p4

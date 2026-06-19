@@ -1,7 +1,0 @@
-config: btrfs-raid0-loop
-backing: /dev/nvme0n1p2
-disks: 5 × 100G loop devices on XFS backing
-mkfs: mkfs.btrfs -d raid0 -m raid0 on /dev/loop2000 /dev/loop2001 /dev/loop2002 /dev/loop2003 /dev/loop2004
-mount: -o noatime,ssd
-date: 2026-06-19T19:46:16+03:00
-kernel: 7.0.12-1-cachyos

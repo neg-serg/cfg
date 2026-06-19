@@ -1,7 +1,0 @@
-Label: 'btrfs-raid0-loop'  uuid: 7e283b4c-c7d0-495d-89b4-34b1bc6040cc
-	Total devices 5 FS bytes used 1.93GiB
-	devid    1 size 100.00GiB used 2.41GiB path /dev/loop2000
-	devid    2 size 100.00GiB used 2.41GiB path /dev/loop2001
-	devid    3 size 100.00GiB used 2.41GiB path /dev/loop2002
-	devid    4 size 100.00GiB used 2.41GiB path /dev/loop2003
-	devid    5 size 100.00GiB used 2.41GiB path /dev/loop2004

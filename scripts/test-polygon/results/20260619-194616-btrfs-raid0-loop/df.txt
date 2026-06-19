@@ -1,2 +1,0 @@
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/loop2000   500G  2.0G  497G   1% /mnt/test-raid0

@@ -19,6 +19,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # ── Package naming differences Arch → Fedora ──────────────────────────
 # Key: Arch package name, Value: Fedora package name (None = not available)
+# Note: None entries are treated as explicitly UNAVAILABLE by categorize()
 FEDORA_RENAME = {
     # base / base-devel are Arch meta-packages, not needed on Fedora
     "linux": None,  # kernel, handled by Bluefin base
@@ -302,7 +303,7 @@ FEDORA_RENAME = {
     "tmsu": None,  # not in fedora
     "recoll": "recoll",
     "fclones": "fclones",
-    "rmlint": None,  # AUR
+    "rmlint": "rmlint",  # actually in Fedora
     "gdu": "gdu",
     "zip": "zip",
     "unzip": "unzip",
@@ -483,7 +484,8 @@ FEDORA_RENAME = {
     "freeglut": "freeglut",
     "vulkan-tools": "vulkan-tools",
     "vulkan-headers": "vulkan-headers",
-    "lib32-vulkan-radeon": None,  # 32-bit not in fedora
+    "lib32-vulkan-radeon": "mesa-vulkan-drivers.i686",
+    "lib32-amdvlk-bin": "amdvlk.i686",
     "doxygen": "doxygen",
     "graphviz": "graphviz",
     "plantuml": "plantuml",
@@ -622,7 +624,7 @@ FEDORA_RENAME = {
     "swaybg": "swaybg",
     "swayidle": "swayidle",
     "swaylock": "swaylock",
-    "wlogout": None,  # AUR
+    "wlogout": "wlogout",  # actually in Fedora
     "wlr-which-key": None,  # AUR
     "wayvnc": "wayvnc",
     "waypipe": "waypipe",
@@ -656,7 +658,7 @@ FEDORA_RENAME = {
     "dia": "dia",
     "gpick": "gpick",
     "gcolor3": "gcolor3",
-    "swappy": None,  # AUR
+    "swappy": "swappy",  # actually in Fedora (entry 2)
     "satty": None,  # AUR
     "flameshot": "flameshot",
     "kooha": "kooha",
@@ -2344,8 +2346,6 @@ UNAVAILABLE = {
     # AUR helpers (not needed on Fedora)
     "paru", "paru-debug", "yay",
     "pacman-contrib", "rebuild-detector", "mkinitcpio",
-    # Arch-specific 32-bit
-    "lib32-amdvlk-bin", "lib32-vulkan-radeon",
     # COSMIC desktop (not packaged for Fedora yet — flatpak soon)
     "cosmic-greeter",
     # DPI bypass / VPN (Arch-specific)
@@ -2368,8 +2368,8 @@ UNAVAILABLE = {
     "ollama-vulkan", "hermes-agent",
     "strace-tui-bin", "systemd-manager-tui",
     "pixora-icons-git", "pup-bin", "tanin-git",
-    "wlogout", "wlr-which-key",
-    "swayosd", "satty", "swappy",
+    "wlr-which-key",
+    "swayosd", "satty",
     "rofi-file-browser-extended-git", "rofi-file-browser-extended-git-debug",
     "gvfs-onedrive", "gvfs-wsdd",
     "bucklespring", "neo-matrix", "unarchiver", "patool",
@@ -2378,15 +2378,14 @@ UNAVAILABLE = {
     "lazytail-bin", "lutgen-bin", "massren",
     "newsraft", "oyo", "regex-tui",
     "reddix-bin", "repeater-bin", "resterm-bin",
-    "rmlint", "simutil-bin", "tessen", "tmmpr",
-    "ttfautohint", "unflac", "watchtower-bin",
+    "simutil-bin", "tessen", "tmmpr",
+    "unflac", "watchtower-bin",
     "witr-bin", "xdg-ninja", "eilmeldung-bin",
     "carapace-bin", "aliae-bin",
     "hishtory-bin", "raysession",
-    "nethack",
     # AUR tools that don't exist in Fedora
     "dualsensectl", "pipemixer-git", "youtube-tui", "sing-box-bin",
-    "dcfldd", "fennel", "dool",
+    "fennel", "dool",
     # Google Chrome (needs Google's RPM repo)
     "google-chrome",
     # Claude Code (Anthropic CLI — npm install)

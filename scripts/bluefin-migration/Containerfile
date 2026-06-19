@@ -1,6 +1,6 @@
 # Generated Bluefin custom image Containerfile
-# Source packages: 452 mapped + 107 unavailable
-#   RPM: 373  Flatpak: 11  Brew: 16
+# Source packages: 460 mapped + 99 unavailable
+#   RPM: 381  Flatpak: 11  Brew: 16
 #   Cargo: 31  Pip: 20  Go: 1
 
 FROM ghcr.io/ublue-os/bluefin-dx:latest
@@ -11,7 +11,7 @@ RUN curl -sLo /etc/yum.repos.d/rpmfusion-free.repo \
     curl -sLo /etc/yum.repos.d/rpmfusion-nonfree.repo \
     https://raw.githubusercontent.com/ublue-os/hwe/main/rpmfusion-nonfree.repo
 
-# ── RPM packages (373 total) ──────────────────
+# ── RPM packages (381 total) ──────────────────
 RUN rpm-ostree install -y \
     ImageMagick \
     NetworkManager \
@@ -22,6 +22,7 @@ RUN rpm-ostree install -y \
     akmods \
     amd-ucode-firmware \
     amdvlk \
+    amdvlk.i686 \
     android-tools \
     aria2 \
     ark \
@@ -53,6 +54,7 @@ RUN rpm-ostree install -y \
     cups-pk-helper \
     curl \
     dash \
+    dcfldd \
     ddccontrol \
     ddrescue \
     device-mapper-multipath \
@@ -208,6 +210,7 @@ RUN rpm-ostree install -y \
     media-player-info \
     mediainfo \
     memtester \
+    mesa-vulkan-drivers.i686 \
     meson \
     miller \
     minicom \
@@ -221,6 +224,7 @@ RUN rpm-ostree install -y \
     neomutt \
     neovim \
     netcat \
+    nethack \
     nethogs \
     network-manager-applet \
     networkmanager-qt \
@@ -284,6 +288,7 @@ RUN rpm-ostree install -y \
     reptyr \
     resvg \
     rlwrap \
+    rmlint \
     rofi \
     rsync \
     ruby \
@@ -313,6 +318,7 @@ RUN rpm-ostree install -y \
     subversion \
     sudo \
     sushi \
+    swappy \
     swayimg \
     sysstat \
     system-config-printer \
@@ -332,6 +338,7 @@ RUN rpm-ostree install -y \
     transmission \
     tree \
     tree-sitter-cli \
+    ttfautohint \
     ttyd \
     tumbler \
     udiskie \
@@ -365,6 +372,7 @@ RUN rpm-ostree install -y \
     wiremix \
     wireshark-cli \
     wl-clipboard \
+    wlogout \
     wlr-randr \
     wofi \
     wtype \
@@ -406,7 +414,7 @@ RUN pipx install beets gallery-dl httpie jupyterlab pre-commit python-ascii_magi
 # ── Go (1 total) ─────────────────────────────
 RUN go install github.com/containerd/nerdctl@latest
 
-# ── UNAVAILABLE (107 total) ────────────
+# ── UNAVAILABLE (99 total) ────────────
 # No Fedora/Flathub/Brew/Cargo/Pip/Go equivalent found.
 # Must compile from source, find COPR, or skip.
 #   - albumdetails
@@ -422,7 +430,6 @@ RUN go install github.com/containerd/nerdctl@latest
 #   - claude-code
 #   - cmake-language-server
 #   - cosmic-greeter
-#   - dcfldd
 #   - dool
 #   - dualsensectl
 #   - eilmeldung-bin
@@ -444,8 +451,6 @@ RUN go install github.com/containerd/nerdctl@latest
 #   - instagram-cli
 #   - iosevka-neg-fonts
 #   - lazytail-bin
-#   - lib32-amdvlk-bin
-#   - lib32-vulkan-radeon
 #   - limine
 #   - linux
 #   - linux-cachyos-headers
@@ -456,7 +461,6 @@ RUN go install github.com/containerd/nerdctl@latest
 #   - mpdris2-git
 #   - neg-pretty-printer
 #   - neo-matrix
-#   - nethack
 #   - newsraft
 #   - ollama-vulkan
 #   - oports-git
@@ -483,7 +487,6 @@ RUN go install github.com/containerd/nerdctl@latest
 #   - repeater-bin
 #   - resterm-bin
 #   - richcolors
-#   - rmlint
 #   - rofi-file-browser-extended-git
 #   - rofi-file-browser-extended-git-debug
 #   - rustmission
@@ -493,7 +496,6 @@ RUN go install github.com/containerd/nerdctl@latest
 #   - sing-box-bin
 #   - ssh-to-age
 #   - strace-tui-bin
-#   - swappy
 #   - swayosd
 #   - systemd-manager-tui
 #   - systemd-resolvconf
@@ -501,7 +503,6 @@ RUN go install github.com/containerd/nerdctl@latest
 #   - taoup
 #   - tessen
 #   - tmmpr
-#   - ttfautohint
 #   - unarchiver
 #   - unflac
 #   - v2raya-bin
@@ -510,7 +511,6 @@ RUN go install github.com/containerd/nerdctl@latest
 #   - watchtower-bin
 #   - witr-bin
 #   - wl
-#   - wlogout
 #   - wlr-which-key
 #   - xdg-ninja
 #   - youtube-tui

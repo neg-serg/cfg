@@ -11,7 +11,6 @@ carapace-bin
 claude-code
 cmake-language-server
 cosmic-greeter
-dcfldd
 dool
 dualsensectl
 eilmeldung-bin
@@ -33,8 +32,6 @@ hyprscratch
 instagram-cli
 iosevka-neg-fonts
 lazytail-bin
-lib32-amdvlk-bin
-lib32-vulkan-radeon
 limine
 linux
 linux-cachyos-headers
@@ -45,7 +42,6 @@ mpdas
 mpdris2-git
 neg-pretty-printer
 neo-matrix
-nethack
 newsraft
 ollama-vulkan
 oports-git
@@ -72,7 +68,6 @@ regex-tui
 repeater-bin
 resterm-bin
 richcolors
-rmlint
 rofi-file-browser-extended-git
 rofi-file-browser-extended-git-debug
 rustmission
@@ -82,7 +77,6 @@ simutil-bin
 sing-box-bin
 ssh-to-age
 strace-tui-bin
-swappy
 swayosd
 systemd-manager-tui
 systemd-resolvconf
@@ -90,7 +84,6 @@ tanin-git
 taoup
 tessen
 tmmpr
-ttfautohint
 unarchiver
 unflac
 v2raya-bin
@@ -99,7 +92,6 @@ vicinae-bin
 watchtower-bin
 witr-bin
 wl
-wlogout
 wlr-which-key
 xdg-ninja
 youtube-tui

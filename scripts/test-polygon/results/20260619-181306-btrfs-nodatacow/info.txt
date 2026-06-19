@@ -1,0 +1,6 @@
+config: btrfs-nodatacow
+device: /dev/nvme0n1p2
+mkfs: mkfs.btrfs 
+mount: -o noatime ssd nodatacow
+date: 2026-06-19T18:13:06+03:00
+kernel: 7.0.12-1-cachyos

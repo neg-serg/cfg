@@ -1,0 +1,6 @@
+config: btrfs-default
+device: /dev/nvme0n1p2
+mkfs: mkfs.btrfs 
+mount: -o noatime ssd
+date: 2026-06-19T18:01:20+03:00
+kernel: 7.0.12-1-cachyos

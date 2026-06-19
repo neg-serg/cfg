@@ -1,0 +1,6 @@
+config: btrfs-meta-single-data-single
+device: /dev/nvme0n1p2
+mkfs: mkfs.btrfs -m single -d single
+mount: -o noatime ssd
+date: 2026-06-19T18:19:01+03:00
+kernel: 7.0.12-1-cachyos

@@ -1,0 +1,6 @@
+config: btrfs-compress-zstd
+device: /dev/nvme0n1p2
+mkfs: mkfs.btrfs 
+mount: -o noatime ssd compress=zstd
+date: 2026-06-19T17:55:28+03:00
+kernel: 7.0.12-1-cachyos

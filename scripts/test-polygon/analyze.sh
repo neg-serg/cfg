@@ -39,12 +39,14 @@ printf -- '--- %.0s' {1..80}
 echo
 
 for d in "${DIRS[@]}"; do
-  label=$(basename "$d")
+  raw=$(basename "$d")
+  label="${raw#*-}"
+  label="${label#*-}"
   CONFIG_LABELS["$d"]="$label"
 
   # print info
   if [ -f "$d/info.txt" ]; then
-    echo "Config: $(grep '^config:' "$d/info.txt" | cut -d' ' -f2-)"
+    echo "${CONFIG_LABELS[$d]}: $(grep '^config:' "$d/info.txt" | cut -d' ' -f2-)"
     echo "  $(grep '^kernel:' "$d/info.txt" | cut -d' ' -f2-)"
     echo "  $(grep '^mkfs:' "$d/info.txt" | cut -d' ' -f2-)"
     echo "  $(grep '^mount:' "$d/info.txt" | cut -d' ' -f2-)"
@@ -75,7 +77,7 @@ for pname in "${profiles[@]}"; do
   for d in "${DIRS[@]}"; do
     f="$d/$pname.json"
     [ -f "$f" ] || continue
-    label=$(basename "$d")
+    label="${CONFIG_LABELS[$d]}"
 
     read_bw=$(jq -r '.jobs[0].read.bw / 1024 | floor' "$f" 2>/dev/null || echo "N/A")
     read_iops=$(jq -r '.jobs[0].read.iops | floor' "$f" 2>/dev/null || echo "N/A")

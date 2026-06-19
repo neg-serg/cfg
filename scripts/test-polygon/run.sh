@@ -60,30 +60,40 @@ for config_sh in "${CONFIGS[@]}"; do
   say "Preparing: $LABEL"
 
   # unmount if mounted elsewhere
-  if mountpoint -q "$MOUNT_POINT" 2>/dev/null; then
-    umount "$MOUNT_POINT"
-  fi
-  if mount | grep -q "$DEVICE"; then
-    umount "$DEVICE"
-  fi
+  for _ in 1 2 3; do
+    mountpoint -q "$MOUNT_POINT" 2>/dev/null && umount "$MOUNT_POINT" 2>/dev/null
+    mount | grep -q "$DEVICE" && umount "$DEVICE" 2>/dev/null
+    sync
+    mount | grep -q "$DEVICE" || break
+    sleep 2
+  done
 
-  # mkfs
+  # clear stale O_EXCL state (common after direct-IO fio runs)
+  python3 -c "import os; fd=os.open('$DEVICE', os.O_RDWR); os.close(fd)" 2>/dev/null || true
+  sleep 1
+
+  # mkfs (with retry on transient EBUSY)
   say "mkfs.$FSTYPE on $DEVICE -> $LABEL"
-  case "$FSTYPE" in
-    xfs)
-      mkfs.xfs -f "${MKFS_OPTS[@]}" -L "$LABEL" "$DEVICE"
-      ;;
-    btrfs)
-      mkfs.btrfs -f "${MKFS_OPTS[@]}" -L "$LABEL" "$DEVICE"
-      ;;
-    *)
-      echo "Unknown FSTYPE: $FSTYPE" >&2
-      exit 1
-  esac
+  for attempt in 1 2 3; do
+    case "$FSTYPE" in
+      xfs) mkfs.xfs -f "${MKFS_OPTS[@]}" -L "$LABEL" "$DEVICE" && break ;;
+      btrfs) mkfs.btrfs -f "${MKFS_OPTS[@]}" -L "$LABEL" "$DEVICE" && break ;;
+      *) echo "Unknown FSTYPE: $FSTYPE" >&2; exit 1 ;;
+    esac
+    rc=$?
+    if [ $attempt -lt 3 ]; then
+      echo "  mkfs failed (attempt $attempt), retrying..."
+      sleep 5
+    else
+      echo "  mkfs failed after 3 attempts, aborting" >&2
+      exit $rc
+    fi
+  done
 
   # mount
   mkdir -p "$MOUNT_POINT"
-  mount -t "$FSTYPE" -o "${MOUNT_OPTS[*]}" "$DEVICE" "$MOUNT_POINT"
+  mount_opts=$(IFS=,; echo "${MOUNT_OPTS[*]}")
+  mount -t "$FSTYPE" -o "$mount_opts" "$DEVICE" "$MOUNT_POINT"
   label_dir="$RESULTS_DIR/$(date +%Y%m%d-%H%M%S)-$LABEL"
   mkdir -p "$label_dir"
 

@@ -31,8 +31,8 @@
   source: RPM
   category: base
 - arch: broot
-  fedora: broot
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: desktop
 - arch: chromium
   fedora: null
@@ -95,24 +95,24 @@
   source: RPM
   category: desktop
 - arch: hypridle
-  fedora: hypridle
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: desktop
 - arch: hyprland
-  fedora: hyprland
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: desktop
 - arch: hyprlock
-  fedora: hyprlock
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: desktop
 - arch: hyprpicker
-  fedora: hyprpicker
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: desktop
 - arch: hyprpolkitagent
-  fedora: hyprpolkitagent
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: desktop
 - arch: eza
   fedora: null
@@ -163,8 +163,8 @@
   source: RPM
   category: desktop
 - arch: xdg-desktop-portal-hyprland
-  fedora: xdg-desktop-portal-hyprland
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: desktop
 - arch: yazi
   fedora: null
@@ -315,8 +315,8 @@
   source: RPM
   category: dev
 - arch: fennel
-  fedora: fennel
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: dev
 - arch: git
   fedora: git
@@ -411,8 +411,8 @@
   source: RPM
   category: network
 - arch: networkmanager-qt
-  fedora: networkmanager-qt
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: network
 - arch: bluez
   fedora: bluez
@@ -459,8 +459,8 @@
   source: RPM
   category: audio
 - arch: gst-plugin-pipewire
-  fedora: gst-plugin-pipewire
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: audio
 - arch: pavucontrol
   fedora: pavucontrol
@@ -475,16 +475,16 @@
   source: RPM
   category: media
 - arch: gst-libav
-  fedora: gst-libav
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: media
 - arch: gst-plugins-bad
-  fedora: gst-plugins-bad
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: media
 - arch: gst-plugins-ugly
-  fedora: gst-plugins-ugly
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: media
 - arch: imagemagick
   fedora: ImageMagick
@@ -547,8 +547,8 @@
   source: RPM
   category: gaming
 - arch: nethack
-  fedora: nethack
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: gaming
 - arch: bottom
   fedora: null
@@ -695,8 +695,8 @@
   source: FLATPAK
   category: other
 - arch: lib32-vulkan-radeon
-  fedora: mesa-vulkan-drivers.i686
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: bluez-utils
   fedora: bluez
@@ -715,8 +715,8 @@
   source: UNAVAILABLE
   category: other
 - arch: carla
-  fedora: carla
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: cava
   fedora: cava
@@ -747,8 +747,8 @@
   source: BREW
   category: other
 - arch: chromaprint
-  fedora: chromaprint
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: cliphist
   fedora: cliphist
@@ -779,8 +779,8 @@
   source: RPM
   category: other
 - arch: ctop
-  fedora: ctop
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: curlie
   fedora: null
@@ -919,8 +919,8 @@
   source: RPM
   category: other
 - arch: geoip-database
-  fedora: geoip-database
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: gist
   fedora: null
@@ -947,20 +947,20 @@
   source: BREW
   category: other
 - arch: gitlogue
-  fedora: gitlogue
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: git-lfs
   fedora: git-lfs
   source: RPM
   category: other
 - arch: ghostty
-  fedora: ghostty
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: ghostty-shell-integration
-  fedora: ghostty-shell-integration
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: glow
   fedora: glow
@@ -971,8 +971,8 @@
   source: RPM
   category: other
 - arch: goimapnotify
-  fedora: goimapnotify
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: gopass
   fedora: gopass
@@ -983,8 +983,8 @@
   source: BREW
   category: other
 - arch: gptfdisk
-  fedora: gptfdisk
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: grafana
   fedora: grafana
@@ -1015,8 +1015,8 @@
   source: RPM
   category: other
 - arch: gvfs-dnssd
-  fedora: gvfs-dnssd
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: gvfs-goa
   fedora: gvfs-goa
@@ -1143,8 +1143,8 @@
   source: RPM
   category: other
 - arch: kmon
-  fedora: kmon
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: kvantum
   fedora: kvantum
@@ -1283,8 +1283,8 @@
   source: RPM
   category: other
 - arch: amdgpu_top
-  fedora: amdgpu_top
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: ollama
   fedora: ollama
@@ -1447,8 +1447,8 @@
   source: RPM
   category: other
 - arch: resvg
-  fedora: resvg
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: richcolors
   fedora: null
@@ -1471,16 +1471,16 @@
   source: RPM
   category: other
 - arch: sbctl
-  fedora: sbctl
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: schedtool
   fedora: schedtool
   source: RPM
   category: other
 - arch: scour
-  fedora: scour
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: shellcheck
   fedora: ShellCheck
@@ -1495,8 +1495,8 @@
   source: RPM
   category: other
 - arch: sops
-  fedora: sops
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: socat
   fedora: socat
@@ -1531,16 +1531,16 @@
   source: RPM
   category: other
 - arch: swappy
-  fedora: swappy
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: systemd-resolvconf
   fedora: null
   source: UNAVAILABLE
   category: other
 - arch: tabiew
-  fedora: tabiew
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: taplo-cli
   fedora: null
@@ -1671,8 +1671,8 @@
   source: RPM
   category: other
 - arch: viu
-  fedora: viu
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: vnstat
   fedora: vnstat
@@ -1751,8 +1751,8 @@
   source: CARGO
   category: other
 - arch: zk
-  fedora: zk
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: zmap
   fedora: zmap
@@ -1767,8 +1767,8 @@
   source: RPM
   category: other
 - arch: handlr-regex
-  fedora: handlr-regex
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: i3status
   fedora: i3status
@@ -1787,8 +1787,8 @@
   source: RPM
   category: other
 - arch: libpulse
-  fedora: libpulse
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: malcontent
   fedora: malcontent
@@ -1827,8 +1827,8 @@
   source: RPM
   category: other
 - arch: breeze
-  fedora: breeze
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: breeze-icons
   fedora: breeze-icon-theme
@@ -1843,8 +1843,8 @@
   source: UNAVAILABLE
   category: other
 - arch: proxypilot-debug
-  fedora: proxypilot-debug
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: qt6-wayland
   fedora: qt6-qtwayland
@@ -1859,8 +1859,8 @@
   source: UNAVAILABLE
   category: other
 - arch: ssh-to-age-debug
-  fedora: ssh-to-age-debug
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: taoup
   fedora: null
@@ -1871,8 +1871,8 @@
   source: RPM
   category: other
 - arch: uwsm
-  fedora: uwsm
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: vim
   fedora: vim
@@ -1895,8 +1895,8 @@
   source: RPM
   category: aur
 - arch: lib32-amdvlk-bin
-  fedora: amdvlk.i686
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: act-bin
   fedora: null
@@ -1915,56 +1915,56 @@
   source: BREW
   category: aur
 - arch: carapace-bin
-  fedora: carapace-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: aliae-bin
-  fedora: aliae-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: claude-code
-  fedora: claude-code
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: cmake-language-server
   fedora: null
   source: UNAVAILABLE
   category: aur
 - arch: dcfldd
-  fedora: dcfldd
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: ddccontrol
   fedora: ddccontrol
   source: RPM
   category: aur
 - arch: dool
-  fedora: dool
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: dualsensectl
-  fedora: dualsensectl
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: eilmeldung-bin
-  fedora: eilmeldung-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: flclashx-bin
   fedora: null
   source: UNAVAILABLE
   category: aur
 - arch: v2raya-bin
-  fedora: v2raya-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: v2rayn-bin
-  fedora: v2rayn-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: v2ray
-  fedora: v2ray
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: vicinae-bin
   fedora: null
@@ -1975,12 +1975,12 @@
   source: UNAVAILABLE
   category: aur
 - arch: epr-git
-  fedora: epr-git
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: freeze-bin
-  fedora: freeze-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: gallery-dl
   fedora: null
@@ -1999,28 +1999,28 @@
   source: RPM
   category: aur
 - arch: google-chrome
-  fedora: google-chrome
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: gowall-bin
-  fedora: gowall-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: hishtory-bin
-  fedora: hishtory-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: hxd
-  fedora: hxd
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: hw-probe
   fedora: null
   source: BREW
   category: aur
 - arch: hyprscratch
-  fedora: hyprscratch
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: instagram-cli
   fedora: null
@@ -2039,32 +2039,32 @@
   source: UNAVAILABLE
   category: aur
 - arch: lutgen-bin
-  fedora: lutgen-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: massren
-  fedora: massren
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: mpdris2-git
   fedora: null
   source: UNAVAILABLE
   category: aur
 - arch: mpdas
-  fedora: mpdas
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: neo-matrix
-  fedora: neo-matrix
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: neovim-remote
   fedora: null
   source: BREW
   category: aur
 - arch: newsraft
-  fedora: newsraft
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: no-more-secrets
   fedora: null
@@ -2075,24 +2075,24 @@
   source: BREW
   category: aur
 - arch: otter-launcher
-  fedora: otter-launcher
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: oports-git
-  fedora: oports-git
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: oyo
-  fedora: oyo
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: par
   fedora: par
   source: RPM
   category: aur
 - arch: patool
-  fedora: patool
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: paru
   fedora: null
@@ -2103,8 +2103,8 @@
   source: UNAVAILABLE
   category: aur
 - arch: pipemixer-git
-  fedora: pipemixer-git
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: pixora-icons-git
   fedora: null
@@ -2119,8 +2119,8 @@
   source: UNAVAILABLE
   category: aur
 - arch: pup-bin
-  fedora: pup-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: python-ascii_magic
   fedora: null
@@ -2139,32 +2139,32 @@
   source: UNAVAILABLE
   category: aur
 - arch: reddix-bin
-  fedora: reddix-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: repeater-bin
   fedora: null
   source: UNAVAILABLE
   category: aur
 - arch: regex-tui
-  fedora: regex-tui
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: raysession
-  fedora: raysession
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: resterm-bin
   fedora: null
   source: UNAVAILABLE
   category: aur
 - arch: rmlint
-  fedora: rmlint
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: rofi-file-browser-extended-git
-  fedora: rofi-file-browser-extended-git
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: rofi-file-browser-extended-git-debug
   fedora: null
@@ -2179,76 +2179,76 @@
   source: UNAVAILABLE
   category: aur
 - arch: songfetch
-  fedora: songfetch
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: simutil-bin
-  fedora: simutil-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: sing-box-bin
-  fedora: sing-box-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: strace-tui-bin
-  fedora: strace-tui-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: systemd-manager-tui
-  fedora: systemd-manager-tui
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: tanin-git
-  fedora: tanin-git
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: tessen
-  fedora: tessen
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: tmmpr
-  fedora: tmmpr
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: ttfautohint
-  fedora: ttfautohint
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: unflac
-  fedora: unflac
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: watchtower-bin
-  fedora: watchtower-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: witr-bin
-  fedora: witr-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: wget2
   fedora: wget2
   source: RPM
   category: aur
 - arch: wlogout
-  fedora: wlogout
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: wlr-which-key
-  fedora: wlr-which-key
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: xdg-ninja
-  fedora: xdg-ninja
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: youtube-tui
-  fedora: youtube-tui
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: ytsurf
-  fedora: ytsurf
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: bazecor
   fedora: null
@@ -2259,8 +2259,8 @@
   source: PIP
   category: aur
 - arch: zapret2
-  fedora: zapret2
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: zen-browser-bin
   fedora: null
@@ -2279,8 +2279,8 @@
   source: RPM
   category: aur
 - arch: lib32-amdvlk-bin
-  fedora: amdvlk.i686
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: act-bin
   fedora: null
@@ -2299,56 +2299,56 @@
   source: BREW
   category: aur
 - arch: carapace-bin
-  fedora: carapace-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: aliae-bin
-  fedora: aliae-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: claude-code
-  fedora: claude-code
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: cmake-language-server
   fedora: null
   source: UNAVAILABLE
   category: aur
 - arch: dcfldd
-  fedora: dcfldd
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: ddccontrol
   fedora: ddccontrol
   source: RPM
   category: aur
 - arch: dool
-  fedora: dool
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: dualsensectl
-  fedora: dualsensectl
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: eilmeldung-bin
-  fedora: eilmeldung-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: flclashx-bin
   fedora: null
   source: UNAVAILABLE
   category: aur
 - arch: v2raya-bin
-  fedora: v2raya-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: v2rayn-bin
-  fedora: v2rayn-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: v2ray
-  fedora: v2ray
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: vicinae-bin
   fedora: null
@@ -2359,12 +2359,12 @@
   source: UNAVAILABLE
   category: aur
 - arch: epr-git
-  fedora: epr-git
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: freeze-bin
-  fedora: freeze-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: gallery-dl
   fedora: null
@@ -2383,28 +2383,28 @@
   source: RPM
   category: aur
 - arch: google-chrome
-  fedora: google-chrome
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: gowall-bin
-  fedora: gowall-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: hishtory-bin
-  fedora: hishtory-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: hxd
-  fedora: hxd
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: hw-probe
   fedora: null
   source: BREW
   category: aur
 - arch: hyprscratch
-  fedora: hyprscratch
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: instagram-cli
   fedora: null
@@ -2423,32 +2423,32 @@
   source: UNAVAILABLE
   category: aur
 - arch: lutgen-bin
-  fedora: lutgen-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: massren
-  fedora: massren
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: mpdris2-git
   fedora: null
   source: UNAVAILABLE
   category: aur
 - arch: mpdas
-  fedora: mpdas
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: neo-matrix
-  fedora: neo-matrix
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: neovim-remote
   fedora: null
   source: BREW
   category: aur
 - arch: newsraft
-  fedora: newsraft
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: no-more-secrets
   fedora: null
@@ -2459,24 +2459,24 @@
   source: BREW
   category: aur
 - arch: otter-launcher
-  fedora: otter-launcher
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: oports-git
-  fedora: oports-git
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: oyo
-  fedora: oyo
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: par
   fedora: par
   source: RPM
   category: aur
 - arch: patool
-  fedora: patool
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: paru
   fedora: null
@@ -2487,8 +2487,8 @@
   source: UNAVAILABLE
   category: aur
 - arch: pipemixer-git
-  fedora: pipemixer-git
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: pixora-icons-git
   fedora: null
@@ -2503,8 +2503,8 @@
   source: UNAVAILABLE
   category: aur
 - arch: pup-bin
-  fedora: pup-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: python-ascii_magic
   fedora: null
@@ -2523,32 +2523,32 @@
   source: UNAVAILABLE
   category: aur
 - arch: reddix-bin
-  fedora: reddix-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: repeater-bin
   fedora: null
   source: UNAVAILABLE
   category: aur
 - arch: regex-tui
-  fedora: regex-tui
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: raysession
-  fedora: raysession
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: resterm-bin
   fedora: null
   source: UNAVAILABLE
   category: aur
 - arch: rmlint
-  fedora: rmlint
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: rofi-file-browser-extended-git
-  fedora: rofi-file-browser-extended-git
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: rofi-file-browser-extended-git-debug
   fedora: null
@@ -2563,76 +2563,76 @@
   source: UNAVAILABLE
   category: aur
 - arch: songfetch
-  fedora: songfetch
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: simutil-bin
-  fedora: simutil-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: sing-box-bin
-  fedora: sing-box-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: strace-tui-bin
-  fedora: strace-tui-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: systemd-manager-tui
-  fedora: systemd-manager-tui
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: tanin-git
-  fedora: tanin-git
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: tessen
-  fedora: tessen
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: tmmpr
-  fedora: tmmpr
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: ttfautohint
-  fedora: ttfautohint
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: unflac
-  fedora: unflac
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: watchtower-bin
-  fedora: watchtower-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: witr-bin
-  fedora: witr-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: wget2
   fedora: wget2
   source: RPM
   category: aur
 - arch: wlogout
-  fedora: wlogout
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: wlr-which-key
-  fedora: wlr-which-key
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: xdg-ninja
-  fedora: xdg-ninja
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: youtube-tui
-  fedora: youtube-tui
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: ytsurf
-  fedora: ytsurf
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: bazecor
   fedora: null
@@ -2643,8 +2643,8 @@
   source: PIP
   category: aur
 - arch: zapret2
-  fedora: zapret2
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: zen-browser-bin
   fedora: null

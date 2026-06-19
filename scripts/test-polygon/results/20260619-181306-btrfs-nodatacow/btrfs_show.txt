@@ -1,0 +1,3 @@
+Label: 'btrfs-nodatacow'  uuid: edfa01e6-bcfd-43fd-ad91-bb7e0562d6fb
+	Total devices 1 FS bytes used 4.18GiB
+	devid    1 size 507.24GiB used 15.02GiB path /dev/nvme0n1p2

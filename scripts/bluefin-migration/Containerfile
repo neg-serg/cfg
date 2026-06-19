@@ -349,11 +349,8 @@ RUN rpm-ostree install -y \
 
 # ── Flatpak apps (11 total) ─────────────
 RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && \
-  flatpak install -y flathub app.zen_browser.zen com.bazecor.Bazecor com.dosbox.DOSBox com.rawtherapee.RawTherapee net.lutris.Lutris org.blender.Blender org.chromium.Chromium org.gimp.GIMP org.localsend.localsend_app org.mozilla.firefox org.telegram.desktop
+  flatpak install -y flathub app.zen_browser.zen com.dosbox.DOSBox com.rawtherapee.RawTherapee net.lutris.Lutris org.blender.Blender org.chromium.Chromium org.gimp.GIMP org.localsend.localsend_app org.mozilla.firefox org.telegram.desktop
 
-# ── Homebrew (16 total) ─────────────────────
-RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && \
-  brew install act-bin babashka-bin choose cloudflare-speed-cli cpufetch curlie dive genact gist gitleaks go-yq hw-probe lua-language-server neovim-remote oh-my-posh taplo-cli
 
 # ── Cargo (31 total) ───────────────────────
 RUN cargo install cargo-binstall && \

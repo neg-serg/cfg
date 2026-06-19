@@ -68,10 +68,6 @@ for config_sh in "${CONFIGS[@]}"; do
     sleep 2
   done
 
-  # clear stale O_EXCL state (common after direct-IO fio runs)
-  python3 -c "import os; fd=os.open('$DEVICE', os.O_RDWR); os.close(fd)" 2>/dev/null || true
-  sleep 1
-
   # mkfs (with retry on transient EBUSY)
   say "mkfs.$FSTYPE on $DEVICE -> $LABEL"
   for attempt in 1 2 3; do
@@ -83,6 +79,15 @@ for config_sh in "${CONFIGS[@]}"; do
     rc=$?
     if [ $attempt -lt 3 ]; then
       echo "  mkfs failed (attempt $attempt), retrying..."
+      # fallback: use loop device to clear kernel-level O_EXCL blockage
+      if command -v losetup >/dev/null 2>&1; then
+        losetup -f "$DEVICE" 2>/dev/null || true
+        LOOP=$(losetup -j "$DEVICE" 2>/dev/null | cut -d: -f1)
+        if [ -n "$LOOP" ]; then
+          dd if=/dev/zero of="$LOOP" bs=4k count=10 oflag=direct status=none 2>/dev/null
+          losetup -d "$LOOP" 2>/dev/null || true
+        fi
+      fi
       sleep 5
     else
       echo "  mkfs failed after 3 attempts, aborting" >&2

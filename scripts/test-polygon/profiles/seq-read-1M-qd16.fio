@@ -1,4 +1,0 @@
-[seq-read-1M-qd16]
-rw=read
-bs=1M
-iodepth=16

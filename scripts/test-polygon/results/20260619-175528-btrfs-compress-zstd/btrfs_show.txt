@@ -1,3 +1,0 @@
-Label: 'btrfs-compress-zstd'  uuid: 0c574ad0-d667-48c3-9389-b4589a729837
-	Total devices 1 FS bytes used 4.00GiB
-	devid    1 size 507.24GiB used 18.02GiB path /dev/nvme0n1p2

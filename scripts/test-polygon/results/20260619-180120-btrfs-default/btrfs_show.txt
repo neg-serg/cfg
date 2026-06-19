@@ -1,3 +1,0 @@
-Label: 'btrfs-default'  uuid: 90251510-e7d9-4197-8db8-304690374092
-	Total devices 1 FS bytes used 4.47GiB
-	devid    1 size 507.24GiB used 51.02GiB path /dev/nvme0n1p2

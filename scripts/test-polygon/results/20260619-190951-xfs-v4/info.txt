@@ -1,6 +1,0 @@
-config: xfs-v4
-device: /dev/nvme0n1p2
-mkfs: mkfs.xfs -m crc=0
-mount: -o noatime
-date: 2026-06-19T19:09:51+03:00
-kernel: 7.0.12-1-cachyos

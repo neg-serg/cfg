@@ -1,4 +1,0 @@
-[seq-read-64K-qd1]
-rw=read
-bs=64K
-iodepth=1

@@ -1,6 +1,0 @@
-config: agcount4
-device: /dev/nvme0n1p2
-mkfs: mkfs.xfs -d agcount=4
-mount: -o noatime
-date: 2026-06-19T18:25:17+03:00
-kernel: 7.0.12-1-cachyos

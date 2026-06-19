@@ -1,4 +1,0 @@
-[seq-write-1M-qd1]
-rw=write
-bs=1M
-iodepth=1

@@ -1,2 +1,0 @@
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/nvme0n1p2  508G  4.7G  501G   1% /mnt/test-polygon

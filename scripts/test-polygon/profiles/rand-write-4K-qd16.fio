@@ -1,4 +1,0 @@
-[rand-write-4K-qd16]
-rw=randwrite
-bs=4K
-iodepth=16

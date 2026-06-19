@@ -1242,16 +1242,8 @@ docs:
   purpose: Adding a New Host
 - path: docs/ai-state-group.md
   purpose: AI State Group
-- path: docs/audit-report.md
-  purpose: Salt Infrastructure Audit Report
-- path: docs/autoparallel-research.md
-  purpose: Compiler Auto-Parallelism Research for CachyOS Workstation
-- path: docs/best-practices.md
-  purpose: Salt Best Practices — Implemented
 - path: docs/boot-optimization.md
   purpose: Boot Optimization Guide
-- path: docs/clipboard-issues.md
-  purpose: Clipboard Issues Analysis and Solutions
 - path: docs/cmd-run-standard.md
   purpose: cmd.run Error Handling Standard
 - path: docs/containerized-services.md
@@ -1260,46 +1252,30 @@ docs:
   purpose: Data Inventory
 - path: docs/deploy-cachyos.md
   purpose: CachyOS Deployment Guide
-- path: docs/gh-issues-export.md
-  purpose: gh-issues-export
 - path: docs/gopass-age-recovery.md
   purpose: gopass age Recovery
 - path: docs/gopass-setup.md
   purpose: gopass Setup Guide
 - path: docs/hdspe-post-install.md
   purpose: 'RME HDSPe AIO Pro: installation & verification'
-- path: docs/hyprland-to-niri-migration-notes.md
-  purpose: Hyprland → Niri Migration Notes
-- path: docs/hyprland-to-niri-parity-dossier.md
-  purpose: Hyprland -> Niri Feature-Parity Dossier
 - path: docs/image-gen-roster.md
   purpose: Image Generation Provider Roster
 - path: docs/managed-telegram-bots.md
   purpose: Managed Telegram Bots (Bot API 9.6+)
-- path: docs/mcp-research-prompt.md
-  purpose: ''
 - path: docs/music-analysis.md
   purpose: Music Analysis Pipeline
 - path: docs/neovim-ai-setup.md
   purpose: Neovim AI Setup
-- path: docs/notebooklm-setup.md
-  purpose: NotebookLM Setup Guide
 - path: docs/ollama-models.md
   purpose: Ollama Models
 - path: docs/proxypilot-free-fallback.md
   purpose: ProxyPilot Free Model Fallback
 - path: docs/proxypilot-setup.md
   purpose: ProxyPilot Setup Guide
-- path: docs/pyinfra-migration-research.md
-  purpose: 'pyinfra Migration Research: Salt vs pyinfra for Single-Host Workstation'
-- path: docs/salt-3008-upgrade-worktree-guide.md
-  purpose: Salt 3008+ Upgrade Guide with Git Worktrees
 - path: docs/salt-best-practices.md
   purpose: Salt Best Practices & LLM Integration Guide (2023-2026)
 - path: docs/salt-explainability.md
   purpose: Salt Explainability
-- path: docs/salt-refactoring-recommendations.md
-  purpose: Salt Refactoring Recommendations
 - path: docs/secrets-scheme.md
   purpose: Secrets Management Scheme
 - path: docs/sonobus-setup.md

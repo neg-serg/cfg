@@ -174,13 +174,6 @@ categories:
           - "pw-route aes"
         key_files: ["/etc/modprobe.d/hdspe.conf", "~/.config/audio/routing.yaml"]
 
-      notebooklm-setup:
-        title: "NotebookLM Setup"
-        summary: "Setup guide for NotebookLM, Google's AI-powered notebook tool, configured for local project documentation analysis. Covers account setup, corpus creation, and workflow integration for querying project-specific knowledge."
-        audience: ["user"]
-        prerequisites: ["google account", "notebooklm access"]
-        tags: ["ai", "notebook", "documentation", "google"]
-
       telethon-bridge-setup:
         title: "Telethon Bridge Setup"
         summary: "Setup guide for a Telethon-based Telegram client bridge used for automated message relay, media organization, and notification aggregation. Covers API credential registration, session file persistence, and event handler configuration."
@@ -300,7 +293,6 @@ categories:
         related_docs:
           - "cmd-run-standard"
           - "salt-explainability"
-          - "salt-refactoring-recommendations"
         tags: ["salt", "best-practices", "style-guide", "jinja"]
         key_commands:
           - "salt-lint states/"
@@ -379,23 +371,6 @@ categories:
           - "ollama show <model>"
         key_files: ["/etc/ollama/models.yaml"]
 
-      autoparallel-research:
-        title: "Autoparallel Research Analysis"
-        summary: "Research analysis evaluating GNU Parallel vs. xargs vs. custom Python multiprocessing for parallel task execution. Covers performance benchmarks, dependency considerations, DSL fit, and a recommendation to standardize on GNU Parallel."
-        audience: ["contributor"]
-        tags: ["research", "parallelism", "gnu-parallel", "xargs", "automation"]
-
-      pyinfra-migration-research:
-        title: "Pyinfra Migration Research"
-        summary: "Research analysis evaluating whether to migrate from Salt to pyinfra for provisioning. Compares architecture, state DSL expressiveness, community health, secret management compatibility, and operational overhead. Concludes with a keep-Salt recommendation."
-        audience: ["operator", "contributor"]
-        related_entities: ["state:*"]
-        related_docs:
-          - "salt-best-practices"
-          - "salt-explainability"
-          - "salt-refactoring-recommendations"
-        tags: ["research", "salt", "pyinfra", "migration", "provisioning"]
-
       salt-explainability:
         title: "Salt Explainability"
         summary: "Guide to understanding Salt state execution: how to trace require/watch chains, interpret state.highstate output, use salt-call with test=True for dry-runs, debug Jinja rendering errors, and follow pillar/map inheritance."
@@ -409,33 +384,6 @@ categories:
         key_commands:
           - "salt-call --local state.apply test=True"
           - "salt-call --local --out=yaml state.show_highstate"
-
-      salt-refactoring-recommendations:
-        title: "Salt Refactoring Recommendations"
-        summary: "Analysis of the Salt state tree with specific refactoring recommendations: macro deduplication, state file splitting, pillar normalization, include graph simplification, and migration path from cmd.run to proper Salt execution modules."
-        audience: ["contributor"]
-        prerequisites: ["salt"]
-        related_entities: ["state:*", "macro:*"]
-        related_docs:
-          - "salt-best-practices"
-          - "salt-explainability"
-        tags: ["salt", "refactoring", "cleanup", "best-practices"]
-
-      hyprland-to-niri-parity-dossier:
-        title: "Hyprland to Niri Parity Dossier"
-        summary: "Detailed feature-by-feature comparison between the current Hyprland compositor configuration and a hypothetical niri migration. Covers window management, keybindings, monitor configuration, workspace behavior, IPC, and screenshot/workflow tooling."
-        audience: ["operator", "contributor"]
-        related_entities: ["state:desktop.hyprland", "state:desktop.niri"]
-        related_docs: ["hyprland-to-niri-migration-notes"]
-        tags: ["hyprland", "niri", "wayland", "compositor", "migration", "research"]
-
-      hyprland-to-niri-migration-notes:
-        title: "Hyprland to Niri Migration Notes"
-        summary: "Practical migration notes and blockages encountered when evaluating a switch from Hyprland to the niri scrollable-tiling Wayland compositor. Documents specific configuration incompatibilities, missing features, workarounds, and the decision status."
-        audience: ["operator"]
-        related_entities: ["state:desktop.hyprland", "state:desktop.niri"]
-        related_docs: ["hyprland-to-niri-parity-dossier"]
-        tags: ["hyprland", "niri", "wayland", "migration", "compositor"]
 
       containerized-services:
         title: "Containerized Services (Podman Quadlet)"
@@ -504,48 +452,6 @@ categories:
         tags: ["ai", "salt", "operations", "gpu"]
         key_commands: ["sudo salt-call --local state.apply ai"]
 
-      audit-report:
-        title: "Audit Report"
-        summary: "Security and configuration audit report for the system. Documents findings from automated and manual audits: open ports, exposed services, file permissions, user/group memberships, SUID binaries, PAM configuration, and deviations from the hardened baseline."
-        audience: ["operator"]
-        tags: ["security", "audit", "hardening"]
-        key_commands:
-          - "python3 scripts/audit.py"
-          - "just audit"
-
-      best-practices:
-        title: "Best Practices (Operations)"
-        summary: "General operational best practices for working with this system: shell workflow conventions, gopass usage hygiene, commit message format, just command usage, test-first mentality, and documentation update requirements."
-        audience: ["operator", "contributor"]
-        related_docs: ["cmd-run-standard", "salt-best-practices"]
-        tags: ["best-practices", "operations", "conventions"]
-
-      clipboard-issues:
-        title: "Clipboard Issues"
-        summary: "Troubleshooting guide for clipboard synchronization problems in the Wayland/Hyprland environment. Covers wl-clipboard vs xclip, clipboard managers (cliphist, wl-paste), copy-paste across security contexts, and known application-specific clipboard bugs."
-        audience: ["user"]
-        related_entities: ["state:desktop.hyprland"]
-        tags: ["clipboard", "wayland", "hyprland", "troubleshooting"]
-        key_commands:
-          - "wl-paste"
-          - "cliphist list"
-
-      gh-issues-export:
-        title: "GitHub Issues Export"
-        summary: "Procedure for exporting GitHub issues to local Markdown files for offline reference, archival, or migration. Covers gh CLI usage, jq filtering, Markdown formatting, and attachment handling."
-        audience: ["operator"]
-        prerequisites: ["gh", "jq"]
-        tags: ["github", "issues", "export", "backup"]
-        key_commands:
-          - "gh issue list --json ..."
-          - "gh issue view <number>"
-
-      mcp-research-prompt:
-        title: "MCP Research Prompt"
-        summary: "Research prompt and findings document for Model Context Protocol (MCP) server evaluation. Lists evaluated MCP servers, integration patterns, security considerations, and recommendations for which MCP servers to deploy."
-        audience: ["contributor"]
-        tags: ["mcp", "ai", "research", "model-context-protocol"]
-
       neovim-startup-benchmark:
         title: "Neovim Startup Benchmark"
         summary: "Startup time benchmarks for Neovim under various configurations. Measures cold/warm startup times with and without AI plugins, lazy-loading effectiveness, and optimization recommendations."
@@ -569,17 +475,6 @@ categories:
           - "proxypilot-ctl use-free-provider"
           - "proxypilot-ctl restore-paid"
         key_files: ["/etc/proxypilot/free-providers.yaml"]
-
-      salt-3008-upgrade-worktree-guide:
-        title: "Salt 3008 Upgrade Worktree Guide"
-        summary: "Step-by-step guide for upgrading the Salt codebase to 3008.x in an isolated git worktree. Covers worktree creation, dependency updates, deprecation migration, highstate validation, and rollback procedure."
-        audience: ["operator"]
-        prerequisites: ["git", "salt", "just"]
-        related_entities: ["state:*"]
-        related_docs:
-          - "salt-best-practices"
-          - "cmd-run-standard"
-        tags: ["salt", "upgrade", "git-worktree", "3008"]
 
       vpn-browser-integration:
         title: "VPN Browser Integration"

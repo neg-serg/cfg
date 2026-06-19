@@ -55,7 +55,6 @@ EXTRA_CARGO = [
     "amdgpu_top",
     "hyprscratch",
     "lutgen",
-    "newsraft",  # actually C, need source build
     "regex-tui",
     "rmpc",
     "rustmission",
@@ -63,7 +62,8 @@ EXTRA_CARGO = [
     "youtube-tui",
     "otter-launcher",
     "wlr-which-key",
-    "wdg-ninja",  # shell script, skip
+    "oyo",
+    "tmmpr",
 ]
 
 # ── 6. Extended pip ─────────────────────────────────────────────────
@@ -74,6 +74,7 @@ EXTRA_PIP = [
     "mpDris2",
     "patool",
     "protonvpn-cli",
+    "raysession",
 ]
 
 # ── 7. Extended go ─────────────────────────────────────────────────
@@ -82,6 +83,7 @@ EXTRA_GO = {
     "scc": "github.com/boyter/scc/v3@latest",
     "massren": "github.com/laurent22/massren@latest",
     "unflac": "github.com/derat/unflac@latest",
+    "ytsurf": "github.com/irevenko/ytsurf@latest",
 }
 
 # ── 8. Binary downloads ─────────────────────────────────────────────
@@ -97,7 +99,13 @@ BINARIES = {
     "v2raya": ("v2rayA/v2rayA", "v2raya", "v2raya_.*_linux_x64.tar.gz"),
     "watchtower": ("containrrr/watchtower", "watchtower", "watchtower_.*_linux_amd64.tar.gz"),
     "gowall": ("Achno/gowall", "gowall", "gowall_.*_linux_amd64.tar.gz"),
-    "bucklespring": ("zevv/bucklespring", "buckle", None),  # needs source build
+    # Additional binaries from research
+    "eilmeldung": ("qcasey/eilmeldung", "eilmeldung", "eilmeldung_.*_linux_amd64.tar.gz"),
+    "reddix": ("crosstype/reddix", "reddix", "reddix_.*_linux_amd64.tar.gz"),
+    "simutil": ("google/simutil", "simutil", "simutil_.*_linux_amd64.tar.gz"),
+    "witr": ("siddharthroy12/witr", "witr", "witr_.*_linux_amd64.tar.gz"),
+    "v2rayn": ("2dust/v2rayN", "v2rayN", "v2rayN_.*_linux_amd64.tar.gz"),
+    "flclash": ("chen08209/FlClash", "FlClash", "FlClash_.*_linux_amd64.tar.gz"),
 }
 
 # ── 9. Source builds ────────────────────────────────────────────────
@@ -149,9 +157,39 @@ SOURCE_BUILDS = {
         "build": "install -Dm755 xdg-ninja.sh /usr/local/bin/xdg-ninja && cp -r scripts /usr/local/share/xdg-ninja/",
     },
     "pixora-icons-git": {
-        "repo": "",  # AUR only, user specific
+        "repo": "",  # user's custom icon theme
         "deps": "",
-        "build": "# Copy icon dirs from PKGBUILD source",
+        "build": "# Copy icon dirs from PKGBUILD source to /usr/share/icons/",
+    },
+    "hxd": {
+        "repo": "https://github.com/schievel/hxd.git",
+        "deps": "gcc make lua-devel scdoc",
+        "build": "make && make install",
+    },
+    "fennel": {
+        "repo": "",
+        "deps": "",
+        "build": "curl -sLo /usr/local/bin/fennel https://fennel-lang.org/downloads/fennel-1.6.1 && chmod +x /usr/local/bin/fennel",
+    },
+    "ytsurf": {
+        "repo": "https://github.com/irevenko/ytsurf.git",
+        "deps": "golang",
+        "build": "go build -o ytsurf cmd/ytsurf/main.go && install -m755 ytsurf /usr/local/bin/",
+    },
+    "newsraft": {
+        "repo": "https://github.com/newsraft/newsraft.git",
+        "deps": "gcc make ncurses-devel libcurl-devel expat-devel sqlite-devel",
+        "build": "make && make install",
+    },
+    "oports-git": {
+        "repo": "",  # user's custom tool
+        "deps": "",
+        "build": "# User-specific port tool — copy from PKGBUILD",
+    },
+    "tanin-git": {
+        "repo": "https://github.com/kamiyaa/tanin.git",
+        "deps": "cargo alsa-lib-devel openssl-devel",
+        "build": "cargo build --release --no-default-features && install -m755 target/release/tanin /usr/local/bin/",
     },
 }
 
@@ -226,9 +264,7 @@ def gen_containerfile_additions():
         lines.append("")
 
     # ── Extra Cargo ──────────────────────────────────────────────
-    cargo_filtered = [c for c in EXTRA_CARGO if c not in (
-        "newsraft", "wdg-ninja"  # these are C/shell, not Rust
-    )]
+    cargo_filtered = [c for c in EXTRA_CARGO]
     if cargo_filtered:
         lines.append(f"# ── Extra Cargo ({len(cargo_filtered)} total) ────────────")
         lines.append("RUN cargo binstall -y " + " ".join(cargo_filtered))

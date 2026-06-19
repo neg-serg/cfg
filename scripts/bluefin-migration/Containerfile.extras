@@ -43,19 +43,20 @@ RUN rpm-ostree install -y \
 # ── NPM global (1 total) ──────────────────
 RUN npm install -g @anthropic-ai/claude-code
 
-# ── Extra Cargo (10 total) ────────────
-RUN cargo binstall -y amdgpu_top hyprscratch lutgen regex-tui rmpc rustmission systemd-manager-tui youtube-tui otter-launcher wlr-which-key
+# ── Extra Cargo (12 total) ────────────
+RUN cargo binstall -y amdgpu_top hyprscratch lutgen regex-tui rmpc rustmission systemd-manager-tui youtube-tui otter-launcher wlr-which-key oyo tmmpr
 
-# ── Extra Pip (6 total) ───────────────────
-RUN pipx install cmake-language-server dool epr-reader mpDris2 patool protonvpn-cli
+# ── Extra Pip (7 total) ───────────────────
+RUN pipx install cmake-language-server dool epr-reader mpDris2 patool protonvpn-cli raysession
 
-# ── Extra Go (4 total) ─────────────────────
+# ── Extra Go (5 total) ─────────────────────
 RUN go install github.com/Mic92/ssh-to-age/cmd/ssh-to-age@latest
 RUN go install github.com/boyter/scc/v3@latest
 RUN go install github.com/laurent22/massren@latest
 RUN go install github.com/derat/unflac@latest
+RUN go install github.com/irevenko/ytsurf@latest
 
-# ── Binary downloads (11 total) ─────────────
+# ── Binary downloads (16 total) ─────────────
 RUN mkdir -p /tmp/bin-dl && \
     dnf install -y curl jq tar unzip gzip && \
     curl -sL "$(curl -sL "https://api.github.com/repos/JanDeDobbeleer/aliae/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/aliae.dl && \
@@ -64,6 +65,12 @@ RUN mkdir -p /tmp/bin-dl && \
     curl -sL "$(curl -sL "https://api.github.com/repos/carapace-sh/carapace-bin/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/carapace.dl && \
     (tar xf /tmp/bin-dl/carapace.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/carapace.dl -d /tmp/bin-dl/) && \
     find /tmp/bin-dl/ -type f -name 'carapace' -executable -exec install -m755 {} /usr/local/bin/ \; && \
+    curl -sL "$(curl -sL "https://api.github.com/repos/qcasey/eilmeldung/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/eilmeldung.dl && \
+    (tar xf /tmp/bin-dl/eilmeldung.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/eilmeldung.dl -d /tmp/bin-dl/) && \
+    find /tmp/bin-dl/ -type f -name 'eilmeldung' -executable -exec install -m755 {} /usr/local/bin/ \; && \
+    curl -sL "$(curl -sL "https://api.github.com/repos/chen08209/FlClash/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/flclash.dl && \
+    (tar xf /tmp/bin-dl/flclash.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/flclash.dl -d /tmp/bin-dl/) && \
+    find /tmp/bin-dl/ -type f -name 'FlClash' -executable -exec install -m755 {} /usr/local/bin/ \; && \
     curl -sL "$(curl -sL "https://api.github.com/repos/charmbracelet/freeze/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/freeze.dl && \
     (tar xf /tmp/bin-dl/freeze.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/freeze.dl -d /tmp/bin-dl/) && \
     find /tmp/bin-dl/ -type f -name 'freeze' -executable -exec install -m755 {} /usr/local/bin/ \; && \
@@ -76,6 +83,12 @@ RUN mkdir -p /tmp/bin-dl && \
     curl -sL "$(curl -sL "https://api.github.com/repos/ericchiang/pup/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/pup.dl && \
     (tar xf /tmp/bin-dl/pup.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/pup.dl -d /tmp/bin-dl/) && \
     find /tmp/bin-dl/ -type f -name 'pup' -executable -exec install -m755 {} /usr/local/bin/ \; && \
+    curl -sL "$(curl -sL "https://api.github.com/repos/crosstype/reddix/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/reddix.dl && \
+    (tar xf /tmp/bin-dl/reddix.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/reddix.dl -d /tmp/bin-dl/) && \
+    find /tmp/bin-dl/ -type f -name 'reddix' -executable -exec install -m755 {} /usr/local/bin/ \; && \
+    curl -sL "$(curl -sL "https://api.github.com/repos/google/simutil/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/simutil.dl && \
+    (tar xf /tmp/bin-dl/simutil.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/simutil.dl -d /tmp/bin-dl/) && \
+    find /tmp/bin-dl/ -type f -name 'simutil' -executable -exec install -m755 {} /usr/local/bin/ \; && \
     curl -sL "$(curl -sL "https://api.github.com/repos/SagerNet/sing-box/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/sing-box.dl && \
     (tar xf /tmp/bin-dl/sing-box.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/sing-box.dl -d /tmp/bin-dl/) && \
     find /tmp/bin-dl/ -type f -name 'sing-box' -executable -exec install -m755 {} /usr/local/bin/ \; && \
@@ -85,12 +98,18 @@ RUN mkdir -p /tmp/bin-dl && \
     curl -sL "$(curl -sL "https://api.github.com/repos/v2rayA/v2rayA/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/v2raya.dl && \
     (tar xf /tmp/bin-dl/v2raya.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/v2raya.dl -d /tmp/bin-dl/) && \
     find /tmp/bin-dl/ -type f -name 'v2raya' -executable -exec install -m755 {} /usr/local/bin/ \; && \
+    curl -sL "$(curl -sL "https://api.github.com/repos/2dust/v2rayN/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/v2rayn.dl && \
+    (tar xf /tmp/bin-dl/v2rayn.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/v2rayn.dl -d /tmp/bin-dl/) && \
+    find /tmp/bin-dl/ -type f -name 'v2rayN' -executable -exec install -m755 {} /usr/local/bin/ \; && \
     curl -sL "$(curl -sL "https://api.github.com/repos/containrrr/watchtower/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/watchtower.dl && \
     (tar xf /tmp/bin-dl/watchtower.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/watchtower.dl -d /tmp/bin-dl/) && \
     find /tmp/bin-dl/ -type f -name 'watchtower' -executable -exec install -m755 {} /usr/local/bin/ \; && \
+    curl -sL "$(curl -sL "https://api.github.com/repos/siddharthroy12/witr/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/witr.dl && \
+    (tar xf /tmp/bin-dl/witr.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/witr.dl -d /tmp/bin-dl/) && \
+    find /tmp/bin-dl/ -type f -name 'witr' -executable -exec install -m755 {} /usr/local/bin/ \; && \
     rm -rf /tmp/bin-dl
 
-# ── Source builds (10 total) ───────────
+# ── Source builds (16 total) ───────────
 # bucklespring
 RUN dnf install -y gcc make libpulse-devel libxtst-devel && \
     git clone --depth=1 https://github.com/zevv/bucklespring.git /tmp/build-bucklespring && \
@@ -104,6 +123,13 @@ RUN dnf install -y gcc meson ninja-build pkgconfig(sdl2) pkgconfig(libudev) pkgc
     cd /tmp/build-dualsensectl && \
     meson setup builddir && ninja -C builddir && ninja -C builddir install && \
     rm -rf /tmp/build-dualsensectl
+
+# hxd
+RUN dnf install -y gcc make lua-devel scdoc && \
+    git clone --depth=1 https://github.com/schievel/hxd.git /tmp/build-hxd && \
+    cd /tmp/build-hxd && \
+    make && make install && \
+    rm -rf /tmp/build-hxd
 
 # mpdas
 RUN dnf install -y gcc gcc-c++ make libcurl-devel libmpdclient-devel && \
@@ -119,6 +145,13 @@ RUN dnf install -y gcc make autoconf automake ncurses-devel && \
     autoreconf -fi && ./configure && make && make install && \
     rm -rf /tmp/build-neo-matrix
 
+# newsraft
+RUN dnf install -y gcc make ncurses-devel libcurl-devel expat-devel sqlite-devel && \
+    git clone --depth=1 https://github.com/newsraft/newsraft.git /tmp/build-newsraft && \
+    cd /tmp/build-newsraft && \
+    make && make install && \
+    rm -rf /tmp/build-newsraft
+
 # pipemixer-git
 RUN dnf install -y gcc meson ninja-build pipewire-devel ncurses-devel && \
     git clone --depth=1 https://github.com/nickelc/pipemixer.git /tmp/build-pipemixer-git && \
@@ -133,6 +166,13 @@ RUN dnf install -y gcc cmake make rofi-devel && \
     mkdir build && cd build && cmake .. && make && make install && \
     rm -rf /tmp/build-rofi-file-browser-extended-git
 
+# tanin-git
+RUN dnf install -y cargo alsa-lib-devel openssl-devel && \
+    git clone --depth=1 https://github.com/kamiyaa/tanin.git /tmp/build-tanin-git && \
+    cd /tmp/build-tanin-git && \
+    cargo build --release --no-default-features && install -m755 target/release/tanin /usr/local/bin/ && \
+    rm -rf /tmp/build-tanin-git
+
 # tessen
 RUN git clone --depth=1 https://github.com/ayushnix/tessen.git /tmp/build-tessen && \
     cd /tmp/build-tessen && \
@@ -144,6 +184,13 @@ RUN git clone --depth=1 https://github.com/b3nj5m1n/xdg-ninja.git /tmp/build-xdg
     cd /tmp/build-xdg-ninja && \
     install -Dm755 xdg-ninja.sh /usr/local/bin/xdg-ninja && cp -r scripts /usr/local/share/xdg-ninja/ && \
     rm -rf /tmp/build-xdg-ninja
+
+# ytsurf
+RUN dnf install -y golang && \
+    git clone --depth=1 https://github.com/irevenko/ytsurf.git /tmp/build-ytsurf && \
+    cd /tmp/build-ytsurf && \
+    go build -o ytsurf cmd/ytsurf/main.go && install -m755 ytsurf /usr/local/bin/ && \
+    rm -rf /tmp/build-ytsurf
 
 # zapret2
 RUN dnf install -y gcc make && \

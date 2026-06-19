@@ -1,400 +1,447 @@
 # Generated Bluefin custom image Containerfile
-# Source packages: 460 mapped + 99 unavailable
-#   RPM: 381  Flatpak: 11  Brew: 16
-#   Cargo: 31  Pip: 20  Go: 1
+# Source packages: 507 mapped + 52 unavailable
+#  RPM: 428 Flatpak: 11 Brew: 16
+#  Cargo: 31 Pip: 20 Go: 1
 
 FROM ghcr.io/ublue-os/bluefin-dx:latest
 
 # ── Enable RPM Fusion ───────────────────────────────────────
 RUN curl -sLo /etc/yum.repos.d/rpmfusion-free.repo \
-    https://raw.githubusercontent.com/ublue-os/hwe/main/rpmfusion-free.repo && \
-    curl -sLo /etc/yum.repos.d/rpmfusion-nonfree.repo \
-    https://raw.githubusercontent.com/ublue-os/hwe/main/rpmfusion-nonfree.repo
+  https://raw.githubusercontent.com/ublue-os/hwe/main/rpmfusion-free.repo && \
+  curl -sLo /etc/yum.repos.d/rpmfusion-nonfree.repo \
+  https://raw.githubusercontent.com/ublue-os/hwe/main/rpmfusion-nonfree.repo
 
-# ── RPM packages (381 total) ──────────────────
+# ── RPM packages (428 total) ──────────────────
 RUN rpm-ostree install -y \
-    ImageMagick \
-    NetworkManager \
-    ShellCheck \
-    abduco \
-    advancecomp \
-    age \
-    akmods \
-    amd-ucode-firmware \
-    amdvlk \
-    amdvlk.i686 \
-    android-tools \
-    aria2 \
-    ark \
-    asciinema \
-    atop \
-    avahi \
-    bluez \
-    borgbackup \
-    bpftrace \
-    breeze \
-    breeze-icon-theme \
-    broot \
-    btop \
-    carla \
-    cava \
-    cdparanoia \
-    chafa \
-    chezmoi \
-    chromaprint \
-    clang \
-    cliphist \
-    cmake \
-    convmv \
-    corectrl \
-    cowsay \
-    cpio \
-    ctop \
-    cups \
-    cups-pk-helper \
-    curl \
-    dash \
-    dcfldd \
-    ddccontrol \
-    ddrescue \
-    device-mapper-multipath \
-    dhcp-client \
-    diff-so-fancy \
-    direnv \
-    distrobox \
-    dnsmasq \
-    dos2unix \
-    dunst \
-    edk2-ovmf \
-    efibootmgr \
-    elfutils \
-    enca \
-    entr \
-    epiphany \
-    etckeeper \
-    expect \
-    fastfetch \
-    ffmpeg-free \
-    ffmpegthumbnailer \
-    figlet \
-    fio \
-    firewalld \
-    fortune-mod \
-    fping \
-    freerdp \
-    fuse-sshfs \
-    fwupd \
-    fzf \
-    gamemode \
-    gamescope \
-    gdb \
-    gdm \
-    geoip-database \
-    geoipupdate \
-    gh \
-    ghostty \
-    ghostty-shell-integration \
-    git \
-    git-crypt \
-    git-extras \
-    git-filter-repo \
-    git-lfs \
-    gitlogue \
-    glow \
-    gnome-backgrounds \
-    gnome-calculator \
-    gnome-calendar \
-    gnome-characters \
-    gnome-clocks \
-    gnome-color-manager \
-    gnome-connections \
-    gnome-console \
-    gnome-contacts \
-    gnome-control-center \
-    gnome-disk-utility \
-    gnome-font-viewer \
-    gnome-keyring \
-    gnome-logs \
-    gnome-maps \
-    gnome-menus \
-    gnome-music \
-    gnome-remote-desktop \
-    gnome-session \
-    gnome-settings-daemon \
-    gnome-shell \
-    gnome-software \
-    gnome-system-monitor \
-    gnome-text-editor \
-    gnome-tour \
-    gnome-tweaks \
-    gnome-user-docs \
-    gnome-user-share \
-    gnome-weather \
-    goaccess \
-    goimapnotify \
-    google-noto-cjk-fonts \
-    gopass \
-    gptfdisk \
-    grafana \
-    graphviz \
-    grilo-plugins \
-    grim \
-    gst-libav \
-    gst-plugin-pipewire \
-    gst-plugins-bad \
-    gst-plugins-ugly \
-    gvfs \
-    gvfs-afc \
-    gvfs-dnssd \
-    gvfs-goa \
-    gvfs-gphoto2 \
-    gvfs-mtp \
-    gvfs-nfs \
-    gvfs-smb \
-    handlr-regex \
-    hashcat \
-    helvum \
-    htop \
-    hunspell-ru \
-    hwinfo \
-    hypridle \
-    hyprland \
-    hyprlock \
-    hyprpicker \
-    hyprpolkitagent \
-    i3 \
-    i3status \
-    id3v2 \
-    iftop \
-    inotify-tools \
-    inxi \
-    ioping \
-    iotop-c \
-    iperf3 \
-    isync \
-    iwd \
-    jc \
-    jdupes \
-    jetbrains-mono-fonts \
-    jj \
-    jpegoptim \
-    jq \
-    kate \
-    kernel-tools \
-    kexec-tools \
-    kitty \
-    kmon \
-    konsole5 \
-    kvantum \
-    lbzip2 \
-    less \
-    libmpc \
-    libnotify \
-    libpulse \
-    linux-firmware \
-    liquidctl \
-    lldb \
-    lm_sensors \
-    lnav \
-    lolcat \
-    loupe \
-    lowdown \
-    lshw \
-    lsof \
-    lsp-plugins \
-    lua \
-    lvm2 \
-    malcontent \
-    man-pages \
-    matugen \
-    media-player-info \
-    mediainfo \
-    memtester \
-    mesa-vulkan-drivers.i686 \
-    meson \
-    miller \
-    minicom \
-    moreutils \
-    mpd \
-    mpv \
-    mtr \
-    nano \
-    nautilus \
-    ncdu \
-    neomutt \
-    neovim \
-    netcat \
-    nethack \
-    nethogs \
-    network-manager-applet \
-    networkmanager-qt \
-    nicotine+ \
-    ninja-build \
-    nm-connection-editor \
-    nmap \
-    nodejs \
-    nodejs-npm \
-    nss-mdns \
-    nuspell \
-    nvtop \
-    ollama \
-    openblas \
-    openocd \
-    openrgb \
-    openssh \
-    optipng \
-    orca \
-    pandoc \
-    papers \
-    par \
-    parallel \
-    parted \
-    pass \
-    patchelf \
-    pavucontrol \
-    pbzip2 \
-    pcmanfm \
-    pcsc-tools \
-    perf \
-    perl-Image-ExifTool \
-    pgcli \
-    picard \
-    pigz \
-    pipewire \
-    pipx \
-    plasma-desktop \
-    plasma-workspace \
-    plasma-workspace-wayland \
-    plocate \
-    pngquant \
-    podman \
-    polkit-kde \
-    powertop \
-    prettyping \
-    progress \
-    proxypilot-debug \
-    pv \
-    pwgen \
-    python3-mutagen \
-    qemu \
-    qpwgraph \
-    qrencode \
-    qt5-qtwayland \
-    qt5ct \
-    qt6-qtwayland \
-    qt6ct \
-    rclone \
-    recoll \
-    reptyr \
-    resvg \
-    rlwrap \
-    rmlint \
-    rofi \
-    rsync \
-    ruby \
-    rygel \
-    sad \
-    samba \
-    sbctl \
-    schedtool \
-    scour \
-    shfmt \
-    showtime \
-    simple-scan \
-    skopeo \
-    slirp4netns \
-    slurp \
-    smartmontools \
-    snapshot \
-    socat \
-    songfetch \
-    sonic-visualiser \
-    sops \
-    sox \
-    ssh-to-age-debug \
-    sshpass \
-    strace \
-    stress-ng \
-    subversion \
-    sudo \
-    sushi \
-    swappy \
-    swayimg \
-    sysstat \
-    system-config-printer \
-    tabiew \
-    tailscale \
-    tcpdump \
-    tecla \
-    tesseract \
-    tesseract-langpack-eng \
-    tesseract-langpack-rus \
-    testdisk \
-    texlive-base \
-    tig \
-    tmux \
-    toilet \
-    traceroute \
-    transmission \
-    tree \
-    tree-sitter-cli \
-    ttfautohint \
-    ttyd \
-    tumbler \
-    udiskie \
-    ufw \
-    ugrep \
-    unbound \
-    unzip \
-    upower \
-    urlscan \
-    urlwatch \
-    uv \
-    uwsm \
-    v2ray \
-    valgrind \
-    vdirsyncer \
-    vim \
-    virt-manager \
-    virt-viewer \
-    viu \
-    vnstat \
-    w3m \
-    waypipe \
-    wayvnc \
-    wev \
-    wf-recorder \
-    wget \
-    wget2 \
-    which \
-    whois \
-    wine \
-    wiremix \
-    wireshark-cli \
-    wl-clipboard \
-    wlogout \
-    wlr-randr \
-    wofi \
-    wtype \
-    xdg-desktop-portal-hyprland \
-    xdg-user-dirs-gtk \
-    xdg-utils \
-    xfsprogs \
-    xorg-x11-drv-amdgpu \
-    xorg-x11-drv-ati \
-    xorg-x11-server-Xorg \
-    xorg-x11-xinit \
-    ydotool \
-    yelp \
-    yubikey-manager \
-    zathura \
-    zathura-pdf-poppler \
-    zbar \
-    zk \
-    zmap \
-    zram-generator \
-    zsh && \
-    rpm-ostree cleanup -m
+  ImageMagick \
+  NetworkManager \
+  ShellCheck \
+  abduco \
+  advancecomp \
+  age \
+  akmods \
+  aliae-bin \
+  amd-ucode-firmware \
+  amdgpu_top \
+  amdvlk \
+  amdvlk.i686 \
+  android-tools \
+  aria2 \
+  ark \
+  asciinema \
+  atop \
+  avahi \
+  bluez \
+  borgbackup \
+  bpftrace \
+  breeze \
+  breeze-icon-theme \
+  broot \
+  btop \
+  carapace-bin \
+  carla \
+  cava \
+  cdparanoia \
+  chafa \
+  chezmoi \
+  chromaprint \
+  clang \
+  claude-code \
+  cliphist \
+  cmake \
+  convmv \
+  corectrl \
+  cowsay \
+  cpio \
+  ctop \
+  cups \
+  cups-pk-helper \
+  curl \
+  dash \
+  dcfldd \
+  ddccontrol \
+  ddrescue \
+  device-mapper-multipath \
+  dhcp-client \
+  diff-so-fancy \
+  direnv \
+  distrobox \
+  dnsmasq \
+  dool \
+  dos2unix \
+  dualsensectl \
+  dunst \
+  edk2-ovmf \
+  efibootmgr \
+  eilmeldung-bin \
+  elfutils \
+  enca \
+  entr \
+  epiphany \
+  epr-git \
+  etckeeper \
+  expect \
+  fastfetch \
+  fennel \
+  ffmpeg-free \
+  ffmpegthumbnailer \
+  figlet \
+  fio \
+  firewalld \
+  fortune-mod \
+  fping \
+  freerdp \
+  freeze-bin \
+  fuse-sshfs \
+  fwupd \
+  fzf \
+  gamemode \
+  gamescope \
+  gdb \
+  gdm \
+  geoip-database \
+  geoipupdate \
+  gh \
+  ghostty \
+  ghostty-shell-integration \
+  git \
+  git-crypt \
+  git-extras \
+  git-filter-repo \
+  git-lfs \
+  gitlogue \
+  glow \
+  gnome-backgrounds \
+  gnome-calculator \
+  gnome-calendar \
+  gnome-characters \
+  gnome-clocks \
+  gnome-color-manager \
+  gnome-connections \
+  gnome-console \
+  gnome-contacts \
+  gnome-control-center \
+  gnome-disk-utility \
+  gnome-font-viewer \
+  gnome-keyring \
+  gnome-logs \
+  gnome-maps \
+  gnome-menus \
+  gnome-music \
+  gnome-remote-desktop \
+  gnome-session \
+  gnome-settings-daemon \
+  gnome-shell \
+  gnome-software \
+  gnome-system-monitor \
+  gnome-text-editor \
+  gnome-tour \
+  gnome-tweaks \
+  gnome-user-docs \
+  gnome-user-share \
+  gnome-weather \
+  goaccess \
+  goimapnotify \
+  google-chrome \
+  google-noto-cjk-fonts \
+  gopass \
+  gowall-bin \
+  gptfdisk \
+  grafana \
+  graphviz \
+  grilo-plugins \
+  grim \
+  gst-libav \
+  gst-plugin-pipewire \
+  gst-plugins-bad \
+  gst-plugins-ugly \
+  gvfs \
+  gvfs-afc \
+  gvfs-dnssd \
+  gvfs-goa \
+  gvfs-gphoto2 \
+  gvfs-mtp \
+  gvfs-nfs \
+  gvfs-smb \
+  handlr-regex \
+  hashcat \
+  helvum \
+  hishtory-bin \
+  htop \
+  hunspell-ru \
+  hwinfo \
+  hxd \
+  hypridle \
+  hyprland \
+  hyprlock \
+  hyprpicker \
+  hyprpolkitagent \
+  hyprscratch \
+  i3 \
+  i3status \
+  id3v2 \
+  iftop \
+  inotify-tools \
+  inxi \
+  ioping \
+  iotop-c \
+  iperf3 \
+  isync \
+  iwd \
+  jc \
+  jdupes \
+  jetbrains-mono-fonts \
+  jj \
+  jpegoptim \
+  jq \
+  kate \
+  kernel-tools \
+  kexec-tools \
+  kitty \
+  kmon \
+  konsole5 \
+  kvantum \
+  lbzip2 \
+  less \
+  libmpc \
+  libnotify \
+  libpulse \
+  linux-firmware \
+  liquidctl \
+  lldb \
+  lm_sensors \
+  lnav \
+  lolcat \
+  loupe \
+  lowdown \
+  lshw \
+  lsof \
+  lsp-plugins \
+  lua \
+  lutgen-bin \
+  lvm2 \
+  malcontent \
+  man-pages \
+  massren \
+  matugen \
+  media-player-info \
+  mediainfo \
+  memtester \
+  mesa-vulkan-drivers.i686 \
+  meson \
+  miller \
+  minicom \
+  moreutils \
+  mpd \
+  mpdas \
+  mpv \
+  mtr \
+  nano \
+  nautilus \
+  ncdu \
+  neo-matrix \
+  neomutt \
+  neovim \
+  netcat \
+  nethack \
+  nethogs \
+  network-manager-applet \
+  networkmanager-qt \
+  newsraft \
+  nicotine+ \
+  ninja-build \
+  nm-connection-editor \
+  nmap \
+  nodejs \
+  nodejs-npm \
+  nss-mdns \
+  nuspell \
+  nvtop \
+  ollama \
+  openblas \
+  openocd \
+  openrgb \
+  openssh \
+  oports-git \
+  optipng \
+  orca \
+  otter-launcher \
+  oyo \
+  pandoc \
+  papers \
+  par \
+  parallel \
+  parted \
+  pass \
+  patchelf \
+  patool \
+  pavucontrol \
+  pbzip2 \
+  pcmanfm \
+  pcsc-tools \
+  perf \
+  perl-Image-ExifTool \
+  pgcli \
+  picard \
+  pigz \
+  pipemixer-git \
+  pipewire \
+  pipx \
+  plasma-desktop \
+  plasma-workspace \
+  plasma-workspace-wayland \
+  plocate \
+  pngquant \
+  podman \
+  polkit-kde \
+  powertop \
+  prettyping \
+  progress \
+  proxypilot-debug \
+  pup-bin \
+  pv \
+  pwgen \
+  python3-mutagen \
+  qemu \
+  qpwgraph \
+  qrencode \
+  qt5-qtwayland \
+  qt5ct \
+  qt6-qtwayland \
+  qt6ct \
+  raysession \
+  rclone \
+  recoll \
+  reddix-bin \
+  regex-tui \
+  reptyr \
+  resvg \
+  rlwrap \
+  rmlint \
+  rofi \
+  rofi-file-browser-extended-git \
+  rsync \
+  ruby \
+  rygel \
+  sad \
+  samba \
+  sbctl \
+  schedtool \
+  scour \
+  shfmt \
+  showtime \
+  simple-scan \
+  simutil-bin \
+  sing-box-bin \
+  skopeo \
+  slirp4netns \
+  slurp \
+  smartmontools \
+  snapshot \
+  socat \
+  songfetch \
+  sonic-visualiser \
+  sops \
+  sox \
+  ssh-to-age-debug \
+  sshpass \
+  strace \
+  strace-tui-bin \
+  stress-ng \
+  subversion \
+  sudo \
+  sushi \
+  swappy \
+  swayimg \
+  sysstat \
+  system-config-printer \
+  systemd-manager-tui \
+  tabiew \
+  tailscale \
+  tanin-git \
+  tcpdump \
+  tecla \
+  tessen \
+  tesseract \
+  tesseract-langpack-eng \
+  tesseract-langpack-rus \
+  testdisk \
+  texlive-base \
+  tig \
+  tmmpr \
+  tmux \
+  toilet \
+  traceroute \
+  transmission \
+  tree \
+  tree-sitter-cli \
+  ttfautohint \
+  ttyd \
+  tumbler \
+  udiskie \
+  ufw \
+  ugrep \
+  unbound \
+  unflac \
+  unzip \
+  upower \
+  urlscan \
+  urlwatch \
+  uv \
+  uwsm \
+  v2ray \
+  v2raya-bin \
+  v2rayn-bin \
+  valgrind \
+  vdirsyncer \
+  vim \
+  virt-manager \
+  virt-viewer \
+  viu \
+  vnstat \
+  w3m \
+  watchtower-bin \
+  waypipe \
+  wayvnc \
+  wev \
+  wf-recorder \
+  wget \
+  wget2 \
+  which \
+  whois \
+  wine \
+  wiremix \
+  wireshark-cli \
+  witr-bin \
+  wl-clipboard \
+  wlogout \
+  wlr-randr \
+  wlr-which-key \
+  wofi \
+  wtype \
+  xdg-desktop-portal-hyprland \
+  xdg-ninja \
+  xdg-user-dirs-gtk \
+  xdg-utils \
+  xfsprogs \
+  xorg-x11-drv-amdgpu \
+  xorg-x11-drv-ati \
+  xorg-x11-server-Xorg \
+  xorg-x11-xinit \
+  ydotool \
+  yelp \
+  youtube-tui \
+  ytsurf \
+  yubikey-manager \
+  zapret2 \
+  zathura \
+  zathura-pdf-poppler \
+  zbar \
+  zk \
+  zmap \
+  zram-generator \
+  zsh && \
+  rpm-ostree cleanup -m
 
 
 # ═══════════════════════════════════════════════════════════
@@ -441,19 +488,20 @@ RUN rpm-ostree install -y \
 # ── NPM global (1 total) ──────────────────
 RUN npm install -g @anthropic-ai/claude-code
 
-# ── Extra Cargo (10 total) ────────────
-RUN cargo binstall -y amdgpu_top hyprscratch lutgen regex-tui rmpc rustmission systemd-manager-tui youtube-tui otter-launcher wlr-which-key
+# ── Extra Cargo (12 total) ────────────
+RUN cargo binstall -y amdgpu_top hyprscratch lutgen regex-tui rmpc rustmission systemd-manager-tui youtube-tui otter-launcher wlr-which-key oyo tmmpr
 
-# ── Extra Pip (6 total) ───────────────────
-RUN pipx install cmake-language-server dool epr-reader mpDris2 patool protonvpn-cli
+# ── Extra Pip (7 total) ───────────────────
+RUN pipx install cmake-language-server dool epr-reader mpDris2 patool protonvpn-cli raysession
 
-# ── Extra Go (4 total) ─────────────────────
+# ── Extra Go (5 total) ─────────────────────
 RUN go install github.com/Mic92/ssh-to-age/cmd/ssh-to-age@latest
 RUN go install github.com/boyter/scc/v3@latest
 RUN go install github.com/laurent22/massren@latest
 RUN go install github.com/derat/unflac@latest
+RUN go install github.com/irevenko/ytsurf@latest
 
-# ── Binary downloads (11 total) ─────────────
+# ── Binary downloads (16 total) ─────────────
 RUN mkdir -p /tmp/bin-dl && \
     dnf install -y curl jq tar unzip gzip && \
     curl -sL "$(curl -sL "https://api.github.com/repos/JanDeDobbeleer/aliae/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/aliae.dl && \
@@ -462,6 +510,12 @@ RUN mkdir -p /tmp/bin-dl && \
     curl -sL "$(curl -sL "https://api.github.com/repos/carapace-sh/carapace-bin/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/carapace.dl && \
     (tar xf /tmp/bin-dl/carapace.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/carapace.dl -d /tmp/bin-dl/) && \
     find /tmp/bin-dl/ -type f -name 'carapace' -executable -exec install -m755 {} /usr/local/bin/ \; && \
+    curl -sL "$(curl -sL "https://api.github.com/repos/qcasey/eilmeldung/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/eilmeldung.dl && \
+    (tar xf /tmp/bin-dl/eilmeldung.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/eilmeldung.dl -d /tmp/bin-dl/) && \
+    find /tmp/bin-dl/ -type f -name 'eilmeldung' -executable -exec install -m755 {} /usr/local/bin/ \; && \
+    curl -sL "$(curl -sL "https://api.github.com/repos/chen08209/FlClash/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/flclash.dl && \
+    (tar xf /tmp/bin-dl/flclash.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/flclash.dl -d /tmp/bin-dl/) && \
+    find /tmp/bin-dl/ -type f -name 'FlClash' -executable -exec install -m755 {} /usr/local/bin/ \; && \
     curl -sL "$(curl -sL "https://api.github.com/repos/charmbracelet/freeze/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/freeze.dl && \
     (tar xf /tmp/bin-dl/freeze.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/freeze.dl -d /tmp/bin-dl/) && \
     find /tmp/bin-dl/ -type f -name 'freeze' -executable -exec install -m755 {} /usr/local/bin/ \; && \
@@ -474,6 +528,12 @@ RUN mkdir -p /tmp/bin-dl && \
     curl -sL "$(curl -sL "https://api.github.com/repos/ericchiang/pup/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/pup.dl && \
     (tar xf /tmp/bin-dl/pup.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/pup.dl -d /tmp/bin-dl/) && \
     find /tmp/bin-dl/ -type f -name 'pup' -executable -exec install -m755 {} /usr/local/bin/ \; && \
+    curl -sL "$(curl -sL "https://api.github.com/repos/crosstype/reddix/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/reddix.dl && \
+    (tar xf /tmp/bin-dl/reddix.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/reddix.dl -d /tmp/bin-dl/) && \
+    find /tmp/bin-dl/ -type f -name 'reddix' -executable -exec install -m755 {} /usr/local/bin/ \; && \
+    curl -sL "$(curl -sL "https://api.github.com/repos/google/simutil/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/simutil.dl && \
+    (tar xf /tmp/bin-dl/simutil.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/simutil.dl -d /tmp/bin-dl/) && \
+    find /tmp/bin-dl/ -type f -name 'simutil' -executable -exec install -m755 {} /usr/local/bin/ \; && \
     curl -sL "$(curl -sL "https://api.github.com/repos/SagerNet/sing-box/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/sing-box.dl && \
     (tar xf /tmp/bin-dl/sing-box.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/sing-box.dl -d /tmp/bin-dl/) && \
     find /tmp/bin-dl/ -type f -name 'sing-box' -executable -exec install -m755 {} /usr/local/bin/ \; && \
@@ -483,12 +543,18 @@ RUN mkdir -p /tmp/bin-dl && \
     curl -sL "$(curl -sL "https://api.github.com/repos/v2rayA/v2rayA/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/v2raya.dl && \
     (tar xf /tmp/bin-dl/v2raya.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/v2raya.dl -d /tmp/bin-dl/) && \
     find /tmp/bin-dl/ -type f -name 'v2raya' -executable -exec install -m755 {} /usr/local/bin/ \; && \
+    curl -sL "$(curl -sL "https://api.github.com/repos/2dust/v2rayN/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/v2rayn.dl && \
+    (tar xf /tmp/bin-dl/v2rayn.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/v2rayn.dl -d /tmp/bin-dl/) && \
+    find /tmp/bin-dl/ -type f -name 'v2rayN' -executable -exec install -m755 {} /usr/local/bin/ \; && \
     curl -sL "$(curl -sL "https://api.github.com/repos/containrrr/watchtower/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/watchtower.dl && \
     (tar xf /tmp/bin-dl/watchtower.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/watchtower.dl -d /tmp/bin-dl/) && \
     find /tmp/bin-dl/ -type f -name 'watchtower' -executable -exec install -m755 {} /usr/local/bin/ \; && \
+    curl -sL "$(curl -sL "https://api.github.com/repos/siddharthroy12/witr/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64')" -o /tmp/bin-dl/witr.dl && \
+    (tar xf /tmp/bin-dl/witr.dl -C /tmp/bin-dl/ 2>/dev/null || unzip -o /tmp/bin-dl/witr.dl -d /tmp/bin-dl/) && \
+    find /tmp/bin-dl/ -type f -name 'witr' -executable -exec install -m755 {} /usr/local/bin/ \; && \
     rm -rf /tmp/bin-dl
 
-# ── Source builds (10 total) ───────────
+# ── Source builds (16 total) ───────────
 # bucklespring
 RUN dnf install -y gcc make libpulse-devel libxtst-devel && \
     git clone --depth=1 https://github.com/zevv/bucklespring.git /tmp/build-bucklespring && \
@@ -502,6 +568,13 @@ RUN dnf install -y gcc meson ninja-build pkgconfig(sdl2) pkgconfig(libudev) pkgc
     cd /tmp/build-dualsensectl && \
     meson setup builddir && ninja -C builddir && ninja -C builddir install && \
     rm -rf /tmp/build-dualsensectl
+
+# hxd
+RUN dnf install -y gcc make lua-devel scdoc && \
+    git clone --depth=1 https://github.com/schievel/hxd.git /tmp/build-hxd && \
+    cd /tmp/build-hxd && \
+    make && make install && \
+    rm -rf /tmp/build-hxd
 
 # mpdas
 RUN dnf install -y gcc gcc-c++ make libcurl-devel libmpdclient-devel && \
@@ -517,6 +590,13 @@ RUN dnf install -y gcc make autoconf automake ncurses-devel && \
     autoreconf -fi && ./configure && make && make install && \
     rm -rf /tmp/build-neo-matrix
 
+# newsraft
+RUN dnf install -y gcc make ncurses-devel libcurl-devel expat-devel sqlite-devel && \
+    git clone --depth=1 https://github.com/newsraft/newsraft.git /tmp/build-newsraft && \
+    cd /tmp/build-newsraft && \
+    make && make install && \
+    rm -rf /tmp/build-newsraft
+
 # pipemixer-git
 RUN dnf install -y gcc meson ninja-build pipewire-devel ncurses-devel && \
     git clone --depth=1 https://github.com/nickelc/pipemixer.git /tmp/build-pipemixer-git && \
@@ -531,6 +611,13 @@ RUN dnf install -y gcc cmake make rofi-devel && \
     mkdir build && cd build && cmake .. && make && make install && \
     rm -rf /tmp/build-rofi-file-browser-extended-git
 
+# tanin-git
+RUN dnf install -y cargo alsa-lib-devel openssl-devel && \
+    git clone --depth=1 https://github.com/kamiyaa/tanin.git /tmp/build-tanin-git && \
+    cd /tmp/build-tanin-git && \
+    cargo build --release --no-default-features && install -m755 target/release/tanin /usr/local/bin/ && \
+    rm -rf /tmp/build-tanin-git
+
 # tessen
 RUN git clone --depth=1 https://github.com/ayushnix/tessen.git /tmp/build-tessen && \
     cd /tmp/build-tessen && \
@@ -543,6 +630,13 @@ RUN git clone --depth=1 https://github.com/b3nj5m1n/xdg-ninja.git /tmp/build-xdg
     install -Dm755 xdg-ninja.sh /usr/local/bin/xdg-ninja && cp -r scripts /usr/local/share/xdg-ninja/ && \
     rm -rf /tmp/build-xdg-ninja
 
+# ytsurf
+RUN dnf install -y golang && \
+    git clone --depth=1 https://github.com/irevenko/ytsurf.git /tmp/build-ytsurf && \
+    cd /tmp/build-ytsurf && \
+    go build -o ytsurf cmd/ytsurf/main.go && install -m755 ytsurf /usr/local/bin/ && \
+    rm -rf /tmp/build-ytsurf
+
 # zapret2
 RUN dnf install -y gcc make && \
     git clone --depth=1 https://github.com/bol-van/zapret.git /tmp/build-zapret2 && \
@@ -553,15 +647,15 @@ RUN dnf install -y gcc make && \
 
 # ── Flatpak apps (11 total) ─────────────
 RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && \
-    flatpak install -y flathub app.zen_browser.zen com.bazecor.Bazecor com.dosbox.DOSBox com.rawtherapee.RawTherapee net.lutris.Lutris org.blender.Blender org.chromium.Chromium org.gimp.GIMP org.localsend.localsend_app org.mozilla.firefox org.telegram.desktop
+  flatpak install -y flathub app.zen_browser.zen com.bazecor.Bazecor com.dosbox.DOSBox com.rawtherapee.RawTherapee net.lutris.Lutris org.blender.Blender org.chromium.Chromium org.gimp.GIMP org.localsend.localsend_app org.mozilla.firefox org.telegram.desktop
 
 # ── Homebrew (16 total) ─────────────────────
 RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && \
-    brew install act-bin babashka-bin choose cloudflare-speed-cli cpufetch curlie dive genact gist gitleaks go-yq hw-probe lua-language-server neovim-remote oh-my-posh taplo-cli
+  brew install act-bin babashka-bin choose cloudflare-speed-cli cpufetch curlie dive genact gist gitleaks go-yq hw-probe lua-language-server neovim-remote oh-my-posh taplo-cli
 
 # ── Cargo (31 total) ───────────────────────
 RUN cargo install cargo-binstall && \
-    cargo binstall -y bandwhich bat bottom difftastic doggo dust erdtree eza fclones fd git-delta grex helix hexyl himalaya htmlq hyperfine just no-more-secrets onefetch ouch pastel ripgrep rmpc tealdeer television xh yazi yt-dlp zellij zoxide
+  cargo binstall -y bandwhich bat bottom difftastic doggo dust erdtree eza fclones fd git-delta grex helix hexyl himalaya htmlq hyperfine just no-more-secrets onefetch ouch pastel ripgrep rmpc tealdeer television xh yazi yt-dlp zellij zoxide
 
 # ── Pip/Pipx (20 total) ──────────────────────
 RUN pipx install beets gallery-dl httpie jupyterlab pre-commit python-ascii_magic python-faker python-internetarchive python-numpy python-orjson python-poetry python-pyperclip python-rapidgzip python-telethon python-textual ruff s-tui streamlink vale yamllint
@@ -569,105 +663,58 @@ RUN pipx install beets gallery-dl httpie jupyterlab pre-commit python-ascii_magi
 # ── Go (1 total) ─────────────────────────────
 RUN go install github.com/containerd/nerdctl@latest
 
-# ── UNAVAILABLE (99 total) ────────────
+# ── UNAVAILABLE (52 total) ────────────
 # No Fedora/Flathub/Brew/Cargo/Pip/Go equivalent found.
 # Must compile from source, find COPR, or skip.
-#   - albumdetails
-#   - aliae-bin
-#   - amdgpu-vulkan-switcher-git
-#   - amdgpu_top
-#   - amneziawg-dkms
-#   - amneziawg-tools
-#   - base
-#   - base-devel
-#   - bucklespring
-#   - carapace-bin
-#   - claude-code
-#   - cmake-language-server
-#   - cosmic-greeter
-#   - dool
-#   - dualsensectl
-#   - eilmeldung-bin
-#   - epr-git
-#   - fennel
-#   - flclashx-bin
-#   - freeze-bin
-#   - fsel-bin
-#   - ghgrab-bin
-#   - gmap-bin
-#   - google-chrome
-#   - gowall-bin
-#   - gvfs-onedrive
-#   - gvfs-wsdd
-#   - hermes-agent
-#   - hishtory-bin
-#   - hxd
-#   - hyprscratch
-#   - instagram-cli
-#   - iosevka-neg-fonts
-#   - lazytail-bin
-#   - limine
-#   - linux
-#   - linux-cachyos-headers
-#   - linux-headers
-#   - lutgen-bin
-#   - massren
-#   - mpdas
-#   - mpdris2-git
-#   - neg-pretty-printer
-#   - neo-matrix
-#   - newsraft
-#   - ollama-vulkan
-#   - oports-git
-#   - optiscaler-universal
-#   - otter-launcher
-#   - oyo
-#   - pacman-contrib
-#   - paru
-#   - paru-debug
-#   - patool
-#   - pipemixer-git
-#   - pixora-icons-git
-#   - proton-cachyos
-#   - proton-ge-custom-bin
-#   - proton-vpn-cli
-#   - proxypilot
-#   - pup-bin
-#   - quickshell
-#   - quickshell-overview-git
-#   - raysession
-#   - rebuild-detector
-#   - reddix-bin
-#   - regex-tui
-#   - repeater-bin
-#   - resterm-bin
-#   - richcolors
-#   - rofi-file-browser-extended-git
-#   - rofi-file-browser-extended-git-debug
-#   - rustmission
-#   - satty
-#   - scc
-#   - simutil-bin
-#   - sing-box-bin
-#   - ssh-to-age
-#   - strace-tui-bin
-#   - swayosd
-#   - systemd-manager-tui
-#   - systemd-resolvconf
-#   - tanin-git
-#   - taoup
-#   - tessen
-#   - tmmpr
-#   - unarchiver
-#   - unflac
-#   - v2raya-bin
-#   - v2rayn-bin
-#   - vicinae-bin
-#   - watchtower-bin
-#   - witr-bin
-#   - wl
-#   - wlr-which-key
-#   - xdg-ninja
-#   - youtube-tui
-#   - ytsurf
-#   - zapret2
+#  - albumdetails
+#  - amdgpu-vulkan-switcher-git
+#  - amneziawg-dkms
+#  - amneziawg-tools
+#  - base
+#  - base-devel
+#  - bucklespring
+#  - cmake-language-server
+#  - cosmic-greeter
+#  - flclashx-bin
+#  - fsel-bin
+#  - ghgrab-bin
+#  - gmap-bin
+#  - gvfs-onedrive
+#  - gvfs-wsdd
+#  - hermes-agent
+#  - instagram-cli
+#  - iosevka-neg-fonts
+#  - lazytail-bin
+#  - limine
+#  - linux
+#  - linux-cachyos-headers
+#  - linux-headers
+#  - mpdris2-git
+#  - neg-pretty-printer
+#  - ollama-vulkan
+#  - optiscaler-universal
+#  - pacman-contrib
+#  - paru
+#  - paru-debug
+#  - pixora-icons-git
+#  - proton-cachyos
+#  - proton-ge-custom-bin
+#  - proton-vpn-cli
+#  - proxypilot
+#  - quickshell
+#  - quickshell-overview-git
+#  - rebuild-detector
+#  - repeater-bin
+#  - resterm-bin
+#  - richcolors
+#  - rofi-file-browser-extended-git-debug
+#  - rustmission
+#  - satty
+#  - scc
+#  - ssh-to-age
+#  - swayosd
+#  - systemd-resolvconf
+#  - taoup
+#  - unarchiver
+#  - vicinae-bin
+#  - wl

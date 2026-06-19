@@ -4,7 +4,7 @@ import socket, threading, subprocess, os, time
 
 CACHE = "/tmp/cdn-cache"
 PROXY = "socks5://127.0.0.1:10808"  # works with curl --socks5-hostname
-CDN_HOST = "cdn.aerynos.dev"
+CDN_HOST = "cdn.example.com"
 os.makedirs(CACHE, exist_ok=True)
 
 def fetch(url, dest):

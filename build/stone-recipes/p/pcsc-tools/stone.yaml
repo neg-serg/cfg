@@ -6,7 +6,7 @@ upstreams:
   - https://github.com/LudovicRousseau/pcsc-tools/archive/refs/tags/1.7.0.tar.gz : 50992ceafd06a0566d2f513ef6de5a58822e3cd18a7608622a862e1817266041
 summary: PC/SC tools
 description: |
-  PC/SC tools for AerynOS.
+  PC/SC tools 
 license:
   - GPL-2.0-only
 builddeps:

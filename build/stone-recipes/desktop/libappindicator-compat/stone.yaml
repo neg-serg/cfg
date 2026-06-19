@@ -1,7 +1,7 @@
 name: libappindicator-compat
 version: "1.0.0"
 release: 1
-homepage: https://github.com/AerynOS
+homepage: https://github.com/
 summary: Compatibility symlinks for libappindicator
 description: |
   Provides libappindicator soname compatibility via libayatana-appindicator.

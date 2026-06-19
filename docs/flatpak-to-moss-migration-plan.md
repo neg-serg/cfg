@@ -1,6 +1,6 @@
 # Flatpak → Moss Migration Plan
 
-VM: aerynos-gnome (192.168.122.167). SSH key auth works.
+VM: 192.168.122.167. SSH key auth works.
 
 ## Current state
 - Only 1 flatpak app remains: `org.telegram.desktop`
@@ -122,7 +122,7 @@ flatpak remote-delete flathub
 ## Self-contained prompt for independent execution
 
 ```
-AerynOS VM at 192.168.122.167. SSH key auth works.
+VM at 192.168.122.167. SSH key auth works.
 Local moss repo at /root/local_repo/stone.index, 52 stones already built.
 Boulder works for Rust/Go/Python packages.
 C++ fix: ln -sf libstdc++.so.6.0.34 /usr/lib/libstdc++.so

@@ -6,7 +6,7 @@ upstreams:
   - https://github.com/tytso/pwgen/archive/refs/tags/v2.08.tar.gz : 8d6e94f28655e61d6126290e3eafad4d17d7fba0d0d354239522a740a270bb2f
 summary: pwgen
 description: |
-  pwgen for AerynOS.
+  pwgen 
 license:
   - GPL-2.0-only
 builddeps:

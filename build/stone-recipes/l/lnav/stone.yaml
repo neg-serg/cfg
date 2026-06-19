@@ -27,7 +27,7 @@ setup       : |
     touch src/config.h.in
     printf 's|\${VCPKG_INSTALLED_DIR}/\${VCPKG_TARGET_TRIPLET}/lib/libunistring\.a|-lunistring|\n' > /tmp/fix.sed
     sed -i -f /tmp/fix.sed CMakeLists.txt
-    rm -rf aerynos-builddir
+    rm -rf builddir
     mkdir -p '%(workdir)/cmake_modules'
     printf 'add_library(unofficial::sqlite3::sqlite3 UNKNOWN IMPORTED)\nset_target_properties(unofficial::sqlite3::sqlite3 PROPERTIES\n    IMPORTED_LOCATION "/usr/lib/libsqlite3.so"\n    INTERFACE_INCLUDE_DIRECTORIES "/usr/include"\n)\n' > '%(workdir)/cmake_modules/unofficial-sqlite3-config.cmake'
     printf 'add_library(PCRE2::8BIT UNKNOWN IMPORTED)\nset_target_properties(PCRE2::8BIT PROPERTIES\n    IMPORTED_LOCATION "/usr/lib/libpcre2-8.so"\n    INTERFACE_INCLUDE_DIRECTORIES "/usr/include"\n)\nadd_library(PCRE2::16BIT UNKNOWN IMPORTED)\nset_target_properties(PCRE2::16BIT PROPERTIES\n    IMPORTED_LOCATION "/usr/lib/libpcre2-16.so"\n    INTERFACE_INCLUDE_DIRECTORIES "/usr/include"\n)\nadd_library(PCRE2::32BIT UNKNOWN IMPORTED)\nset_target_properties(PCRE2::32BIT PROPERTIES\n    IMPORTED_LOCATION "/usr/lib/libpcre2-32.so"\n    INTERFACE_INCLUDE_DIRECTORIES "/usr/include"\n)\nadd_library(PCRE2::POSIX UNKNOWN IMPORTED)\nset_target_properties(PCRE2::POSIX PROPERTIES\n    IMPORTED_LOCATION "/usr/lib/libpcre2-posix.so"\n    INTERFACE_INCLUDE_DIRECTORIES "/usr/include"\n)\n' > '%(workdir)/cmake_modules/pcre2-config.cmake'

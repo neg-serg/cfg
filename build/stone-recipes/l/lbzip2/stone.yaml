@@ -17,6 +17,6 @@ setup       : |
 build       : |
     %cmake_build
 install     : |
-    install -Dm755 aerynos-builddir/lbzip2 %(installroot)%(prefix)/bin/lbzip2
-    install -Dm755 aerynos-builddir/lbunzip2 %(installroot)%(prefix)/bin/lbunzip2 || true
-    install -Dm755 aerynos-builddir/lbzcat %(installroot)%(prefix)/bin/lbzcat || true
+    install -Dm755 builddir/lbzip2 %(installroot)%(prefix)/bin/lbzip2
+    install -Dm755 builddir/lbunzip2 %(installroot)%(prefix)/bin/lbunzip2 || true
+    install -Dm755 builddir/lbzcat %(installroot)%(prefix)/bin/lbzcat || true

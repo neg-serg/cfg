@@ -9,11 +9,12 @@ RUN rm -f /etc/yum.repos.d/*multimedia* /etc/yum.repos.d/*negativo* /etc/yum.rep
 
 # ── RPM Fusion free ────────────────────────────────────────────────
 # ADD fetches from host network (works even if container can't reach external)
-ADD https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-44.noarch.rpm /tmp/rpmfusion-free.rpm
+COPY rpmfusion-free.rpm /tmp/rpmfusion-free.rpm
 RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm /tmp/rpmfusion-free.rpm || true
 
-# ── Hyprland COPR repo ─────────────────────────────────────────────
 
+
+# ── NOTE: Hyprland excluded (COPR solopasha deps conflict with Fedora 44)
 # ── RPM packages (360+) ────────────────────────────────────────────
 RUN rpm-ostree install -y \
     ImageMagick \
@@ -169,6 +170,7 @@ RUN rpm-ostree install -y \
     lbzip2 \
     less \
     libmpc \
+    libdisplay-info \
     libnotify \
     linux-firmware \
     liquidctl \

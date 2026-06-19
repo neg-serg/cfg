@@ -132,6 +132,7 @@ RUN . /tmp/retry.sh && retry rpm-ostree install -y \
     gnome-user-docs \
     gnome-user-share \
     gnome-weather \
+    golang \
     goaccess \
     google-noto-cjk-fonts \
     gopass \
@@ -272,6 +273,8 @@ RUN . /tmp/retry.sh && retry rpm-ostree install -y \
     rofi \
     rsync \
     ruby \
+    rust \
+    cargo \
     rygel \
     sad \
     samba \
@@ -384,8 +387,8 @@ RUN . /tmp/retry.sh && \
     com.dosbox.DOSBox || echo "(flatpak skipped — install later)"
 
 # ── Cargo (Rust CLI tools) ─────────────────────────────────────────
-RUN . /tmp/retry.sh && retry cargo install cargo-binstall || true
-RUN . /tmp/retry.sh && retry cargo binstall -y \
+RUN mkdir -p /root/.cargo && . /tmp/retry.sh && retry cargo install cargo-binstall || true
+RUN mkdir -p /root/.cargo && . /tmp/retry.sh && retry cargo binstall -y \
     bandwhich bat bottom difftastic doggo dust erdtree eza \
     fclones fd genact git-delta grex helix hexyl himalaya \
     htmlq hyperfine just no-more-secrets onefetch ouch pastel \

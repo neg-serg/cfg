@@ -1,33 +1,21 @@
 # ═══════════════════════════════════════════════════════════════════
-# Bluefin Custom Image — FULL build (RPM + Flatpak + Cargo + Pip + Go + NPM + Binaries + Source)
-# Base: Bluefin DX (Fedora Atomic with developer tooling)
-# Build: podman build -t bluefin-custom:latest .
+# Bluefin Custom Image — RPM-ONLY (Fedora + RPM Fusion + Hyprland COPR)
+# All packages via rpm-ostree. No flatpak/cargo/pip/go/npm/source.
 # ═══════════════════════════════════════════════════════════════════
 FROM ghcr.io/ublue-os/bluefin-dx:latest
 
-# ── Retry helper ───────────────────────────────────────────────────
-RUN echo 'retry() { local n=0; until "$@" 2>/dev/null; do ((n++>=2)) && return 1; echo "  retry $n..."; sleep 5; done; }' >> /etc/profile && \
-    echo 'retry() { local n=0; until "$@" 2>/dev/null; do ((n++>=2)) && { echo "  FAILED after 3 tries: $*"; return 1; }; echo "  retry $n..."; sleep 5; done; }' > /tmp/retry.sh && \
-    chmod +x /tmp/retry.sh
+# ── Disable broken/slow repos ──────────────────────────────────────
+RUN rm -f /etc/yum.repos.d/*multimedia* /etc/yum.repos.d/*negativo* /etc/yum.repos.d/*rpmfusion* 2>/dev/null || true
 
-# ── Disable broken repos ──────────────────────────────────────────
-RUN rm -f /etc/yum.repos.d/*multimedia* /etc/yum.repos.d/*negativo* 2>/dev/null || true
+# ── RPM Fusion free ────────────────────────────────────────────────
+# ADD fetches from host network (works even if container can't reach external)
+ADD https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-44.noarch.rpm /tmp/rpmfusion-free.rpm
+RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm /tmp/rpmfusion-free.rpm || true
 
-# ── RPM Fusion ─────────────────────────────────────────────────────
-# Try to enable RPM Fusion; if network fails, skip (most packages from Fedora main)
-RUN . /tmp/retry.sh && retry rpm-ostree install -y \
-    https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm && \
-    rpm-ostree cleanup -m || echo "RPM Fusion skipped (network unavailable)"
+# ── Hyprland COPR repo ─────────────────────────────────────────────
 
-# ── COPR repos (Hyprland!) ─────────────────────────────────────────
-RUN . /tmp/retry.sh && \
-    for copr in solopasha/hyprland errornointernet/packages erikreider/SwayNotificationCenter; do \
-      retry curl -sLo /etc/yum.repos.d/_copr_${copr/\//-}.repo \
-        "https://copr.fedorainfracloud.org/coprs/${copr}/repo/fedora-\$(rpm -E %fedora)/${copr/\//-}-fedora-\$(rpm -E %fedora).repo" 2>/dev/null || true; \
-    done || true
-
-# ── RPM packages (340+) ────────────────────────────────────────────
-RUN . /tmp/retry.sh && retry rpm-ostree install -y \
+# ── RPM packages (360+) ────────────────────────────────────────────
+RUN rpm-ostree install -y \
     ImageMagick \
     NetworkManager \
     ShellCheck \
@@ -47,6 +35,7 @@ RUN . /tmp/retry.sh && retry rpm-ostree install -y \
     bpftrace \
     breeze-icon-theme \
     btop \
+    cargo \
     cava \
     cdparanoia \
     chafa \
@@ -133,12 +122,16 @@ RUN . /tmp/retry.sh && retry rpm-ostree install -y \
     gnome-user-share \
     gnome-weather \
     goaccess \
+    golang \
     google-noto-cjk-fonts \
     gopass \
     grafana \
     graphviz \
     grilo-plugins \
     grim \
+    gstreamer1-plugins-bad-free \
+    gstreamer1-plugins-ugly-free \
+    gstreamer1-libav \
     gvfs \
     gvfs-afc \
     gvfs-goa \
@@ -272,6 +265,7 @@ RUN . /tmp/retry.sh && retry rpm-ostree install -y \
     rofi \
     rsync \
     ruby \
+    rust \
     rygel \
     sad \
     samba \
@@ -362,120 +356,7 @@ RUN . /tmp/retry.sh && retry rpm-ostree install -y \
     zsh && \
     rpm-ostree cleanup -m
 
-# ── COPR/hyprland packages ─────────────────────────────────────────
-RUN . /tmp/retry.sh && retry rpm-ostree install -y \
-    hyprland hypridle hyprlock hyprpicker hyprpolkitagent \
-    xdg-desktop-portal-hyprland \
-    satty swayosd uwsm || echo "(COPR packages skipped — install later)"
+RUN rpm-ostree cleanup -m || true
 
-# ── Flatpak ────────────────────────────────────────────────────────
-RUN . /tmp/retry.sh && \
-    retry flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && \
-    retry flatpak install -y flathub \
-    org.mozilla.firefox \
-    org.chromium.Chromium \
-    org.gimp.GIMP \
-    org.blender.Blender \
-    org.telegram.desktop \
-    org.localsend.localsend_app \
-    app.zen_browser.zen \
-    net.lutris.Lutris \
-    com.rawtherapee.RawTherapee \
-    com.dosbox.DOSBox || echo "(flatpak skipped — install later)"
-
-# ── Cargo (Rust CLI tools) ─────────────────────────────────────────
-RUN . /tmp/retry.sh && retry cargo install cargo-binstall || true
-RUN . /tmp/retry.sh && retry cargo binstall -y \
-    bandwhich bat bottom difftastic doggo dust erdtree eza \
-    fclones fd genact git-delta grex helix hexyl himalaya \
-    htmlq hyperfine just no-more-secrets onefetch ouch pastel \
-    ripgrep rmpc tealdeer television xh yazi yt-dlp zellij zoxide \
-    amdgpu_top hyprscratch lutgen regex-tui rustmission \
-    systemd-manager-tui youtube-tui otter-launcher wlr-which-key \
-    oyo tmmpr || cargo install \
-    bandwhich bat bottom difftastic doggo dust erdtree eza \
-    fclones fd genact git-delta grex helix hexyl himalaya \
-    htmlq hyperfine just no-more-secrets onefetch ouch pastel \
-    ripgrep rmpc tealdeer television xh yazi yt-dlp zellij zoxide \
-    amdgpu_top hyprscratch lutgen regex-tui rustmission \
-    systemd-manager-tui youtube-tui otter-launcher wlr-which-key \
-    oyo tmmpr
-
-# ── Pip/Pipx ───────────────────────────────────────────────────────
-RUN . /tmp/retry.sh && retry pipx install \
-    beets gallery-dl httpie jupyterlab pre-commit \
-    python-ascii_magic python-faker python-internetarchive \
-    python-numpy python-orjson python-poetry python-pyperclip \
-    python-rapidgzip python-telethon python-textual ruff \
-    s-tui streamlink vale yamllint \
-    cmake-language-server dool epr-reader mpDris2 patool \
-    protonvpn-cli raysession || echo "(pipx skipped — install later)"
-
-# ── Go ─────────────────────────────────────────────────────────────
-RUN . /tmp/retry.sh && \
-    retry go install github.com/containerd/nerdctl@latest; \
-    retry go install github.com/Mic92/ssh-to-age/cmd/ssh-to-age@latest; \
-    retry go install github.com/boyter/scc/v3@latest; \
-    retry go install github.com/laurent22/massren@latest; \
-    retry go install github.com/derat/unflac@latest || echo "(go skipped — install later)"
-
-# ── NPM ────────────────────────────────────────────────────────────
-RUN . /tmp/retry.sh && retry npm install -g @anthropic-ai/claude-code || echo "(npm skipped)"
-
-# ── Binary downloads (pre-built from GitHub releases) ──────────────
-RUN . /tmp/retry.sh && mkdir -p /tmp/bin-dl && \
-    for dl in \
-      "aliae|JanDeDobbeleer/aliae|aliae" \
-      "carapace|carapace-sh/carapace-bin|carapace" \
-      "freeze|charmbracelet/freeze|freeze" \
-      "hishtory|ddworken/hishtory|hishtory" \
-      "pup|ericchiang/pup|pup" \
-      "sing-box|SagerNet/sing-box|sing-box" \
-      "strace-tui|nickelc/strace-tui|strace-tui" \
-      "v2raya|v2rayA/v2rayA|v2raya" \
-      "watchtower|containrrr/watchtower|watchtower" \
-      "gowall|Achno/gowall|gowall" \
-      "eilmeldung|qcasey/eilmeldung|eilmeldung" \
-    ; do \
-      name=$(echo "$dl" | cut -d'|' -f1); \
-      repo=$(echo "$dl" | cut -d'|' -f2); \
-      binary=$(echo "$dl" | cut -d'|' -f3); \
-      url=$(curl -sL "https://api.github.com/repos/${repo}/releases/latest" | jq -r '.assets[].browser_download_url' | grep -i 'linux.*amd64\|Linux_x86_64\|linux_x64' | head -1); \
-      ([ -n "$url" ] && curl -sLo "/tmp/bin-dl/${name}.dl" "$url" && \
-       (tar xf "/tmp/bin-dl/${name}.dl" -C /tmp/bin-dl/ 2>/dev/null || unzip -o "/tmp/bin-dl/${name}.dl" -d /tmp/bin-dl/) && \
-       find /tmp/bin-dl/ -type f -name "${binary}" -executable -exec install -m755 {} /usr/local/bin/ \;) || echo "  skip $name"; \
-    done && \
-    rm -rf /tmp/bin-dl
-
-# ── Source builds ──────────────────────────────────────────────────
-RUN . /tmp/retry.sh && mkdir -p /tmp/src-build && \
-    (retry git clone --depth=1 https://github.com/zevv/bucklespring.git /tmp/src-build/bucklespring && \
-     cd /tmp/src-build/bucklespring && dnf install -y gcc make libpulse-devel libxtst-devel && make && install -m755 buckle /usr/local/bin/) && \
-    (retry git clone --depth=1 https://github.com/st3w/neo.git /tmp/src-build/neo && \
-     cd /tmp/src-build/neo && dnf install -y gcc make autoconf automake ncurses-devel && autoreconf -fi && ./configure && make && make install) && \
-    (retry git clone --depth=1 https://github.com/hrkfdn/mpdas.git /tmp/src-build/mpdas && \
-     cd /tmp/src-build/mpdas && dnf install -y gcc gcc-c++ make libcurl-devel libmpdclient-devel && make && install -m755 mpdas /usr/local/bin/) && \
-    (retry git clone --depth=1 https://github.com/newsraft/newsraft.git /tmp/src-build/newsraft && \
-     cd /tmp/src-build/newsraft && dnf install -y gcc make ncurses-devel libcurl-devel expat-devel sqlite-devel && make && make install) && \
-    (retry git clone --depth=1 https://github.com/bol-van/zapret.git /tmp/src-build/zapret && \
-     cd /tmp/src-build/zapret/ip2net && dnf install -y gcc make && make && install -m755 ip2net /usr/local/bin/) && \
-    (retry git clone --depth=1 https://github.com/b3nj5m1n/xdg-ninja.git /tmp/src-build/xdg-ninja && \
-     cd /tmp/src-build/xdg-ninja && install -Dm755 xdg-ninja.sh /usr/local/bin/xdg-ninja && cp -r scripts /usr/local/share/xdg-ninja/) && \
-    (retry git clone --depth=1 https://github.com/ayushnix/tessen.git /tmp/src-build/tessen && \
-     cd /tmp/src-build/tessen && PREFIX=/usr/local make install) && \
-    (retry git clone --depth=1 https://github.com/nowrep/dualsensectl.git /tmp/src-build/dualsensectl && \
-     cd /tmp/src-build/dualsensectl && dnf install -y gcc meson ninja-build pkgconfig\(sdl2\) pkgconfig\(libudev\) pkgconfig\(dbus-1\) pkgconfig\(hidapi-hidraw\) && meson setup builddir && ninja -C builddir && ninja -C builddir install) && \
-    (retry git clone --depth=1 https://github.com/nickelc/pipemixer.git /tmp/src-build/pipemixer && \
-     cd /tmp/src-build/pipemixer && dnf install -y gcc meson ninja-build pipewire-devel ncurses-devel && meson setup builddir && ninja -C builddir && ninja -C builddir install) && \
-    (retry git clone --depth=1 https://github.com/marvinkreis/rofi-file-browser-extended.git /tmp/src-build/rofi-fbe && \
-     cd /tmp/src-build/rofi-fbe && dnf install -y gcc cmake make rofi-devel && mkdir build && cd build && cmake .. && make && make install) && \
-    curl -sLo /usr/local/bin/fennel https://fennel-lang.org/downloads/fennel-1.6.1 && chmod +x /usr/local/bin/fennel && \
-    rm -rf /tmp/src-build || echo "(source builds skipped — build later)"
-
-# ── Cleanup ────────────────────────────────────────────────────────
-RUN rm -f /tmp/retry.sh && rpm-ostree cleanup -m || true
-
-# ── Final labels ───────────────────────────────────────────────────
 LABEL org.opencontainers.image.title="bluefin-custom"
-LABEL org.opencontainers.image.description="Bluefin DX + 340 RPM + Flatpak + Cargo + Pip + Go + NPM + Binaries + Source builds"
-LABEL org.opencontainers.image.version="1.0"
+LABEL org.opencontainers.image.version="3.0"

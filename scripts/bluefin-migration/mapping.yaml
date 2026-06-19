@@ -1,22 +1,22 @@
 - arch: base
-  fedora: filesystem
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: base
 - arch: base-devel
-  fedora: base-devel
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: base
 - arch: limine
-  fedora: limine
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: base
 - arch: linux
-  fedora: linux
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: base
 - arch: linux-headers
-  fedora: linux-headers
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: base
 - arch: linux-cachyos-headers
   fedora: null
@@ -123,8 +123,8 @@
   source: RPM
   category: desktop
 - arch: rmpc
-  fedora: rmpc
-  source: RPM
+  fedora: null
+  source: CARGO
   category: desktop
 - arch: rofi
   fedora: rofi
@@ -315,8 +315,8 @@
   source: RPM
   category: dev
 - arch: fennel
-  fedora: fennel
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: dev
 - arch: git
   fedora: git
@@ -343,7 +343,7 @@
   source: RPM
   category: dev
 - arch: npm
-  fedora: npm
+  fedora: nodejs-npm
   source: RPM
   category: dev
 - arch: python-pipx
@@ -431,8 +431,8 @@
   source: RPM
   category: network
 - arch: proton-vpn-cli
-  fedora: proton-vpn-cli
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: network
 - arch: amneziawg-dkms
   fedora: null
@@ -795,7 +795,7 @@
   source: RPM
   category: other
 - arch: dhcpcd
-  fedora: dhcpcd
+  fedora: dhcp-client
   source: RPM
   category: other
 - arch: diff-so-fancy
@@ -939,8 +939,8 @@
   source: RPM
   category: other
 - arch: github-cli
-  fedora: null
-  source: GO
+  fedora: gh
+  source: RPM
   category: other
 - arch: gitleaks
   fedora: null
@@ -1095,8 +1095,8 @@
   source: RPM
   category: other
 - arch: iosevka-neg-fonts
-  fedora: iosevka-neg-fonts
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: iotop-c
   fedora: iotop-c
@@ -1535,8 +1535,8 @@
   source: UNAVAILABLE
   category: other
 - arch: systemd-resolvconf
-  fedora: systemd-resolvconf
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: other
 - arch: tabiew
   fedora: tabiew
@@ -1923,28 +1923,28 @@
   source: UNAVAILABLE
   category: aur
 - arch: claude-code
-  fedora: claude-code
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: cmake-language-server
-  fedora: cmake-language-server
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: dcfldd
-  fedora: dcfldd
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: ddccontrol
   fedora: ddccontrol
   source: RPM
   category: aur
 - arch: dool
-  fedora: dool
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: dualsensectl
-  fedora: dualsensectl
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: eilmeldung-bin
   fedora: null
@@ -1999,8 +1999,8 @@
   source: RPM
   category: aur
 - arch: google-chrome
-  fedora: google-chrome
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: gowall-bin
   fedora: null
@@ -2015,8 +2015,8 @@
   source: UNAVAILABLE
   category: aur
 - arch: hw-probe
-  fedora: hw-probe
-  source: RPM
+  fedora: null
+  source: BREW
   category: aur
 - arch: hyprscratch
   fedora: null
@@ -2071,8 +2071,8 @@
   source: CARGO
   category: aur
 - arch: oh-my-posh
-  fedora: oh-my-posh
-  source: RPM
+  fedora: null
+  source: BREW
   category: aur
 - arch: otter-launcher
   fedora: null
@@ -2103,8 +2103,8 @@
   source: UNAVAILABLE
   category: aur
 - arch: pipemixer-git
-  fedora: pipemixer-git
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: pixora-icons-git
   fedora: null
@@ -2176,19 +2176,19 @@
   category: aur
 - arch: scc
   fedora: null
-  source: CARGO
+  source: UNAVAILABLE
   category: aur
 - arch: songfetch
-  fedora: null
-  source: CARGO
+  fedora: songfetch
+  source: RPM
   category: aur
 - arch: simutil-bin
   fedora: null
   source: UNAVAILABLE
   category: aur
 - arch: sing-box-bin
-  fedora: sing-box-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: strace-tui-bin
   fedora: null
@@ -2243,8 +2243,8 @@
   source: UNAVAILABLE
   category: aur
 - arch: youtube-tui
-  fedora: youtube-tui
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: ytsurf
   fedora: null
@@ -2307,28 +2307,28 @@
   source: UNAVAILABLE
   category: aur
 - arch: claude-code
-  fedora: claude-code
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: cmake-language-server
-  fedora: cmake-language-server
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: dcfldd
-  fedora: dcfldd
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: ddccontrol
   fedora: ddccontrol
   source: RPM
   category: aur
 - arch: dool
-  fedora: dool
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: dualsensectl
-  fedora: dualsensectl
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: eilmeldung-bin
   fedora: null
@@ -2383,8 +2383,8 @@
   source: RPM
   category: aur
 - arch: google-chrome
-  fedora: google-chrome
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: gowall-bin
   fedora: null
@@ -2399,8 +2399,8 @@
   source: UNAVAILABLE
   category: aur
 - arch: hw-probe
-  fedora: hw-probe
-  source: RPM
+  fedora: null
+  source: BREW
   category: aur
 - arch: hyprscratch
   fedora: null
@@ -2455,8 +2455,8 @@
   source: CARGO
   category: aur
 - arch: oh-my-posh
-  fedora: oh-my-posh
-  source: RPM
+  fedora: null
+  source: BREW
   category: aur
 - arch: otter-launcher
   fedora: null
@@ -2487,8 +2487,8 @@
   source: UNAVAILABLE
   category: aur
 - arch: pipemixer-git
-  fedora: pipemixer-git
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: pixora-icons-git
   fedora: null
@@ -2560,19 +2560,19 @@
   category: aur
 - arch: scc
   fedora: null
-  source: CARGO
+  source: UNAVAILABLE
   category: aur
 - arch: songfetch
-  fedora: null
-  source: CARGO
+  fedora: songfetch
+  source: RPM
   category: aur
 - arch: simutil-bin
   fedora: null
   source: UNAVAILABLE
   category: aur
 - arch: sing-box-bin
-  fedora: sing-box-bin
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: strace-tui-bin
   fedora: null
@@ -2627,8 +2627,8 @@
   source: UNAVAILABLE
   category: aur
 - arch: youtube-tui
-  fedora: youtube-tui
-  source: RPM
+  fedora: null
+  source: UNAVAILABLE
   category: aur
 - arch: ytsurf
   fedora: null

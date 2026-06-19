@@ -20,8 +20,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 # ── Package naming differences Arch → Fedora ──────────────────────────
 # Key: Arch package name, Value: Fedora package name (None = not available)
 FEDORA_RENAME = {
-    "base": "filesystem",
-    "base-devel": None,  # meta package, individual tools exist
+    # base / base-devel are Arch meta-packages, not needed on Fedora
     "linux": None,  # kernel, handled by Bluefin base
     "linux-headers": None,
     "linux-cachyos-headers": None,
@@ -88,7 +87,7 @@ FEDORA_RENAME = {
     "pipx": "pipx",
     "uv": "uv",
     "nodejs": "nodejs",
-    "npm": None,  # included in nodejs
+    "npm": "nodejs-npm",  # npm is a subpackage of nodejs
     "ruby": "ruby",
     "gdb": "gdb",
     "clang": "clang",
@@ -393,7 +392,7 @@ FEDORA_RENAME = {
     "nss-mdns": "nss-mdns",
     "firewalld": "firewalld",
     "ufw": "ufw",
-    "dhcpcd": None,  # dhcp-client instead
+    "dhcpcd": "dhcp-client",  # dhcpcd doesn't exist in Fedora
     "smartmontools": "smartmontools",
     "lm_sensors": "lm_sensors",
     "hwinfo": "hwinfo",
@@ -2280,7 +2279,7 @@ BREW_PACKAGES = {
     "nb", "fx", "croc", "gum", "mcfly", "atuin", "navi", "xcp",
     "lua-language-server", "marksman",
     "babashka-bin", "clj-kondo", "zprint",
-    "neovim-remote",
+    "neovim-remote", "oh-my-posh", "hw-probe",
 }
 
 # ── Packages available via cargo install ────────────────────────────
@@ -2296,8 +2295,8 @@ CARGO_PACKAGES = {
     "gitui", "diskonaut", "dysk", "dssim",
     "yt-dlp", "yazi", "lazygit", "gitui", "csview",
     "himalaya", "no-more-secrets", "genact",
-    "tealdeer", "tokei", "onefetch",
-    "songfetch", "scc", "halp", "pastel",
+    "tealdeer", "tokei", "onefetch", "rmpc",
+    "pdfrip", "halp", "pastel",
     "csvlens", "jaq", "cocogitto", "git-cliff",
     "eza", "bat", "fd", "ripgrep", "procs", "bottom",
     "bandwhich", "doggo", "watchexec",
@@ -2317,34 +2316,44 @@ PIP_PACKAGES = {
 
 # ── Packages available via go install ────────────────────────────────
 GO_PACKAGES = {
-    "nerdctl", "lazydocker", "dive", "cloudflared",
-    "gh", "github-cli", "glab", "croc",
-    "caddy", "coredns", "traefik",
+    # Only packages NOT available as RPM/Flatpak/Brew/Cargo/Pip
+    "nerdctl",  # github.com/containerd/nerdctl
 }
 
 # ── Truly Arch-specific / unavailable ────────────────────────────────
 UNAVAILABLE = {
+    # Already available via npm (bundled with nodejs, which is in RPM)
+    # "npm" - excluded, comes with nodejs
     # CachyOS kernel stack
     "linux-cachyos", "linux-cachyos-headers",
     "proton-cachyos", "proton-ge-custom-bin",
+    # Kernel base (provided by Bluefin/Fedora base image)
+    "linux", "linux-headers",
+    # Arch meta-packages
+    "base", "base-devel",
+    # Bootloader (Limine not in Fedora, systemd-boot is)
+    "limine",
     # AmneziaWG (need DKMS, Arch-only)
     "amneziawg-dkms", "amneziawg-tools",
     # Custom PKGBUILD/local packages
     "taoup", "richcolors", "albumdetails", "proxypilot",
     "ssh-to-age", "neg-pretty-printer", "wl", "raise",
     "sidecar", "throne", "tailray",
+    # Custom fonts
+    "iosevka-neg-fonts",
     # AUR helpers (not needed on Fedora)
     "paru", "paru-debug", "yay",
     "pacman-contrib", "rebuild-detector", "mkinitcpio",
     # Arch-specific 32-bit
     "lib32-amdvlk-bin", "lib32-vulkan-radeon",
-    # COSMIC desktop (not packaged for Fedora yet)
+    # COSMIC desktop (not packaged for Fedora yet — flatpak soon)
     "cosmic-greeter",
     # DPI bypass / VPN (Arch-specific)
-    "zapret2",
-    "amneziawg",
-    "hiddify", "hiddify-core",
+    "zapret2", "hiddify", "hiddify-core",
     "v2raya-bin", "v2rayn-bin", "flclashx-bin",
+    "proton-vpn-cli",
+    # systemd-resolvconf (not needed — systemd-resolved is built-in)
+    "systemd-resolvconf",
     # Qt/Wayland launchers (custom builds)
     "vicinae-bin", "fsel-bin", "quickshell", "quickshell-overview-git",
     "otter-launcher", "oports-git",
@@ -2375,6 +2384,18 @@ UNAVAILABLE = {
     "carapace-bin", "aliae-bin",
     "hishtory-bin", "raysession",
     "nethack",
+    # AUR tools that don't exist in Fedora
+    "dualsensectl", "pipemixer-git", "youtube-tui", "sing-box-bin",
+    "dcfldd", "fennel", "dool",
+    # Google Chrome (needs Google's RPM repo)
+    "google-chrome",
+    # Claude Code (Anthropic CLI — npm install)
+    "claude-code",
+    # hw-probe (Linux hardware probe)
+    "hw-probe",
+    "cmake-language-server",
+    # ProtonVPN (available from Proton's own RPM repo, not standard Fedora)
+    "proton-vpn-cli",
 }
 
 
@@ -2399,9 +2420,13 @@ def categorize(pkg: str) -> tuple:
         return (None, "GO")
     if pkg in UNAVAILABLE:
         return (None, "UNAVAILABLE")
-    mapped = FEDORA_RENAME.get(pkg)
-    if mapped is not None:
+    # Check explicit FEDORA_RENAME mapping
+    if pkg in FEDORA_RENAME:
+        mapped = FEDORA_RENAME[pkg]
+        if mapped is None:
+            return (None, "UNAVAILABLE")  # Explicitly unavailable
         return (mapped, "RPM")
+    # Not in any dict — assume available in Fedora with same name
     return (pkg, "RPM")
 
 
@@ -2461,59 +2486,61 @@ def build_containerfile(packages):
     lines.append("FROM ghcr.io/ublue-os/bluefin-dx:latest")
     lines.append("")
     lines.append("# ── Enable RPM Fusion ───────────────────────────────────────")
-    lines.append("RUN rpm-ostree install -y \\")
-    lines.append("    https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \\")
-    lines.append("    https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm")
+    lines.append("RUN curl -sLo /etc/yum.repos.d/rpmfusion-free.repo \\")
+    lines.append("    https://raw.githubusercontent.com/ublue-os/hwe/main/rpmfusion-free.repo && \\")
+    lines.append("    curl -sLo /etc/yum.repos.d/rpmfusion-nonfree.repo \\")
+    lines.append("    https://raw.githubusercontent.com/ublue-os/hwe/main/rpmfusion-nonfree.repo")
     lines.append("")
 
-    # RPM packages
+    # ALL RPM packages in ONE command
     lines.append(f"# ── RPM packages ({len(rpm_sorted)} total) ──────────────────")
-    for i in range(0, len(rpm_sorted), 6):
-        batch = rpm_sorted[i:i+6]
-        lines.append("RUN rpm-ostree install -y \\")
-        for j, p in enumerate(batch):
-            suffix = " \\" if (i + j < len(rpm_sorted) - 1 and j == len(batch) - 1) else ""
-            lines.append(f"    {p}{suffix}")
-        if i + len(batch) < len(rpm_sorted):
-            lines.append("")
+    lines.append("RUN rpm-ostree install -y \\")
+    for i, pkg in enumerate(rpm_sorted):
+        suffix = " \\" if i < len(rpm_sorted) - 1 else " && \\"
+        lines.append(f"    {pkg}{suffix}")
+    lines.append("    rpm-ostree cleanup -m")
 
     # Flatpak
     if flatpak_sorted:
         lines.append("")
         lines.append(f"# ── Flatpak apps ({len(flatpak_sorted)} total) ─────────────")
-        lines.append("RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo")
-        for ref in flatpak_sorted:
-            lines.append(f"RUN flatpak install -y flathub {ref}")
+        lines.append("RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && \\")
+        flatpak_args = " ".join(flatpak_sorted)
+        lines.append(f"    flatpak install -y flathub {flatpak_args}")
 
     # Brew
     if brew_sorted:
         lines.append("")
         lines.append(f"# ── Homebrew ({len(brew_sorted)} total) ─────────────────────")
-        lines.append("# Homebrew is pre-installed in Bluefin DX")
-        for pkg in brew_sorted:
-            lines.append(f"RUN brew install {pkg}")
+        brew_args = " ".join(brew_sorted)
+        lines.append(f"RUN /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\" && \\")
+        lines.append(f"    brew install {brew_args}")
 
     # Cargo
     if cargo_sorted:
         lines.append("")
         lines.append(f"# ── Cargo ({len(cargo_sorted)} total) ───────────────────────")
-        lines.append("# cargo-binstall is recommended for speed")
-        for pkg in cargo_sorted:
-            lines.append(f"RUN cargo binstall -y {pkg} || cargo install {pkg}")
+        lines.append("RUN cargo install cargo-binstall && \\")
+        cargo_args = " ".join(cargo_sorted)
+        lines.append(f"    cargo binstall -y {cargo_args}")
 
     # Pip
     if pip_sorted:
         lines.append("")
         lines.append(f"# ── Pip/Pipx ({len(pip_sorted)} total) ──────────────────────")
-        for pkg in pip_sorted:
-            lines.append(f"RUN pipx install {pkg}")
+        pip_args = " ".join(pip_sorted)
+        lines.append(f"RUN pipx install {pip_args}")
 
     # Go
     if go_sorted:
         lines.append("")
         lines.append(f"# ── Go ({len(go_sorted)} total) ─────────────────────────────")
+        go_paths = {
+            "nerdctl": "github.com/containerd/nerdctl",
+        }
         for pkg in go_sorted:
-            lines.append(f"RUN go install github.com/{pkg}@latest")
+            path = go_paths.get(pkg, f"github.com/{pkg}")
+            lines.append(f"RUN go install {path}@latest")
 
     # Unavailable
     if unavailable_sorted:

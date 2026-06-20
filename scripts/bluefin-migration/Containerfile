@@ -381,6 +381,13 @@ RUN rpm-ostree install -y \
     mangohud \
     mpc \
     nethack \
+    plasma-workspace-wayland \
+    gstreamer1-libav \
+    gstreamer1-plugins-bad-free \
+    gstreamer1-plugins-ugly-free \
+    nodejs \
+    google-noto-cjk-fonts \
+    jetbrains-mono-fonts \
     zsh && \
     rpm-ostree cleanup -m
 

@@ -15,8 +15,6 @@ RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm
 COPY rpmfusion-nonfree.rpm /tmp/rpmfusion-nonfree.rpm
 RUN rpm-ostree install -y /tmp/rpmfusion-nonfree.rpm && rm /tmp/rpmfusion-nonfree.rpm
 
-# ── Steam native ─────────────────────────────────────────
-RUN rpm-ostree install -y --disablerepo="*" --enablerepo=rpmfusion-nonfree --enablerepo=rpmfusion-nonfree-updates --enablerepo=rpmfusion-free --enablerepo=rpmfusion-free-updates --enablerepo=fedora --enablerepo=updates steam && rpm-ostree cleanup -m
 
 
 
@@ -381,6 +379,8 @@ RUN rpm-ostree install -y \
     gimp \
     lutris \
     mangohud \
+    mpc \
+    nethack \
     zsh && \
     rpm-ostree cleanup -m
 

@@ -11,3 +11,10 @@ RUN ln -sf /usr/bin/btm /usr/bin/bottom 2>/dev/null; \
 RUN ln -sf /usr/bin/erd /usr/bin/erdtree
 RUN mkdir -p /usr/share/steam/compatibilitytools.d
 RUN echo "/usr/lib32" > /etc/ld.so.conf.d/steam.conf && ldconfig
+# Binary name symlinks (Arch → host-built names)
+RUN ln -sf /usr/bin/rg /usr/bin/ripgrep 2>/dev/null; \
+    ln -sf /usr/bin/delta /usr/bin/git-delta 2>/dev/null; \
+    ln -sf /usr/bin/btm /usr/bin/bottom 2>/dev/null; \
+    ln -sf /usr/bin/tv /usr/bin/television 2>/dev/null; \
+    ln -sf /usr/bin/jj /usr/bin/jujutsu 2>/dev/null; \
+    true

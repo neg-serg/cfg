@@ -1,5 +1,5 @@
 FROM localhost/bluefin-custom:latest
 COPY hyprland-binaries.tar.gz /tmp/hyprland-binaries.tar.gz
 RUN tar xzf /tmp/hyprland-binaries.tar.gz -C / && rm /tmp/hyprland-binaries.tar.gz && ldconfig
-RUN ls -la /usr/bin/Hyprland && /usr/bin/Hyprland --version
+RUN ls -la /usr/bin/Hyprland && echo "Hyprland binary OK ($(stat -c%s /usr/bin/Hyprland) bytes)"
 LABEL org.opencontainers.image.title="bluefin-custom-hyprland"

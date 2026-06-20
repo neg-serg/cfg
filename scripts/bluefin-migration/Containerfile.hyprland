@@ -8,3 +8,4 @@ LABEL org.opencontainers.image.title="bluefin-custom-hyprland"
 RUN ln -sf /usr/bin/btm /usr/bin/bottom 2>/dev/null; \
     ln -sf /usr/bin/difft /usr/bin/difftastic 2>/dev/null; \
     true
+RUN ln -sf /usr/bin/erd /usr/bin/erdtree

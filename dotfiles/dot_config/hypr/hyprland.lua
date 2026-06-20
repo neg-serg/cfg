@@ -330,7 +330,7 @@ hl.workspace_rule({ workspace = "f[1]", gaps_out = 0, gaps_in = 0 })
 -- Autostart
 hl.on("hyprland.start", function()
   hl.exec_cmd("~/.local/bin/unlock")
-  hl.exec_cmd("dunst")
+  hl.exec_cmd("pkill dunst 2>/dev/null; dunst &")
   hl.exec_cmd("hyprpm reload")
   hl.exec_cmd("systemctl --user start --no-block hyprpolkitagent.service")
   hl.exec_cmd("systemctl --user restart --no-block hyprscratch.service")

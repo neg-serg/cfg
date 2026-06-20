@@ -1,7 +1,7 @@
 #!/bin/bash
 # Reproducible host-build script for bluefin-custom-full
 # Reads packages.yaml, builds everything not in RPM list, outputs to build-output/
-set -euo pipefail
+set -uo pipefail
 
 OUTDIR="${1:-/tmp/hyprland-binaries}"
 mkdir -p "$OUTDIR/usr/bin" "$OUTDIR/usr/lib64" "$OUTDIR/usr/share"

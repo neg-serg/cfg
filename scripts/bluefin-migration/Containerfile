@@ -371,6 +371,8 @@ RUN rpm-ostree install -y \
     firefox \
     chromium \
     gimp \
+    lutris \
+    mangohud \
     zsh && \
     rpm-ostree cleanup -m
 

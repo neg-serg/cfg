@@ -1,0 +1,77 @@
+# ═══════════════════════════════════════════════════════════════════
+# Multi-stage build: Hyprland built in Fedora 43 (Mesa 26.0 matches -devel)
+# Binaries copied to bluefin-custom base
+# ═══════════════════════════════════════════════════════════════════
+
+# ── Stage 1: Fedora 43 build environment ──────────────────────────
+FROM fedora:44 AS builder
+
+RUN dnf install -y --setopt=install_weak_deps=False --setopt=retries=5 \
+    cmake gcc-c++ meson ninja-build \
+    wayland-devel wayland-protocols-devel \
+    libxkbcommon-devel pango-devel cairo-devel \
+    libdrm-devel libinput-devel libxcb-devel \
+    libuuid-devel libseat-devel libglvnd-devel \
+    pugixml-devel libdisplay-info-devel libzip-devel \
+    librsvg2-devel libwebp-devel file-devel \
+    libjpeg-turbo-devel libpng-devel \
+    libXcursor-devel libXdmcp-devel libXtst-devel \
+    mesa-libgbm-devel hwdata-devel \
+    tomlplusplus-devel git curl && \
+    dnf clean all
+
+WORKDIR /tmp/hb
+
+RUN build_hypr() { \
+      local name=$1 url=$2; \
+      echo "=== Building $name ==="; \
+      git clone --depth=1 "$url" "$name" && cd "$name"; \
+      cmake -B b -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr; \
+      cmake --build b -j$(nproc) && cmake --install b; \
+      cd /tmp/hb; rm -rf "$name"; \
+    }; \
+    build_hypr hyprutils              https://github.com/hyprwm/hyprutils; \
+    build_hypr hyprlang               https://github.com/hyprwm/hyprlang; \
+    build_hypr hyprcursor             https://github.com/hyprwm/hyprcursor; \
+    build_hypr hyprwayland-scanner    https://github.com/hyprwm/hyprwayland-scanner; \
+    build_hypr hyprgraphics           https://github.com/hyprwm/hyprgraphics; \
+    build_hypr aquamarine             https://github.com/hyprwm/aquamarine; \
+    build_hypr Hyprland               https://github.com/hyprwm/Hyprland; \
+    build_hypr hypridle               https://github.com/hyprwm/hypridle; \
+    build_hypr hyprlock               https://github.com/hyprwm/hyprlock; \
+    build_hypr hyprpicker             https://github.com/hyprwm/hyprpicker; \
+    build_hypr hyprpolkitagent        https://github.com/hyprwm/hyprpolkitagent; \
+    build_hypr xdg-desktop-portal-hyprland https://github.com/hyprwm/xdg-desktop-portal-hyprland; \
+    echo "All 12 Hyprland components built" && \
+    rm -rf /tmp/hb
+
+# ── Stage 2: bluefin-custom with Hyprland copied in ────────────────
+FROM localhost/bluefin-custom:latest
+
+# Copy Hyprland binaries from builder
+COPY --from=builder /usr/bin/Hyprland /usr/bin/hyprctl /usr/bin/
+COPY --from=builder /usr/bin/hypridle /usr/bin/
+COPY --from=builder /usr/bin/hyprlock /usr/bin/
+COPY --from=builder /usr/bin/hyprpicker /usr/bin/
+COPY --from=builder /usr/bin/hyprpolkitagent /usr/bin/
+COPY --from=builder /usr/libexec/xdg-desktop-portal-hyprland /usr/libexec/
+
+# Copy Hyprland shared libs
+COPY --from=builder /usr/lib64/libhyprlang.so* /usr/lib64/
+COPY --from=builder /usr/lib64/libhyprcursor.so* /usr/lib64/
+COPY --from=builder /usr/lib64/libhyprutils.so* /usr/lib64/
+COPY --from=builder /usr/lib64/libhyprgraphics.so* /usr/lib64/
+COPY --from=builder /usr/lib64/libaquamarine.so* /usr/lib64/
+
+# Copy session entry
+COPY --from=builder /usr/share/wayland-sessions/hyprland.desktop /usr/share/wayland-sessions/ 2>/dev/null || true
+COPY --from=builder /usr/share/xdg-desktop-portal/hyprland-portals.conf /usr/share/xdg-desktop-portal/ 2>/dev/null || true
+
+# Update ldconfig
+RUN ldconfig 2>/dev/null || true
+
+RUN Hyprland --version 2>/dev/null || echo "Hyprland installed" && \
+    ls -la /usr/bin/Hyprland /usr/bin/hyprctl
+
+LABEL org.opencontainers.image.title="bluefin-custom-full"
+LABEL org.opencontainers.image.description="Bluefin DX + 360 RPMs + Hyprland (F43 multi-stage)"

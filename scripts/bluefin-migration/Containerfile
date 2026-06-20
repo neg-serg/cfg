@@ -195,6 +195,7 @@ RUN rpm-ostree install -y \
     miller \
     minicom \
     moreutils \
+    muparser \
     mpd \
     mpv \
     mtr \

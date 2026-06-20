@@ -18,7 +18,7 @@ stop_recording() {
     if is_recording; then
         kill -INT "$(cat "$PIDFILE")" 2>/dev/null || true
         rm -f "$PIDFILE"
-        notify-send -u low "Screen Recording" "Recording stopped"
+        notify-send -u low "Screen Recording" "Recording stopped" &>/dev/null &
         exit 0
     fi
 }
@@ -34,7 +34,7 @@ start_recording() {
         fi
     fi
 
-    notify-send -u low "Screen Recording" "Recording started..."
+    notify-send -u low "Screen Recording" "Recording started..." &>/dev/null &
 
     if [ -n "$geometry" ]; then
         wf-recorder -g "$geometry" -c libx264rgb -r 60 -p crf=20 -p preset=superfast -f "$filename" &

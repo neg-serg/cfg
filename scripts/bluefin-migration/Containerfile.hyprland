@@ -19,3 +19,4 @@ RUN ln -sf /usr/bin/rg /usr/bin/ripgrep 2>/dev/null; \
     ln -sf /usr/bin/jj /usr/bin/jujutsu 2>/dev/null; \
     true
 RUN ln -sf /usr/bin/delta /usr/bin/git-delta
+RUN ln -sf /usr/bin/ip2net /usr/bin/zapret2

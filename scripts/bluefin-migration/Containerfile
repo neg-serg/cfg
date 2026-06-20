@@ -11,6 +11,10 @@ RUN rm -f /etc/yum.repos.d/*multimedia* /etc/yum.repos.d/*negativo* /etc/yum.rep
 COPY rpmfusion-free.rpm /tmp/rpmfusion-free.rpm
 RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm /tmp/rpmfusion-free.rpm || true
 
+# ── RPM Fusion non-free ──────────────────────────────────
+COPY rpmfusion-nonfree.rpm /tmp/rpmfusion-nonfree.rpm
+RUN rpm-ostree install -y /tmp/rpmfusion-nonfree.rpm && rm /tmp/rpmfusion-nonfree.rpm || true
+
 
 
 # ── NOTE: Hyprland excluded (COPR solopasha deps conflict with Fedora 44)

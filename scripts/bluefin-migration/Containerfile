@@ -1,7 +1,6 @@
 # ═══════════════════════════════════════════════════════════════════
 # Bluefin Custom Image — RPM-ONLY (Fedora + RPM Fusion + Hyprland COPR)
 # All packages via rpm-ostree. No flatpak/cargo/pip/go/npm/source.
-# ═══════════════════════════════════════════════════════════════════
 FROM ghcr.io/ublue-os/bluefin-dx:latest
 
 # ── Disable broken/slow repos ──────────────────────────────────────
@@ -195,7 +194,6 @@ RUN rpm-ostree install -y \
     miller \
     minicom \
     moreutils \
-    muparser \
     mpd \
     mpv \
     mtr \
@@ -356,6 +354,20 @@ RUN rpm-ostree install -y \
     zbar \
     zmap \
     zram-generator \
+    zoxide \
+    yamllint \
+    telegram-desktop \
+    tealdeer \
+    ruff \
+    pre-commit \
+    pastel \
+    onefetch \
+    helix \
+    httpie \
+    fd-find \
+    dosbox \
+    blender \
+    beets \
     zsh && \
     rpm-ostree cleanup -m
 

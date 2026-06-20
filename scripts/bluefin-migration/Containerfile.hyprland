@@ -3,3 +3,8 @@ COPY hyprland-binaries.tar.gz /tmp/hyprland-binaries.tar.gz
 RUN tar xzf /tmp/hyprland-binaries.tar.gz -C / && rm /tmp/hyprland-binaries.tar.gz && ldconfig
 RUN ls -la /usr/bin/Hyprland && echo "Hyprland binary OK ($(stat -c%s /usr/bin/Hyprland) bytes)"
 LABEL org.opencontainers.image.title="bluefin-custom-hyprland"
+
+# Fix binary names
+RUN ln -sf /usr/bin/btm /usr/bin/bottom 2>/dev/null; \
+    ln -sf /usr/bin/difft /usr/bin/difftastic 2>/dev/null; \
+    true

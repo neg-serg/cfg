@@ -368,6 +368,9 @@ RUN rpm-ostree install -y \
     dosbox \
     blender \
     beets \
+    firefox \
+    chromium \
+    gimp \
     zsh && \
     rpm-ostree cleanup -m
 

@@ -33,6 +33,12 @@ build_hyprland() {
   echo "=== Hyprland ==="
   local WORK=/tmp/hypr-build && rm -rf "$WORK" && mkdir -p "$WORK" && cd "$WORK"
   
+  # hyprland-protocols FIRST (needed by other components)
+  git clone --depth=1 https://github.com/hyprwm/hyprland-protocols && cd hyprland-protocols && cmake -B b -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr && cmake --build b && DESTDIR="$OUTDIR" cmake --install b && cd "$WORK"
+  
+  export PKG_CONFIG_PATH="$OUTDIR/usr/share/pkgconfig:$PKG_CONFIG_PATH"
+  export CMAKE_PREFIX_PATH="$OUTDIR/usr:$CMAKE_PREFIX_PATH"
+  
   for pkg in \
     "hyprutils|hyprwm/hyprutils" \
     "hyprlang|hyprwm/hyprlang" \
@@ -41,27 +47,25 @@ build_hyprland() {
     "hyprgraphics|hyprwm/hyprgraphics"; do
     name="${pkg%%|*}"; repo="${pkg##*|}"
     git clone --depth=1 "https://github.com/$repo" "$name" 2>/dev/null || continue
-    cd "$name" && cmake -B b -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr 2>/dev/null && cmake --build b -j$(nproc) 2>/dev/null && cmake --install b --prefix /usr 2>/dev/null || DESTDIR="$OUTDIR" cmake --install b 2>/dev/null
-    cd "$WORK"
+    cd "$name" && cmake -B b -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr && cmake --build b -j$(nproc) && DESTDIR="$OUTDIR" cmake --install b && cd "$WORK" || true
   done
 
   # aquamarine
-  git clone --depth=1 https://github.com/hyprwm/aquamarine && cd aquamarine && cmake -B b -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr && cmake --build b -j$(nproc) && DESTDIR="$OUTDIR" cmake --install b && cd "$WORK"
+  git clone --depth=1 https://github.com/hyprwm/aquamarine && cd aquamarine && cmake -B b -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr && cmake --build b -j$(nproc) && DESTDIR="$OUTDIR" cmake --install b && cd "$WORK" || true
 
   # Hyprland
-  git clone --depth=1 --recursive https://github.com/hyprwm/Hyprland && cd Hyprland && cmake -B b -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr && cmake --build b -j$(nproc) && DESTDIR="$OUTDIR" cmake --install b && cd "$WORK"
-  copy_binary "$WORK/Hyprland/b/Hyprland"
-  
-  # hyprland-protocols
-  git clone --depth=1 https://github.com/hyprwm/hyprland-protocols && cd hyprland-protocols && cmake -B b -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr && cmake --build b && DESTDIR="$OUTDIR" cmake --install b && cd "$WORK"
+  git clone --depth=1 --recursive https://github.com/hyprwm/Hyprland && cd Hyprland && cmake -B b -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr && cmake --build b -j$(nproc) && DESTDIR="$OUTDIR" cmake --install b && cd "$WORK" || true
 
-  # Components
+  # Components (best-effort — some may fail due to proto issues)
   for comp in hypridle hyprlock hyprpicker hyprpolkitagent xdg-desktop-portal-hyprland; do
-    git clone --depth=1 "https://github.com/hyprwm/$comp" && cd "$comp" && cmake -B b -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr && cmake --build b -j$(nproc) && copy_binary "b/$comp" && cd "$WORK"
+    git clone --depth=1 "https://github.com/hyprwm/$comp" 2>/dev/null && cd "$comp" && cmake -B b -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr && cmake --build b -j$(nproc) && DESTDIR="$OUTDIR" cmake --install b && cd "$WORK" || true
   done
 
-  copy_binary /usr/bin/hyprctl 2>/dev/null || true
-  copy_binary /usr/bin/uwsm 2>/dev/null || true
+  # Also copy what's already on host as fallback
+  for bin in Hyprland hyprctl hypridle hyprlock hyprpicker hyprpolkitagent uwsm; do
+    copy_binary "/usr/bin/$bin" 2>/dev/null || true
+  done
+
   rm -rf "$WORK"
 }
 
@@ -70,9 +74,13 @@ build_hyprland() {
 build_cargo() {
   echo "=== Cargo packages ==="
   local pkgs="bat bottom eza fd-find du-dust erdtree fclones hexyl hyperfine just bandwhich doggo grex htmlq difftastic choose genact himalaya gist zellij xh viu ouch curlie ripgrep rmpc broot ctop kmon git-delta pastel onefetch television sbctl"
-  cargo_install $pkgs
-  cargo_install hyprscratch amdgpu_top lutgen regex-tui rustmission systemd-manager-tui youtube-tui otter-launcher wlr-which-key oyo tmmpr songfetch
-  cargo_install jj 2>/dev/null || cargo install --root "$OUTDIR/usr" --locked --bin jj jj-cli 2>/dev/null
+  cargo_install $pkgs || true
+  cargo_install hyprscratch amdgpu_top lutgen regex-tui rustmission systemd-manager-tui youtube-tui otter-launcher wlr-which-key oyo tmmpr songfetch || true
+  cargo install --root "$OUTDIR/usr" --locked --bin jj jj-cli 2>/dev/null || true
+  # Fallback: copy from host
+  for bin in bat bottom eza fd dust erdtree fclones hexyl hyperfine just bandwhich doggo grex htmlq difft choose genact himalaya gist zellij xh viu ouch curlie ripgrep rmpc broot ctop kmon delta pastel onefetch tv sbctl jj hyprscratch amdgpu_top lutgen regex-tui rustmission systemd-manager-tui youtube-tui otter-launcher wlr-which-key oyo tmmpr songfetch; do
+    copy_binary "/usr/bin/$bin" 2>/dev/null || true
+  done
 }
 
 # ── Go packages ────────────────────────────────────────────────────

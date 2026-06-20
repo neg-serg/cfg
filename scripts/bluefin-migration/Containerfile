@@ -4,20 +4,24 @@
 FROM ghcr.io/ublue-os/bluefin-dx:latest
 
 # ── Disable broken/slow repos ──────────────────────────────────────
-RUN rm -f /etc/yum.repos.d/*multimedia* /etc/yum.repos.d/*negativo* /etc/yum.repos.d/*rpmfusion* 2>/dev/null || true
+RUN rm -f /etc/yum.repos.d/*multimedia* /etc/yum.repos.d/*negativo* /etc/yum.repos.d/*rpmfusion* 2>/dev/null
 
 # ── RPM Fusion free ────────────────────────────────────────────────
 # ADD fetches from host network (works even if container can't reach external)
 COPY rpmfusion-free.rpm /tmp/rpmfusion-free.rpm
-RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm /tmp/rpmfusion-free.rpm || true
+RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm /tmp/rpmfusion-free.rpm
 
 # ── RPM Fusion non-free ──────────────────────────────────
 COPY rpmfusion-nonfree.rpm /tmp/rpmfusion-nonfree.rpm
-RUN rpm-ostree install -y /tmp/rpmfusion-nonfree.rpm && rm /tmp/rpmfusion-nonfree.rpm || true
+RUN rpm-ostree install -y /tmp/rpmfusion-nonfree.rpm && rm /tmp/rpmfusion-nonfree.rpm
+
+# ── Steam native ─────────────────────────────────────────
+RUN rpm-ostree install -y --disablerepo="*" --enablerepo=rpmfusion-nonfree --enablerepo=rpmfusion-nonfree-updates --enablerepo=rpmfusion-free --enablerepo=rpmfusion-free-updates --enablerepo=fedora --enablerepo=updates steam && rpm-ostree cleanup -m
 
 
 
 # ── NOTE: Hyprland excluded (COPR solopasha deps conflict with Fedora 44)
+
 # ── RPM packages (360+) ────────────────────────────────────────────
 RUN rpm-ostree install -y \
     ImageMagick \
@@ -380,7 +384,7 @@ RUN rpm-ostree install -y \
     zsh && \
     rpm-ostree cleanup -m
 
-RUN rpm-ostree cleanup -m || true
+RUN rpm-ostree cleanup -m
 
 LABEL org.opencontainers.image.title="bluefin-custom"
 LABEL org.opencontainers.image.version="3.0"

@@ -171,7 +171,6 @@ RUN rpm-ostree install -y \
     lsof \
     lsp-plugins \
     lua \
-    lutris \
     lvm2 \
     man-pages \
     mangohud \
@@ -353,3 +352,7 @@ RUN rpm-ostree install -y \
     zoxide \
     zram-generator && \
     rpm-ostree cleanup -m
+
+# ── Remove orphaned wine packages ──────────────────────────
+RUN rpm-ostree override remove wine-alsa wine-pulseaudio glibc-all-langpacks || true
+

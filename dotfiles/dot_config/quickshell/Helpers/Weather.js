@@ -217,30 +217,14 @@ function _fetchWttrIn(latitude, longitude, callback, errorCallback, options) {
 
     var coords = String(latitude) + "," + String(longitude);
 
-    // Try JSON format first (has daily forecast).  If that fails (truncated
-    // response or network issue), fall back to the tiny pipe-separated text
-    // format which is only ~80 bytes and never truncates.
-    var jsonUrl = "https://wttr.in/" + coords + "?format=j1";
+    // Skip JSON (format=j1) entirely — wttr.in's JSON response is often
+    // truncated mid-stream, which causes JSON.parse to always fail.
+    // Go straight to the tiny pipe-separated text format (~80 bytes) which
+    // completes before any connection can be dropped.  The side effect is
+    // no daily forecast in the side panel when this provider is active.
+    console.warn("[Weather] Open-Meteo unreachable, falling back to wttr.in text for", coords);
     var textUrl = "https://wttr.in/" + coords + "?format=%c|%t|%h|%w|%C|%p|%P|%u";
-
-    function _tryJson() {
-        _httpGetJson(jsonUrl, timeoutMs, function(wData) {
-            var normalized = _normalizeWttrIn(wData);
-            if (normalized) {
-                callback(normalized);
-            } else {
-                _tryText();
-            }
-        }, function(err) {
-            _tryText();
-        }, _ua);
-    }
-
-    function _tryText() {
-        _fetchWttrText(textUrl, timeoutMs, _ua, callback, errorCallback);
-    }
-
-    _tryJson();
+    _fetchWttrText(textUrl, timeoutMs, _ua, callback, errorCallback);
 }
 
 function _fetchWttrText(url, timeoutMs, userAgent, callback, errorCallback) {

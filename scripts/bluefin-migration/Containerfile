@@ -46,7 +46,6 @@ RUN rpm-ostree install -y \
     cdparanoia \
     chafa \
     chezmoi \
-    chromium \
     clang \
     cliphist \
     cmake \
@@ -98,7 +97,6 @@ RUN rpm-ostree install -y \
     gdm \
     geoip \
     gh \
-    gimp \
     git \
     git-crypt \
     git-extras \
@@ -258,7 +256,6 @@ RUN rpm-ostree install -y \
     qt5ct \
     qt6-qtwayland \
     qt6ct \
-    rawtherapee \
     rclone \
     recoll \
     reptyr \

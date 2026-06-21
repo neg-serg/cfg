@@ -205,3 +205,26 @@ done
 
 count=$(find "$OUTDIR/usr/bin" -type f | wc -l)
 echo "=== Done: $count binaries ==="
+
+# ── Build images ──────────────────────────────────────────────
+echo "=== Building images ==="
+TAG="${TAG:-latest}"
+DATE_TAG="$(date +%Y%m%d)"
+
+cd "$(dirname "$0")"
+
+# Build RPM layer (with caching)
+echo "--- RPM layer ---"
+podman build -t "bluefin-custom:${TAG}" -t "bluefin-custom:${DATE_TAG}" -f Containerfile . || {
+  echo "RPM build failed, retrying with --no-cache..."
+  podman build --no-cache -t "bluefin-custom:${TAG}" -f Containerfile .
+}
+
+# Build full image
+echo "--- Full image ---"
+rm -f hyprland-binaries.tar.gz
+tar czf hyprland-binaries.tar.gz -C "$OUTDIR" .
+podman build -t "bluefin-custom-full:${TAG}" -t "bluefin-custom-full:${DATE_TAG}" -f Containerfile.hyprland .
+
+echo "=== Done: $(date) ==="
+podman images "bluefin-custom*" --format "table {{.Repository}}:{{.Tag}}  {{.Size}}"

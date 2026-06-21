@@ -35,7 +35,6 @@ RUN rpm-ostree install -y \
     avahi \
     bat \
     beets \
-    blender \
     bluez \
     borgbackup \
     bpftrace \
@@ -120,7 +119,6 @@ RUN rpm-ostree install -y \
     golang \
     google-noto-cjk-fonts \
     gopass \
-    grafana \
     graphviz \
     grim \
     gstreamer1-libav \

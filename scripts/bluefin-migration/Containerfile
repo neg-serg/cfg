@@ -213,7 +213,6 @@ RUN rpm-ostree install -y \
     openrgb \
     openssh \
     optipng \
-    pandoc \
     papers \
     par \
     parallel \
@@ -295,7 +294,6 @@ RUN rpm-ostree install -y \
     tcpdump \
     tealdeer \
     tecla \
-    telegram-desktop \
     tesseract \
     tesseract-langpack-eng \
     tesseract-langpack-rus \

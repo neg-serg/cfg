@@ -15,6 +15,10 @@ RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm
 COPY rpmfusion-nonfree.rpm /tmp/rpmfusion-nonfree.rpm
 RUN rpm-ostree install -y /tmp/rpmfusion-nonfree.rpm && rm /tmp/rpmfusion-nonfree.rpm || true
 
+# ── Remove base image bloat ────────────────────────────────
+RUN rpm-ostree override remove code glibc-all-langpacks || true
+# ── Add language packs we need ────────────────────────────
+RUN rpm-ostree install -y glibc-langpack-en glibc-langpack-ru || true
 # ── RPM packages (381 total) ──
 RUN rpm-ostree install -y \
     ImageMagick \

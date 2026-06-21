@@ -73,7 +73,6 @@ RUN rpm-ostree install -y \
     elfutils \
     enca \
     entr \
-    epiphany \
     etckeeper \
     expect \
     eza \
@@ -103,40 +102,22 @@ RUN rpm-ostree install -y \
     git-filter-repo \
     git-lfs \
     glow \
-    gnome-backgrounds \
     gnome-calculator \
-    gnome-calendar \
-    gnome-characters \
-    gnome-clocks \
-    gnome-color-manager \
-    gnome-connections \
     gnome-console \
-    gnome-contacts \
     gnome-control-center \
     gnome-disk-utility \
-    gnome-font-viewer \
     gnome-keyring \
-    gnome-logs \
-    gnome-maps \
-    gnome-menus \
-    gnome-music \
-    gnome-remote-desktop \
-    gnome-session \
     gnome-settings-daemon \
-    gnome-shell \
-    gnome-software \
     gnome-system-monitor \
     gnome-text-editor \
     gnome-tweaks \
     gnome-user-share \
-    gnome-weather \
     goaccess \
     golang \
     google-noto-cjk-fonts \
     gopass \
     grafana \
     graphviz \
-    grilo-plugins \
     grim \
     gstreamer1-libav \
     gstreamer1-plugins-bad-free \
@@ -174,11 +155,9 @@ RUN rpm-ostree install -y \
     jq \
     jupyterlab \
     just \
-    kate \
     kernel-tools \
     kexec-tools \
     kitty \
-    konsole5 \
     kvantum \
     lbzip2 \
     less \
@@ -212,7 +191,6 @@ RUN rpm-ostree install -y \
     mpv \
     mtr \
     nano \
-    nautilus \
     ncdu \
     neomutt \
     neovim \
@@ -255,13 +233,9 @@ RUN rpm-ostree install -y \
     pigz \
     pipewire \
     pipx \
-    plasma-desktop \
-    plasma-workspace \
-    plasma-workspace-wayland \
     plocate \
     pngquant \
     podman \
-    polkit-kde \
     powertop \
     pre-commit \
     prettyping \
@@ -294,7 +268,6 @@ RUN rpm-ostree install -y \
     ruby \
     ruff \
     rust \
-    rygel \
     s-tui \
     sad \
     samba \

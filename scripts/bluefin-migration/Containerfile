@@ -1,10 +1,9 @@
 # ═══════════════════════════════════════════════════════════════════
-# Bluefin Custom Image — RPM layer
-# 381 packages
+# Bluefin Custom Image
+# 332 RPMs
 # ═══════════════════════════════════════════════════════════════════
 FROM ghcr.io/ublue-os/bluefin-dx:latest
 
-# ── Disable broken repos ──────────────────────────────────
 RUN rm -f /etc/yum.repos.d/*multimedia* /etc/yum.repos.d/*negativo* 2>/dev/null || true
 
 # ── RPM Fusion free ───────────────────────────────────────
@@ -15,11 +14,10 @@ RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm
 COPY rpmfusion-nonfree.rpm /tmp/rpmfusion-nonfree.rpm
 RUN rpm-ostree install -y /tmp/rpmfusion-nonfree.rpm && rm /tmp/rpmfusion-nonfree.rpm || true
 
-# ── Remove base image bloat ────────────────────────────────
-RUN rpm-ostree override remove code glibc-all-langpacks || true
-# ── Add language packs we need ────────────────────────────
-RUN rpm-ostree install -y glibc-langpack-en glibc-langpack-ru || true
-# ── RPM packages (381 total) ──
+# ── Ollama without ROCm weak deps ─────────────────────────
+RUN rpm-ostree install -y --setopt=install_weak_deps=False ollama || true
+
+# ── RPM packages (332 total) ──
 RUN rpm-ostree install -y \
     ImageMagick \
     NetworkManager \

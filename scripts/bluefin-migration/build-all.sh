@@ -97,7 +97,7 @@ build_go() {
   go_install github.com/nektos/act@latest
 }
 
-# ── Git clone + build ──────────────────────────────────────────────
+# ── Git clone + build (parallel where possible) ──────────────────────────────────────────────
 
 build_git() {
   echo "=== Source builds ==="
@@ -224,7 +224,7 @@ podman build -t "bluefin-custom:${TAG}" -t "bluefin-custom:${DATE_TAG}" -f Conta
 echo "--- Full image ---"
 rm -f hyprland-binaries.tar.gz
 tar czf hyprland-binaries.tar.gz -C "$OUTDIR" .
-podman build -t "bluefin-custom-full:${TAG}" -t "bluefin-custom-full:${DATE_TAG}" -f Containerfile.hyprland .
+podman build --squash-all -t "bluefin-custom-full:${TAG}" -t "bluefin-custom-full:${DATE_TAG}" -f Containerfile.hyprland .
 
 echo "=== Done: $(date) ==="
 podman images "bluefin-custom*" --format "table {{.Repository}}:{{.Tag}}  {{.Size}}"

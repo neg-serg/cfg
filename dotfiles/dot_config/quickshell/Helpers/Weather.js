@@ -62,6 +62,95 @@ function _wwoToWmo(wwoCode) {
     return _WWO_TO_WMO[String(wwoCode)] !== undefined ? _WWO_TO_WMO[String(wwoCode)] : 2;
 }
 
+// ── wttr.in text-format helpers ────────────────────────────────────────────
+// Used when the JSON format (format=j1) is truncated or unparseable.
+
+// Emoji weather icon → WMO weather code mapping.
+// Matches the icons wttr.in returns for %c.
+var _EMOJI_TO_WMO = {
+    "\u2600\uFE0F": 0,   // ☀️ Sunny
+    "\uD83C\uDF24\uFE0F": 2, // 🌤️ Partly cloudy
+    "\u26C5": 2,          // ⛅ Partly cloudy
+    "\uD83C\uDF25\uFE0F": 3, // 🌥️ Cloudy
+    "\u2601\uFE0F": 3,    // ☁️ Overcast
+    "\uD83C\uDF26\uFE0F": 61, // 🌦️ Light rain
+    "\uD83C\uDF27\uFE0F": 63, // 🌧️ Rain
+    "\u26C8\uFE0F": 95,   // ⛈️ Thunderstorm
+    "\uD83C\uDF28\uFE0F": 71, // 🌨️ Snow
+    "\uD83C\uDF2A\uFE0F": 45, // 🌪️ Wind/fog
+    "\uD83C\uDF2B\uFE0F": 45, // 🌫️ Fog
+    "\u2744\uFE0F": 71,   // ❄️ Snowflake
+    "\uD83C\uDF00": 0,    // 🌐 Clear (fallback)
+};
+
+function _emojiToWmo(raw) {
+    if (!raw) return 2;
+    var trimmed = String(raw).trim();
+    return _EMOJI_TO_WMO[trimmed] !== undefined ? _EMOJI_TO_WMO[trimmed] : 2;
+}
+
+// Arrow character → wind direction degrees
+var _ARROW_TO_DEG = {
+    "\u2191": 0,    // ↑ N
+    "\u2197": 45,   // ↗ NE
+    "\u2192": 90,   // → E
+    "\u2198": 135,  // ↘ SE
+    "\u2193": 180,  // ↓ S
+    "\u2199": 225,  // ↙ SW
+    "\u2190": 270,  // ← W
+    "\u2196": 315,  // ↖ NW
+};
+
+function _arrowToDeg(raw) {
+    if (!raw) return 0;
+    var first = String(raw).charAt(0);
+    return _ARROW_TO_DEG[first] !== undefined ? _ARROW_TO_DEG[first] : 0;
+}
+
+// Parse pipe-separated wttr.in text format:
+//   %c|%t|%h|%w|%C|%p|%P|%u
+//   icon|temp|humidity|wind|condition|precip|pressure|uv_index
+// Example: 🌤️ |+25°C|65%|→15km/h|Partly cloudy|0.0mm|1017hPa|1
+function _parseWttrText(text) {
+    if (!text) return null;
+    var parts = String(text).split("|");
+    if (parts.length < 6) return null;
+
+    var icon = parts[0] || "";
+    var tempRaw = parts[1] || "";
+    var humRaw = parts[2] || "";
+    var windRaw = parts[3] || "";
+    var condRaw = parts[4] || "";
+    var presRaw = (parts[6] || "");
+
+    var tempC = parseFloat(String(tempRaw).replace("°C", "").replace("+", "").replace("−", "-").replace("−", "-"));
+    if (isNaN(tempC)) return null;
+
+    var humidity = parseFloat(String(humRaw).replace("%", "")) || 0;
+    var wmoCode = _emojiToWmo(icon);
+
+    // Parse wind: "→15km/h" or "→ 15km/h"
+    var windDirDeg = 0;
+    var windSpeedKmph = 0;
+    if (windRaw) {
+        var ws = String(windRaw).trim();
+        windDirDeg = _arrowToDeg(ws);
+        var speedMatch = ws.match(/(\d+(?:\.\d+)?)/);
+        if (speedMatch) windSpeedKmph = parseFloat(speedMatch[1]) || 0;
+    }
+
+    var pressure = parseFloat(String(presRaw).replace("hPa", "").trim()) || 0;
+
+    return {
+        temperature_2m: tempC,
+        weather_code: wmoCode,
+        wind_speed_10m: windSpeedKmph / 3.6,
+        wind_direction_10m: windDirDeg,
+        relative_humidity_2m: humidity,
+        surface_pressure: pressure
+    };
+}
+
 // Normalise wttr.in "format=j1" JSON to the Open-Meteo shape the QML expects.
 // Handles possible truncation gracefully — returns current conditions even if
 // daily forecast is missing.
@@ -127,18 +216,69 @@ function _fetchWttrIn(latitude, longitude, callback, errorCallback, options) {
     var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
 
     var coords = String(latitude) + "," + String(longitude);
-    var url = "https://wttr.in/" + coords + "?format=j1";
 
-    _httpGetJson(url, timeoutMs, function(wData) {
-        var normalized = _normalizeWttrIn(wData);
-        if (normalized) {
-            callback(normalized);
-        } else {
-            errorCallback && errorCallback("Fallback weather provider returned invalid data");
-        }
-    }, function(err) {
-        errorCallback && errorCallback("Fallback weather error: " + (err.status || err.type || "unknown"));
-    }, _ua);
+    // Try JSON format first (has daily forecast).  If that fails (truncated
+    // response or network issue), fall back to the tiny pipe-separated text
+    // format which is only ~80 bytes and never truncates.
+    var jsonUrl = "https://wttr.in/" + coords + "?format=j1";
+    var textUrl = "https://wttr.in/" + coords + "?format=%c|%t|%h|%w|%C|%p|%P|%u";
+
+    function _tryJson() {
+        _httpGetJson(jsonUrl, timeoutMs, function(wData) {
+            var normalized = _normalizeWttrIn(wData);
+            if (normalized) {
+                callback(normalized);
+            } else {
+                _tryText();
+            }
+        }, function(err) {
+            _tryText();
+        }, _ua);
+    }
+
+    function _tryText() {
+        _fetchWttrText(textUrl, timeoutMs, _ua, callback, errorCallback);
+    }
+
+    _tryJson();
+}
+
+function _fetchWttrText(url, timeoutMs, userAgent, callback, errorCallback) {
+    try {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        if (timeoutMs !== undefined && timeoutMs !== null) xhr.timeout = timeoutMs;
+        try {
+            if (xhr.setRequestHeader) {
+                var ua = userAgent || 'Quickshell';
+                try { xhr.setRequestHeader('User-Agent', ua); } catch (e2) {}
+            }
+        } catch (e) {}
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState !== XMLHttpRequest.DONE) return;
+            if (xhr.status === 200) {
+                var text = xhr.responseText;
+                var current = _parseWttrText(text);
+                if (current) {
+                    callback({
+                        current: current,
+                        daily: { time: [], weathercode: [], temperature_2m_max: [], temperature_2m_min: [] },
+                        timezone_abbreviation: "",
+                        _provider: "wttr.in"
+                    });
+                } else {
+                    errorCallback && errorCallback("Could not parse wttr.in text response");
+                }
+            } else {
+                errorCallback && errorCallback("wttr.in text HTTP error: " + xhr.status);
+            }
+        };
+        xhr.ontimeout = function() { errorCallback && errorCallback("wttr.in text timeout"); };
+        xhr.onerror = function() { errorCallback && errorCallback("wttr.in text network error"); };
+        xhr.send();
+    } catch (e) {
+        errorCallback && errorCallback("wttr.in text exception: " + String(e));
+    }
 }
 
 function _now() { return Date.now(); }

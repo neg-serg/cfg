@@ -127,9 +127,7 @@ RUN rpm-ostree install -y \
     gnome-software \
     gnome-system-monitor \
     gnome-text-editor \
-    gnome-tour \
     gnome-tweaks \
-    gnome-user-docs \
     gnome-user-share \
     gnome-weather \
     goaccess \
@@ -199,7 +197,6 @@ RUN rpm-ostree install -y \
     lua \
     lutris \
     lvm2 \
-    malcontent \
     man-pages \
     mangohud \
     matugen \
@@ -239,7 +236,6 @@ RUN rpm-ostree install -y \
     openrgb \
     openssh \
     optipng \
-    orca \
     pandoc \
     papers \
     par \

@@ -22,3 +22,9 @@ RUN while read -r src dst; do \
 RUN ln -sf /usr/bin/delta /usr/bin/git-delta
 RUN ln -sf /usr/bin/ip2net /usr/bin/zapret2
 RUN ln -sf /opt/v2rayN/v2rayN /usr/bin/v2rayN
+
+# ── Size optimization ────────────────────────────────────────
+RUN rm -rf /usr/share/doc/* /usr/share/man/* /usr/share/info/* \
+    /usr/share/locale/* /usr/lib*/*.a /usr/lib*/*.la \
+    /root/.cache /tmp/* /var/cache/dnf/* 2>/dev/null; \
+    rpm-ostree cleanup -m || true

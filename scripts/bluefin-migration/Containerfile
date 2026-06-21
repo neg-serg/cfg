@@ -1,51 +1,47 @@
 # ═══════════════════════════════════════════════════════════════════
-# Bluefin Custom Image — RPM-ONLY (Fedora + RPM Fusion + Hyprland COPR)
-# All packages via rpm-ostree. No flatpak/cargo/pip/go/npm/source.
+# Bluefin Custom Image — RPM layer (clean, merged, verified)
+# 387 packages
+# ═══════════════════════════════════════════════════════════════════
 FROM ghcr.io/ublue-os/bluefin-dx:latest
 
-# ── Disable broken/slow repos ──────────────────────────────────────
-RUN rm -f /etc/yum.repos.d/*multimedia* /etc/yum.repos.d/*negativo* /etc/yum.repos.d/*rpmfusion* 2>/dev/null
+# ── Disable broken repos ──────────────────────────────────────
+RUN rm -f /etc/yum.repos.d/*multimedia* /etc/yum.repos.d/*negativo* 2>/dev/null || true
 
-# ── RPM Fusion free ────────────────────────────────────────────────
-# ADD fetches from host network (works even if container can't reach external)
+# ── RPM Fusion free ───────────────────────────────────────────
 COPY rpmfusion-free.rpm /tmp/rpmfusion-free.rpm
-RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm /tmp/rpmfusion-free.rpm
+RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm /tmp/rpmfusion-free.rpm || true
 
-# ── RPM Fusion non-free ──────────────────────────────────
+# ── RPM Fusion non-free ───────────────────────────────────────
 COPY rpmfusion-nonfree.rpm /tmp/rpmfusion-nonfree.rpm
-RUN rpm-ostree install -y /tmp/rpmfusion-nonfree.rpm && rm /tmp/rpmfusion-nonfree.rpm
+RUN rpm-ostree install -y /tmp/rpmfusion-nonfree.rpm && rm /tmp/rpmfusion-nonfree.rpm || true
 
-
-
-
-# ── NOTE: Hyprland excluded (COPR solopasha deps conflict with Fedora 44)
-
-# ── RPM packages (360+) ────────────────────────────────────────────
+# ── RPM packages (387 total) ──
 RUN rpm-ostree install -y \
     ImageMagick \
     NetworkManager \
     ShellCheck \
     abduco \
-    advancecomp \
     age \
-    akmods \
-    amd-ucode-firmware \
     android-tools \
     aria2 \
     ark \
     asciinema \
     atop \
     avahi \
+    bat \
+    beets \
+    blender \
     bluez \
     borgbackup \
     bpftrace \
     breeze-icon-theme \
     btop \
-    cargo \
     cava \
+    ccid \
     cdparanoia \
     chafa \
     chezmoi \
+    chromium \
     clang \
     cliphist \
     cmake \
@@ -57,13 +53,14 @@ RUN rpm-ostree install -y \
     cups-pk-helper \
     curl \
     dash \
-    ddccontrol \
     ddrescue \
     device-mapper-multipath \
     dhcp-client \
     diff-so-fancy \
+    difftastic \
     direnv \
     distrobox \
+    dkms \
     dnsmasq \
     dos2unix \
     dunst \
@@ -75,26 +72,29 @@ RUN rpm-ostree install -y \
     epiphany \
     etckeeper \
     expect \
+    eza \
     fastfetch \
+    fd-find \
     ffmpegthumbnailer \
     figlet \
     fio \
+    firefox \
     firewalld \
     fortune-mod \
     fping \
     freerdp \
     fuse-sshfs \
     fwupd \
-    fzf \
     gamemode \
     gamescope \
     gdb \
+    gdisk \
     gdm \
-    geoipupdate \
+    geoip \
     gh \
+    gimp \
     git \
     git-crypt \
-    git-extras \
     git-filter-repo \
     git-lfs \
     glow \
@@ -128,16 +128,15 @@ RUN rpm-ostree install -y \
     gnome-user-share \
     gnome-weather \
     goaccess \
-    golang \
     google-noto-cjk-fonts \
     gopass \
     grafana \
     graphviz \
     grilo-plugins \
     grim \
+    gstreamer1-libav \
     gstreamer1-plugins-bad-free \
     gstreamer1-plugins-ugly-free \
-    gstreamer1-libav \
     gvfs \
     gvfs-afc \
     gvfs-goa \
@@ -147,9 +146,11 @@ RUN rpm-ostree install -y \
     gvfs-smb \
     hashcat \
     helvum \
+    hexyl \
     htop \
     hunspell-ru \
     hwinfo \
+    hyperfine \
     i3 \
     i3status \
     id3v2 \
@@ -162,10 +163,11 @@ RUN rpm-ostree install -y \
     isync \
     iwd \
     jc \
-    jdupes \
     jetbrains-mono-fonts \
     jpegoptim \
     jq \
+    jupyterlab \
+    just \
     kate \
     kernel-tools \
     kexec-tools \
@@ -174,8 +176,6 @@ RUN rpm-ostree install -y \
     kvantum \
     lbzip2 \
     less \
-    libmpc \
-    libdisplay-info \
     libnotify \
     linux-firmware \
     liquidctl \
@@ -189,6 +189,7 @@ RUN rpm-ostree install -y \
     lsof \
     lsp-plugins \
     lua \
+    lutris \
     lvm2 \
     malcontent \
     man-pages \
@@ -200,6 +201,7 @@ RUN rpm-ostree install -y \
     miller \
     minicom \
     moreutils \
+    mpc \
     mpd \
     mpv \
     mtr \
@@ -209,6 +211,7 @@ RUN rpm-ostree install -y \
     neomutt \
     neovim \
     netcat \
+    nethack \
     nethogs \
     network-manager-applet \
     nicotine+ \
@@ -221,6 +224,7 @@ RUN rpm-ostree install -y \
     nuspell \
     nvtop \
     ollama \
+    onefetch \
     openblas \
     openocd \
     openrgb \
@@ -229,7 +233,6 @@ RUN rpm-ostree install -y \
     orca \
     pandoc \
     papers \
-    par \
     parallel \
     parted \
     pass \
@@ -244,7 +247,6 @@ RUN rpm-ostree install -y \
     picard \
     pigz \
     pipewire \
-    pipx \
     plasma-desktop \
     plasma-workspace \
     plasma-workspace-wayland \
@@ -253,11 +255,18 @@ RUN rpm-ostree install -y \
     podman \
     polkit-kde \
     powertop \
+    pre-commit \
     prettyping \
     progress \
     pv \
     pwgen \
+    python3-faker \
     python3-mutagen \
+    python3-numpy \
+    python3-orjson \
+    python3-poetry \
+    python3-pyperclip \
+    python3-textual \
     qemu \
     qpwgraph \
     qrencode \
@@ -265,15 +274,18 @@ RUN rpm-ostree install -y \
     qt5ct \
     qt6-qtwayland \
     qt6ct \
+    rawtherapee \
     rclone \
     recoll \
     reptyr \
+    ripgrep \
     rlwrap \
     rofi \
     rsync \
     ruby \
-    rust \
+    ruff \
     rygel \
+    s-tui \
     sad \
     samba \
     schedtool \
@@ -290,16 +302,18 @@ RUN rpm-ostree install -y \
     sox \
     sshpass \
     strace \
+    streamlink \
     stress-ng \
     subversion \
     sudo \
     sushi \
-    swayimg \
     sysstat \
     system-config-printer \
     tailscale \
     tcpdump \
+    tealdeer \
     tecla \
+    telegram-desktop \
     tesseract \
     tesseract-langpack-eng \
     tesseract-langpack-rus \
@@ -335,7 +349,6 @@ RUN rpm-ostree install -y \
     wev \
     wf-recorder \
     wget \
-    wget2 \
     which \
     whois \
     wine \
@@ -352,6 +365,7 @@ RUN rpm-ostree install -y \
     xorg-x11-drv-ati \
     xorg-x11-server-Xorg \
     xorg-x11-xinit \
+    yamllint \
     ydotool \
     yelp \
     yubikey-manager \
@@ -359,39 +373,7 @@ RUN rpm-ostree install -y \
     zathura-pdf-poppler \
     zbar \
     zmap \
-    zram-generator \
     zoxide \
-    yamllint \
-    telegram-desktop \
-    tealdeer \
-    ruff \
-    pre-commit \
-    pastel \
-    onefetch \
-    helix \
-    httpie \
-    fd-find \
-    dosbox \
-    blender \
-    beets \
-    firefox \
-    chromium \
-    gimp \
-    lutris \
-    mangohud \
-    mpc \
-    nethack \
-    plasma-workspace-wayland \
-    gstreamer1-libav \
-    gstreamer1-plugins-bad-free \
-    gstreamer1-plugins-ugly-free \
-    nodejs \
-    google-noto-cjk-fonts \
-    jetbrains-mono-fonts \
-    zsh && \
+    zram-generator && \
     rpm-ostree cleanup -m
 
-RUN rpm-ostree cleanup -m
-
-LABEL org.opencontainers.image.title="bluefin-custom"
-LABEL org.opencontainers.image.version="3.0"

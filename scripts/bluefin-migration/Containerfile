@@ -14,6 +14,13 @@ RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm
 COPY rpmfusion-nonfree.rpm /tmp/rpmfusion-nonfree.rpm
 RUN rpm-ostree install -y /tmp/rpmfusion-nonfree.rpm && rm /tmp/rpmfusion-nonfree.rpm || true
 
+# ── Remove base image bloat ────────────────────────────────
+RUN rpm-ostree override remove \
+    code glibc-all-langpacks \
+    rocm-hip rocm-hip-devel hipcc rocm-device-libs \
+    rocm-llvm-static rocblas rocsolver rocm-comgr \
+    wine-alsa wine-pulseaudio || true
+
 # ── Ollama without ROCm weak deps ─────────────────────────
 RUN rpm-ostree install -y --setopt=install_weak_deps=False ollama || true
 
@@ -203,7 +210,6 @@ RUN rpm-ostree install -y \
     nss-mdns \
     nuspell \
     nvtop \
-    ollama \
     onefetch \
     openblas \
     openocd \
@@ -352,7 +358,4 @@ RUN rpm-ostree install -y \
     zoxide \
     zram-generator && \
     rpm-ostree cleanup -m
-
-# ── Remove orphaned wine packages ──────────────────────────
-RUN rpm-ostree override remove wine-alsa wine-pulseaudio glibc-all-langpacks || true
 

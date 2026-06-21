@@ -298,7 +298,6 @@ RUN rpm-ostree install -y \
     tesseract-langpack-eng \
     tesseract-langpack-rus \
     testdisk \
-    texlive-base \
     tig \
     tmux \
     toilet \

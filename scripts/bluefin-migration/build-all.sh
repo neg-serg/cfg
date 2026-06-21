@@ -36,8 +36,8 @@ build_hyprland() {
   # hyprland-protocols FIRST (needed by other components)
   git clone --depth=1 https://github.com/hyprwm/hyprland-protocols && cd hyprland-protocols && cmake -B b -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr && cmake --build b && DESTDIR="$OUTDIR" cmake --install b && cd "$WORK"
   
-  export PKG_CONFIG_PATH="$OUTDIR/usr/share/pkgconfig:$PKG_CONFIG_PATH"
-  export CMAKE_PREFIX_PATH="$OUTDIR/usr:$CMAKE_PREFIX_PATH"
+  export PKG_CONFIG_PATH="$OUTDIR/usr/share/pkgconfig:${PKG_CONFIG_PATH:-}"
+  export CMAKE_PREFIX_PATH="$OUTDIR/usr:${CMAKE_PREFIX_PATH:-}"
   
   for pkg in \
     "hyprutils|hyprwm/hyprutils" \

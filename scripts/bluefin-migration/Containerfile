@@ -1,26 +1,27 @@
 # ═══════════════════════════════════════════════════════════════════
-# Bluefin Custom Image — RPM layer (clean, merged, verified)
-# 387 packages
+# Bluefin Custom Image — RPM layer
+# 381 packages
 # ═══════════════════════════════════════════════════════════════════
 FROM ghcr.io/ublue-os/bluefin-dx:latest
 
-# ── Disable broken repos ──────────────────────────────────────
+# ── Disable broken repos ──────────────────────────────────
 RUN rm -f /etc/yum.repos.d/*multimedia* /etc/yum.repos.d/*negativo* 2>/dev/null || true
 
-# ── RPM Fusion free ───────────────────────────────────────────
+# ── RPM Fusion free ───────────────────────────────────────
 COPY rpmfusion-free.rpm /tmp/rpmfusion-free.rpm
 RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm /tmp/rpmfusion-free.rpm || true
 
-# ── RPM Fusion non-free ───────────────────────────────────────
+# ── RPM Fusion non-free ───────────────────────────────────
 COPY rpmfusion-nonfree.rpm /tmp/rpmfusion-nonfree.rpm
 RUN rpm-ostree install -y /tmp/rpmfusion-nonfree.rpm && rm /tmp/rpmfusion-nonfree.rpm || true
 
-# ── RPM packages (387 total) ──
+# ── RPM packages (381 total) ──
 RUN rpm-ostree install -y \
     ImageMagick \
     NetworkManager \
     ShellCheck \
     abduco \
+    advancecomp \
     age \
     android-tools \
     aria2 \
@@ -36,6 +37,7 @@ RUN rpm-ostree install -y \
     bpftrace \
     breeze-icon-theme \
     btop \
+    cargo \
     cava \
     ccid \
     cdparanoia \
@@ -53,6 +55,7 @@ RUN rpm-ostree install -y \
     cups-pk-helper \
     curl \
     dash \
+    ddccontrol \
     ddrescue \
     device-mapper-multipath \
     dhcp-client \
@@ -63,6 +66,7 @@ RUN rpm-ostree install -y \
     dkms \
     dnsmasq \
     dos2unix \
+    dosbox \
     dunst \
     edk2-ovmf \
     efibootmgr \
@@ -95,6 +99,7 @@ RUN rpm-ostree install -y \
     gimp \
     git \
     git-crypt \
+    git-extras \
     git-filter-repo \
     git-lfs \
     glow \
@@ -128,6 +133,7 @@ RUN rpm-ostree install -y \
     gnome-user-share \
     gnome-weather \
     goaccess \
+    golang \
     google-noto-cjk-fonts \
     gopass \
     grafana \
@@ -145,6 +151,7 @@ RUN rpm-ostree install -y \
     gvfs-nfs \
     gvfs-smb \
     hashcat \
+    helix \
     helvum \
     hexyl \
     htop \
@@ -163,6 +170,7 @@ RUN rpm-ostree install -y \
     isync \
     iwd \
     jc \
+    jdupes \
     jetbrains-mono-fonts \
     jpegoptim \
     jq \
@@ -193,6 +201,7 @@ RUN rpm-ostree install -y \
     lvm2 \
     malcontent \
     man-pages \
+    mangohud \
     matugen \
     media-player-info \
     mediainfo \
@@ -233,9 +242,11 @@ RUN rpm-ostree install -y \
     orca \
     pandoc \
     papers \
+    par \
     parallel \
     parted \
     pass \
+    pastel \
     patchelf \
     pavucontrol \
     pbzip2 \
@@ -247,6 +258,7 @@ RUN rpm-ostree install -y \
     picard \
     pigz \
     pipewire \
+    pipx \
     plasma-desktop \
     plasma-workspace \
     plasma-workspace-wayland \
@@ -280,10 +292,12 @@ RUN rpm-ostree install -y \
     reptyr \
     ripgrep \
     rlwrap \
+    rmlint \
     rofi \
     rsync \
     ruby \
     ruff \
+    rust \
     rygel \
     s-tui \
     sad \
@@ -307,6 +321,7 @@ RUN rpm-ostree install -y \
     subversion \
     sudo \
     sushi \
+    swayimg \
     sysstat \
     system-config-printer \
     tailscale \
@@ -349,6 +364,7 @@ RUN rpm-ostree install -y \
     wev \
     wf-recorder \
     wget \
+    wget2 \
     which \
     whois \
     wine \
@@ -376,4 +392,3 @@ RUN rpm-ostree install -y \
     zoxide \
     zram-generator && \
     rpm-ostree cleanup -m
-

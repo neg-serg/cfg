@@ -215,7 +215,7 @@ cd "$(dirname "$0")"
 
 # Build RPM layer (with caching)
 echo "--- RPM layer ---"
-podman build -t "bluefin-custom:${TAG}" -t "bluefin-custom:${DATE_TAG}" -f Containerfile . || {
+podman build --target rpm-layer -t "bluefin-custom:${DATE_TAG}" -f Containerfile . || {
   echo "RPM build failed, retrying with --no-cache..."
   podman build --no-cache -t "bluefin-custom:${TAG}" -f Containerfile .
 }

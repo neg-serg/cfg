@@ -1306,6 +1306,5 @@ docs:
   purpose: Windows VM Setup (QEMU/KVM + Looking Glass)
 - path: docs/xray-vpn-cli.md
   purpose: Xray VPN - CLI Usage
-  purpose: Yubikey Reset Guide
 - path: docs/zapret2-setup.md
   purpose: Zapret2 Safe Rollout

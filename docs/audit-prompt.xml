@@ -22,14 +22,14 @@
       Salt управляет: конфигурацией, сервисами, установкой из не-pacman источников
       (GitHub releases, pip, cargo, npm, curl), кастомными PKGBUILD-ами, feature flags.
 
-      Секреты — gopass (GPG + Yubikey). Некоторые state-ы зависят от секретов
+      Секреты — gopass. Некоторые state-ы зависят от секретов
       на этапе Jinja-рендеринга через макрос gopass_secret().
     </description>
 
     <deployment_flow>
       <step order="1">Свежая установка CachyOS через bootstrap + deploy</step>
       <step order="2">Первая загрузка: монтирование XFS дисков (/mnt/one, /mnt/zero)</step>
-      <step order="3">Инициализация GPG/Yubikey + gopass clone</step>
+      <step order="3">Инициализация gopass clone</step>
       <step order="4">cachyos-packages.sh (все pacman/AUR пакеты)</step>
       <step order="5">salt-apply.sh (Salt states + chezmoi)</step>
       <step order="6">Перезагрузка и проверка</step>
@@ -253,7 +253,6 @@
         <step>Шаги, которых нет в доке, но они обязательны:
           - Настройка сети (Wi-Fi, DNS)
           - Настройка дисплея/GPU
-          - Специфика инициализации Yubikey
           - URL gopass store и GPG key IDs
           - Post-salt-apply ручные шаги</step>
         <step>Совпадает ли POST-BOOT.md (генерируется deploy) с deploy-cachyos.md?</step>

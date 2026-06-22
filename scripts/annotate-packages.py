@@ -300,7 +300,6 @@ DESC = {
     "xdg-desktop-portal-hyprland": "XDG desktop portal backend for Hyprland",
     "xdg-desktop-portal-gtk": "XDG desktop portal backend for GTK",
     "ccid": "Chip/Smart Card interface driver (PC/SC)",
-    "python-yubikey-manager": "YubiKey configuration tool (Python)",
     "python-debugpy": "Python debugger adapter (DAP protocol)",
     "ssh-to-age": "Convert SSH keys to age keys",
     "pup": "HTML parser CLI (jq for HTML, Go)",

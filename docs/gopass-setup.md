@@ -17,7 +17,7 @@ for key in \
     api/github-token api/brave-search api/context7 \
     api/proxypilot-local api/proxypilot-management \
     api/anthropic api/nanoclaw-telegram api/nanoclaw-telegram-uid \
-    ssh-key yubikey-pin; do
+    ssh-key; do
   if gopass show -o "$key" >/dev/null 2>&1; then
     echo "  ✓ $key"
   else
@@ -63,23 +63,7 @@ Used by: `~/.local/bin/unlock` — automatic SSH key unlock at login.
 gopass insert ssh-key
 ```
 
-### 2b. Yubikey PIN
-
-```bash
-# PIN for unlocking the Yubikey GPG key. Only used with the GPG/Yubikey backend.
-gopass insert yubikey-pin
-```
-
-If the current fallback path is `gpg + gpg-agent`, validate it from an interactive
-session with one real decrypt, not just `gpg --list-keys`:
-
-```bash
-gpg-connect-agent /bye
-~/.local/bin/gpg-warmup
-gopass show -o email/gmail/address
-```
-
-### 2c. age identity unlock
+### 2b. age identity unlock
 
 If using the `age` backend, protect the generated identity with a strong password and
 store the recovery instructions outside the store itself. Recommended session flow:
@@ -103,7 +87,7 @@ On this workstation, `~/.local/bin/gpg-warmup` is also started from Hyprland ses
 autostart and will unlock the `age` agent once per login if `age.agent-enabled = true`.
 
 Keep a secure backup of the `age` identity and the password needed to unlock it.
-Do not remove the previous GPG/Yubikey access path until a 7-day stabilization
+Do not remove the previous GPG access path until a 7-day stabilization
 window has passed with no fallback to the old path and no unresolved required-workflow
 failures.
 
@@ -326,13 +310,6 @@ gpg --list-keys --keyid-format long
 # Use the full fingerprint: gopass init ABCD1234...
 ```
 
-If using a Yubikey, the key is on the card:
-
-```bash
-gpg --card-status
-# Look for "General key info" line — that's your key ID
-```
-
 ### 8b. age identity recovery
 
 When initializing the `age` backend:
@@ -346,7 +323,7 @@ For the break-glass recovery path when the working machine has lost decrypt capa
 
 ### 8c. Migration cutover guardrails
 
-If you are migrating an existing store from GPG/Yubikey to `age`:
+If you are migrating an existing store from GPG to `age`:
 
 - keep `gopass` as the only public interface for Salt, chezmoi, and scripts;
 - build a rollback package before cutover: active store copy, store git history, legacy unlock materials, and written rollback steps;

@@ -841,7 +841,6 @@ yamllint
 yazi
 Yazi
 ydotool
-Yubikey
 Zathura
 zenity
 Zenity

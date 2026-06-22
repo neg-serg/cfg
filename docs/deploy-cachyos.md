@@ -78,12 +78,6 @@ sudo mount /dev/mapper/argon-zero /mnt/zero
 cp -a /mnt/one/salt ~/src/salt
 
 # Set up gopass backend
-# GPG/Yubikey flow:
-gpg --card-status
-gpg-connect-agent /bye
-~/.local/bin/gpg-warmup
-gopass show -o email/gmail/address
-
 # age flow:
 export GPG_TTY="$(tty)"
 # gopass age identities keygen
@@ -179,17 +173,11 @@ via recursive merge (`slsutil.merge` with `strategy='recurse'`).
 
 `salt-apply.sh` will show diagnostic output listing affected `.tmpl` files.
 Common causes:
-- GPG/Yubikey flow: token not plugged in or GPG agent not running
 - age flow: identity not unlocked for the current user session
 - gopass store not cloned yet (see step 6 in POST-BOOT.md)
 
 Fix:
 ```bash
-# GPG/Yubikey flow:
-gpg --card-status                    # verify Yubikey detected
-gpg-connect-agent /bye               # ensure gpg-agent socket is live
-~/.local/bin/gpg-warmup              # verify one decrypt succeeds
-
 # age flow:
 export GPG_TTY="$(tty)"
 gopass age agent unlock              # if agent-enabled
@@ -197,7 +185,7 @@ gopass show -o email/gmail/address   # verify decryption works
 chezmoi apply --force --source ~/src/salt/dotfiles  # re-run chezmoi only
 ```
 
-For an `age` cutover, do not retire the old GPG/Yubikey path immediately. Keep it
+For an `age` cutover, do not retire the old GPG path immediately. Keep it
 available until the 7-day stabilization window finishes without fallback or unresolved
 required-workflow failures.
 

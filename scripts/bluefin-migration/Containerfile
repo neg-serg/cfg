@@ -1,21 +1,59 @@
 # ═══════════════════════════════════════════════════════════════════
-# bluefin-custom — Multi-stage build
-# Stage 1: RPM layer (Silverblue + packages)
-# Stage 2: Host-built layer (binaries + shared libs)
-# Stage 3: Config layer (dotfiles + first-boot)
+# bluefin-custom — single-stage (everything in one ostree commit)
 # ═══════════════════════════════════════════════════════════════════
+FROM registry.fedoraproject.org/fedora-silverblue:44
 
-# ── Stage 1: RPM layer ────────────────────────────────────────────
-FROM registry.fedoraproject.org/fedora-silverblue:44 AS rpm-layer
-
+# ── Disable broken repos ──────────────────────────────────────
 RUN rm -f /etc/yum.repos.d/*multimedia* /etc/yum.repos.d/*negativo* 2>/dev/null || true
 
+# ── RPM Fusion repos ──────────────────────────────────────────
 COPY rpmfusion-free.rpm /tmp/rpmfusion-free.rpm
 RUN rpm-ostree install -y /tmp/rpmfusion-free.rpm && rpm-ostree cleanup -m && rm /tmp/rpmfusion-free.rpm || true
-
 COPY rpmfusion-nonfree.rpm /tmp/rpmfusion-nonfree.rpm
 RUN rpm-ostree install -y /tmp/rpmfusion-nonfree.rpm && rm /tmp/rpmfusion-nonfree.rpm || true
 
+# ── Extract host-built binaries BEFORE RPM install ─────────────
+# These go into the filesystem before rpm-ostree creates the commit
+ADD hyprland-binaries.tar.gz /
+
+# ── Dotfiles ───────────────────────────────────────────────────
+ADD dotfiles.tar.gz /etc/skel/
+ADD dotfiles.tar.gz /root/
+
+# ── Config scripts ─────────────────────────────────────────────
+RUN cat > /usr/bin/apply-dotfiles << 'SCRIPT'
+#!/bin/bash
+if [ ! -f "$HOME/.config/chezmoi-applied" ]; then
+  [ -d /etc/skel/.config ] && cp -a /etc/skel/.bashrc /etc/skel/.zshenv \
+    /etc/skel/.p10k.zsh /etc/skel/.npmrc /etc/skel/.mpdasrc "$HOME/" 2>/dev/null
+  [ -d /etc/skel/.config ] && cp -a /etc/skel/.config/* "$HOME/.config/" 2>/dev/null
+  [ -d /etc/skel/.local ] && cp -a /etc/skel/.local/* "$HOME/.local/" 2>/dev/null
+  touch "$HOME/.config/chezmoi-applied"
+  echo "✅ Dotfiles applied"
+fi
+SCRIPT
+RUN chmod +x /usr/bin/apply-dotfiles
+RUN echo '[ -f /usr/bin/apply-dotfiles ] && /usr/bin/apply-dotfiles' >> /etc/skel/.bashrc
+RUN echo '[ -f /usr/bin/apply-dotfiles ] && /usr/bin/apply-dotfiles' >> /etc/skel/.zshenv
+
+# ── Gopass init ─────────────────────────────────────────────────
+RUN cat > /usr/bin/gopass-init << 'INIT'
+#!/bin/bash
+AGE_DIR="$HOME/.config/age"; AGE_KEY="$AGE_DIR/gopass-identity.txt"
+STORE="${GOPASS_STORE:-github.com/neg-serg/pass-store}"
+[ -f "$AGE_KEY" ] && exit 0; mkdir -p "$AGE_DIR"
+HOST_KEY="/etc/ssh/ssh_host_ed25519_key"
+[ ! -f "$HOST_KEY" ] && sudo ssh-keygen -t ed25519 -f "$HOST_KEY" -N "" -q 2>/dev/null
+[ -f "$HOST_KEY" ] && cp "$HOST_KEY" "$AGE_KEY" && chmod 600 "$AGE_KEY" && echo "🔐 Age identity created"
+if command -v gopass >/dev/null && [ ! -d "$HOME/.local/share/gopass/stores/root" ]; then
+  gopass clone "$STORE" 2>/dev/null || echo "⚠️ gopass clone failed"
+fi
+INIT
+RUN chmod +x /usr/bin/gopass-init
+RUN echo '[ -f /usr/bin/gopass-init ] && [ ! -f "$HOME/.config/age/gopass-identity.txt" ] && /usr/bin/gopass-init' >> /etc/skel/.bashrc
+RUN echo '[ -f /usr/bin/gopass-init ] && [ ! -f "$HOME/.config/age/gopass-identity.txt" ] && /usr/bin/gopass-init' >> /etc/skel/.zshenv
+
+# ── RPM packages ───────────────────────────────────────────────
 RUN rpm-ostree install -y \
     ImageMagick NetworkManager ShellCheck abduco advancecomp age \
     alsa-firmware alsa-tools-firmware android-tools aria2 ark asciinema atop avahi bat beets \
@@ -58,106 +96,21 @@ RUN rpm-ostree install -y \
     zbar zmap zoxide zram-generator zsh && \
     rpm-ostree cleanup -m
 
-LABEL org.opencontainers.image.title="bluefin-custom"
-LABEL org.opencontainers.image.description="Silverblue + 337 RPM packages"
-
-# ── Stage 2: Host-built binaries ──────────────────────────────────
-FROM rpm-layer AS full-layer
-
-ADD hyprland-binaries.tar.gz /
-RUN ldconfig 2>/dev/null || true
-
-# Symlinks from symlinks.txt
+# ── Symlinks ───────────────────────────────────────────────────────
 COPY symlinks.txt /tmp/symlinks.txt
 RUN while read -r src dst; do \
       [ -n "$src" ] && ln -sf "/usr/bin/$src" "/usr/bin/$dst" 2>/dev/null; \
     done < /tmp/symlinks.txt && rm /tmp/symlinks.txt; \
     ln -sf /usr/bin/delta /usr/bin/git-delta 2>/dev/null; \
     ln -sf /opt/v2rayN/v2rayN /usr/bin/v2rayN 2>/dev/null; \
+    ldconfig 2>/dev/null; \
     true
 
-# Size cleanup
+# ── Size cleanup ──────────────────────────────────────────────────
 RUN rm -rf /usr/share/doc/* /usr/share/man/* /usr/share/info/* \
     /usr/share/locale/* /usr/lib*/*.a /usr/lib*/*.la \
     /root/.cache /tmp/* /var/cache/dnf/* 2>/dev/null || true
 
-LABEL org.opencontainers.image.title="bluefin-custom-full"
-LABEL org.opencontainers.image.description="+ 156 host-built packages"
-
-# ── Stage 3: Configs ──────────────────────────────────────────────
-FROM full-layer AS with-configs
-
-ADD dotfiles.tar.gz /etc/skel/
-ADD dotfiles.tar.gz /root/
-
-COPY system-configs.tar.gz /tmp/
-RUN tar xzf /tmp/system-configs.tar.gz -C / && rm /tmp/system-configs.tar.gz
-
-RUN cat > /usr/bin/apply-dotfiles << 'SCRIPT'
-#!/bin/bash
-if [ ! -f "$HOME/.config/chezmoi-applied" ]; then
-  [ -d /etc/skel/.config ] && cp -a /etc/skel/.bashrc /etc/skel/.zshenv \
-    /etc/skel/.p10k.zsh /etc/skel/.npmrc /etc/skel/.mpdasrc "$HOME/" 2>/dev/null
-  [ -d /etc/skel/.config ] && cp -a /etc/skel/.config/* "$HOME/.config/" 2>/dev/null
-  [ -d /etc/skel/.local ] && cp -a /etc/skel/.local/* "$HOME/.local/" 2>/dev/null
-  touch "$HOME/.config/chezmoi-applied"
-  echo "✅ Dotfiles applied"
-fi
-SCRIPT
-RUN chmod +x /usr/bin/apply-dotfiles
-RUN echo '[ -f /usr/bin/apply-dotfiles ] && /usr/bin/apply-dotfiles' >> /etc/skel/.bashrc
-RUN echo '[ -f /usr/bin/apply-dotfiles ] && /usr/bin/apply-dotfiles' >> /etc/skel/.zshenv
-
-LABEL org.opencontainers.image.title="bluefin-custom-with-configs"
-LABEL org.opencontainers.image.description="+ dotfiles + first-boot setup"
-LABEL org.opencontainers.image.version="${VERSION:-latest}"
-LABEL org.opencontainers.image.created="$(date -Iseconds)"
-
-# ── Gopass first-boot init ───────────────────────────────────────
-RUN cat > /usr/bin/gopass-init << 'INIT'
-#!/bin/bash
-# Clone gopass store on first login
-GOPASS_STORE="${GOPASS_STORE:-github.com/neg-serg/pass-store}"
-if [ ! -d "$HOME/.local/share/gopass/stores/root" ] && command -v gopass >/dev/null; then
-  echo "🔐 Initializing gopass..."
-  gopass clone "$GOPASS_STORE" 2>/dev/null || echo "⚠️ gopass clone failed — run manually with: gopass clone $GOPASS_STORE"
-fi
-INIT
-RUN chmod +x /usr/bin/gopass-init
-RUN echo '[ -f /usr/bin/gopass-init ] && /usr/bin/gopass-init' >> /etc/skel/.bashrc
-RUN echo '[ -f /usr/bin/gopass-init ] && /usr/bin/gopass-init' >> /etc/skel/.zshenv
-
-
-# ── Gopass init via SSH host key ──────────────────────────────
-RUN cat > /usr/bin/gopass-init << 'INIT'
-#!/bin/bash
-# Initialize gopass age identity from machine SSH host key
-AGE_DIR="$HOME/.config/age"
-AGE_KEY="$AGE_DIR/gopass-identity.txt"
-STORE="${GOPASS_STORE:-github.com/neg-serg/pass-store}"
-
-[ -f "$AGE_KEY" ] && exit 0
-mkdir -p "$AGE_DIR"
-
-# Ensure host keys exist
-HOST_KEY="/etc/ssh/ssh_host_ed25519_key"
-[ ! -f "$HOST_KEY" ] && sudo ssh-keygen -t ed25519 -f "$HOST_KEY" -N "" -q 2>/dev/null
-
-if [ -f "$HOST_KEY" ]; then
-  cp "$HOST_KEY" "$AGE_KEY"
-  chmod 600 "$AGE_KEY"
-  echo "🔐 Age identity created from host key"
-else
-  echo "⚠️ No SSH host key — run: sudo ssh-keygen -A" >&2
-  exit 1
-fi
-
-# Init gopass
-if command -v gopass >/dev/null && [ ! -d "$HOME/.local/share/gopass/stores/root" ]; then
-  gopass clone "$STORE" 2>/dev/null || echo "⚠️ gopass clone failed — run manually: gopass clone $STORE"
-fi
-INIT
-RUN chmod +x /usr/bin/gopass-init
-RUN echo '[ -f /usr/bin/gopass-init ] && [ ! -f "$HOME/.config/age/gopass-identity.txt" ] && /usr/bin/gopass-init' >> /etc/skel/.bashrc
-RUN echo '[ -f /usr/bin/gopass-init ] && [ ! -f "$HOME/.config/age/gopass-identity.txt" ] && /usr/bin/gopass-init' >> /etc/skel/.zshenv
-
+LABEL org.opencontainers.image.title="bluefin-custom"
+LABEL org.opencontainers.image.description="Silverblue + RPMs + Hyprland + Steam + dotfiles — all in ostree"
+LABEL org.opencontainers.image.version="2.0"

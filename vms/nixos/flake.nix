@@ -29,7 +29,7 @@
     };
 
     # ── Bare metal (dual-boot with CachyOS) ────────────
-    nixosConfigurations.nixos-bare = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.telfir = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ./modules/bare-metal.nix

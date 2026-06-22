@@ -228,3 +228,15 @@ podman build -t "bluefin-custom-full:${TAG}" -t "bluefin-custom-full:${DATE_TAG}
 
 echo "=== Done: $(date) ==="
 podman images "bluefin-custom*" --format "table {{.Repository}}:{{.Tag}}  {{.Size}}"
+
+# ── Auto-verify ──────────────────────────────────────────────
+echo "=== Verifying ==="
+podman run --rm "bluefin-custom-full:${TAG}" sh -c '
+ok=0 fail=0
+for pkg in zsh neovim git curl tmux ripgrep bat eza fd-find podman distrobox flatpak chezmoi gopass age; do
+  rpm -q "$pkg" >/dev/null 2>&1 && ok=$((ok+1)) || { echo "  ❌ $pkg"; fail=$((fail+1)); }
+done
+echo "  ✅ $ok packages  ❌ $fail missing"
+command -v Hyprland >/dev/null && echo "  ✅ Hyprland" || echo "  ❌ Hyprland"
+command -v steam >/dev/null && echo "  ✅ Steam" || echo "  ❌ Steam"
+' || echo "⚠️ Verification failed"

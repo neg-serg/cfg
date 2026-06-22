@@ -16,7 +16,7 @@ RUN rpm-ostree install -y /tmp/rpmfusion-nonfree.rpm && rm /tmp/rpmfusion-nonfre
 
 # ── Remove base image bloat ────────────────────────────────
 RUN rpm-ostree override remove \
-    code glibc-all-langpacks \
+    firefox code glibc-all-langpacks \
     rocm-hip rocm-hip-devel hipcc rocm-device-libs \
     rocm-llvm-static rocblas rocsolver rocm-comgr \
     wine-alsa wine-pulseaudio || true

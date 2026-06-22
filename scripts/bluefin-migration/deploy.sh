@@ -1,53 +1,53 @@
 #!/bin/bash
-# Deploy bluefin-custom to /dev/nvme0n1p2 (old Guix partition)
-# Uses existing EFI at nvme0n1p5. Must run as root.
+# Deploy bluefin-custom to /dev/nvme0n1p2 using bootc install to-filesystem
+# Uses existing EFI at nvme0n1p5. CachyOS host, non-destructive to host.
 set -euo pipefail
-DISK=/dev/nvme0n1p2
-EFI=/dev/nvme0n1p5
-ROOT=/mnt/bluefin
+ROOT_PART=/dev/nvme0n1p2
+EFI_PART=/dev/nvme0n1p5
+MNT=/mnt/bluefin
 
-echo "=== Format $DISK ==="
-mkfs.xfs -f -L bluefin "$DISK"
+echo "=== Format $ROOT_PART ==="
+mkfs.xfs -f -L bluefin "$ROOT_PART"
 
 echo "=== Mount ==="
-mkdir -p "$ROOT"
-mount "$DISK" "$ROOT"
+mkdir -p "$MNT"
+mount "$ROOT_PART" "$MNT"
+mkdir -p "$MNT/boot"
+mount "$EFI_PART" "$MNT/boot"
 
-echo "=== Init ostree ==="
-podman run --rm --privileged -v "$ROOT:/target" bluefin-custom:latest \
-  ostree admin init-fs /target --sysroot /target
+echo "=== Get EFI UUID for kernel cmdline ==="
+EFI_UUID=$(blkid -s UUID -o value "$EFI_PART")
+echo "EFI UUID: $EFI_UUID"
 
-echo "=== Get commit ==="
-REV=$(podman run --rm bluefin-custom:latest ostree refs --repo=/ostree/repo 2>/dev/null | head -1)
-REV=${REV##*:}
-[ -z "$REV" ] && REV=$(podman run --rm bluefin-custom:latest sh -c 'rpm-ostree status 2>/dev/null | grep Commit | head -1' | awk '{print $2}')
-echo "Commit: $REV"
+echo "=== Install via bootc ==="
+podman run --rm --privileged \
+  -v "$MNT:/target" \
+  -v /dev:/dev \
+  --pid=host \
+  bluefin-custom:latest \
+  bootc install to-filesystem \
+    --skip-fetch-check \
+    --replace=wipe \
+    --boot-mount-spec="UUID=$EFI_UUID" \
+    --karg=root=LABEL=bluefin \
+    --karg=rw \
+    --bootloader=systemd \
+    /target
 
-echo "=== Pull commit ==="
-podman run --rm --privileged --pid=host -v "$ROOT:/target" bluefin-custom:latest sh -c "
-  mkdir -p /target/sysroot/ostree/repo
-  ostree --repo=/target/sysroot/ostree/repo pull-local /ostree/repo '$REV'
-"
+echo "=== Add EFI boot entry ==="
+efibootmgr --create --label "Bluefin (Silverblue)" \
+  --loader '\EFI\systemd\systemd-bootx64.efi' \
+  --disk "$(echo $ROOT_PART | sed 's/p[0-9]*$//')" \
+  --part "$(echo $ROOT_PART | grep -oP '\d+$')" \
+  2>/dev/null || echo "⚠️ Could not create EFI entry — use BIOS boot menu"
 
-echo "=== Deploy ==="
-podman run --rm --privileged -v "$ROOT:/target" bluefin-custom:latest sh -c "
-  cd /target
-  ostree admin deploy --sysroot=/target --os=bluefin --karg=root=LABEL=bluefin --karg=rw '$REV'
-"
-
-echo "=== EFI ==="
-mkdir -p "$ROOT/boot" && mount "$EFI" "$ROOT/boot"
-# Copy systemd-boot EFI stub
-podman run --rm --privileged -v "$ROOT:/target" bluefin-custom:latest sh -c '
-  mkdir -p /target/boot/EFI/BOOT /target/boot/EFI/Linux
-  cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /target/boot/EFI/BOOT/BOOTX64.EFI 2>/dev/null || true
-  cp /boot/efi/EFI/Linux/* /target/boot/EFI/Linux/ 2>/dev/null || true
-'
-umount "$ROOT/boot" 2>/dev/null || true
+echo "=== Cleanup ==="
+umount "$MNT/boot" 2>/dev/null || true
+umount "$MNT" 2>/dev/null || true
 
 echo ""
-echo "Done. Boot entry:"
-echo "  efibootmgr --create --label Bluefin --loader '\\EFI\\BOOT\\BOOTX64.EFI' --disk /dev/nvme0n1"
-echo ""
-echo "  or add to existing systemd-boot via loader/entries/bluefin.conf"
-umount "$ROOT" 2>/dev/null || true
+echo "✅ Done. Reboot and select 'Bluefin (Silverblue)' from BIOS."
+echo "   First boot will walk through GNOME initial setup."
+echo "   Then login: user created during setup."
+echo "   Dotfiles auto-apply on first login."
+echo "   Gopass auto-initializes from machine SSH host key."

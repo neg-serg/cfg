@@ -2,7 +2,7 @@
 # Bluefin Custom Image
 # 332 RPMs
 # ═══════════════════════════════════════════════════════════════════
-FROM ghcr.io/ublue-os/bluefin-dx:latest
+FROM registry.fedoraproject.org/fedora-silverblue:44
 
 RUN rm -f /etc/yum.repos.d/*multimedia* /etc/yum.repos.d/*negativo* 2>/dev/null || true
 

@@ -10,7 +10,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot";
 
-  boot.kernelParams = lib.mkForce [ "quiet" ];
+  boot.kernelParams = lib.mkForce [ "console=tty0" ];
   boot.initrd.availableKernelModules = lib.mkForce [
     "nvme" "xhci_pci" "ahci" "usbhid" "sd_mod"
   ];
@@ -19,9 +19,15 @@
 
   services.qemuGuest.enable = lib.mkForce false;
 
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
 
   hardware.cpu.amd.updateMicrocode = true;
+
+  # Swapfiles on btrfs cause kernel panic (autofs). Disable for bare metal.
+  swapDevices = lib.mkForce [ ];
+
+  # Hugepages allocation can fail on systems with <32GB RAM
+  boot.kernel.sysctl."vm.nr_hugepages" = lib.mkForce 0;
 
   nix.settings = lib.mkForce {
     max-jobs = 16;

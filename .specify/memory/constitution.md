@@ -43,12 +43,9 @@ Network is unreliable. States that silently fail on transient errors, re-downloa
 ### III. Secrets Isolation
 
 No plaintext secrets MUST exist in the repository. All secrets MUST use `gopass`
-with an approved encrypted backend. Approved backends are:
+with an approved encrypted backend. Approved backend:
 
-- `gpg` with hardware-backed access such as YubiKey
 - `age` with password-protected identities and documented backup/recovery handling
-- `age` with hardware-backed plugin identities such as YubiKey and documented
-  unlock, backup, and recovery handling
 
 - Chezmoi templates: `{{ gopass "key/path" }}` in `.tmpl` files
 - Salt states: `gopass show -o key/path` in `cmd.run`

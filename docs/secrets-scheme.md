@@ -14,14 +14,12 @@ Both chezmoi and Salt read secrets from gopass at deploy time.
 
 Approved backends:
 
-- `gpg`: existing hardware-backed flow (for example YubiKey + GPG agent)
 - `age`: password-protected identity flow with documented backup and recovery handling
 
 ## gopass Store Layout
 
 ```
 ssh-key                   # SSH key passphrase (~/.ssh/id_ed25519)
-yubikey-pin               # Yubikey PIN (only needed if the GPG/Yubikey backend is used)
 
 email/
   gmail/
@@ -161,12 +159,9 @@ Salt states using `gopass_secret()` macro (graceful fallback if gopass unavailab
 - Use a validation matrix that covers direct secret reads, chezmoi templates, Salt consumers, git-backed store behavior, and a representative subset of attached files or other non-password entries.
 - Retain existing git history during the main migration, document the residual risk explicitly, and defer any history rewrite or cleanup to a separate follow-up task.
 - Use a single maintainer/operator as the production cutover and rollback owner.
-- Keep the legacy GPG/Yubikey path available for a fixed 7-day stabilization window after cutover. Retire it only after no fallback use and no unresolved required-workflow failures during that window.
-
 ## Security Properties
 
 - Secrets remain encrypted at rest through `gopass`
-- `gpg` backend can require hardware-backed unlock such as YubiKey touch
 - `age` backend can use a password-protected identity with agent-assisted session unlock
 - decrypt-capable verification should use `gopass show -o <known-key>` rather than `gopass ls` alone
 - gopass store can be versioned in a separate private git repo

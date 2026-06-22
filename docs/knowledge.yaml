@@ -12,10 +12,10 @@ categories:
     description: "Installation guides and initial configuration procedures"
     docs:
       gopass-setup:
-        title: "GoPass Setup with age and YubiKey"
-        summary: "Complete walkthrough for installing and configuring gopass 1.16.x with age backend (age-plugin-yubikey) as the local password store. Covers gopass init, age key generation, YubiKey PIN/PUK/reset setup, git remote configuration, and store mounting."
+        title: "GoPass Setup with age"
+        summary: "Complete walkthrough for installing and configuring gopass 1.16.x with age backend as the local password store. Covers gopass init, age key generation, git remote configuration, and store mounting."
         audience: ["operator"]
-        prerequisites: ["age", "gopass", "age-plugin-yubikey", "pcscd"]
+        prerequisites: ["age", "gopass", "pcscd"]
         related_docs: ["vault-setup", "gopass-age-recovery", "gopass-breakglass-recovery"]
         tags: ["gopass", "age", "password-store", "secrets"]
         key_commands:
@@ -189,30 +189,16 @@ categories:
           - "~/.config/telethon-bridge/config.toml"
           - "~/.config/telethon-bridge/session.session"
 
-      yubikey:
-        title: "YubiKey Configuration"
-        summary: "Comprehensive YubiKey setup and usage guide covering PIV, GPG, and FIDO2 modes. Documents PIN/PUK/reset procedures, age-plugin-yubikey integration for gopass, GPG subkey provisioning, and SSH via GPG agent."
-        audience: ["operator"]
-        prerequisites: ["yubikey-manager", "pcscd"]
-        related_docs:
-          - "gopass-setup"
-          - "gopass-age-recovery"
-          - "gopass-breakglass-recovery"
-        tags: ["hardware-token", "piv", "gpg", "fido2", "authentication"]
-        key_commands:
-          - "ykman piv info"
-          - "gpg --card-status"
-          - "age-plugin-yubikey identity"
-        key_files: ["~/.config/age-plugin-yubikey/identities"]
+
 
   recovery:
     description: "Disaster recovery and breakglass runbooks"
     docs:
       gopass-age-recovery:
         title: "GoPass age Recovery"
-        summary: "Step-by-step recovery procedure for restoring a gopass password store when the primary YubiKey is available but the store is corrupted or deleted. Covers git clone of remote store, age identity re-registration, gopass init with recovery flag, and store integrity verification."
+        summary: "Step-by-step recovery procedure for restoring a gopass password store when the primary age identity is available but the store is corrupted or deleted. Covers git clone of remote store, age identity re-registration, gopass init with recovery flag, and store integrity verification."
         audience: ["operator"]
-        prerequisites: ["gopass", "age", "age-plugin-yubikey", "pcscd", "git remote access"]
+        prerequisites: ["gopass", "age", "pcscd", "git remote access"]
         related_docs:
           - "gopass-setup"
           - "gopass-breakglass-recovery"
@@ -226,7 +212,7 @@ categories:
 
       gopass-breakglass-recovery:
         title: "GoPass Breakglass Recovery"
-        summary: "Emergency breakglass procedure for gopass recovery WITHOUT the primary YubiKey. Covers offline recovery code retrieval, age identity file reconstruction from paper backup, store decryption with breakglass identity, and post-recovery audit trail creation."
+        summary: "Emergency breakglass procedure for gopass recovery WITHOUT the primary age identity. Covers offline recovery code retrieval, age identity file reconstruction from paper backup, store decryption with breakglass identity, and post-recovery audit trail creation."
         audience: ["operator", "breakglass"]
         prerequisites: ["breakglass codes / paper backup", "alternate git credential", "gopass"]
         related_docs:
@@ -300,7 +286,7 @@ categories:
 
       secrets-scheme:
         title: "Secrets Scheme Architecture"
-        summary: "Architecture document describing the project's layered secrets management scheme: gopass (age + YubiKey) at the human-facing layer, Ansible Vault at the automation layer, and age-encrypted data files at the Salt layer. Documents the flow of secrets between layers."
+        summary: "Architecture document describing the project's layered secrets management scheme: gopass (age) at the human-facing layer, Ansible Vault at the automation layer, and age-encrypted data files at the Salt layer. Documents the flow of secrets between layers."
         audience: ["operator", "contributor"]
         prerequisites: ["gopass", "age", "ansible-vault"]
         related_entities: ["state:vaultwarden"]

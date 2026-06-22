@@ -265,7 +265,6 @@ Generated: 2026-05-28
 | `perl-image-exiftool` | ✓ |
 | `sbctl` | ✓ |
 | `sops` | ✓ |
-| `yubikey-manager` | ✓ |
 
 ## File/Archive (7)
 

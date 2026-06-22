@@ -174,7 +174,6 @@ in
     # ── other (309) ────────────────────────────────────
     abduco          # Terminal session manager (like screen/tmux, but minimal)
     age             # Simple, modern file encryption tool
-    age-plugin-yubikey # age plugin for YubiKey-backed encryption
     android-tools
     aria2                          # Download utility supporting multiple protocols
     asciinema
@@ -190,7 +189,6 @@ in
     carla                          # Audio plugin host (LV2/VST2/DSSI)
     cava                           # Console audio visualizer
     ccid                           # Chip/Smart Card interface driver (PC/SC)
-    yubikey-manager
     cdparanoia                     # CD audio ripping tool
     chafa                          # Terminal image viewer/probe
     chezmoi                        # Dotfile manager (declarative)

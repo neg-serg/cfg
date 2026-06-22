@@ -84,7 +84,7 @@ readonly SCRIPT_PATH="${(%):-%x}"
 # ISOs
 : "${VM_WINDOWS_ISO:=${HOME}/Downloads/Win11.iso}"
 : "${VM_VIRTIO_ISO:=/var/lib/libvirt/images/virtio-win.iso}"
-: "${VM_VIRTIO_ISO_URL:=https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso}"
+: "${VM_VIRTIO_ISO_URL:=https://github.com/virtio-win/virtio-win-pkg-scripts/releases/latest/download/virtio-win.iso}"
 
 # Firmware (UEFI Secure Boot for Windows 11)
 : "${VM_OVMF_CODE:=/usr/share/edk2/x64/OVMF_CODE.secboot.4m.fd}"

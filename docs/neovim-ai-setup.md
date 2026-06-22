@@ -36,5 +36,5 @@ To add a new AI completion provider:
 ## Notes
 
 - The `ai` state group (`just group ai`) includes `opencode` but no longer contains Gemini‑related states.
-- AI‑related secret management (API keys) continues to use `gopass` with `age`/`Yubikey` backend.
+- AI‑related secret management (API keys) continues to use `gopass` with `age` backend.
 - Future AI integrations should follow the same pattern: plugin → configuration → secret management.

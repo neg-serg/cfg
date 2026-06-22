@@ -26,7 +26,7 @@
 
 ## Secret Management
 
-AI‑related secrets (API keys, access tokens) are stored in `gopass` with `age`/`Yubikey` backend.
+AI‑related secrets (API keys, access tokens) are stored in `gopass` with `age` backend.
 
 - `ai/ollama/api_key` (if required)
 - `ai/opencode/...`

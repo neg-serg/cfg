@@ -8,7 +8,7 @@ Auto-generated from active feature plans. Last updated: 2026-05-14
 - Sphinx + MyST for embedded documentation; `just docs` builds static HTML site
 - `just`, `ruff`, `shellcheck`, `yamllint`, `salt-lint`
 - Repository artifacts under `states/`, `scripts/`, `docs/`, `.specify/`
-- Markdown documentation, shell-based operator workflow, `gopass` 1.16.x + `age` + `age-plugin-yubikey`, `chezmoi`, systemd, Arch/CachyOS package management
+- Markdown documentation, shell-based operator workflow, `gopass` 1.16.x + `age`, `chezmoi`, systemd, Arch/CachyOS package management
 - Zen Browser (`zen-browser-bin`), Surfingkeys, Hyprland/Wayfire launcher config, vicinae/dmenu/rofi
 
 ## Project Structure

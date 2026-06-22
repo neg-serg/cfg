@@ -99,14 +99,6 @@ curl -fsSL https://tailscale.com/install.sh | sh
 sudo tailscale up
 ```
 
-### Linux (Fedora)
-
-```bash
-sudo dnf install tailscale
-sudo systemctl enable --now tailscaled
-sudo tailscale up
-```
-
 ### Android
 
 1. Install **Tailscale** from Google Play Store

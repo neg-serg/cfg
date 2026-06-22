@@ -100,7 +100,6 @@
     accept-flake-config = true;
   };
 
-  # PC/SC daemon for YubiKey smart card access
   services.pcscd.enable = true;
 
   # Environment matching Salt/chezmoi conventions

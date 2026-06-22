@@ -59,7 +59,7 @@ Run `win-vm help` for the full reference.
 
 ### Via virt-manager (one-off GUI setup)
 
-1. Download Windows 11 ISO and [virtio-win drivers ISO](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable1/virtio-win.iso)
+1. Download Windows 11 ISO and [virtio-win drivers ISO](https://github.com/virtio-win/virtio-win-pkg-scripts/releases)
 2. Open `virt-manager` → Create a new virtual machine
 3. Choose "Local install media" → select Windows 11 ISO
 4. Memory: **16384 MB** (16 GB), CPUs: **8** (4 cores x 2 threads)

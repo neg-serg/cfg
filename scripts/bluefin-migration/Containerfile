@@ -167,6 +167,9 @@ RUN rpm-ostree install -y \
     less \
     libnotify \
     linux-firmware \
+    alsa-firmware \
+    alsa-tools-firmware \
+    libva-utils \
     liquidctl \
     lldb \
     lm_sensors \

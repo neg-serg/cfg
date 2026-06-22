@@ -67,7 +67,7 @@ docs/
 
 ## Recent Changes
 - Dynamic proxy switching for Zen Browser: Added menu script `switch-proxy` with Super+Alt+P binding for vicinae/dmenu/rofi selection, `set-zen-proxy` Python helper, integration with existing HTTP helper server (dynamic-proxy-switching)
-- 079-age-yubikey-cutover: Added Markdown planning artifacts, Salt/Jinja states, shell-based operator workflow, `gopass` 1.16.1, `age` 1.3.1, `yubikey-manager` 5.9.0 + `gopass`, `age`, `age-plugin-yubikey`, `yubikey-manager`, `pcsclite` / `pcscd`, systemd user services, existing Salt data/state files, existing chezmoi templates
+- 
 
 
 ## LLM Entry Point

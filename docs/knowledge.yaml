@@ -15,9 +15,9 @@ categories:
         title: "GoPass Setup with age and YubiKey"
         summary: "Complete walkthrough for installing and configuring gopass 1.16.x with age backend (age-plugin-yubikey) as the local password store. Covers gopass init, age key generation, YubiKey PIN/PUK/reset setup, git remote configuration, and store mounting."
         audience: ["operator"]
-        prerequisites: ["yubikey", "age", "gopass", "age-plugin-yubikey", "pcscd"]
-        related_docs: ["vault-setup", "gopass-age-recovery", "gopass-breakglass-recovery", "yubikey"]
-        tags: ["gopass", "age", "yubikey", "password-store", "secrets"]
+        prerequisites: ["age", "gopass", "age-plugin-yubikey", "pcscd"]
+        related_docs: ["vault-setup", "gopass-age-recovery", "gopass-breakglass-recovery"]
+        tags: ["gopass", "age", "password-store", "secrets"]
         key_commands:
           - "gopass init --crypto age --storage gitfs"
           - "gopass setup"
@@ -193,12 +193,12 @@ categories:
         title: "YubiKey Configuration"
         summary: "Comprehensive YubiKey setup and usage guide covering PIV, GPG, and FIDO2 modes. Documents PIN/PUK/reset procedures, age-plugin-yubikey integration for gopass, GPG subkey provisioning, and SSH via GPG agent."
         audience: ["operator"]
-        prerequisites: ["yubikey", "yubikey-manager", "pcscd"]
+        prerequisites: ["yubikey-manager", "pcscd"]
         related_docs:
           - "gopass-setup"
           - "gopass-age-recovery"
           - "gopass-breakglass-recovery"
-        tags: ["yubikey", "hardware-token", "piv", "gpg", "fido2", "authentication"]
+        tags: ["hardware-token", "piv", "gpg", "fido2", "authentication"]
         key_commands:
           - "ykman piv info"
           - "gpg --card-status"
@@ -212,12 +212,12 @@ categories:
         title: "GoPass age Recovery"
         summary: "Step-by-step recovery procedure for restoring a gopass password store when the primary YubiKey is available but the store is corrupted or deleted. Covers git clone of remote store, age identity re-registration, gopass init with recovery flag, and store integrity verification."
         audience: ["operator"]
-        prerequisites: ["gopass", "age", "age-plugin-yubikey", "yubikey", "pcscd", "git remote access"]
+        prerequisites: ["gopass", "age", "age-plugin-yubikey", "pcscd", "git remote access"]
         related_docs:
           - "gopass-setup"
           - "gopass-breakglass-recovery"
           - "vault-recovery"
-        tags: ["recovery", "gopass", "age", "yubikey", "disaster-recovery"]
+        tags: ["recovery", "gopass", "age", "disaster-recovery"]
         key_commands:
           - "gopass init --crypto age --storage gitfs"
           - "gopass fsck"
@@ -232,7 +232,7 @@ categories:
         related_docs:
           - "gopass-setup"
           - "gopass-age-recovery"
-          - "yubikey"
+          - 
         tags: ["recovery", "breakglass", "gopass", "emergency", "disaster-recovery"]
         key_commands:
           - "gopass init --crypto age --storage gitfs /tmp/breakglass"
@@ -302,13 +302,13 @@ categories:
         title: "Secrets Scheme Architecture"
         summary: "Architecture document describing the project's layered secrets management scheme: gopass (age + YubiKey) at the human-facing layer, Ansible Vault at the automation layer, and age-encrypted data files at the Salt layer. Documents the flow of secrets between layers."
         audience: ["operator", "contributor"]
-        prerequisites: ["gopass", "age", "ansible-vault", "yubikey"]
+        prerequisites: ["gopass", "age", "ansible-vault"]
         related_entities: ["state:vaultwarden"]
         related_docs:
           - "gopass-setup"
           - "vault-setup"
-          - "yubikey"
-        tags: ["secrets", "architecture", "gopass", "ansible-vault", "age", "yubikey"]
+          - 
+        tags: ["secrets", "architecture", "gopass", "ansible-vault", "age"]
 
       managed-telegram-bots:
         title: "Managed Telegram Bots"

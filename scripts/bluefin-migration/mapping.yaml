@@ -335,7 +335,6 @@ rpm_to_arch:
   xfsprogs: xfsprogs
   ydotool: ydotool
   yelp: yelp
-  yubikey-manager: yubikey-manager
   zathura: zathura
   zathura-pdf-poppler: zathura-pdf-poppler
   zbar: zbar

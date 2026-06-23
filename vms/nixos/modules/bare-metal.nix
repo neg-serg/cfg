@@ -17,6 +17,8 @@
     "pcie_aspm=performance"
     "usbcore.autosuspend=-1"
     "amdgpu.ppfeaturemask=0xffffffff"
+    "udev.children_max=32"
+    "udev.event_timeout=10"
   ];
   boot.initrd.availableKernelModules = lib.mkForce [
     "nvme" "xhci_pci" "ahci" "usbhid" "sd_mod"

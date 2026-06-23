@@ -77,9 +77,6 @@
   systemd.network.enable = true;
   networking.useNetworkd = true;
 
-  # LVM for external NVMe storage drives
-  services.lvm.enable = true;
-
   # Allow unfree packages (Steam, etc.)
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.doCheckByDefault = false;

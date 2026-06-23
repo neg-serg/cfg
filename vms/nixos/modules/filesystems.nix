@@ -4,14 +4,10 @@ let
   cfg = config._filesystems;
 in
 {
-  options._filesystems.enable = lib.mkEnableOption "Additional filesystems (Windows NTFS + bind mounts)";
+  options._filesystems.enable = lib.mkEnableOption "Additional filesystems (bind mounts, external storage)";
 
   config = lib.mkIf cfg.enable {
-    # CachyOS root (read-only, for chezmoi dotfiles via ~/src)
-    fileSystems."/mnt/cachyos" = {
-      device = "/dev/nvme0n1p4";
-      fsType = "xfs";
-      options = [ "nofail" "ro" "noauto" ];
-    };
+    # Only mount what's needed. LVM volumes /mnt/one, /mnt/zero added
+    # later via nixos-rebuild when user is ready.
   };
 }

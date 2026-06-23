@@ -37,11 +37,12 @@
     '';
 
     environment.systemPackages = with pkgs; [
-    # Shell tools already in packages.nix
-    # Additional shell enhancements
-    oh-my-posh
-    zinit  # Zinit plugin manager (provides zi function for p10k)
-  ];
+      # Shell tools already in packages.nix
+      # Additional shell enhancements
+      oh-my-posh
+      zinit
+      zsh-powerlevel10k  # p10k theme from nixpkgs (fallback if zi network fails)
+    ];
 
   # Zsh completions
   environment.pathsToLink = [ "/share/zsh" ];

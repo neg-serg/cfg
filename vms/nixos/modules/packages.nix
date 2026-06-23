@@ -303,6 +303,7 @@ in
     nuspell
     amdgpu_top
     ollama                         # Local LLM runner (llama.cpp wrapper, Go)
+    ollama-rocm                    # Ollama with AMD ROCm GPU acceleration
     onefetch                       # Git repository summary tool
     libressl.nc
     openocd
@@ -374,7 +375,7 @@ in
     tumbler
     udiskie
     # ugrep (check nixpkgs)
-    # unar (not in nixpkgs)
+    unar                           # Multi-format archive extractor (replaces unarchiver)
     unzip
     cpio
     upower                         # Power management abstraction layer
@@ -545,7 +546,6 @@ in
     simple-scan                    # Document scanner GUI
     sushi                          # GNOME file previewer (quick preview)
     awww  # renamed from swww
-    # unar (not in nixpkgs)
     wget2
     wlr-which-key
     jdupes
@@ -673,7 +673,7 @@ in
     ##proton-ge-custom                # Custom Proton-GE build
     #protonup-rs                     # Proton-GE installer (Rust)
     #steam                           # Steam gaming platform (unfree)
-    ## unar (unarchiver) — not in nixpkgs; use 'lsar' from 'unar' package
+    ## unar (unarchiver) — resolved: added 'unar' to active list
 ];
 }
     ## amdvlk                                 # AMD Vulkan driver (open source, AMDGPU)

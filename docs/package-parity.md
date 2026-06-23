@@ -7,7 +7,7 @@ Generated: 2026-05-28
 
 | VM | Present | Missing | Coverage |
 |---|---|---|
-| NixOS | 375 | 3 | 375/378 (99%) |
+| NixOS | 377 | 1 | 377/378 (99.7%) |
 
 ## Desktop/GNOME (35)
 
@@ -276,7 +276,7 @@ Generated: 2026-05-28
 | `ouch` | ✓ |
 | `patool` | ✓ |
 | `pbzip2` | ✓ |
-| `unarchiver` | ✗ |  <!-- not in nixpkgs; use 'lsar' from 'unar' -->
+| `unarchiver` | ✓ |  <!-- 'unar' provides lsar/unar tools -->
 
 ## Email/Productivity (6)
 
@@ -404,7 +404,7 @@ Generated: 2026-05-28
 | `nuspell` | ✓ |
 | `oh-my-posh` | ✓ |
 | `ollama` | ✓ |
-| `ollama-vulkan` | ✗ |  <!-- CPU-only via Podman container, no GPU passthrough -->
+| `ollama-vulkan` | ✓ |  <!-- ollama-rocm for AMD GPU acceleration -->
 | `openocd` | ✓ |
 | `openrgb` | ✓ |
 | `optiscaler-universal` | ✓ |

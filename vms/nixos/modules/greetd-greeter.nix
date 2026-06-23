@@ -70,9 +70,9 @@ in
       exec-once = kitty
     '';
 
-    # Use dotfiles Hyprland config if available, fall back to base
+    # Base config as fallback — chezmoi-init will replace with dotfiles
     systemd.tmpfiles.rules = [
-      "L /home/neg/.config/hypr/hyprland.conf - - - - /home/neg/src/cfg/dotfiles/dot_config/hypr/hyprland.conf"
+      "L+ /home/neg/.config/hypr/hyprland.conf - - - - /etc/hypr/hyprland-base.conf"
     ];
 
     # Desktop portal

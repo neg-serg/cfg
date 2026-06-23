@@ -22,6 +22,9 @@
 
   hardware.graphics.enable = true;
 
+  # AMD GPU firmware — required for amdgpu kernel module
+  hardware.firmware = [ pkgs.linux-firmware ];
+
   hardware.cpu.amd.updateMicrocode = true;
 
   # Swapfiles on btrfs cause kernel panic (autofs). Disable for bare metal.

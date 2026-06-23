@@ -13,8 +13,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Ensure graphical.target is reached
-    systemd.targets.multi-user.wants = [ "graphical.target" ];
+    # Boot into graphical.target (required for greetd)
+    systemd.defaultUnit = "graphical.target";
+
+    # GPU acceleration
 
     # GPU acceleration
     hardware.graphics = {

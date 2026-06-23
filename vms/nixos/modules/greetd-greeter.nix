@@ -13,6 +13,9 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # Ensure graphical.target is reached
+    systemd.targets.multi-user.wants = [ "graphical.target" ];
+
     # GPU acceleration
     hardware.graphics = {
       enable = true;

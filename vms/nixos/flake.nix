@@ -53,6 +53,7 @@
         ./modules/opencode.nix
         ./modules/zen-profiles.nix
         ./modules/filesystems.nix
+        ./modules/system-tuning.nix
         ./modules/zsh.nix
         ./modules/packages.nix
         ./modules/network.nix
@@ -61,10 +62,7 @@
         ({ config, lib, ... }: {
           nixpkgs.overlays = [
             (final: prev: {
-              # pipx tests fail in nixpkgs-unstable 2026-06
               pipx = prev.pipx.overridePythonAttrs (_: { doCheck = false; });
-              # kanata-bin broken, use Rust build instead
-              kanata-bin = prev.kanata;
             })
           ];
           fileSystems."/" = {
@@ -94,6 +92,7 @@
           _opencode.enable = lib.mkDefault true;
           _zenProfiles.enable = lib.mkDefault true;
           _filesystems.enable = lib.mkDefault true;
+          _systemTuning.enable = lib.mkDefault true;
           # Proxy module requires proxyHost arg
           _module.args.proxyHost = "";
           _module.args.proxyPort = "10808";

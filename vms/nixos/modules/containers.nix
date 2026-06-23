@@ -144,9 +144,50 @@ in
       };
     };
 
+    systemd.services."promtail" = {
+      enable = true;
+      description = "Grafana Promtail log collector (container)";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStartPre = "${pkgs.podman}/bin/podman pull grafana/promtail:latest";
+        ExecStart = "${pkgs.podman}/bin/podman run --rm --name promtail -v /var/log:/var/log:ro -v /var/lib/promtail:/etc/promtail grafana/promtail:latest";
+        ExecStop = "${pkgs.podman}/bin/podman stop promtail";
+        Restart = "always";
+        RestartSec = 10;
+      };
+    };
+
+    systemd.services."alertmanager" = {
+      enable = true;
+      description = "Prometheus Alertmanager (container)";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStartPre = "${pkgs.podman}/bin/podman pull prom/alertmanager:latest";
+        ExecStart = "${pkgs.podman}/bin/podman run --rm --name alertmanager -p 9093:9093 prom/alertmanager:latest";
+        ExecStop = "${pkgs.podman}/bin/podman stop alertmanager";
+        Restart = "always";
+        RestartSec = 10;
+      };
+    };
+
+    systemd.services."llama-embed" = {
+      enable = true;
+      description = "LLM embeddings server (container)";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStartPre = "${pkgs.podman}/bin/podman pull ghcr.io/huggingface/text-embeddings-inference:latest";
+        ExecStart = "${pkgs.podman}/bin/podman run --rm --name llama-embed -p 8088:80 ghcr.io/huggingface/text-embeddings-inference:latest";
+        ExecStop = "${pkgs.podman}/bin/podman stop llama-embed";
+        Restart = "always";
+        RestartSec = 10;
+      };
+    };
+
     environment.systemPackages = with pkgs; [
       podman
-      podman-compose
       skopeo
       slirp4netns
     ];

@@ -46,11 +46,11 @@ let
     eilmeldung-bin       = final.callPackage ./eilmeldung-bin.nix {};
     #flclashx-bin         = final.callPackage ./flclashx-bin.nix {};
     gitlogue             = final.callPackage ./gitlogue.nix {};
-    grex                 = final.callPackage ./grex.nix {};
+    # hermes-agent (download 404 — broken URL)
     #hxd                  = final.callPackage ./hxd-bin.nix {};
     #hyprscratch          = final.callPackage ./hyprscratch.nix {};
     instagram-cli         = final.callPackage ./instagram-cli.nix {};
-    kanata               = final.callPackage ./kanata-bin.nix {};
+    kanata               = prev.kanata;  # nixpkgs Rust build, not kanata-bin
     lazytail             = final.callPackage ./lazytail-bin.nix {};
     neo-matrix           = final.callPackage ./neo-matrix-bin.nix {};
     no-more-secrets       = final.callPackage ./no-more-secrets.nix {};

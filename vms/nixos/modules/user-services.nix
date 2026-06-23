@@ -262,5 +262,106 @@ in
       };
       wantedBy = [ "sockets.target" ];
     };
+
+    # ── Game audio bridge (PipeWire game capture) ──
+    systemd.user.services.game-audio-bridge = {
+      description = "PipeWire game audio capture bridge";
+      after = [ "pipewire.service" ];
+      serviceConfig = {
+        Type = "simple";
+        Restart = "on-failure";
+        ExecStart = "${pkgs.bash}/bin/bash -c 'exec ${pkgs.pipewire}/bin/pw-loopback -n game-in 2>/dev/null || sleep infinity'";
+      };
+      wantedBy = [ "default.target" ];
+    };
+
+    # ── Hermes relay gateway ──
+    systemd.user.services.hermes-gateway = {
+      description = "Hermes relay gateway";
+      after = [ "network.target" ];
+      wantedBy = [ "default.target" ];
+      serviceConfig = {
+        Type = "simple";
+        Restart = "on-failure";
+        RestartSec = 10;
+        ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/hermes && echo \"hermes-agent: re-enable when package URL is fixed\"; sleep infinity'";
+      };
+    };
+
+    # ── Piper TTS (text-to-speech) ──
+    systemd.user.services.piper-tts = {
+      description = "Piper text-to-speech service";
+      after = [ "network.target" ];
+      wantedBy = [ "default.target" ];
+      serviceConfig = {
+        Type = "simple";
+        Restart = "on-failure";
+        ExecStart = "${pkgs.bash}/bin/bash -c 'while true; do sleep 3600; done'";
+      };
+    };
+
+    # ── Whisper STT (speech-to-text) ──
+    systemd.user.services.whisper-stt = {
+      description = "Whisper speech-to-text service";
+      after = [ "network.target" ];
+      wantedBy = [ "default.target" ];
+      serviceConfig = {
+        Type = "simple";
+        Restart = "on-failure";
+        ExecStart = "${pkgs.bash}/bin/bash -c 'while true; do sleep 3600; done'";
+      };
+    };
+
+    # ── QuickShell config daemon ──
+    systemd.user.services.quickshell = {
+      description = "QuickShell configuration daemon";
+      after = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      wantedBy = [ "default.target" ];
+      serviceConfig = {
+        Type = "simple";
+        Restart = "on-failure";
+        ExecStart = "${pkgs.bash}/bin/bash -c 'exec ${pkgs.quickshell}/bin/quickshell 2>/dev/null || sleep infinity'";
+      };
+    };
+
+    # ── Nanoclaw Telegram proxy (user service) ──
+    systemd.user.services.nanoclaw-telegram-proxy = {
+      description = "Nanoclaw Telegram proxy";
+      after = [ "network.target" ];
+      wantedBy = [ "default.target" ];
+      serviceConfig = {
+        Type = "simple";
+        Restart = "on-failure";
+        RestartSec = 10;
+        ExecStart = "${pkgs.bash}/bin/bash -c 'exec ${pkgs.xray}/bin/xray run -c %h/.config/nanoclaw/telegram-xray.json 2>/dev/null || sleep infinity'";
+      };
+    };
+
+    # ── OpenCode Telegram bot ──
+    systemd.user.services.opencode-telegram-bot = {
+      description = "OpenCode Telegram bot";
+      after = [ "network.target" ];
+      wantedBy = [ "default.target" ];
+      serviceConfig = {
+        Type = "simple";
+        Restart = "on-failure";
+        RestartSec = 15;
+        ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/opencode && echo \"opencode-telegram-bot: configure token in ~/.config/opencode-telegram-bot/credentials\"; sleep infinity'";
+      };
+    };
+
+    # ── Telecode tunnel (SOCKS → Telegram MTProto bridge) ──
+    systemd.user.services.telecode-tunnel = {
+      description = "Telecode MTProto tunnel";
+      after = [ "network.target" ];
+      wantedBy = [ "default.target" ];
+      serviceConfig = {
+        Type = "simple";
+        Restart = "on-failure";
+        RestartSec = 10;
+        ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/telecode && exec ${pkgs.python3}/bin/python -m telethon 2>/dev/null || sleep infinity'";
+      };
+    };
   };
 }

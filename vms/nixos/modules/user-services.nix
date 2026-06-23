@@ -272,9 +272,9 @@ in
     # ── System mail directories + Chezmoi source symlink ──
     systemd.tmpfiles.rules = [
       "d /home/neg/.local/mail/gmail/INBOX 0700 neg users -"
-      "d /home/neg/.local/mail/gmail/[Gmail]/Sent\\Mail 0700 neg users -"
+      "d /home/neg/.local/mail/gmail/[Gmail]/Sent Mail 0700 neg users -"
       "d /home/neg/.local/mail/gmail/[Gmail]/Drafts 0700 neg users -"
-      "d /home/neg/.local/mail/gmail/[Gmail]/All\\Mail 0700 neg users -"
+      "d /home/neg/.local/mail/gmail/[Gmail]/All Mail 0700 neg users -"
       "d /home/neg/.local/mail/gmail/[Gmail]/Trash 0700 neg users -"
       "d /home/neg/.local/mail/gmail/[Gmail]/Spam 0700 neg users -"
       "L+ /home/neg/.local/share/chezmoi - - - - /home/neg/src/cfg/dotfiles"

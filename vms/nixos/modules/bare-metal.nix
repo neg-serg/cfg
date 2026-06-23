@@ -15,6 +15,8 @@
     "nvme_core.default_ps_max_latency_us=0"
     "nvme_core.io_timeout=4294967295"
     "pcie_aspm=performance"
+    "usbcore.autosuspend=-1"
+    "amdgpu.ppfeaturemask=0xffffffff"
   ];
   boot.initrd.availableKernelModules = lib.mkForce [
     "nvme" "xhci_pci" "ahci" "usbhid" "sd_mod"

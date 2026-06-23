@@ -19,7 +19,7 @@ in
       serviceConfig = {
         Type = "simple";
         Restart = "on-failure";
-        ExecStart = "${pkgs.lm_sensors}/sbin/fancontrol";
+        ExecStart = "${pkgs.lm_sensors}/bin/fancontrol";
       };
     };
 

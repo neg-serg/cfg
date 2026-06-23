@@ -13,6 +13,19 @@ in
       fsType = "xfs";
       options = [ "nofail" "ro" "noauto" ];
     };
+
+    # LVM external storage
+    fileSystems."/mnt/one" = {
+      device = "/dev/xenon/one";
+      fsType = "xfs";
+      options = [ "nofail" "noauto" "x-systemd.automount" ];
+    };
+    fileSystems."/mnt/zero" = {
+      device = "/dev/argon/zero";
+      fsType = "xfs";
+      options = [ "nofail" "noauto" "x-systemd.automount" ];
+    };
+
     fileSystems."/mnt/windows" = {
       device = "/dev/disk/by-uuid/86286AAE286A9CC5";
       fsType = "ntfs3";

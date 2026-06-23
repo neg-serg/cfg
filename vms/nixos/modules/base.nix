@@ -62,26 +62,20 @@
     settings.PasswordAuthentication = false;
   };
 
-  # Boot — systemd-boot for UEFI
-  # VM: grub instead (no /boot mount needed), or use --no-install-bootloader
+  # Boot — systemd-boot for UEFI (defaults, overridden by bare-metal.nix)
   boot.loader.systemd-boot.enable = lib.mkDefault true;
   boot.loader.efi.canTouchEfiVariables = lib.mkDefault false;
-  # Prevent bootloader errors when /boot isn't mounted (e.g. in VM)
   boot.loader.efi.efiSysMountPoint = lib.mkDefault "/boot";
+  # VM defaults — bare-metal overrides via mkForce
   boot.kernelParams = [ "quiet" "console=ttyS0,115200n8" ];
   boot.initrd.availableKernelModules = [
     "virtio_scsi" "virtio_blk" "virtio_net" "vfat" "zstd" "virtio-gpu"
   ];
+  services.qemuGuest.enable = true;
 
   # Network (uses networkd with DHCP)
   systemd.network.enable = true;
   networking.useNetworkd = true;
-
-  # QEMU guest agent
-  services.qemuGuest.enable = true;
-
-  # VM disk size — 50G for closure (~30G) + swapfile (8G) + headroom
-  virtualisation.diskSize = 51200;
 
   # Allow unfree packages (Steam, etc.)
   nixpkgs.config.allowUnfree = true;

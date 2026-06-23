@@ -25,16 +25,22 @@
   users.defaultUserShell = pkgs.zsh;
   users.users.neg.shell = pkgs.zsh;
 
-  # Zoxide (smart cd) — shell integration
-  programs.zoxide = {
-    enable = true;
-    enableZshIntegration = true;
-  };
+    # Zoxide (smart cd) — shell integration
+    programs.zoxide = {
+      enable = true;
+      enableZshIntegration = true;
+    };
 
-  environment.systemPackages = with pkgs; [
+    # Source zinit before user config (provides 'zi' function for p10k)
+    programs.zsh.interactiveShellInit = ''
+      source ${pkgs.zinit}/share/zinit/zinit.zsh
+    '';
+
+    environment.systemPackages = with pkgs; [
     # Shell tools already in packages.nix
     # Additional shell enhancements
     oh-my-posh
+    zinit  # Zinit plugin manager (provides zi function for p10k)
   ];
 
   # Zsh completions

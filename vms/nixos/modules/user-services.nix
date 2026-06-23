@@ -151,13 +151,13 @@ in
     # ── Chezmoi watch service ──
     systemd.user.services.chezmoi-init = {
       enable = true;
-      description = "Initialize and apply chezmoi dotfiles on first boot";
-      after = [ "home.mount" ];
+      description = "Initialize and apply chezmoi dotfiles on first login";
+      after = [ "multi-user.target" ];
       wantedBy = [ "default.target" ];
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${pkgs.chezmoi}/bin/chezmoi init --source /home/neg/src/cfg/dotfiles --force 2>/dev/null || true";
-        ExecStartPost = "${pkgs.chezmoi}/bin/chezmoi apply --source /home/neg/src/cfg/dotfiles --force 2>/dev/null || true";
+        ExecStartPre = "${pkgs.coreutils}/bin/ln -sfn /mnt/cachyos/home/neg/src /home/neg/src";
+        ExecStart = "${pkgs.bash}/bin/bash -c 'if [ -d /home/neg/src/cfg/dotfiles ]; then ${pkgs.chezmoi}/bin/chezmoi init --source /home/neg/src/cfg/dotfiles --force 2>/dev/null; ${pkgs.chezmoi}/bin/chezmoi apply --source /home/neg/src/cfg/dotfiles --force; else echo \"chezmoi: /home/neg/src/cfg/dotfiles not found (CachyOS not mounted?)\"; fi'";
       };
     };
 
@@ -166,7 +166,7 @@ in
       description = "Chezmoi file watcher for auto-apply";
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${pkgs.chezmoi}/bin/chezmoi apply --source /home/neg/src/cfg/dotfiles --force 2>/dev/null || true";
+        ExecStart = "${pkgs.bash}/bin/bash -c 'if [ -d /home/neg/src/cfg/dotfiles ]; then ${pkgs.chezmoi}/bin/chezmoi apply --source /home/neg/src/cfg/dotfiles --force; fi'";
       };
     };
 
@@ -253,7 +253,6 @@ in
 
     # ── System mail directories + Chezmoi source symlink ──
     systemd.tmpfiles.rules = [
-      "L+ /home/neg/src - - - - /mnt/cachyos/home/neg/src"
       "d /home/neg/.local/mail/gmail/INBOX 0700 neg users -"
       "d /home/neg/.local/mail/gmail/[Gmail]/Sent\\Mail 0700 neg users -"
       "d /home/neg/.local/mail/gmail/[Gmail]/Drafts 0700 neg users -"

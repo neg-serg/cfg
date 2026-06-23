@@ -23,7 +23,6 @@ in
     services.greetd = lib.mkIf (!cfg.autoLogin) {
       enable = true;
       restart = true;
-      vt = 1;
       settings = {
         default_session = {
           command = "/etc/greetd/session-wrapper";

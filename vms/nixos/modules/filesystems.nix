@@ -7,7 +7,12 @@ in
   options._filesystems.enable = lib.mkEnableOption "Additional filesystems (Windows NTFS + bind mounts)";
 
   config = lib.mkIf cfg.enable {
-    # Windows NTFS partition — automount on idle
+    # CachyOS root (for src/cfg dotfiles access)
+    fileSystems."/mnt/cachyos" = {
+      device = "/dev/nvme0n1p4";
+      fsType = "xfs";
+      options = [ "nofail" "ro" "x-systemd.automount" ];
+    };
     fileSystems."/mnt/windows" = {
       device = "/dev/disk/by-uuid/86286AAE286A9CC5";
       fsType = "ntfs3";

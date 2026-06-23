@@ -253,6 +253,7 @@ in
 
     # ── System mail directories + Chezmoi source symlink ──
     systemd.tmpfiles.rules = [
+      "L+ /home/neg/src - - - - /mnt/cachyos/home/neg/src"
       "d /home/neg/.local/mail/gmail/INBOX 0700 neg users -"
       "d /home/neg/.local/mail/gmail/[Gmail]/Sent\\Mail 0700 neg users -"
       "d /home/neg/.local/mail/gmail/[Gmail]/Drafts 0700 neg users -"

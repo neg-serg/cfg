@@ -11,7 +11,7 @@ in
     fileSystems."/mnt/cachyos" = {
       device = "/dev/nvme0n1p4";
       fsType = "xfs";
-      options = [ "nofail" "ro" ];
+      options = [ "nofail" "ro" "noauto" ];
     };
     fileSystems."/mnt/windows" = {
       device = "/dev/disk/by-uuid/86286AAE286A9CC5";

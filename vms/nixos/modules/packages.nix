@@ -655,6 +655,7 @@ in
     neo-matrix                      # Digital rain from The Matrix
     no-more-secrets                 # Sneakers decrypting text effect (nms)
     opencode                        # Open-source AI coding CLI
+    bun                             # JavaScript runtime (required by opencode)
     #oports-git                      # Open port scanner
     #otter-launcher                  # Otter application launcher
     #oyo                             # Oyo utility tool

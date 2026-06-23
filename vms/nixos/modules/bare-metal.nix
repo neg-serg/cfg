@@ -22,8 +22,9 @@
 
   hardware.graphics.enable = true;
 
-  # AMD GPU firmware — required for amdgpu kernel module
+  # AMD GPU firmware — must be in initrd for amdgpu to initialize
   hardware.firmware = [ pkgs.linux-firmware ];
+  boot.initrd.systemd.storePaths = [ "${pkgs.linux-firmware}/lib/firmware/amdgpu" ];
 
   hardware.cpu.amd.updateMicrocode = true;
 

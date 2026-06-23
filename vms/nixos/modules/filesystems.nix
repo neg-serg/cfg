@@ -11,7 +11,7 @@ in
     fileSystems."/mnt/cachyos" = {
       device = "/dev/nvme0n1p4";
       fsType = "xfs";
-      options = [ "nofail" "ro" "x-systemd.automount" ];
+      options = [ "nofail" "ro" "noauto" "x-systemd.automount" ];
     };
     fileSystems."/mnt/windows" = {
       device = "/dev/disk/by-uuid/86286AAE286A9CC5";
@@ -19,36 +19,36 @@ in
       options = [ "rw" "nofail" "x-systemd.automount" "x-systemd.idle-timeout=60" ];
     };
 
-    # Bind mounts for external storage directories
+    # Bind mounts for external storage directories (require /mnt/one, /mnt/zero)
     fileSystems."/home/neg/.local/mail" = {
       device = "/mnt/zero/mail";
       fsType = "none";
-      options = [ "bind" "nofail" "x-systemd.requires-mounts-for=/mnt/zero" ];
+      options = [ "bind" "nofail" "noauto" "x-systemd.automount" ];
     };
     fileSystems."/home/neg/music" = {
       device = "/mnt/one/music";
       fsType = "none";
-      options = [ "bind" "nofail" "x-systemd.requires-mounts-for=/mnt/one" ];
+      options = [ "bind" "nofail" "noauto,x-systemd.automount" ];
     };
     fileSystems."/home/neg/vid" = {
       device = "/mnt/one/vid";
       fsType = "none";
-      options = [ "bind" "nofail" "x-systemd.requires-mounts-for=/mnt/one" ];
+      options = [ "bind" "nofail" "noauto,x-systemd.automount" ];
     };
     fileSystems."/home/neg/doc" = {
       device = "/mnt/one/doc";
       fsType = "none";
-      options = [ "bind" "nofail" "x-systemd.requires-mounts-for=/mnt/one" ];
+      options = [ "bind" "nofail" "noauto,x-systemd.automount" ];
     };
     fileSystems."/home/neg/torrent" = {
       device = "/mnt/one/torrent";
       fsType = "none";
-      options = [ "bind" "nofail" "x-systemd.requires-mounts-for=/mnt/one" ];
+      options = [ "bind" "nofail" "noauto,x-systemd.automount" ];
     };
     fileSystems."/home/neg/games" = {
       device = "/mnt/zero/games";
       fsType = "none";
-      options = [ "bind" "nofail" "x-systemd.requires-mounts-for=/mnt/zero" ];
+      options = [ "bind" "nofail" "noauto,x-systemd.automount" ];
     };
   };
 }

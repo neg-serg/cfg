@@ -1,20 +1,31 @@
-{ lib, stdenvNoCC, fetchurl, }:
+{ lib, python3, fetchurl }:
 
-stdenvNoCC.mkDerivation rec {
-  pname = "hermes-agent";  version = "0.10.4";
+python3.pkgs.buildPythonApplication rec {
+  pname = "hermes-agent";
+  version = "0.17.0";
+  format = "wheel";
+
+  # Disable strict version matching in runtime deps check
+  dontUsePythonRuntimeDepsCheckHook = true;
+
   src = fetchurl {
-    url = "https://github.com/NousResearch/hermes-agent/releases/download/v${version}/hermes-agent-x86_64-unknown-linux-musl.tar.gz";
-    sha256 = "sha256-ABnfxLMtY8E5KqJkrtIlPB4ML7CSFvjizCabv7i7SbU=";
+    url = "https://files.pythonhosted.org/packages/e3/e2/d18d5ec6735b412fde47ecac3b6a63874c824c83e9821e1c1f4a07bcff85/hermes_agent-0.17.0-py3-none-any.whl";
+    hash = "sha256-8R3MGxaNLbYm74shdTAXQahrUkfF/6/0sPDiQBjRsZA=";
   };
-  sourceRoot = ".";
-  installPhase = ''
-    mkdir -p $out/bin
-    [ -f hermes-agent ] && cp hermes-agent $out/bin/ || cp hermes $out/bin/hermes-agent 2>/dev/null || true
-    chmod +x $out/bin/hermes-agent 2>/dev/null || true
-  '';
+
+  dependencies = with python3.pkgs; [
+    openai certifi python-dotenv fire httpx rich tenacity pyyaml
+    ruamel-yaml requests jinja2 pydantic prompt-toolkit croniter
+    packaging markdown pyjwt urllib3 psutil websockets pathspec
+    fastapi uvicorn python-multipart ptyprocess pillow
+    python-telegram-bot aiohttp slack-sdk
+  ];
+
   meta = with lib; {
-    description = "Hermes AI agent (Nous Research, CLI)";
+    description = "The self-improving AI agent — creates skills from experience";
     homepage = "https://github.com/NousResearch/hermes-agent";
-    license = licenses.asl20;  platforms = [ "x86_64-linux" ];
+    license = licenses.asl20;
+    platforms = platforms.all;
+    mainProgram = "hermes";
   };
 }

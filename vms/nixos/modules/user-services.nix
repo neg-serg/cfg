@@ -297,13 +297,11 @@ in
         Type = "simple";
         WorkingDirectory = "%h/.hermes";
         Environment = [
-          "PATH=/opt/hermes-agent/venv/bin:/run/current-system/sw/bin:%h/.local/bin:%h/.cargo/bin"
-          "VIRTUAL_ENV=/opt/hermes-agent/venv"
           "HERMES_HOME=%h/.hermes"
         ];
         Restart = "always";
         RestartSec = 5;
-        ExecStart = "/opt/hermes-agent/venv/bin/python -m hermes_cli.main gateway run --replace";
+        ExecStart = "${pkgs.bash}/bin/bash -c 'echo \"hermes-gateway: install hermes-agent via pip first\"; sleep infinity'";
         ExecReload = "/bin/kill -USR1 $MAINPID";
         KillMode = "mixed";
         KillSignal = "SIGTERM";

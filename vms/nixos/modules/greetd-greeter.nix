@@ -23,6 +23,7 @@ in
     services.greetd = lib.mkIf (!cfg.autoLogin) {
       enable = true;
       restart = true;
+      vt = 1;
       settings = {
         default_session = {
           command = "/etc/greetd/session-wrapper";
@@ -56,26 +57,23 @@ in
     # Session wrapper
     environment.etc."greetd/session-wrapper".source = pkgs.writeShellScript "greetd-session-wrapper" ''
       set -eu
-      export HOME="$1"
+      USERNAME="$1"
       shift
+      export HOME="/home/$USERNAME"
       exec ${pkgs.hyprland}/bin/Hyprland "$@"
     '';
 
-    # Minimal Hyprland config for VM (avoids custom dotfiles issues)
-    environment.etc."hypr/hyprland.conf".source = pkgs.writeText "hyprland-vm.conf" ''
+    # Minimal Hyprland fallback config (overridden by dotfiles if present)
+    environment.etc."hypr/hyprland-base.conf".source = pkgs.writeText "hyprland-base.conf" ''
       monitor = , preferred, auto, 1
       input { kb_layout = us,ru; kb_options = grp:alt_shift_toggle }
-      cursor { no_hardware_cursors = true }
-      misc { disable_hyprland_logo = true; force_default_wallpaper = 0 }
-      animations { enabled = false }
-      decoration { blur { enabled = false }; shadow { enabled = false } }
+      misc { disable_hyprland_logo = true }
       exec-once = kitty
-      
     '';
 
-    # Symlink VM config to user home
+    # Use dotfiles Hyprland config if available, fall back to base
     systemd.tmpfiles.rules = [
-      "L+ /home/neg/.config/hypr/hyprland.conf - - - - /etc/hypr/hyprland.conf"
+      "L /home/neg/.config/hypr/hyprland.conf - - - - /home/neg/src/cfg/dotfiles/dot_config/hypr/hyprland.conf"
     ];
 
     # Desktop portal

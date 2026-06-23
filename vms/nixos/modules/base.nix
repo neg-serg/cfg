@@ -49,6 +49,10 @@
 
   # Locale
   i18n.defaultLocale = "en_US.UTF-8";
+  console = {
+    font = "ter-v32n";
+    useXkbConfig = true;
+  };
   time.timeZone = "Europe/Moscow";
 
   # SSH

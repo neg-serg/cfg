@@ -149,13 +149,24 @@ in
     };
 
     # ── Chezmoi watch service ──
+    systemd.user.services.chezmoi-init = {
+      enable = true;
+      description = "Initialize and apply chezmoi dotfiles on first boot";
+      after = [ "home.mount" ];
+      wantedBy = [ "default.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.chezmoi}/bin/chezmoi init --source /home/neg/src/cfg/dotfiles --force 2>/dev/null || true";
+        ExecStartPost = "${pkgs.chezmoi}/bin/chezmoi apply --source /home/neg/src/cfg/dotfiles --force 2>/dev/null || true";
+      };
+    };
+
     systemd.user.services.chezmoi-watch = {
       enable = true;
       description = "Chezmoi file watcher for auto-apply";
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${pkgs.bash}/bin/bash -c 'cd /home/neg/.local/share/chezmoi && ${pkgs.chezmoi}/bin/chezmoi reapply 2>/dev/null || true'";
-        ExecStartPost = "${pkgs.systemd}/bin/systemctl --user start chezmoi-watch.timer 2>/dev/null || true";
+        ExecStart = "${pkgs.chezmoi}/bin/chezmoi apply --source /home/neg/src/cfg/dotfiles --force 2>/dev/null || true";
       };
     };
 

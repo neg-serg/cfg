@@ -23,7 +23,7 @@
 
   # Make zsh the default shell
   users.defaultUserShell = pkgs.zsh;
-  users.users.nixos.shell = pkgs.zsh;
+  users.users.neg.shell = pkgs.zsh;
 
   # Zoxide (smart cd) — shell integration
   programs.zoxide = {

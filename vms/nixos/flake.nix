@@ -75,9 +75,12 @@
           _monitoring.enable = lib.mkDefault true;
           _espanso.enable = lib.mkDefault true;
           _ai.enable = lib.mkDefault true;
-          _proxy.enable = lib.mkDefault true;
+          _proxy.enable = lib.mkDefault false;  # requires proxyHost config
           _proxypilot.enable = lib.mkDefault true;
-          _installers.enable = lib.mkDefault true;
+          _installers.enable = lib.mkDefault false;  # pipx tests broken in nixpkgs
+          # Proxy module requires proxyHost arg
+          _module.args.proxyHost = "";
+          _module.args.proxyPort = "10808";
         })
       ];
     };

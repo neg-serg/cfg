@@ -73,16 +73,16 @@ in
       style = "gtk2";
     };
 
-    # Kanata keyboard remapper
-    services.kanata = {
-      enable = true;
-      keyboards.main = {
-        config = ''
-          (defsrc)
-          (deflayer base)
-        '';
-      };
-    };
+    # Kanata keyboard remapper — broken in current nixpkgs, enable later
+    # services.kanata = {
+    #   enable = true;
+    #   keyboards.main = {
+    #     config = ''
+    #       (defsrc)
+    #       (deflayer base)
+    #     '';
+    #   };
+    # };
 
     # Espanso text expander
     services.espanso = {

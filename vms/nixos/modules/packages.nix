@@ -650,7 +650,7 @@ in
     ##hxd                             # Hex dump tool
     ##hyprscratch                     # Hyprland scratchpad tool
     #instagram-cli                   # Instagram CLI tool
-    kanata                          # Keyboard remapper
+    # kanata (broken in current nixpkgs: kanata-bin not found)
     #lazytail                        # Lazy log tail viewer
     neo-matrix                      # Digital rain from The Matrix
     no-more-secrets                 # Sneakers decrypting text effect (nms)

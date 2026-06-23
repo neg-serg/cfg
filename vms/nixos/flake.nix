@@ -75,7 +75,6 @@
           };
           # Enable all feature modules
           _desktop.enable = lib.mkDefault true;
-          _desktop.autoLogin = lib.mkDefault true;  # skip greetd greeter
           _audio.enable = lib.mkDefault true;
           _dev.enable = lib.mkDefault true;
           _steam.enable = lib.mkDefault true;

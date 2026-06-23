@@ -56,9 +56,9 @@ in
 
     # Session wrapper
     environment.etc."greetd/session-wrapper".source = pkgs.writeShellScript "greetd-session-wrapper" ''
-      set -eu
-      USERNAME="$1"
-      shift
+      set -e
+      USERNAME="''${1:-neg}"
+      shift 2>/dev/null || true
       export HOME="/home/$USERNAME"
       exec ${pkgs.hyprland}/bin/Hyprland "$@"
     '';

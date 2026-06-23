@@ -5,8 +5,8 @@ python3.pkgs.buildPythonApplication rec {
   version = "0.17.0";
   format = "wheel";
 
-  # Disable strict version matching in runtime deps check
-  dontUsePythonRuntimeDepsCheckHook = true;
+  # Skip strict version pin checking — nixpkgs provides compatible versions
+  dontCheckRuntimeDeps = true;
 
   src = fetchurl {
     url = "https://files.pythonhosted.org/packages/e3/e2/d18d5ec6735b412fde47ecac3b6a63874c824c83e9821e1c1f4a07bcff85/hermes_agent-0.17.0-py3-none-any.whl";

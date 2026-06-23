@@ -301,7 +301,7 @@ in
         ];
         Restart = "always";
         RestartSec = 5;
-        ExecStart = "${pkgs.bash}/bin/bash -c 'echo \"hermes-gateway: install hermes-agent via pip first\"; sleep infinity'";
+        ExecStart = "${pkgs.hermes-agent}/bin/hermes gateway run --replace";
         ExecReload = "/bin/kill -USR1 $MAINPID";
         KillMode = "mixed";
         KillSignal = "SIGTERM";

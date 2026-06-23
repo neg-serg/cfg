@@ -46,7 +46,7 @@ let
     eilmeldung-bin       = final.callPackage ./eilmeldung-bin.nix {};
     #flclashx-bin         = final.callPackage ./flclashx-bin.nix {};
     gitlogue             = final.callPackage ./gitlogue.nix {};
-    # hermes-agent (strict version pins in wheel, WIP)
+    hermes-agent         = final.callPackage ./hermes-agent.nix {};
     #hxd                  = final.callPackage ./hxd-bin.nix {};
     #hyprscratch          = final.callPackage ./hyprscratch.nix {};
     instagram-cli         = final.callPackage ./instagram-cli.nix {};

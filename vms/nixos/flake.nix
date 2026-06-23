@@ -49,12 +49,24 @@
         ./modules/proxypilot-service.nix
         ./modules/installers.nix
         ./modules/defaults.nix
+        ./modules/duckdns.nix
+        ./modules/opencode.nix
+        ./modules/zen-profiles.nix
+        ./modules/filesystems.nix
         ./modules/zsh.nix
         ./modules/packages.nix
         ./modules/network.nix
         ./pkgs/default.nix
         { nixpkgs.config.doCheckByDefault = false; }
         ({ config, lib, ... }: {
+          nixpkgs.overlays = [
+            (final: prev: {
+              # pipx tests fail in nixpkgs-unstable 2026-06
+              pipx = prev.pipx.overridePythonAttrs (_: { doCheck = false; });
+              # kanata-bin broken, use Rust build instead
+              kanata-bin = prev.kanata;
+            })
+          ];
           fileSystems."/" = {
             device = "/dev/nvme0n1p2";
             fsType = "btrfs";
@@ -77,7 +89,11 @@
           _ai.enable = lib.mkDefault true;
           _proxy.enable = lib.mkDefault false;  # requires proxyHost config
           _proxypilot.enable = lib.mkDefault true;
-          _installers.enable = lib.mkDefault false;  # pipx tests broken in nixpkgs
+          _installers.enable = lib.mkDefault true;
+          _duckdns.enable = lib.mkDefault true;
+          _opencode.enable = lib.mkDefault true;
+          _zenProfiles.enable = lib.mkDefault true;
+          _filesystems.enable = lib.mkDefault true;
           # Proxy module requires proxyHost arg
           _module.args.proxyHost = "";
           _module.args.proxyPort = "10808";

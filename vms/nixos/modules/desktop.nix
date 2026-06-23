@@ -73,16 +73,19 @@ in
       style = "gtk2";
     };
 
-    # Kanata keyboard remapper — broken in current nixpkgs, enable later
-    # services.kanata = {
-    #   enable = true;
-    #   keyboards.main = {
-    #     config = ''
-    #       (defsrc)
-    #       (deflayer base)
-    #     '';
-    #   };
-    # };
+    # Kanata keyboard remapper — manual service (nixpkgs module broken)
+    systemd.user.services.kanata = {
+      description = "Kanata keyboard remapper";
+      after = [ "graphical-session.target" ];
+      wantedBy = [ "default.target" ];
+      partOf = [ "graphical-session.target" ];
+      serviceConfig = {
+        Type = "simple";
+        Restart = "on-failure";
+        RestartSec = 5;
+        ExecStart = "${pkgs.kanata}/bin/kanata --cfg %h/.config/kanata/config.kdb";
+      };
+    };
 
     # Espanso text expander
     services.espanso = {

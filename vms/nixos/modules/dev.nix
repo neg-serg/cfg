@@ -38,7 +38,7 @@ in
       openblas
       nodejs
       python3
-      # pipx (broken in current nixpkgs)
+      pipx
       uv
       ruby
       lua5_3

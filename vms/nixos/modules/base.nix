@@ -52,6 +52,7 @@
   console = {
     font = "ter-v32n";
     useXkbConfig = true;
+    earlySetup = true;
   };
   time.timeZone = "Europe/Moscow";
 

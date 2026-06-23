@@ -10,7 +10,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot";
 
-  boot.kernelParams = lib.mkForce [ "console=tty0" "fbcon=font:TER16x32" ];
+  boot.kernelParams = lib.mkForce [ "console=tty0" ];
   boot.initrd.availableKernelModules = lib.mkForce [
     "nvme" "xhci_pci" "ahci" "usbhid" "sd_mod"
   ];

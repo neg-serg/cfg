@@ -157,7 +157,25 @@ in
       serviceConfig = {
         Type = "oneshot";
         ExecStartPre = "${pkgs.coreutils}/bin/ln -sfn /mnt/cachyos/home/neg/src /home/neg/src";
-        ExecStart = "${pkgs.bash}/bin/bash -c 'if [ -d /home/neg/src/cfg/dotfiles ]; then ${pkgs.chezmoi}/bin/chezmoi init --source /home/neg/src/cfg/dotfiles --force 2>/dev/null; ${pkgs.chezmoi}/bin/chezmoi apply --source /home/neg/src/cfg/dotfiles --force; else echo \"chezmoi: /home/neg/src/cfg/dotfiles not found (CachyOS not mounted?)\"; fi'";
+        ExecStart = "${pkgs.bash}/bin/bash -c '
+          if [ -d /home/neg/src/cfg/dotfiles ]; then
+            ${pkgs.chezmoi}/bin/chezmoi init --source /home/neg/src/cfg/dotfiles --force
+            ${pkgs.chezmoi}/bin/chezmoi apply --source /home/neg/src/cfg/dotfiles --force
+            echo \"chezmoi: dotfiles applied\"
+          else
+            echo \"chezmoi: waiting for /home/neg/src/cfg/dotfiles...\"
+            for i in \$(seq 1 10); do
+              sleep 2
+              if [ -d /home/neg/src/cfg/dotfiles ]; then
+                ${pkgs.chezmoi}/bin/chezmoi init --source /home/neg/src/cfg/dotfiles --force
+                ${pkgs.chezmoi}/bin/chezmoi apply --source /home/neg/src/cfg/dotfiles --force
+                echo \"chezmoi: dotfiles applied (retry \$i)\"
+                exit 0
+              fi
+            done
+            echo \"chezmoi: /home/neg/src/cfg/dotfiles still not found after 20s\"
+          fi
+        '";
       };
     };
 

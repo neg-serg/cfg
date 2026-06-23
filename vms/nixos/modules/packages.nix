@@ -125,10 +125,12 @@ in
     # ufw → use firewalld above
     # proton-vpn-cli → custom/aur; omit for now
 
-    # ── audio (3) ──────────────────────────────────────
+    # ── audio (5) ──────────────────────────────────────
     pipewire
     gst_all_1.gst-plugins-bad  # includes gst-plugin-pipewire
     pavucontrol
+    alsa-firmware                  # Firmware for RME Hammerfall DSP / other cards
+    alsa-tools                     # hdsploader, hdspconf, hdspmixer for RME HDSP
 
     # ── media (10) ─────────────────────────────────────
     ffmpeg                         # Multimedia converter/processor

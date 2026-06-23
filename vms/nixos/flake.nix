@@ -32,13 +32,29 @@
     nixosConfigurations.telfir = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        ./modules/bare-metal.nix
+        ./modules/bare-metal.nix       # imports base.nix, overrides for bare metal
+        ./modules/desktop.nix
+        ./modules/audio.nix
+        ./modules/dev.nix
+        ./modules/steam.nix
+        ./modules/containers.nix
+        ./modules/user-services.nix
+        ./modules/flatpak.nix
+        ./modules/greetd-greeter.nix
+        ./modules/mpd.nix
+        ./modules/monitoring.nix
+        ./modules/espanso.nix
+        ./modules/ai.nix
+        ./modules/proxy.nix
+        ./modules/proxypilot-service.nix
+        ./modules/installers.nix
+        ./modules/defaults.nix
         ./modules/zsh.nix
         ./modules/packages.nix
         ./modules/network.nix
         ./pkgs/default.nix
         { nixpkgs.config.doCheckByDefault = false; }
-        ({ ... }: {
+        ({ config, lib, ... }: {
           fileSystems."/" = {
             device = "/dev/nvme0n1p2";
             fsType = "btrfs";
@@ -47,6 +63,21 @@
             device = "/dev/nvme0n1p5";
             fsType = "vfat";
           };
+          # Enable all feature modules
+          _desktop.enable = lib.mkDefault true;
+          _audio.enable = lib.mkDefault true;
+          _dev.enable = lib.mkDefault true;
+          _steam.enable = lib.mkDefault true;
+          _containers.enable = lib.mkDefault true;
+          _userServices.enable = lib.mkDefault true;
+          _flatpak.enable = lib.mkDefault true;
+          _mpd.enable = lib.mkDefault true;
+          _monitoring.enable = lib.mkDefault true;
+          _espanso.enable = lib.mkDefault true;
+          _ai.enable = lib.mkDefault true;
+          _proxy.enable = lib.mkDefault true;
+          _proxypilot.enable = lib.mkDefault true;
+          _installers.enable = lib.mkDefault true;
         })
       ];
     };

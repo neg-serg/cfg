@@ -53,13 +53,13 @@ in
       };
     };
 
-    # Session wrapper
+    # Session wrapper — sources environment like CachyOS
     environment.etc."greetd/session-wrapper".source = pkgs.writeShellScript "greetd-session-wrapper" ''
-      set -e
-      USERNAME="''${1:-neg}"
-      shift 2>/dev/null || true
-      export HOME="/home/$USERNAME"
-      exec ${pkgs.hyprland}/bin/Hyprland "$@"
+      [ -f /etc/profile ] && . /etc/profile
+      set -a
+      [ -f "$HOME/.config/environment.d/10-user.conf" ] && . "$HOME/.config/environment.d/10-user.conf"
+      set +a
+      exec ${pkgs.hyprland}/bin/Hyprland
     '';
 
     # Minimal Hyprland fallback config (overridden by dotfiles if present)

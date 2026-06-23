@@ -15,7 +15,8 @@
     "nvme" "xhci_pci" "ahci" "usbhid" "sd_mod"
   ];
   boot.kernelModules = [ "amdgpu" ];
-  boot.initrd.kernelModules = [ "amdgpu" ];
+  # crc32c is a softdep of btrfs — must be in initrd for root mount
+  boot.initrd.kernelModules = [ "amdgpu" "crc32c" ];
 
   services.qemuGuest.enable = lib.mkForce false;
 

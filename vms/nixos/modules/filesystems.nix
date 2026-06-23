@@ -7,23 +7,23 @@ in
   options._filesystems.enable = lib.mkEnableOption "Additional filesystems (Windows NTFS + bind mounts)";
 
   config = lib.mkIf cfg.enable {
-    # CachyOS root (for src/cfg dotfiles access)
+    # CachyOS root (for src/cfg dotfiles access — must mount at boot)
     fileSystems."/mnt/cachyos" = {
       device = "/dev/nvme0n1p4";
       fsType = "xfs";
-      options = [ "nofail" "ro" "noauto" ];
+      options = [ "nofail" "ro" ];
     };
 
     # LVM external storage
     fileSystems."/mnt/one" = {
       device = "/dev/xenon/one";
       fsType = "xfs";
-      options = [ "nofail" "noauto" "x-systemd.automount" ];
+      options = [ "nofail" "x-systemd.automount" ];
     };
     fileSystems."/mnt/zero" = {
       device = "/dev/argon/zero";
       fsType = "xfs";
-      options = [ "nofail" "noauto" "x-systemd.automount" ];
+      options = [ "nofail" "x-systemd.automount" ];
     };
 
     fileSystems."/mnt/windows" = {

@@ -249,6 +249,18 @@ in
       "d /home/neg/.local/mail/gmail/[Gmail]/Trash 0700 neg users -"
       "d /home/neg/.local/mail/gmail/[Gmail]/Spam 0700 neg users -"
       "L+ /home/neg/.local/share/chezmoi - - - - /home/neg/src/cfg/dotfiles"
+      "d /home/neg/.hermes 0755 neg users -"
+      "d /home/neg/.hermes/cron 0755 neg users -"
+      "d /home/neg/.hermes/sessions 0755 neg users -"
+      "d /home/neg/.hermes/logs 0755 neg users -"
+      "d /home/neg/.hermes/memories 0755 neg users -"
+      "d /home/neg/.hermes/skills 0755 neg users -"
+      "d /home/neg/.hermes/pairing 0755 neg users -"
+      "d /home/neg/.hermes/hooks 0755 neg users -"
+      "d /home/neg/.hermes/image_cache 0755 neg users -"
+      "d /home/neg/.hermes/audio_cache 0755 neg users -"
+      "d /home/neg/.hermes/whatsapp/session 0755 neg users -"
+      "d /home/neg/.hermes/skins 0755 neg users -"
     ];
 
     # ── GPG agent socket ──
@@ -277,14 +289,25 @@ in
 
     # ── Hermes relay gateway ──
     systemd.user.services.hermes-gateway = {
-      description = "Hermes relay gateway";
-      after = [ "network.target" ];
+      description = "Hermes Agent Gateway — messaging platform integration";
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
       wantedBy = [ "default.target" ];
       serviceConfig = {
         Type = "simple";
-        Restart = "on-failure";
-        RestartSec = 10;
-        ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/hermes && echo \"hermes-agent: re-enable when package URL is fixed\"; sleep infinity'";
+        WorkingDirectory = "%h/.hermes";
+        Environment = [
+          "PATH=/opt/hermes-agent/venv/bin:/run/current-system/sw/bin:%h/.local/bin:%h/.cargo/bin"
+          "VIRTUAL_ENV=/opt/hermes-agent/venv"
+          "HERMES_HOME=%h/.hermes"
+        ];
+        Restart = "always";
+        RestartSec = 5;
+        ExecStart = "/opt/hermes-agent/venv/bin/python -m hermes_cli.main gateway run --replace";
+        ExecReload = "/bin/kill -USR1 $MAINPID";
+        KillMode = "mixed";
+        KillSignal = "SIGTERM";
+        TimeoutStopSec = 210;
       };
     };
 

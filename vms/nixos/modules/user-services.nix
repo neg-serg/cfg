@@ -151,11 +151,20 @@ in
     # ── Chezmoi watch service ──
     systemd.user.services.chezmoi-init = {
       enable = true;
-      description = "Initialize and apply chezmoi dotfiles on first login";
+      description = "Apply chezmoi dotfiles if source exists";
       wantedBy = [ "default.target" ];
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${pkgs.bash}/bin/bash -c 'echo \"chezmoi: dotfiles pre-installed from host deployment\"'";
+        ExecStart = "${pkgs.bash}/bin/bash -c '
+          SRC=/home/neg/src/cfg/dotfiles
+          if [ -d \"$SRC\" ]; then
+            ${pkgs.chezmoi}/bin/chezmoi init --source \"$SRC\" --force
+            ${pkgs.chezmoi}/bin/chezmoi apply --source \"$SRC\" --force
+            echo \"chezmoi: applied from $SRC\"
+          else
+            echo \"chezmoi: $SRC not found, skipping\"
+          fi
+        '";
       };
     };
 

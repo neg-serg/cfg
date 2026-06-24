@@ -30,19 +30,18 @@ limine_efi_binary:
 limine_efi_entry:
   cmd.run:
     - name: |
-        entry=$(efibootmgr 2>/dev/null | awk '/ {{ limine_yml.efi_label }}$/ {gsub(/[ *]/,""); print $1; exit}')
+        entry=$(efibootmgr 2>/dev/null | grep ' {{ limine_yml.efi_label }}$' | awk '{print $1}' | tr -d 'Boot*')
         if [ -z "$entry" ]; then
           efibootmgr --create --disk {{ limine_yml.esp_device }} --part {{ limine_yml.esp_part }} \
             --label "{{ limine_yml.efi_label }}" --loader \\EFI\\Limine\\liminex64.efi
           echo "EFI entry created"
         else
-          echo "EFI entry exists"
+          echo "EFI entry exists: Boot$entry"
         fi
-        entry_hex="$(efibootmgr 2>/dev/null | grep ' {{ limine_yml.efi_label }}$' | awk '{print $1}' | tr -d 'Boot*')"
-        current_first=$(efibootmgr 2>/dev/null | awk '/^BootOrder:/ {print $2}' | cut -d, -f1)
-        if [ -n "$entry_hex" ] && [ "$current_first" != "$entry_hex" ]; then
-          full_order=$(efibootmgr | awk '/^BootOrder:/ {$1=""; print}' | sed 's/^ *//')
-          efibootmgr --bootorder "$entry_hex,$full_order" 2>/dev/null || true
+        current_first=$(efibootmgr 2>/dev/null | awk -F, '/^BootOrder:/ {print $2}')
+        if [ -n "$entry" ] && [ "$current_first" != "$entry" ]; then
+          full_order=$(efibootmgr 2>/dev/null | awk '/^BootOrder:/ {$1=""; print}' | sed 's/^ *//')
+          efibootmgr --bootorder "$entry,$full_order" 2>/dev/null || true
           echo "BootOrder updated: Limine first"
         fi
     - require:
@@ -59,5 +58,11 @@ limine_config:
     - require:
       - file: limine_efi_binary
 
-# NixOS generation entries are managed by vms/nixos/modules/limine-boot.nix
-# which runs on nixos-rebuild activation and keeps /efi/limine.cfg in sync.
+# NixOS generation entries appended by scripts/limine-generations.sh on config changes.
+limine_nixos_generations:
+  cmd.script:
+    - source: salt://scripts/limine-generations.sh
+    - shell: /bin/bash
+    - runas: root
+    - onchanges:
+      - file: limine_config

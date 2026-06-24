@@ -5,7 +5,7 @@ package: limine
 source_efi: /usr/share/limine/BOOTX64.EFI
 target_dir: /efi/EFI/Limine
 target_efi: /efi/EFI/Limine/liminex64.efi
-config_path: /efi/limine.cfg
+config_path: /efi/EFI/Limine/limine.cfg
 esp_device: /dev/nvme0n1
 esp_part: 5
 efi_label: Limine

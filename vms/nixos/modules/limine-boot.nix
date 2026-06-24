@@ -16,7 +16,7 @@ let
     text = ''
       set -euo pipefail
       ESP_MOUNT="''${1:-/boot}"
-      CONFIG="$ESP_MOUNT/limine.cfg"
+      CONFIG="$ESP_MOUNT/EFI/Limine/limine.cfg"
       MARKER="# @nixos-generations"
       PROFILE="$(readlink -f /run/current-system)"
 

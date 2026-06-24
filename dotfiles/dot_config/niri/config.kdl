@@ -499,6 +499,7 @@ binds {
     spawn-at-startup "swayosd-server"
     spawn-at-startup "sh" "-c" "pkill -f 'wl-paste --watch cliphist store' 2>/dev/null; wl-paste --watch cliphist store"
     spawn-at-startup "nicotine"
+    spawn-at-startup "bazecor"
     spawn-at-startup "sh" "-c" "~/.local/bin/niri-focus-hist"
     spawn-at-startup "sh" "-c" "~/.local/bin/gpg-warmup"
     spawn-at-startup "systemctl" "--user" "start" "--no-block" "vicinae.service"

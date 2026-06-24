@@ -27,7 +27,6 @@ schema_versions:
   ipv6.yaml: 1
   kanata.yaml: 1
   kernel_params.yaml: 1
-  limine.yaml: 1
   llama_embed.yaml: 1
   managed_resources.yaml: 1
   monitored_services.yaml: 1

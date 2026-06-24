@@ -2,15 +2,11 @@
 {
   imports = [
     ./base.nix
-    ./limine-boot.nix
   ];
 
   networking.hostName = lib.mkForce "telfir";
 
-  boot.loader.limine = {
-    enable = true;
-    efiSysMountPoint = "/boot";
-  };
+  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot";
 

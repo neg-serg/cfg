@@ -50,12 +50,8 @@
   # Locale
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
-    font = "ter-118n";
     useXkbConfig = true;
   };
-
-  # Ensure terminus font is available
-  environment.systemPackages = [ pkgs.terminus_font ];
   time.timeZone = "Europe/Moscow";
 
   # SSH

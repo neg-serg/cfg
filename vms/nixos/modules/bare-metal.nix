@@ -10,6 +10,9 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot";
 
+  # UKI: Unified Kernel Image — systemd initrd auto-generates .efi with kernel+initrd+cmdline+microcode
+  boot.initrd.systemd.enable = true;
+
   boot.kernelParams = lib.mkForce [
     "console=tty0"
     "nvme_core.default_ps_max_latency_us=0"
@@ -48,10 +51,10 @@
     experimental-features = [ "nix-command" "flakes" ];
     max-jobs = 16;
     cores = 16;
-    substituters = [ "https://cache.nixos.org" "https://hyprland.cachix.org" ];
+    substituters = lib.mkForce [ "https://cache.nixos.org" ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
     ];
+    builders = lib.mkForce "";
   };
 }

@@ -44,6 +44,7 @@
   boot.kernel.sysctl."vm.nr_hugepages" = lib.mkForce 0;
 
   nix.settings = lib.mkForce {
+    experimental-features = [ "nix-command" "flakes" ];
     max-jobs = 16;
     cores = 16;
     substituters = [ "https://cache.nixos.org" "https://hyprland.cachix.org" ];

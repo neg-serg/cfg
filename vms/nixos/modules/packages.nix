@@ -140,6 +140,7 @@ in
     gst_all_1.gst-plugins-ugly
     imagemagick                    # Image manipulation suite
     mpv                            # Media player
+    vlc                            # VLC media player
     grilo-plugins
     rygel
 

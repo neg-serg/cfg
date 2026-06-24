@@ -23,6 +23,7 @@
   boot.initrd.availableKernelModules = lib.mkForce [
     "nvme" "xhci_pci" "ahci" "usbhid" "sd_mod"
   ];
+  boot.kernelPackages = pkgs.linuxPackages_latest;  # 7.1.1
   boot.kernelModules = [ "amdgpu" ];
   # crc32c is a softdep of btrfs — must be in initrd for root mount
   boot.initrd.kernelModules = [ "amdgpu" "crc32c" "btrfs" "dm_mod" "xfs" ];

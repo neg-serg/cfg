@@ -30,7 +30,7 @@ limine_efi_binary:
 limine_efi_entry:
   cmd.run:
     - name: |
-        entry=$(efibootmgr 2>/dev/null | awk '/^{{ limine_yml.efi_label }}\*? / {sub(/[ *]/,""); print $1; exit}')
+        entry=$(efibootmgr 2>/dev/null | awk '/ {{ limine_yml.efi_label }}$/ {gsub(/[ *]/,""); print $1; exit}')
         if [ -z "$entry" ]; then
           efibootmgr --create --disk {{ limine_yml.esp_device }} --part {{ limine_yml.esp_part }} \
             --label "{{ limine_yml.efi_label }}" --loader \\EFI\\Limine\\liminex64.efi
@@ -38,8 +38,7 @@ limine_efi_entry:
         else
           echo "EFI entry exists"
         fi
-        # Ensure Limine is first in boot order
-        entry_hex="$(efibootmgr 2>/dev/null | grep '^{{ limine_yml.efi_label }}' | awk '{print $1}' | tr -d 'Boot*')"
+        entry_hex="$(efibootmgr 2>/dev/null | grep ' {{ limine_yml.efi_label }}$' | awk '{print $1}' | tr -d 'Boot*')"
         current_first=$(efibootmgr 2>/dev/null | awk '/^BootOrder:/ {print $2}' | cut -d, -f1)
         if [ -n "$entry_hex" ] && [ "$current_first" != "$entry_hex" ]; then
           full_order=$(efibootmgr | awk '/^BootOrder:/ {$1=""; print}' | sed 's/^ *//')

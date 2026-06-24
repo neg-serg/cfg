@@ -64,6 +64,7 @@ include:
   - fstab_column
   - kernel_modules
   - mkinitcpio
+  - limine
   - sysctl
   - hardware
   - cachyos

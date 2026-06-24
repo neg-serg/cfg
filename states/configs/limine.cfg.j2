@@ -1,0 +1,23 @@
+# {{ limine_yml.config_path }} — managed by Salt (states/limine.sls)
+# ESP: {{ limine_yml.esp_device }}p{{ limine_yml.esp_part }}
+# NixOS entries are appended by scripts/limine-generations.sh on rebuilds.
+
+TIMEOUT=5
+DEFAULT_ENTRY=1
+EDITOR_ENABLED=yes
+GRAPHICS=yes
+RANDOMIZE_MEMORY=yes
+
+{% for entry in limine_yml.uki_entries %}
+:{{ entry.name }}
+    PROTOCOL=efi_chainload
+    COMMENT={{ entry.comment }}
+    IMAGE_PATH=boot:///{{ entry.path }}
+{% endfor %}
+
+{% if limine_yml.fallback_entry %}
+:{{ limine_yml.fallback_entry.name }}
+    PROTOCOL=efi_chainload
+    COMMENT={{ limine_yml.fallback_entry.comment }}
+    IMAGE_PATH=boot:///{{ limine_yml.fallback_entry.path }}
+{% endif %}

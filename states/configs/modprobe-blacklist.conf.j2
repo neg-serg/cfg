@@ -36,9 +36,6 @@ blacklist atm
 # In-kernel RME HDSPM driver (conflicts with DKMS snd-hdspe for AIO Pro)
 blacklist snd_hdspm
 
-# TEMPORARY: snd-hdspe DKMS module (disabled for troubleshooting)
-blacklist snd_hdspe
-
 # ALSA loopback (conflicts with PipeWire RME routing — snd_aloop
 # creates pro-output nodes that race with USB audio at startup)
 blacklist snd_aloop

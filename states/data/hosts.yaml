@@ -96,7 +96,6 @@ hosts:
     hostname: telfir
     extra_modules:
     - ec_sys
-    - snd_hdspe
     features:
       fancontrol: true
       monitoring:

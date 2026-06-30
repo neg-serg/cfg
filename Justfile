@@ -80,9 +80,6 @@ help:
 test STATE="system_description":
     scripts/salt-apply.sh {{STATE}} --test
 
-# Run CachyOS VM smoke test inside Podman
-vm-smoke ROOTFS="/mnt/one/cachyos-root":
-    sudo scripts/vm-smoke.sh {{ROOTFS}}
 
 # Start the salt daemon (keeps running, speeds up subsequent applies)
 daemon:

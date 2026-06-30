@@ -1,7 +1,0 @@
-# salt-lint configuration
-verbosity: 1
-exclude_paths:
-  - .venv/
-skip_list:
-  - 204 # Lines should be no longer than 120 characters (sometimes hard with long URLs/commands)
-  - 210 # Jinja variable should be surrounded by spaces (Jinja blocks in shell commands need tight spacing)

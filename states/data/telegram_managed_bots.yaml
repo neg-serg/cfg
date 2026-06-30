@@ -1,5 +1,0 @@
-owner_uids: []
-allowlist_uids: []
-pip_deps:
-- python-telegram-bot[all]
-- PyYAML

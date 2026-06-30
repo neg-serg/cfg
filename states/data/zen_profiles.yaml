@@ -1,5 +1,0 @@
-profiles:
-- name: Personal
-  path: personal
-- name: Work
-  path: work

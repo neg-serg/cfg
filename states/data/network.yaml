@@ -1,5 +1,0 @@
-vm_bridge:
-  netdev: /etc/systemd/network/10-br0.netdev
-  network: /etc/systemd/network/10-br0.network
-  name: br0
-  kind: bridge

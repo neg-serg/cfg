@@ -1,5 +1,0 @@
-repo: Qwen/Qwen3-Embedding-8B-GGUF
-file: Qwen3-Embedding-8B-Q5_K_M.gguf
-context: 8192
-gpu_layers: 99
-pooling: last

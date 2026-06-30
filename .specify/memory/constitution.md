@@ -111,7 +111,7 @@ Salt states are interconnected through `require` chains and `include` lists. A c
 2. **Data-driven when possible**: Package lists, service definitions, and font sets live in `states/data/*.yaml` and are consumed via `import_yaml`. Prefer adding entries to data files over writing new state logic
 3. **Self-modifying configs**: Some tools (e.g., OpenClaw) rewrite their own config at startup. Use `replace: False` in `file.managed` to deploy initial seed only
 4. **State file organization**: Each `.sls` file owns a domain (audio, fonts, dns, etc.). New functionality goes into the appropriate domain file; new `.sls` files are created only when no existing domain fits
-5. **Quickshell context**: When working under `dotfiles/dot_config/quickshell/`, load the knowledge-base router from `IMPROVEMENT_PROMPT.md`
+
 
 ## Governance
 

@@ -62,32 +62,16 @@ if [[ "$theme_name" == "pass" || "$theme_name" == askpass* ]]; then
   want_offsets=0
 fi
 
-# Compute offsets from Quickshell Theme + Hyprland scale to align with panel
+# Compute offsets from monitor scale to align with panel
 # Only when caller did not specify offsets explicitly
 if [ "$want_offsets" -eq 1 ] && [ "$have_xoff" -eq 0 ] && [ "$have_yoff" -eq 0 ]; then
-  theme_json="$xdg_conf/quickshell/Theme/.theme.json"
-  # Defaults if quickshell or jq/hyprctl unavailable
   sm=18
   ay=4
   scale=1
-  extra=""
-  if [ -f "$theme_json" ]; then
-    local jq_out
-    jq_out=$("$jq_bin" -r '"\(try .panel.sideMargin // 18)\t\(try .panel.menuYOffset // 8)\t\(try .panel.menuYOffsetAdjust // "")"' "$theme_json" 2>/dev/null) || jq_out=$'18\t8\t'
-    IFS=$'\t' read -r sm ay extra <<< "$jq_out"
-    : ${sm:=18} ${ay:=8}
-  fi
-  if ! [[ "$extra" =~ '^[0-9]+(\.[0-9]+)?$' ]]; then
-    # Default: subtract full menuYOffset so the menu sits flush to panel
-    extra=$ay
-  fi
   # Monitor scale: try Hyprland first, fall back to wlr-randr
   scale=$("$hyprctl_bin" -j monitors 2> /dev/null | "$jq_bin" -r 'try (.[] | select(.focused==true) | .scale) // 1' 2> /dev/null || \
          wlr-randr --json 2> /dev/null | "$jq_bin" -r 'try ([.[] | select(.enabled) | .scale] | first) // 1' 2> /dev/null || \
          echo 1)
-  # reduce y-offset by adjustment (clamp >=0)
-  (( ay = ay - extra ))
-  (( ay < 0 )) && ay=0
   # Round offsets to ints
   local _tmp
   (( _tmp = sm * scale )); xoff=${_tmp%.*}

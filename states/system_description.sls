@@ -75,7 +75,6 @@ include:
   - dns
   - network
   - packages
-  - quickshell
   - ambxst
   - axctl
   - installers

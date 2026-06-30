@@ -1,7 +1,7 @@
-{# greetd display manager with Hyprland compositor and quickshell greeter #}
+{# greetd display manager with Hyprland compositor #}
 {#- @state
    id: greetd
-   purpose: "greetd display manager with Hyprland compositor and quickshell greeter."
+   purpose: "greetd display manager with Hyprland compositor."
    includes: [pacman_db_warmup, systemd_resources]
    data_files: [data/greetd.yaml]
 #}

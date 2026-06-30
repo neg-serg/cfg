@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """
-Annotate package lists with descriptions in Salt (YAML), NixOS (Nix), and Guix (Scheme).
+Annotate package lists with descriptions in Salt (YAML) and NixOS (Nix).
 
 Reads package names from each config file and adds inline comments with descriptions.
 Skips packages that already have comments.
 
 Usage:
-  python3 scripts/annotate-packages.py              # all three configs
+  python3 scripts/annotate-packages.py              # both configs
   python3 scripts/annotate-packages.py --salt        # Salt only
   python3 scripts/annotate-packages.py --salt        # Salt only
-  #python3 scripts/annotate-packages.py --guix        # removed
 """
 
 import re, argparse
@@ -91,7 +90,6 @@ DESC = {
     "hyprcursor": "Hyprland cursor theme support",
     "greetd": "Login greeter daemon (display manager)",
     "tuigreet": "TUI greeter for greetd",
-    "quickshell": "QtQuick-based Wayland shell environment",
     "niri": "Scrolling-tiling Wayland compositor",
     "ghostty": "GPU-accelerated terminal emulator",
     "kitty": "GPU-accelerated terminal emulator",
@@ -400,8 +398,7 @@ DESC = {
     "kmon": "Kernel module manager TUI",
 }
 
-# ── Configs that store package names as "quoted strings" (Guix)
-GUIX_STRING_PKGS = True
+
 
 def annotate_salt():
     """Annotate Salt packages.yaml"""

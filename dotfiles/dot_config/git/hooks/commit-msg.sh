@@ -13,7 +13,7 @@ esac
 if ! [[ "$first_line" =~ '^\[[^][]+\]( \[[^][]+\])*[[:space:]][^[:space:]].*' ]]; then
   echo "Commit message must start with [scope] subject" >&2
   echo "Got: '$first_line'" >&2
-  echo "Examples: [salt] decompose desktop includes, [docs] update hook guidance, [gui/quickshell] fix bar spacing" >&2
+  echo "Examples: [salt] decompose desktop includes, [docs] update hook guidance, [gui] fix bar spacing" >&2
   exit 1
 fi
 

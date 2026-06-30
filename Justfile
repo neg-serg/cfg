@@ -90,10 +90,6 @@ daemon:
         --config-dir .salt_runtime \
         --log-level warning
 
-# Build Sphinx documentation site
-docs:
-    sphinx-build -b html docs/ docs/_build/html
-
 # Regenerate Claude Code knowledge base indexes
 index:
     python scripts/index-qml.py

@@ -667,8 +667,6 @@ Qdrant
 qmk
 qml
 qmldir
-quickshell
-Quickshell
 Qwen
 ramdisk
 ramPercent

@@ -1,3 +1,0 @@
-# cfg
-
-Chezmoi dotfiles.
